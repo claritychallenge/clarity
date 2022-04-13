@@ -1,0 +1,45 @@
+path:
+  root: ???
+  exp_folder: ./results/  # folder to store intermediate signals and final results
+  scenes_listeners_file: ${path.root}/clarity_CEC1_data/clarity_data/metadata/scenes_listeners.dev.json
+  listeners_file: ${path.root}/clarity_CEC1_data/clarity_data/metadata/listeners.json
+  scenes_folder: ${path.root}/clarity_CEC1_data/clarity_data/dev/scenes
+  enhanced_signals: ${path.exp_folder}/enhanced_signals
+
+# experimental parameters
+num_channels: 3
+fs: 44100
+ahr: 20
+equiv0dBSPL: 100
+
+GHAHearingAid:  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
+  fs: ${fs}
+  ahr: ${ahr}
+  audf: null
+  cfg_file: prerelease_combination4_smooth
+  noisegatelevels: null
+  noisegateslope: 0
+  cr_level: 0
+  max_output_level: 100
+  equiv0dBSPL: ${equiv0dBSPL}
+  test_nbits: 16
+
+MSBGEar:   # hyperparameters for MSBG ear
+  src_pos: ff
+  fs: ${fs}
+  equiv0dBSPL: ${equiv0dBSPL}
+  ahr: ${ahr}
+
+mbstoi:
+  fs: ${fs}
+  gridcoarseness: 1
+
+
+# disable hydra loggings
+defaults:
+  - override hydra/job_logging: disabled
+
+hydra:
+  output_subdir: Null
+  run:
+    dir: .

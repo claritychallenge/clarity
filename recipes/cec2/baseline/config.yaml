@@ -1,0 +1,12 @@
+path:
+  root: ???
+  metadata_dir: ${path.root}/clarity_data/metadata
+  exp_folder: ./results/  # folder to store final results
+  scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.dev.json
+  listeners_file: ${path.metadata_dir}/listeners.json
+  scenes_folder: ${path.root}/clarity_data/dev/scenes
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}

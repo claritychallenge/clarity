@@ -1,0 +1,57 @@
+train_path:
+  root: ???
+  exp_folder: ${train_path.root}/exps/train/  # folder to store intermediate signals and final results
+  scenes_file: ${train_path.root}/clarity_CPC1_data/metadata/CPC1.train.json
+  listeners_file: ${train_path.root}/clarity_CPC1_data/metadata/listeners.CPC1_train.json
+  scenes_folder: ${train_path.root}/clarity_CPC1_data/clarity_data/HA_outputs/train
+  ref_folder: ${train_path.root}/clarity_CPC1_data/clarity_data/scenes
+
+test_path:
+  root: ${train_path.root}
+  exp_folder: ${test_path.root}/exps/test/
+  scenes_file: ${test_path.root}/clarity_CPC1_data_test/metadata/CPC1.test.json
+  listeners_file: ${test_path.root}/clarity_CPC1_data_test/metadata/listeners.CPC1_all.json
+  scenes_folder: ${test_path.root}/clarity_CPC1_data_test/clarity_data/HA_outputs/test
+  ref_folder: ${test_path.root}/clarity_CPC1_data_test/clarity_data/scenes
+
+train_indep_path:
+  root: /home/tu/bessfastdata/Clarity_CPC1
+  exp_folder: ${train_path.root}/exps/train_indep/  # folder to store intermediate signals and final results
+  scenes_file: ${train_path.root}/clarity_CPC1_data/metadata/CPC1.train_indep.json
+  listeners_file: ${train_path.root}/clarity_CPC1_data/metadata/listeners.CPC1_train.json
+  scenes_folder: ${train_path.root}/clarity_CPC1_data/clarity_data/HA_outputs/train_indep
+  ref_folder: ${train_path.root}/clarity_CPC1_data/clarity_data/scenes
+
+test_indep_path:
+  root: ${train_path.root}
+  exp_folder: ${test_path.root}/exps/test_indep/
+  scenes_file: ${test_path.root}/clarity_CPC1_data_test/metadata/CPC1.test_indep.json
+  listeners_file: ${test_path.root}/clarity_CPC1_data_test/metadata/listeners.CPC1_all.json
+  scenes_folder: ${test_path.root}/clarity_CPC1_data_test/clarity_data/HA_outputs/test_indep
+  ref_folder: ${test_path.root}/clarity_CPC1_data_test/clarity_data/scenes
+
+# experimental parameters
+num_channels: 3
+fs: 44100
+ahr: 20
+equiv0dBSPL: 100
+
+MSBGEar:   # hyperparameters for MSBG ear
+  src_pos: ff
+  fs: ${fs}
+  equiv0dBSPL: ${equiv0dBSPL}
+  ahr: ${ahr}
+
+mbstoi:
+  fs: ${fs}
+  gridcoarseness: 1
+
+
+# disable hydra loggings
+defaults:
+  - override hydra/job_logging: disabled
+
+hydra:
+  output_subdir: Null
+  run:
+    dir: .

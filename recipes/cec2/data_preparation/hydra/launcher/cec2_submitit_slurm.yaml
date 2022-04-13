@@ -1,0 +1,10 @@
+defaults:
+  - submitit_slurm
+
+mem_per_cpu: 4GB
+tasks_per_node: 1
+timeout_min: 180
+additional_parameters:
+  account: clarity
+  partition: clarity
+setup: ['module load Anaconda3/5.3.0', 'source activate clarity', 'export SLURM_EXPORT_ENV=ALL']

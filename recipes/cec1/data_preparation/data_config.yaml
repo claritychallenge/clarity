@@ -1,0 +1,22 @@
+root: ???
+input_path: ${root}/clarity_CEC1_data/clarity_data/
+
+datasets:
+  train:
+    metafile_path: ${root}/clarity_CEC1_data/clarity_data/metadata/scenes.train.json
+    scene_folder: ${root}/clarity_CEC1_data/clarity_data/train/scenes/
+  dev:
+    metafile_path: ${root}/clarity_CEC1_data/clarity_data/metadata/scenes.dev.json
+    scene_folder: ${root}/clarity_CEC1_data/clarity_data/dev/scenes/
+
+num_channels: 3
+
+
+# disable hydra loggings
+defaults:
+  - override hydra/job_logging: disabled
+
+hydra:
+  output_subdir: Null
+  run:
+    dir: .
