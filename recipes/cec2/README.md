@@ -100,7 +100,7 @@ If single-run locally:
 python render_scenes.py
 ```
 
-The Hydra submitit feature is used for parallel multi-run, see [https://hydra.cc/docs/plugins/submitit_launcher/]
+The Hydra submitit feature is used for parallel multi-run, see https://hydra.cc/docs/plugins/submitit_launcher/
 
 If multi-run locally, make sure the `override hydra/launcher` is set `cec2_submitit_local`, and specify the parameters in `hydra/launcher/cec2_submitit_local.yaml`, then:
 
