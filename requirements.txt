@@ -10,3 +10,4 @@ pyloudnorm==0.1.0
 scikit-learn==1.0.2
 scipy==1.7.3
 SoundFile==0.10.3.post1
+tqdm==4.62.3
