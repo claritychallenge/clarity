@@ -10,7 +10,7 @@ To download data, please visit [here](https://mab.to/zU7TS8jJelkoD). The data is
 Unpack packages under the same root directory using
 
 ```bash
-tar -xkzf <PACKAGE_NAME>
+tar -xvzf <PACKAGE_NAME>
 ```
 
 **Core** contains metadata and development set signals, which can be used for validate existing systems
