@@ -4,7 +4,7 @@ Clarity challenge code for the 2nd enhancement challenge (CEC2).
 For more information about the Clarity Challenge please visit https://claritychallenge.github.io/clarity_CC_doc/
 
 ## Data structure
-To download data, please visit [here](link). The data is split into three packages:
+To download data, please visit [here](https://mab.to/zU7TS8jJelkoD). The data is split into three packages:
 
 **Core** contains metadata and development set signals, which can be used for validate existing systems
 ```

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def run_calculate_SI(cfg: DictConfig) -> None:
     scenes_listeners = json.load(open(cfg.path.scenes_listeners_file))
     listener_audiograms = json.load(open(cfg.path.listeners_file))
-
+    os.makedirs(cfg.path.exp_folder, exist_ok=True)
     sii_file = os.path.join(cfg.path.exp_folder, "sii.csv")
     csv_lines = [["scene", "listener", "sii"]]
 

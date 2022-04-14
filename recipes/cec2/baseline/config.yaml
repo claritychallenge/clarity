@@ -9,4 +9,4 @@ path:
 # hydra config
 hydra:
   run:
-    dir: ${path.exp_folder}
+    dir: .
