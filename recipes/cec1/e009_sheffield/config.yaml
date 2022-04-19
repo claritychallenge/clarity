@@ -1,0 +1,102 @@
+path:
+  cec1_root: ???
+  exp_folder: ???  # folder to store intermediate signals and final results
+
+sr: 44100
+downsample_factor: 2
+num_channels: 6
+level_norm: False
+wav_silence_len: 2
+
+listener:
+  metafile: ${path.cec1_root}/clarity_CEC1_data/clarity_data/metadata/listeners.json
+  id: L0001
+  src_pos: ff
+  loudnorm: False
+
+mc_conv_tasnet:
+  N_spec: 256
+  N_spat: 128 # 6 * 30
+  L: 20
+  B: 256
+  H: 512
+  P: 3
+  X: 6
+  R: 4
+  C: 1  # num_speakers
+  num_channels: 6  # should be consistent with dataloader num_channels
+  norm_type: cLN
+  causal: True
+  mask_nonlinear: relu
+
+fir:
+  sr: ${sr}
+  nfir: 220
+
+den_trainer:
+  optimizer:
+    lr: 1e-3
+  epochs: 200
+  gradient_clip_val: 5.0
+
+amp_trainer:
+  optimizer:
+    lr: 5e-2
+  epochs: 100
+  gradient_clip_val: 5.0
+  stoilevel_loss:
+    sr: ${sr}
+    alpha: 1e-4
+
+train_dataset:
+  scenes_folder: ${path.cec1_root}/clarity_CEC1_data/clarity_data/train/scenes
+  scenes_file: ${path.cec1_root}/clarity_CEC1_data/clarity_data/metadata/scenes.train.json
+  sr: ${sr}
+  downsample_factor: ${downsample_factor}
+  wav_sample_len: 2
+  wav_silence_len: ${wav_silence_len}
+  num_channels: ${num_channels}
+  norm: ${level_norm}
+
+train_loader:
+  batch_size: 2
+  shuffle: True
+  num_workers: 10
+  drop_last: true
+  pin_memory: True
+
+dev_dataset:
+  scenes_folder: ${path.cec1_root}/clarity_CEC1_data/clarity_data/dev/scenes
+  scenes_file: ${path.cec1_root}/clarity_CEC1_data/clarity_data/metadata/scenes.dev.json
+  sr: ${sr}
+  downsample_factor: ${downsample_factor}
+  wav_sample_len: null
+  wav_silence_len: ${wav_silence_len}
+  num_channels: ${num_channels}
+  norm: ${level_norm}
+
+dev_loader:
+  batch_size: 1
+  shuffle: False
+  num_workers: 10
+
+test_dataset:
+  scenes_folder: ${path.cec1_root}/clarity_CEC1_data_eval/clarity_data/eval/scenes
+  scenes_file: ${path.cec1_root}/clarity_CEC1_data_eval/clarity_data/metadata/scenes_listeners.eval.json
+  sr: ${sr}
+  downsample_factor: ${downsample_factor}
+  wav_sample_len: null
+  wav_silence_len: 0
+  num_channels: ${num_channels}
+  norm: ${level_norm}
+  testing: True
+
+test_loader:
+  batch_size: 1
+  shuffle: False
+  num_workers: 10
+
+hydra:
+  # output_subdir: ${path.exp_folder}.hydra
+  run:
+    dir: ${path.exp_folder}
