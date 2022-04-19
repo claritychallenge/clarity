@@ -7,7 +7,8 @@ To build the overall system, the multi-channel Conv-TasNet based denoising modul
 ## References
 * [1] Luo Y, Mesgarani N. Conv-tasnet: Surpassing ideal time–frequency magnitude masking for speech separation[J]. IEEE/ACM transactions on audio, speech, and language processing, 2019, 27(8): 1256-1266.
 * [2] Andersen A H, de Haan J M, Tan Z H, et al. Refinement and validation of the binaural short time objective intelligibility measure for spatially diverse conditions[J]. Speech Communication, 2018, 102: 1-13.
-* [3] C.H.Taal, R.C.Hendriks, R.Heusdens, J.Jensen 'A Short-Time Objective Intelligibility Measure for Time-Frequency Weighted Noisy Speech', ICASSP 2010, Texas, Dallas.
+* [3] Taal, C. H., Hendriks, R. C., Heusdens, R., & Jensen, J. An algorithm for intelligibility prediction of time–frequency weighted noisy speech. IEEE Transactions on Audio, Speech, and Language Processing, 19(7), 2125-2136.
+* [4] Zhang, J., Zorilă, C., Doddipatla, R., & Barker, J. On end-to-end multi-channel time domain speech separation in reverberant environments. In ICASSP 2020-2020 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) (pp. 6389-6393). IEEE.
 
 ## Citation
 If you use this work, please cite:
