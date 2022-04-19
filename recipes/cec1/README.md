@@ -7,7 +7,7 @@ Please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_in
 and https://claritychallenge.github.io/clarity2021-workshop/results.html for CEC1 results.
 
 ## Data structure
-To download data, please visit [here](https://mab.to/I9mkGx4wsiiaX). The data is split into two packages: `clarity_CEC1_data.train.tgz` [192 GB], `clarity_CEC1_data.dev_eval_metadata.tgz` [163 GB].
+To download data, please visit [here](https://mab.to/bavGDV87BZISg). The data is split into two packages: `clarity_CEC1_data.train.tgz` [192 GB], `clarity_CEC1_data.dev_eval_metadata.tgz` [163 GB].
 
 Unpack packages under the same root directory using
 
