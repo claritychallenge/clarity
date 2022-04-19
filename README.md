@@ -37,3 +37,8 @@ Previous challenges
 
 - [The 1st Clarity Prediction Challenge (CPC1)](./recipes/cpc1)
 - [The 1st Clarity Enhancement Challenge (CEC1)](./recipes/cec1/baseline)
+
+
+## Open-source systems
+- CEC1:
+  - [E009 Sheffield Entry](./recipes/cec1/e009_sheffield)
