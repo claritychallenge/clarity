@@ -113,7 +113,7 @@ def run_calculate_SI(cfg, path) -> None:
         listener = scene_dict["listener"]
         system = scene_dict["system"]
         proc = read_signal(
-            os.path.join(path.scenes_folder, f"{scene}_{listener}_{system}.wav")
+            os.path.join(proc_folder, f"{scene}_{listener}_{system}_HL-output.wav")
         )
         clean = read_signal(
             os.path.join(path.ref_folder, f"{scene}_target_anechoic.wav")
