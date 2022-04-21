@@ -36,7 +36,7 @@ metadata
 
 
 ## Baseline
-The baseline folder provides the code of the Cambridge Auditory Group MSBG hearing loss model and MBSTOI, see [CEC1](../cec1/baseline)
+The baseline folder provides the code of the Cambridge Auditory Group MSBG hearing loss model and MBSTOI, see [CEC1](../cec1/baseline). Run `run.py` to generate the predicted intelligibility, and then run `compute_scores.py` to apply logistic fitting and compute the evaluation scores, including RMSE, normalised cross-correlation, Kendall's Tau coefficient.
 
 ## Citing CPC1
 ```text
