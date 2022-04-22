@@ -33,7 +33,7 @@ def two_point_rotation(rotation, origin, duration):
     Returns:
         ndarray: sequence of theta values per sample
     """
-    angle_origin = np.arctan2(origin[0], origin[1])
+    angle_origin = np.arctan2(origin[1], origin[0])
     angles = [math.radians(r["angle"]) - angle_origin for r in rotation]
     logger.info(f"{angles=}")
     theta = hoa.rotation_vector(
