@@ -117,7 +117,7 @@ sbatch render_scenes.sh
 
 ## Baseline
 
-In this folder, we provide code for generating more training data, objective evaluation with binaural HASPI [1]. The baseline system will be released soon.
+In this folder, we provide code for generating more training data, objective evaluation with binaural HASPI [1]. The baseline system consists of the NAL-R [2] fitting amplification and a simple automatic gain compressor.
 
 ### Data generation
 
@@ -125,9 +125,9 @@ The method of using this is the same as for `Data preparation`. A `scenes.train_
 
 ### Evaluation
 
-The `evaluate.py` calculates the HASPI score given the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. Specify `path.exp_folder` to store the results. To check the HASPI code, see [here](../../clarity/evaluator/haspi).
+The `evaluate.py` calculates the better-ear HASPI score given the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. Specify `path.exp_folder` to store the results. To check the HASPI code, see [here](../../clarity/evaluator/haspi). The `_target_anechoic_CH1.wav` is used as the reference, with its level is normalised to match that of the corresponding `_target_CH1.wav`. The scores of both unprocessed signals and baseline enhanced signals are provided, whose averages are `0.1615` and `0.2493`, respectively. Please note: you will not get identical HASPI scores for the same signals, as there are random noises generated within HASPI, but the differences should be sufficiently small.
 
 ## References
 
 * [1] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI)[J]. Speech Communication, 2014, 65: 75-93.
-
+* [2] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265.
