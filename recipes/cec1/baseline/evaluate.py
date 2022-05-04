@@ -50,10 +50,11 @@ def run_HL_processing(cfg: DictConfig) -> None:
 
     for scene in tqdm(scenes_listeners):
         for listener in scenes_listeners[scene]:
-            if enhanced_folder is not None:
+            if os.path.exists(enhanced_folder):
                 signal_file = os.path.join(
                     enhanced_folder, f"{scene}_{listener}_HA-output.wav"
                 )
+            # if no enhanced signals, use the unprocessed signal for si calculation
             else:
                 signal_file = os.path.join(
                     cfg["path"]["scenes_folder"], f"{scene}_mixed_CH0.wav"
