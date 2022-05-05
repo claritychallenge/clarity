@@ -7,7 +7,7 @@ Please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_in
 and https://claritychallenge.github.io/clarity2021-workshop/results.html for CEC1 results.
 
 ## Data structure
-To download data, please visit [here](https://mab.to/bavGDV87BZISg). The data is split into two packages: `clarity_CEC1_data.train.tgz` [192 GB], `clarity_CEC1_data.dev_eval_metadata.tgz` [163 GB].
+To download data, please visit [here](https://mab.to/bavGDV87BZISg). The data is split into two packages: `clarity_CEC1_data.train.tgz` [192 GB], `clarity_CEC1_data.dev_eval_metadata.tgz` [163 GB]. Please also download and unpack `clarity_CEC1_data.anechoic.v1_3.tgz` [11.4 GB], which contains the correct version of anechoic signals for reference, and replace the old anechoic signals within the train.tgz and dev_eval_metadata.tgz.
 
 Unpack packages under the same root directory using
 
