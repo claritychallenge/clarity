@@ -35,7 +35,7 @@ def two_point_rotation(rotation, origin, duration):
     """
     angle_origin = np.arctan2(origin[1], origin[0])
     angles = [math.radians(r["angle"]) - angle_origin for r in rotation]
-    logger.info(f"{angles=}")
+    logger.info(f"angles={angles}")
     theta = hoa.rotation_vector(
         angles[0], angles[1], duration, rotation[0]["sample"], rotation[1]["sample"]
     )
@@ -129,10 +129,7 @@ class SceneRenderer:
         """Loads and returns interferer signals for given scene."""
         interferer_audio_paths = self.prepare_interferer_paths(scene)
         # NOTE: all interferer signals are assumed to by at the Clarity fs = 44100 Hz
-        signals = [
-            librosa.load(signal_path, sr=None)[0]
-            for signal_path in interferer_audio_paths
-        ]
+        signals = [librosa.load(signal_path, sr=None)[0] for signal_path in interferer_audio_paths]
         signal_starts = [interferer["offset"] for interferer in scene["interferers"]]
         signal_lengths = [
             interferer["time_end"] - interferer["time_start"]
@@ -186,13 +183,9 @@ class SceneRenderer:
         )
         n_chans = (self.ambisonic_order + 1) ** 2
         anechoic_ir = anechoic_ir[:n_chans]
-        hoa_target_anechoic = hoa.ambisonic_convolve(
-            target, anechoic_ir, self.ambisonic_order
-        )
+        hoa_target_anechoic = hoa.ambisonic_convolve(target, anechoic_ir, self.ambisonic_order)
         # prepend with zeros to match the propagation delay
-        hoa_target_anechoic = np.vstack(
-            (np.zeros((samples_delay, n_chans)), hoa_target_anechoic)
-        )
+        hoa_target_anechoic = np.vstack((np.zeros((samples_delay, n_chans)), hoa_target_anechoic))
         logger.info(f"{anechoic_ir.shape} {target.shape} {hoa_target_anechoic.shape}")
 
         return hoa_target_anechoic
@@ -254,7 +247,9 @@ class SceneRenderer:
 
         flat_hoa_interferers = sum(padded_interferers)
 
-        logger.info(f"{hoa_target.shape=}; {flat_hoa_interferers.shape=}")
+        logger.info(
+            f"hoa_target.shape={hoa_target.shape}; flat_hoa_interferers.shape={flat_hoa_interferers.shape}"
+        )
 
         th = two_point_rotation(
             scene["listener"]["rotation"],
@@ -302,15 +297,13 @@ class SceneRenderer:
 
         # Load all hrirs - one for each microphone pair
         hrir_filenames = [
-            f"{self.paths.hrirs}/{name}.mat"
-            for name in scene["listener"]["hrir_filename"]
+            f"{self.paths.hrirs}/{name}.mat" for name in scene["listener"]["hrir_filename"]
         ]
         hrirs = [loadmat(hrir_filename) for hrir_filename in hrir_filenames]
 
         # Target and (flattened) interferer mixed down to binaural using each set of hrirs
         targets = [
-            hoa.binaural_mixdown(hoa_target, hrir, self.metadata.hrir_metadata)
-            for hrir in hrirs
+            hoa.binaural_mixdown(hoa_target, hrir, self.metadata.hrir_metadata) for hrir in hrirs
         ]
         interferers = [
             hoa.binaural_mixdown(hoa_interferer, hrir, self.metadata.hrir_metadata)
@@ -344,13 +337,9 @@ class SceneRenderer:
         norms = self.channel_norms
         out_path = out_path.format(dataset=scene["dataset"])
         file_stem = f"{out_path}/{scene['scene']}"
-        for channel, (t, i, m, norm) in enumerate(
-            zip(targets, interferers, mix, norms)
-        ):
+        for channel, (t, i, m, norm) in enumerate(zip(targets, interferers, mix, norms)):
             for sig, sig_type in zip([t, i, m], ["target", "interferer", "mix"]):
-                self.save_signal_16bit(
-                    f"{file_stem}_{sig_type}_CH{channel}.wav", sig, norm
-                )
+                self.save_signal_16bit(f"{file_stem}_{sig_type}_CH{channel}.wav", sig, norm)
 
         # Save the anechoic reference signal. Level normalised to abs max 1.0
         norm = np.max(np.abs(target_anechoic))
@@ -376,12 +365,14 @@ class SceneRenderer:
 
             # Save the head rotation signal
             head_turn = (np.mod(head_turn, 2 * np.pi) - np.pi) / np.pi
-            file_stem = (
-                output_path.format(dataset=scene["dataset"]) + "/" + scene["scene"]
-            )
+            file_stem = output_path.format(dataset=scene["dataset"]) + "/" + scene["scene"]
             wavfile.write(f"{file_stem}_hr.wav", 44100, head_turn)
 
             # Stage 2: Mix down to the binaural domain
             self.generate_binaural_signals(
-                scene, target, interferers, anechoic, output_path,
+                scene,
+                target,
+                interferers,
+                anechoic,
+                output_path,
             )
