@@ -56,6 +56,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
     for scene in tqdm(scenes_listeners):
         for listener in scenes_listeners[scene]:
             logger.info(f"Running SI calculation: scene {scene}, listener {listener}")
+            if cfg.evaluate.set_random_seed:
+                np.random.seed(int(scene[-4:]))
 
             # retrieve audiograms
             cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])

@@ -22,6 +22,7 @@ soft_clip: True
 
 evaluate:
   cal_unprocessed_si: True
+  set_random_seed: True
 
 # hydra config
 hydra:
