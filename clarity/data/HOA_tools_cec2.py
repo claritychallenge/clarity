@@ -122,15 +122,11 @@ def V(m, n, el, r):
     elif m > 0:
         if m == 1:
             d = 1.0
-        return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (
-            1 - d
-        )
+        return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (1 - d)
     else:
         if m == -1:
             d = 1.0
-        return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(
-            1 + d
-        )
+        return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(1 + d)
 
 
 @njit
@@ -173,12 +169,7 @@ def compute_UVW_coefficients(m, n, el):
     u = np.sqrt(float((el + m) * (el - m)) * one_over_denom)
     v = (
         0.5
-        * np.sqrt(
-            (1.0 + d)
-            * float(el + np.abs(m) - 1)
-            * (float(el + np.abs(m)))
-            * one_over_denom
-        )
+        * np.sqrt((1.0 + d) * float(el + np.abs(m) - 1) * (float(el + np.abs(m))) * one_over_denom)
         * (1.0 - 2.0 * d)
     )
     w = (
@@ -216,9 +207,7 @@ def compute_band_rotation(el, rotations, output):
                 w *= ww
             rotations[el][mm, nn] = u + v + w
 
-    starting_index = int(
-        np.sum(np.array([i * 2.0 + 1.0 for i in np.arange(el)], dtype="float32"))
-    )
+    starting_index = el * el
 
     output[
         starting_index : (starting_index + (el * 2 + 1)),
@@ -288,9 +277,7 @@ class HOARotator:
             for t_r0_, t_r1_, alpha_ in zip(t_r0, t_r1, theta_i - theta_0)
         )
         # Apply the interpolated rotation matrices to the signal
-        signal = np.array(
-            [np.dot(x, _t_interp) for x, _t_interp in zip(signal, t_interp)]
-        )
+        signal = np.array([np.dot(x, _t_interp) for x, _t_interp in zip(signal, t_interp)])
         return signal
 
 
