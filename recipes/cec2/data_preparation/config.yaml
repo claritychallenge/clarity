@@ -17,6 +17,11 @@ room_datasets:
     n_interferers: 3
     n_rooms: 2500
     start_room: 6001
+  demo:
+    rpf_location: ${path.root}/clarity_data/dev/rooms/rpf
+    n_interferers: 3
+    n_rooms: 200
+    start_room: 6001
 
 # Instantiate_scenes
 scene_datasets:
@@ -27,6 +32,10 @@ scene_datasets:
   dev:
     n_scenes: 2500
     room_selection: SEQUENTIAL
+    scene_start_index: 6001
+  demo:
+    n_scenes: 100
+    room_selection: RANDOM
     scene_start_index: 6001
 
 target:
@@ -92,7 +101,19 @@ scene_renderer:
       scene_definitions: ${path.metadata_dir}/scenes.dev.json
       hrir_metadata: ${path.metadata_dir}/hrir_data.json
     chunk_size: 5
-
+  demo:
+    paths:
+      hoairs: ${path.root}/clarity_data/dev/rooms/HOA_IRs
+      hrirs: ${path.root}/clarity_data/hrir/HRIRs_MAT
+      scenes: ${path.root}/clarity_data/demo/scenes
+      targets: ${path.root}/clarity_data/dev/targets
+      interferers: ${path.root}/clarity_data/dev/interferers/{type}
+    metadata:
+      room_definitions: ${path.metadata_dir}/rooms.demo.json
+      scene_definitions: ${path.metadata_dir}/scenes.demo.json
+      hrir_metadata: ${path.metadata_dir}/hrir_data.json
+    chunk_size: 5
+    
 render_params:
   ambisonic_order: 6
   equalise_loudness: False
