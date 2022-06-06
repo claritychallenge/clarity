@@ -47,6 +47,7 @@ target:
 snr_range:
   train: [-12, 6]
   dev: [-12, 6]
+  demo: [-12, 6]
 
 interferer:
   speech_interferers: ${path.metadata_dir}/masker_speech_list.json
