@@ -51,11 +51,11 @@ def enhance(cfg: DictConfig) -> None:
             enhanced = np.stack([out_l, out_r], axis=1)
             filename = f"{scene}_{listener}_HA-output.wav"
 
+            if cfg.soft_clip:
+                enhanced = np.tanh(enhanced)
             n_clipped = np.sum(np.abs(enhanced) > 1.0)
             if n_clipped > 0:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            if cfg.soft_clip:
-                enhanced = np.tanh(enhanced)
             np.clip(enhanced, -1.0, 1.0, out=enhanced)
             signal_16 = (32768.0 * enhanced).astype(np.int16)
             wavfile.write(
