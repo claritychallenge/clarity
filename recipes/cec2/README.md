@@ -34,7 +34,7 @@ clarity_data
 |   └───targets 1.3G
 |   |
 |   └───speaker_adapt 20M
-|   
+|
 └───metadata
     |   scenes.train.json
     |   scenes.dev.json
@@ -127,9 +127,9 @@ The method of using this is the same as for `Data preparation`. A `scenes.train_
 
 ### Evaluation
 
-The `evaluate.py` calculates the better-ear HASPI score given the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. Specify `path.exp_folder` to store the results. To check the HASPI code, see [here](../../clarity/evaluator/haspi). The `_target_anechoic_CH1.wav` is used as the reference, with its level is normalised to match that of the corresponding `_target_CH1.wav`. 
+The `evaluate.py` calculates the better-ear HASPI score given the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. Specify `path.exp_folder` to store the results. To check the HASPI code, see [here](../../clarity/evaluator/haspi). The `_target_anechoic_CH1.wav` is used as the reference, with its level is normalised to match that of the corresponding `_target_CH1.wav`.
 
-The scores of both unprocessed signals and baseline enhanced signals are provided, whose averages are `0.1615` and `0.2492`, respectively. Please note: you will not get identical HASPI scores for the same signals if the random seed is not determined (in the given recipe, the random seed for each signal is set the scene ID). As there are random noises generated within HASPI, but the differences should be sufficiently small. We ran evaluation for the baseline for five times, and the average overall score is 0.2491594 +/- 2.3366643e-6.
+The scores of both unprocessed signals and baseline enhanced signals are provided, whose averages are `0.1615` and `0.2492`, respectively. Please note: you will not get identical HASPI scores for the same signals if the random seed is not determined (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). As there are random noises generated within HASPI, but the differences should be sufficiently small. We ran evaluation for the baseline for five times, and the average overall score is 0.2491594 +/- 2.3366643e-6.
 
 ## References
 

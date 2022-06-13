@@ -2,6 +2,7 @@ import os
 import csv
 import json
 import logging
+import hashlib
 from scipy.io import wavfile
 import numpy as np
 from tqdm import tqdm
@@ -17,7 +18,7 @@ def read_csv_scores(file):
     score_dict = {}
     with open(file, "r") as f:
         reader = csv.reader(f)
-        header = next(reader)
+        _ = next(reader)
         for row in reader:
             score_dict[row[0] + "_" + row[1]] = float(row[2])
     return score_dict
@@ -57,7 +58,10 @@ def run_calculate_SI(cfg: DictConfig) -> None:
         for listener in scenes_listeners[scene]:
             logger.info(f"Running SI calculation: scene {scene}, listener {listener}")
             if cfg.evaluate.set_random_seed:
-                np.random.seed(int(scene[-4:]))
+                scene_md5 = int(hashlib.md5(scene.encode("utf-8")).hexdigest(), 16) % (
+                    10 ** 8
+                )
+                np.random.seed(scene_md5)
 
             # retrieve audiograms
             cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
@@ -105,6 +109,12 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             csv_lines.append([scene, listener, si])
 
             if cfg.evaluate.cal_unprocessed_si:
+                if cfg.evaluate.set_random_seed:
+                    scene_md5 = int(
+                        hashlib.md5(scene.encode("utf-8")).hexdigest(), 16
+                    ) % (10 ** 8)
+                    np.random.seed(scene_md5)
+
                 fs_unproc, unproc = wavfile.read(
                     os.path.join(cfg.path.scenes_folder, f"{scene}_mix_CH1.wav")
                 )
@@ -152,4 +162,3 @@ def run_calculate_SI(cfg: DictConfig) -> None:
 
 if __name__ == "__main__":
     run_calculate_SI()
-
