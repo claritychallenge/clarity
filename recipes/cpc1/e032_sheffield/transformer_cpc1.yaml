@@ -24,7 +24,7 @@ train_log: !ref <output_folder>/train_log.txt
 pretrained_lm_tokenizer_path: speechbrain/asr-transformer-transformerlm-librispeech
 
 # Data files
-data_folder: ???
+data_folder: !ref ???
 train_splits: ["cpc1_train_binaural"]
 dev_splits: ["cpc1_dev_binaural"]
 test_splits: ["cpc1_train_left_dev", "cpc1_train_right_dev"]
