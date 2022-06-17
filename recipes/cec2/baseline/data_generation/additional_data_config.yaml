@@ -69,7 +69,7 @@ render_params:
   ambisonic_order: 6
   equalise_loudness: False
   reference_channel: 1
-  channel_norms: [4.0, 2.0, 2.0, 2.0]
+  channel_norms: [12.0, 3.0, 3.0, 3.0]
 
 hydra:
   run:
