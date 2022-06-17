@@ -29,11 +29,11 @@ train_splits: ["cpc1_train_binaural"]
 dev_splits: ["cpc1_dev_binaural"]
 test_splits: ["cpc1_train_left_dev", "cpc1_train_right_dev"]
 skip_prep: True
-train_csv: !ref <data_folder>/train_binaural_16k_train.csv
-valid_csv: !ref <data_folder>/train_binaural_16k_dev.csv
+train_csv: !ref <data_folder>/binaural_train_msbg.csv
+valid_csv: !ref <data_folder>/binaural_dev_msbg.csv
 test_csv:
-   - !ref <data_folder>/train_left_16k_dev.csv
-   - !ref <data_folder>/train_right_16k_dev.csv
+   - !ref <data_folder>/left_dev_msbg.csv
+   - !ref <data_folder>/right_dev_msbg.csv
 ckpt_interval_minutes: 30 # save checkpoint every N min
 
 # Training parameters

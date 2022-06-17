@@ -318,29 +318,11 @@ if __name__ == "__main__":
     # create ddp_group with the right communication protocol
     sb.utils.distributed.ddp_init_group(run_opts)
 
-    # 1.  # Dataset prep (parsing Librispeech)
-    from librispeech_prepare import prepare_librispeech  # noqa
-
     # Create experiment directory
     sb.create_experiment_directory(
         experiment_directory=hparams["output_folder"],
         hyperparams_to_save=hparams_file,
         overrides=overrides,
-    )
-
-    # multi-gpu (ddp) save data preparation
-    run_on_main(
-        prepare_librispeech,
-        kwargs={
-            "data_folder": hparams["data_folder"],
-            "tr_splits": hparams["train_splits"],
-            "dev_splits": hparams["dev_splits"],
-            "te_splits": hparams["test_splits"],
-            "save_folder": hparams["data_folder"],
-            "merge_lst": hparams["train_splits"],
-            "merge_name": hparams["train_csv"],
-            "skip_prep": hparams["skip_prep"],
-        },
     )
 
     # here we create the datasets objects as well as tokenization and encoding
