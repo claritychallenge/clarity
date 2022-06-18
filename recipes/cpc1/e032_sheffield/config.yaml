@@ -12,3 +12,10 @@ MSBGEar:   # hyperparameters for MSBG ear
   fs: 44100
   equiv0dBSPL: 100
   ahr: 20
+
+asr_config: transformer_cpc1.yaml
+
+hydra:
+  output_subdir: Null
+  run:
+    dir: .

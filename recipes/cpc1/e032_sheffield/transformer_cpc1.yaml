@@ -10,7 +10,7 @@
 # Seed needs to be set at top of yaml, before objects with parameters are made
 seed: 8886
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
-output_folder: !ref ???
+output_folder: !ref /home/tu/bessfastdata/data/clarity/Clarity_CPC1_public/e032/transformer_cpc1
 wer_file: !ref <output_folder>/wer.txt
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
@@ -24,7 +24,7 @@ train_log: !ref <output_folder>/train_log.txt
 pretrained_lm_tokenizer_path: speechbrain/asr-transformer-transformerlm-librispeech
 
 # Data files
-data_folder: !ref ???
+data_folder: !ref /home/tu/bessfastdata/data/clarity/Clarity_CPC1_public/e032/cpc1_asr_data
 train_splits: ["cpc1_train_binaural"]
 dev_splits: ["cpc1_dev_binaural"]
 test_splits: ["cpc1_train_left_dev", "cpc1_train_right_dev"]
