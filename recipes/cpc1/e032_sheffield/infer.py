@@ -1,9 +1,12 @@
 import os
 import torch
 import logging
+import json
+from tqdm import tqdm
 import speechbrain as sb
 from hyperpyyaml import load_hyperpyyaml
 from speechbrain.utils.distributed import run_on_main
+from transfromer_cpc1_decoder import S2STransformerBeamSearch
 
 from scipy.spatial.distance import cosine
 from fastdtw import fastdtw
@@ -23,16 +26,16 @@ class ASR(sb.core.Brain):
             wav_lens.to(self.device),
             tokens_bos.to(self.device),
         )
+        with torch.no_grad():
+            feats = self.hparams.compute_features(wavs)
+            current_epoch = self.hparams.epoch_counter.current
+            feats = self.hparams.normalize(feats, wav_lens, epoch=current_epoch)
 
-        feats = self.hparams.compute_features(wavs)
-        current_epoch = self.hparams.epoch_counter.current
-        feats = self.hparams.normalize(feats, wav_lens, epoch=current_epoch)
-
-        cnn_out = self.hparams.CNN(feats)
-        enc_out, _ = self.hparams.Transformer(
-            cnn_out, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index
-        )
-        _, _, dec_out, _ = self.hparams.test_search(enc_out.detach(), wav_lens)
+            cnn_out = self.hparams.CNN(feats)
+            enc_out, _ = self.hparams.Transformer(
+                cnn_out, tokens_bos, wav_lens, pad_idx=self.hparams.pad_index
+            )
+            _, _, dec_out, _ = self.test_search(enc_out.detach(), wav_lens)
 
         return enc_out.detach().cpu(), dec_out.detach().cpu()
 
@@ -46,6 +49,28 @@ class ASR(sb.core.Brain):
         )
         self.hparams.model.load_state_dict(ckpt, strict=True)
         self.hparams.model.eval()
+
+        self.test_search = S2STransformerBeamSearch(
+            modules=[
+                self.hparams.Transformer,
+                self.hparams.seq_lin,
+                self.hparams.ctc_lin,
+            ],
+            bos_index=self.hparams.bos_index,
+            eos_index=self.hparams.eos_index,
+            blank_index=self.hparams.blank_index,
+            min_decode_ratio=self.hparams.min_decode_ratio,
+            max_decode_ratio=self.hparams.max_decode_ratio,
+            beam_size=self.hparams.test_beam_size,
+            ctc_weight=self.hparams.ctc_weight_decode,
+            lm_weight=self.hparams.lm_weight,
+            lm_modules=self.hparams.lm_model,
+            temperature=1,
+            temperature_lm=1,
+            topk=10,
+            using_eos_threshold=False,
+            length_normalization=True,
+        )
 
 
 def init_asr(asr_config):
@@ -182,7 +207,7 @@ def compute_similarity(left_proc_path, wrd, asr_model, bos_index, tokenizer):
         right_ref_feats[0],
         if_dtw=True,
     )
-    return enc_similarity, dec_similarity
+    return enc_similarity[0].numpy(), dec_similarity[0].numpy()
 
 
 @hydra.main(config_path=".", config_name="config")
@@ -199,17 +224,43 @@ def run(cfg: DictConfig) -> None:
     left_dev_csv = sb.dataio.dataio.load_data_csv(
         os.path.join(cfg.path.exp_folder, "cpc1_asr_data" + track, "left_dev_msbg.csv")
     )  # using left ear csvfile for data loading
+    left_test_csv = sb.dataio.dataio.load_data_csv(
+        os.path.join(cfg.path.exp_folder, "cpc1_asr_data" + track, "left_test_msbg.csv")
+    )  # using left ear csvfile for data loading
 
-    for _, wav_obj in left_dev_csv.items():
-        left_proc_path = wav_obj["wav"].replace(
-            "/fastdata/acp18zt/data/clarity/Clarity_CPC1_public/e032",
-            cfg.path.exp_folder,
-        )
+    # dev set similarity
+    dev_enc_similarity = {}
+    dev_dec_similarity = {}
+    for wav_id, wav_obj in tqdm(left_dev_csv.items()):
+        left_proc_path = wav_obj["wav"]
         wrd = wav_obj["wrd"]
         similarity = compute_similarity(
             left_proc_path, wrd, asr_model, bos_index, tokenizer
         )
-        print(similarity)
+        dev_enc_similarity[wav_id] = similarity[0].tolist()
+        dev_dec_similarity[wav_id] = similarity[1].tolist()
+
+    with open(os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"), "r") as f:
+        json.dump(dev_enc_similarity, f)
+    with open(os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "r") as f:
+        json.dump(dev_dec_similarity, f)
+
+    # test set similarity
+    test_enc_similarity = {}
+    test_dec_similarity = {}
+    for wav_id, wav_obj in tqdm(left_test_csv.items()):
+        left_proc_path = wav_obj["wav"]
+        wrd = wav_obj["wrd"]
+        similarity = compute_similarity(
+            left_proc_path, wrd, asr_model, bos_index, tokenizer
+        )
+        test_enc_similarity[wav_id] = similarity[0].tolist()
+        test_dec_similarity[wav_id] = similarity[1].tolist()
+
+    with open(os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"), "r") as f:
+        json.dump(test_enc_similarity, f)
+    with open(os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "r") as f:
+        json.dump(test_dec_similarity, f)
 
 
 if __name__ == "__main__":
