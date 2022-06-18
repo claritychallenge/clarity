@@ -240,10 +240,14 @@ def run(cfg: DictConfig) -> None:
         dev_enc_similarity[wav_id] = similarity[0].tolist()
         dev_dec_similarity[wav_id] = similarity[1].tolist()
 
-    with open(os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"), "r") as f:
-        json.dump(dev_enc_similarity, f)
-    with open(os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "r") as f:
-        json.dump(dev_dec_similarity, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"), "w"
+        ) as f:
+            json.dump(dev_enc_similarity, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "w"
+        ) as f:
+            json.dump(dev_dec_similarity, f)
 
     # test set similarity
     test_enc_similarity = {}
@@ -257,10 +261,14 @@ def run(cfg: DictConfig) -> None:
         test_enc_similarity[wav_id] = similarity[0].tolist()
         test_dec_similarity[wav_id] = similarity[1].tolist()
 
-    with open(os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"), "r") as f:
-        json.dump(test_enc_similarity, f)
-    with open(os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "r") as f:
-        json.dump(test_dec_similarity, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"), "w"
+        ) as f:
+            json.dump(test_enc_similarity, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "w"
+        ) as f:
+            json.dump(test_dec_similarity, f)
 
 
 if __name__ == "__main__":
