@@ -37,7 +37,7 @@ class ASR(sb.core.Brain):
             )
             _, _, dec_out, _ = self.test_search(enc_out.detach(), wav_lens)
 
-        return enc_out.detach().cpu(), dec_out.detach().cpu()
+        return enc_out.detach().cpu(), dec_out.unsqueeze(0).detach().cpu()
 
     def init_evaluation(self, max_key=None, min_key=None):
         """perform checkpoint averge if needed"""
@@ -201,10 +201,10 @@ def compute_similarity(left_proc_path, wrd, asr_model, bos_index, tokenizer):
         left_proc_feats[0], right_proc_feats[0], left_ref_feats[0], right_ref_feats[0]
     )
     dec_similarity = feat2similarity(
-        left_proc_feats[0],
-        right_proc_feats[0],
-        left_ref_feats[0],
-        right_ref_feats[0],
+        left_proc_feats[1],
+        right_proc_feats[1],
+        left_ref_feats[1],
+        right_ref_feats[1],
         if_dtw=True,
     )
     return enc_similarity[0].numpy(), dec_similarity[0].numpy()
@@ -266,7 +266,7 @@ def run(cfg: DictConfig) -> None:
         ) as f:
             json.dump(test_enc_similarity, f)
         with open(
-            os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "w"
+            os.path.join(cfg.path.exp_folder, "test_dec_similarity.json"), "w"
         ) as f:
             json.dump(test_dec_similarity, f)
 
