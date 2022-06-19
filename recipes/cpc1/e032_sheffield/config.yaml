@@ -1,5 +1,5 @@
 path:
-  root: /home/tu/bessfastdata/data/clarity/Clarity_CPC1_public
+  root: ???
   cpc1_train_data: ${path.root}/clarity_CPC1_data_train/
   cpc1_test_data: ${path.root}/clarity_CPC1_data_test/
   exp_folder: ${path.root}/e032
