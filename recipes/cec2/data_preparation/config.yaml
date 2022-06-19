@@ -114,13 +114,12 @@ scene_renderer:
       scene_definitions: ${path.metadata_dir}/scenes.demo.json
       hrir_metadata: ${path.metadata_dir}/hrir_data.json
     chunk_size: 5
-    
+
 render_params:
   ambisonic_order: 6
   equalise_loudness: False
   reference_channel: 1
-  channel_norms: [4.0, 2.0, 2.0, 2.0]
-
+  channel_norms: [12.0, 3.0, 3.0, 3.0]
 
 hydra:
   run:

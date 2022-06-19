@@ -1,0 +1,275 @@
+AC3Db
+MATERIAL "parquet" rgb 0 0 0.05625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "mat_scene10_ceiling" rgb 0 0 0.1125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "concrete" rgb 0 0 0.16875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "concrete" rgb 0 0 0.225 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "concrete" rgb 0 0 0.28125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "concrete" rgb 0 0 0.3375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "Classroom_Door" rgb 0 0 0.39375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "mat_scene09_windows" rgb 0 0 0.45 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "mat_scene09_windows" rgb 0 0 0.50625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "curtains" rgb 0 0 0.5625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "curtains" rgb 0 0 0.61875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "curtains" rgb 0 0 0.675 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "curtains" rgb 0 0 0.73125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "rug_Teppich_carpet_clarity" rgb 0 0 0.7875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "leather" rgb 0 0 0.84375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "leather" rgb 0 0 0.9 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+OBJECT world
+kids 16
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0500 0.0000 0.0000
+2.0500 0.0000 0.0000
+2.0500 4.4317 0.0000
+-2.0500 4.4317 0.0000
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+2.0500 4.4317 2.6000
+-2.0500 4.4317 2.6000
+-2.0500 0.0000 2.6000
+2.0500 0.0000 2.6000
+numsurf 1
+SURF 0x10
+mat 1
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0500 0.0000 0.0000
+2.0500 0.0000 0.0000
+2.0500 0.0000 2.6000
+-2.0500 0.0000 2.6000
+numsurf 1
+SURF 0x10
+mat 2
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0500 4.4317 0.0000
+2.0500 4.4317 0.0000
+2.0500 4.4317 2.6000
+-2.0500 4.4317 2.6000
+numsurf 1
+SURF 0x10
+mat 3
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+2.0500 4.4317 0.0000
+2.0500 0.0000 0.0000
+2.0500 0.0000 2.6000
+2.0500 4.4317 2.6000
+numsurf 1
+SURF 0x10
+mat 4
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0500 0.0000 0.0000
+-2.0500 4.4317 0.0000
+-2.0500 4.4317 2.6000
+-2.0500 0.0000 2.6000
+numsurf 1
+SURF 0x10
+mat 5
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+0.8100 0.0050 0.0000
+1.5700 0.0050 0.0000
+1.5700 0.0050 1.9800
+0.8100 0.0050 1.9800
+numsurf 1
+SURF 0x10
+mat 6
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0475 0.4400 0.6800
+-2.0475 2.2700 0.6800
+-2.0475 2.2700 1.9000
+-2.0475 0.4400 1.9000
+numsurf 1
+SURF 0x10
+mat 7
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+2.0500 3.5000 0.6800
+2.0500 1.6700 0.6800
+2.0500 1.6700 1.9000
+2.0500 3.5000 1.9000
+numsurf 1
+SURF 0x10
+mat 8
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0475 0.0400 0.0000
+-2.0475 0.4400 0.0000
+-2.0475 0.4400 1.9000
+-2.0475 0.0400 1.9000
+numsurf 1
+SURF 0x10
+mat 9
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-2.0475 2.2700 0.0000
+-2.0475 2.6700 0.0000
+-2.0475 2.6700 1.9000
+-2.0475 2.2700 1.9000
+numsurf 1
+SURF 0x10
+mat 10
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+2.0475 1.6700 0.0000
+2.0475 1.2700 0.0000
+2.0475 1.2700 1.9000
+2.0475 1.6700 1.9000
+numsurf 1
+SURF 0x10
+mat 11
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+2.0475 3.9000 0.0000
+2.0475 3.5000 0.0000
+2.0475 3.5000 1.9000
+2.0475 3.9000 1.9000
+numsurf 1
+SURF 0x10
+mat 12
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-1.0100 0.6900 0.0050
+0.9900 0.6900 0.0050
+0.9900 3.6900 0.0050
+-1.0100 3.6900 0.0050
+numsurf 1
+SURF 0x10
+mat 13
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+-1.3500 4.4267 0.0050
+0.1500 4.4267 0.0050
+0.1500 4.4267 1.0000
+-1.3500 4.4267 1.0000
+numsurf 1
+SURF 0x10
+mat 14
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
+OBJECT poly
+name "polygon_object"
+numvert 4
+0.1500 4.4267 0.0050
+-1.3500 4.4267 0.0050
+-1.3500 3.8267 0.0050
+0.1500 3.8267 0.0050
+numsurf 1
+SURF 0x10
+mat 15
+refs 4
+3 0 0
+2 0 0
+1 0 0
+0 0 0
+kids 0
