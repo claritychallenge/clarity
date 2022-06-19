@@ -48,7 +48,7 @@ class Model:
 
     def fit(self, pred, intel):
         """Fit a mapping betweeen mbstoi scores and intelligibility scores."""
-        initial_guess = [0.5, 1.0]  # Initial guess for parameter values
+        initial_guess = [50.0, 1.0]  # Initial guess for parameter values
         self.params, pcov = curve_fit(
             self._logistic_mapping, pred, intel, initial_guess
         )
@@ -96,21 +96,23 @@ def run(cfg: DictConfig) -> None:
     else:
         logger.error("cpc1_track has to be closed or open")
 
-    # prediction_dev, label_dev = read_data(
-    #     os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"),
-    #     os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
-    # )
-    # prediction_test, label_test = read_data(
-    #     os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"),
-    #     f"../test_listener_responses/CPC1.{'test'+track}.json",
-    # )
-    #
-    # logger.info("Apply logistic fitting.")
-    # model = Model()
-    # model.fit(prediction_dev, label_dev)
-    # fit_pred = model.predict(prediction_test)
-    # scores = compute_scores(fit_pred, label_test)
+    # encoder representation evaluation
+    prediction_dev, label_dev = read_data(
+        os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"),
+        os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
+    )
+    prediction_test, label_test = read_data(
+        os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"),
+        f"../test_listener_responses/CPC1.{'test'+track}.json",
+    )
 
+    logger.info("Apply logistic fitting.")
+    model = Model()
+    model.fit(prediction_dev, label_dev)
+    fit_pred = model.predict(prediction_test)
+    enc_scores = compute_scores(fit_pred, label_test)
+
+    # decoder representation evaluation
     prediction_dev, label_dev = read_data(
         os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"),
         os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
@@ -124,17 +126,10 @@ def run(cfg: DictConfig) -> None:
     model = Model()
     model.fit(prediction_dev, label_dev)
     fit_pred = model.predict(prediction_test)
-    scores = compute_scores(fit_pred, label_test)
-    print(scores)
+    dec_scores = compute_scores(fit_pred, label_test)
 
-    import matplotlib.pyplot as plt
-
-    fig, axs = plt.subplots(1, 2, figsize=(10, 4))
-    axs[0].scatter(prediction_test / 100, label_test / 100, s=3, color="b", alpha=0.5)
-    axs[0].set_xlim(-0.05, 1.05)
-    axs[0].set_ylim(-0.05, 1.05)
-    axs[0].set(adjustable="box", aspect="equal")
-    plt.show()
+    with (open(os.path.join(cfg.path.exp_folder, "results.json")), "w") as f:
+        json.dump({"enc_results": enc_scores, "dec_results": dec_scores}, f)
 
 
 if __name__ == "__main__":
