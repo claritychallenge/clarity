@@ -1,12 +1,12 @@
-import os
 import json
-import torch
-import librosa
+import os
 
+import librosa
 import numpy as np
-from torch.utils import data
-from soundfile import read
+import torch
 from scipy.signal import firwin, lfilter
+from soundfile import read
+from torch.utils import data
 
 
 def read_wavfile(path):

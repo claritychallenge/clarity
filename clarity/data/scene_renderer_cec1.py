@@ -1,13 +1,13 @@
-import os
-import math
 import logging
+import math
+import os
+
 import numpy as np
 import soundfile
-
-from soundfile import SoundFile
 from scipy.signal import convolve
+from soundfile import SoundFile
 
-from clarity.data.utils import better_ear_speechweighted_snr, sum_signals, pad
+from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
 
 
 class Renderer:
@@ -60,7 +60,7 @@ class Renderer:
         """
         try:
             wave_file = SoundFile(filename)
-        except:
+        except:  # noqa E722
             # Ensure incorrect error (24 bit) is not generated
             raise Exception(f"Unable to read {filename}.")
 
@@ -324,4 +324,3 @@ def main():
         offset=scene["interferer"]["offset"],
         snr_dB=scene["SNR"],
     )
-

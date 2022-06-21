@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+
 import numpy as np
 
-DEFAULT_CFS=[250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
+DEFAULT_CFS = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
 
 
 def standard_audiograms():
@@ -34,7 +35,9 @@ def standard_audiograms():
         # (used in Stafa talk by MAS)
         Audiogram(
             cfs=cfs,
-            levels=np.array([5, 10, 15, 18, 19, 22, 25, 28, 31, 35, 38, 40, 40, 45, 50]),
+            levels=np.array(
+                [5, 10, 15, 18, 19, 22, 25, 28, 31, 35, 38, 40, 40, 45, 50]
+            ),
         ),
         # mod hearing loss based on mild N2 flat/mod sloping from Bisgaard et al. 2020
         Audiogram(
@@ -85,7 +88,7 @@ class Audiogram:
         impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
         tmp = self.levels[impairment_freqs]
         # Ignore any None values
-        impairment_degree = np.mean(tmp[tmp != None])
+        impairment_degree = np.mean(tmp[tmp is not None])
 
         if impairment_degree > 56:
             severity_level = "SEVERE"

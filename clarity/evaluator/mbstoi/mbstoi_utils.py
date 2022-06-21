@@ -1,5 +1,6 @@
-import numpy as np
 import logging
+
+import numpy as np
 from scipy.signal import find_peaks
 
 EPS = np.finfo("float").eps

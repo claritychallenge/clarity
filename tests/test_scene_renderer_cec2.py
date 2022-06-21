@@ -1,6 +1,6 @@
-import clarity.data.scene_renderer_cec2 as sr
 import logging
 
+import clarity.data.scene_renderer_cec2 as sr
 
 logger = logging.getLogger(__name__)
 

@@ -1,13 +1,13 @@
-import os
 import json
+import logging
 import math
+import os
+
 import numpy as np
 import scipy
 import scipy.signal
-import logging
 import soundfile
 from soundfile import SoundFile
-
 
 # measure rms parameters
 WIN_SECS = 0.01
@@ -281,12 +281,11 @@ ITU_ERP_DRP = np.array(
 )
 
 
-"""
-Ideal pre-emphasis (starts off as SII 1997), then rescaled for Moore et al. 2008
-NB last two are -15dB/oct before rescaling below
-(Moore et al 2008 E&H paper suggests that shape would be better as -7.5
-dB/oct, at least up to 8, and -13 dB/oct above there.)
-"""
+# Ideal pre-emphasis (starts off as SII 1997), then rescaled for Moore et al. 2008
+# NB last two are -15dB/oct before rescaling below
+# (Moore et al 2008 E&H paper suggests that shape would be better as -7.5
+# dB/oct, at least up to 8, and -13 dB/oct above there.)
+
 GEN_NOISE_HZ = np.array(
     [0, 100, 200, 450, 550, 707, 1000, 1414, 2000, 2828, 4000, 5656, 8000, 16e3, 32e3]
 )
@@ -646,7 +645,7 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
     """
     try:
         wave_file = SoundFile(filename)
-    except:
+    except:  # noqa E722
         # Ensure incorrect error (24 bit) is not generated
         raise Exception(f"Unable to read {filename}.")
 

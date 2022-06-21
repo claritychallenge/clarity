@@ -18,7 +18,7 @@ def haspi_v2(x, fx, y, fy, HL, Level1=65):
     y			Output signal with noise, distortion, HA gain, and/or processing.
     fy        Sampling rate in Hz for signal y.
     HL		(1,6) vector of hearing loss at the 6 audiometric frequencies
-    			  [250, 500, 1000, 2000, 4000, 6000] Hz.
+                    [250, 500, 1000, 2000, 4000, 6000] Hz.
     Level1    Optional input specifying level in dB SPL that corresponds to a
               signal RMS = 1. Default is 65 dB SPL if argument not provided.
 
@@ -34,12 +34,12 @@ def haspi_v2(x, fx, y, fy, HL, Level1=65):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    ## Auditory model for intelligibility
+    # Auditory model for intelligibility
     # Reference is no processing, normal hearing
     itype = 0  # Intelligibility model
     xenv, _, yenv, _, _, _, fsamp = eb.EarModel(x, fx, y, fy, HL, itype, Level1)
 
-    ## Envelope modulation features
+    # Envelope modulation features
 
     # LP filter and subsample the envelope
     fLP = 320
@@ -61,7 +61,7 @@ def haspi_v2(x, fx, y, fy, HL, Level1=65):
     # averaged over basis functions 2-6
     aveCM = ebm.ModCorr(xmod, ymod)
 
-    ## Intelligibility prediction
+    # Intelligibility prediction
     # Get the neural network parameters and the weights for an ensemble of 10 networks
     NNparam, Whid, Wout, b = ip.GetNeuralNet()
 

@@ -1,8 +1,9 @@
-import os
 import logging
+import os
 
 import hydra
 from omegaconf import DictConfig
+
 from clarity.data.scene_builder_cec2 import RoomBuilder, SceneBuilder, set_random_seed
 
 logger = logging.getLogger(__name__)

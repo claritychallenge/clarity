@@ -1,13 +1,13 @@
+import logging
+
+import numpy as np
 import scipy
 from scipy import signal
-import numpy as np
-import logging
 
 from clarity.evaluator.msbg.msbg_utils import read_gtf_file
 from clarity.evaluator.msbg.smearing import Smearer
 
-
-## TODO: Fix power overflow error when (expansion_ratios[ixch] - 1) < 0
+# TODO: Fix power overflow error when (expansion_ratios[ixch] - 1) < 0
 
 # Parameters for smearing and gammatone filtering according to degree of loss
 HL_PARAMS = {
@@ -70,14 +70,7 @@ def compute_recruitment_parameters(gtn_cf, audiogram, catch_up):
 
 
 def gammatone_filterbank(
-    x,
-    ngamma,
-    gtn_denoms,
-    gtn_nums,
-    gtn_delays,
-    start2poleHP,
-    hp_denoms,
-    hp_nums,
+    x, ngamma, gtn_denoms, gtn_nums, gtn_delays, start2poleHP, hp_denoms, hp_nums,
 ):
     """Pass signal through gammatone filterbank.
 
@@ -156,11 +149,7 @@ def compute_envelope(coch_sig, erbn_cf, fs):
 
 
 def recruitment(
-    coch_sig,
-    envelope,
-    SPL_equiv_0dB,
-    expansion_ratios,
-    eq_loud_db,
+    coch_sig, envelope, SPL_equiv_0dB, expansion_ratios, eq_loud_db,
 ):
     """Simulate loudness recruitment.
 
