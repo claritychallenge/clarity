@@ -160,6 +160,6 @@ def test_full_pipeline(regtest):
 
     print(f"Enhanced audio HASPI score is {sii_enhanced}")
 
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced}")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.9f}")
 
-    # Enhanced audio HASPI score is 0.31047796029212865
+    # Enhanced audio HASPI score is 0.299406606
