@@ -1,6 +1,7 @@
 import copy
-import re
 import logging
+import re
+
 import numpy as np
 from scipy.interpolate import interp1d
 

@@ -1,6 +1,7 @@
 black==19.10b0
 click==8.0.4
 flake8==3.7.9
+isort==5.10.1
 pycodestyle==2.5.0
 pytest==5.4.1
 pytest-regtest==1.4.6

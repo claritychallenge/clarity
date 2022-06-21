@@ -1,23 +1,23 @@
-import math
 import logging
-import numpy as np
+import math
 
-from scipy import interpolate
-from scipy import signal
+import numpy as np
+from scipy import interpolate, signal
 from scipy.signal import firwin, lfilter
 
 from clarity.evaluator.msbg.cochlea import Cochlea
-from clarity.evaluator.msbg.msbg_utils import firwin2
 from clarity.evaluator.msbg.msbg_utils import (
-    HZ,
-    MIDEAR,
-    FF_ED,
     DF_ED,
-    ITU_HZ,
+    FF_ED,
+    HZ,
     ITU_ERP_DRP,
+    ITU_HZ,
+    MIDEAR,
+    firwin2,
+    gen_eh2008_speech_noise,
+    gen_tone,
+    measure_rms,
 )
-from clarity.evaluator.msbg.msbg_utils import gen_tone, gen_eh2008_speech_noise
-from clarity.evaluator.msbg.msbg_utils import measure_rms
 
 # Cut off frequency of low-pass filter at end of simulations:
 # prevents possible excessive processing noise at high frequencies.

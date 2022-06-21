@@ -1,14 +1,15 @@
-import os
 import logging
+import os
+import pathlib
 import subprocess
 import tempfile
-import numpy as np
-import pathlib
-import soundfile
-from soundfile import SoundFile
-from jinja2 import Environment, FileSystemLoader
 
-from clarity.enhancer.gha.gha_utils import get_gaintable, format_gaintable
+import numpy as np
+import soundfile
+from jinja2 import Environment, FileSystemLoader
+from soundfile import SoundFile
+
+from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 
 
 class GHAHearingAid:
@@ -168,7 +169,7 @@ class GHAHearingAid:
             sig = np.expand_dims(sig, axis=1)
 
         if not np.all(np.sum(abs(sig), axis=0)):
-            raise ValueError(f"Channel empty.")
+            raise ValueError("Channel empty.")
 
         self.write_signal(outfile_name, sig, floating_point=True)
 

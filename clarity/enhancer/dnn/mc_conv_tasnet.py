@@ -1,10 +1,11 @@
 """
 Adopted from https://github.com/kaituoxu/Conv-TasNet
 """
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
 
 EPS = 1e-8
 

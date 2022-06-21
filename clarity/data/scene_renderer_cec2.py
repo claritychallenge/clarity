@@ -3,19 +3,19 @@ import json
 import logging
 import math
 from pathlib import Path
-import librosa
 
+import librosa
 import numpy as np
 
 # from clarity_core import signal as ccs
 # from clarity_core.signal import SPEECH_FILTER
-from scipy.io import wavfile, loadmat
+from scipy.io import loadmat, wavfile
 from scipy.signal import convolve
 from tqdm import tqdm
 
-from clarity.data.utils import better_ear_speechweighted_snr, SPEECH_FILTER
 import clarity.data.HOA_tools_cec2 as hoa
 from clarity.data.HOA_tools_cec2 import HOARotator
+from clarity.data.utils import SPEECH_FILTER, better_ear_speechweighted_snr
 
 logger = logging.getLogger(__name__)
 

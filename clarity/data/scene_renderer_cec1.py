@@ -1,13 +1,13 @@
-import os
-import math
 import logging
+import math
+import os
+
 import numpy as np
 import soundfile
-
-from soundfile import SoundFile
 from scipy.signal import convolve
+from soundfile import SoundFile
 
-from clarity.data.utils import better_ear_speechweighted_snr, sum_signals, pad
+from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
 
 
 class Renderer:

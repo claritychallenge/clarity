@@ -1,6 +1,7 @@
-import gdown
 import os
 from pathlib import Path
+
+import gdown
 
 TARGET_DIR = "clarity_data/demo"
 PACKAGE_NAME = "data.tgz"

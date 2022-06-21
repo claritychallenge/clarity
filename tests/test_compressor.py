@@ -1,5 +1,6 @@
-from clarity.enhancer.compressor import Compressor
 import numpy as np
+
+from clarity.enhancer.compressor import Compressor
 
 DEFAULT_FS = 44100
 

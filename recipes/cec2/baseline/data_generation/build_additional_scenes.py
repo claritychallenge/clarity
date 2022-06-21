@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 import hydra
 from omegaconf import DictConfig
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def instantiate_scenes(cfg):
     rb = RoomBuilder()
     set_random_seed(cfg.random_seed)
-    room_file = os.path.join(cfg.path.metadata_dir, f"rooms.train.json")
+    room_file = os.path.join(cfg.path.metadata_dir, "rooms.train.json")
     for dataset in cfg.scene_datasets:
         if not os.path.exists(cfg.path.additional_data_file):
             logger.info(f"instantiate scenes for {dataset} set")

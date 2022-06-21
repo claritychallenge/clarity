@@ -1,15 +1,15 @@
-import os
 import json
 import logging
-import numpy as np
-from tqdm import tqdm
-from scipy.io import wavfile
+import os
 
 import hydra
+import numpy as np
 from omegaconf import DictConfig
+from scipy.io import wavfile
+from tqdm import tqdm
 
-from clarity.enhancer.nalr import NALR
 from clarity.enhancer.compressor import Compressor
+from clarity.enhancer.nalr import NALR
 
 logger = logging.getLogger(__name__)
 

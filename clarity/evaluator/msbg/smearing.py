@@ -1,5 +1,6 @@
-import numpy as np
 import math
+
+import numpy as np
 
 FFT_SIZE = 512
 FRAME_SIZE = 256

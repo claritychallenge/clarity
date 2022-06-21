@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.signal import resample_poly, cheby2, lfilter, butter, group_delay, correlate
 from numba import jit
+from scipy.signal import butter, cheby2, correlate, group_delay, lfilter, resample_poly
 
 
 def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
@@ -74,7 +74,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     _, BW1, _, _, _ = LossParameters(HLmax, cfreq1)
     # Maximum BW for the control
 
-    ## Input signal adjustments
+    # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
     # Using 24 kHz guarantees that all of the cochlear filters have the same shape independent of the incoming signal sampling rates
     x24, _ = Resamp24kHz(x, xsamp)
@@ -93,7 +93,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     # if itype == 1:
     #     pass
 
-    ## Cochlear model
+    # Cochlear model
     # Middle ear
     xmid = MiddleEar(x24, fsamp)
     ymid = MiddleEar(y24, fsamp)
@@ -506,7 +506,7 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
     x = x[:nsamp]
     y = y[:nsamp]
 
-    ## Filter the first signal
+    # Filter the first signal
     # Initialize the filter coefficients
     tpt = 2 * np.pi / fs
     tptBW = BWx * tpt * ERB * 1.019
@@ -532,7 +532,7 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
     BMx = gain * (ureal * coscf + uimag * sincf)
     envx = gain * np.sqrt(ureal * ureal + uimag * uimag)
 
-    ## Filter the second signal using the existing cosine and sine sequences
+    # Filter the second signal using the existing cosine and sine sequences
     tptBW = BWy * tpt * ERB * 1.019
     a = np.exp(-tptBW)
     a1 = 4.0 * a

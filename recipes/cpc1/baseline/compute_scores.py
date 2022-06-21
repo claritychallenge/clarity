@@ -1,14 +1,13 @@
-import os
 import json
 import logging
-import hydra
-from omegaconf import DictConfig
+import os
 
+import hydra
 import numpy as np
 import pandas as pd
+from omegaconf import DictConfig
 from scipy.optimize import curve_fit
-from scipy.stats import pearsonr
-from scipy.stats import kendalltau
+from scipy.stats import kendalltau, pearsonr
 
 logger = logging.getLogger(__name__)
 

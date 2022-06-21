@@ -1,13 +1,14 @@
-import os
 import csv
+import hashlib
 import json
 import logging
-import hashlib
-from scipy.io import wavfile
-import numpy as np
-from tqdm import tqdm
+import os
+
 import hydra
+import numpy as np
 from omegaconf import DictConfig
+from scipy.io import wavfile
+from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
 

@@ -1,18 +1,17 @@
 """
 An FIR-based torch implementation of approximated MSBG hearing loss model
 """
-import os
 import json
+import os
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchaudio
-
-from scipy.signal import firwin, firwin2, ellip, freqz
-from scipy.interpolate import interp1d
 from scipy.fftpack import fft
-
+from scipy.interpolate import interp1d
+from scipy.signal import ellip, firwin, firwin2, freqz
 
 EPS = 1e-8
 # old msbg matlab

@@ -1,13 +1,13 @@
+import logging
+
+import numpy as np
 import scipy
 from scipy import signal
-import numpy as np
-import logging
 
 from clarity.evaluator.msbg.msbg_utils import read_gtf_file
 from clarity.evaluator.msbg.smearing import Smearer
 
-
-## TODO: Fix power overflow error when (expansion_ratios[ixch] - 1) < 0
+# TODO: Fix power overflow error when (expansion_ratios[ixch] - 1) < 0
 
 # Parameters for smearing and gammatone filtering according to degree of loss
 HL_PARAMS = {

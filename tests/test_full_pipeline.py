@@ -5,12 +5,13 @@
 import os
 
 import numpy as np
+from omegaconf import OmegaConf
+from scipy.io import wavfile
+
 from clarity.data.scene_renderer_cec2 import SceneRenderer
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
-from omegaconf import OmegaConf
-from scipy.io import wavfile
 
 
 def test_full_pipeline(regtest):

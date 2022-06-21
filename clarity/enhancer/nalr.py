@@ -1,7 +1,8 @@
+import math
+
 import numpy as np
 import scipy
 import scipy.signal
-import math
 
 
 def firwin2(n, f, a, window=None, antisymmetric=None):

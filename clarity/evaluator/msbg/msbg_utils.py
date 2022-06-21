@@ -1,13 +1,13 @@
-import os
 import json
+import logging
 import math
+import os
+
 import numpy as np
 import scipy
 import scipy.signal
-import logging
 import soundfile
 from soundfile import SoundFile
-
 
 # measure rms parameters
 WIN_SECS = 0.01
