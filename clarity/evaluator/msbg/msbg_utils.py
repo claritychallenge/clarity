@@ -281,12 +281,11 @@ ITU_ERP_DRP = np.array(
 )
 
 
-"""
-Ideal pre-emphasis (starts off as SII 1997), then rescaled for Moore et al. 2008
-NB last two are -15dB/oct before rescaling below
-(Moore et al 2008 E&H paper suggests that shape would be better as -7.5
-dB/oct, at least up to 8, and -13 dB/oct above there.)
-"""
+# Ideal pre-emphasis (starts off as SII 1997), then rescaled for Moore et al. 2008
+# NB last two are -15dB/oct before rescaling below
+# (Moore et al 2008 E&H paper suggests that shape would be better as -7.5
+# dB/oct, at least up to 8, and -13 dB/oct above there.)
+
 GEN_NOISE_HZ = np.array(
     [0, 100, 200, 450, 550, 707, 1000, 1414, 2000, 2828, 4000, 5656, 8000, 16e3, 32e3]
 )
