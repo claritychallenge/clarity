@@ -18,7 +18,7 @@ def haspi_v2(x, fx, y, fy, HL, Level1=65):
     y			Output signal with noise, distortion, HA gain, and/or processing.
     fy        Sampling rate in Hz for signal y.
     HL		(1,6) vector of hearing loss at the 6 audiometric frequencies
-    			  [250, 500, 1000, 2000, 4000, 6000] Hz.
+                    [250, 500, 1000, 2000, 4000, 6000] Hz.
     Level1    Optional input specifying level in dB SPL that corresponds to a
               signal RMS = 1. Default is 65 dB SPL if argument not provided.
 

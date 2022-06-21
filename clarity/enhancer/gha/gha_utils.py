@@ -2,8 +2,6 @@ import copy
 import re
 import logging
 import numpy as np
-import pathlib
-from jinja2 import Environment, FileSystemLoader
 from scipy.interpolate import interp1d
 
 from clarity.enhancer.gha.gainrule_camfit import gainrule_camfit_compr

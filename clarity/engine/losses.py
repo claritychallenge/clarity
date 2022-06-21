@@ -91,15 +91,15 @@ class STOILevelLoss(torch.nn.Module):
         z = (
             torch.sum(x_unfold ** 2, dim=1) / self.frame_size
         )  # mean square for each frame
-        l = -0.691 + 10 * torch.log10(z + eps)
+        el = -0.691 + 10 * torch.log10(z + eps)
 
-        idx_a = torch.where(l > self.gamma_a, 1, 0)
+        idx_a = torch.where(el > self.gamma_a, 1, 0)
         z_ave_gated_a = torch.sum(z * idx_a, dim=1, keepdim=True) / (
             torch.sum(idx_a, dim=1, keepdim=True) + eps
         )
         gamma_r = -0.691 + 10 * torch.log10(z_ave_gated_a + eps) - 10
 
-        idx_r = torch.where(l > gamma_r, 1, 0)
+        idx_r = torch.where(el > gamma_r, 1, 0)
         idx_a_r = idx_a * idx_r
         z_ave_gated_a_r = torch.sum(z * idx_a_r, dim=1, keepdim=True) / (
             torch.sum(idx_a_r, dim=1, keepdim=True) + eps

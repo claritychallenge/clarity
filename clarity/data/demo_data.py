@@ -9,7 +9,7 @@ PACKAGE_NAME = "data.tgz"
 def get_demo_data(metadata_url, target_dir):
     gdown.download(metadata_url, PACKAGE_NAME, quiet=False)
     p = Path(target_dir)
-    if p.exists() == False:
+    if p.exists() is False:
         p.mkdir(parents=True, exist_ok=True)
     os.system(f"tar -xvzf {PACKAGE_NAME} --directory {target_dir}/")
     os.system(f"rm {PACKAGE_NAME}")

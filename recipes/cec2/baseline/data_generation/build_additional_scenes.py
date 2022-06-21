@@ -14,7 +14,6 @@ def instantiate_scenes(cfg):
     set_random_seed(cfg.random_seed)
     room_file = os.path.join(cfg.path.metadata_dir, f"rooms.train.json")
     for dataset in cfg.scene_datasets:
-        scene_file = os.path.join(cfg.path.metadata_dir, f"scenes.{dataset}.json")
         if not os.path.exists(cfg.path.additional_data_file):
             logger.info(f"instantiate scenes for {dataset} set")
             rb.load(room_file)

@@ -60,7 +60,7 @@ class Renderer:
         """
         try:
             wave_file = SoundFile(filename)
-        except:
+        except:  # noqa E722
             # Ensure incorrect error (24 bit) is not generated
             raise Exception(f"Unable to read {filename}.")
 
@@ -324,4 +324,3 @@ def main():
         offset=scene["interferer"]["offset"],
         snr_dB=scene["SNR"],
     )
-

@@ -239,14 +239,14 @@ def LossParameters(HL, cfreq):
     Calling variables:
     HL		hearing loss at the 6 audiometric frequencies
     cfreq		array containing the center frequencies of the gammatone filters
-    			arranged from low to high
+                arranged from low to high
 
     Returned values:
     attnOHC	attenuation in dB for the OHC gammatone filters
     BW		OHC filter bandwidth expressed in terms of normal
     lowknee	Lower kneepoint for the low-level linear amplification
     CR		Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal
-    			hearing. Reduced in proportion to the OHC loss to 1:1.
+                hearing. Reduced in proportion to the OHC loss to 1:1.
     attnIHC	attenuation in dB for the input to the IHC synapse
 
     James M. Kates, 25 January 2007.
@@ -435,11 +435,11 @@ def MiddleEar(x, fsamp):
     threshold.
 
     Calling variables:
-    	x		input signal
-    	fsamp	sampling rate in Hz
+        x		input signal
+        fsamp	sampling rate in Hz
 
     Function output:
-    	xout	filtered output
+        xout	filtered output
 
     James M. Kates, 18 January 2007.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
@@ -617,16 +617,16 @@ def EnvCompressBM(envsig, bm, control, attnOHC, thrLow, CR, fsamp, Level1):
 
     Calling variables:
     envsig	analytic signal envelope (magnitude) returned by the
-    			gammatone filter bank
+                gammatone filter bank
     bm        BM motion output by the filter bank
     control	analytic control envelope returned by the wide control
-    			path filter bank
+                path filter bank
     attnOHC	OHC attenuation at the input to the compressor
     thrLow	kneepoint for the low-level linear amplification
     CR		compression ratio
     fsamp		sampling rate in Hz
     Level1	dB reference level: a signal having an RMS value of 1 is
-    			assigned to Level1 dB SPL.
+                assigned to Level1 dB SPL.
 
     Function outputs:
     y			compressed version of the signal envelope
@@ -920,14 +920,14 @@ def aveSL(env, control, attnOHC, thrLow, CR, attnIHC, Level1):
 
     Calling variables:
     env		analytic signal envelope (magnitude) returned by the
-    			gammatone filter bank, RMS average level
+                gammatone filter bank, RMS average level
     control   control signal envelope
     attnOHC	OHC attenuation at the input to the compressor
     thrLow	kneepoint for the low-level linear amplification
     CR		compression ratio
     attnIHC	IHC attenuation at the input to the synapse
     Level1	dB reference level: a signal having an RMS value of 1 is
-    			assigned to Level1 dB SPL.
+                assigned to Level1 dB SPL.
 
     Function output:
     xdB		compressed output in dB above the impaired threshold

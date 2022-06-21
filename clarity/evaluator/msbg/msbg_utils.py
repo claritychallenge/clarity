@@ -646,7 +646,7 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
     """
     try:
         wave_file = SoundFile(filename)
-    except:
+    except:  # noqa E722
         # Ensure incorrect error (24 bit) is not generated
         raise Exception(f"Unable to read {filename}.")
 

@@ -97,7 +97,6 @@ class GHAHearingAid:
             outfile_name (str): File in which to store output wav files
             dry_run (bool): perform dry run only
         """
-        dirname = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
         logging.info(f"Processing {outfile_name} with listener {listener}")
 
         logging.info(f"Audiogram severity is {audiogram.severity}")
@@ -190,7 +189,7 @@ class GHAHearingAid:
         """
         try:
             wave_file = SoundFile(filename)
-        except:
+        except:  # noqa E722
             # Ensure incorrect error (24 bit) is not generated
             raise Exception(f"Unable to read {filename}.")
 
@@ -241,17 +240,13 @@ class GHAHearingAid:
         signal_CH3 = self.read_signal(infile_names[2])
 
         merged_signal = np.zeros((len(signal_CH1), 4))
-        merged_signal[:, 0] = signal_CH1[
-            :, 0
-        ]  # channel index 0 = front microphone on the left hearing aid
-        merged_signal[:, 1] = signal_CH1[
-            :, 1
-        ]  # channel index 1 = front microphone on the right hearing aid
-        merged_signal[:, 2] = signal_CH3[
-            :, 0
-        ]  # channel index 2 = rear microphone on the left hearing aid
-        merged_signal[:, 3] = signal_CH3[
-            :, 1
-        ]  # channel index 3 = rear microphone on the right hearing aid
+        # channel index 0 = front microphone on the left hearing aid
+        merged_signal[:, 0] = signal_CH1[:, 0]
+        # channel index 1 = front microphone on the right hearing aid
+        merged_signal[:, 1] = signal_CH1[:, 1]
+        # channel index 2 = rear microphone on the left hearing aid
+        merged_signal[:, 2] = signal_CH3[:, 0]
+        # channel index 3 = rear microphone on the right hearing aid
+        merged_signal[:, 3] = signal_CH3[:, 1]
 
         self.write_signal(merged_filename, merged_signal, floating_point=True)

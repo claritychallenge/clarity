@@ -102,7 +102,9 @@ def smear3(f_smear, inbuffer):
     buffer = np.arange(0, overlaps)
     nyquist = int(FFT_SIZE / 2)
 
-    window = 0.5 - 0.5 * np.cos(2 * np.pi * (np.arange(1, FRAME_SIZE + 1) - 0.5) / FRAME_SIZE)
+    window = 0.5 - 0.5 * np.cos(
+        2 * np.pi * (np.arange(1, FRAME_SIZE + 1) - 0.5) / FRAME_SIZE
+    )
     window = window / math.sqrt(1.5)
 
     samplecount = min(FRAME_SIZE, inlength - inpointer)

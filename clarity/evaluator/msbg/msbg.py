@@ -1,8 +1,5 @@
-import os
-import json
 import math
 import logging
-import scipy
 import numpy as np
 
 from scipy import interpolate
@@ -11,10 +8,16 @@ from scipy.signal import firwin, lfilter
 
 from clarity.evaluator.msbg.cochlea import Cochlea
 from clarity.evaluator.msbg.msbg_utils import firwin2
-from clarity.evaluator.msbg.msbg_utils import HZ, MIDEAR, FF_ED, DF_ED, ITU_HZ, ITU_ERP_DRP
+from clarity.evaluator.msbg.msbg_utils import (
+    HZ,
+    MIDEAR,
+    FF_ED,
+    DF_ED,
+    ITU_HZ,
+    ITU_ERP_DRP,
+)
 from clarity.evaluator.msbg.msbg_utils import gen_tone, gen_eh2008_speech_noise
 from clarity.evaluator.msbg.msbg_utils import measure_rms
-from clarity.evaluator.msbg.msbg_utils import pad, read_signal, write_signal, MSBG_FS
 
 # Cut off frequency of low-pass filter at end of simulations:
 # prevents possible excessive processing noise at high frequencies.
@@ -23,11 +26,8 @@ UPPER_CUTOFF_HZ = 18000
 
 class Ear:
     """Representation of a pairs of ears."""
-    def __init__(self,
-                 src_pos='ff',
-                 fs=44100,
-                 equiv0dBSPL=100,
-                 ahr=20):
+
+    def __init__(self, src_pos="ff", fs=44100, equiv0dBSPL=100, ahr=20):
         """
         Constructor for the Ear class.
         Args:
@@ -40,7 +40,7 @@ class Ear:
         self.ahr = ahr
 
     def set_audiogram(self, audiogram):
-        if np.max(audiogram.levels[audiogram.levels != None]) > 80:
+        if np.max(audiogram.levels[audiogram.levels is not None]) > 80:
             logging.warning(
                 "Impairment too severe: Suggest you limit audiogram max to 80-90 dB HL, \
                 otherwise things go wrong/unrealistic."
@@ -149,9 +149,7 @@ class Ear:
         return [chans[:, i] for i in range(chans.shape[1])]
 
     def process(
-        self,
-        chans,
-        add_calibration=False,
+        self, chans, add_calibration=False,
     ):
         """Run the hearing loss simulation.
 
@@ -202,7 +200,7 @@ class Ear:
         )
 
         # Add calibration signal at target SPL dB
-        if add_calibration == True:
+        if add_calibration is True:
             if self.calibration_signal is None:
                 self.calibration_signal = Ear.make_calibration_signal(REF_RMS_DB)
             chans = [
@@ -229,4 +227,3 @@ class Ear:
         chans = [lfilter(lpf44d1, 1, x) for x in chans]
 
         return chans
-

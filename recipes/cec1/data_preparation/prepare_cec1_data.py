@@ -3,7 +3,7 @@ import json
 import logging
 from tqdm import tqdm
 import hydra
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 
 from clarity.data.scene_renderer_cec1 import Renderer, check_scene_exists
 

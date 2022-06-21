@@ -75,11 +75,11 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
 
         logging.debug(f"Resampling signals with sr={fs} for MBSTOI calculation.")
         # Assumes fs_signal is 44.1 kHz
-        l = len(xl)
-        xl = resample(xl, int(l * (fs / fs_signal) + 1))
-        xr = resample(xr, int(l * (fs / fs_signal) + 1))
-        yl = resample(yl, int(l * (fs / fs_signal) + 1))
-        yr = resample(yr, int(l * (fs / fs_signal) + 1))
+        el = len(xl)
+        xl = resample(xl, int(el * (fs / fs_signal) + 1))
+        xr = resample(xr, int(el * (fs / fs_signal) + 1))
+        yl = resample(yl, int(el * (fs / fs_signal) + 1))
+        yr = resample(yr, int(el * (fs / fs_signal) + 1))
 
     # Remove silent frames
     [xl, xr, yl, yr] = remove_silent_frames(
