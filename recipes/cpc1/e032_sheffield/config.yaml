@@ -1,0 +1,21 @@
+path:
+  root: ???
+  cpc1_train_data: ${path.root}/clarity_CPC1_data_train/
+  cpc1_test_data: ${path.root}/clarity_CPC1_data_test/
+  exp_folder: ${path.root}/e032
+
+cpc1_track: closed  # "closed" or "open"
+dev_percent: 0.3  # amount of scenes for dev set
+
+MSBGEar:   # hyperparameters for MSBG ear
+  src_pos: ff
+  fs: 44100
+  equiv0dBSPL: 100
+  ahr: 20
+
+asr_config: transformer_cpc1.yaml
+
+hydra:
+  output_subdir: Null
+  run:
+    dir: .
