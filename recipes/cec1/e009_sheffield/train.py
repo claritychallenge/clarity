@@ -1,24 +1,22 @@
-import os
 import json
 import logging
+import os
 
 import hydra
-from omegaconf import DictConfig
-
-import torch
-from torch.utils.data import DataLoader
-import torchaudio
 import numpy as np
-
 import pytorch_lightning as pl
+import torch
+import torchaudio
+from omegaconf import DictConfig
 from pytorch_lightning.callbacks import ModelCheckpoint
+from torch.utils.data import DataLoader
 
+from clarity.dataset.cec1_dataset import CEC1Dataset
+from clarity.engine.losses import SNRLoss, STOILevelLoss
 from clarity.engine.system import System
 from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
 from clarity.enhancer.dsp.filter import AudiometricFIR
-from clarity.engine.losses import SNRLoss, STOILevelLoss
 from clarity.predictor.torch_msbg import MSBGHearingModel
-from clarity.dataset.cec1_dataset import CEC1Dataset
 
 logger = logging.getLogger(__name__)
 

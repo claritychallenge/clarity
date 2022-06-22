@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 from scipy.signal import find_peaks
 
@@ -181,7 +183,7 @@ def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas):
     result = (
         2
         * np.transpose(
-            np.dot(R1, np.real(np.dot(np.transpose(rho1), tauexp)),)
+            np.dot(R1, np.real(np.dot(np.transpose(rho1), tauexp)))
             + np.dot(R2, np.real(np.transpose(rho2) * tauexp))
         )
         * 10 ** -gammas
@@ -230,7 +232,7 @@ def stft(x, win_size, fft_size):
 
 
 def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
-    """ 
+    """
     Remove silent frames of x and y based on x
     A frame is excluded if its energy is lower than max(energy) - dyn_range
     The frame exclusion is based solely on x, the clean speech signal
@@ -279,7 +281,7 @@ def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
     maskxl = (np.max(xl_energies) - dyn_range - xl_energies) < 0
     maskxr = (np.max(xr_energies) - dyn_range - xr_energies) < 0
 
-    mask = (maskxl == True) | (maskxr == True)
+    mask = maskxl | maskxr
 
     # Remove silent frames by masking
     xl_frames = xl_frames[mask]

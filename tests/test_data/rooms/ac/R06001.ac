@@ -1,20 +1,20 @@
 AC3Db
-MATERIAL "parquet" rgb 0 0 0.05625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "mat_scene10_ceiling" rgb 0 0 0.1125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "concrete" rgb 0 0 0.16875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "concrete" rgb 0 0 0.225 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "concrete" rgb 0 0 0.28125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "concrete" rgb 0 0 0.3375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "Classroom_Door" rgb 0 0 0.39375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "mat_scene09_windows" rgb 0 0 0.45 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "mat_scene09_windows" rgb 0 0 0.50625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "curtains" rgb 0 0 0.5625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "curtains" rgb 0 0 0.61875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "curtains" rgb 0 0 0.675 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "curtains" rgb 0 0 0.73125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "rug_Teppich_carpet_clarity" rgb 0 0 0.7875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "leather" rgb 0 0 0.84375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
-MATERIAL "leather" rgb 0 0 0.9 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0 
+MATERIAL "parquet" rgb 0 0 0.05625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "mat_scene10_ceiling" rgb 0 0 0.1125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "concrete" rgb 0 0 0.16875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "concrete" rgb 0 0 0.225 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "concrete" rgb 0 0 0.28125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "concrete" rgb 0 0 0.3375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "Classroom_Door" rgb 0 0 0.39375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "mat_scene09_windows" rgb 0 0 0.45 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "mat_scene09_windows" rgb 0 0 0.50625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "curtains" rgb 0 0 0.5625 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "curtains" rgb 0 0 0.61875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "curtains" rgb 0 0 0.675 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "curtains" rgb 0 0 0.73125 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "rug_Teppich_carpet_clarity" rgb 0 0 0.7875 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "leather" rgb 0 0 0.84375 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
+MATERIAL "leather" rgb 0 0 0.9 amb 0.2 0.2 0.2  emis 0 0 0  spec 0.2 0.2 0.2  shi 128  trans 0
 OBJECT world
 kids 16
 OBJECT poly

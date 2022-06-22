@@ -1,5 +1,4 @@
-import clarity
-import clarity.enhancer
+import clarity.enhancer  # noqa: F401
 
 
 def test_null():

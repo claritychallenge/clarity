@@ -4,7 +4,7 @@ In `data_config.yaml`, specify `path.root` folder in which you unpack the data; 
 ## 1. Hearing aid baseline system
 THe openMHA software is used as the baseline hearing aid system. You need to [download](http://www.openmha.org/download/) and install openMHA to run `enhance.py`, which generates enhanced scenes.
 
-## 2. Evaluation 
+## 2. Evaluation
 The combination of MSBG hearing loss model and MBSTOI.  In `evaluate.py`, `run_HL_processing` runs MSBG hearing loss simulation, and `run_calculate_SI` computes MBSTOI scores. The intermediate signals and final scores will be saved. Note: if there are not `enhanced_signals`, the evaluation will be done with the original scene `mixed_CH0`.
 
 ## 3.Information on default parameter values

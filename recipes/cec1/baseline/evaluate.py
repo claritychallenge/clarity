@@ -1,19 +1,19 @@
-import os
 import csv
 import json
 import logging
-import numpy as np
-from tqdm import tqdm
+import os
+
 import hydra
+import numpy as np
 from omegaconf import DictConfig
 from scipy.signal import unit_impulse
-
-from clarity.evaluator.msbg.msbg_utils import pad, read_signal, write_signal, MSBG_FS
-from clarity.evaluator.msbg.audiogram import Audiogram
-from clarity.evaluator.msbg.msbg import Ear
+from tqdm import tqdm
 
 from clarity.evaluator.mbstoi.mbstoi import mbstoi
 from clarity.evaluator.mbstoi.mbstoi_utils import find_delay_impulse
+from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.evaluator.msbg.msbg import Ear
+from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal, write_signal
 
 
 def listen(ear, signal, audiogram_l, audiogram_r):
@@ -141,14 +141,14 @@ def run_calculate_SI(cfg: DictConfig) -> None:
 
             # Allow for value lower than 1000 samples in case of unimpaired hearing
             if maxdelay > 2000:
-                logging.error(f"Error in delay calculation for signal time-alignment.")
+                logging.error("Error in delay calculation for signal time-alignment.")
 
             # Correct for delays by padding clean signals
             cleanpad = np.zeros((len(clean) + maxdelay, 2))
             procpad = np.zeros((len(clean) + maxdelay, 2))
 
             if len(procpad) < len(proc):
-                raise ValueError(f"Padded processed signal is too short.")
+                raise ValueError("Padded processed signal is too short.")
 
             cleanpad[int(delay[0]) : int(len(clean) + int(delay[0])), 0] = clean[:, 0]
             cleanpad[int(delay[1]) : int(len(clean) + int(delay[1])), 1] = clean[:, 1]

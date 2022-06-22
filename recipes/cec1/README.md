@@ -1,8 +1,8 @@
 # The 1st Clarity Enhancement Challenge
 
-Clarity challenge code for the first enhancement challenge (CEC1). 
+Clarity challenge code for the first enhancement challenge (CEC1).
 
-Please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_intro for CEC1 information, 
+Please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_intro for CEC1 information,
 
 and https://claritychallenge.github.io/clarity2021-workshop/results.html for CEC1 results.
 
@@ -51,7 +51,7 @@ clarity_data
 |   └───scenes 72G
 |   |
 |   └───targets 1.3G
-|   
+|
 └───eval
 |   |   |    nosie 675M
 |   |   |    speech 1.3G

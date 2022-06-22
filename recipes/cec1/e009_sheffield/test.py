@@ -1,18 +1,17 @@
 import os
-from tqdm import tqdm
-
-import torch
-from torch.utils.data import DataLoader
-import torchaudio
-from soundfile import write
-import numpy as np
 
 import hydra
+import numpy as np
+import torch
+import torchaudio
 from omegaconf import DictConfig
+from soundfile import write
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 
+from clarity.dataset.cec1_dataset import CEC1Dataset
 from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
 from clarity.enhancer.dsp.filter import AudiometricFIR
-from clarity.dataset.cec1_dataset import CEC1Dataset
 
 
 @hydra.main(config_path=".", config_name="config")

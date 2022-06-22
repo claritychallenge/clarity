@@ -2,14 +2,13 @@
 This implementation is from https://github.com/mpariente/pytorch_stoi, please cite and star the repo.
 The pip version of torch_stoi does not include EPS in line 127 & 128, hence could lead to sqrt(0)
 """
-import torch
-from torch import nn
 import numpy as np
-from torch.nn.functional import unfold, pad
+import torch
 import torchaudio
-
-from pystoi.stoi import FS, N_FRAME, NUMBAND, MINFREQ, N, BETA, DYN_RANGE
+from pystoi.stoi import BETA, DYN_RANGE, FS, MINFREQ, N_FRAME, NUMBAND, N
 from pystoi.utils import thirdoct
+from torch import nn
+from torch.nn.functional import pad, unfold
 
 EPS = 1e-8
 

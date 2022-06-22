@@ -1,12 +1,13 @@
-import numpy as np
 import logging
 import math
+
+import numpy as np
 from scipy.signal import resample
 
 from clarity.evaluator.mbstoi.mbstoi_utils import (
     ec,
-    stft,
     remove_silent_frames,
+    stft,
     thirdoct,
 )
 
@@ -75,11 +76,11 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
 
         logging.debug(f"Resampling signals with sr={fs} for MBSTOI calculation.")
         # Assumes fs_signal is 44.1 kHz
-        l = len(xl)
-        xl = resample(xl, int(l * (fs / fs_signal) + 1))
-        xr = resample(xr, int(l * (fs / fs_signal) + 1))
-        yl = resample(yl, int(l * (fs / fs_signal) + 1))
-        yr = resample(yr, int(l * (fs / fs_signal) + 1))
+        el = len(xl)
+        xl = resample(xl, int(el * (fs / fs_signal) + 1))
+        xr = resample(xr, int(el * (fs / fs_signal) + 1))
+        yl = resample(yl, int(el * (fs / fs_signal) + 1))
+        yr = resample(yr, int(el * (fs / fs_signal) + 1))
 
     # Remove silent frames
     [xl, xr, yl, yr] = remove_silent_frames(
@@ -114,7 +115,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     yr_hat = yr_hat[0:idx, :]
 
     # Compute intermediate correlation via EC search
-    logging.info(f"Starting EC evaluation")
+    logging.info("Starting EC evaluation")
     # Here intermeduiate correlation coefficients are evaluated for a discrete set of
     # gamma and tau values (a "grid") and the highest value is chosen.
     d = np.zeros((J, np.shape(xl_hat)[1] - N + 1))
@@ -131,7 +132,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     gammas = gammas / 20
     sigma_delta = np.sqrt(2) * sigma_delta_0 * (1 + (abs(taus) / tau_0))
 
-    logging.info(f"Processing EC stage")
+    logging.info("Processing EC stage")
     d, p_ec_max = ec(
         xl_hat,
         xr_hat,
@@ -152,7 +153,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     )
 
     # Compute the better ear STOI
-    logging.info(f"Computing better ear intermediate correlation coefficients")
+    logging.info("Computing better ear intermediate correlation coefficients")
     # Arrays for the 1/3 octave envelope
     Xl = np.zeros((J, np.shape(xl_hat)[1]))
     Xr = np.zeros((J, np.shape(xl_hat)[1]))

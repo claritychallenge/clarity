@@ -1,6 +1,7 @@
-import numpy as np
 from math import floor
-from scipy.signal import convolve2d, convolve
+
+import numpy as np
+from scipy.signal import convolve, convolve2d
 
 
 def EnvFilt(xdB, ydB, fcut, fsub, fsamp):

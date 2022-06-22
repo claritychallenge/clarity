@@ -5,12 +5,13 @@
 import os
 
 import numpy as np
+from omegaconf import OmegaConf
+from scipy.io import wavfile
+
 from clarity.data.scene_renderer_cec2 import SceneRenderer
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
-from omegaconf import OmegaConf
-from scipy.io import wavfile
 
 
 def test_full_pipeline(regtest):
@@ -160,6 +161,6 @@ def test_full_pipeline(regtest):
 
     print(f"Enhanced audio HASPI score is {sii_enhanced}")
 
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced}")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}")
 
-    # Enhanced audio HASPI score is 0.31047796029212865
+    # Enhanced audio HASPI score is 0.2994066

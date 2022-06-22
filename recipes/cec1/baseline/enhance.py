@@ -1,9 +1,10 @@
-import os
 import json
-import numpy as np
-from tqdm import tqdm
+import os
+
 import hydra
+import numpy as np
 from omegaconf import DictConfig
+from tqdm import tqdm
 
 from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid

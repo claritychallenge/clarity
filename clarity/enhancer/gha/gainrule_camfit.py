@@ -1,5 +1,6 @@
 import copy
 import logging
+
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -20,8 +21,8 @@ def compute_proportion_overlap(a1, a2, b1, b2):
     else:
         overlap = float(right - left) / (b2 - b1)
     return overlap
-    
-    
+
+
 def isothr(vsDesF):
     """Calculate conversion factors of HL thresholds to SPL thresholds.
 
@@ -125,7 +126,7 @@ def isothr(vsDesF):
     vIsoThrDB = interp1d(vsF, vThr, fill_value="extrapolate")(vsDesF)
 
     return vIsoThrDB
-    
+
 
 def freq_interp_sh(f_in, y_in, f):
     """Linear interpolation on logarithmic frequency scale.
@@ -238,7 +239,7 @@ def gainrule_camfit_linear(
             intercepts = freq_interp_sh(
                 intercept_frequencies, intercepts, sFitmodel["frequencies"][0][0]
             )
-    except:
+    except:  # noqa E722
         intercepts = freq_interp_sh(
             intercept_frequencies, intercepts, sFitmodel["frequencies"]
         )
@@ -294,7 +295,7 @@ def gainrule_camfit_linear(
         )
         noisegate_slope[:, i] = noisegateslope * np.ones(np.size(sFitmodel_frequencies))
 
-    overall_level = 10 * np.log(np.sum(10 ** (insertion_gains_out / 10), axis=0))
+    # overall_level = 10 * np.log(np.sum(10 ** (insertion_gains_out / 10), axis=0))
 
     output = {}
     output["sGt"] = sGt

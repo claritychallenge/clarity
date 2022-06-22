@@ -1,19 +1,17 @@
 """
 An FIR-based torch implementation of approximated MSBG hearing loss model
 """
-import os
 import json
+import os
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchaudio
-
-from scipy.signal import firwin, firwin2, ellip, lfilter, freqz
-from scipy.io import loadmat
-from scipy.interpolate import interp1d
 from scipy.fftpack import fft
-
+from scipy.interpolate import interp1d
+from scipy.signal import ellip, firwin, firwin2, freqz
 
 EPS = 1e-8
 # old msbg matlab
@@ -39,7 +37,6 @@ def generate_key_percent(signal, thr_dB, winlen):
         print("\nGenerate_key_percent: \t Window length must be integer")
 
     siglen = len(signal)
-    track_percent = 0
     expected = thr_dB.copy()  # expected threshold
     non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
 
@@ -88,7 +85,7 @@ def measure_rms(signal, sr, dB_rel_rms):
     key, used_thr_dB = generate_key_percent(
         signal, key_thr_dB, np.int(np.round(win_secs * sr))
     )
-    active = 100.0 * len(key) / len(signal)
+    # active = 100.0 * len(key) / len(signal)
     rms = np.sqrt(np.mean(signal[key] ** 2))
     rel_dB_thresh = used_thr_dB - 20 * np.log10(rms)
     return rms, key, rel_dB_thresh
@@ -864,15 +861,15 @@ class torchloudnorm(nn.Module):
         z = (
             torch.sum(x_unfold ** 2, dim=1) / self.frame_size
         )  # mean square for each frame
-        l = -0.691 + 10 * torch.log10(z + EPS)
+        el = -0.691 + 10 * torch.log10(z + EPS)
 
-        idx_a = torch.where(l > self.gamma_a, 1, 0)
+        idx_a = torch.where(el > self.gamma_a, 1, 0)
         z_ave_gated_a = torch.sum(z * idx_a, dim=1, keepdim=True) / (
             torch.sum(idx_a, dim=1, keepdim=True) + 1e-8
         )
         gamma_r = -0.691 + 10 * torch.log10(z_ave_gated_a + EPS) - 10
 
-        idx_r = torch.where(l > gamma_r, 1, 0)
+        idx_r = torch.where(el > gamma_r, 1, 0)
         idx_a_r = idx_a * idx_r
         z_ave_gated_a_r = torch.sum(z * idx_a_r, dim=1, keepdim=True) / (
             torch.sum(idx_a_r, dim=1, keepdim=True) + 1e-8

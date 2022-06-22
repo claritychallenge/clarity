@@ -1,7 +1,8 @@
 import os
+
+import numpy as np
 import scipy
 import scipy.io
-import numpy as np
 
 SPEECH_FILTER = scipy.io.loadmat(
     os.path.join(
