@@ -4,7 +4,7 @@ import setuptools
 
 setup(
     name="clarity",
-    version="2.0.1",
+    version="2.0.2",
     description="Tools for the Clarity Challenge",
     author="Clarity Team",
     packages=setuptools.find_packages(),
