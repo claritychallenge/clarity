@@ -20,9 +20,6 @@ cd clarity
 conda create --name clarity python=3.8
 conda activate clarity
 
-# Third install requirements
-pip install -r requirements.txt
-
 # Last install with pip
 pip install -e .
 ```
