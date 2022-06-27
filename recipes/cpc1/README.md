@@ -1,4 +1,4 @@
-# The 2nd Clarity Enhancement Challenge (CEC2)
+# The 1st Clarity Prediction Challenge (CPC1)
 Clarity challenge code for the 1st prediction challenge (CPC1).
 
 There are two traks in CPC1:
