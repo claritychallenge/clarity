@@ -13,6 +13,7 @@ speechbrain==0.5.9
 
 ### Prepare ASR data
 Same as e032_sheffield:
+
 To train the ASR model and generate the hidden representations from it, the CPC1 data needs to be processed first. This part of code will (1) randomly split train and dev set; (2) run MSBG hearing loss simulation to all signals in `clarity_data/HA_output`; (3) resample signals to 16kHz and generate csv files for SpeechBrain ASR model training.
 - Download `clarity_CPC1_data.v1_1.tgz` and `clarity_CPC1_data.test.v1.tgz`, untar them into `clarity_CPC1_data_train` and `clarity_CPC1_data_test`, respectively. See recipes/cpc1/baseline/README.
 - Specify `root` in config.yaml. Both `clarity_CPC1_data_train` and `clarity_CPC1_data_test` should be in your root folder. You could also specify your own `exp_folder`.
@@ -66,9 +67,11 @@ This part generates the uncertainties, including the confidence and negative ent
 
 ### Evaluation
 Same as e032_sheffield:
+
 This part optimize a logistic fitting function with the dev set similarities and dev set labels, and applies the fitting function to the test set similarities for scaled predicted test set prediction. And the evaluation results of RMSE, Std, NCC and KT will be computed and stored in the `results.json`.
 - Run `python evaluate.py`
 
+## Citation
 If you use this code for your research, please cite:
 ```text
 @inproceedings{tu2022unsupervised,
