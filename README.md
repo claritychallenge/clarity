@@ -39,5 +39,6 @@ Previous challenges
 ## Open-source systems
 - CPC1:
   - [Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners](./recipes/cpc1/e032_sheffield)
+  - [Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction](./recipes/cpc1/e029_sheffield)
 - CEC1:
   - [A Two-Stage End-to-End System for Speech-in-Noise Hearing Aid Processing](./recipes/cec1/e009_sheffield)
