@@ -36,10 +36,10 @@ def speechweighted_snr(target, noise):
     noise_filt = scipy.signal.convolve(noise, SPEECH_FILTER, mode="full", method="fft")
 
     # rms of the target after speech weighted filter
-    targ_rms = np.sqrt(np.mean(target_filt ** 2))
+    targ_rms = np.sqrt(np.mean(target_filt**2))
 
     # rms of the noise after speech weighted filter
-    noise_rms = np.sqrt(np.mean(noise_filt ** 2))
+    noise_rms = np.sqrt(np.mean(noise_filt**2))
     sw_snr = np.divide(targ_rms, noise_rms)
     return sw_snr
 

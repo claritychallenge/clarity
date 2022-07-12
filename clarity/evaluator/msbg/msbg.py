@@ -148,9 +148,7 @@ class Ear:
             chans = chans[..., np.newaxis]
         return [chans[:, i] for i in range(chans.shape[1])]
 
-    def process(
-        self, chans, add_calibration=False,
-    ):
+    def process(self, chans, add_calibration=False):
         """Run the hearing loss simulation.
 
         Args:

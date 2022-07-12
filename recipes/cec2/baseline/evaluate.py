@@ -60,7 +60,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             logger.info(f"Running SI calculation: scene {scene}, listener {listener}")
             if cfg.evaluate.set_random_seed:
                 scene_md5 = int(hashlib.md5(scene.encode("utf-8")).hexdigest(), 16) % (
-                    10 ** 8
+                    10**8
                 )
                 np.random.seed(scene_md5)
 
@@ -92,8 +92,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             ref_anechoic = ref_anechoic / 32768.0
             ref_target = ref_target / 32768.0
 
-            rms_target = np.mean(ref_target ** 2, axis=0) ** 0.5
-            rms_anechoic = np.mean(ref_anechoic ** 2, axis=0) ** 0.5
+            rms_target = np.mean(ref_target**2, axis=0) ** 0.5
+            rms_anechoic = np.mean(ref_anechoic**2, axis=0) ** 0.5
             ref = ref_anechoic * rms_target / rms_anechoic
 
             si = haspi_v2_be(
@@ -113,7 +113,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 if cfg.evaluate.set_random_seed:
                     scene_md5 = int(
                         hashlib.md5(scene.encode("utf-8")).hexdigest(), 16
-                    ) % (10 ** 8)
+                    ) % (10**8)
                     np.random.seed(scene_md5)
 
                 fs_unproc, unproc = wavfile.read(

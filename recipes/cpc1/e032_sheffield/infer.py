@@ -1,18 +1,17 @@
-import os
-import torch
-import logging
 import json
-from tqdm import tqdm
-import speechbrain as sb
-from hyperpyyaml import load_hyperpyyaml
-from speechbrain.utils.distributed import run_on_main
-from transfromer_cpc1_decoder import S2STransformerBeamSearch
-
-from scipy.spatial.distance import cosine
-from fastdtw import fastdtw
+import logging
+import os
 
 import hydra
+import speechbrain as sb
+import torch
+from fastdtw import fastdtw
+from hyperpyyaml import load_hyperpyyaml
 from omegaconf import DictConfig
+from scipy.spatial.distance import cosine
+from speechbrain.utils.distributed import run_on_main
+from tqdm import tqdm
+from transfromer_cpc1_decoder import S2STransformerBeamSearch
 
 logger = logging.getLogger(__name__)
 

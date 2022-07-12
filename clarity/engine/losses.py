@@ -90,7 +90,7 @@ class STOILevelLoss(torch.nn.Module):
         x_unfold = self.unfold(signal.unsqueeze(1).unsqueeze(2))
 
         z = (
-            torch.sum(x_unfold ** 2, dim=1) / self.frame_size
+            torch.sum(x_unfold**2, dim=1) / self.frame_size
         )  # mean square for each frame
         el = -0.691 + 10 * torch.log10(z + eps)
 
