@@ -60,18 +60,18 @@ def ec(
     sigma_delta = np.expand_dims(sigma_delta, axis=0)
     sigma_epsilon = np.expand_dims(sigma_epsilon, axis=0)
     gammas = np.expand_dims(gammas, axis=0)
-    epsexp = np.exp(2 * np.log(10) ** 2 * sigma_epsilon ** 2)
+    epsexp = np.exp(2 * np.log(10) ** 2 * sigma_epsilon**2)
 
     for i in range(J):  # per frequency band
         tauexp = np.exp(-1j * cf[i] * taus)
         tauexp2 = np.exp(-1j * 2 * cf[i] * taus)
-        deltexp = np.exp(-2 * cf[i] ** 2 * sigma_delta ** 2)
+        deltexp = np.exp(-2 * cf[i] ** 2 * sigma_delta**2)
         epsdelexp = np.exp(
             0.5
             * (
                 np.ones((ntaus, 1))
                 * (
-                    np.log(10) ** 2 * sigma_epsilon ** 2
+                    np.log(10) ** 2 * sigma_epsilon**2
                     - cf[i] ** 2 * np.transpose(sigma_delta) ** 2
                 )
                 * np.ones((1, ngammas))
@@ -172,7 +172,7 @@ def secondpartfunc(L1, L2, rho1, rho2, tauexp, epsdelexp, gammas):
                 np.dot(L1, np.real(np.transpose(rho1) * tauexp))
                 + np.dot(L2, np.real(np.transpose(rho2) * tauexp))
             )
-            * 10 ** gammas
+            * 10**gammas
         )
         * epsdelexp
     )
@@ -186,7 +186,7 @@ def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas):
             np.dot(R1, np.real(np.dot(np.transpose(rho1), tauexp)))
             + np.dot(R2, np.real(np.transpose(rho2) * tauexp))
         )
-        * 10 ** -gammas
+        * 10**-gammas
         * epsdelexp
     )
     return result

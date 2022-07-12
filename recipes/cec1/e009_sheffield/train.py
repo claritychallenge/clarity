@@ -113,7 +113,8 @@ def train_den(cfg, ear):
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
     torch.save(
-        den_module.model.state_dict(), os.path.join(exp_dir, "best_model.pth"),
+        den_module.model.state_dict(),
+        os.path.join(exp_dir, "best_model.pth"),
     )
 
 
@@ -207,7 +208,8 @@ def train_amp(cfg, ear):
     amp_module.load_state_dict(state_dict=state_dict["state_dict"])
     amp_module.cpu()
     torch.save(
-        amp_module.model.state_dict(), os.path.join(exp_dir, "best_model.pth"),
+        amp_module.model.state_dict(),
+        os.path.join(exp_dir, "best_model.pth"),
     )
 
 
