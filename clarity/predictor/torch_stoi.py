@@ -86,11 +86,7 @@ class NegSTOILoss(nn.Module):
         obm_mat = thirdoct(sample_rate, self.nfft, NUMBAND, MINFREQ)[0]
         self.OBM = nn.Parameter(torch.from_numpy(obm_mat).float(), requires_grad=False)
 
-    def forward(
-        self,
-        est_targets: torch.Tensor,
-        targets: torch.Tensor,
-    ) -> torch.Tensor:
+    def forward(self, est_targets: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         """Compute negative (E)STOI loss.
         Args:
             est_targets (torch.Tensor): Tensor containing target estimates.

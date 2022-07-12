@@ -112,10 +112,7 @@ def train_den(cfg, ear):
     state_dict = torch.load(checkpoint.best_model_path)
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
-    torch.save(
-        den_module.model.state_dict(),
-        os.path.join(exp_dir, "best_model.pth"),
-    )
+    torch.save(den_module.model.state_dict(), os.path.join(exp_dir, "best_model.pth"))
 
 
 def train_amp(cfg, ear):
@@ -207,10 +204,7 @@ def train_amp(cfg, ear):
     state_dict = torch.load(checkpoint.best_model_path)
     amp_module.load_state_dict(state_dict=state_dict["state_dict"])
     amp_module.cpu()
-    torch.save(
-        amp_module.model.state_dict(),
-        os.path.join(exp_dir, "best_model.pth"),
-    )
+    torch.save(amp_module.model.state_dict(), os.path.join(exp_dir, "best_model.pth"))
 
 
 @hydra.main(config_path=".", config_name="config")

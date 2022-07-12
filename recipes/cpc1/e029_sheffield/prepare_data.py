@@ -315,21 +315,11 @@ def run_signal_generation_test(cfg, track):
     # )
 
     generate_data_split(
-        test_json_path,
-        test_signal_folder,
-        target_folder,
-        "test",
-        [],
-        if_msbg=True,
+        test_json_path, test_signal_folder, target_folder, "test", [], if_msbg=True
     )
 
     generate_data_split(
-        test_json_path,
-        test_signal_folder,
-        target_folder,
-        "test",
-        [],
-        if_ref=True,
+        test_json_path, test_signal_folder, target_folder, "test", [], if_ref=True
     )
 
 

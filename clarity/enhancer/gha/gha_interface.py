@@ -44,11 +44,7 @@ class GHAHearingAid:
         self.test_nbits = test_nbits
 
     def create_configured_cfgfile(
-        self,
-        input_file,
-        output_file,
-        formatted_sGt,
-        cfg_template_file,
+        self, input_file, output_file, formatted_sGt, cfg_template_file
     ):
         """Using Jinja2, generates cfg file for given configuration.
 
@@ -143,10 +139,7 @@ class GHAHearingAid:
         with open(cfg_filename, "w") as f:
             f.write(
                 self.create_configured_cfgfile(
-                    merged_filename,
-                    outfile_name,
-                    formatted_sGt,
-                    cfg_template,
+                    merged_filename, outfile_name, formatted_sGt, cfg_template
                 )
             )
 
