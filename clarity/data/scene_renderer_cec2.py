@@ -384,9 +384,5 @@ class SceneRenderer:
 
             # Stage 2: Mix down to the binaural domain
             self.generate_binaural_signals(
-                scene,
-                target,
-                interferers,
-                anechoic,
-                output_path,
+                scene, target, interferers, anechoic, output_path
             )
