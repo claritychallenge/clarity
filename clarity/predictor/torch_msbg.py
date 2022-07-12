@@ -79,7 +79,7 @@ def measure_rms(signal, sr, dB_rel_rms):
     """
     win_secs = 0.01
     # first RMS is of all signal
-    first_stage_rms = np.sqrt(np.mean(signal ** 2))
+    first_stage_rms = np.sqrt(np.mean(signal**2))
     # use this RMS to generate key threshold to more accurate RMS
     key_thr_dB = np.max([20 * np.log10(first_stage_rms) + dB_rel_rms, -80])
     key, used_thr_dB = generate_key_percent(
@@ -636,14 +636,14 @@ class MSBGHearingModel(nn.Module):
 
     def measure_rms(self, wav):
         bs = wav.shape[0]
-        ave_rms = torch.sqrt(torch.mean(wav ** 2, dim=1) + EPS)
+        ave_rms = torch.sqrt(torch.mean(wav**2, dim=1) + EPS)
         thr_db = 20 * torch.log10(ave_rms + EPS) + self.db_relative_rms
 
         num_frames = wav.shape[1] // self.win_len
         wav_reshaped = torch.reshape(
             wav[:, : num_frames * self.win_len], [bs, num_frames, self.win_len]
         )
-        db_frames = 10 * torch.log10(torch.mean(wav_reshaped ** 2, dim=2) + EPS)
+        db_frames = 10 * torch.log10(torch.mean(wav_reshaped**2, dim=2) + EPS)
 
         key_frames = (
             torch.where(
@@ -664,7 +664,7 @@ class MSBGHearingModel(nn.Module):
 
     def calibrate_spl(self, x):
         if self.spl_cali:
-            levelreFS = 10 * torch.log10(torch.mean(x ** 2, dim=1, keepdim=True) + EPS)
+            levelreFS = 10 * torch.log10(torch.mean(x**2, dim=1, keepdim=True) + EPS)
             leveldBSPL = equiv_0dB_SPL + levelreFS
             rms = self.measure_rms(x)
             change_dB = leveldBSPL - (equiv_0dB_SPL + 20 * torch.log10(rms + EPS))
@@ -859,7 +859,7 @@ class torchloudnorm(nn.Module):
         x_unfold = self.unfold(x.unsqueeze(2))
 
         z = (
-            torch.sum(x_unfold ** 2, dim=1) / self.frame_size
+            torch.sum(x_unfold**2, dim=1) / self.frame_size
         )  # mean square for each frame
         el = -0.691 + 10 * torch.log10(z + EPS)
 

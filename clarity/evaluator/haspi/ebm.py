@@ -105,7 +105,7 @@ def CepCoef(xdB, ydB, thrCep, thrNerve, nbasis):
 
     for nb in range(nbasis):
         basis = np.cos(freq[nb] * np.pi * k / (nbands - 1))
-        cepm[:, nb] = basis / np.sqrt(np.sum(basis ** 2))
+        cepm[:, nb] = basis / np.sqrt(np.sum(basis**2))
 
     # Find the reference segments that lie sufficiently above the quiescent rate
     xLinear = 10 ** (xdB / 20)  # Convert envelope dB to linear (specific loudness)
@@ -324,11 +324,11 @@ def ModCorr(Xmod, Ymod):
             # Index j gives the input reference band
             xj = Xmod[j, m]  # Input freq band j, modulation freq m
             xj = xj - np.mean(xj)
-            xsum = np.sum(xj ** 2)
+            xsum = np.sum(xj**2)
             # Processed signal band
             yj = Ymod[j, m]  # Processed freq band j, modulation freq m
             yj = yj - np.mean(yj)
-            ysum = np.sum(yj ** 2)
+            ysum = np.sum(yj**2)
             # Cross-correlate the reference and processed signals
             if (xsum < small) or (ysum < small):
                 CM[j, m] = 0

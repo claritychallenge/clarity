@@ -59,7 +59,9 @@ def enhance(cfg: DictConfig) -> None:
             np.clip(enhanced, -1.0, 1.0, out=enhanced)
             signal_16 = (32768.0 * enhanced).astype(np.int16)
             wavfile.write(
-                os.path.join(enhanced_folder, filename), fs, signal_16,
+                os.path.join(enhanced_folder, filename),
+                fs,
+                signal_16,
             )
 
 

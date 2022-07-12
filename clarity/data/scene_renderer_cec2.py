@@ -215,7 +215,7 @@ class SceneRenderer:
         # TODO: set target to a fixed reference level??
         target_filt = convolve(target, SPEECH_FILTER, mode="full", method="fft")
         # rms of the target after speech weighted filter
-        target_rms = np.sqrt(np.mean(target_filt ** 2))
+        target_rms = np.sqrt(np.mean(target_filt**2))
         logger.info(f"target rms: {target_rms}")
         target_hoair = self.paths.hoairs.format(dataset=scene["dataset"])
         target_hoair = f"{target_hoair}/HOA_{room_id}_t.wav"
@@ -384,5 +384,9 @@ class SceneRenderer:
 
             # Stage 2: Mix down to the binaural domain
             self.generate_binaural_signals(
-                scene, target, interferers, anechoic, output_path,
+                scene,
+                target,
+                interferers,
+                anechoic,
+                output_path,
             )

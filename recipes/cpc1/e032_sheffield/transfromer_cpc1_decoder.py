@@ -6,9 +6,8 @@ Authors
  * Mirco Ravanelli 2020
  * Sung-Lin Yeh 2020
 """
-import torch
-
 import speechbrain as sb
+import torch
 from speechbrain.decoders.ctc import CTCPrefixScorer
 
 
@@ -39,7 +38,11 @@ class S2SBaseSearcher(torch.nn.Module):
     """
 
     def __init__(
-        self, bos_index, eos_index, min_decode_ratio, max_decode_ratio,
+        self,
+        bos_index,
+        eos_index,
+        min_decode_ratio,
+        max_decode_ratio,
     ):
         super(S2SBaseSearcher, self).__init__()
         self.bos_index = bos_index
@@ -330,7 +333,10 @@ class S2SBeamSearcher(S2SBaseSearcher):
         minus_inf=-1e20,
     ):
         super(S2SBeamSearcher, self).__init__(
-            bos_index, eos_index, min_decode_ratio, max_decode_ratio,
+            bos_index,
+            eos_index,
+            min_decode_ratio,
+            max_decode_ratio,
         )
         self.beam_size = beam_size
         self.topk = topk
@@ -529,9 +535,17 @@ class S2SBeamSearcher(S2SBaseSearcher):
         topk_scores, indices = top_scores.topk(self.topk, dim=-1)
         indices = (indices + self.beam_offset.unsqueeze(1)).view(batch_size * self.topk)
         # Select topk hypotheses
-        topk_hyps = torch.index_select(top_hyps, dim=0, index=indices,)
+        topk_hyps = torch.index_select(
+            top_hyps,
+            dim=0,
+            index=indices,
+        )
         topk_hyps = topk_hyps.view(batch_size, self.topk, -1)
-        topk_lengths = torch.index_select(top_lengths, dim=0, index=indices,)
+        topk_lengths = torch.index_select(
+            top_lengths,
+            dim=0,
+            index=indices,
+        )
         topk_lengths = topk_lengths.view(batch_size, self.topk)
         topk_log_probs = [top_log_probs[index.item()] for index in indices]
 
@@ -628,7 +642,9 @@ class S2SBeamSearcher(S2SBaseSearcher):
             if self.using_eos_threshold:
                 cond = self._check_eos_threshold(log_probs)
                 log_probs[:, self.eos_index] = mask_by_condition(
-                    log_probs[:, self.eos_index], cond, fill_value=self.minus_inf,
+                    log_probs[:, self.eos_index],
+                    cond,
+                    fill_value=self.minus_inf,
                 )
 
             # adding LM scores to log_prob if lm_weight > 0
@@ -778,7 +794,10 @@ class S2SBeamSearcher(S2SBaseSearcher):
             topk_scores,
             topk_lengths,
             log_probs,
-        ) = self._get_top_score_prediction(hyps_and_scores, topk=self.topk,)
+        ) = self._get_top_score_prediction(
+            hyps_and_scores,
+            topk=self.topk,
+        )
         # pick the best hyp
         predictions = topk_hyps[:, 0, :]
         predictions = batch_filter_seq2seq_output(predictions, eos_id=self.eos_index)
@@ -880,7 +899,13 @@ class S2SRNNBeamSearcher(S2SBeamSearcher):
     """
 
     def __init__(
-        self, embedding, decoder, linear, ctc_linear=None, temperature=1.0, **kwargs,
+        self,
+        embedding,
+        decoder,
+        linear,
+        ctc_linear=None,
+        temperature=1.0,
+        **kwargs,
     ):
         super(S2SRNNBeamSearcher, self).__init__(**kwargs)
         self.emb = embedding
@@ -978,7 +1003,13 @@ class S2SRNNBeamSearchLM(S2SRNNBeamSearcher):
     """
 
     def __init__(
-        self, embedding, decoder, linear, language_model, temperature_lm=1.0, **kwargs,
+        self,
+        embedding,
+        decoder,
+        linear,
+        language_model,
+        temperature_lm=1.0,
+        **kwargs,
     ):
         super(S2SRNNBeamSearchLM, self).__init__(embedding, decoder, linear, **kwargs)
 
@@ -1064,7 +1095,13 @@ class S2SRNNBeamSearchTransformerLM(S2SRNNBeamSearcher):
     """
 
     def __init__(
-        self, embedding, decoder, linear, language_model, temperature_lm=1.0, **kwargs,
+        self,
+        embedding,
+        decoder,
+        linear,
+        language_model,
+        temperature_lm=1.0,
+        **kwargs,
     ):
         super(S2SRNNBeamSearchTransformerLM, self).__init__(
             embedding, decoder, linear, **kwargs
@@ -1190,7 +1227,11 @@ class S2STransformerBeamSearch(S2SBeamSearcher):
     """
 
     def __init__(
-        self, modules, temperature=1.0, temperature_lm=1.0, **kwargs,
+        self,
+        modules,
+        temperature=1.0,
+        temperature_lm=1.0,
+        **kwargs,
     ):
         super(S2STransformerBeamSearch, self).__init__(**kwargs)
 

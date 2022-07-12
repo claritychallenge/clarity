@@ -339,7 +339,7 @@ def ambisonic_convolve(signal, ir, order):
 
 def compute_rms(input, axis=0):
     """Compute rms values along a given axis."""
-    return np.sqrt(np.mean(input ** 2, axis=axis))
+    return np.sqrt(np.mean(input**2, axis=axis))
 
 
 def equalise_rms_levels(inputs):

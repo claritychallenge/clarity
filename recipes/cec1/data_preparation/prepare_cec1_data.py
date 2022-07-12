@@ -10,7 +10,10 @@ from clarity.data.scene_renderer_cec1 import Renderer, check_scene_exists
 
 
 def prepare_data(
-    root_path, metafile_path, scene_folder, num_channels,
+    root_path,
+    metafile_path,
+    scene_folder,
+    num_channels,
 ):
     """
     Generate scene data given dataset (train or dev)
@@ -25,7 +28,11 @@ def prepare_data(
 
     os.makedirs(scene_folder, exist_ok=True)
 
-    renderer = Renderer(input_path=root_path, output_path=scene_folder, num_channels=3,)
+    renderer = Renderer(
+        input_path=root_path,
+        output_path=scene_folder,
+        num_channels=3,
+    )
     for scene in tqdm(scenes):
         if check_scene_exists(scene, scene_folder, num_channels):
             logging.info(f"Skipping processed scene {scene['scene']}.")
