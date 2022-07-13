@@ -26,8 +26,9 @@ jobs:
           pip install -e .[docs]
           pip install -e .[dev]
       - name: Lint code with flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       - name: Run pytest
         run: |
           pytest --cov=clarity .
