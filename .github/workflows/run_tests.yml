@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
+    name: Testing : (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
