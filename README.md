@@ -51,8 +51,8 @@ We provide also a number of tools in this repository:
 In addition, differentiable approximation to some tools are provided:
 * [x] [Differentiable MSBG hearing loss model](./clarity/predictor/torch_msbg.py). See also the BUT implementation: https://github.com/BUTSpeechFIT/torch_msbg_mbstoi
 * [ ] Differentiable HASPI (coming)
-  
-    
+
+
 
 ## Open-source systems
 - CPC1:
