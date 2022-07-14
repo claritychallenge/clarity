@@ -21,6 +21,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          sudo apt-get update -yq
+          sudo apt-get install -yq libsndfile1-dev ffmpeg
+      - name: Install package, including extras
+        run: |
           pip install -e .
           pip install -e .[tests]
           pip install -e .[docs]
