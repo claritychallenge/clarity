@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 requirements = [
     "audioread>=2.1.9",
-    "hydra-core>=1.1.1",
+    "hydra-core==1.1.1",  # pinned, hydra 1.2 requires some changes
     "hydra-submitit-launcher>=1.1.6",
     "librosa>=0.8.1",
     "matplotlib>=3.5.1",
