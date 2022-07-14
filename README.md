@@ -36,6 +36,24 @@ Previous challenges
 - [The 1st Clarity Enhancement Challenge (CEC1)](./recipes/cec1)
 
 
+## Available tools
+
+We provide also a number of tools in this repository:
+- **Hearing loss simulation**
+    - [Cambridge MSBG hearing loss simulator](./clarity/evaluator/msbg): descriptions can be found in the [CEC1 description](./recipes/cec1); an usage example can be found in the [CEC1 baseline](./recipes/cec1/baseline) evaluation script `evaluate.py`.
+- **Objective intelligibility measurement**
+    - [Modified binaural STOI (MBSTOI)](./clarity/evaluator/mbstoi/mbstoi.py): a python implementation of MBSTOI. It is jointly used with the MSBG hearing loss model in the [CEC1 baseline](./recipes/cec1/baseline). The official matlab implementation can be found here: http://ah-andersen.net/code/
+    - [Hearing-aid speech perception index (HASPI)](./clarity/evaluator/haspi/haspi.py): a python implementation of HASPI Version 2, and the better-ear HASPI for binaural speech signals. For official matlab implementation, request here: https://www.colorado.edu/lab/hearlab/resources
+- **Hearing aid enhancement**
+    - [Cambridge hearing aid fitting (CAMFIT)](./clarity/enhancer/gha/gainrule_camfit.py): a python implementation of CAMFIT, translated from the [HörTech Open Master Hearing Aid (OpenMHA)](http://www.openmha.org/about/); the CAMFIT is used together with OpenMHA enhancement as the [CEC1 baseline](./recipes/cec1/baseline), see `enhance.py`.
+    - [NAL-R hearing aid fitting](./clarity/enhancer/nalr.py): a python implementation of NAL-R prescription fitting. It is used as the [CEC2 baseline](./recipes/cec2/baseline), see `enhance.py`.
+
+In addition, differentiable approximation to some tools are provided:
+* [x] [Differentiable MSBG hearing loss model](./clarity/predictor/torch_msbg.py). See also the BUT implementation: https://github.com/BUTSpeechFIT/torch_msbg_mbstoi
+* [ ] Differentiable HASPI (coming)
+  
+    
+
 ## Open-source systems
 - CPC1:
   - [Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners](./recipes/cpc1/e032_sheffield)
