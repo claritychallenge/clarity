@@ -131,10 +131,10 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
         xenv, xbm, yenv, ybm = GammatoneBM(xmid, BWx[n], ymid, BWy[n], fsamp, cfreq[n])
 
         # RMS levels of the ref and output envelopes for linear metric
-        xave[n] = np.sqrt(np.mean(xenv ** 2))
-        yave[n] = np.sqrt(np.mean(yenv ** 2))
-        xcave[n] = np.sqrt(np.mean(xcontrol ** 2))
-        ycave[n] = np.sqrt(np.mean(ycontrol ** 2))
+        xave[n] = np.sqrt(np.mean(xenv**2))
+        yave[n] = np.sqrt(np.mean(yenv**2))
+        xcave[n] = np.sqrt(np.mean(xcontrol**2))
+        ycave[n] = np.sqrt(np.mean(ycontrol**2))
 
         # Cochlear compression for the signal envelopes and BM motion
         xc, xb[n] = EnvCompressBM(
@@ -331,8 +331,8 @@ def Resamp24kHz(x, fsampx):
         y = resample_poly(x, fy, fx)
 
         # Match the RMS level of the resampled signal to that of the input
-        xRMS = np.sqrt(np.mean(x ** 2))
-        yRMS = np.sqrt(np.mean(y ** 2))
+        xRMS = np.sqrt(np.mean(x**2))
+        yRMS = np.sqrt(np.mean(y**2))
         y = (xRMS / yRMS) * y
 
     else:
@@ -355,8 +355,8 @@ def Resamp24kHz(x, fsampx):
         yfilt = lfilter(by, ay, y, axis=0)
 
         # Compute the input and output RMS levels within the 21 kHz bandwidth and match the output to the input
-        xRMS = np.sqrt(np.mean(xfilt ** 2))
-        yRMS = np.sqrt(np.mean(yfilt ** 2))
+        xRMS = np.sqrt(np.mean(xfilt**2))
+        yRMS = np.sqrt(np.mean(yfilt**2))
         y = (xRMS / yRMS) * y
 
     return y, fsamp
@@ -590,7 +590,7 @@ def BWadjust(control, BWmin, BWmax, Level1):
     """
 
     # Compute the control signal level
-    cRMS = np.sqrt(np.mean(control ** 2))
+    cRMS = np.sqrt(np.mean(control**2))
     cdB = 20 * np.log10(cRMS) + Level1
 
     # Adjust the auditory filter bandwidth

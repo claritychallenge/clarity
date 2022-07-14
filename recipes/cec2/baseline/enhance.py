@@ -58,9 +58,7 @@ def enhance(cfg: DictConfig) -> None:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
             np.clip(enhanced, -1.0, 1.0, out=enhanced)
             signal_16 = (32768.0 * enhanced).astype(np.int16)
-            wavfile.write(
-                os.path.join(enhanced_folder, filename), fs, signal_16,
-            )
+            wavfile.write(os.path.join(enhanced_folder, filename), fs, signal_16)
 
 
 if __name__ == "__main__":

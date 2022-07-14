@@ -431,7 +431,7 @@ class RoomBuilder:
         self.room_dict = {room["name"]: room for room in self.rooms}
 
     def build_from_rpf(
-        self, rpf_location, n_interferers=N_INTERFERERS, n_rooms=N_SCENES, start_room=1,
+        self, rpf_location, n_interferers=N_INTERFERERS, n_rooms=N_SCENES, start_room=1
     ):
         """Build a list of rooms by extracting info from RAVEN rpf files.
         Args:

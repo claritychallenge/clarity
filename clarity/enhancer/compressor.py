@@ -38,7 +38,7 @@ class Compressor:
     def process(self, signal):
         padded_signal = np.concatenate((np.zeros(self.win_len - 1), signal))
         rms = np.sqrt(
-            np.convolve(padded_signal ** 2, self.window, mode="valid") / self.win_len
+            np.convolve(padded_signal**2, self.window, mode="valid") / self.win_len
             + self.eps
         )
         comp_ratios = []

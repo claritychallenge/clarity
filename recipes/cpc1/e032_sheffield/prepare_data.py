@@ -1,19 +1,19 @@
 import csv
 import json
-import os
 import logging
+import os
 import random
-import soundfile as sf
-from librosa import resample
-import numpy as np
-from tqdm import tqdm
 
 import hydra
+import numpy as np
+import soundfile as sf
+from librosa import resample
 from omegaconf import DictConfig
+from tqdm import tqdm
 
-from clarity.evaluator.msbg.msbg_utils import pad, read_signal, write_signal, MSBG_FS
 from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
+from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal, write_signal
 
 logger = logging.getLogger(__name__)
 
@@ -315,11 +315,11 @@ def run_signal_generation_test(cfg, track):
     # )
 
     generate_data_split(
-        test_json_path, test_signal_folder, target_folder, "test", [], if_msbg=True,
+        test_json_path, test_signal_folder, target_folder, "test", [], if_msbg=True
     )
 
     generate_data_split(
-        test_json_path, test_signal_folder, target_folder, "test", [], if_ref=True,
+        test_json_path, test_signal_folder, target_folder, "test", [], if_ref=True
     )
 
 
