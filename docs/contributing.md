@@ -1,5 +1,7 @@
 # Contributing to Clarity
 
+We welcome and encourage you to contribute to the development of the Clarity code base. These guidelines outline how you
+can do so.
 
 ## Using Clarity
 
@@ -13,13 +15,16 @@ documentation useful.
 
 ## Contributing Code
 
-You are welcome to [fork]() the repository and address bugs and features yourself and then create a [pull request](),
-however there are a number of practices and standards we ask that you adhere to in order to maintain the quality and
+You are welcome to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the repository and address bugs
+and features yourself and then create a [pull request from the
+fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+However, there are a number of practices and standards we ask that you adhere to in order to maintain the quality and
 maintainability of the code base.
 
 ### Use a Virtual Environment
 
-It is recommended that you use a [Virtual Environment]().
+It is recommended that you use a [Virtual Environment](https://realpython.com/python-virtual-environments-a-primer/) to
+undertake development.
 
 ### Install Development Dependencies
 
@@ -37,9 +42,14 @@ pip install '.[dev]'
 
 ### Create an issue
 
-Before undertaking any development please create an [Issue]() for it here on the Clarity repository. There are templates
-for [Bug Reports]() and [Feature Requests](). This allows maintainers to keep an overview of what work is being
-undertaken and gives you the opportunity to discuss with them your intended solutions.
+Before undertaking any development please create an [Issue](https://github.com/claritychallenge/clarity/issues) for it
+here on the Clarity repository. There are templates for [Bug
+Reports](https://github.com/claritychallenge/clarity/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D)
+and [Feature
+Requests](https://github.com/claritychallenge/clarity/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D). This
+allows maintainers to keep an overview of what work is being undertaken and gives you the opportunity to discuss with
+them your intended solutions.
+
 
 ### Create a Fork
 
@@ -76,3 +86,19 @@ automatically lint your code with flake8 and isort so please check the changes c
 
 If your commit fails to pass the checks please read the error messages carefully to find out what has changed and what
 you need to manually fix.
+
+
+### Testing
+
+All new code should be covered by [unit
+tests](https://carpentries-incubator.github.io/python-testing/04-units/index.html) with at least 70% coverage and where
+appropriate [regression tests](https://carpentries-incubator.github.io/python-testing/07-integration/index.html). This
+includes bug fixes, when a test should be added that captures the bug.
+
+The [pytest](https://docs.pytest.org/en/7.1.x/) framework is used and the conventions are followed under
+Clarity. Tests reside under the `tests` directory (and optionally within a module directory), fixtures should be defined
+in `conftest.py` files whilst resources used should be placed under `tests/resources`.
+
+The Continuous Integration in place on GitHub Actions runs `pytest` on newly created pull-requests and these have to
+pass successfully before merging so it is useful to ensure they pass before you create pull requests at the very
+least. Sometimes it may be sensible to run them against commits too.
