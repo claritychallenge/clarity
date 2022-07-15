@@ -62,4 +62,17 @@ For information on how to configure some popular IDEs see the following links.
 
 
 Further we have implemented a [`pre-commit`](https://pre-commit.com/) hook to ensure flake8 and isort are applied each
-time you make a commit.
+time you make a commit. Whilst the `pre-commit` package will have been installed in your environment when you need to
+install the configured hooks (which are defined in
+[`.precommit-config.yaml`](https://github.com/claritychallenge/clarity/blob/main/.pre-commit-config.yaml)) in your local
+repository. To do so run the following from the `clarity` directory...
+
+``` bash
+pre-commit install
+```
+
+This installs `.git/hooks/pre-commit` commit hook which is triggered each time you make a new commit. When run this will
+automatically lint your code with flake8 and isort so please check the changes carefully.
+
+If your commit fails to pass the checks please read the error messages carefully to find out what has changed and what
+you need to manually fix.
