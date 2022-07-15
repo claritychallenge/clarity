@@ -49,11 +49,12 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
     "sphinx.ext.coverage",
-    "sphinx.ext.numpydoc",
+    #    "sphinx.ext.numpydoc",
     "sphinx_rtd_theme",
     "myst_parser",
     "sphinx_markdown_tables",
     "sphinxcontrib.mermaid",
+    "sphinxcontrib.napoleon",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
