@@ -25,9 +25,9 @@ autodoc_mock_imports = ["numpy", "pandas", "matplotlib", "scipy"]
 
 # -- Project information -----------------------------------------------------
 
-project = "clarity"
-copyright = "2022, clarity authors"
-author = "clarity authors"
+project = "pyclarity"
+copyright = "2022, pyclarity authors"
+author = "pyclarity authors"
 
 # The short X.Y version
 version = ""
@@ -49,21 +49,23 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
     "sphinx.ext.coverage",
+    "sphinx.ext.napoleon",
     #    "sphinx.ext.numpydoc",
     "sphinx_rtd_theme",
     "myst_parser",
-    "sphinx_markdown_tables",
+    # "sphinx_markdown_tables",
     "sphinxcontrib.mermaid",
-    "sphinxcontrib.napoleon",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
+
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
+source_parsers = {".md": "recommonmark.parsers.CommonMarkParser"}
 source_suffix = {".rst": "restructuredtext", ".txt": "restructuredtext", ".md": "markdown"}
 
 # The master toctree document.
