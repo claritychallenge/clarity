@@ -15,7 +15,10 @@ documentation useful.
 
 ## Contributing Code
 
-If you have algorithms or code that you would like to contribute then please get in touch by emailing us at [claritychallengecontact@gmail.com](mailto:claritychallengecontact@gmail.com). We will be happy to help you integrate your contribution into the Clarity framework; we can even help translate contributions from other languages, e.g. MATLAB.
+If you have algorithms or code that you would like to contribute then please get in touch by emailing us at
+[claritychallengecontact@gmail.com](mailto:claritychallengecontact@gmail.com). We will be happy to help you integrate
+your contribution into the Clarity framework; we can even help translate contributions from other languages, e.g. MATLAB.
+
 
 You are also very welcome to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the repository and address bugs
 and features yourself and then create a [pull request from the
