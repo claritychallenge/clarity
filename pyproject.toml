@@ -1,3 +1,21 @@
+[build-system]
+requires = [
+  "setuptools >= 40.9.0",
+  "wheel",
+  ]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--cov"
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning"
+]
+
 [tool.black]
 line-length = 88
 target-version = ['py37']
