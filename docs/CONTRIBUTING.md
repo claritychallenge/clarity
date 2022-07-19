@@ -1,13 +1,13 @@
-# Contributing to Clarity
+# Contributing to pypyClarity
 
-We welcome and encourage you to contribute to the development of the Clarity code base. These guidelines outline how you
+We welcome and encourage you to contribute to the development of the pyClarity code base. These guidelines outline how you
 can do so.
 
-## Using Clarity
+## Using pyClarity
 
-You can contribute to the development of Clarity simply by using it. If something isn't clear then please do ask
+You can contribute to the development of pyClarity simply by using it. If something isn't clear then please do ask
 questions in the [Discussion](). If you find errors when running the code then please report them using the [Issues Bug
-Template](), or if there is a feature or improvement you think Clarity would benefit from then suggest it using the
+Template](), or if there is a feature or improvement you think pyClarity would benefit from then suggest it using the
 [Issues Feature Template]().
 
 If you are new to GitHub and working collaboratively you may find the [GitHub Issues](https://docs.github.com/en/issues)
@@ -17,7 +17,7 @@ documentation useful.
 
 If you have algorithms or code that you would like to contribute then please get in touch by emailing us at
 [claritychallengecontact@gmail.com](mailto:claritychallengecontact@gmail.com). We will be happy to help you integrate
-your contribution into the Clarity framework; we can even help translate contributions from other languages, e.g. MATLAB.
+your contribution into the pyClarity framework; we can even help translate contributions from other languages, e.g. MATLAB.
 
 
 You are also very welcome to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the repository and address bugs
@@ -33,7 +33,7 @@ undertake development.
 
 ### Install Development Dependencies
 
-Before undertaking development you should install the development requirements defined by Clarity.  To do so you can do one
+Before undertaking development you should install the development requirements defined by pyClarity.  To do so you can do one
 of the following
 
 ``` bash
@@ -48,7 +48,7 @@ pip install '.[dev]'
 ### Create an issue
 
 Before undertaking any development please create an [Issue](https://github.com/claritychallenge/clarity/issues) for it
-here on the Clarity repository. There are templates for [Bug
+here on the pyClarity repository. There are templates for [Bug
 Reports](https://github.com/claritychallenge/clarity/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D)
 and [Feature
 Requests](https://github.com/claritychallenge/clarity/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D). This
@@ -60,7 +60,7 @@ them your intended solutions.
 
 Once you have created an issue you can
 [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) the
-Clarity repository to your own account and create a branch on which to undertake development.
+pyClarity repository to your own account and create a branch on which to undertake development.
 
 
 ### Coding Style
@@ -101,9 +101,11 @@ appropriate [regression tests](https://carpentries-incubator.github.io/python-te
 includes bug fixes, when a test should be added that captures the bug.
 
 The [pytest](https://docs.pytest.org/en/7.1.x/) framework is used and the conventions are followed under
-Clarity. Tests reside under the `tests` directory (and optionally within a module directory), fixtures should be defined
+pyClarity. Tests reside under the `tests` directory (and optionally within a module directory), fixtures should be defined
 in `conftest.py` files whilst resources used should be placed under `tests/resources`.
 
 The Continuous Integration in place on GitHub Actions runs `pytest` on newly created pull-requests and these have to
 pass successfully before merging so it is useful to ensure they pass before you create pull requests at the very
 least. Sometimes it may be sensible to run them against commits too.
+
+To run the tests simply call `pytest` from the root of the project folder.
