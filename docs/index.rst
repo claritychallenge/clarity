@@ -8,7 +8,8 @@ Welcome to Clarity's documentation!
     introduction
     installation
     usage
-    contributing
+    CONTRIBUTING
+    CODE_OF_CONDUCT
     copying
 
 .. toctree::
