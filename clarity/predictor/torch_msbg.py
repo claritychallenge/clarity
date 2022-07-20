@@ -121,9 +121,9 @@ def audfilt(rl, ru, size, sr):
     :param sr:
     :return:
     """
-    filter = np.zeros([size, size])
-    filter[0, 0] = 1.0
-    filter[0, 0] = filter[0, 0] / ((rl + ru) / 2)
+    aud_filter = np.zeros([size, size])
+    aud_filter[0, 0] = 1.0
+    aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
 
     g = np.zeros(size)
     for i in np.arange(2, size + 1, 1, dtype=np.int):
@@ -133,12 +133,12 @@ def audfilt(rl, ru, size, sr):
         pu = 4 * fhz / (erbhz * ru)
         j = np.arange(1, i, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
-        filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
+        aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
         j = np.arange(i, size + 1, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
-        filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
-        filter[i - 1, :] = filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
-    return filter
+        aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
+        aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
+    return aud_filter
 
 
 class MSBGHearingModel(nn.Module):

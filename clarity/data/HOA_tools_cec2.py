@@ -337,9 +337,9 @@ def ambisonic_convolve(signal, ir, order):
     return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
 
 
-def compute_rms(input, axis=0):
+def compute_rms(input_signal, axis=0):
     """Compute rms values along a given axis."""
-    return np.sqrt(np.mean(input**2, axis=axis))
+    return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
 def equalise_rms_levels(inputs):

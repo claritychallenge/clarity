@@ -686,8 +686,8 @@ def EnvAlign(x, y):
     # The MATLAB code limits the range of lags to search (to 100 ms) to save computation time - no such option exists in numpy,
     # but the code below limits the delay to the same range as in Matlab, for consistent results
     fsamp = 24000
-    range = 100  # Range in msec for the correlation
-    lags = round(0.001 * range * fsamp)  # Range in samples
+    corr_range = 100  # Range in msec for the correlation
+    lags = round(0.001 * corr_range * fsamp)  # Range in samples
     npts = len(x)
     lags = min(lags, npts)
 
