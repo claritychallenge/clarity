@@ -237,7 +237,7 @@ def gainrule_camfit_linear(
             intercepts = freq_interp_sh(
                 intercept_frequencies, intercepts, sFitmodel["frequencies"][0][0]
             )
-    except:  # noqa E722
+    except Exception:  # noqa E722
         intercepts = freq_interp_sh(
             intercept_frequencies, intercepts, sFitmodel["frequencies"]
         )

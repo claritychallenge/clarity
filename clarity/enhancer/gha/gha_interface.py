@@ -155,7 +155,8 @@ class GHAHearingAid:
                 "cmd=start",
                 "cmd=stop",
                 "cmd=quit",
-            ]
+            ],
+            check=True,
         )
 
         # Delete temporary files.

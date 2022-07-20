@@ -322,7 +322,7 @@ class TemporalBlock(nn.Module):
         prelu = nn.PReLU()
         norm = chose_norm(norm_type, out_channels)
         # [M, H, K] -> [M, B, K]
-        dsconv = DepthwiseSeparableConv(
+        dsconv = DepthwiseSeparableConv(  # pylint: disable=W1114
             out_channels,
             in_channels,
             kernel_size,

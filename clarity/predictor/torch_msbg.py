@@ -720,7 +720,7 @@ class MSBGHearingModel(nn.Module):
         ixhp = 0
         outputs = []
         for ixch in range(self.nchans):
-            """Gammaton filtering"""
+            # Gammaton filtering
             pass_n = torchaudio.functional.lfilter(
                 x, self.gtn_denoms[ixch, :], self.gtn_nums[ixch, :]
             )
@@ -739,7 +739,7 @@ class MSBGHearingModel(nn.Module):
                     pass_n_cali, self.hp_denoms[ixhp - 1, :], self.hp_nums[ixhp - 1, :]
                 )
 
-            """Get the envelope"""
+            # Get the envelope
             envlp_out = torchaudio.functional.lfilter(
                 torch.abs(pass_n_cali), self.chan_lpfA[ixch, :], self.chan_lpfB[ixch, :]
             )

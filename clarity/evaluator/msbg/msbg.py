@@ -38,6 +38,7 @@ class Ear:
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv0dBSPL = equiv0dBSPL
         self.ahr = ahr
+        self.cochlea = None
 
     def set_audiogram(self, audiogram):
         if np.max(audiogram.levels[audiogram.levels is not None]) > 80:

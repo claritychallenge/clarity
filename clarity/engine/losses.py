@@ -4,8 +4,8 @@ from clarity.predictor.torch_stoi import NegSTOILoss
 
 
 class SISNRLoss(torch.nn.Module):
-    def __init__(self):
-        super(SISNRLoss, self).__init__()
+    # def __init__(self):  # removed as does nothing
+    #    super(SISNRLoss, self).__init__()
 
     def cal_sisnr(self, x, s, eps=1e-8):
         """
