@@ -35,10 +35,10 @@ def ec(
     intermediate correlation coefficients d.
     Could add location of source and interferer to this to reduce search space.
     Args:
-        xl_hat(ndarray): clean L short-time DFT coefficients (single-sided) per frequency bin and frame
-        xr_hat(ndarray): clean R short-time DFT coefficients (single-sided) per frequency bin and frame
-        yl_hat(ndarray): proc. L short-time DFT coefficients (single-sided) per frequency bin and frame
-        yr_hat(ndarray): proc. R short-time DFT coefficients (single-sided) per frequency bin and frame
+        xl_hat(ndarray): clean L short-time DFT coefficients (single-sided) per freq bin and frame
+        xr_hat(ndarray): clean R short-time DFT coefficients (single-sided) per freq bin and frame
+        yl_hat(ndarray): proc. L short-time DFT coefficients (single-sided) per freq bin and frame
+        yr_hat(ndarray): proc. R short-time DFT coefficients (single-sided) per freq bin and frame
         J (int): number of one-third octave bands
         N (int): number of frames for intermediate intelligibility measure
         fids (ndarray): indices of frequency band edges
@@ -104,8 +104,10 @@ def ec(
             rhoy = np.expand_dims(rhoy, axis=0)
             rhoy = rhoy - np.mean(rhoy)
 
-            # Evaluate parts of intermediate correlation - EC stage exhaustive search over ITD/ILD values
-            # These correspond to equations 7 and 8 in Andersen et al. 2018
+            # Evaluate parts of intermediate correlation - EC stage exhaustive search
+            # over ITD/ILD values. These correspond to equations 7 and 8 in
+            # Andersen et al. 2018
+
             # Calculate Exy
             firstpart = firstpartfunc(Lx, Ly, Rx, Ry, ntaus, gammas, epsexp)
             secondpart = secondpartfunc(Lx, Ly, rhoy, rhox, tauexp, epsdelexp, gammas)

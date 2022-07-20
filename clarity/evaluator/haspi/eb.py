@@ -59,8 +59,8 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     # Cochlear model parameters for the processed signal
     attnOHCy, BWminy, lowkneey, CRy, attnIHCy = LossParameters(HL, cfreq)
 
-    # The cochlear model parameters for the reference are the same as for the hearing loss if calculating quality,
-    # but are for normal hearing if calculating intelligibility.
+    # The cochlear model parameters for the reference are the same as for the hearing
+    # loss if calculating quality, but are for normal hearing if calculating intelligibility.
     if itype == 0:
         HLx = [0] * len(HL)
     else:
@@ -76,7 +76,8 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
 
     # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
-    # Using 24 kHz guarantees that all of the cochlear filters have the same shape independent of the incoming signal sampling rates
+    # Using 24 kHz guarantees that all of the cochlear filters have the same shape
+    # independent of the incoming signal sampling rates
     x24, _ = Resamp24kHz(x, xsamp)
     y24, fsamp = Resamp24kHz(y, ysamp)
 
@@ -202,7 +203,8 @@ def CenterFreq(nchan, shift=None):
     EarQ = 9.26449
     minBW = 24.7
 
-    # In the Matlab code, the loop below never evaluates (but the current code was trained with this bug)
+    # In the Matlab code, the loop below never evaluates
+    # (but the current code was trained with this bug)
     shift = None  # This is to keep consistency with MATLAB code
     if shift is not None:
         k = 1
@@ -218,7 +220,8 @@ def CenterFreq(nchan, shift=None):
         lowFreq = A * (10 ** (a * xLow) - k)
         highFreq = A * (10 ** (a * xHigh) - k)
 
-    # All of the following expressions are derived in Apple TR #35, "An Efficient Implementation of the Patterson-Holdsworth Cochlear
+    # All of the following expressions are derived in Apple TR #35,
+    # "An Efficient Implementation of the Patterson-Holdsworth Cochlear
     # Filter Bank" by Malcolm Slaney.
     cf = -(EarQ * minBW) + np.exp(
         np.arange(1, nchan)
@@ -259,7 +262,8 @@ def LossParameters(HL, cfreq):
     aud = [250, 500, 1000, 2000, 4000, 6000]
 
     # Interpolation to give the loss at the gammatone center frequencies
-    # Use linear interpolation in dB. The interpolation assumes that  cfreq[1] < aud[1] and cfreq[nfilt] > aud[6]
+    # Use linear interpolation in dB. The interpolation assumes that
+    # cfreq[1] < aud[1] and cfreq[nfilt] > aud[6]
     nfilt = len(cfreq)
     fv = np.insert(aud, [0, len(aud)], [cfreq[0], cfreq[-1]])
 
@@ -268,7 +272,8 @@ def LossParameters(HL, cfreq):
     loss = np.maximum(loss, 0)
     # Make sure there are no negative losses
 
-    # Compression ratio changes linearly with ERB rate from 1.25:1 in the 80-Hz frequency band to 3.5:1 in the 8-kHz frequency band
+    # Compression ratio changes linearly with ERB rate from 1.25:1 in the 80-Hz
+    # frequency band to 3.5:1 in the 8-kHz frequency band
     CR = 1.25 + 2.25 * np.arange(nfilt) / (nfilt - 1)
 
     # Maximum OHC sensitivity loss depends on the compression ratio.
@@ -276,7 +281,9 @@ def LossParameters(HL, cfreq):
     maxOHC = 70 * (1 - (1 / CR))  # HC loss that results in 1:1 compression
     thrOHC = 1.25 * maxOHC  # Loss threshold for adjusting the OHC parameters
 
-    # Apportion the loss in dB to the outer and inner hair cells based on the data of Moore et al (1999), JASA 106, 2761-2778.
+    # Apportion the loss in dB to the outer and inner hair cells based on the data of
+    # Moore et al (1999), JASA 106, 2761-2778.
+
     # Reduce the CR towards 1:1 in proportion to the OHC loss.
     attnOHC = 0.8 * np.copy(loss)
     attnIHC = 0.2 * np.copy(loss)
@@ -354,7 +361,8 @@ def Resamp24kHz(x, fsampx):
         by, ay = cheby2(order, atten, fcuty)
         yfilt = lfilter(by, ay, y, axis=0)
 
-        # Compute the input and output RMS levels within the 21 kHz bandwidth and match the output to the input
+        # Compute the input and output RMS levels within the 21 kHz bandwidth and
+        # match the output to the input
         xRMS = np.sqrt(np.mean(xfilt**2))
         yRMS = np.sqrt(np.mean(yfilt**2))
         y = (xRMS / yRMS) * y
@@ -384,7 +392,8 @@ def InputAlign(x, y):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    # Match the length of the processed output to the reference for the purposes of computing the cross-covariance
+    # Match the length of the processed output to the reference for the purposes
+    # of computing the cross-covariance
     nx = len(x)
     ny = len(y)
     nsamp = min(nx, ny)
@@ -683,8 +692,9 @@ def EnvAlign(x, y):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    # The MATLAB code limits the range of lags to search (to 100 ms) to save computation time - no such option exists in numpy,
-    # but the code below limits the delay to the same range as in Matlab, for consistent results
+    # The MATLAB code limits the range of lags to search (to 100 ms) to save
+    # computation time - no such option exists in numpy, but the code below limits the delay
+    # to the same range as in Matlab, for consistent results
     fsamp = 24000
     corr_range = 100  # Range in msec for the correlation
     lags = round(0.001 * corr_range * fsamp)  # Range in samples

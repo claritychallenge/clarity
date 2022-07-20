@@ -1,5 +1,6 @@
 """
-Adopted from Asteroid https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py
+Adopted from Asteroid
+https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py
 """
 import pytorch_lightning as pl
 from torch.optim.lr_scheduler import ReduceLROnPlateau

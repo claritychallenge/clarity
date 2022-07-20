@@ -46,8 +46,9 @@ def EnvFilt(xdB, ydB, fcut, fsub, fsamp):
     nhalf = floor(nfilt / 2)
     nfilt = int(2 * nhalf)  # Force an even filter length
 
-    # Design the FIR LP filter using a von Hann window to ensure that there are no negative envelope values
-    # The MATLAB code uses the hanning() function, which returns the Hann window without the first and last zero-weighted window samples,
+    # Design the FIR LP filter using a von Hann window to ensure that there are no negative
+    # envelope values. The MATLAB code uses the hanning() function, which returns the Hann
+    # window without the first and last zero-weighted window samples,
     # unlike np.hann and scipy.signal.windows.hann; the code below replicates this behaviour
     w = 0.5 * (1 - np.cos(2 * np.pi * np.arange(1, nfilt / 2 + 1) / (nfilt + 1)))
     benv = np.concatenate((w, np.flip(w)))
@@ -129,8 +130,8 @@ def CepCoef(xdB, ydB, thrCep, thrNerve, nbasis):
     xcep = xdB @ cepm
     ycep = ydB @ cepm
 
-    # Remove the average value from the cepstral coefficients. The cepstral cross-correlation will thus be a cross-covariance,
-    # and there is no effect of the absolute signal level in dB.
+    # Remove the average value from the cepstral coefficients. The cepstral cross-correlation
+    # will thus be a cross-covariance, and there is no effect of the absolute signal level in dB.
     for n in range(nbasis):
         x = xcep[:, n]
         x = x - np.mean(x)
@@ -224,9 +225,11 @@ def ModFilt(Xenv, Yenv, fsub):
     nmod = len(edge) - 1
     cf = cf[:nmod]
 
-    # Assign FIR filter lengths. Setting t0=0.2 gives a filter Q of about 1.25 to match Ewert et al. (2002),
-    # and t0=0.33 corresponds to Q=2 (Dau et al 1997a). Moritz et al. (2015) used t0=0.29. General relation Q=6.25*t0,
-    # compromise with t0=0.24 which gives Q=1.5
+    # Assign FIR filter lengths. Setting t0=0.2 gives a filter Q of about 1.25
+    # to match Ewert et al. (2002), and t0=0.33 corresponds to Q=2 (Dau et al 1997a).
+    # Moritz et al. (2015) used t0=0.29. General relation Q=6.25*t0, compromise with
+    # t0=0.24 which gives Q=1.5
+
     t0 = 0.24  # Filter length in seconds for the lowest modulation frequency band
     t = np.zeros(nmod)
     t[0] = t0

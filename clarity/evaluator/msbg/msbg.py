@@ -76,9 +76,10 @@ class Ear:
 
         Made more general, Mar2012, to include diffuse field as well as ITU reference points,
         that were included in DOS-versions of recruitment simulator, released ca 1999-2001,
-        and on hearing group website, Mar2012 variable [src_pos] takes one of 3 values: 'ff', 'df' and 'ITU'
-        free-field to cochlea filter forwards or backward direction, depends on 'backward' switch.
-        NO LONGER via 2 steps. ff to eardrum and then via middle ear: use same length FIR 5-12-97.
+        and on hearing group website, Mar2012 variable [src_pos] takes one of 3
+        values: 'ff', 'df' and 'ITU' free-field to cochlea filter forwards or backward direction,
+        depends on 'backward' switch. NO LONGER via 2 steps. ff to eardrum and then via middle ear:
+        use same length FIR 5-12-97.
 
         Args:
             ip_sig (ndarray): signal to process

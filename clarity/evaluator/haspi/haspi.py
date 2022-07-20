@@ -57,8 +57,8 @@ def haspi_v2(x, fx, y, fy, HL, Level1=65):
     # Band edges [0, 4, 8, 12.5, 20.5, 30.5, 52.4, 78.1, 128, 200, 328] Hz
     xmod, ymod, _ = ebm.ModFilt(xcep, ycep, fsub)
 
-    # Cross-correlation between the cepstral coefficients for the degraded and ref signals at each modulation rate,
-    # averaged over basis functions 2-6
+    # Cross-correlation between the cepstral coefficients for the degraded and
+    # ref signals at each modulation rate, averaged over basis functions 2-6
     aveCM = ebm.ModCorr(xmod, ymod)
 
     # Intelligibility prediction

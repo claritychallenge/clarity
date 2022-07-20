@@ -172,7 +172,8 @@ def add_this_target_to_scene(target, scene, pre_samples_range, post_samples_rang
         target (dict): target dict read from target metadata file
         scene (dict): complete scene dict
         pre_samples_range (list): parameters for number of samples prior to target onset
-        post_samples_range (list): parameters for number of samples to continue player after target offsets
+        post_samples_range (list): parameters for number of samples to continue
+            player after target offsets
     """
     scene_target = {}
     num_pre_samples = get_num_pre_samples(pre_samples_range)

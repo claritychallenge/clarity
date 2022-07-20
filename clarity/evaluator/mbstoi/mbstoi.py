@@ -62,7 +62,8 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     alpha_0_db = 13
     # Constant for time shift deviation in seconds. Equation 6 Andersen et al. 2018
     tau_0 = 1.6e-3
-    # Constant for level shift deviation. Power for calculation of sigma delta gamma in equation 5 Andersen et al. 2018.
+    # Constant for level shift deviation. Power for calculation of sigma delta gamma
+    # in equation 5 Andersen et al. 2018.
     p = 1.6
 
     # Prepare signals, ensuring that inputs are column vectors

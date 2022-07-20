@@ -12,8 +12,9 @@ from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
 
 class Renderer:
     """
-    SceneGenerator of CEC1 training and development sets. The render() function generates all simulated signals for each
-    scene given the parameters specified in the metadata/scenes.train.json or metadata/scenes.dev.json file.
+    SceneGenerator of CEC1 training and development sets. The render() function generates all
+    simulated signals for each scene given the parameters specified in the
+    metadata/scenes.train.json or metadata/scenes.dev.json file.
     """
 
     def __init__(

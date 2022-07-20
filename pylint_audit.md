@@ -6,13 +6,14 @@ Pylint can be asked to report a specific error with e.g.,
 
 `pylint --disable=all -e E1101 clarity`
 
+Code currently rate 6.55
 
-## Error
+## Error - all done
 
 150  E1101 - : Module 'torch' has no 'tensor' member;
 1  E1120
 
-## Warning
+## Warning - all done
 
 27  W1203 - Use lazy % formatting in logging functions
 14  W1514
@@ -36,21 +37,21 @@ Pylint can be asked to report a specific error with e.g.,
 777  C0103 - variable names
 49  C0116 - Missing function or method docstring (missing-function-docstring)
 41  C0301 - Line too long (107/100) (line-too-long)
-25  C0114
-17  C0115
+25  C0114 - missing-module-docstring
+17  C0115 - missing-class-docstring
 3  C0415 - Import outside toplevel (json) (import-outside-toplevel)
-3  C0209
-3  C0200
-3  C0123
+3  C0209 - consider using f-string
+3  C0200 - consider using enumerate
+3  C0123 - unidiomatic type check
 
 ## Refactor
 
 39  R0801 - duplicate code
 35  R0914 - Too many local variables
 35  R0913 -  Too many arguments (6/5) (too-many-arguments)
-17  R1725
-10  R1732
-9  R0902
+17  R1725 - super-with-arguments
+10  R1732 - consider using with
+9  R0902 - too many instance attributes
 5  R0915
 4  R0201
 3  R1714
