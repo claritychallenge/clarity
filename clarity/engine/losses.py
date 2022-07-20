@@ -112,5 +112,4 @@ class STOILevelLoss(torch.nn.Module):
         loudness_x = self.measure_loudness(x)
         loudness_s = self.measure_loudness(s)
         LevelLoss = self.alpha * self.cal_mse(loudness_x, loudness_s)
-        STOILoss = self.NegSTOI(x, s).mean()
-        return LevelLoss + STOILoss
+        return LevelLoss + self.NegSTOI(x, s).mean()
