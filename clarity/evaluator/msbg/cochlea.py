@@ -220,7 +220,7 @@ class Cochlea(object):
             smear_params = HL_PARAMS[severity_level]["smear_params"]
             self.smearer = Smearer(*smear_params, fs)
 
-        logging.info(f"Severity level - {severity_level}")
+        logging.info("Severity level - %s", severity_level)
 
     def simulate(self, coch_sig, equiv_0dB_file_SPL):
         """Pass a signal through the cochlea.

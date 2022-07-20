@@ -303,8 +303,8 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
     """
     # weights = np.array(hrir_metadata["weights"])
     matrix = np.array(hrir_metadata["matrix"])
-    logger.info(f"decoding signal with shape {ambisonic_signals.shape}")
-    logger.info(f"Decoding to {matrix.shape[0]} positions")
+    logger.info("decoding signal with shape %s", ambisonic_signals.shape)
+    logger.info("Decoding to %s positions", matrix.shape[0])
 
     # Decode to loudspeaker positions
 

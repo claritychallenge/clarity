@@ -85,7 +85,7 @@ class Renderer:
         """Write a signal as fixed or floating point wav file."""
 
         if fs != self.fs:
-            logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")
+            logging.warning("Sampling rate mismatch: %s with sr=%s.", filename, fs)
             # raise ValueError("Sampling rate mismatch")
 
         if floating_point is False:
@@ -209,7 +209,7 @@ class Renderer:
             interferer_at_ear = self.apply_brir(interferer, interferer_brir)
 
             # Scale interferer to obtain SNR specified in scene description
-            logging.info(f"Scaling interferer to obtain mixture SNR = {snr_dB} dB.")
+            logging.info("Scaling interferer to obtain mixture SNR = %s dB.", snr_dB)
 
             if snr_ref is None:
                 # snr_ref computed for first channel in the list and then
@@ -220,7 +220,7 @@ class Renderer:
                     pre_samples=pre_samples,
                     post_samples=post_samples,
                 )
-                logging.debug(f"Using channel {channel} as reference.")
+                logging.debug("Using channel %s as reference.", channel)
 
             # Apply snr_ref reference scaling to get 0 dB and then scale to target snr_dB
             interferer_at_ear = interferer_at_ear * snr_ref

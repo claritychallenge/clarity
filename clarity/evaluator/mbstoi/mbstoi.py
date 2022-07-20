@@ -74,7 +74,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     # Resample signals to 10 kHz
     if fs_signal != fs:
 
-        logging.debug(f"Resampling signals with sr={fs} for MBSTOI calculation.")
+        logging.debug("Resampling signals with sr=%s for MBSTOI calculation.", fs)
         # Assumes fs_signal is 44.1 kHz
         el = len(xl)
         xl = resample(xl, int(el * (fs / fs_signal) + 1))

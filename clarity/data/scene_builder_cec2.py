@@ -265,7 +265,7 @@ def get_random_interferer_offset(interferer, required_samples):
     masker_nsamples = interferer["nsamples"]
     latest_start = masker_nsamples - required_samples
     if latest_start < 0:
-        log.error(f"Interferer {interferer['ID']} does not has enough samples.")
+        log.error("Interferer %s does not has enough samples.", interferer["ID"])
 
     assert (
         latest_start >= 0
@@ -495,7 +495,7 @@ class SceneBuilder:
         json.dump(self.scenes, open(filename, "w"), indent=2)
 
     def instantiate_scenes(self, dataset):
-        log.info(f"Initialise {dataset} scenes")
+        log.info("Initialise %s scenes", dataset)
         self.initialise_scenes(dataset, **self.scene_datasets)
         log.info("adding targets to scenes")
         self.add_target_to_scene(dataset, **self.target)

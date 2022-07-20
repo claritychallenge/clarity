@@ -64,7 +64,7 @@ class Ear:
             src_correction = f(HZ)
         else:
             logging.error(
-                f"Invalid src position ({src_pos}). Must be one of ff, df or ITU"
+                "Invalid src position (%s). Must be one of ff, df or ITU", src_pos
             )
             raise ValueError("Invalid src position")
         return src_correction
@@ -167,7 +167,7 @@ class Ear:
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
 
-        logging.info(f"Processing {len(chans)} samples")
+        logging.info("Processing %s samples", len(chans))
 
         # Get single channel array and convert to list
         chans = Ear.array_to_list(chans)
@@ -194,7 +194,10 @@ class Ear:
             np.mean(np.power(chans[0][idx], 2.0))
         )
         logging.info(
-            f"Rescaling: leveldBSPL was {leveldBSPL:3.1f} dB SPL, now {new_rms_db:3.1f}dB SPL. Target SPL is {TARGET_SPL:3.1f} dB SPL."
+            "Rescaling: leveldBSPL was %3.1f dB SPL, now %3.1f dB SPL. Target SPL is %3.1f dB SPL.",
+            leveldBSPL,
+            new_rms_db,
+            TARGET_SPL,
         )
 
         # Add calibration signal at target SPL dB

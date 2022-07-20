@@ -70,7 +70,7 @@ class GHAHearingAid:
         # Define cfg filenames
         # Read new file and replace any parameter values necessary
         # Update peaklevel out by adding headroom
-        logging.info(f"Adding {self.ahr} dB headroom")
+        logging.info("Adding %s dB headroom", self.ahr)
 
         peaklevel_in = int(self.equiv0dBSPL)
         peaklevel_out = int(self.equiv0dBSPL + self.ahr)
@@ -98,9 +98,9 @@ class GHAHearingAid:
             outfile_name (str): File in which to store output wav files
             dry_run (bool): perform dry run only
         """
-        logging.info(f"Processing {outfile_name} with listener {listener}")
+        logging.info("Processing %s with listener %s", outfile_name, listener)
 
-        logging.info(f"Audiogram severity is {audiogram.severity}")
+        logging.info("Audiogram severity is %s", audiogram.severity)
         audiogram = audiogram.select_subset_of_cfs(self.audf)
 
         # Get gain table with noisegate correction

@@ -503,7 +503,7 @@ def gainrule_camfit_compr(
         )
         noisegate_slope[:, i] = noisegateslope * np.ones(np.size(sFitmodel_frequencies))
 
-    logging.info(f"Noisegate levels are {noisegate_level}")
+    logging.info("Noisegate levels are %s", noisegate_level)
 
     output = {}
     output["sGt"] = sGt

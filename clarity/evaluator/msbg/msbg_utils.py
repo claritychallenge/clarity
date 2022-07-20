@@ -512,14 +512,14 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
     sig = sig.flatten()
     if winlen != math.floor(winlen):  # whoops on fractional indexing: 7-March 2002
         winlen = math.floor(winlen)
-        logging.warning(f"Window length must be integer: now {winlen}")
+        logging.warning("Window length must be integer: now %s", winlen)
 
     siglen = len(sig)
 
     expected = thr_dB
     # new Dec 2003. Possibly track percentage of frames rather than fixed threshold
     if percent_to_track is not None:
-        logging.info(f"tracking {percent_to_track} percentage of frames")
+        logging.info("tracking %s percentage of frames", percent_to_track)
     else:
         logging.info("tracking fixed threshold")
 
@@ -672,7 +672,7 @@ def write_signal(filename, x, fs, floating_point=True):
     """Write a signal as fixed or floating point wav file."""
 
     if fs != MSBG_FS:
-        logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")
+        logging.warning("Sampling rate mismatch: %s with sr=%s.", filename, fs)
         # raise ValueError("Sampling rate mismatch")
 
     if floating_point is False:
