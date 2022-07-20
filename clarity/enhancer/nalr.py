@@ -5,7 +5,7 @@ import scipy
 import scipy.signal
 
 
-def firwin2(n, f, a, window=None, antisymmetric=None):
+def firwin2(n, f, a, window=None, _antisymmetric=None):
     """FIR filter design using the window method.
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
     Args:
@@ -13,7 +13,7 @@ def firwin2(n, f, a, window=None, antisymmetric=None):
         f (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
         a (ndarray): The filter gains at the frequency sampling points.
         window (string or (string, float), optional): See scipy.firwin2 (default: (None))
-        antisymmetric (bool, optional): Unused but present to main compatability with scipy firwin2.
+        _antisymmetric (bool, optional): Unused but present to main compatability with scipy firwin2.
     Returns:
         ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
     """
