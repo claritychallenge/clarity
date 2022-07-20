@@ -242,11 +242,11 @@ def select_random_interferer(interferers, dataset, required_samples):
     ]
     try:
         interferer = random.choice(filtered_interferer_group)
-    except IndexError:
+    except IndexError as e:
         raise ValueError(
             f"No suitable interferer found for dataset {dataset} and required samples"
             f" {required_samples}"
-        )
+        ) from e
     return interferer
 
 

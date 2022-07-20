@@ -60,9 +60,9 @@ class Renderer:
         """
         try:
             wave_file = SoundFile(filename)
-        except:  # noqa E722
+        except Exception as e:
             # Ensure incorrect error (24 bit) is not generated
-            raise Exception(f"Unable to read {filename}.")
+            raise Exception(f"Unable to read {filename}.") from e
 
         if nchannels != 0 and wave_file.channels != nchannels:
             raise Exception(
