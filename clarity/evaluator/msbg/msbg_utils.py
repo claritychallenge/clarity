@@ -304,7 +304,7 @@ def read_gtf_file(gtf_file):
     # Fix filename if necessary
     dirname = os.path.dirname(os.path.abspath(__file__))
     gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r") as fp:
+    with open(gtf_file, "r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
         if type(data[key]) == list:

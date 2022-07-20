@@ -475,7 +475,7 @@ class MSBGHearingModel(nn.Module):
             )
             bw_broaden_coef = 1
         # GT4Bank = loadmat(GT4Bankfile)
-        with open(GT4Bankfile, "r") as fp:
+        with open(GT4Bankfile, "r", encoding="utf-8") as fp:
             GT4Bank = json.load(fp)
 
         if severe_not_moderate > 0:

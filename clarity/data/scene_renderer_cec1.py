@@ -304,6 +304,7 @@ def main():
         open(
             "/home/tu/datasets/clarity_CEC1_data/clarity_data/metadata/scenes.train.json",
             "r",
+            encoding="utf-8",
         )
     )[0]
 

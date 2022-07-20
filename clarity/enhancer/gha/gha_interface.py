@@ -136,7 +136,7 @@ class GHAHearingAid:
         # Again, only need file name; must immediately close the unused file handle.
         os.close(fd_cfg)
 
-        with open(cfg_filename, "w") as f:
+        with open(cfg_filename, "w", encoding="utf-8") as f:
             f.write(
                 self.create_configured_cfgfile(
                     merged_filename, outfile_name, formatted_sGt, cfg_template
