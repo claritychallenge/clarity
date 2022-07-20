@@ -307,7 +307,7 @@ def read_gtf_file(gtf_file):
     with open(gtf_file, "r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
-        if type(data[key]) == list:
+        if isinstance(data[key], list):
             data[key] = np.array(data[key])
     return data
 
@@ -330,7 +330,7 @@ def firwin2(n, f, a, window=None, _antisymmetric=None):
 
     """
     window_shape = None
-    if type(window) == tuple:
+    if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
         window_type = window

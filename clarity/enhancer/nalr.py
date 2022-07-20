@@ -19,7 +19,7 @@ def firwin2(n, f, a, window=None, _antisymmetric=None):
         ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
     """
     window_shape = None
-    if type(window) == tuple:
+    if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
         window_type = window
