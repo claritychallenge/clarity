@@ -200,7 +200,7 @@ class Ear:
         # Add calibration signal at target SPL dB
         if add_calibration is True:
             if self.calibration_signal is None:
-                self.calibration_signal = Ear.make_calibration_signal(REF_RMS_DB)
+                self.calibration_signal = self.make_calibration_signal(REF_RMS_DB)
             chans = [
                 np.concatenate(
                     (self.calibration_signal[0], x, self.calibration_signal[1])
