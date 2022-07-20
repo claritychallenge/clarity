@@ -256,7 +256,7 @@ class TemporalConvNet(nn.Module):
         bottleneck_conv1x1 = nn.Conv1d(N_spec + N_spat, B, 1, bias=False)
         # [M, B, K] -> [M, B, K]
         repeats = []
-        for r in range(R):
+        for _r in range(R):
             blocks = []
             for x in range(X):
                 dilation = 2**x
@@ -290,7 +290,7 @@ class TemporalConvNet(nn.Module):
         returns:
             est_mask: [M, C, N, K]
         """
-        M, N, K = mixture_w.size()
+        M, _N, K = mixture_w.size()
         score = self.network(mixture_w)  # [M, N, K] -> [M, C*N, K]
         score = score.view(M, self.C, self.N_spec, K)  # [M, C*N, K] -> [M, C, N, K]
         if self.mask_nonlinear == "softmax":

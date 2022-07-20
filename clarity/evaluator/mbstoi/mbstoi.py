@@ -96,7 +96,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
 
     # STDFT and filtering
     # Get 1/3 octave band matrix
-    [H, cf, fids, freq_low, freq_high] = thirdoct(
+    [H, cf, fids, _freq_low, _freq_high] = thirdoct(
         fs, K, J, mn
     )  # (fs, nfft, num_bands, min_freq)
     cf = 2 * math.pi * cf  # This is now the angular frequency in radians per sec

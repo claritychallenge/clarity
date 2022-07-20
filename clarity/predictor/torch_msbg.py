@@ -724,7 +724,7 @@ class MSBGHearingModel(nn.Module):
             pass_n = torchaudio.functional.lfilter(
                 x, self.gtn_denoms[ixch, :], self.gtn_nums[ixch, :]
             )
-            for ixg in range(self.ngamma - 1):
+            for _ixg in range(self.ngamma - 1):
                 pass_n = torchaudio.functional.lfilter(
                     pass_n, self.gtn_denoms[ixch, :], self.gtn_nums[ixch, :]
                 )

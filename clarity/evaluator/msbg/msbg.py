@@ -184,7 +184,7 @@ class Ear:
         REF_RMS_DB = CALIB_DB_SPL - equiv_0dB_SPL
 
         # Measure RMS where 3rd arg is dB_rel_rms (how far below)
-        calculated_rms, idx, rel_dB_thresh, active = measure_rms(chans[0], fs, -12)
+        calculated_rms, idx, _rel_dB_thresh, _active = measure_rms(chans[0], fs, -12)
 
         # Rescale input data and check level after rescaling
         # This is to ensure that the following processing steps are applied correctly
