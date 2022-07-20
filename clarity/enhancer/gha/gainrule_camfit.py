@@ -142,8 +142,6 @@ def freq_interp_sh(f_in, y_in, f):
         ndarray: interpolated levels corresponding to filterbank frequencies
 
     """
-    import numpy as np
-    from scipy.interpolate import interp1d
 
     # Checks
     if np.size(f[0]) > 1:
