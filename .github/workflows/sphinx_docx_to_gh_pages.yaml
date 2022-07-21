@@ -4,7 +4,7 @@ name: Sphinx docs to gh-pages
 on:
   push:
     branches:
-      - master
+      - main
       - ns-rse/16-documentation
 
 workflow_dispatch:        # Un comment line if you also want to trigger action manually
@@ -27,10 +27,8 @@ jobs:
       - name: Running Sphinx to gh-pages Action
         uses: ns-rse/action-sphinx-docs-to-gh-pages@main
         with:
-          # When testing set this branch to your branch, when working switch to master. It WILL fail if not
-          # defined as it defaults to 'main'.
-          branch: ns-rse/16-documentation
+          branch: ns-rse/16-documentation # Test on branch, switch to main when working
           dir_docs: docs
-          sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb
+          sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb'
           sphinxapiopts: '--separate -o . ../'
           sphinxopts: ''
