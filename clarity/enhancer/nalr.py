@@ -1,19 +1,24 @@
 import math
+from typing import Union
 
 import numpy as np
 import scipy
 import scipy.signal
 
 
-def firwin2(n, f, a, window=None, antisymmetric=None):
+def firwin2(
+    n: int, f: np.ndarray, a: np.ndarray, window: Union[str, float] = None, antisymmetric: bool = None
+) -> np.ndarray:
     """FIR filter design using the window method.
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
+
     Args:
         n (int): The number of taps in the FIR filter.
         f (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
         a (ndarray): The filter gains at the frequency sampling points.
         window (string or (string, float), optional): See scipy.firwin2 (default: (None))
         antisymmetric (bool, optional): Unused but present to main compatability with scipy firwin2.
+
     Returns:
         ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
     """
@@ -36,18 +41,20 @@ def firwin2(n, f, a, window=None, antisymmetric=None):
     return b
 
 
-def fir2(nn, ff, aa, npt=None):
+def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray:
     """FIR arbitrary shape filter design using the frequency sampling method.
     Translation of MATLAB fir2.
+
     Args:
         nn (int): Order
-        ff (ndarray): Frequency breakpoints (0 < F < 1) where 1 is Nyquist rate.
+        ff (np.ndarray): Frequency breakpoints (0 < F < 1) where 1 is Nyquist rate.
                         First and last elements must be 0 and 1 respectively
-        aa (ndarray): Magnitude breakpoints
+        aa (np.ndarray): Magnitude breakpoints
         npt (int, optional): Number of points for freq response interpolation
             (default: max (smallest power of 2 greater than nn, 512))
+
     Returns:
-        ndarray: nn + 1 filter coefficients
+        np.ndarray: nn + 1 filter coefficients
     """
     # Work with filter length instead of filter order
     nn += 1
@@ -124,6 +131,7 @@ class NALR:
         """
         Args:
             HL: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz
+
         Returns:
             NAL-R FIR filter
             delay
@@ -142,15 +150,9 @@ class NALR:
             gdB = np.clip(gdB, a_min=0, a_max=None)
 
             # Design the linear-phase FIR filter
-            fv = np.append(
-                np.append(0, self.aud), self.fmax
-            )  # Frequency vector for the interpolation
-            cfreq = (
-                np.linspace(0, self.nfir, self.nfir + 1) / self.nfir
-            )  # Uniform frequency spacing from 0 to 1
-            gdBv = np.append(
-                np.append(gdB[0], gdB), gdB[-1]
-            )  # gdB vector for the interpolation
+            fv = np.append(np.append(0, self.aud), self.fmax)  # Frequency vector for the interpolation
+            cfreq = np.linspace(0, self.nfir, self.nfir + 1) / self.nfir  # Uniform frequency spacing from 0 to 1
+            gdBv = np.append(np.append(gdB[0], gdB), gdB[-1])  # gdB vector for the interpolation
             interpf = scipy.interpolate.interp1d(fv, gdBv)
             gain = interpf(self.fmax * cfreq)
             glin = np.power(10, gain / 20.0)
@@ -164,6 +166,7 @@ class NALR:
         Args:
             nalr: built NAL-R FIR filter
             wav: one dimensional wav signal
+
         Returns:
             amplified signal
         """

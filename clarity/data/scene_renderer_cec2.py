@@ -23,30 +23,32 @@ SPEED_SOUND = 344  # in m/s at 21 degrees C
 FS = 44100
 
 
-def two_point_rotation(rotation, origin, duration):
+def two_point_rotation(rotation: dict, origin: np.ndarray, duration: int) -> np.ndarray:
     """Perform rotation defined by two control points.
+
     Args:
         rotation (dict): rotation object from scene definition
         origin (ndarray): origin view vector
         duration (int): total number of samples to generate for
+
     Returns:
-        ndarray: sequence of theta values per sample
+        np.ndarray: sequence of theta values per sample
     """
     angle_origin = np.arctan2(origin[1], origin[0])
     angles = [math.radians(r["angle"]) - angle_origin for r in rotation]
     logger.info(f"angles={angles}")
-    theta = hoa.rotation_vector(
-        angles[0], angles[1], duration, rotation[0]["sample"], rotation[1]["sample"]
-    )
+    theta = hoa.rotation_vector(angles[0], angles[1], duration, rotation[0]["sample"], rotation[1]["sample"])
     return theta
 
 
-def pad_signal_start_end(signal, delay, duration):
+def pad_signal_start_end(signal: np.array, delay: int, duration: int) -> np.array:
     """Pad signal at start and end.
+
     Args:
         signal (array-like): ambisonic signals
         delay (int): number of zeros to pad at start
         duration (int): desired duration after start and end padding
+
     Returns:
         array-like: padded signals
     """
@@ -64,6 +66,7 @@ def pad_signal_start_end(signal, delay, duration):
 
 class SceneRenderer:
     """Ambisonic scene rendering class.
+
     Contains methods for generating signals from pseudorandom datasets for CEC2
     """
 
@@ -77,8 +80,14 @@ class SceneRenderer:
         channel_norms,
     ):
         """Initialise SceneRenderer.
+
         Args:
-            cfg (dict): complete configuration dictionary
+            paths ():
+            metadata ():
+            ambisonic_order ():
+            equalise_loudness ():
+            reference_channel ():
+            channel_norms ():
         """
         self.paths = paths
         self.metadata = metadata
@@ -97,58 +106,79 @@ class SceneRenderer:
         # Fixed hrir metadata for hrir sets being used
         self.metadata.hrir_metadata = json.load(open(self.metadata.hrir_metadata))
 
-    def make_interferer_filename(self, interferer, dataset):
-        """Construct filename for an interferer."""
+    def make_interferer_filename(self, interferer: dict, dataset) -> str:
+        """Construct filename for an interferer.
+
+        Args:
+            interferer (dict):
+
+        Returns:
+            str: Filename for an interferer.
+        """
         data_type = interferer["type"]
         stem = self.paths.interferers.format(dataset=dataset, type=data_type)
         return f"{stem}/{interferer['name']}"
 
     def prepare_interferer_paths(self, scene):
-        """Make list of full path filenames for interferers in scene."""
+        """Make list of full path filenames for interferers in scene.
+
+        Args:
+            scene ():
+
+        Returns:
+            list: List of full path filenames for interferers in scene.
+        """
         logger.info(f"number of interferers: {len(scene['interferers'])}")
         interferer_filenames = [
-            self.make_interferer_filename(interferer, scene["dataset"])
-            for interferer in scene["interferers"]
+            self.make_interferer_filename(interferer, scene["dataset"]) for interferer in scene["interferers"]
         ]
         return interferer_filenames
 
     def load_interferer_hoairs(self, scene):
-        """Loads and returns the interferer hoa irs for given scene."""
+        """Loads and returns the interferer hoa irs for given scene.
+
+        Args:
+            scene ():
+
+        Returns:
+            list: List of inferior hoa irs for the given scene.
+        """
         room_id = scene["room"]
         n_interferers = len(scene["interferers"])
 
         hoair_path = self.paths.hoairs.format(dataset=scene["dataset"])
-        interferer_hoairs = [
-            f"{hoair_path}/HOA_{room_id}_i{n}.wav" for n in range(1, n_interferers + 1)
-        ]
+        interferer_hoairs = [f"{hoair_path}/HOA_{room_id}_i{n}.wav" for n in range(1, n_interferers + 1)]
         irs = [wavfile.read(filename)[1] for filename in interferer_hoairs]
         return irs
 
     def load_interferer_signals(self, scene):
-        """Loads and returns interferer signals for given scene."""
+        """Loads and returns interferer signals for given scene.
+
+        Args:
+            scene ():
+
+        Returns:
+            list: List of signals.
+        """
         interferer_audio_paths = self.prepare_interferer_paths(scene)
         # NOTE: all interferer signals are assumed to by at the Clarity fs = 44100 Hz
-        signals = [
-            librosa.load(signal_path, sr=None)[0]
-            for signal_path in interferer_audio_paths
-        ]
+        signals = [librosa.load(signal_path, sr=None)[0] for signal_path in interferer_audio_paths]
         signal_starts = [interferer["offset"] for interferer in scene["interferers"]]
-        signal_lengths = [
-            interferer["time_end"] - interferer["time_start"]
-            for interferer in scene["interferers"]
-        ]
+        signal_lengths = [interferer["time_end"] - interferer["time_start"] for interferer in scene["interferers"]]
 
-        signals = [
-            signal[ss : (ss + sl)]
-            for (signal, ss, sl) in zip(signals, signal_starts, signal_lengths)
-        ]
+        signals = [signal[ss : (ss + sl)] for (signal, ss, sl) in zip(signals, signal_starts, signal_lengths)]
 
         return signals
 
     def make_hoa_target_anechoic(self, target, room):
         """Make the HOA anechoic target.
+
         Applies an anechoic HOA IR that models a source straight in front of the listener.
         The signal is delayed to match the propagation delay of the room.
+
+        Args:
+            target ():
+            room (dict):
         """
         # TODO: The delay does not appear to correctly align the signals as expected
         t_pos = np.array(room["target"]["position"])
@@ -185,23 +215,18 @@ class SceneRenderer:
         )
         n_chans = (self.ambisonic_order + 1) ** 2
         anechoic_ir = anechoic_ir[:n_chans]
-        hoa_target_anechoic = hoa.ambisonic_convolve(
-            target, anechoic_ir, self.ambisonic_order
-        )
+        hoa_target_anechoic = hoa.ambisonic_convolve(target, anechoic_ir, self.ambisonic_order)
         # prepend with zeros to match the propagation delay
-        hoa_target_anechoic = np.vstack(
-            (np.zeros((samples_delay, n_chans)), hoa_target_anechoic)
-        )
+        hoa_target_anechoic = np.vstack((np.zeros((samples_delay, n_chans)), hoa_target_anechoic))
         logger.info(f"{anechoic_ir.shape} {target.shape} {hoa_target_anechoic.shape}")
 
         return hoa_target_anechoic
 
-    def generate_hoa_signals(self, scene):
+    def generate_hoa_signals(self, scene: dict) -> tuple:
         """Generates HOA signals.
+
         Args:
             scene (dict): scene definitions
-            ir_path (string): impulse response paths
-            out_path (string): output path
         """
         room_id = scene["room"]
         room = self.room_dict[room_id]
@@ -223,9 +248,7 @@ class SceneRenderer:
 
         hoa_target = hoa.ambisonic_convolve(target, ir, self.ambisonic_order)
 
-        hoa_target = pad_signal_start_end(
-            hoa_target, scene["target"]["time_start"], scene["duration"]
-        )
+        hoa_target = pad_signal_start_end(hoa_target, scene["target"]["time_start"], scene["duration"])
 
         # Make anechoic HOA target signal
         hoa_target_anechoic = self.make_hoa_target_anechoic(target, room)
@@ -239,8 +262,7 @@ class SceneRenderer:
         interferers = self.load_interferer_signals(scene)
 
         hoa_interferers = [
-            hoa.ambisonic_convolve(signal, ir, order=self.ambisonic_order)
-            for (signal, ir) in zip(interferers, irs)
+            hoa.ambisonic_convolve(signal, ir, order=self.ambisonic_order) for (signal, ir) in zip(interferers, irs)
         ]
 
         padded_interferers = [
@@ -253,9 +275,7 @@ class SceneRenderer:
 
         flat_hoa_interferers = sum(padded_interferers)
 
-        logger.info(
-            f"hoa_target.shape={hoa_target.shape}; flat_hoa_interferers.shape={flat_hoa_interferers.shape}"
-        )
+        logger.info(f"hoa_target.shape={hoa_target.shape}; flat_hoa_interferers.shape={flat_hoa_interferers.shape}")
 
         th = two_point_rotation(
             scene["listener"]["rotation"],
@@ -273,8 +293,9 @@ class SceneRenderer:
             th,
         )
 
-    def save_signal_16bit(self, filename, signal, norm=1.0):
+    def save_signal_16bit(self, filename: str, signal: np.array, norm: float = 1.0):
         """Saves a signal to a 16 bit wav file.
+
         Args:
             filename (string): filename
             signal (np.array): signal
@@ -289,9 +310,15 @@ class SceneRenderer:
         wavfile.write(filename, FS, signal_16)
 
     def generate_binaural_signals(
-        self, scene, hoa_target, hoa_interferer, hoa_target_anechoic, out_path
+        self,
+        scene: dict,
+        hoa_target: np.ndarray,
+        hoa_interferer: np.ndarray,
+        hoa_target_anechoic: np.ndarray,
+        out_path: str,
     ):
         """Generate and write binaural signals.
+
         Args:
             scene (dict): scene definitions
             hoa_target (ndarray): target signal in HOA domain
@@ -302,21 +329,12 @@ class SceneRenderer:
         ref_chan = self.reference_channel  # channel at which SNR is computed
 
         # Load all hrirs - one for each microphone pair
-        hrir_filenames = [
-            f"{self.paths.hrirs}/{name}.mat"
-            for name in scene["listener"]["hrir_filename"]
-        ]
+        hrir_filenames = [f"{self.paths.hrirs}/{name}.mat" for name in scene["listener"]["hrir_filename"]]
         hrirs = [loadmat(hrir_filename) for hrir_filename in hrir_filenames]
 
         # Target and (flattened) interferer mixed down to binaural using each set of hrirs
-        targets = [
-            hoa.binaural_mixdown(hoa_target, hrir, self.metadata.hrir_metadata)
-            for hrir in hrirs
-        ]
-        interferers = [
-            hoa.binaural_mixdown(hoa_interferer, hrir, self.metadata.hrir_metadata)
-            for hrir in hrirs
-        ]
+        targets = [hoa.binaural_mixdown(hoa_target, hrir, self.metadata.hrir_metadata) for hrir in hrirs]
+        interferers = [hoa.binaural_mixdown(hoa_interferer, hrir, self.metadata.hrir_metadata) for hrir in hrirs]
 
         target_anechoic = hoa.binaural_mixdown(
             hoa_target_anechoic,
@@ -345,22 +363,17 @@ class SceneRenderer:
         norms = self.channel_norms
         out_path = out_path.format(dataset=scene["dataset"])
         file_stem = f"{out_path}/{scene['scene']}"
-        for channel, (t, i, m, norm) in enumerate(
-            zip(targets, interferers, mix, norms)
-        ):
+        for channel, (t, i, m, norm) in enumerate(zip(targets, interferers, mix, norms)):
             for sig, sig_type in zip([t, i, m], ["target", "interferer", "mix"]):
-                self.save_signal_16bit(
-                    f"{file_stem}_{sig_type}_CH{channel}.wav", sig, norm
-                )
+                self.save_signal_16bit(f"{file_stem}_{sig_type}_CH{channel}.wav", sig, norm)
 
         # Save the anechoic reference signal. Level normalised to abs max 1.0
         norm = np.max(np.abs(target_anechoic))
-        self.save_signal_16bit(
-            f"{file_stem}_target_anechoic_CH{ref_chan}.wav", target_anechoic, norm
-        )
+        self.save_signal_16bit(f"{file_stem}_target_anechoic_CH{ref_chan}.wav", target_anechoic, norm)
 
-    def render_scenes(self, scenes):
+    def render_scenes(self, scenes: dict):
         """Renders scenes.
+
         Args:
             scenes (dict): scene definitions
         """
@@ -377,12 +390,8 @@ class SceneRenderer:
 
             # Save the head rotation signal
             head_turn = (np.mod(head_turn, 2 * np.pi) - np.pi) / np.pi
-            file_stem = (
-                output_path.format(dataset=scene["dataset"]) + "/" + scene["scene"]
-            )
+            file_stem = output_path.format(dataset=scene["dataset"]) + "/" + scene["scene"]
             wavfile.write(f"{file_stem}_hr.wav", 44100, head_turn)
 
             # Stage 2: Mix down to the binaural domain
-            self.generate_binaural_signals(
-                scene, target, interferers, anechoic, output_path
-            )
+            self.generate_binaural_signals(scene, target, interferers, anechoic, output_path)
