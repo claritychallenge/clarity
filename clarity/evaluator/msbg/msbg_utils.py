@@ -312,7 +312,7 @@ def read_gtf_file(gtf_file):
     return data
 
 
-def firwin2(n, f, a, window=None, _antisymmetric=None):
+def firwin2(n, f, a, window=None, antisymmetric=None):  # pylint: disable=W0613
     """FIR filter design using the window method.
 
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -552,8 +552,7 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
             inactive_ix = inactive_ix + n_bins[ix]
             if inactive_ix > inactive_bins:
                 break
-            else:
-                ix_count += 1
+            ix_count += 1
         if ix == 1:
             logging.warning("Counted every bin.........")
         elif ix == n_levels:
@@ -650,7 +649,7 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
         # Ensure incorrect error (24 bit) is not generated
         raise Exception(f"Unable to read {filename}.") from e
 
-    if nchannels != 0 and wave_file.channels != nchannels:
+    if nchannels not in (0, wave_file.channels):
         raise Exception(
             f"Wav file ({filename}) was expected to have {nchannels} channels."
         )

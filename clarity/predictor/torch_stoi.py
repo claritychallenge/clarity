@@ -102,9 +102,8 @@ class NegSTOILoss(nn.Module):
         """
         if targets.shape != est_targets.shape:
             raise RuntimeError(
-                "targets and est_targets should have "
-                "the same shape, found {} and "
-                "{}".format(targets.shape, est_targets.shape)
+                "targets and est_targets should have the same shape,"
+                f"found {targets.shape} and {est_targets.shape}"
             )
         # Compute STOI loss without batch size.
         if targets.ndim == 1:

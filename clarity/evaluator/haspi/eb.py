@@ -427,8 +427,7 @@ def InputAlign(x, y):
     nx1 = above_threshold[-1]
 
     # Prune the sequences to remove the leading and trailing zeros
-    if nx1 > ny:
-        nx1 = ny
+    nx1 = min(nx1, ny)
     xp = x[nx0 : nx1 + 1]
     yp = y[nx0 : nx1 + 1]
 
@@ -777,8 +776,7 @@ def IHCadapt(xdB, xBM, delta, fsamp):
     """
     # Test the amount of overshoot
     dsmall = 1.0001
-    if delta < dsmall:
-        delta = dsmall
+    delta = max(delta, dsmall)
 
     # Initialize adaptation time constants
     tau1 = 2  # Rapid adaptation in msec

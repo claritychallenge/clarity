@@ -33,7 +33,7 @@ class System(pl.LightningModule):
         """
         return self.model(*args, **kwargs)
 
-    def common_step(self, batch, _batch_nb, _train=True):
+    def common_step(self, batch, batch_nb, train=True):  # pylint: disable=W0613
         """Common forward step between training and validation.
         The function of this method is to unpack the data given by the loader,
         forward the batch through the model and compute the loss.

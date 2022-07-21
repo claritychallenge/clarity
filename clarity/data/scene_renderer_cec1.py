@@ -1,3 +1,4 @@
+import json
 import logging
 import math
 import os
@@ -65,7 +66,7 @@ class Renderer:
             # Ensure incorrect error (24 bit) is not generated
             raise Exception(f"Unable to read {filename}.") from e
 
-        if nchannels != 0 and wave_file.channels != nchannels:
+        if nchannels not in (0, wave_file.channels):
             raise Exception(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
@@ -299,7 +300,6 @@ def check_scene_exists(scene, output_path, num_channels):
 
 
 def main():
-    import json
 
     scene = json.load(
         open(

@@ -152,7 +152,7 @@ class MSBGHearingModel(nn.Module):
         src_posn="ff",
         kernel_size=1025,
     ):
-        super(MSBGHearingModel, self).__init__()
+        super().__init__()
         self.sr = sr
         self.spl_cali = spl_cali
         self.src_posn = src_posn
@@ -820,7 +820,7 @@ class torchloudnorm(nn.Module):
         overlap=0.75,
         gamma_a=-70,
     ):
-        super(torchloudnorm, self).__init__()
+        super().__init__()
         self.sr = sr
         self.norm_lufs = norm_lufs
         self.kernel_size = kernel_size

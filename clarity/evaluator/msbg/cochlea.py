@@ -178,7 +178,7 @@ def recruitment(coch_sig, envelope, SPL_equiv_0dB, expansion_ratios, eq_loud_db)
     return coch_sig
 
 
-class Cochlea(object):
+class Cochlea:
     """Simulate the cochlea.
 
     Includes simulation of effects of bandwidth broadening (smearing) and recruitment.

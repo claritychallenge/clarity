@@ -374,8 +374,7 @@ def generate_rotation(
     start_offset = random.uniform(*relative_start_time_range)
     duration = int(random.gauss(duration_mean, duration_sd))
     start_time = scene["target"]["time_start"] + start_offset
-    if start_time < 0:
-        start_time = 0
+    start_time = max(start_time, 0)
     end_time = start_time + duration
 
     # Head initially offset to left or right at random
@@ -606,7 +605,7 @@ class SceneBuilder:
         interferers_noise = json.load(open(noise_interferers, "r", encoding="utf-8"))
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
-        interferer_by_type = dict()
+        interferer_by_type = {}
         for interferer in interferers_noise:
             interferer_by_type.setdefault(interferer["class"], []).append(interferer)
         interferers_noise = list(interferer_by_type.values())

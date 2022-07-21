@@ -195,7 +195,7 @@ class GHAHearingAid:
             # Ensure incorrect error (24 bit) is not generated
             raise Exception(f"Unable to read {filename}.") from e
 
-        if nchannels != 0 and wave_file.channels != nchannels:
+        if nchannels not in (0, wave_file.channels):
             raise Exception(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )

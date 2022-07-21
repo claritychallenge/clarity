@@ -8,7 +8,7 @@ EPS = 1e-8
 
 class AudiometricFIR(nn.Module):
     def __init__(self, sr=44100, nfir=220):
-        super(AudiometricFIR, self).__init__()
+        super().__init__()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.window_size = nfir + 1
         self.padding = nfir // 2
