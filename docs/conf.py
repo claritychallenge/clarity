@@ -16,6 +16,7 @@ import os
 import sys
 
 import sphinx_rtd_theme
+import clarity
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -32,7 +33,7 @@ author = "pyclarity authors"
 # The short X.Y version
 version = ""
 # The full version, including alpha/beta/rc tags
-release = "0.0.1"
+release = clarity.__version__
 
 
 # -- General configuration ---------------------------------------------------

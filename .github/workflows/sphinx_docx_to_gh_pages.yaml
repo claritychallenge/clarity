@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - ns-rse/16-documentation
 
 # workflow_dispatch:        # Un comment line if you also want to trigger action manually
 
@@ -28,7 +29,7 @@ jobs:
         with:
           # When testing set this branch to your branch, when working switch to master. It WILL fail if not
           # defined as it defaults to 'main'.
-          branch: master
+          branch: [master, ns-rse/16-documentation]
           dir_docs: docs
           sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb
           sphinxapiopts: '--separate -o . ../'
