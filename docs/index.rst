@@ -1,4 +1,4 @@
-Welcome to Clarity's documentation!
+Welcome to pyClarity's documentation!
 =====================================
 
 .. toctree::

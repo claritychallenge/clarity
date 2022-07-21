@@ -1,4 +1,4 @@
-# Contributing to pypyClarity
+# Contributing to pyClarity
 
 We welcome and encourage you to contribute to the development of the pyClarity code base. These guidelines outline how you
 can do so.
