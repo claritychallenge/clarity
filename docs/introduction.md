@@ -4,24 +4,24 @@ pyClarity is core data used across all [Clarity Challenges](https://claritychall
 toolkits and systems for working with the challenge data. It can be used for scene generation, hearing aid modelling and
 HASPI speech intelligibility model to evaluate solutions.
 
-# Tutorials
+## Tutorials
 
 A series of Jupyter Notebooks are available on Colab to help you learn how to use the tools made available within this
 package. To access these please refer to the [Clarity Tutorials](https://claritychallenge.org/tutorials).
 
-# Challenges
+## Challenges
 
 * [2nd Clarity Enhancement Challenge (CEC2)](https://claritychallenge.org/docs/cec2/cec2_intro) ([GitHub Recipes](https://github.com/claritychallenge/clarity/tree/main/recipes/cec2))
 * [1st Clarity Enhancement Challenge (CEC1)](https://claritychallenge.org/docs/cec1/cec1_intro) ([GitHub Recipes](https://github.com/claritychallenge/clarity/tree/main/recipes/cec1))
 * [1st Clarity Prediction Challenge (CPC1)](https://claritychallenge.org/docs/cpc1/cpc1_intro) ([GitHub Recipes](https://github.com/claritychallenge/clarity/tree/main/recipes/cpc1))
 
-# Workshops
+## Workshops
 
 * [Clarity 2021](https://claritychallenge.org/clarity2021-workshop/)
 * [Clarity 2022](https://claritychallenge.org/clarity2022-workshop/)
 
 
-# Tools
+## Tools
 
 A number of tools are included in this repository
 

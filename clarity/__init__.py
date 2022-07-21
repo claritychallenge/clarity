@@ -1,4 +1,4 @@
 """pyClarity"""
-from importlib import metadata
+from importlib_metadata import metadata
 
-__version__ = metadata.version("clarity")
+__version__ = metadata("clarity").get("version")
