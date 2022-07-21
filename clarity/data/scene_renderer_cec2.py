@@ -159,9 +159,7 @@ class SceneRenderer:
         l_pos = np.array(room["listener"]["position"])
         distance = np.linalg.norm(t_pos - l_pos)
         samples_delay = int(distance / SPEED_SOUND * FS)
-        logger.info(
-            "%s, %s", {room["target"]["position"]}, {room["listener"]["position"]}
-        )
+        logger.info("%s, %s", room["target"]["position"], room["listener"]["position"])
         logger.info("target signal delay = %s samples %s m)", samples_delay, distance)
 
         # Values below for a source directly ahead of the listener
