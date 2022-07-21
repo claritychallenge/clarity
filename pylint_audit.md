@@ -8,81 +8,35 @@ Pylint can be asked to report a specific error with e.g.,
 
 Code currently rate 6.55
 
-## Error - all done
-
-150  E1101 - : Module 'torch' has no 'tensor' member;
-1  E1120
-
 ## Warning - all done
 
-27  W1203 - Use lazy % formatting in logging functions
-14  W1514
-7  W0612
-6  W0511
-5  W0622
-4  W0707
-4  W0613
+6  W0511 - TODO messages in code
 4  W0221 - Variadics removed in overridden 'System.validation_step' method (arguments-differ)
-3  W0621
-2  W0404
-2  W0105
-1  W1510
-1  W1114
-1  W0702
-1  W0235
-1  W0201
+1  W0703 - Catching too general exception Exception (broad-except)
 
 ## Convention
 
-777  C0103 - variable names
 49  C0116 - Missing function or method docstring (missing-function-docstring)
-41  C0301 - Line too long (107/100) (line-too-long)
 25  C0114 - missing-module-docstring
 17  C0115 - missing-class-docstring
-3  C0415 - Import outside toplevel (json) (import-outside-toplevel)
-3  C0209 - consider using f-string
-3  C0200 - consider using enumerate
-3  C0123 - unidiomatic type check
+1  C0200 - consider using enumerate
+1  C0301 - line too long (is an URL so awkward to split)
 
 ## Refactor
 
-39  R0801 - duplicate code
+39  R0801 - duplicate code (!!)
 35  R0914 - Too many local variables
-35  R0913 -  Too many arguments (6/5) (too-many-arguments)
-17  R1725 - super-with-arguments
+15  R0913 - Too many arguments
 10  R1732 - consider using with
 9  R0902 - too many instance attributes
-5  R0915
-4  R0201
-3  R1714
-3  R0903
-3  R1705
-3  R0402
-2  R1735
-2  R1731
-1  R1730
-1  R1724
-1  R1723
-1  R1721
-1  R0912
-1  R0901
-1  R0205
-
-
----
-clarity/evaluator/msbg/msbg_utils.py:553:12: R1723: Unnecessary "else" after "break" (no-else-break)
-clarity/evaluator/msbg/msbg_utils.py:653:7: R1714: Consider merging these comparisons with "in" to 'nchannels not in (0, wave_file.channels)' (consider-using-in)
-clarity/evaluator/msbg/msbg_utils.py:463:13: E1123: Unexpected keyword argument 'antisymmetric' in function call (unexpected-keyword-arg)
-clarity/evaluator/msbg/cochlea.py:181:0: R0205: Class 'Cochlea' inherits from object, can be safely removed from bases in python3 (useless-object-inheritance)
-clarity/evaluator/mbstoi/mbstoi_utils.py:134:12: R1724: Unnecessary "else" after "continue" (no-else-continue)
-clarity/evaluator/mbstoi/mbstoi_utils.py:229:4: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
-clarity/evaluator/haspi/eb.py:430:4: R1730: Consider using 'nx1 = min(nx1, ny)' instead of unnecessary if block (consider-using-min-builtin)
-clarity/evaluator/haspi/eb.py:780:4: R1731: Consider using 'delta = max(delta, dsmall)' instead of unnecessary if block (consider-using-max-builtin)
-clarity/enhancer/compressor.py:46:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
-clarity/enhancer/gha/gha_utils.py:76:10: R1735: Consider using {} instead of dict() (use-dict-literal)
-clarity/enhancer/gha/gha_interface.py:198:11: R1714: Consider merging these comparisons with "in" to 'nchannels not in (0, wave_file.channels)' (consider-using-in)
-clarity/enhancer/dnn/mc_conv_tasnet.py:437:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
-
+5  R0915 - Too many statements
+4  R0201 - no self use
+3  R0402 - consider using from import
+3  R0903 - too few public methods
+2  R1705 - no else return
+1  R0901 - too many ancestors
+1  R0912 - too many branches
+1  R1721 - consider swap variables
 
 
 
@@ -201,25 +155,22 @@ clarity/enhancer/dnn/mc_conv_tasnet.py:309:0: C0115: Missing class docstring (mi
 clarity/enhancer/dnn/mc_conv_tasnet.py:310:4: R0913: Too many arguments (9/7) (too-many-arguments)
 clarity/enhancer/dnn/mc_conv_tasnet.py:354:0: C0115: Missing class docstring (missing-class-docstring)
 clarity/enhancer/dnn/mc_conv_tasnet.py:355:4: R0913: Too many arguments (9/7) (too-many-arguments)
-clarity/enhancer/dnn/mc_conv_tasnet.py:422:4: R1705: Unnecessary "elif" after "return" (no-else-return)
 clarity/enhancer/dnn/mc_conv_tasnet.py:442:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/enhancer/dnn/mc_conv_tasnet.py:468:4: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module clarity.enhancer.dsp.filter
 clarity/enhancer/dsp/filter.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 clarity/enhancer/dsp/filter.py:3:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
 clarity/enhancer/dsp/filter.py:9:0: C0115: Missing class docstring (missing-class-docstring)
-clarity/enhancer/dsp/filter.py:11:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
 clarity/enhancer/dsp/filter.py:23:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
 clarity/enhancer/dsp/filter.py:51:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/enhancer/dsp/filter.py:51:4: R0914: Too many local variables (19/15) (too-many-locals)
 ************* Module clarity.predictor.torch_stoi
 clarity/predictor/torch_stoi.py:18:0: R0902: Too many instance attributes (12/7) (too-many-instance-attributes)
 clarity/predictor/torch_stoi.py:91:4: R0914: Too many local variables (23/15) (too-many-locals)
-clarity/predictor/torch_stoi.py:105:16: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
-clarity/predictor/torch_stoi.py:209:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/predictor/torch_stoi.py:244:0: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/predictor/torch_stoi.py:250:0: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/predictor/torch_stoi.py:258:0: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/predictor/torch_stoi.py:208:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/predictor/torch_stoi.py:243:0: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/predictor/torch_stoi.py:249:0: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/predictor/torch_stoi.py:257:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module clarity.predictor.torch_msbg
 clarity/predictor/torch_msbg.py:9:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
 clarity/predictor/torch_msbg.py:34:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -228,7 +179,6 @@ clarity/predictor/torch_msbg.py:95:0: C0116: Missing function or method docstrin
 clarity/predictor/torch_msbg.py:145:0: C0115: Missing class docstring (missing-class-docstring)
 clarity/predictor/torch_msbg.py:145:0: R0902: Too many instance attributes (33/7) (too-many-instance-attributes)
 clarity/predictor/torch_msbg.py:146:4: R0914: Too many local variables (77/15) (too-many-locals)
-clarity/predictor/torch_msbg.py:155:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
 clarity/predictor/torch_msbg.py:146:4: R0912: Too many branches (17/12) (too-many-branches)
 clarity/predictor/torch_msbg.py:146:4: R0915: Too many statements (150/50) (too-many-statements)
 clarity/predictor/torch_msbg.py:648:4: C0116: Missing function or method docstring (missing-function-docstring)
@@ -240,21 +190,18 @@ clarity/predictor/torch_msbg.py:802:4: C0116: Missing function or method docstri
 clarity/predictor/torch_msbg.py:813:0: C0115: Missing class docstring (missing-class-docstring)
 clarity/predictor/torch_msbg.py:813:0: R0902: Too many instance attributes (11/7) (too-many-instance-attributes)
 clarity/predictor/torch_msbg.py:814:4: R0914: Too many local variables (16/15) (too-many-locals)
-clarity/predictor/torch_msbg.py:823:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
 clarity/predictor/torch_msbg.py:864:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/predictor/torch_msbg.py:869:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/predictor/torch_msbg.py:892:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/predictor/torch_msbg.py:897:4: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module clarity.data.scene_renderer_cec1
 clarity/data/scene_renderer_cec1.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-clarity/data/scene_renderer_cec1.py:13:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
-clarity/data/scene_renderer_cec1.py:20:4: R0913: Too many arguments (10/7) (too-many-arguments)
-clarity/data/scene_renderer_cec1.py:68:11: R1714: Consider merging these comparisons with "in" to 'nchannels not in (0, wave_file.channels)' (consider-using-in)
-clarity/data/scene_renderer_cec1.py:160:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/data/scene_renderer_cec1.py:160:4: R0913: Too many arguments (11/7) (too-many-arguments)
-clarity/data/scene_renderer_cec1.py:160:4: R0914: Too many local variables (32/15) (too-many-locals)
-clarity/data/scene_renderer_cec1.py:301:0: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/data/scene_renderer_cec1.py:302:4: C0415: Import outside toplevel (json) (import-outside-toplevel)
+clarity/data/scene_renderer_cec1.py:14:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
+clarity/data/scene_renderer_cec1.py:21:4: R0913: Too many arguments (10/7) (too-many-arguments)
+clarity/data/scene_renderer_cec1.py:161:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/data/scene_renderer_cec1.py:161:4: R0913: Too many arguments (11/7) (too-many-arguments)
+clarity/data/scene_renderer_cec1.py:161:4: R0914: Too many local variables (32/15) (too-many-locals)
+clarity/data/scene_renderer_cec1.py:302:0: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/data/scene_renderer_cec1.py:305:8: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
 ************* Module clarity.data.demo_data
 clarity/data/demo_data.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -271,19 +218,18 @@ clarity/data/utils.py:1:0: C0114: Missing module docstring (missing-module-docst
 clarity/data/scene_builder_cec2.py:35:0: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/data/scene_builder_cec2.py:277:0: R0914: Too many local variables (17/15) (too-many-locals)
 clarity/data/scene_builder_cec2.py:346:0: R0914: Too many local variables (23/15) (too-many-locals)
-clarity/data/scene_builder_cec2.py:377:4: R1731: Consider using 'start_time = max(start_time, 0)' instead of unnecessary if block (consider-using-max-builtin)
-clarity/data/scene_builder_cec2.py:460:31: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:465:30: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:468:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
-clarity/data/scene_builder_cec2.py:471:4: R0913: Too many arguments (8/7) (too-many-arguments)
-clarity/data/scene_builder_cec2.py:492:0: R1721: Unnecessary use of a comprehension, use self.scenes instead. (unnecessary-comprehension)
-clarity/data/scene_builder_cec2.py:496:31: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:498:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/data/scene_builder_cec2.py:556:28: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:597:39: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:606:38: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:615:38: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:633:4: R0913: Too many arguments (9/7) (too-many-arguments)
+clarity/data/scene_builder_cec2.py:459:31: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:464:30: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:467:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+clarity/data/scene_builder_cec2.py:470:4: R0913: Too many arguments (8/7) (too-many-arguments)
+clarity/data/scene_builder_cec2.py:491:0: R1721: Unnecessary use of a comprehension, use self.scenes instead. (unnecessary-comprehension)
+clarity/data/scene_builder_cec2.py:495:31: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:497:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/data/scene_builder_cec2.py:555:28: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:596:39: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:605:38: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:614:38: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+clarity/data/scene_builder_cec2.py:632:4: R0913: Too many arguments (9/7) (too-many-arguments)
 ************* Module clarity.data.scene_renderer_cec2
 clarity/data/scene_renderer_cec2.py:157:9: W0511: TODO: The delay does not appear to correctly align the signals as expected (fixme)
 clarity/data/scene_renderer_cec2.py:223:9: W0511: TODO: set target to a fixed reference level?? (fixme)
@@ -303,28 +249,22 @@ clarity/engine/system.py:9:0: R0901: Too many ancestors (8/7) (too-many-ancestor
 clarity/engine/system.py:10:4: R0913: Too many arguments (8/7) (too-many-arguments)
 clarity/engine/system.py:62:4: W0221: Number of parameters was 3 in 'LightningModule.training_step' and is now 3 in overridden 'System.training_step' method (arguments-differ)
 clarity/engine/system.py:62:4: W0221: Variadics removed in overridden 'System.training_step' method (arguments-differ)
-clarity/engine/system.py:72:15: E1123: Unexpected keyword argument 'train' in method call (unexpected-keyword-arg)
 clarity/engine/system.py:76:4: W0221: Number of parameters was 3 in 'LightningModule.validation_step' and is now 3 in overridden 'System.validation_step' method (arguments-differ)
 clarity/engine/system.py:76:4: W0221: Variadics removed in overridden 'System.validation_step' method (arguments-differ)
-clarity/engine/system.py:83:15: E1123: Unexpected keyword argument 'train' in method call (unexpected-keyword-arg)
 ************* Module clarity.engine.losses
 clarity/engine/losses.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 clarity/engine/losses.py:6:0: C0115: Missing class docstring (missing-class-docstring)
 clarity/engine/losses.py:10:4: R0201: Method could be a function (no-self-use)
-clarity/engine/losses.py:37:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/engine/losses.py:41:0: C0115: Missing class docstring (missing-class-docstring)
-clarity/engine/losses.py:43:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
-clarity/engine/losses.py:46:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/engine/losses.py:46:4: R0201: Method could be a function (no-self-use)
-clarity/engine/losses.py:49:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/engine/losses.py:52:16: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
-clarity/engine/losses.py:63:0: C0115: Missing class docstring (missing-class-docstring)
-clarity/engine/losses.py:65:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
-clarity/engine/losses.py:68:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/engine/losses.py:72:0: C0115: Missing class docstring (missing-class-docstring)
-clarity/engine/losses.py:74:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
-clarity/engine/losses.py:89:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/engine/losses.py:111:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/engine/losses.py:35:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/engine/losses.py:39:0: C0115: Missing class docstring (missing-class-docstring)
+clarity/engine/losses.py:44:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/engine/losses.py:44:4: R0201: Method could be a function (no-self-use)
+clarity/engine/losses.py:47:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/engine/losses.py:59:0: C0115: Missing class docstring (missing-class-docstring)
+clarity/engine/losses.py:64:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/engine/losses.py:68:0: C0115: Missing class docstring (missing-class-docstring)
+clarity/engine/losses.py:85:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/engine/losses.py:107:4: C0116: Missing function or method docstring (missing-function-docstring)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.33/10 (previous run: 9.25/10, +0.08)
+Your code has been rated at 9.41/10 (previous run: 9.33/10, +0.07)

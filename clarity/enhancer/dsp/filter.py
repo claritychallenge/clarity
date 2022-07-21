@@ -20,9 +20,9 @@ class AudiometricFIR(nn.Module):
         )  # linear frequency vector
         interval_freq = np.zeros([len(linear_fv), 2])
         interval_idx = np.zeros([len(linear_fv), 2], dtype=int)
-        for i in range(len(linear_fv)):
+        for i, linear_fv_i in enumerate(linear_fv):
             for j in range(len(aud_fv) - 1):
-                if aud_fv[j] <= linear_fv[i] < aud_fv[j + 1]:
+                if aud_fv[j] <= linear_fv_i < aud_fv[j + 1]:
                     interval_freq[i, 0] = aud_fv[j]
                     interval_freq[i, 1] = aud_fv[j + 1]
                     interval_idx[i, 0] = j
