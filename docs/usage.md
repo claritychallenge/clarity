@@ -93,7 +93,7 @@ scene_0 = scenes[0]
 print(f"Keys for scene_0         : {scene_0.keys()}")
 print(f'Value of SNR for scene_0 : {scene_0["SNR"]}')
 # Directly...
-print(f'Value of SNR for scene_0 : {scenes[0]["SNR"]})
+print(f'Value of SNR for scene_0 : {scenes[0]["SNR"]}')
 ```
 
 ### Processing Collections of Scenes
@@ -214,6 +214,7 @@ for i, l in enumerate(current_listeners):
 
 plt.legend(handles=[left_ag, right_ag])
 plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
+plt.show()
 ```
 
 ## 02 Running the CEC2 Baseline from the command line
@@ -389,7 +390,11 @@ By default, the demo data will have been downloaded into a directory called `cla
 
 ### Importing the baseline NALR and Compressor components
 
-The baseline enhancer is based on [NAL-R prescription fitting](https://pubmed.ncbi.nlm.nih.gov/3743918/). Since output signals are required to be in 16-bit integer format, a slow acting automatic gain control is implemented to reduce clipping of the signal introduced by the NAL-R fitting for audiograms which represent more severe hearing loss. The AGC is followed by a soft-clip function.
+The baseline enhancer is based on [NAL-R prescription fitting](https://pubmed.ncbi.nlm.nih.gov/3743918/). Since output
+signals are required to be in 16-bit integer format, a slow acting automatic gain control is implemented to reduce
+clipping of the signal introduced by the NAL-R fitting for audiograms which represent more severe hearing loss. The AGC
+is followed by a soft-clip function.
+
 
 The NAL-R and AGC (compressor) classes can be accessed by importing them from the `clarity.enhancer` module.
 
@@ -400,18 +405,29 @@ from clarity.enhancer.nalr import NALR
 
 ### Configuring the NALR and Compressor components
 
-To allow for scalable and flexible running on both local and HPC platforms, many Clarity challenge CEC2 scripts and tools depend on <a href='https://hydra.cc/'>hydra</a> and <a href='https://github.com/facebookincubator/submitit'>submitit</a> for the configuration of Python code, for the setting of environment variables such as dataset directories, and for enabling parallisation of Python on both HPC and local machines. (A full description of how hydra and submitit is used in the Clarity challenges is out of the scope of this tutorial).
+To allow for scalable and flexible running on both local and HPC platforms, many Clarity challenge CEC2 scripts and
+tools depend on [hydra](https://hydra.cc/) and [submitit](https://github.com/facebookincubator/submitit) for the
+configuration of Python code, for the setting of environment variables such as dataset directories, and for enabling
+parallisation of Python on both HPC and local machines. (A full description of how hydra and submitit is used in the
+Clarity challenges is out of the scope of this tutorial).
 
-In this notebook, we will be importing the baseline configuration file directly using `omegaconf`. The module can read a configuration file in YAML format and return a DictConfig object storing the configuration data.
 
-In [ ]:
+In this notebook, we will be importing the baseline configuration file directly using `omegaconf`. The module can read a
+configuration file in YAML format and return a DictConfig object storing the configuration data.
+
+
+``` python
 from omegaconf import DictConfig, OmegaConf
 
 cfg = OmegaConf.load("clarity/recipes/cec2/baseline/config.yaml")
 assert type(cfg) == DictConfig
 
-markdown:
-We will need to override some of the standard paths provided in the baseline `config.yaml` to enable us to run the baseline on the demo data in this notebook environment.
+```
+
+
+We will need to override some of the standard paths provided in the baseline `config.yaml` to enable us to run the
+baseline on the demo data in this notebook environment.
+
 
 We need to supply:
 
@@ -476,7 +492,6 @@ So we first choose a scene the the `scene_metadata` list using a `scene_index`, 
 
 ``` python
 scene_index = 2
-
 scene = scene_metadata[scene_index]
 
 print(scene)
@@ -488,7 +503,6 @@ We find the scene's listeners by looking them up in the `scene_listeners_metadat
 
 ``` python
 scene_id = scene["scene"]
-
 scene_listeners = scene_listeners_metadata[scene_id]
 
 print(scene_listeners)
@@ -574,6 +588,7 @@ nalr_fir, _ = enhancer.build(listener["audiogram_levels_r"], listener["audiogram
 out_r = enhancer.apply(nalr_fir, signal[:, 1])
 
 plt.plot(out_l)
+plt.show()
 ```
 
 
@@ -586,6 +601,7 @@ out_r, _, _ = compressor.process(out_r)
 enhanced_audio = np.stack([out_l, out_r], axis=1)
 
 plt.plot(enhanced_audio)
+plt.show()
 ```
 
 
@@ -601,7 +617,7 @@ enhanced_audio = np.tanh(enhanced_audio)
 np.clip(enhanced_audio, -1.0, 1.0, out=enhanced_audio)
 
 plt.plot(enhanced_audio)
-
+plt.show()
 ```
 
 
