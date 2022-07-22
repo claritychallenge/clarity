@@ -343,7 +343,7 @@ def ambisonic_convolve(signal: np.ndarray, ir: np.ndarray, order: int) -> np.nda
     return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
 
 
-def compute_rms(input, axis=0) ->:
+def compute_rms(input, axis=0) -> float:
     """Compute Root Mean Square values along a given axis.
 
     Args:
@@ -381,7 +381,7 @@ def dB_to_gain(x: float) -> float:
     return 10 ** (0.05 * x)
 
 
-def smoothstep(x: np.array, x_min: float=0, x_max: float=1, N: int=1) -> np.array:
+def smoothstep(x: np.array, x_min: float = 0, x_max: float = 1, N: int = 1) -> np.array:
     """Apply the smoothstep function.
 
     Args:
@@ -404,7 +404,7 @@ def smoothstep(x: np.array, x_min: float=0, x_max: float=1, N: int=1) -> np.arra
     return result
 
 
-def rotation_control_vector(array_length: int, start_idx: int, end_idx: int, smoothness: int=1) -> np.array:
+def rotation_control_vector(array_length: int, start_idx: int, end_idx: int, smoothness: int = 1) -> np.array:
     """Generate mapped rotation control vector for values of theta.
 
     Args:

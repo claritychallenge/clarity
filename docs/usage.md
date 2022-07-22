@@ -24,7 +24,7 @@ under, if the package still isn't found then you should go through the installat
 Environment.
 
 
-### Jupyter Notebooks
+## Jupyter Notebooks
 
 These tutorials are available as Jupyter Notebooks [pyClarity Tutorials](https://claritychallenge.org/tutorials) that
 run in Google CoLab.
@@ -386,7 +386,6 @@ By default, the demo data will have been downloaded into a directory called `cla
 
 ## Running the baseline
 
----
 
 ### Importing the baseline NALR and Compressor components
 

@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
-SPHINXAPIBUILD ?= sphinx-apidoc
+SPHINXAPIBUILD = sphinx-apidoc
 
 # Put it first so that "make" without argument is like "make help".
 help:

@@ -286,12 +286,8 @@ ITU_ERP_DRP = np.array(
 # (Moore et al 2008 E&H paper suggests that shape would be better as -7.5
 # dB/oct, at least up to 8, and -13 dB/oct above there.)
 
-GEN_NOISE_HZ = np.array(
-    [0, 100, 200, 450, 550, 707, 1000, 1414, 2000, 2828, 4000, 5656, 8000, 16e3, 32e3]
-)
-EMPHASIS = np.array(
-    [0, 0.0, 0.0, 0, -0.5, -4.5, -9.0, -13.5, -18, -22.5, -27, -31.5, -36.0, -51, -66]
-) * (7.5 / 9)
+GEN_NOISE_HZ = np.array([0, 100, 200, 450, 550, 707, 1000, 1414, 2000, 2828, 4000, 5656, 8000, 16e3, 32e3])
+EMPHASIS = np.array([0, 0.0, 0.0, 0, -0.5, -4.5, -9.0, -13.5, -18, -22.5, -27, -31.5, -36.0, -51, -66]) * (7.5 / 9)
 
 
 def read_gtf_file(gtf_file):
@@ -413,11 +409,7 @@ def fir2(nn, ff, aa, npt=None):
 
 
 def gen_tone(freq, duration, fs=44100, level=0):
-    return (
-        1.4142
-        * np.power(10, (0.05 * level))
-        * np.sin(2 * np.pi * freq * np.arange(1, duration * fs + 1) / fs)
-    )
+    return 1.4142 * np.power(10, (0.05 * level)) * np.sin(2 * np.pi * freq * np.arange(1, duration * fs + 1) / fs)
 
 
 def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
@@ -456,11 +448,7 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
 
     # Create type II filter with 10 msec window and even number of taps
     n_taps = int(2 * np.ceil(10 * (fs / 2000))) + 1
-    b = (
-        supplied_b
-        if supplied_b is not None
-        else firwin2(n_taps, norm_freq, m, window="hamming", antisymmetric=False)
-    )
+    b = supplied_b if supplied_b is not None else firwin2(n_taps, norm_freq, m, window="hamming", antisymmetric=False)
 
     # white noise, 0 DC
     nburst = np.random.random((1, n_samples + len(b))) - 0.5
@@ -483,26 +471,27 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
 
     if level is not None:
         eh2008_nse = (
-            eh2008_nse
-            * np.power(10, 0.05 * level)
-            / np.sqrt(np.sum(np.power(eh2008_nse, 2)) / len(eh2008_nse))
+            eh2008_nse * np.power(10, 0.05 * level) / np.sqrt(np.sum(np.power(eh2008_nse, 2)) / len(eh2008_nse))
         )
 
     return eh2008_nse
 
 
-def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
+def generate_key_percent(sig: np.ndarray, thr_dB: float, winlen: int, percent_to_track: float = None):
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
     of rms, adaptively sets threshold after looking at histogram of whole recording
+
     Args:
         sig (ndarray): The signal to analyse
         thr_dB (float): fixed energy threshold (dB)
         winlen (int): length of window in samples
         percent_to_track (float, optional): Track a percentage of frames (default: {None})
+
     Raises:
         ValueError: percent_to_track is set too high
+
     Returns:
         (ndarray, float) -- "key" and rms threshold
             The key array of indices of samples used in rms calculation,
@@ -571,9 +560,7 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
 
     # convert frame numbers into indices for sig
     for ix in np.arange(valid_frames):
-        meas_span = np.arange(
-            (frame_index[ix] * winlen), (frame_index[ix] + 1) * winlen
-        )
+        meas_span = np.arange((frame_index[ix] * winlen), (frame_index[ix] + 1) * winlen)
         key_span = np.arange(((ix) * winlen), (ix + 1) * winlen, 1)
         key[key_span] = meas_span
         key = key.flatten()
@@ -581,13 +568,15 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
     return key, used_thr_dB
 
 
-def measure_rms(signal, fs, dB_rel_rms, percent_to_track=None):
+def measure_rms(signal: np.ndarray, fs: float, dB_rel_rms: float, percent_to_track: float = None) -> tuple:
     """Measure rms.
+
     A sophisticated method of measuring RMS in a file. It splits the signal up into
     short windows, performs  a histogram of levels, calculates an approximate RMS,
     and then uses that RMS to calculate a threshold level in the histogram and then
     re-measures the RMS only using those durations whose individual RMS exceed that
     threshold.
+
     Args:
         signal (ndarray): the signal of which to measure the rms
         fs (float): sampling frequency
@@ -608,9 +597,7 @@ def measure_rms(signal, fs, dB_rel_rms, percent_to_track=None):
     key_thr_dB = max(20 * np.log10(first_stage_rms) + dB_rel_rms, -80)
 
     # move key_thr_dB to account for noise less peakier than signal
-    key, used_thr_dB = generate_key_percent(
-        signal, key_thr_dB, round(WIN_SECS * fs), percent_to_track=percent_to_track
-    )
+    key, used_thr_dB = generate_key_percent(signal, key_thr_dB, round(WIN_SECS * fs), percent_to_track=percent_to_track)
 
     idx = key.astype(int)  # move into generate_key_percent
     # statistic to be reported later, BUT save for later
@@ -628,20 +615,23 @@ def pad(signal, length):
     Assumes required length is not less than input length.
     """
     assert length >= signal.shape[0]
-    return np.pad(
-        signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
-    )
+    return np.pad(signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1))
 
 
-def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False):
+def read_signal(
+    filename: str, offset: int = 0, nsamples: int = -1, nchannels: int = 0, offset_is_samples: bool = False
+) -> np.ndarray:
     """Read a wavefile and return as numpy array of floats.
+
     Args:
         filename (string): Name of file to read
         offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
-        nchannels: expected number of channel (default: 0 = any number OK)
+        nsamples (int): Number of samples.
+        nchannels (int): expected number of channel (default: 0 = any number OK)
         offset_is_samples (bool): measurement units for offset (default: False)
+
     Returns:
-        ndarray: audio signal
+        np.ndarray: audio signal
     """
     try:
         wave_file = SoundFile(filename)
@@ -650,9 +640,7 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
         raise Exception(f"Unable to read {filename}.")
 
     if nchannels != 0 and wave_file.channels != nchannels:
-        raise Exception(
-            f"Wav file ({filename}) was expected to have {nchannels} channels."
-        )
+        raise Exception(f"Wav file ({filename}) was expected to have {nchannels} channels.")
 
     if not offset_is_samples:  # Default behaviour
         offset = int(offset * wave_file.samplerate)
@@ -668,8 +656,15 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
     return x
 
 
-def write_signal(filename, x, fs, floating_point=True):
-    """Write a signal as fixed or floating point wav file."""
+def write_signal(filename: str, x, fs, floating_point: bool = True) -> None:
+    """Write a signal as fixed or floating point wav file.
+
+    Args:
+        filename (str):
+        x ():
+        fs ():
+        floating_point (bool):
+    """
 
     if fs != MSBG_FS:
         logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")

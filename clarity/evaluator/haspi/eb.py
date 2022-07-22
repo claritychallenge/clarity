@@ -15,7 +15,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     the envelopes of the signals after OHC compression and IHC loss
     attenuation.
 
-    Calling arguments:
+    Args:
     x        reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)
                or to 65 dB SPL plus NAL-R gain (itype=2)
     xsamp    sampling rate for the reference signal, Hz
@@ -30,7 +30,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
              2=quality: reference already has NAL-R EQ applied
     Level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL
 
-    Returned values:
+    Returns:
     xdB      envelope for the reference in each band
     xBM      BM motion for the reference in each band
     ydB      envelope for the processed signal in each band
@@ -119,9 +119,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     # Loop over each filter in the auditory filter bank
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
-        xcontrol, _, ycontrol, _ = GammatoneBM(
-            xmid, BW1[n], ymid, BW1[n], fsamp, cfreq1[n]
-        )
+        xcontrol, _, ycontrol, _ = GammatoneBM(xmid, BW1[n], ymid, BW1[n], fsamp, cfreq1[n])
 
         # Adjust the auditory filter bandwidths for the average signal level
         BWx[n] = BWadjust(xcontrol, BWminx[n], BW1[n], Level1)  # Reference
@@ -137,12 +135,8 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
         ycave[n] = np.sqrt(np.mean(ycontrol**2))
 
         # Cochlear compression for the signal envelopes and BM motion
-        xc, xb[n] = EnvCompressBM(
-            xenv, xbm, xcontrol, attnOHCx[n], lowkneex[n], CRx[n], fsamp, Level1
-        )
-        yc, yb[n] = EnvCompressBM(
-            yenv, ybm, ycontrol, attnOHCy[n], lowkneey[n], CRy[n], fsamp, Level1
-        )
+        xc, xb[n] = EnvCompressBM(xenv, xbm, xcontrol, attnOHCx[n], lowkneex[n], CRx[n], fsamp, Level1)
+        yc, yb[n] = EnvCompressBM(yenv, ybm, ycontrol, attnOHCy[n], lowkneey[n], CRy[n], fsamp, Level1)
 
         # Correct for the delay between the reference and output
         yc = EnvAlign(xc, yc)  # Align processed envelope to reference
@@ -221,9 +215,7 @@ def CenterFreq(nchan, shift=None):
     # All of the following expressions are derived in Apple TR #35, "An Efficient Implementation of the Patterson-Holdsworth Cochlear
     # Filter Bank" by Malcolm Slaney.
     cf = -(EarQ * minBW) + np.exp(
-        np.arange(1, nchan)
-        * (-np.log(highFreq + EarQ * minBW) + np.log(lowFreq + EarQ * minBW))
-        / (nchan - 1)
+        np.arange(1, nchan) * (-np.log(highFreq + EarQ * minBW) + np.log(lowFreq + EarQ * minBW)) / (nchan - 1)
     ) * (highFreq + EarQ * minBW)
     cf = np.insert(cf, 0, highFreq)  # Last center frequency is set to highFreq
     cf = np.flip(cf)
@@ -241,7 +233,7 @@ def LossParameters(HL, cfreq):
     cfreq		array containing the center frequencies of the gammatone filters
                 arranged from low to high
 
-    Returned values:
+    Returns:
     attnOHC	attenuation in dB for the OHC gammatone filters
     BW		OHC filter bandwidth expressed in terms of normal
     lowknee	Lower kneepoint for the low-level linear amplification
@@ -282,9 +274,7 @@ def LossParameters(HL, cfreq):
     attnIHC = 0.2 * np.copy(loss)
 
     attnOHC[loss >= thrOHC] = 0.8 * thrOHC[loss >= thrOHC]
-    attnIHC[loss >= thrOHC] = 0.2 * thrOHC[loss >= thrOHC] + (
-        loss[loss >= thrOHC] - thrOHC[loss >= thrOHC]
-    )
+    attnIHC[loss >= thrOHC] = 0.2 * thrOHC[loss >= thrOHC] + (loss[loss >= thrOHC] - thrOHC[loss >= thrOHC])
 
     # Adjust the OHC bandwidth in proportion to the OHC loss
     BW = np.ones(nfilt)
@@ -374,7 +364,7 @@ def InputAlign(x, y):
     x       input reference sequence
     y       hearing-aid output sequence
 
-    Returned values:
+    Returns:
     xp   pruned and shifted reference
     yp   pruned and shifted hearing-aid output
 
@@ -482,7 +472,7 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
     fs		sampling rate in Hz
     cf		filter center frequency in Hz
 
-    Returned values:
+    Returns:
     envx      filter envelope output (modulated down to baseband) 1st signal
     BMx       BM motion for the first signal
     envy      filter envelope output (modulated down to baseband) 2nd signal
@@ -520,9 +510,7 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
 
     # Initialize the complex demodulation
     npts = len(x)
-    sincf, coscf = GammatoneBW_demodulation(
-        npts, tpt, cf, np.zeros(npts), np.zeros(npts)
-    )
+    sincf, coscf = GammatoneBW_demodulation(npts, tpt, cf, np.zeros(npts), np.zeros(npts))
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a1, a5], [1, -a1, -a2, -a3, -a4], x * coscf)
@@ -576,7 +564,7 @@ def BWadjust(control, BWmin, BWmax, Level1):
     Function to compute the increase in auditory filter bandwidth in response
     to high signal levels.
 
-    Calling arguments:
+    Args:
     control     envelope output in the control filter band
     BWmin       auditory filter bandwidth computed for the loss (or NH)
     BWmax       auditory filter bandwidth at maximum OHC damage
@@ -670,11 +658,11 @@ def EnvAlign(x, y):
     Function to align the envelope of the processed signal to that of the
     reference signal.
 
-    Calling arguments:
+    Args:
     x      envelope or BM motion of the reference signal
     y      envelope or BM motion of the output signal
 
-    Returned values:
+    Returns:
     y      shifted output envelope to match the input
 
     James M. Kates, 28 October 2011.
@@ -711,7 +699,7 @@ def EnvSL(env, bm, attnIHC, Level1):
     Function to convert the compressed envelope returned by
     cochlea_envcomp to dB SL.
 
-    Calling arguments
+    Args
     env			linear envelope after compression
     bm            linear basilar membrane vibration after compression
     attnIHC		IHC attenuation at the input to the synapse
@@ -758,7 +746,7 @@ def IHCadapt(xdB, xBM, delta, fsamp):
     delta    overshoot factor = delta x steady-state
     fsamp    sampling rate in Hz
 
-    Returned values:
+    Returns:
     ydB      envelope in dB SL with IHC adaptation
     yBM      BM motion multiplied by the IHC adaptation gain function
 
@@ -828,12 +816,12 @@ def BMaddnoise(x, thr, Level1):
     Function to apply the IHC attenuation to the BM motion and to add a
     low-level Gaussian noise to give the auditory threshold.
 
-    Calling arguments:
+    Args:
     x         BM motion to be attenuated
     thr       additive noise level in dB re:auditory threshold
     Level1    an input having RMS=1 corresponds to Leve1 dB SPL
 
-    Returned values:
+    Returns:
     y         attenuated signal with threhsold noise added
 
     James M. Kates, 19 June 2012.
@@ -857,13 +845,13 @@ def GroupDelayComp(xenv, BW, cfreq, fsamp):
     have the same group delay.
 
     Calling variables:
-    xenv     matrix of signal envelopes or BM motion
-    BW       gammatone filter bandwidths adjusted for loss
-    cfreq    center frequencies of the bands
-    fsamp    sampling rate for the input signal in Hz (e.g. 24,000 Hz)
+        xenv (np.ndarray): matrix of signal envelopes or BM motion
+        BW (): gammatone filter bandwidths adjusted for loss
+        cfreq (): center frequencies of the bands
+        fsamp (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
 
-    Returned values:
-    yenv    envelopes or BM motion compensated for the group delay
+    Returns:
+        yenv    envelopes or BM motion compensated for the group delay
 
     James M. Kates, 28 October 2011.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
@@ -889,9 +877,7 @@ def GroupDelayComp(xenv, BW, cfreq, fsamp):
     # Compute the group delay in samples at fsamp for each filter
     gd = np.zeros(nchan)
     for n in range(nchan):
-        _, gd[n] = group_delay(
-            ([1, a1[n], a5[n]], [1, -a1[n], -a2[n], -a3[n], -a4[n]]), 1
-        )
+        _, gd[n] = group_delay(([1, a1[n], a5[n]], [1, -a1[n], -a2[n], -a3[n], -a4[n]]), 1)
     gd = np.round(gd).astype("int")  # convert to integer samples
 
     # Compute the delay correlation

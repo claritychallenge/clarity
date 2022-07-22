@@ -22,7 +22,18 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # Mock imports (things that can't be installed at do building time)
 
-autodoc_mock_imports = ["numpy", "pandas", "matplotlib", "scipy"]
+autodoc_mock_imports = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "scipy",
+    "torch",
+    "torchaudio",
+    "pytorch_lightning",
+    "gdown",
+    "pystoi",
+    "numba",
+]
 
 # -- Project information -----------------------------------------------------
 
@@ -54,7 +65,7 @@ extensions = [
     #    "sphinx.ext.numpydoc",
     "sphinx_rtd_theme",
     "myst_parser",
-    # "sphinx_markdown_tables",
+    "sphinx_markdown_tables",
     "sphinxcontrib.mermaid",
 ]
 

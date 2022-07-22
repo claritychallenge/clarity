@@ -10,7 +10,6 @@ Welcome to pyClarity's documentation!
     usage
     CONTRIBUTING
     CODE_OF_CONDUCT
-    copying
 
 .. toctree::
    :maxdepth: 2
