@@ -91,7 +91,7 @@ accessed using the keys. We extract the first (`0`th) scene and inspect the `SNR
 ``` python
 scene_0 = scenes[0]
 print(f"Keys for scene_0         : {scene_0.keys()}")
-print(f'Value of SNR for scene_0 : {scene_0["SNR"]})
+print(f'Value of SNR for scene_0 : {scene_0["SNR"]}')
 # Directly...
 print(f'Value of SNR for scene_0 : {scenes[0]["SNR"]})
 ```
