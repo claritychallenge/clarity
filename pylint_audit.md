@@ -1,4 +1,4 @@
-# Pylint
+l# Pylint
 
 Initial run of pylint over complete code base. Created to help prioritise the fixes.
 
@@ -38,6 +38,101 @@ Code currently rate 6.55
 1  R1721 - consider swap variables
 
 
+
+## Duplicated code
+
+### fir2 and firwin2
+
+==clarity.evaluator.msbg.msbg_utils:[331:415]
+==clarity.enhancer.nalr:[20:100]
+functions fir2 and firwin2 - identical
+
+
+### numpy array constnatns in msbg
+
+==clarity.evaluator.msbg.msbg_utils:[116:166]
+==clarity.predictor.torch_msbg:[271:315]
+large constant np.arrays
+FF_ED - free field to ear drum array definintion
+midear - constant np.array
+hz - centre frequencies
+df_ed
+ITU_Hz
+ITU_erp_drp
+
+
+### functions for reading and writing signals
+
+==clarity.data.scene_renderer_cec1:[50:85]
+==clarity.enhancer.gha.gha_interface:[178:215]
+function read_signal,
+
+==clarity.data.scene_renderer_cec1:[92:102]
+==clarity.enhancer.gha.gha_interface:[218:228]
+function read_signal - identical
+function write_signal - identical accept for minor refactor to handle sample rate
+
+- read and write signal also in msbg_utils - but a bit different
+
+### Audiogram dataclass
+
+==clarity.enhancer.gha.audiogram:[35:43]
+==clarity.evaluator.msbg.audiogram:[92:100]
+class Audiogram
+ - binaural audiogram in enhancer/gha
+ - monaural audiogram in evaluator/msbg
+ Very similar - e.g. shared code in severity() function
+
+ Elsewhere audiograms are passed around just as separate left ear loss, right ear loss and cfs parameters
+
+### functions fir2 and firwin2
+
+==clarity.evaluator.msbg.msbg_utils:[331:415]
+==clarity.enhancer.nalr:[20:100]
+
+### msbg constant arrays
+
+==clarity.evaluator.msbg.msbg_utils:[116:166]
+==clarity.predictor.torch_msbg:[271:315]
+
+large constant np.arrays
+FF_ED - free field to ear drum array definintion
+midear - constant np.array
+hz - centre frequencies
+df_ed
+ITU_Hz
+ITU_erp_drp
+
+In general, much of torch_msbg is a re-write of msbg.
+
+### code for reading and writing signals
+
+==clarity.data.scene_renderer_cec1:[50:85]
+==clarity.enhancer.gha.gha_interface:[178:215]
+function read_signal,
+
+==clarity.data.scene_renderer_cec1:[92:102]
+==clarity.enhancer.gha.gha_interface:[218:228]
+function read_signal - identical
+function write_signal - identical accept for minor refactor to handle sample rate
+
+- read and write signal also in msbg_utils - but a bit different
+
+### Handling of audiograms
+
+==clarity.enhancer.gha.audiogram:[35:43]
+==clarity.evaluator.msbg.audiogram:[92:100]
+
+dataclasses for Audiogram
+ - binaural audiogram in enhancer/gha
+ - monaural audiogram in evaluator/msbg
+ Very similar - e.g. shared code in severity() function
+
+Elsewhere audiograms are passed around just as separate left ear loss, right ear loss and cfs parameters
+
+
+
+## Specific warnings
 
 ************* Module clarity
 clarity/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
