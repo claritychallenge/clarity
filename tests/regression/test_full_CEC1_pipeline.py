@@ -1,15 +1,12 @@
 # Regression test
 # Pass some random data through code and compare with reference output
-# scene_renderer, enhancer, compressor, haspi
-
-import os
+# CEC1 scene_renderer, enhancer, compressor, MSBG and MBSTOI
 
 import numpy as np
-from omegaconf import OmegaConf
 from scipy.io import wavfile
 from scipy.signal import unit_impulse
 
-from clarity.data.scene_renderer_cec2 import SceneRenderer
+from clarity.data.scene_renderer_cec1 import Renderer
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.mbstoi.mbstoi import mbstoi
@@ -43,91 +40,52 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def test_full_CEC1_pipeline(regtest):
     np.random.seed(0)
 
-    # Set up some scene to simulate
-    # It's been designed to get good code coverage but running quickly
-    # - Using three maskers - one from each noise type
-    # - Using a short target with reduce pre and post silence
-    # - Only generating 2 hearing aid channels
     scene = {
-        "dataset": "demo",
-        "room": "R06001",
-        "scene": "S06001",
-        "target": {"name": "T010_G0N_02468", "time_start": 37837, "time_end": 115894},
-        "duration": 150000,
-        "interferers": [
-            {
-                "position": 1,
-                "time_start": 0,
-                "time_end": 150000,
-                "type": "noise",
-                "name": "CIN_fan_014.wav",
-                "offset": 5376,
-            },
-            {
-                "position": 2,
-                "time_start": 0,
-                "time_end": 150000,
-                "type": "speech",
-                "name": "som_04766_05.wav",
-                "offset": 40000,
-            },
-            {
-                "position": 3,
-                "time_start": 0,
-                "time_end": 150000,
-                "type": "music",
-                "name": "1111967.low.mp3",
-                "offset": 842553,
-            },
-        ],
-        "SNR": 0.0,
-        "listener": {
-            "rotation": [
-                {"sample": 116192.9795, "angle": 52.3628},
-                {"sample": 124829.9795, "angle": 38.5256},
-            ],
-            "hrir_filename": ["VP_N6-ED", "VP_N6-BTE_fr"],
+        "room": {"name": "R00001", "dimensions": "5.9x3.4186x2.9"},
+        "hrirfilename": "VP_N6-BTE_fr",
+        "target": {
+            "Positions": [-0.5, 3.4, 1.2],
+            "ViewVectors": [0.291, -0.957, 0.0],
+            "name": "T010_G0N_02468",
+            "nsamples": 109809,
         },
+        "listener": {"Positions": [0.2, 1.1, 1.2], "ViewVectors": [-0.414, 0.91, 0.0]},
+        "interferer": {
+            "Positions": [0.4, 3.2, 1.2],
+            "name": "CIN_fan_014",
+            "nsamples": 1190700,
+            "duration": 27.0,
+            "type": "noise",
+            "offset": 5376,
+        },
+        "azimuth_target_listener": -7.54,
+        "azimuth_interferer_listener": -29.9,
+        "scene": "S00001",
+        "dataset": ".",
+        "pre_samples": 88200,
+        "post_samples": 44100,
+        "SNR": 0.586,
     }
-
-    demo_paths = OmegaConf.create(
-        {
-            "hoairs": "tests/test_data/rooms/HOA_IRs",
-            "hrirs": "tests/test_data/hrir/HRIRs_MAT",
-            "scenes": "tests/test_data/clarity_data/demo/scenes",
-            "targets": "tests/test_data/targets",
-            "interferers": "tests/test_data/interferers/{type}",
-        }
-    )
-
-    demo_metadata = OmegaConf.create(
-        {
-            "room_definitions": "tests/test_data/metadata/rooms.demo.json",
-            "scene_definitions": "",  # Scene definition file not needed for test
-            "hrir_metadata": "tests/test_data/metadata/hrir_data.json",
-        }
-    )
-
-    scene_renderer = SceneRenderer(
-        demo_paths,
-        demo_metadata,
-        ambisonic_order=6,
-        equalise_loudness=True,
-        reference_channel=1,
-        channel_norms=[12.0, 3.0],
-    )
 
     output_path = "tmp"
 
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-
-    target, interferers, anechoic, head_turn = scene_renderer.generate_hoa_signals(
-        scene
+    renderer = Renderer(
+        input_path="tests/test_data",
+        output_path=output_path,
+        num_channels=3,
     )
 
-    scene_renderer.generate_binaural_signals(
-        scene, target, interferers, anechoic, output_path
+    renderer.render(
+        pre_samples=scene["pre_samples"],
+        post_samples=scene["post_samples"],
+        dataset=scene["dataset"],
+        target=scene["target"]["name"],
+        noise_type=scene["interferer"]["type"],
+        interferer=scene["interferer"]["name"],
+        room=scene["room"]["name"],
+        scene=scene["scene"],
+        offset=scene["interferer"]["offset"],
+        snr_dB=scene["SNR"],
     )
 
     _, reference = wavfile.read(f"{output_path}/S06001_target_anechoic_CH1.wav")
