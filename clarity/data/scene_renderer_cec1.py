@@ -301,13 +301,12 @@ def check_scene_exists(scene, output_path, num_channels):
 
 def main():
 
-    scene = json.load(
-        open(
-            "/home/tu/datasets/clarity_CEC1_data/clarity_data/metadata/scenes.train.json",
-            "r",
-            encoding="utf-8",
-        )
-    )[0]
+    with open(
+        "/home/tu/datasets/clarity_CEC1_data/clarity_data/metadata/scenes.train.json",
+        "r",
+        encoding="utf-8",
+    ) as f:
+        scene = json.load(f)[0]
 
     renderer = Renderer(
         input_path="/home/tu/datasets/clarity_CEC1_data/clarity_data",

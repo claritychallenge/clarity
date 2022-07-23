@@ -91,15 +91,13 @@ class SceneRenderer:
         self.hoa_rotator = HOARotator(self.ambisonic_order, resolution=0.1)
 
         # Build dictionary for looking up room data
-        rooms = json.load(
-            open(f"{self.metadata.room_definitions}", "r", encoding="utf-8")
-        )
+        with open(f"{self.metadata.room_definitions}", "r", encoding="utf-8") as f:
+            rooms = json.load(f)
         self.room_dict = {room["name"]: room for room in rooms}
 
         # Fixed hrir metadata for hrir sets being used
-        self.metadata.hrir_metadata = json.load(
-            open(self.metadata.hrir_metadata, encoding="utf-8")
-        )
+        with open(self.metadata.hrir_metadata, encoding="utf-8") as f:
+            self.metadata.hrir_metadata = json.load(f)
 
     def make_interferer_filename(self, interferer, dataset):
         """Construct filename for an interferer."""

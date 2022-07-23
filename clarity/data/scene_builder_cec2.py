@@ -456,12 +456,14 @@ class RoomBuilder:
 
     def load(self, filename):
         """Load the list of room from a json file."""
-        self.rooms = json.load(open(filename, "r", encoding="utf-8"))
+        with open(filename, "r", encoding="utf-8") as f:
+            self.rooms = json.load(f)
         self.rebuild_dict()
 
     def save_rooms(self, filename):
         """Save the list of rooms to a json file."""
-        json.dump(self.rooms, open(filename, "w", encoding="utf-8"), indent=2)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.rooms, f, indent=2)
 
 
 class SceneBuilder:
@@ -492,7 +494,8 @@ class SceneBuilder:
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
-        json.dump(self.scenes, open(filename, "w", encoding="utf-8"), indent=2)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.scenes, f, indent=2)
 
     def instantiate_scenes(self, dataset):
         log.info("Initialise %s scenes", dataset)
@@ -552,7 +555,8 @@ class SceneBuilder:
         Raises:
             Exception: _description_
         """
-        targets = json.load(open(target_speakers, "r", encoding="utf-8"))
+        with open(target_speakers, "r", encoding="utf-8") as f:
+            targets = json.load(f)
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
         scenes_dataset = [s for s in self.scenes if s["dataset"] == dataset]
@@ -593,7 +597,8 @@ class SceneBuilder:
     ):
         """Add interferer to the scene description file."""
         # Load and prepare speech interferer metadata
-        interferers_speech = json.load(open(speech_interferers, "r", encoding="utf-8"))
+        with open(speech_interferers, "r", encoding="utf-8") as f:
+            interferers_speech = json.load(f)
         for interferer in interferers_speech:
             interferer["ID"] = (
                 interferer["speaker"] + ".wav"
@@ -602,7 +607,8 @@ class SceneBuilder:
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        interferers_noise = json.load(open(noise_interferers, "r", encoding="utf-8"))
+        with open(noise_interferers, "r", encoding="utf-8") as f:
+            interferers_noise = json.load(f)
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
         interferer_by_type = {}
@@ -611,7 +617,8 @@ class SceneBuilder:
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        interferers_music = json.load(open(music_interferers, "r", encoding="utf-8"))
+        with open(music_interferers, "r", encoding="utf-8") as f:
+            interferers_music = json.load(f)
         for interferer in interferers_music:
             interferer["ID"] = interferer[
                 "file"

@@ -27,7 +27,6 @@ Code currently rate 6.55
 39  R0801 - duplicate code (!!)
 35  R0914 - Too many local variables
 15  R0913 - Too many arguments
-10  R1732 - consider using with
 9  R0902 - too many instance attributes
 5  R0915 - Too many statements
 4  R0201 - no self use
@@ -161,7 +160,6 @@ clarity/enhancer/dnn/mc_conv_tasnet.py:468:4: C0116: Missing function or method 
 clarity/enhancer/dsp/filter.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 clarity/enhancer/dsp/filter.py:3:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
 clarity/enhancer/dsp/filter.py:9:0: C0115: Missing class docstring (missing-class-docstring)
-clarity/enhancer/dsp/filter.py:23:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
 clarity/enhancer/dsp/filter.py:51:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/enhancer/dsp/filter.py:51:4: R0914: Too many local variables (19/15) (too-many-locals)
 ************* Module clarity.predictor.torch_stoi
@@ -202,7 +200,6 @@ clarity/data/scene_renderer_cec1.py:161:4: C0116: Missing function or method doc
 clarity/data/scene_renderer_cec1.py:161:4: R0913: Too many arguments (11/7) (too-many-arguments)
 clarity/data/scene_renderer_cec1.py:161:4: R0914: Too many local variables (32/15) (too-many-locals)
 clarity/data/scene_renderer_cec1.py:302:0: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/data/scene_renderer_cec1.py:305:8: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
 ************* Module clarity.data.demo_data
 clarity/data/demo_data.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 clarity/data/demo_data.py:10:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -218,27 +215,18 @@ clarity/data/utils.py:1:0: C0114: Missing module docstring (missing-module-docst
 clarity/data/scene_builder_cec2.py:35:0: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/data/scene_builder_cec2.py:277:0: R0914: Too many local variables (17/15) (too-many-locals)
 clarity/data/scene_builder_cec2.py:346:0: R0914: Too many local variables (23/15) (too-many-locals)
-clarity/data/scene_builder_cec2.py:459:31: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:464:30: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:467:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
-clarity/data/scene_builder_cec2.py:470:4: R0913: Too many arguments (8/7) (too-many-arguments)
-clarity/data/scene_builder_cec2.py:491:0: R1721: Unnecessary use of a comprehension, use self.scenes instead. (unnecessary-comprehension)
-clarity/data/scene_builder_cec2.py:495:31: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:497:4: C0116: Missing function or method docstring (missing-function-docstring)
-clarity/data/scene_builder_cec2.py:555:28: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:596:39: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:605:38: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:614:38: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_builder_cec2.py:632:4: R0913: Too many arguments (9/7) (too-many-arguments)
+clarity/data/scene_builder_cec2.py:469:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+clarity/data/scene_builder_cec2.py:472:4: R0913: Too many arguments (8/7) (too-many-arguments)
+clarity/data/scene_builder_cec2.py:493:0: R1721: Unnecessary use of a comprehension, use self.scenes instead. (unnecessary-comprehension)
+clarity/data/scene_builder_cec2.py:500:4: C0116: Missing function or method docstring (missing-function-docstring)
+clarity/data/scene_builder_cec2.py:639:4: R0913: Too many arguments (9/7) (too-many-arguments)
 ************* Module clarity.data.scene_renderer_cec2
-clarity/data/scene_renderer_cec2.py:157:9: W0511: TODO: The delay does not appear to correctly align the signals as expected (fixme)
-clarity/data/scene_renderer_cec2.py:223:9: W0511: TODO: set target to a fixed reference level?? (fixme)
+clarity/data/scene_renderer_cec2.py:155:9: W0511: TODO: The delay does not appear to correctly align the signals as expected (fixme)
+clarity/data/scene_renderer_cec2.py:219:9: W0511: TODO: set target to a fixed reference level?? (fixme)
 clarity/data/scene_renderer_cec2.py:65:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
-clarity/data/scene_renderer_cec2.py:95:12: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_renderer_cec2.py:101:12: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-clarity/data/scene_renderer_cec2.py:207:4: R0914: Too many local variables (22/15) (too-many-locals)
-clarity/data/scene_renderer_cec2.py:286:4: R0201: Method could be a function (no-self-use)
-clarity/data/scene_renderer_cec2.py:301:4: R0914: Too many local variables (27/15) (too-many-locals)
+clarity/data/scene_renderer_cec2.py:203:4: R0914: Too many local variables (22/15) (too-many-locals)
+clarity/data/scene_renderer_cec2.py:282:4: R0201: Method could be a function (no-self-use)
+clarity/data/scene_renderer_cec2.py:297:4: R0914: Too many local variables (27/15) (too-many-locals)
 ************* Module clarity.data.HOA_tools_cec2
 clarity/data/HOA_tools_cec2.py:120:4: R1705: Unnecessary "elif" after "return" (no-else-return)
 clarity/data/HOA_tools_cec2.py:147:4: R1705: Unnecessary "elif" after "return" (no-else-return)
@@ -266,5 +254,5 @@ clarity/engine/losses.py:68:0: C0115: Missing class docstring (missing-class-doc
 clarity/engine/losses.py:85:4: C0116: Missing function or method docstring (missing-function-docstring)
 clarity/engine/losses.py:107:4: C0116: Missing function or method docstring (missing-function-docstring)
 
-------------------------------------------------------------------
-Your code has been rated at 9.41/10 (previous run: 9.33/10, +0.07)
+-------------------------------------------------------------------
+Your code has been rated at 9.44/10 (previous run: 10.00/10, -0.56)
