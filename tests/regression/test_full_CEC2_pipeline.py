@@ -14,7 +14,7 @@ from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
 
 
-def test_full_pipeline(regtest):
+def test_full_CEC2_pipeline(regtest):
     np.random.seed(0)
 
     # Set up some scene to simulate
