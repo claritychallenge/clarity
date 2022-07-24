@@ -182,6 +182,7 @@ def add_this_target_to_scene(target, scene, pre_samples_range, post_samples_rang
     scene_target["time_end"] = num_pre_samples + target["nsamples"]
     scene["target"] = scene_target
     scene["duration"] = num_pre_samples + target["nsamples"] + num_post_samples
+    print(scene)
 
 
 # SNR handling
