@@ -119,7 +119,9 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     # Loop over each filter in the auditory filter bank
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
-        xcontrol, _, ycontrol, _ = GammatoneBM(xmid, BW1[n], ymid, BW1[n], fsamp, cfreq1[n])
+        xcontrol, _, ycontrol, _ = GammatoneBM(
+            xmid, BW1[n], ymid, BW1[n], fsamp, cfreq1[n]
+        )
 
         # Adjust the auditory filter bandwidths for the average signal level
         BWx[n] = BWadjust(xcontrol, BWminx[n], BW1[n], Level1)  # Reference
@@ -135,8 +137,12 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
         ycave[n] = np.sqrt(np.mean(ycontrol**2))
 
         # Cochlear compression for the signal envelopes and BM motion
-        xc, xb[n] = EnvCompressBM(xenv, xbm, xcontrol, attnOHCx[n], lowkneex[n], CRx[n], fsamp, Level1)
-        yc, yb[n] = EnvCompressBM(yenv, ybm, ycontrol, attnOHCy[n], lowkneey[n], CRy[n], fsamp, Level1)
+        xc, xb[n] = EnvCompressBM(
+            xenv, xbm, xcontrol, attnOHCx[n], lowkneex[n], CRx[n], fsamp, Level1
+        )
+        yc, yb[n] = EnvCompressBM(
+            yenv, ybm, ycontrol, attnOHCy[n], lowkneey[n], CRy[n], fsamp, Level1
+        )
 
         # Correct for the delay between the reference and output
         yc = EnvAlign(xc, yc)  # Align processed envelope to reference
@@ -215,7 +221,9 @@ def CenterFreq(nchan, shift=None):
     # All of the following expressions are derived in Apple TR #35, "An Efficient Implementation of the Patterson-Holdsworth Cochlear
     # Filter Bank" by Malcolm Slaney.
     cf = -(EarQ * minBW) + np.exp(
-        np.arange(1, nchan) * (-np.log(highFreq + EarQ * minBW) + np.log(lowFreq + EarQ * minBW)) / (nchan - 1)
+        np.arange(1, nchan)
+        * (-np.log(highFreq + EarQ * minBW) + np.log(lowFreq + EarQ * minBW))
+        / (nchan - 1)
     ) * (highFreq + EarQ * minBW)
     cf = np.insert(cf, 0, highFreq)  # Last center frequency is set to highFreq
     cf = np.flip(cf)
@@ -274,7 +282,9 @@ def LossParameters(HL, cfreq):
     attnIHC = 0.2 * np.copy(loss)
 
     attnOHC[loss >= thrOHC] = 0.8 * thrOHC[loss >= thrOHC]
-    attnIHC[loss >= thrOHC] = 0.2 * thrOHC[loss >= thrOHC] + (loss[loss >= thrOHC] - thrOHC[loss >= thrOHC])
+    attnIHC[loss >= thrOHC] = 0.2 * thrOHC[loss >= thrOHC] + (
+        loss[loss >= thrOHC] - thrOHC[loss >= thrOHC]
+    )
 
     # Adjust the OHC bandwidth in proportion to the OHC loss
     BW = np.ones(nfilt)
@@ -510,7 +520,9 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
 
     # Initialize the complex demodulation
     npts = len(x)
-    sincf, coscf = GammatoneBW_demodulation(npts, tpt, cf, np.zeros(npts), np.zeros(npts))
+    sincf, coscf = GammatoneBW_demodulation(
+        npts, tpt, cf, np.zeros(npts), np.zeros(npts)
+    )
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a1, a5], [1, -a1, -a2, -a3, -a4], x * coscf)
@@ -877,7 +889,9 @@ def GroupDelayComp(xenv, BW, cfreq, fsamp):
     # Compute the group delay in samples at fsamp for each filter
     gd = np.zeros(nchan)
     for n in range(nchan):
-        _, gd[n] = group_delay(([1, a1[n], a5[n]], [1, -a1[n], -a2[n], -a3[n], -a4[n]]), 1)
+        _, gd[n] = group_delay(
+            ([1, a1[n], a5[n]], [1, -a1[n], -a2[n], -a3[n], -a4[n]]), 1
+        )
     gd = np.round(gd).astype("int")  # convert to integer samples
 
     # Compute the delay correlation

@@ -134,16 +134,18 @@ class NegSTOILoss(nn.Module):
         y_tob = torch.matmul(self.OBM, torch.norm(y_spec, 2, -1) ** 2 + EPS).pow(0.5)
         # Perform N-frame segmentation --> (batch, 15, N, n_chunks)
         batch = targets.shape[0]
-        x_seg = unfold(x_tob.unsqueeze(2), kernel_size=(1, self.intel_frames), stride=(1, 1)).view(
-            batch, x_tob.shape[1], N, -1
-        )
-        y_seg = unfold(y_tob.unsqueeze(2), kernel_size=(1, self.intel_frames), stride=(1, 1)).view(
-            batch, y_tob.shape[1], N, -1
-        )
+        x_seg = unfold(
+            x_tob.unsqueeze(2), kernel_size=(1, self.intel_frames), stride=(1, 1)
+        ).view(batch, x_tob.shape[1], N, -1)
+        y_seg = unfold(
+            y_tob.unsqueeze(2), kernel_size=(1, self.intel_frames), stride=(1, 1)
+        ).view(batch, y_tob.shape[1], N, -1)
         # Compute mask if use_vad
         if self.use_vad:
             # Detech silent frames (boolean mask of shape (batch, 1, frame_idx)
-            mask = self.detect_silent_frames(targets, self.dyn_range, self.win_len, self.win_len // 2)
+            mask = self.detect_silent_frames(
+                targets, self.dyn_range, self.win_len, self.win_len // 2
+            )
             mask = pad(mask, [0, x_tob.shape[-1] - mask.shape[-1]])
             # Unfold on the mask, to float and mean per frame.
             mask_f = unfold(
@@ -199,12 +201,16 @@ class NegSTOILoss(nn.Module):
         Returns:
             torch.BoolTensor, framewise mask.
         """
-        x_frames = unfold(x[:, None, None, :], kernel_size=(1, framelen), stride=(1, hop))[..., :-1]
+        x_frames = unfold(
+            x[:, None, None, :], kernel_size=(1, framelen), stride=(1, hop)
+        )[..., :-1]
         # Compute energies in dB
         x_energies = 20 * torch.log10(torch.norm(x_frames, dim=1, keepdim=True) + EPS)
         # Find boolean mask of energies lower than dynamic_range dB
         # with respect to maximum clean speech energy frame
-        mask = (torch.max(x_energies, dim=2, keepdim=True)[0] - dyn_range - x_energies) < 0
+        mask = (
+            torch.max(x_energies, dim=2, keepdim=True)[0] - dyn_range - x_energies
+        ) < 0
         return mask
 
     @staticmethod
@@ -252,7 +258,9 @@ def meanvar_norm(x, mask=None, dim=-1):
 def masked_mean(x, dim=-1, mask=None, keepdim=False):
     if mask is None:
         return x.mean(dim=dim, keepdim=keepdim)
-    return (x * mask).sum(dim=dim, keepdim=keepdim) / (mask.sum(dim=dim, keepdim=keepdim) + EPS)
+    return (x * mask).sum(dim=dim, keepdim=keepdim) / (
+        mask.sum(dim=dim, keepdim=keepdim) + EPS
+    )
 
 
 def masked_norm(x, p=2, dim=-1, mask=None, keepdim=False):

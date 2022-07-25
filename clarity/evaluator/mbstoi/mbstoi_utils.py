@@ -72,7 +72,10 @@ def ec(
             0.5
             * (
                 np.ones((ntaus, 1))
-                * (np.log(10) ** 2 * sigma_epsilon**2 - cf[i] ** 2 * np.transpose(sigma_delta) ** 2)
+                * (
+                    np.log(10) ** 2 * sigma_epsilon**2
+                    - cf[i] ** 2 * np.transpose(sigma_delta) ** 2
+                )
                 * np.ones((1, ngammas))
             )
         )
@@ -149,7 +152,14 @@ def ec(
 
 def firstpartfunc(L1, L2, R1, R2, ntaus, gammas, epsexp):
     result = (
-        np.ones((ntaus, 1)) * ((10 ** (2 * gammas) * np.sum(L1 * L2) + 10 ** (-2 * gammas) * np.sum(R1 * R2)) * epsexp)
+        np.ones((ntaus, 1))
+        * (
+            (
+                10 ** (2 * gammas) * np.sum(L1 * L2)
+                + 10 ** (-2 * gammas) * np.sum(R1 * R2)
+            )
+            * epsexp
+        )
         + np.sum(L1 * R2)
         + np.sum(R1 * L2)
     )
@@ -161,7 +171,8 @@ def secondpartfunc(L1, L2, rho1, rho2, tauexp, epsdelexp, gammas):
         2
         * (
             np.transpose(
-                np.dot(L1, np.real(np.transpose(rho1) * tauexp)) + np.dot(L2, np.real(np.transpose(rho2) * tauexp))
+                np.dot(L1, np.real(np.transpose(rho1) * tauexp))
+                + np.dot(L2, np.real(np.transpose(rho2) * tauexp))
             )
             * 10**gammas
         )
@@ -174,7 +185,8 @@ def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas):
     result = (
         2
         * np.transpose(
-            np.dot(R1, np.real(np.dot(np.transpose(rho1), tauexp))) + np.dot(R2, np.real(np.transpose(rho2) * tauexp))
+            np.dot(R1, np.real(np.dot(np.transpose(rho1), tauexp)))
+            + np.dot(R2, np.real(np.transpose(rho2) * tauexp))
         )
         * 10**-gammas
         * epsdelexp
@@ -249,10 +261,18 @@ def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
     # Compute Mask
     w = np.hanning(framelen + 2)[1:-1]
 
-    xl_frames = np.array([w * xl[i : i + framelen] for i in range(0, len(xl) - framelen, hop)])
-    xr_frames = np.array([w * xr[i : i + framelen] for i in range(0, len(xr) - framelen, hop)])
-    yl_frames = np.array([w * yl[i : i + framelen] for i in range(0, len(yl) - framelen, hop)])
-    yr_frames = np.array([w * yr[i : i + framelen] for i in range(0, len(yr) - framelen, hop)])
+    xl_frames = np.array(
+        [w * xl[i : i + framelen] for i in range(0, len(xl) - framelen, hop)]
+    )
+    xr_frames = np.array(
+        [w * xr[i : i + framelen] for i in range(0, len(xr) - framelen, hop)]
+    )
+    yl_frames = np.array(
+        [w * yl[i : i + framelen] for i in range(0, len(yl) - framelen, hop)]
+    )
+    yr_frames = np.array(
+        [w * yr[i : i + framelen] for i in range(0, len(yr) - framelen, hop)]
+    )
 
     # Compute energies in dB
     xl_energies = 20 * np.log10(np.linalg.norm(xl_frames, axis=1) + EPS)

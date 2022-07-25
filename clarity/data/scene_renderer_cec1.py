@@ -46,7 +46,9 @@ class Renderer:
             # e.g. num_channel = 2  => channels [1, 2, 0]
             self.channels = list(range(1, num_channels + 1)) + [0]
 
-    def read_signal(self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False):
+    def read_signal(
+        self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
+    ):
         """Read a wavefile and return as numpy array of floats.
 
         Args:
@@ -65,7 +67,9 @@ class Renderer:
             raise Exception(f"Unable to read {filename}.")
 
         if nchannels != 0 and wave_file.channels != nchannels:
-            raise Exception(f"Wav file ({filename}) was expected to have {nchannels} channels.")
+            raise Exception(
+                f"Wav file ({filename}) was expected to have {nchannels} channels."
+            )
 
         if wave_file.samplerate != self.fs:
             raise Exception(f"Sampling rate is not {self.fs} for filename {filename}.")
@@ -172,12 +176,16 @@ class Renderer:
         brir_stem = f"{self.input_path}/{dataset}/rooms/brir/brir_{room}"
         anechoic_brir_stem = f"{self.input_path}/{dataset}/rooms/brir/anech_brir_{room}"
         target_fn = f"{self.input_path}/{dataset}/targets/{target}.wav"
-        interferer_fn = f"{self.input_path}/{dataset}/interferers/{noise_type}/{interferer}.wav"
+        interferer_fn = (
+            f"{self.input_path}/{dataset}/interferers/{noise_type}/{interferer}.wav"
+        )
 
         target = self.read_signal(target_fn)
         target = np.pad(target, [(pre_samples, post_samples)])
 
-        interferer = self.read_signal(interferer_fn, offset=offset, nsamples=len(target), offset_is_samples=True)
+        interferer = self.read_signal(
+            interferer_fn, offset=offset, nsamples=len(target), offset_is_samples=True
+        )
 
         if len(target) != len(interferer):
             logging.debug("Target and interferer have different lengths")
@@ -236,7 +244,9 @@ class Renderer:
             target_brir = self.read_signal(target_brir_fn)
 
         # Construct the anechoic target reference signal
-        anechoic_brir_fn = f"{anechoic_brir_stem}_t_CH1.wav"  # CH1 used for the anechoic signal
+        anechoic_brir_fn = (
+            f"{anechoic_brir_stem}_t_CH1.wav"  # CH1 used for the anechoic signal
+        )
         anechoic_brir = self.read_signal(anechoic_brir_fn)
         # Padding the anechoic brir very inefficient but keeps it simple
         anechoic_brir_pad = pad(anechoic_brir, len(target_brir))

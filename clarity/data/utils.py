@@ -5,7 +5,9 @@ import scipy
 import scipy.io
 
 SPEECH_FILTER = scipy.io.loadmat(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "params", "speech_weight.mat"),
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "params", "speech_weight.mat"
+    ),
     squeeze_me=True,
 )
 SPEECH_FILTER = np.array(SPEECH_FILTER["filt"])
@@ -42,7 +44,9 @@ def speechweighted_snr(target, noise):
 
     Returns:
     """
-    target_filt = scipy.signal.convolve(target, SPEECH_FILTER, mode="full", method="fft")
+    target_filt = scipy.signal.convolve(
+        target, SPEECH_FILTER, mode="full", method="fft"
+    )
     noise_filt = scipy.signal.convolve(noise, SPEECH_FILTER, mode="full", method="fft")
 
     # rms of the target after speech weighted filter
@@ -86,4 +90,6 @@ def pad(signal: np.array, length: float) -> np.array:
     """
     # FIXME : Consider encapsulating in a 'try: ... except: ...' should the assertion not be met.
     assert length >= signal.shape[0]
-    return np.pad(signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1))
+    return np.pad(
+        signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
+    )

@@ -160,7 +160,9 @@ def AddNoise(ydB, thrdB):
     """
     # Additive noise sequence
     # rng = np.random.default_rng()
-    noise = thrdB * np.random.standard_normal(ydB.shape)  # Gaussian noise with RMS=1, then scaled
+    noise = thrdB * np.random.standard_normal(
+        ydB.shape
+    )  # Gaussian noise with RMS=1, then scaled
 
     # Add the noise to the signal envelope
     zdB = ydB + noise
@@ -263,16 +265,24 @@ def ModFilt(Xenv, Yenv, fsub):
         for m in range(nchan):  # Loop over the input signal vectors
             # Reference signal
             x = Xenv[:, m]  # Extract the frequency or cepstral coefficient band
-            u = convolve((x * c - 1j * x * s), bk)  # Complex demodulation, then LP filter
+            u = convolve(
+                (x * c - 1j * x * s), bk
+            )  # Complex demodulation, then LP filter
             u = u[nh : nh + nsamp]  # Truncate the filter transients
-            xfilt = np.real(u) * c - np.imag(u) * s  # Modulate back up to the carrier freq
+            xfilt = (
+                np.real(u) * c - np.imag(u) * s
+            )  # Modulate back up to the carrier freq
             Xmod[m, k, :] = xfilt  # Save the filtered signal
 
             # Processed signal
             y = Yenv[:, m]  # Extract the frequency or cepstral coefficient band
-            v = convolve((y * c - 1j * y * s), bk)  # Complex demodulation, then LP filter
+            v = convolve(
+                (y * c - 1j * y * s), bk
+            )  # Complex demodulation, then LP filter
             v = v[nh : nh + nsamp]  # Truncate the filter transients
-            yfilt = np.real(v) * c - np.imag(v) * s  # Modulate back up to the carrier freq
+            yfilt = (
+                np.real(v) * c - np.imag(v) * s
+            )  # Modulate back up to the carrier freq
             Ymod[m, k, :] = yfilt  # Save the filtered signal
 
     return Xmod, Ymod, cf

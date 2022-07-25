@@ -73,12 +73,17 @@ class Compressor:
             np.array: DESCRIPTION
         """
         padded_signal = np.concatenate((np.zeros(self.win_len - 1), signal))
-        rms = np.sqrt(np.convolve(padded_signal**2, self.window, mode="valid") / self.win_len + self.eps)
+        rms = np.sqrt(
+            np.convolve(padded_signal**2, self.window, mode="valid") / self.win_len
+            + self.eps
+        )
         comp_ratios = []
         curr_comp = 1
         for i in range(len(rms)):
             if rms[i] > self.threshold:
-                temp_comp = (rms[i] * self.attenuation) + ((1 - self.attenuation) * self.threshold)
+                temp_comp = (rms[i] * self.attenuation) + (
+                    (1 - self.attenuation) * self.threshold
+                )
                 curr_comp = (curr_comp * (1 - self.attack)) + (temp_comp * self.attack)
             else:
                 curr_comp = (1 * self.release) + curr_comp * (1 - self.release)

@@ -7,7 +7,11 @@ import scipy.signal
 
 
 def firwin2(
-    n: int, f: np.ndarray, a: np.ndarray, window: Union[str, float] = None, antisymmetric: bool = None
+    n: int,
+    f: np.ndarray,
+    a: np.ndarray,
+    window: Union[str, float] = None,
+    antisymmetric: bool = None,
 ) -> np.ndarray:
     """FIR filter design using the window method.
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -150,9 +154,15 @@ class NALR:
             gdB = np.clip(gdB, a_min=0, a_max=None)
 
             # Design the linear-phase FIR filter
-            fv = np.append(np.append(0, self.aud), self.fmax)  # Frequency vector for the interpolation
-            cfreq = np.linspace(0, self.nfir, self.nfir + 1) / self.nfir  # Uniform frequency spacing from 0 to 1
-            gdBv = np.append(np.append(gdB[0], gdB), gdB[-1])  # gdB vector for the interpolation
+            fv = np.append(
+                np.append(0, self.aud), self.fmax
+            )  # Frequency vector for the interpolation
+            cfreq = (
+                np.linspace(0, self.nfir, self.nfir + 1) / self.nfir
+            )  # Uniform frequency spacing from 0 to 1
+            gdBv = np.append(
+                np.append(gdB[0], gdB), gdB[-1]
+            )  # gdB vector for the interpolation
             interpf = scipy.interpolate.interp1d(fv, gdBv)
             gain = interpf(self.fmax * cfreq)
             glin = np.power(10, gain / 20.0)

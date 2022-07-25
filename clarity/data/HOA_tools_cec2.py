@@ -132,11 +132,15 @@ def V(m, n, el, r):
     elif m > 0:
         if m == 1:
             d = 1.0
-        return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (1 - d)
+        return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (
+            1 - d
+        )
     else:
         if m == -1:
             d = 1.0
-        return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(1 + d)
+        return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(
+            1 + d
+        )
 
 
 @njit
@@ -183,10 +187,19 @@ def compute_UVW_coefficients(m, n, el):
     u = np.sqrt(float((el + m) * (el - m)) * one_over_denom)
     v = (
         0.5
-        * np.sqrt((1.0 + d) * float(el + np.abs(m) - 1) * (float(el + np.abs(m))) * one_over_denom)
+        * np.sqrt(
+            (1.0 + d)
+            * float(el + np.abs(m) - 1)
+            * (float(el + np.abs(m)))
+            * one_over_denom
+        )
         * (1.0 - 2.0 * d)
     )
-    w = -0.5 * np.sqrt(float(el - np.abs(m) - 1) * float(el - np.abs(m)) * one_over_denom) * (1.0 - d)
+    w = (
+        -0.5
+        * np.sqrt(float(el - np.abs(m) - 1) * float(el - np.abs(m)) * one_over_denom)
+        * (1.0 - d)
+    )
 
     return u, v, w
 
@@ -288,9 +301,14 @@ class HOARotator:
         t_r0 = (self.rotmat[t % n_entries] for t in theta_0)
         t_r1 = (self.rotmat[(t + 1) % n_entries] for t in theta_0)
         # Interpolate between the two nearest rotation matrices
-        t_interp = (t_r0_ + alpha_ * (t_r1_ - t_r0_) for t_r0_, t_r1_, alpha_ in zip(t_r0, t_r1, theta_i - theta_0))
+        t_interp = (
+            t_r0_ + alpha_ * (t_r1_ - t_r0_)
+            for t_r0_, t_r1_, alpha_ in zip(t_r0, t_r1, theta_i - theta_0)
+        )
         # Apply the interpolated rotation matrices to the signal
-        signal = np.array([np.dot(x, _t_interp) for x, _t_interp in zip(signal, t_interp)])
+        signal = np.array(
+            [np.dot(x, _t_interp) for x, _t_interp in zip(signal, t_interp)]
+        )
         return signal
 
 
@@ -404,7 +422,9 @@ def smoothstep(x: np.array, x_min: float = 0, x_max: float = 1, N: int = 1) -> n
     return result
 
 
-def rotation_control_vector(array_length: int, start_idx: int, end_idx: int, smoothness: int = 1) -> np.array:
+def rotation_control_vector(
+    array_length: int, start_idx: int, end_idx: int, smoothness: int = 1
+) -> np.array:
     """Generate mapped rotation control vector for values of theta.
 
     Args:
@@ -424,7 +444,13 @@ def rotation_control_vector(array_length: int, start_idx: int, end_idx: int, smo
     return idx
 
 
-def rotation_vector(start_angle: float, end_angle: float, signal_length: int, start_idx: int, end_idx: int) -> np.array:
+def rotation_vector(
+    start_angle: float,
+    end_angle: float,
+    signal_length: int,
+    start_idx: int,
+    end_idx: int,
+) -> np.array:
     """Compute the rotation vector.
 
     Args:

@@ -76,7 +76,9 @@ def haspi_v2(x, fx, y, fy, HL, Level1=65):
     return Intel, raw
 
 
-def haspi_v2_be(xl, xr, yl, yr, fs_signal, audiogram_l, audiogram_r, audiogram_cfs, Level=100) -> float:
+def haspi_v2_be(
+    xl, xr, yl, yr, fs_signal, audiogram_l, audiogram_r, audiogram_cfs, Level=100
+) -> float:
     """Better ear HASPI.
 
     Calculates HASPI for left and right ear and selects the better result.
@@ -102,8 +104,12 @@ def haspi_v2_be(xl, xr, yl, yr, fs_signal, audiogram_l, audiogram_r, audiogram_c
     aud = [250, 500, 1000, 2000, 4000, 6000]
 
     # Adjust listener.audiogram_levels_l and _r to match the frequencies above
-    HL_l = [audiogram_l[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud]
-    HL_r = [audiogram_r[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud]
+    HL_l = [
+        audiogram_l[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+    ]
+    HL_r = [
+        audiogram_r[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+    ]
 
     score_l, _ = haspi_v2(xl, fs_signal, yl, fs_signal, HL_l, Level)
     score_r, _ = haspi_v2(xr, fs_signal, yr, fs_signal, HL_r, Level)

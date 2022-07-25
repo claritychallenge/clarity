@@ -40,11 +40,15 @@ def overlap_and_add(signal, frame_step, device):
 
     subframe_signal = signal.view(*outer_dimensions, -1, subframe_length)
 
-    frame = torch.arange(0, output_subframes).unfold(0, subframes_per_frame, subframe_step)
+    frame = torch.arange(0, output_subframes).unfold(
+        0, subframes_per_frame, subframe_step
+    )
     frame = signal.new_tensor(frame, device=device).long()  # signal may in GPU or CPU
     frame = frame.contiguous().view(-1)
 
-    result = signal.new_zeros(*outer_dimensions, output_subframes, subframe_length, device=device)
+    result = signal.new_zeros(
+        *outer_dimensions, output_subframes, subframe_length, device=device
+    )
     result.index_add_(-2, frame, subframe_signal)
     result = result.view(*outer_dimensions, -1)
     return result
@@ -104,7 +108,9 @@ class ConvTasNet(nn.Module):
         self.spectral_encoder = SpectralEncoder(L, N_spec)
         self.spatial_encoder = SpatialEncoder(L, N_spat, num_channels)
 
-        self.separator = TemporalConvNet(N_spec, N_spat, B, H, P, X, R, C, norm_type, causal, mask_nonlinear)
+        self.separator = TemporalConvNet(
+            N_spec, N_spat, B, H, P, X, R, C, norm_type, causal, mask_nonlinear
+        )
         self.decoder = Decoder(N_spec, L)
         # init
         for p in self.parameters():
@@ -119,7 +125,9 @@ class ConvTasNet(nn.Module):
         Returns:
             est_source: [M, C, T]
         """
-        mixture_spectral = self.spectral_encoder(torch.narrow(mixture, 1, 0, 1).squeeze(1))
+        mixture_spectral = self.spectral_encoder(
+            torch.narrow(mixture, 1, 0, 1).squeeze(1)
+        )
         mixture_spatial = self.spatial_encoder(mixture)
 
         mixture_w = torch.cat((mixture_spectral, mixture_spatial), 1)
@@ -166,7 +174,9 @@ class SpatialEncoder(nn.Module):
         self.L, self.N = L, N
         # Components
         # 50% overlap
-        self.conv2d_U = nn.Conv1d(1, N, kernel_size=(num_channels, L), stride=(1, L // 2), bias=False)
+        self.conv2d_U = nn.Conv1d(
+            1, N, kernel_size=(num_channels, L), stride=(1, L // 2), bias=False
+        )
 
     def forward(self, mixture):
         """
@@ -204,7 +214,9 @@ class Decoder(nn.Module):
         source_w = torch.transpose(source_w, 2, 3)  # [M, C, K, N]
         # S = DV
         est_source = self.basis_signals(source_w)  # [M, C, K, L]
-        est_source = overlap_and_add(est_source, self.L // 2, device=self.device)  # M x C x T
+        est_source = overlap_and_add(
+            est_source, self.L // 2, device=self.device
+        )  # M x C x T
         return est_source
 
 
@@ -269,7 +281,9 @@ class TemporalConvNet(nn.Module):
         # [M, B, K] -> [M, C*N, K]
         mask_conv1x1 = nn.Conv1d(B, C * N_spec, 1, bias=False)
         # Put together
-        self.network = nn.Sequential(layer_norm, bottleneck_conv1x1, temporal_conv_net, mask_conv1x1)
+        self.network = nn.Sequential(
+            layer_norm, bottleneck_conv1x1, temporal_conv_net, mask_conv1x1
+        )
 
     def forward(self, mixture_w):
         """
@@ -475,6 +489,8 @@ class GlobalLayerNorm(nn.Module):
         """
         # TODO: in torch 1.0, torch.mean() support dim list
         mean = y.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True)  # [M, 1, 1]
-        var = (torch.pow(y - mean, 2)).mean(dim=1, keepdim=True).mean(dim=2, keepdim=True)
+        var = (
+            (torch.pow(y - mean, 2)).mean(dim=1, keepdim=True).mean(dim=2, keepdim=True)
+        )
         gLN_y = self.gamma * (y - mean) / torch.pow(var + EPS, 0.5) + self.beta
         return gLN_y

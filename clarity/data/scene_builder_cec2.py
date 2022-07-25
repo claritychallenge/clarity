@@ -88,7 +88,7 @@ def get_room_name(text: str) -> str:
 
 def read_rpf_file(rpf_filename):
     """Process an rpf file and return key contents as a dictionary."""
-    with open(rpf_filename, "r") as f:
+    with open(rpf_filename, "r", encoding="utf-8") as f:
         text = f.read()
 
     rpf_dict = {}
@@ -141,7 +141,9 @@ def build_room(target_file, interferer_files):
     scene_dict["listener"] = rpf_dict["receiver"]
 
     # Read interferer rpf files and extract source info
-    interferer_rpfs = [read_rpf_file(interferer_file) for interferer_file in interferer_files]
+    interferer_rpfs = [
+        read_rpf_file(interferer_file) for interferer_file in interferer_files
+    ]
     interferers = [interferer_rpf["source"] for interferer_rpf in interferer_rpfs]
     # The source view vectors are removed as interferer are all omnidirectional
     for interferer in interferers:
@@ -156,10 +158,14 @@ def make_rpf_filename_dict(rpf_location, scene_str, n_interferers):
     rpf_filename_format = "{rpf_location}/{scene_str}_{source}.rpf"
 
     rpf_filedict = {}
-    rpf_filedict["target"] = rpf_filename_format.format(rpf_location=rpf_location, scene_str=scene_str, source="t")
+    rpf_filedict["target"] = rpf_filename_format.format(
+        rpf_location=rpf_location, scene_str=scene_str, source="t"
+    )
 
     rpf_filedict["interferers"] = [
-        rpf_filename_format.format(rpf_location=rpf_location, scene_str=scene_str, source=f"i{i}")
+        rpf_filename_format.format(
+            rpf_location=rpf_location, scene_str=scene_str, source=f"i{i}"
+        )
         for i in range(1, n_interferers + 1)
     ]
     return rpf_filedict
@@ -255,13 +261,16 @@ def select_random_interferer(interferers, dataset, required_samples):
     """
     interferer_group = random.choice(interferers)
     filtered_interferer_group = [
-        i for i in interferer_group if i["dataset"] == dataset and i["nsamples"] >= required_samples
+        i
+        for i in interferer_group
+        if i["dataset"] == dataset and i["nsamples"] >= required_samples
     ]
     try:
         interferer = random.choice(filtered_interferer_group)
     except IndexError:
         raise ValueError(
-            f"No suitable interferer found for dataset {dataset} and required samples" f" {required_samples}"
+            f"No suitable interferer found for dataset {dataset} and required samples"
+            f" {required_samples}"
         )
     return interferer
 
@@ -285,11 +294,15 @@ def get_random_interferer_offset(interferer, required_samples):
     if latest_start < 0:
         log.error(f"Interferer {interferer['ID']} does not has enough samples.")
 
-    assert latest_start >= 0  # This should never happen - mean masker was too short for the scene
+    assert (
+        latest_start >= 0
+    )  # This should never happen - mean masker was too short for the scene
     return random.randint(0, latest_start)
 
 
-def add_interferer_to_scene_inner(scene, interferers, number, start_time_range, end_early_time_range):
+def add_interferer_to_scene_inner(
+    scene, interferers, number, start_time_range, end_early_time_range
+):
     """Randomly select interferers and add them to the given scene.
     A random number of interferers is chosen, then each is given a random type
     selected from the possible speech, nonspeech, music types.
@@ -324,19 +337,27 @@ def add_interferer_to_scene_inner(scene, interferers, number, start_time_range, 
     scene["interferers"] = [{"position": position} for position in positions]
 
     # Randomly instantiate each interferer in the scene
-    for scene_interferer, scene_type in zip(scene["interferers"], selected_interferer_types):
+    for scene_interferer, scene_type in zip(
+        scene["interferers"], selected_interferer_types
+    ):
         desired_start_time = random.randint(*start_time_range)
 
         scene_interferer["time_start"] = min(scene["duration"], desired_start_time)
         desired_end_time = scene["duration"] - random.randint(*end_early_time_range)
 
-        scene_interferer["time_end"] = max(scene_interferer["time_start"], desired_end_time)
+        scene_interferer["time_end"] = max(
+            scene_interferer["time_start"], desired_end_time
+        )
 
         required_samples = scene_interferer["time_end"] - scene_interferer["time_start"]
-        interferer = select_random_interferer(interferers[scene_type], dataset, required_samples)
+        interferer = select_random_interferer(
+            interferers[scene_type], dataset, required_samples
+        )
         scene_interferer["type"] = scene_type.value
         scene_interferer["name"] = interferer["ID"]
-        scene_interferer["offset"] = get_random_interferer_offset(interferer, required_samples)
+        scene_interferer["offset"] = get_random_interferer_offset(
+            interferer, required_samples
+        )
 
 
 # listener handlinf
@@ -398,7 +419,9 @@ def generate_rotation(
             break
 
     angle_initial_offset = random_sign * math.radians(angle_initial_mean + offset)
-    angle_final_offset = random_sign * (math.radians(random.uniform(*angle_final_range)))
+    angle_final_offset = random_sign * (
+        math.radians(random.uniform(*angle_final_range))
+    )
 
     # Convert angle from relative to target speaker to room axes
     listener_pos = scene["room"]["listener"]["position"]
@@ -437,7 +460,9 @@ class RoomBuilder:
         """Build room dictionary."""
         self.room_dict = {room["name"]: room for room in self.rooms}
 
-    def build_from_rpf(self, rpf_location, n_interferers=N_INTERFERERS, n_rooms=N_SCENES, start_room=1):
+    def build_from_rpf(
+        self, rpf_location, n_interferers=N_INTERFERERS, n_rooms=N_SCENES, start_room=1
+    ):
         """Build a list of rooms by extracting info from RAVEN rpf files.
 
         Args:
@@ -455,18 +480,19 @@ class RoomBuilder:
 
         # Process all rpf file to generate the list of rooms dicts
         self.rooms = [
-            build_room(rpf_filedict["target"], rpf_filedict["interferers"]) for rpf_filedict in tqdm(rpf_filedicts)
+            build_room(rpf_filedict["target"], rpf_filedict["interferers"])
+            for rpf_filedict in tqdm(rpf_filedicts)
         ]
         self.rebuild_dict()
 
     def load(self, filename):
         """Load the list of room from a json file."""
-        self.rooms = json.load(open(filename, "r"))
+        self.rooms = json.load(open(filename, "r", encoding="utf-8"))
         self.rebuild_dict()
 
     def save_rooms(self, filename):
         """Save the list of rooms to a json file."""
-        json.dump(self.rooms, open(filename, "w"), indent=2)
+        json.dump(self.rooms, open(filename, "w", encoding="utf-8"), indent=2)
 
 
 class SceneBuilder:
@@ -497,7 +523,7 @@ class SceneBuilder:
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
-        json.dump(self.scenes, open(filename, "w"), indent=2)
+        json.dump(self.scenes, open(filename, "w", encoding="utf-8"), indent=2)
 
     def instantiate_scenes(self, dataset):
         log.info(f"Initialise {dataset} scenes")
@@ -559,7 +585,7 @@ class SceneBuilder:
         Raises:
             Exception: _description_
         """
-        targets = json.load(open(target_speakers, "r"))
+        targets = json.load(open(target_speakers, "r", encoding="utf-8"))
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
         scenes_dataset = [s for s in self.scenes if s["dataset"] == dataset]
@@ -569,7 +595,9 @@ class SceneBuilder:
         if target_selection == "SEQUENTIAL":
             # Sequential mode: Cycle through targets sequentially
             for scene, target in zip(scenes_dataset, itertools.cycle(targets_dataset)):
-                add_this_target_to_scene(target, scene, pre_samples_range, post_samples_range)
+                add_this_target_to_scene(
+                    target, scene, pre_samples_range, post_samples_range
+                )
         elif target_selection == "RANDOM":
             # Random mode: randomly select target with replacement
             for scene in scenes_dataset:
@@ -598,14 +626,16 @@ class SceneBuilder:
     ):
         """Add interferer to the scene description file."""
         # Load and prepare speech interferer metadata
-        interferers_speech = json.load(open(speech_interferers, "r"))
+        interferers_speech = json.load(open(speech_interferers, "r", encoding="utf-8"))
         for interferer in interferers_speech:
-            interferer["ID"] = interferer["speaker"] + ".wav"  # selection require a unique "ID" field
+            interferer["ID"] = (
+                interferer["speaker"] + ".wav"
+            )  # selection require a unique "ID" field
         # Selection process requires list of lists
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        interferers_noise = json.load(open(noise_interferers, "r"))
+        interferers_noise = json.load(open(noise_interferers, "r", encoding="utf-8"))
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
         interferer_by_type = dict()
@@ -614,9 +644,11 @@ class SceneBuilder:
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        interferers_music = json.load(open(music_interferers, "r"))
+        interferers_music = json.load(open(music_interferers, "r", encoding="utf-8"))
         for interferer in interferers_music:
-            interferer["ID"] = interferer["file"]  # selection require a unique "ID" field
+            interferer["ID"] = interferer[
+                "file"
+            ]  # selection require a unique "ID" field
         interferers_music = [interferers_music]
 
         interferers = {
@@ -626,7 +658,9 @@ class SceneBuilder:
         }
 
         for scene in tqdm(self.scenes):
-            add_interferer_to_scene_inner(scene, interferers, number, start_time_range, end_early_time_range)
+            add_interferer_to_scene_inner(
+                scene, interferers, number, start_time_range, end_early_time_range
+            )
 
     def add_listener_details_to_scene(
         self,
