@@ -16,7 +16,7 @@ room_datasets:
 # Instantiate_scenes
 scene_datasets:
   train:
-    n_scenes: 100
+    n_scenes: 10
     room_selection: RANDOM
     scene_start_index: 1
 

@@ -1,1 +1,1022 @@
-[{'dataset': 'train', 'room': {'name': 'R06025', 'dimensions': '3.8x3.0263x3.4', 'target': {'position': [0.5, 2.3, 1.2], 'view_vector': [-0.874, -0.486, 0.0]}, 'listener': {'position': [-0.4, 1.8, 1.2], 'view_vector': [0.874, 0.486, 0.0]}, 'interferers': [{'position': [0.4, 1.2, 1.2]}, {'position': [-0.1, 2.8, 1.2]}, {'position': [-0.5, 2.8, 1.2]}]}, 'scene': 'S00001', 'target': {'name': 'T037_GW8_00543', 'time_start': 68187, 'time_end': 174027}, 'duration': 218127, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 218127, 'type': 'music', 'name': '92/9592.low.mp3', 'offset': 1946292}, {'position': 2, 'time_start': 0, 'time_end': 218127, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 11243483}, {'position': 3, 'time_start': 0, 'time_end': 218127, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 2916610}], 'SNR': 3.448322075493076, 'listener': {'rotation': [{'sample': 99846.35886398485, 'angle': 48.80884390963763}, {'sample': 108303.35886398485, 'angle': 29.94742859812924}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06049', 'dimensions': '4.8x3.7854x2.8', 'target': {'position': [-0.5, 2.4, 1.6], 'view_vector': [0.809, 0.588, 0.0]}, 'listener': {'position': [0.6, 3.2, 1.6], 'view_vector': [-0.809, -0.588, 0.0]}, 'interferers': [{'position': [0.1, 1.3, 1.6]}, {'position': [-0.5, 2.4, 1.6]}, {'position': [0.5, 1.4, 1.6]}]}, 'scene': 'S00002', 'target': {'name': 'T037_H0F_00198', 'time_start': 70945, 'time_end': 184723}, 'duration': 228823, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 228823, 'type': 'music', 'name': '09/6609.low.mp3', 'offset': 9336094}, {'position': 3, 'time_start': 0, 'time_end': 228823, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 14579638}], 'SNR': -10.419392924924537, 'listener': {'rotation': [{'sample': 61979.8088949023, 'angle': -113.89365024252348}, {'sample': 70791.8088949023, 'angle': -137.60903477535516}], 'hrir_filename': ['DADEC-ED', 'DADEC-BTE_fr', 'DADEC-BTE_mid', 'DADEC-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06027', 'dimensions': '6x4.4533x2.2', 'target': {'position': [-1.2, 3.0, 1.6], 'view_vector': [0.659, 0.753, 0.0]}, 'listener': {'position': [0.2, 4.6, 1.6], 'view_vector': [-0.659, -0.753, 0.0]}, 'interferers': [{'position': [0.4, 2.3, 1.6]}, {'position': [0.6, 1.5, 1.6]}, {'position': [-0.8, 1.1, 1.6]}]}, 'scene': 'S00003', 'target': {'name': 'T037_FAU_02016', 'time_start': 67632, 'time_end': 168180}, 'duration': 212280, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 212280, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 926738}, {'position': 2, 'time_start': 0, 'time_end': 212280, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 26706214}, {'position': 3, 'time_start': 0, 'time_end': 212280, 'type': 'music', 'name': '38/4638.low.mp3', 'offset': 5229584}], 'SNR': -4.225147544762315, 'listener': {'rotation': [{'sample': 74256.01847757467, 'angle': -157.7415843774629}, {'sample': 83234.01847757467, 'angle': -138.80299133354873}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06003', 'dimensions': '7.9x3.0038x2.8', 'target': {'position': [0.4, 2.5, 1.6], 'view_vector': [-0.236, 0.972, 0.0]}, 'listener': {'position': [-0.4, 5.8, 1.6], 'view_vector': [0.236, -0.972, 0.0]}, 'interferers': [{'position': [-0.3, 3.7, 1.6]}, {'position': [0.3, 2.8, 1.6]}, {'position': [-0.2, 3.9, 1.6]}]}, 'scene': 'S00004', 'target': {'name': 'T037_G15_01927', 'time_start': 67024, 'time_end': 146404}, 'duration': 190504, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 190504, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 27239949}, {'position': 2, 'time_start': 0, 'time_end': 190504, 'type': 'noise', 'name': 'CIN_microwave_003.wav', 'offset': 2090612}], 'SNR': -9.923861767419872, 'listener': {'rotation': [{'sample': 101089.30429830102, 'angle': -55.42862371625764}, {'sample': 110109.30429830102, 'angle': -73.13980595813757}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06017', 'dimensions': '5.4x4.8148x2.8', 'target': {'position': [-1.3, 4.1, 1.2], 'view_vector': [0.997, 0.083, 0.0]}, 'listener': {'position': [-0.1, 4.2, 1.2], 'view_vector': [-0.997, -0.083, 0.0]}, 'interferers': [{'position': [0.9, 1.1, 1.2]}, {'position': [-0.4, 1.7, 1.2]}, {'position': [0.7, 2.7, 1.2]}]}, 'scene': 'S00005', 'target': {'name': 'T037_FAB_02006', 'time_start': 86957, 'time_end': 163691}, 'duration': 207791, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 207791, 'type': 'noise', 'name': 'CIN_dishwasher_044.wav', 'offset': 311147}, {'position': 2, 'time_start': 0, 'time_end': 207791, 'type': 'music', 'name': '06/6606.low.mp3', 'offset': 7892528}, {'position': 3, 'time_start': 0, 'time_end': 207791, 'type': 'noise', 'name': 'CIN_kettle_003.wav', 'offset': 556623}], 'SNR': -11.554791421999013, 'listener': {'rotation': [{'sample': 80800.35835919635, 'angle': -203.1558962784758}, {'sample': 90249.35835919635, 'angle': -179.74699391858854}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06033', 'dimensions': '5.1x3.3392x2.9', 'target': {'position': [0.6, 2.7, 1.6], 'view_vector': [0.0, -1.0, 0.0]}, 'listener': {'position': [0.6, 1.2, 1.6], 'view_vector': [0.0, 1.0, 0.0]}, 'interferers': [{'position': [0.0, 3.3, 1.6]}, {'position': [0.4, 3.9, 1.6]}, {'position': [0.6, 3.6, 1.6]}]}, 'scene': 'S00006', 'target': {'name': 'T037_HH3_10714', 'time_start': 86018, 'time_end': 219641}, 'duration': 263741, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 263741, 'type': 'speech', 'name': 'nof_03397.wav', 'offset': 33889955}, {'position': 3, 'time_start': 0, 'time_end': 263741, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 26647089}], 'SNR': -8.900568677060912, 'listener': {'rotation': [{'sample': 89139.45829858074, 'angle': 60.30494987747938}, {'sample': 98113.45829858074, 'angle': 82.23454390441594}], 'hrir_filename': ['VP_N5-ED', 'VP_N5-BTE_fr', 'VP_N5-BTE_mid', 'VP_N5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06032', 'dimensions': '6x3.1767x2.9', 'target': {'position': [0.3, 4.0, 1.6], 'view_vector': [-0.385, -0.923, 0.0]}, 'listener': {'position': [-0.2, 2.8, 1.6], 'view_vector': [0.385, 0.923, 0.0]}, 'interferers': [{'position': [-0.3, 1.8, 1.6]}, {'position': [0.1, 1.5, 1.6]}, {'position': [0.5, 1.2, 1.6]}]}, 'scene': 'S00007', 'target': {'name': 'T037_AEB_00383', 'time_start': 78969, 'time_end': 208623}, 'duration': 252723, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 252723, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 22044743}, {'position': 3, 'time_start': 0, 'time_end': 252723, 'type': 'noise', 'name': 'CIN_hairdryer_018.wav', 'offset': 533640}], 'SNR': -1.310254517417544, 'listener': {'rotation': [{'sample': 82719.81869147641, 'angle': 95.52483609632937}, {'sample': 91769.81869147641, 'angle': 73.82299537214108}], 'hrir_filename': ['VP_N4-ED', 'VP_N4-BTE_fr', 'VP_N4-BTE_mid', 'VP_N4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06026', 'dimensions': '5.5x4.1291x2.9', 'target': {'position': [0.5, 1.0, 1.6], 'view_vector': [-0.254, 0.967, 0.0]}, 'listener': {'position': [0.0, 2.9, 1.6], 'view_vector': [0.254, -0.967, 0.0]}, 'interferers': [{'position': [-0.4, 1.9, 1.6]}, {'position': [0.8, 4.2, 1.6]}, {'position': [0.9, 4.1, 1.6]}]}, 'scene': 'S00008', 'target': {'name': 'T037_G21_00436', 'time_start': 78278, 'time_end': 198671}, 'duration': 242771, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 242771, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 1205739}, {'position': 2, 'time_start': 0, 'time_end': 242771, 'type': 'noise', 'name': 'CIN_fan_011.wav', 'offset': 2524831}, {'position': 3, 'time_start': 0, 'time_end': 242771, 'type': 'music', 'name': '10/6610.low.mp3', 'offset': 590218}], 'SNR': -7.094228801502327, 'listener': {'rotation': [{'sample': 71005.13304481581, 'angle': -101.07981269305174}, {'sample': 79964.13304481581, 'angle': -81.7018006676117}], 'hrir_filename': ['VP_E1-ED', 'VP_E1-BTE_fr', 'VP_E1-BTE_mid', 'VP_E1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06020', 'dimensions': '5x3.232x3', 'target': {'position': [0.2, 1.3, 1.6], 'view_vector': [0.1, 0.995, 0.0]}, 'listener': {'position': [0.3, 2.3, 1.6], 'view_vector': [-0.1, -0.995, 0.0]}, 'interferers': [{'position': [-0.3, 3.3, 1.6]}, {'position': [0.0, 3.4, 1.6]}, {'position': [-0.3, 1.2, 1.6]}]}, 'scene': 'S00009', 'target': {'name': 'T037_CHE_01831', 'time_start': 67342, 'time_end': 157306}, 'duration': 201406, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 201406, 'type': 'noise', 'name': 'CIN_dishwasher_038.wav', 'offset': 817778}, {'position': 2, 'time_start': 0, 'time_end': 201406, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 20472221}, {'position': 3, 'time_start': 0, 'time_end': 201406, 'type': 'noise', 'name': 'CIN_microwave_001.wav', 'offset': 1243134}], 'SNR': 1.290637655221424, 'listener': {'rotation': [{'sample': 83279.28044063457, 'angle': -116.43767241514291}, {'sample': 92190.28044063457, 'angle': -102.36656222597634}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06031', 'dimensions': '5.1x3.0039x3.3', 'target': {'position': [0.4, 3.4, 1.6], 'view_vector': [-0.217, -0.976, 0.0]}, 'listener': {'position': [0.0, 1.6, 1.6], 'view_vector': [0.217, 0.976, 0.0]}, 'interferers': [{'position': [0.3, 3.4, 1.6]}, {'position': [-0.5, 3.6, 1.6]}, {'position': [0.1, 3.5, 1.6]}]}, 'scene': 'S00010', 'target': {'name': 'T037_EFJ_01324', 'time_start': 72526, 'time_end': 231286}, 'duration': 275386, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 275386, 'type': 'music', 'name': '11/6611.low.mp3', 'offset': 6234105}, {'position': 2, 'time_start': 0, 'time_end': 275386, 'type': 'noise', 'name': 'CIN_hairdryer_029.wav', 'offset': 331357}], 'SNR': 3.67088380884627, 'listener': {'rotation': [{'sample': 71122.99735136073, 'angle': 52.88447455989089}, {'sample': 79778.99735136073, 'angle': 72.80370920602}], 'hrir_filename': ['VP_E11-ED', 'VP_E11-BTE_fr', 'VP_E11-BTE_mid', 'VP_E11-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06023', 'dimensions': '4.5x3.8489x2.5', 'target': {'position': [-0.5, 3.5, 1.6], 'view_vector': [0.479, -0.878, 0.0]}, 'listener': {'position': [0.1, 2.4, 1.6], 'view_vector': [-0.479, 0.878, 0.0]}, 'interferers': [{'position': [-0.9, 2.7, 1.6]}, {'position': [0.6, 3.3, 1.6]}, {'position': [0.1, 1.4, 1.6]}]}, 'scene': 'S00011', 'target': {'name': 'T037_CBN_01275', 'time_start': 70209, 'time_end': 177372}, 'duration': 221472, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 221472, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 10244556}, {'position': 3, 'time_start': 0, 'time_end': 221472, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 28323733}], 'SNR': -5.088863987158651, 'listener': {'rotation': [{'sample': 57571.58974518478, 'angle': 94.96396016373208}, {'sample': 65435.58974518478, 'angle': 114.95060168190933}], 'hrir_filename': ['VP_N4-ED', 'VP_N4-BTE_fr', 'VP_N4-BTE_mid', 'VP_N4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06038', 'dimensions': '4.3x3.207x2.6', 'target': {'position': [-0.2, 2.6, 1.6], 'view_vector': [0.447, -0.894, 0.0]}, 'listener': {'position': [0.5, 1.2, 1.6], 'view_vector': [-0.447, 0.894, 0.0]}, 'interferers': [{'position': [0.3, 2.7, 1.6]}, {'position': [-0.5, 1.4, 1.6]}, {'position': [0.2, 3.0, 1.6]}]}, 'scene': 'S00012', 'target': {'name': 'T037_HP0_01377', 'time_start': 73050, 'time_end': 160368}, 'duration': 204468, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 204468, 'type': 'music', 'name': '10/6610.low.mp3', 'offset': 6996426}, {'position': 2, 'time_start': 0, 'time_end': 204468, 'type': 'noise', 'name': 'CIN_washing_051.wav', 'offset': 132427}], 'SNR': -6.253170018490037, 'listener': {'rotation': [{'sample': 45502.113616813, 'angle': 96.29729127969362}, {'sample': 53561.113616813, 'angle': 108.89920016378991}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06014', 'dimensions': '5.9x3.8085x2.4', 'target': {'position': [-0.1, 4.8, 1.6], 'view_vector': [0.236, -0.972, 0.0]}, 'listener': {'position': [0.7, 1.5, 1.6], 'view_vector': [-0.236, 0.972, 0.0]}, 'interferers': [{'position': [-0.5, 1.4, 1.6]}, {'position': [-0.3, 3.2, 1.6]}, {'position': [0.9, 2.8, 1.6]}]}, 'scene': 'S00013', 'target': {'name': 'T037_HTG_00728', 'time_start': 66896, 'time_end': 211103}, 'duration': 255203, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 255203, 'type': 'noise', 'name': 'CIN_fan_001.wav', 'offset': 483379}, {'position': 3, 'time_start': 0, 'time_end': 255203, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 108451}], 'SNR': 2.3212436081368732, 'listener': {'rotation': [{'sample': 74993.80276161278, 'angle': 77.53208609543243}, {'sample': 83878.80276161278, 'angle': 100.0400329319003}], 'hrir_filename': ['VP_E11-ED', 'VP_E11-BTE_fr', 'VP_E11-BTE_mid', 'VP_E11-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06033', 'dimensions': '5.1x3.3392x2.9', 'target': {'position': [0.6, 2.7, 1.6], 'view_vector': [0.0, -1.0, 0.0]}, 'listener': {'position': [0.6, 1.2, 1.6], 'view_vector': [0.0, 1.0, 0.0]}, 'interferers': [{'position': [0.0, 3.3, 1.6]}, {'position': [0.4, 3.9, 1.6]}, {'position': [0.6, 3.6, 1.6]}]}, 'scene': 'S00014', 'target': {'name': 'T037_HHX_09726', 'time_start': 86485, 'time_end': 184387}, 'duration': 228487, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 228487, 'type': 'noise', 'name': 'CIN_microwave_001.wav', 'offset': 976698}, {'position': 3, 'time_start': 0, 'time_end': 228487, 'type': 'music', 'name': '29/4629.low.mp3', 'offset': 3998798}], 'SNR': -3.0664814126066258, 'listener': {'rotation': [{'sample': 70376.11091042007, 'angle': 116.17161075639973}, {'sample': 79277.11091042007, 'angle': 99.4697436257518}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06009', 'dimensions': '4.5364x4.4x2.6', 'target': {'position': [-0.8, 3.3, 1.2], 'view_vector': [0.294, -0.956, 0.0]}, 'listener': {'position': [-0.4, 2.0, 1.2], 'view_vector': [-0.294, 0.956, 0.0]}, 'interferers': [{'position': [0.8, 2.3, 1.2]}, {'position': [0.6, 1.4, 1.2]}, {'position': [-0.4, 3.1, 1.2]}]}, 'scene': 'S00015', 'target': {'name': 'T037_J54_00114', 'time_start': 74667, 'time_end': 189768}, 'duration': 233868, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 233868, 'type': 'music', 'name': '00/12100.low.mp3', 'offset': 5485883}, {'position': 2, 'time_start': 0, 'time_end': 233868, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 19490071}, {'position': 3, 'time_start': 0, 'time_end': 233868, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 4202222}], 'SNR': -9.279364101504395, 'listener': {'rotation': [{'sample': 100322.38839172528, 'angle': 124.86980571450688}, {'sample': 109220.38839172528, 'angle': 114.35541297269901}], 'hrir_filename': ['VP_E11-ED', 'VP_E11-BTE_fr', 'VP_E11-BTE_mid', 'VP_E11-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06019', 'dimensions': '3.7871x3.1x2.5', 'target': {'position': [-0.3, 1.1, 1.6], 'view_vector': [0.504, 0.864, 0.0]}, 'listener': {'position': [0.4, 2.3, 1.6], 'view_vector': [-0.504, -0.864, 0.0]}, 'interferers': [{'position': [0.4, 1.2, 1.6]}, {'position': [0.5, 1.3, 1.6]}, {'position': [0.3, 1.1, 1.6]}]}, 'scene': 'S00016', 'target': {'name': 'T037_CML_01176', 'time_start': 73386, 'time_end': 180549}, 'duration': 224649, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 224649, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 20173200}, {'position': 2, 'time_start': 0, 'time_end': 224649, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 4429865}], 'SNR': -1.3545899607136676, 'listener': {'rotation': [{'sample': 90590.74989775513, 'angle': -102.43248888550644}, {'sample': 99853.74989775513, 'angle': -119.81950950512}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06009', 'dimensions': '4.5364x4.4x2.6', 'target': {'position': [-0.8, 3.3, 1.2], 'view_vector': [0.294, -0.956, 0.0]}, 'listener': {'position': [-0.4, 2.0, 1.2], 'view_vector': [-0.294, 0.956, 0.0]}, 'interferers': [{'position': [0.8, 2.3, 1.2]}, {'position': [0.6, 1.4, 1.2]}, {'position': [-0.4, 3.1, 1.2]}]}, 'scene': 'S00017', 'target': {'name': 'T037_JY7_03966', 'time_start': 87348, 'time_end': 182604}, 'duration': 226704, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 226704, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 24780353}, {'position': 2, 'time_start': 0, 'time_end': 226704, 'type': 'noise', 'name': 'CIN_vacuum_001.wav', 'offset': 6999881}, {'position': 3, 'time_start': 0, 'time_end': 226704, 'type': 'music', 'name': '08/6608.low.mp3', 'offset': 4920952}], 'SNR': -4.661612983327869, 'listener': {'rotation': [{'sample': 94134.06104953139, 'angle': 132.06247438703417}, {'sample': 103218.06104953139, 'angle': 109.98056472596149}], 'hrir_filename': ['VP_N6-ED', 'VP_N6-BTE_fr', 'VP_N6-BTE_mid', 'VP_N6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06049', 'dimensions': '4.8x3.7854x2.8', 'target': {'position': [-0.5, 2.4, 1.6], 'view_vector': [0.809, 0.588, 0.0]}, 'listener': {'position': [0.6, 3.2, 1.6], 'view_vector': [-0.809, -0.588, 0.0]}, 'interferers': [{'position': [0.1, 1.3, 1.6]}, {'position': [-0.5, 2.4, 1.6]}, {'position': [0.5, 1.4, 1.6]}]}, 'scene': 'S00018', 'target': {'name': 'T037_H8M_03676', 'time_start': 77628, 'time_end': 198021}, 'duration': 242121, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 242121, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 5863207}, {'position': 2, 'time_start': 0, 'time_end': 242121, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 4783771}, {'position': 3, 'time_start': 0, 'time_end': 242121, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 13666042}], 'SNR': -0.705517985445459, 'listener': {'rotation': [{'sample': 81620.9583491837, 'angle': -164.92640773270526}, {'sample': 91031.9583491837, 'angle': -149.97041677462025}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06007', 'dimensions': '7.281x4.2x2.3', 'target': {'position': [0.3, 2.2, 1.6], 'view_vector': [-0.997, -0.083, 0.0]}, 'listener': {'position': [-0.9, 2.1, 1.6], 'view_vector': [0.997, 0.083, 0.0]}, 'interferers': [{'position': [0.4, 4.8, 1.6]}, {'position': [-0.8, 5.7, 1.6]}, {'position': [-0.5, 4.1, 1.6]}]}, 'scene': 'S00019', 'target': {'name': 'T037_JXS_03107', 'time_start': 72058, 'time_end': 162022}, 'duration': 206122, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 206122, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 23699295}, {'position': 2, 'time_start': 0, 'time_end': 206122, 'type': 'music', 'name': '39/4639.low.mp3', 'offset': 4561228}, {'position': 3, 'time_start': 0, 'time_end': 206122, 'type': 'noise', 'name': 'CIN_microwave_001.wav', 'offset': 506804}], 'SNR': 4.389873933060329, 'listener': {'rotation': [{'sample': 84510.02253128274, 'angle': 33.850511683848815}, {'sample': 93173.02253128274, 'angle': 12.458132754176829}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06040', 'dimensions': '3.8x3.2342x2.9', 'target': {'position': [0.5, 1.3, 1.2], 'view_vector': [-0.514, 0.857, 0.0]}, 'listener': {'position': [-0.1, 2.3, 1.2], 'view_vector': [0.514, -0.857, 0.0]}, 'interferers': [{'position': [0.0, 1.2, 1.2]}, {'position': [0.0, 1.1, 1.2]}, {'position': [0.6, 1.0, 1.2]}]}, 'scene': 'S00020', 'target': {'name': 'T037_APP_00992', 'time_start': 82653, 'time_end': 203046}, 'duration': 247146, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 247146, 'type': 'music', 'name': '06/6606.low.mp3', 'offset': 3288852}, {'position': 2, 'time_start': 0, 'time_end': 247146, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 10254366}, {'position': 3, 'time_start': 0, 'time_end': 247146, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 2284820}], 'SNR': -7.919546855190238, 'listener': {'rotation': [{'sample': 88544.84021914785, 'angle': -31.013284768943603}, {'sample': 97035.84021914785, 'angle': -56.922543759426155}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06017', 'dimensions': '5.4x4.8148x2.8', 'target': {'position': [-1.3, 4.1, 1.2], 'view_vector': [0.997, 0.083, 0.0]}, 'listener': {'position': [-0.1, 4.2, 1.2], 'view_vector': [-0.997, -0.083, 0.0]}, 'interferers': [{'position': [0.9, 1.1, 1.2]}, {'position': [-0.4, 1.7, 1.2]}, {'position': [0.7, 2.7, 1.2]}]}, 'scene': 'S00021', 'target': {'name': 'T037_BMR_01420', 'time_start': 67440, 'time_end': 140205}, 'duration': 184305, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 184305, 'type': 'music', 'name': '06/6606.low.mp3', 'offset': 7421646}, {'position': 2, 'time_start': 0, 'time_end': 184305, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 4043908}, {'position': 3, 'time_start': 0, 'time_end': 184305, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 18777501}], 'SNR': -11.950521148928695, 'listener': {'rotation': [{'sample': 74923.44590726375, 'angle': -192.47413685793828}, {'sample': 84353.44590726375, 'angle': -177.61802637024152}], 'hrir_filename': ['VP_E9-ED', 'VP_E9-BTE_fr', 'VP_E9-BTE_mid', 'VP_E9-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06035', 'dimensions': '4.5279x4.3x2.9', 'target': {'position': [0.0, 2.6, 1.2], 'view_vector': [-0.984, -0.179, 0.0]}, 'listener': {'position': [-1.1, 2.4, 1.2], 'view_vector': [0.984, 0.179, 0.0]}, 'interferers': [{'position': [-0.2, 3.2, 1.2]}, {'position': [-0.4, 1.1, 1.2]}, {'position': [0.9, 3.4, 1.2]}]}, 'scene': 'S00022', 'target': {'name': 'T037_CH6_02005', 'time_start': 78971, 'time_end': 186134}, 'duration': 230234, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 230234, 'type': 'noise', 'name': 'CIN_vacuum_013.wav', 'offset': 149748}, {'position': 2, 'time_start': 0, 'time_end': 230234, 'type': 'noise', 'name': 'CIN_kettle_020.wav', 'offset': 214302}, {'position': 3, 'time_start': 0, 'time_end': 230234, 'type': 'noise', 'name': 'CIN_vacuum_001.wav', 'offset': 8838707}], 'SNR': -4.149581788827257, 'listener': {'rotation': [{'sample': 92244.0442631158, 'angle': -17.66809422146841}, {'sample': 101263.0442631158, 'angle': 7.7378387370905415}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06046', 'dimensions': '5.8x3.6776x2.8', 'target': {'position': [-0.6, 3.9, 1.6], 'view_vector': [0.793, -0.61, 0.0]}, 'listener': {'position': [0.7, 2.9, 1.6], 'view_vector': [-0.793, 0.61, 0.0]}, 'interferers': [{'position': [0.3, 4.0, 1.6]}, {'position': [0.3, 4.3, 1.6]}, {'position': [-0.3, 2.5, 1.6]}]}, 'scene': 'S00023', 'target': {'name': 'T037_B0U_01203', 'time_start': 74674, 'time_end': 193744}, 'duration': 237844, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 237844, 'type': 'music', 'name': '29/4629.low.mp3', 'offset': 5208292}, {'position': 3, 'time_start': 0, 'time_end': 237844, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 4720430}], 'SNR': -1.119348357883755, 'listener': {'rotation': [{'sample': 82161.53426672169, 'angle': 119.82420443324276}, {'sample': 90927.53426672169, 'angle': 137.63317712905794}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06039', 'dimensions': '3.3x3.2x2.5', 'target': {'position': [-0.2, 2.3, 1.2], 'view_vector': [-0.1, -0.995, 0.0]}, 'listener': {'position': [-0.3, 1.3, 1.2], 'view_vector': [0.1, 0.995, 0.0]}, 'interferers': [{'position': [0.4, 2.2, 1.2]}, {'position': [-0.1, 2.3, 1.2]}, {'position': [0.6, 1.8, 1.2]}]}, 'scene': 'S00024', 'target': {'name': 'T037_CAM_02020', 'time_start': 81558, 'time_end': 179460}, 'duration': 223560, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 223560, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 9898605}, {'position': 2, 'time_start': 0, 'time_end': 223560, 'type': 'noise', 'name': 'CIN_fan_004.wav', 'offset': 29106}, {'position': 3, 'time_start': 0, 'time_end': 223560, 'type': 'music', 'name': '92/9592.low.mp3', 'offset': 6535336}], 'SNR': -0.36512545006295305, 'listener': {'rotation': [{'sample': 93266.05018114994, 'angle': 104.45901178481877}, {'sample': 101538.05018114994, 'angle': 89.25673903971774}], 'hrir_filename': ['VP_E5-ED', 'VP_E5-BTE_fr', 'VP_E5-BTE_mid', 'VP_E5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06010', 'dimensions': '4.1x3.9659x2.5', 'target': {'position': [0.9, 2.4, 1.2], 'view_vector': [-0.994, -0.11, 0.0]}, 'listener': {'position': [-0.9, 2.2, 1.2], 'view_vector': [0.994, 0.11, 0.0]}, 'interferers': [{'position': [0.6, 1.5, 1.2]}, {'position': [0.4, 2.6, 1.2]}, {'position': [-0.1, 3.1, 1.2]}]}, 'scene': 'S00025', 'target': {'name': 'T037_BMS_03276', 'time_start': 88191, 'time_end': 196677}, 'duration': 240777, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 240777, 'type': 'music', 'name': '51/951.low.mp3', 'offset': 3133243}, {'position': 3, 'time_start': 0, 'time_end': 240777, 'type': 'noise', 'name': 'CIN_microwave_011.wav', 'offset': 363591}], 'SNR': -0.33151263926193764, 'listener': {'rotation': [{'sample': 79618.38841901702, 'angle': -21.982706632763758}, {'sample': 88394.38841901702, 'angle': 3.1869449012851865}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06020', 'dimensions': '5x3.232x3', 'target': {'position': [0.2, 1.3, 1.6], 'view_vector': [0.1, 0.995, 0.0]}, 'listener': {'position': [0.3, 2.3, 1.6], 'view_vector': [-0.1, -0.995, 0.0]}, 'interferers': [{'position': [-0.3, 3.3, 1.6]}, {'position': [0.0, 3.4, 1.6]}, {'position': [-0.3, 1.2, 1.6]}]}, 'scene': 'S00026', 'target': {'name': 'T037_CDM_01165', 'time_start': 68052, 'time_end': 167277}, 'duration': 211377, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 211377, 'type': 'noise', 'name': 'CIN_vacuum_002.wav', 'offset': 5300588}, {'position': 3, 'time_start': 0, 'time_end': 211377, 'type': 'noise', 'name': 'CIN_vacuum_012.wav', 'offset': 997515}], 'SNR': -9.560142181483346, 'listener': {'rotation': [{'sample': 42914.14196780297, 'angle': -72.54357439281945}, {'sample': 52312.14196780297, 'angle': -90.13840550083113}], 'hrir_filename': ['KEMAR-ED', 'KEMAR-BTE_fr', 'KEMAR-BTE_mid', 'KEMAR-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06007', 'dimensions': '7.281x4.2x2.3', 'target': {'position': [0.3, 2.2, 1.6], 'view_vector': [-0.997, -0.083, 0.0]}, 'listener': {'position': [-0.9, 2.1, 1.6], 'view_vector': [0.997, 0.083, 0.0]}, 'interferers': [{'position': [0.4, 4.8, 1.6]}, {'position': [-0.8, 5.7, 1.6]}, {'position': [-0.5, 4.1, 1.6]}]}, 'scene': 'S00027', 'target': {'name': 'T037_ADP_01134', 'time_start': 71456, 'time_end': 178619}, 'duration': 222719, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 222719, 'type': 'noise', 'name': 'CIN_hairdryer_023.wav', 'offset': 14952}, {'position': 3, 'time_start': 0, 'time_end': 222719, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 7454670}], 'SNR': -10.46607330778411, 'listener': {'rotation': [{'sample': 60046.275266989964, 'angle': -25.846916478850062}, {'sample': 68746.27526698996, 'angle': -3.7213317453994925}], 'hrir_filename': ['VP_E12-ED', 'VP_E12-BTE_fr', 'VP_E12-BTE_mid', 'VP_E12-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06047', 'dimensions': '4.1286x3.5x2.8', 'target': {'position': [0.6, 2.3, 1.2], 'view_vector': [-0.97, 0.243, 0.0]}, 'listener': {'position': [-0.6, 2.6, 1.2], 'view_vector': [0.97, -0.243, 0.0]}, 'interferers': [{'position': [-0.1, 1.2, 1.2]}, {'position': [0.6, 1.1, 1.2]}, {'position': [-0.5, 1.2, 1.2]}]}, 'scene': 'S00028', 'target': {'name': 'T037_FU2_01464', 'time_start': 83499, 'time_end': 194631}, 'duration': 238731, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 238731, 'type': 'noise', 'name': 'CIN_kettle_051.wav', 'offset': 2727501}, {'position': 2, 'time_start': 0, 'time_end': 238731, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 12371657}, {'position': 3, 'time_start': 0, 'time_end': 238731, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 6765297}], 'SNR': -6.414429635022782, 'listener': {'rotation': [{'sample': 59097.08931348414, 'angle': 5.569557240584783}, {'sample': 68717.08931348415, 'angle': -12.439114304563756}], 'hrir_filename': ['VP_E7-ED', 'VP_E7-BTE_fr', 'VP_E7-BTE_mid', 'VP_E7-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06005', 'dimensions': '6.2x4.6468x2.3', 'target': {'position': [1.1, 1.2, 1.6], 'view_vector': [-0.431, 0.902, 0.0]}, 'listener': {'position': [0.0, 3.5, 1.6], 'view_vector': [0.431, -0.902, 0.0]}, 'interferers': [{'position': [1.0, 3.3, 1.6]}, {'position': [1.1, 4.1, 1.6]}, {'position': [-1.0, 2.8, 1.6]}]}, 'scene': 'S00029', 'target': {'name': 'T037_K1S_01604', 'time_start': 69990, 'time_end': 185091}, 'duration': 229191, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 229191, 'type': 'music', 'name': '11/6611.low.mp3', 'offset': 8309764}, {'position': 2, 'time_start': 0, 'time_end': 229191, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 30904415}, {'position': 3, 'time_start': 0, 'time_end': 229191, 'type': 'noise', 'name': 'CIN_dishwasher_005.wav', 'offset': 4045731}], 'SNR': -0.6071006321145216, 'listener': {'rotation': [{'sample': 82668.09958330622, 'angle': -87.88852848272604}, {'sample': 91134.09958330622, 'angle': -72.96753932565422}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06044', 'dimensions': '4.6x3.9565x2.8', 'target': {'position': [-0.6, 2.1, 1.6], 'view_vector': [0.423, 0.906, 0.0]}, 'listener': {'position': [0.1, 3.6, 1.6], 'view_vector': [-0.423, -0.906, 0.0]}, 'interferers': [{'position': [0.5, 2.1, 1.6]}, {'position': [-0.8, 1.5, 1.6]}, {'position': [0.9, 1.1, 1.6]}]}, 'scene': 'S00030', 'target': {'name': 'T037_ACG_01013', 'time_start': 87960, 'time_end': 226875}, 'duration': 270975, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 270975, 'type': 'music', 'name': '50/950.low.mp3', 'offset': 3026431}, {'position': 2, 'time_start': 0, 'time_end': 270975, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 28201124}], 'SNR': -0.7270869711976751, 'listener': {'rotation': [{'sample': 84761.03217424857, 'angle': -90.73759899267755}, {'sample': 93761.03217424857, 'angle': -105.28023210424796}], 'hrir_filename': ['KEMAR-ED', 'KEMAR-BTE_fr', 'KEMAR-BTE_mid', 'KEMAR-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06022', 'dimensions': '3.8x3.2079x2.5', 'target': {'position': [-0.5, 2.1, 1.6], 'view_vector': [0.743, -0.669, 0.0]}, 'listener': {'position': [0.5, 1.2, 1.6], 'view_vector': [-0.743, 0.669, 0.0]}, 'interferers': [{'position': [-0.4, 2.6, 1.6]}, {'position': [0.5, 2.5, 1.6]}, {'position': [-0.4, 2.7, 1.6]}]}, 'scene': 'S00031', 'target': {'name': 'T037_ABX_00032', 'time_start': 66582, 'time_end': 198882}, 'duration': 242982, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 242982, 'type': 'music', 'name': '00/12100.low.mp3', 'offset': 4378651}, {'position': 2, 'time_start': 0, 'time_end': 242982, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 3318559}, {'position': 3, 'time_start': 0, 'time_end': 242982, 'type': 'noise', 'name': 'CIN_fan_005.wav', 'offset': 149189}], 'SNR': 2.8742686297316773, 'listener': {'rotation': [{'sample': 72059.06739430559, 'angle': 112.20536462852009}, {'sample': 81522.06739430559, 'angle': 128.45579018018395}], 'hrir_filename': ['VP_E1-ED', 'VP_E1-BTE_fr', 'VP_E1-BTE_mid', 'VP_E1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06031', 'dimensions': '5.1x3.0039x3.3', 'target': {'position': [0.4, 3.4, 1.6], 'view_vector': [-0.217, -0.976, 0.0]}, 'listener': {'position': [0.0, 1.6, 1.6], 'view_vector': [0.217, 0.976, 0.0]}, 'interferers': [{'position': [0.3, 3.4, 1.6]}, {'position': [-0.5, 3.6, 1.6]}, {'position': [0.1, 3.5, 1.6]}]}, 'scene': 'S00032', 'target': {'name': 'T037_ACV_00737', 'time_start': 79581, 'time_end': 176160}, 'duration': 220260, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 220260, 'type': 'music', 'name': '08/6608.low.mp3', 'offset': 3851422}, {'position': 3, 'time_start': 0, 'time_end': 220260, 'type': 'noise', 'name': 'CIN_microwave_012.wav', 'offset': 64461040}], 'SNR': -8.596833759101319, 'listener': {'rotation': [{'sample': 111187.58573511186, 'angle': 103.91597043262531}, {'sample': 120019.58573511186, 'angle': 86.8023040296879}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06036', 'dimensions': '4.627x3.7x2.8', 'target': {'position': [-0.2, 1.2, 1.2], 'view_vector': [0.447, 0.894, 0.0]}, 'listener': {'position': [0.4, 2.4, 1.2], 'view_vector': [-0.447, -0.894, 0.0]}, 'interferers': [{'position': [-0.7, 2.5, 1.2]}, {'position': [-0.2, 3.4, 1.2]}, {'position': [0.0, 1.1, 1.2]}]}, 'scene': 'S00033', 'target': {'name': 'T037_GWC_00510', 'time_start': 87414, 'time_end': 176055}, 'duration': 220155, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 220155, 'type': 'noise', 'name': 'CIN_kettle_014.wav', 'offset': 2303309}, {'position': 2, 'time_start': 0, 'time_end': 220155, 'type': 'music', 'name': '48/948.low.mp3', 'offset': 2178066}], 'SNR': -10.893673493681202, 'listener': {'rotation': [{'sample': 65461.3885288542, 'angle': -94.1844427827715}, {'sample': 73907.38852885421, 'angle': -107.64414673621545}], 'hrir_filename': ['VP_N4-ED', 'VP_N4-BTE_fr', 'VP_N4-BTE_mid', 'VP_N4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06007', 'dimensions': '7.281x4.2x2.3', 'target': {'position': [0.3, 2.2, 1.6], 'view_vector': [-0.997, -0.083, 0.0]}, 'listener': {'position': [-0.9, 2.1, 1.6], 'view_vector': [0.997, 0.083, 0.0]}, 'interferers': [{'position': [0.4, 4.8, 1.6]}, {'position': [-0.8, 5.7, 1.6]}, {'position': [-0.5, 4.1, 1.6]}]}, 'scene': 'S00034', 'target': {'name': 'T037_CTX_02010', 'time_start': 78885, 'time_end': 220446}, 'duration': 264546, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 264546, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 25500245}, {'position': 2, 'time_start': 0, 'time_end': 264546, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 16725741}, {'position': 3, 'time_start': 0, 'time_end': 264546, 'type': 'music', 'name': '92/9592.low.mp3', 'offset': 7643748}], 'SNR': 5.487315747791122, 'listener': {'rotation': [{'sample': 114280.2841742099, 'angle': 27.02481702356652}, {'sample': 123361.2841742099, 'angle': 6.600678940408576}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06023', 'dimensions': '4.5x3.8489x2.5', 'target': {'position': [-0.5, 3.5, 1.6], 'view_vector': [0.479, -0.878, 0.0]}, 'listener': {'position': [0.1, 2.4, 1.6], 'view_vector': [-0.479, 0.878, 0.0]}, 'interferers': [{'position': [-0.9, 2.7, 1.6]}, {'position': [0.6, 3.3, 1.6]}, {'position': [0.1, 1.4, 1.6]}]}, 'scene': 'S00035', 'target': {'name': 'T037_G0L_00841', 'time_start': 71177, 'time_end': 162464}, 'duration': 206564, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 206564, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 20277144}, {'position': 2, 'time_start': 0, 'time_end': 206564, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 12887999}, {'position': 3, 'time_start': 0, 'time_end': 206564, 'type': 'noise', 'name': 'CIN_dishwasher_036.wav', 'offset': 3046995}], 'SNR': -6.309791210129727, 'listener': {'rotation': [{'sample': 52229.378543265724, 'angle': 96.32508887367199}, {'sample': 61291.378543265724, 'angle': 117.15777304811235}], 'hrir_filename': ['VP_E7-ED', 'VP_E7-BTE_fr', 'VP_E7-BTE_mid', 'VP_E7-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06028', 'dimensions': '5.7x3.3544x3', 'target': {'position': [-0.5, 1.5, 1.6], 'view_vector': [0.316, 0.949, 0.0]}, 'listener': {'position': [0.1, 3.3, 1.6], 'view_vector': [-0.316, -0.949, 0.0]}, 'interferers': [{'position': [-0.7, 4.6, 1.6]}, {'position': [0.2, 4.3, 1.6]}, {'position': [-0.4, 1.8, 1.6]}]}, 'scene': 'S00036', 'target': {'name': 'T037_CKE_02126', 'time_start': 81156, 'time_end': 249177}, 'duration': 293277, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 293277, 'type': 'noise', 'name': 'CIN_microwave_002.wav', 'offset': 1278853}, {'position': 3, 'time_start': 0, 'time_end': 293277, 'type': 'noise', 'name': 'CIN_kettle_062.wav', 'offset': 488074}], 'SNR': 5.640855653780683, 'listener': {'rotation': [{'sample': 66675.67325745318, 'angle': -76.15870690547229}, {'sample': 76051.67325745318, 'angle': -98.91236219546867}], 'hrir_filename': ['VP_E5-ED', 'VP_E5-BTE_fr', 'VP_E5-BTE_mid', 'VP_E5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06021', 'dimensions': '4.9x4.5918x2.3', 'target': {'position': [-1.1, 3.7, 1.2], 'view_vector': [0.351, -0.936, 0.0]}, 'listener': {'position': [-0.2, 1.3, 1.2], 'view_vector': [-0.351, 0.936, 0.0]}, 'interferers': [{'position': [-0.6, 3.3, 1.2]}, {'position': [1.0, 3.3, 1.2]}, {'position': [-1.1, 1.9, 1.2]}]}, 'scene': 'S00037', 'target': {'name': 'T037_CHH_00543', 'time_start': 77157, 'time_end': 200196}, 'duration': 244296, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 244296, 'type': 'noise', 'name': 'CIN_dishwasher_018.wav', 'offset': 342819}, {'position': 3, 'time_start': 0, 'time_end': 244296, 'type': 'noise', 'name': 'CIN_washing_009.wav', 'offset': 1446735}], 'SNR': 1.446439809642552, 'listener': {'rotation': [{'sample': 106730.00738600595, 'angle': 136.22591370019524}, {'sample': 116094.00738600595, 'angle': 111.81800912016149}], 'hrir_filename': ['VP_E7-ED', 'VP_E7-BTE_fr', 'VP_E7-BTE_mid', 'VP_E7-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06040', 'dimensions': '3.8x3.2342x2.9', 'target': {'position': [0.5, 1.3, 1.2], 'view_vector': [-0.514, 0.857, 0.0]}, 'listener': {'position': [-0.1, 2.3, 1.2], 'view_vector': [0.514, -0.857, 0.0]}, 'interferers': [{'position': [0.0, 1.2, 1.2]}, {'position': [0.0, 1.1, 1.2]}, {'position': [0.6, 1.0, 1.2]}]}, 'scene': 'S00038', 'target': {'name': 'T037_A7D_01317', 'time_start': 83986, 'time_end': 171304}, 'duration': 215404, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 215404, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 323237}, {'position': 2, 'time_start': 0, 'time_end': 215404, 'type': 'music', 'name': '50/950.low.mp3', 'offset': 9474571}, {'position': 3, 'time_start': 0, 'time_end': 215404, 'type': 'noise', 'name': 'CIN_vacuum_008.wav', 'offset': 13044}], 'SNR': -3.2511631281114823, 'listener': {'rotation': [{'sample': 61377.48897119103, 'angle': -77.22106443861206}, {'sample': 70083.48897119102, 'angle': -61.82893094299556}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06041', 'dimensions': '4.185x4x2.5', 'target': {'position': [-0.8, 1.4, 1.6], 'view_vector': [0.793, 0.61, 0.0]}, 'listener': {'position': [0.5, 2.4, 1.6], 'view_vector': [-0.793, -0.61, 0.0]}, 'interferers': [{'position': [-1.0, 2.6, 1.6]}, {'position': [0.4, 1.1, 1.6]}, {'position': [-0.1, 1.3, 1.6]}]}, 'scene': 'S00039', 'target': {'name': 'T037_H7W_00891', 'time_start': 70568, 'time_end': 159209}, 'duration': 203309, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 203309, 'type': 'noise', 'name': 'CIN_fan_004.wav', 'offset': 32347}, {'position': 3, 'time_start': 0, 'time_end': 203309, 'type': 'noise', 'name': 'CIN_microwave_012.wav', 'offset': 150702023}], 'SNR': -3.337516226161579, 'listener': {'rotation': [{'sample': 42833.268942924085, 'angle': -170.10242353668696}, {'sample': 51839.268942924085, 'angle': -142.46515414054574}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06014', 'dimensions': '5.9x3.8085x2.4', 'target': {'position': [-0.1, 4.8, 1.6], 'view_vector': [0.236, -0.972, 0.0]}, 'listener': {'position': [0.7, 1.5, 1.6], 'view_vector': [-0.236, 0.972, 0.0]}, 'interferers': [{'position': [-0.5, 1.4, 1.6]}, {'position': [-0.3, 3.2, 1.6]}, {'position': [0.9, 2.8, 1.6]}]}, 'scene': 'S00040', 'target': {'name': 'T037_BN3_01491', 'time_start': 81938, 'time_end': 214238}, 'duration': 258338, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 258338, 'type': 'music', 'name': '40/4640.low.mp3', 'offset': 5708452}, {'position': 3, 'time_start': 0, 'time_end': 258338, 'type': 'noise', 'name': 'CIN_microwave_001.wav', 'offset': 2081821}], 'SNR': 4.430048390854385, 'listener': {'rotation': [{'sample': 63557.2548727023, 'angle': 80.0458417321386}, {'sample': 71870.2548727023, 'angle': 96.92889852686413}], 'hrir_filename': ['VP_N1-ED', 'VP_N1-BTE_fr', 'VP_N1-BTE_mid', 'VP_N1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06036', 'dimensions': '4.627x3.7x2.8', 'target': {'position': [-0.2, 1.2, 1.2], 'view_vector': [0.447, 0.894, 0.0]}, 'listener': {'position': [0.4, 2.4, 1.2], 'view_vector': [-0.447, -0.894, 0.0]}, 'interferers': [{'position': [-0.7, 2.5, 1.2]}, {'position': [-0.2, 3.4, 1.2]}, {'position': [0.0, 1.1, 1.2]}]}, 'scene': 'S00041', 'target': {'name': 'T037_HHC_00984', 'time_start': 86142, 'time_end': 177429}, 'duration': 221529, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 221529, 'type': 'noise', 'name': 'CIN_microwave_012.wav', 'offset': 108638878}, {'position': 2, 'time_start': 0, 'time_end': 221529, 'type': 'music', 'name': '09/6609.low.mp3', 'offset': 248033}], 'SNR': -7.14765645470743, 'listener': {'rotation': [{'sample': 79081.78018025358, 'angle': -139.1018412838798}, {'sample': 88135.78018025358, 'angle': -123.90503299194984}], 'hrir_filename': ['VP_E5-ED', 'VP_E5-BTE_fr', 'VP_E5-BTE_mid', 'VP_E5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06031', 'dimensions': '5.1x3.0039x3.3', 'target': {'position': [0.4, 3.4, 1.6], 'view_vector': [-0.217, -0.976, 0.0]}, 'listener': {'position': [0.0, 1.6, 1.6], 'view_vector': [0.217, 0.976, 0.0]}, 'interferers': [{'position': [0.3, 3.4, 1.6]}, {'position': [-0.5, 3.6, 1.6]}, {'position': [0.1, 3.5, 1.6]}]}, 'scene': 'S00042', 'target': {'name': 'T037_H8L_01442', 'time_start': 77920, 'time_end': 186406}, 'duration': 230506, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 230506, 'type': 'noise', 'name': 'CIN_microwave_001.wav', 'offset': 1693571}, {'position': 2, 'time_start': 0, 'time_end': 230506, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 9162027}, {'position': 3, 'time_start': 0, 'time_end': 230506, 'type': 'noise', 'name': 'CIN_microwave_011.wav', 'offset': 1220550}], 'SNR': -0.37268063871407797, 'listener': {'rotation': [{'sample': 56556.444783387095, 'angle': 52.18261091047145}, {'sample': 64965.444783387095, 'angle': 74.64395457916017}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06029', 'dimensions': '5.3243x3.7x2.1', 'target': {'position': [0.4, 3.8, 1.6], 'view_vector': [-0.447, -0.894, 0.0]}, 'listener': {'position': [-0.5, 2.0, 1.6], 'view_vector': [0.447, 0.894, 0.0]}, 'interferers': [{'position': [0.3, 3.6, 1.6]}, {'position': [0.6, 1.4, 1.6]}, {'position': [-0.8, 4.2, 1.6]}]}, 'scene': 'S00043', 'target': {'name': 'T037_CBT_02919', 'time_start': 76317, 'time_end': 265506}, 'duration': 309606, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 309606, 'type': 'noise', 'name': 'CIN_kettle_072.wav', 'offset': 2234641}, {'position': 2, 'time_start': 0, 'time_end': 309606, 'type': 'noise', 'name': 'CIN_washing_023.wav', 'offset': 2773764}, {'position': 3, 'time_start': 0, 'time_end': 309606, 'type': 'music', 'name': '08/6608.low.mp3', 'offset': 6093368}], 'SNR': -3.744150754252331, 'listener': {'rotation': [{'sample': 84852.87369500849, 'angle': 36.49450900555849}, {'sample': 94064.87369500849, 'angle': 54.350175710706786}], 'hrir_filename': ['VP_E1-ED', 'VP_E1-BTE_fr', 'VP_E1-BTE_mid', 'VP_E1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06034', 'dimensions': '6.7x3.0522x2.9', 'target': {'position': [0.3, 3.7, 1.2], 'view_vector': [-0.091, -0.996, 0.0]}, 'listener': {'position': [0.2, 2.6, 1.2], 'view_vector': [0.091, 0.996, 0.0]}, 'interferers': [{'position': [0.0, 5.6, 1.2]}, {'position': [0.5, 4.3, 1.2]}, {'position': [-0.3, 5.2, 1.2]}]}, 'scene': 'S00044', 'target': {'name': 'T037_HR9_00494', 'time_start': 79729, 'time_end': 186892}, 'duration': 230992, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 230992, 'type': 'noise', 'name': 'CIN_kettle_003.wav', 'offset': 3706832}, {'position': 2, 'time_start': 0, 'time_end': 230992, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 17287169}, {'position': 3, 'time_start': 0, 'time_end': 230992, 'type': 'music', 'name': '40/4640.low.mp3', 'offset': 2916442}], 'SNR': 1.5836441730888353, 'listener': {'rotation': [{'sample': 85918.97938667565, 'angle': 52.081642336984686}, {'sample': 95312.97938667565, 'angle': 83.36376629412744}], 'hrir_filename': ['VP_E7-ED', 'VP_E7-BTE_fr', 'VP_E7-BTE_mid', 'VP_E7-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06017', 'dimensions': '5.4x4.8148x2.8', 'target': {'position': [-1.3, 4.1, 1.2], 'view_vector': [0.997, 0.083, 0.0]}, 'listener': {'position': [-0.1, 4.2, 1.2], 'view_vector': [-0.997, -0.083, 0.0]}, 'interferers': [{'position': [0.9, 1.1, 1.2]}, {'position': [-0.4, 1.7, 1.2]}, {'position': [0.7, 2.7, 1.2]}]}, 'scene': 'S00045', 'target': {'name': 'T037_H98_00178', 'time_start': 66199, 'time_end': 194530}, 'duration': 238630, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 238630, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 9561766}, {'position': 3, 'time_start': 0, 'time_end': 238630, 'type': 'noise', 'name': 'CIN_washing_044.wav', 'offset': 541465}], 'SNR': 4.164760723249167, 'listener': {'rotation': [{'sample': 97476.4151971832, 'angle': -152.14276765374532}, {'sample': 105568.4151971832, 'angle': -174.55202492038939}], 'hrir_filename': ['VP_N1-ED', 'VP_N1-BTE_fr', 'VP_N1-BTE_mid', 'VP_N1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06004', 'dimensions': '5.3x5.1755x2.7', 'target': {'position': [1.1, 3.3, 1.6], 'view_vector': [-0.156, -0.988, 0.0]}, 'listener': {'position': [0.8, 1.4, 1.6], 'view_vector': [0.156, 0.988, 0.0]}, 'interferers': [{'position': [0.8, 3.3, 1.6]}, {'position': [-0.2, 4.2, 1.6]}, {'position': [1.4, 2.4, 1.6]}]}, 'scene': 'S00046', 'target': {'name': 'T037_CDY_00280', 'time_start': 77107, 'time_end': 171040}, 'duration': 215140, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 215140, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 20606900}, {'position': 2, 'time_start': 0, 'time_end': 215140, 'type': 'noise', 'name': 'CIN_hairdryer_018.wav', 'offset': 332433}, {'position': 3, 'time_start': 0, 'time_end': 215140, 'type': 'music', 'name': '48/948.low.mp3', 'offset': 4180788}], 'SNR': -2.776258672319404, 'listener': {'rotation': [{'sample': 113549.47413416047, 'angle': 54.88882715009331}, {'sample': 122267.47413416047, 'angle': 77.1271770760434}], 'hrir_filename': ['VP_E12-ED', 'VP_E12-BTE_fr', 'VP_E12-BTE_mid', 'VP_E12-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06036', 'dimensions': '4.627x3.7x2.8', 'target': {'position': [-0.2, 1.2, 1.2], 'view_vector': [0.447, 0.894, 0.0]}, 'listener': {'position': [0.4, 2.4, 1.2], 'view_vector': [-0.447, -0.894, 0.0]}, 'interferers': [{'position': [-0.7, 2.5, 1.2]}, {'position': [-0.2, 3.4, 1.2]}, {'position': [0.0, 1.1, 1.2]}]}, 'scene': 'S00047', 'target': {'name': 'T037_EDJ_01126', 'time_start': 73995, 'time_end': 171897}, 'duration': 215997, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 215997, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 27072518}, {'position': 2, 'time_start': 0, 'time_end': 215997, 'type': 'music', 'name': '11/6611.low.mp3', 'offset': 1094374}], 'SNR': -1.9393283958221996, 'listener': {'rotation': [{'sample': 82346.11535553777, 'angle': -133.74776860546297}, {'sample': 91262.11535553777, 'angle': -123.12568376614884}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06001', 'dimensions': '4.4317x4.1x2.6', 'target': {'position': [-0.7, 1.7, 1.2], 'view_vector': [0.282, 0.959, 0.0]}, 'listener': {'position': [-0.2, 3.4, 1.2], 'view_vector': [-0.282, -0.959, 0.0]}, 'interferers': [{'position': [0.9, 3.0, 1.2]}, {'position': [-1.0, 2.6, 1.2]}, {'position': [0.9, 1.4, 1.2]}]}, 'scene': 'S00048', 'target': {'name': 'T037_CLX_01189', 'time_start': 87036, 'time_end': 194199}, 'duration': 238299, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 238299, 'type': 'noise', 'name': 'CIN_vacuum_001.wav', 'offset': 12793077}, {'position': 2, 'time_start': 0, 'time_end': 238299, 'type': 'music', 'name': '09/6609.low.mp3', 'offset': 7308355}, {'position': 3, 'time_start': 0, 'time_end': 238299, 'type': 'speech', 'name': 'nof_03397.wav', 'offset': 8510308}], 'SNR': -4.717917375682672, 'listener': {'rotation': [{'sample': 99827.33381757441, 'angle': -82.05655097893944}, {'sample': 108072.33381757441, 'angle': -101.702421937615}], 'hrir_filename': ['VP_E12-ED', 'VP_E12-BTE_fr', 'VP_E12-BTE_mid', 'VP_E12-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06006', 'dimensions': '3.4x3.2559x2.5', 'target': {'position': [0.5, 1.0, 1.6], 'view_vector': [-0.6, 0.8, 0.0]}, 'listener': {'position': [-0.1, 1.8, 1.6], 'view_vector': [0.6, -0.8, 0.0]}, 'interferers': [{'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}]}, 'scene': 'S00049', 'target': {'name': 'T037_GW8_00543', 'time_start': 78557, 'time_end': 184397}, 'duration': 228497, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 228497, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 2327781}, {'position': 2, 'time_start': 0, 'time_end': 228497, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 10553950}, {'position': 3, 'time_start': 0, 'time_end': 228497, 'type': 'noise', 'name': 'CIN_vacuum_005.wav', 'offset': 1153780}], 'SNR': -3.939753714330415, 'listener': {'rotation': [{'sample': 116029.90047964542, 'angle': -81.04792730367836}, {'sample': 125214.90047964542, 'angle': -57.79575045314766}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06047', 'dimensions': '4.1286x3.5x2.8', 'target': {'position': [0.6, 2.3, 1.2], 'view_vector': [-0.97, 0.243, 0.0]}, 'listener': {'position': [-0.6, 2.6, 1.2], 'view_vector': [0.97, -0.243, 0.0]}, 'interferers': [{'position': [-0.1, 1.2, 1.2]}, {'position': [0.6, 1.1, 1.2]}, {'position': [-0.5, 1.2, 1.2]}]}, 'scene': 'S00050', 'target': {'name': 'T037_H0F_00198', 'time_start': 67183, 'time_end': 180961}, 'duration': 225061, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 225061, 'type': 'music', 'name': '50/950.low.mp3', 'offset': 8717578}, {'position': 2, 'time_start': 0, 'time_end': 225061, 'type': 'noise', 'name': 'CIN_fan_007.wav', 'offset': 173642}, {'position': 3, 'time_start': 0, 'time_end': 225061, 'type': 'noise', 'name': 'CIN_washing_042.wav', 'offset': 845590}], 'SNR': 0.07696019755923267, 'listener': {'rotation': [{'sample': 41314.4612026006, 'angle': 13.186784925457394}, {'sample': 50155.4612026006, 'angle': -13.339616053138908}], 'hrir_filename': ['VP_N5-ED', 'VP_N5-BTE_fr', 'VP_N5-BTE_mid', 'VP_N5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06026', 'dimensions': '5.5x4.1291x2.9', 'target': {'position': [0.5, 1.0, 1.6], 'view_vector': [-0.254, 0.967, 0.0]}, 'listener': {'position': [0.0, 2.9, 1.6], 'view_vector': [0.254, -0.967, 0.0]}, 'interferers': [{'position': [-0.4, 1.9, 1.6]}, {'position': [0.8, 4.2, 1.6]}, {'position': [0.9, 4.1, 1.6]}]}, 'scene': 'S00051', 'target': {'name': 'T037_FAU_02016', 'time_start': 84744, 'time_end': 185292}, 'duration': 229392, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 229392, 'type': 'noise', 'name': 'CIN_washing_050.wav', 'offset': 150246}, {'position': 2, 'time_start': 0, 'time_end': 229392, 'type': 'noise', 'name': 'CIN_kettle_022.wav', 'offset': 15390424}, {'position': 3, 'time_start': 0, 'time_end': 229392, 'type': 'music', 'name': '92/9592.low.mp3', 'offset': 9326791}], 'SNR': -1.0654060644840193, 'listener': {'rotation': [{'sample': 70804.99861023847, 'angle': -44.738450240255936}, {'sample': 79786.99861023847, 'angle': -66.66365543355995}], 'hrir_filename': ['VP_N4-ED', 'VP_N4-BTE_fr', 'VP_N4-BTE_mid', 'VP_N4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06046', 'dimensions': '5.8x3.6776x2.8', 'target': {'position': [-0.6, 3.9, 1.6], 'view_vector': [0.793, -0.61, 0.0]}, 'listener': {'position': [0.7, 2.9, 1.6], 'view_vector': [-0.793, 0.61, 0.0]}, 'interferers': [{'position': [0.3, 4.0, 1.6]}, {'position': [0.3, 4.3, 1.6]}, {'position': [-0.3, 2.5, 1.6]}]}, 'scene': 'S00052', 'target': {'name': 'T037_G15_01927', 'time_start': 87848, 'time_end': 167228}, 'duration': 211328, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 211328, 'type': 'noise', 'name': 'CIN_vacuum_024.wav', 'offset': 369434}, {'position': 2, 'time_start': 0, 'time_end': 211328, 'type': 'music', 'name': '99/12099.low.mp3', 'offset': 6074273}], 'SNR': -4.455162929049633, 'listener': {'rotation': [{'sample': 68458.51544126583, 'angle': 111.25744606591229}, {'sample': 77472.51544126583, 'angle': 138.11504295262912}], 'hrir_filename': ['VP_E12-ED', 'VP_E12-BTE_fr', 'VP_E12-BTE_mid', 'VP_E12-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06043', 'dimensions': '7.8x3.641x3.1', 'target': {'position': [0.4, 5.9, 1.6], 'view_vector': [-0.284, -0.959, 0.0]}, 'listener': {'position': [-0.4, 3.2, 1.6], 'view_vector': [0.284, 0.959, 0.0]}, 'interferers': [{'position': [-0.6, 4.7, 1.6]}, {'position': [0.5, 5.7, 1.6]}, {'position': [-0.5, 1.9, 1.6]}]}, 'scene': 'S00053', 'target': {'name': 'T037_FAB_02006', 'time_start': 71578, 'time_end': 148312}, 'duration': 192412, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 192412, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 13886041}, {'position': 3, 'time_start': 0, 'time_end': 192412, 'type': 'music', 'name': '50/950.low.mp3', 'offset': 10073858}], 'SNR': -9.724737924689062, 'listener': {'rotation': [{'sample': 100776.50518988515, 'angle': 94.60946108576361}, {'sample': 110158.50518988515, 'angle': 79.79865617512559}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06041', 'dimensions': '4.185x4x2.5', 'target': {'position': [-0.8, 1.4, 1.6], 'view_vector': [0.793, 0.61, 0.0]}, 'listener': {'position': [0.5, 2.4, 1.6], 'view_vector': [-0.793, -0.61, 0.0]}, 'interferers': [{'position': [-1.0, 2.6, 1.6]}, {'position': [0.4, 1.1, 1.6]}, {'position': [-0.1, 1.3, 1.6]}]}, 'scene': 'S00054', 'target': {'name': 'T037_HH3_10714', 'time_start': 68243, 'time_end': 201866}, 'duration': 245966, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 245966, 'type': 'noise', 'name': 'CIN_hairdryer_022.wav', 'offset': 325129}, {'position': 2, 'time_start': 0, 'time_end': 245966, 'type': 'music', 'name': '10/6610.low.mp3', 'offset': 3031077}], 'SNR': -0.17615884071318177, 'listener': {'rotation': [{'sample': 63444.251993781734, 'angle': -166.34251825462823}, {'sample': 73035.25199378174, 'angle': -142.77805517225758}], 'hrir_filename': ['VP_E5-ED', 'VP_E5-BTE_fr', 'VP_E5-BTE_mid', 'VP_E5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06001', 'dimensions': '4.4317x4.1x2.6', 'target': {'position': [-0.7, 1.7, 1.2], 'view_vector': [0.282, 0.959, 0.0]}, 'listener': {'position': [-0.2, 3.4, 1.2], 'view_vector': [-0.282, -0.959, 0.0]}, 'interferers': [{'position': [0.9, 3.0, 1.2]}, {'position': [-1.0, 2.6, 1.2]}, {'position': [0.9, 1.4, 1.2]}]}, 'scene': 'S00055', 'target': {'name': 'T037_AEB_00383', 'time_start': 71317, 'time_end': 200971}, 'duration': 245071, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 245071, 'type': 'noise', 'name': 'CIN_dishwasher_001.wav', 'offset': 2942592}, {'position': 2, 'time_start': 0, 'time_end': 245071, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 915804}], 'SNR': 4.887583150985943, 'listener': {'rotation': [{'sample': 72455.19324201727, 'angle': -81.77796935299}, {'sample': 80972.19324201727, 'angle': -104.02352900848611}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06040', 'dimensions': '3.8x3.2342x2.9', 'target': {'position': [0.5, 1.3, 1.2], 'view_vector': [-0.514, 0.857, 0.0]}, 'listener': {'position': [-0.1, 2.3, 1.2], 'view_vector': [0.514, -0.857, 0.0]}, 'interferers': [{'position': [0.0, 1.2, 1.2]}, {'position': [0.0, 1.1, 1.2]}, {'position': [0.6, 1.0, 1.2]}]}, 'scene': 'S00056', 'target': {'name': 'T037_G21_00436', 'time_start': 83437, 'time_end': 203830}, 'duration': 247930, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 247930, 'type': 'noise', 'name': 'CIN_washing_042.wav', 'offset': 116587}, {'position': 2, 'time_start': 0, 'time_end': 247930, 'type': 'noise', 'name': 'CIN_hairdryer_013.wav', 'offset': 500772}, {'position': 3, 'time_start': 0, 'time_end': 247930, 'type': 'music', 'name': '31/4631.low.mp3', 'offset': 8667062}], 'SNR': 2.176036313352361, 'listener': {'rotation': [{'sample': 61479.77325213816, 'angle': -26.898253174924726}, {'sample': 70194.77325213817, 'angle': -51.65610142583732}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06032', 'dimensions': '6x3.1767x2.9', 'target': {'position': [0.3, 4.0, 1.6], 'view_vector': [-0.385, -0.923, 0.0]}, 'listener': {'position': [-0.2, 2.8, 1.6], 'view_vector': [0.385, 0.923, 0.0]}, 'interferers': [{'position': [-0.3, 1.8, 1.6]}, {'position': [0.1, 1.5, 1.6]}, {'position': [0.5, 1.2, 1.6]}]}, 'scene': 'S00057', 'target': {'name': 'T037_CHE_01831', 'time_start': 84546, 'time_end': 174510}, 'duration': 218610, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 218610, 'type': 'music', 'name': '07/6607.low.mp3', 'offset': 400104}, {'position': 2, 'time_start': 0, 'time_end': 218610, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 8062810}, {'position': 3, 'time_start': 0, 'time_end': 218610, 'type': 'noise', 'name': 'CIN_fan_005.wav', 'offset': 369184}], 'SNR': -1.4785319870682372, 'listener': {'rotation': [{'sample': 114575.2643434015, 'angle': 93.74353163484743}, {'sample': 123588.2643434015, 'angle': 73.50618098095649}], 'hrir_filename': ['KEMAR-ED', 'KEMAR-BTE_fr', 'KEMAR-BTE_mid', 'KEMAR-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06022', 'dimensions': '3.8x3.2079x2.5', 'target': {'position': [-0.5, 2.1, 1.6], 'view_vector': [0.743, -0.669, 0.0]}, 'listener': {'position': [0.5, 1.2, 1.6], 'view_vector': [-0.743, 0.669, 0.0]}, 'interferers': [{'position': [-0.4, 2.6, 1.6]}, {'position': [0.5, 2.5, 1.6]}, {'position': [-0.4, 2.7, 1.6]}]}, 'scene': 'S00058', 'target': {'name': 'T037_EFJ_01324', 'time_start': 67425, 'time_end': 226185}, 'duration': 270285, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 270285, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 378300}, {'position': 2, 'time_start': 0, 'time_end': 270285, 'type': 'noise', 'name': 'CIN_fan_001.wav', 'offset': 52777}], 'SNR': -9.99412784653114, 'listener': {'rotation': [{'sample': 54642.17932462749, 'angle': 171.52365568145044}, {'sample': 64114.17932462749, 'angle': 138.1910698757133}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06016', 'dimensions': '3.4x3.0706x2.5', 'target': {'position': [-0.3, 1.1, 1.2], 'view_vector': [-0.0, 1.0, 0.0]}, 'listener': {'position': [-0.3, 2.1, 1.2], 'view_vector': [0.0, -1.0, 0.0]}, 'interferers': [{'position': [0.4, 1.3, 1.2]}, {'position': [0.2, 1.0, 1.2]}, {'position': [0.2, 1.0, 1.2]}]}, 'scene': 'S00059', 'target': {'name': 'T037_CBN_01275', 'time_start': 76830, 'time_end': 183993}, 'duration': 228093, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 228093, 'type': 'noise', 'name': 'CIN_vacuum_018.wav', 'offset': 4765096}, {'position': 2, 'time_start': 0, 'time_end': 228093, 'type': 'speech', 'name': 'nof_03397.wav', 'offset': 34242462}, {'position': 3, 'time_start': 0, 'time_end': 228093, 'type': 'music', 'name': '31/4631.low.mp3', 'offset': 6841052}], 'SNR': -8.651543174374064, 'listener': {'rotation': [{'sample': 58350.219911346525, 'angle': -111.01658455305517}, {'sample': 67407.21991134653, 'angle': -91.15755181818278}], 'hrir_filename': ['VP_E9-ED', 'VP_E9-BTE_fr', 'VP_E9-BTE_mid', 'VP_E9-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06047', 'dimensions': '4.1286x3.5x2.8', 'target': {'position': [0.6, 2.3, 1.2], 'view_vector': [-0.97, 0.243, 0.0]}, 'listener': {'position': [-0.6, 2.6, 1.2], 'view_vector': [0.97, -0.243, 0.0]}, 'interferers': [{'position': [-0.1, 1.2, 1.2]}, {'position': [0.6, 1.1, 1.2]}, {'position': [-0.5, 1.2, 1.2]}]}, 'scene': 'S00060', 'target': {'name': 'T037_HP0_01377', 'time_start': 81449, 'time_end': 168767}, 'duration': 212867, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 212867, 'type': 'music', 'name': '09/6609.low.mp3', 'offset': 9753866}, {'position': 2, 'time_start': 0, 'time_end': 212867, 'type': 'noise', 'name': 'CIN_hairdryer_018.wav', 'offset': 779714}, {'position': 3, 'time_start': 0, 'time_end': 212867, 'type': 'noise', 'name': 'CIN_fan_006.wav', 'offset': 84523}], 'SNR': 5.345564936704868, 'listener': {'rotation': [{'sample': 74626.1628970691, 'angle': -34.37620252471188}, {'sample': 83380.1628970691, 'angle': -15.952439754621894}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06021', 'dimensions': '4.9x4.5918x2.3', 'target': {'position': [-1.1, 3.7, 1.2], 'view_vector': [0.351, -0.936, 0.0]}, 'listener': {'position': [-0.2, 1.3, 1.2], 'view_vector': [-0.351, 0.936, 0.0]}, 'interferers': [{'position': [-0.6, 3.3, 1.2]}, {'position': [1.0, 3.3, 1.2]}, {'position': [-1.1, 1.9, 1.2]}]}, 'scene': 'S00061', 'target': {'name': 'T037_HTG_00728', 'time_start': 79753, 'time_end': 223960}, 'duration': 268060, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 268060, 'type': 'music', 'name': '09/6609.low.mp3', 'offset': 7263806}, {'position': 2, 'time_start': 0, 'time_end': 268060, 'type': 'noise', 'name': 'CIN_kettle_051.wav', 'offset': 1353745}, {'position': 3, 'time_start': 0, 'time_end': 268060, 'type': 'noise', 'name': 'CIN_vacuum_018.wav', 'offset': 1333866}], 'SNR': -6.704282102316458, 'listener': {'rotation': [{'sample': 86242.75309698438, 'angle': 139.2587938745972}, {'sample': 94432.75309698438, 'angle': 110.91083331007503}], 'hrir_filename': ['VP_N1-ED', 'VP_N1-BTE_fr', 'VP_N1-BTE_mid', 'VP_N1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06046', 'dimensions': '5.8x3.6776x2.8', 'target': {'position': [-0.6, 3.9, 1.6], 'view_vector': [0.793, -0.61, 0.0]}, 'listener': {'position': [0.7, 2.9, 1.6], 'view_vector': [-0.793, 0.61, 0.0]}, 'interferers': [{'position': [0.3, 4.0, 1.6]}, {'position': [0.3, 4.3, 1.6]}, {'position': [-0.3, 2.5, 1.6]}]}, 'scene': 'S00062', 'target': {'name': 'T037_HHX_09726', 'time_start': 84125, 'time_end': 182027}, 'duration': 226127, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 226127, 'type': 'music', 'name': '32/4632.low.mp3', 'offset': 12137585}, {'position': 2, 'time_start': 0, 'time_end': 226127, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 1391251}, {'position': 3, 'time_start': 0, 'time_end': 226127, 'type': 'noise', 'name': 'CIN_dishwasher_041.wav', 'offset': 2257112}], 'SNR': 1.1213864967237193, 'listener': {'rotation': [{'sample': 61221.4246856635, 'angle': 165.32244551960153}, {'sample': 69865.4246856635, 'angle': 148.45504193473352}], 'hrir_filename': ['VP_E11-ED', 'VP_E11-BTE_fr', 'VP_E11-BTE_mid', 'VP_E11-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06005', 'dimensions': '6.2x4.6468x2.3', 'target': {'position': [1.1, 1.2, 1.6], 'view_vector': [-0.431, 0.902, 0.0]}, 'listener': {'position': [0.0, 3.5, 1.6], 'view_vector': [0.431, -0.902, 0.0]}, 'interferers': [{'position': [1.0, 3.3, 1.6]}, {'position': [1.1, 4.1, 1.6]}, {'position': [-1.0, 2.8, 1.6]}]}, 'scene': 'S00063', 'target': {'name': 'T037_J54_00114', 'time_start': 70426, 'time_end': 185527}, 'duration': 229627, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 229627, 'type': 'music', 'name': '11/6611.low.mp3', 'offset': 1277901}, {'position': 2, 'time_start': 0, 'time_end': 229627, 'type': 'noise', 'name': 'CIN_kettle_075.wav', 'offset': 2323295}, {'position': 3, 'time_start': 0, 'time_end': 229627, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 5518749}], 'SNR': 0.32236684678656147, 'listener': {'rotation': [{'sample': 52698.2860558716, 'angle': -34.19941969169024}, {'sample': 61860.2860558716, 'angle': -62.32404199027223}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06013', 'dimensions': '5.6x4.6875x3.4', 'target': {'position': [-0.6, 4.0, 1.6], 'view_vector': [0.981, -0.196, 0.0]}, 'listener': {'position': [0.4, 3.8, 1.6], 'view_vector': [-0.981, 0.196, 0.0]}, 'interferers': [{'position': [-1.1, 4.3, 1.6]}, {'position': [0.5, 1.2, 1.6]}, {'position': [-1.3, 2.5, 1.6]}]}, 'scene': 'S00064', 'target': {'name': 'T037_CML_01176', 'time_start': 79316, 'time_end': 186479}, 'duration': 230579, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 230579, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 25951689}, {'position': 3, 'time_start': 0, 'time_end': 230579, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 16829610}], 'SNR': -4.336159954070302, 'listener': {'rotation': [{'sample': 60526.58684860892, 'angle': 146.809268256393}, {'sample': 69818.58684860892, 'angle': 160.29973670184947}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06037', 'dimensions': '7.7x3.3766x2.3', 'target': {'position': [0.0, 4.1, 1.6], 'view_vector': [0.287, 0.958, 0.0]}, 'listener': {'position': [0.6, 6.1, 1.6], 'view_vector': [-0.287, -0.958, 0.0]}, 'interferers': [{'position': [0.0, 3.8, 1.6]}, {'position': [-0.3, 3.6, 1.6]}, {'position': [0.2, 2.0, 1.6]}]}, 'scene': 'S00065', 'target': {'name': 'T037_JY7_03966', 'time_start': 76510, 'time_end': 171766}, 'duration': 215866, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 215866, 'type': 'noise', 'name': 'CIN_vacuum_020.wav', 'offset': 2145581}, {'position': 2, 'time_start': 0, 'time_end': 215866, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 5167868}, {'position': 3, 'time_start': 0, 'time_end': 215866, 'type': 'noise', 'name': 'CIN_kettle_066.wav', 'offset': 2659404}], 'SNR': -7.029761313406564, 'listener': {'rotation': [{'sample': 98122.83926270885, 'angle': -128.3503851886469}, {'sample': 106342.83926270885, 'angle': -107.68447593907804}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06015', 'dimensions': '5.6932x4.4x2.4', 'target': {'position': [0.3, 3.6, 1.6], 'view_vector': [-0.588, -0.809, 0.0]}, 'listener': {'position': [-0.5, 2.5, 1.6], 'view_vector': [0.588, 0.809, 0.0]}, 'interferers': [{'position': [-0.3, 3.8, 1.6]}, {'position': [-1.0, 3.8, 1.6]}, {'position': [0.5, 1.9, 1.6]}]}, 'scene': 'S00066', 'target': {'name': 'T037_H8M_03676', 'time_start': 73146, 'time_end': 193539}, 'duration': 237639, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 237639, 'type': 'music', 'name': '51/951.low.mp3', 'offset': 604333}, {'position': 3, 'time_start': 0, 'time_end': 237639, 'type': 'noise', 'name': 'CIN_hairdryer_030.wav', 'offset': 189389}], 'SNR': -10.008499417937447, 'listener': {'rotation': [{'sample': 61391.14918913415, 'angle': 26.338778095344818}, {'sample': 71055.14918913416, 'angle': 48.07917444095803}], 'hrir_filename': ['VP_N1-ED', 'VP_N1-BTE_fr', 'VP_N1-BTE_mid', 'VP_N1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06016', 'dimensions': '3.4x3.0706x2.5', 'target': {'position': [-0.3, 1.1, 1.2], 'view_vector': [-0.0, 1.0, 0.0]}, 'listener': {'position': [-0.3, 2.1, 1.2], 'view_vector': [0.0, -1.0, 0.0]}, 'interferers': [{'position': [0.4, 1.3, 1.2]}, {'position': [0.2, 1.0, 1.2]}, {'position': [0.2, 1.0, 1.2]}]}, 'scene': 'S00067', 'target': {'name': 'T037_JXS_03107', 'time_start': 66227, 'time_end': 156191}, 'duration': 200291, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 200291, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 5637190}, {'position': 2, 'time_start': 0, 'time_end': 200291, 'type': 'music', 'name': '38/4638.low.mp3', 'offset': 3675765}, {'position': 3, 'time_start': 0, 'time_end': 200291, 'type': 'noise', 'name': 'CIN_dishwasher_011.wav', 'offset': 6513217}], 'SNR': -5.597463748131603, 'listener': {'rotation': [{'sample': 92565.00050006168, 'angle': -111.15990362949782}, {'sample': 101357.00050006168, 'angle': -93.76369991618948}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06010', 'dimensions': '4.1x3.9659x2.5', 'target': {'position': [0.9, 2.4, 1.2], 'view_vector': [-0.994, -0.11, 0.0]}, 'listener': {'position': [-0.9, 2.2, 1.2], 'view_vector': [0.994, 0.11, 0.0]}, 'interferers': [{'position': [0.6, 1.5, 1.2]}, {'position': [0.4, 2.6, 1.2]}, {'position': [-0.1, 3.1, 1.2]}]}, 'scene': 'S00068', 'target': {'name': 'T037_APP_00992', 'time_start': 72390, 'time_end': 192783}, 'duration': 236883, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 236883, 'type': 'music', 'name': '99/12099.low.mp3', 'offset': 7642438}, {'position': 2, 'time_start': 0, 'time_end': 236883, 'type': 'noise', 'name': 'CIN_kettle_008.wav', 'offset': 4507901}], 'SNR': 2.8538645181678888, 'listener': {'rotation': [{'sample': 85750.45727046276, 'angle': -12.711922183753563}, {'sample': 94318.45727046276, 'angle': 1.162355390353467}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06035', 'dimensions': '4.5279x4.3x2.9', 'target': {'position': [0.0, 2.6, 1.2], 'view_vector': [-0.984, -0.179, 0.0]}, 'listener': {'position': [-1.1, 2.4, 1.2], 'view_vector': [0.984, 0.179, 0.0]}, 'interferers': [{'position': [-0.2, 3.2, 1.2]}, {'position': [-0.4, 1.1, 1.2]}, {'position': [0.9, 3.4, 1.2]}]}, 'scene': 'S00069', 'target': {'name': 'T037_BMR_01420', 'time_start': 86084, 'time_end': 158849}, 'duration': 202949, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 202949, 'type': 'noise', 'name': 'CIN_vacuum_003.wav', 'offset': 143637}, {'position': 2, 'time_start': 0, 'time_end': 202949, 'type': 'noise', 'name': 'CIN_kettle_048.wav', 'offset': 2332621}, {'position': 3, 'time_start': 0, 'time_end': 202949, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 3720287}], 'SNR': 2.4326876353111437, 'listener': {'rotation': [{'sample': 101090.41230895482, 'angle': 34.718496865380665}, {'sample': 109860.41230895482, 'angle': 16.31556180994758}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06029', 'dimensions': '5.3243x3.7x2.1', 'target': {'position': [0.4, 3.8, 1.6], 'view_vector': [-0.447, -0.894, 0.0]}, 'listener': {'position': [-0.5, 2.0, 1.6], 'view_vector': [0.447, 0.894, 0.0]}, 'interferers': [{'position': [0.3, 3.6, 1.6]}, {'position': [0.6, 1.4, 1.6]}, {'position': [-0.8, 4.2, 1.6]}]}, 'scene': 'S00070', 'target': {'name': 'T037_CH6_02005', 'time_start': 76059, 'time_end': 183222}, 'duration': 227322, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 227322, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 23480968}, {'position': 2, 'time_start': 0, 'time_end': 227322, 'type': 'music', 'name': '00/12100.low.mp3', 'offset': 5826400}, {'position': 3, 'time_start': 0, 'time_end': 227322, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 7605121}], 'SNR': -11.854614609955533, 'listener': {'rotation': [{'sample': 105220.65527319795, 'angle': 40.165632535772644}, {'sample': 114882.65527319795, 'angle': 57.51454651804809}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06006', 'dimensions': '3.4x3.2559x2.5', 'target': {'position': [0.5, 1.0, 1.6], 'view_vector': [-0.6, 0.8, 0.0]}, 'listener': {'position': [-0.1, 1.8, 1.6], 'view_vector': [0.6, -0.8, 0.0]}, 'interferers': [{'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}]}, 'scene': 'S00071', 'target': {'name': 'T037_B0U_01203', 'time_start': 72121, 'time_end': 191191}, 'duration': 235291, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 235291, 'type': 'music', 'name': '10/6610.low.mp3', 'offset': 3795962}, {'position': 2, 'time_start': 0, 'time_end': 235291, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 9660412}, {'position': 3, 'time_start': 0, 'time_end': 235291, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 12896306}], 'SNR': -1.059097898998509, 'listener': {'rotation': [{'sample': 48609.572274691905, 'angle': -24.234940755529728}, {'sample': 57364.572274691905, 'angle': -45.32945099325886}], 'hrir_filename': ['VP_N6-ED', 'VP_N6-BTE_fr', 'VP_N6-BTE_mid', 'VP_N6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06006', 'dimensions': '3.4x3.2559x2.5', 'target': {'position': [0.5, 1.0, 1.6], 'view_vector': [-0.6, 0.8, 0.0]}, 'listener': {'position': [-0.1, 1.8, 1.6], 'view_vector': [0.6, -0.8, 0.0]}, 'interferers': [{'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}]}, 'scene': 'S00072', 'target': {'name': 'T037_CAM_02020', 'time_start': 81734, 'time_end': 179636}, 'duration': 223736, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 223736, 'type': 'music', 'name': '10/6610.low.mp3', 'offset': 4654198}, {'position': 3, 'time_start': 0, 'time_end': 223736, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 16096983}], 'SNR': 5.5268025097233355, 'listener': {'rotation': [{'sample': 81503.3450015775, 'angle': -78.63823863632246}, {'sample': 90490.3450015775, 'angle': -57.64519681757982}], 'hrir_filename': ['VP_E11-ED', 'VP_E11-BTE_fr', 'VP_E11-BTE_mid', 'VP_E11-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06021', 'dimensions': '4.9x4.5918x2.3', 'target': {'position': [-1.1, 3.7, 1.2], 'view_vector': [0.351, -0.936, 0.0]}, 'listener': {'position': [-0.2, 1.3, 1.2], 'view_vector': [-0.351, 0.936, 0.0]}, 'interferers': [{'position': [-0.6, 3.3, 1.2]}, {'position': [1.0, 3.3, 1.2]}, {'position': [-1.1, 1.9, 1.2]}]}, 'scene': 'S00073', 'target': {'name': 'T037_BMS_03276', 'time_start': 86716, 'time_end': 195202}, 'duration': 239302, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 239302, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 12881768}, {'position': 2, 'time_start': 0, 'time_end': 239302, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 14807932}, {'position': 3, 'time_start': 0, 'time_end': 239302, 'type': 'music', 'name': '39/4639.low.mp3', 'offset': 2638418}], 'SNR': 5.160744864440826, 'listener': {'rotation': [{'sample': 80730.83669708156, 'angle': 131.77776749311275}, {'sample': 89264.83669708156, 'angle': 113.52089108949018}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06033', 'dimensions': '5.1x3.3392x2.9', 'target': {'position': [0.6, 2.7, 1.6], 'view_vector': [0.0, -1.0, 0.0]}, 'listener': {'position': [0.6, 1.2, 1.6], 'view_vector': [0.0, 1.0, 0.0]}, 'interferers': [{'position': [0.0, 3.3, 1.6]}, {'position': [0.4, 3.9, 1.6]}, {'position': [0.6, 3.6, 1.6]}]}, 'scene': 'S00074', 'target': {'name': 'T037_CDM_01165', 'time_start': 66865, 'time_end': 166090}, 'duration': 210190, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 210190, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 8840339}, {'position': 2, 'time_start': 0, 'time_end': 210190, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 6067420}], 'SNR': 3.990388439682107, 'listener': {'rotation': [{'sample': 52904.7637159678, 'angle': 119.24360877846962}, {'sample': 62320.7637159678, 'angle': 95.22889615692188}], 'hrir_filename': ['VP_N1-ED', 'VP_N1-BTE_fr', 'VP_N1-BTE_mid', 'VP_N1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06032', 'dimensions': '6x3.1767x2.9', 'target': {'position': [0.3, 4.0, 1.6], 'view_vector': [-0.385, -0.923, 0.0]}, 'listener': {'position': [-0.2, 2.8, 1.6], 'view_vector': [0.385, 0.923, 0.0]}, 'interferers': [{'position': [-0.3, 1.8, 1.6]}, {'position': [0.1, 1.5, 1.6]}, {'position': [0.5, 1.2, 1.6]}]}, 'scene': 'S00075', 'target': {'name': 'T037_ADP_01134', 'time_start': 80993, 'time_end': 188156}, 'duration': 232256, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 232256, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 13267792}, {'position': 2, 'time_start': 0, 'time_end': 232256, 'type': 'music', 'name': '00/12100.low.mp3', 'offset': 2971836}, {'position': 3, 'time_start': 0, 'time_end': 232256, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 15927782}], 'SNR': -4.654165052390619, 'listener': {'rotation': [{'sample': 74136.04260295282, 'angle': 86.3507740929416}, {'sample': 83485.04260295282, 'angle': 72.57285248103994}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06007', 'dimensions': '7.281x4.2x2.3', 'target': {'position': [0.3, 2.2, 1.6], 'view_vector': [-0.997, -0.083, 0.0]}, 'listener': {'position': [-0.9, 2.1, 1.6], 'view_vector': [0.997, 0.083, 0.0]}, 'interferers': [{'position': [0.4, 4.8, 1.6]}, {'position': [-0.8, 5.7, 1.6]}, {'position': [-0.5, 4.1, 1.6]}]}, 'scene': 'S00076', 'target': {'name': 'T037_FU2_01464', 'time_start': 74554, 'time_end': 185686}, 'duration': 229786, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 229786, 'type': 'noise', 'name': 'CIN_microwave_003.wav', 'offset': 1414845}, {'position': 2, 'time_start': 0, 'time_end': 229786, 'type': 'noise', 'name': 'CIN_kettle_061.wav', 'offset': 1544358}], 'SNR': 2.108760860552291, 'listener': {'rotation': [{'sample': 93570.5513452644, 'angle': -13.1026684586943}, {'sample': 102252.5513452644, 'angle': -4.476447606600713}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06020', 'dimensions': '5x3.232x3', 'target': {'position': [0.2, 1.3, 1.6], 'view_vector': [0.1, 0.995, 0.0]}, 'listener': {'position': [0.3, 2.3, 1.6], 'view_vector': [-0.1, -0.995, 0.0]}, 'interferers': [{'position': [-0.3, 3.3, 1.6]}, {'position': [0.0, 3.4, 1.6]}, {'position': [-0.3, 1.2, 1.6]}]}, 'scene': 'S00077', 'target': {'name': 'T037_K1S_01604', 'time_start': 87566, 'time_end': 202667}, 'duration': 246767, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 246767, 'type': 'music', 'name': '00/12100.low.mp3', 'offset': 1770507}, {'position': 2, 'time_start': 0, 'time_end': 246767, 'type': 'noise', 'name': 'CIN_kettle_050.wav', 'offset': 985240}, {'position': 3, 'time_start': 0, 'time_end': 246767, 'type': 'noise', 'name': 'CIN_kettle_030.wav', 'offset': 270284}], 'SNR': -3.3360093239945368, 'listener': {'rotation': [{'sample': 65842.15580200883, 'angle': -117.5176482730438}, {'sample': 74454.15580200883, 'angle': -98.32882795840742}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06036', 'dimensions': '4.627x3.7x2.8', 'target': {'position': [-0.2, 1.2, 1.2], 'view_vector': [0.447, 0.894, 0.0]}, 'listener': {'position': [0.4, 2.4, 1.2], 'view_vector': [-0.447, -0.894, 0.0]}, 'interferers': [{'position': [-0.7, 2.5, 1.2]}, {'position': [-0.2, 3.4, 1.2]}, {'position': [0.0, 1.1, 1.2]}]}, 'scene': 'S00078', 'target': {'name': 'T037_ACG_01013', 'time_start': 69921, 'time_end': 208836}, 'duration': 252936, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 252936, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 14998784}, {'position': 2, 'time_start': 0, 'time_end': 252936, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 14411257}, {'position': 3, 'time_start': 0, 'time_end': 252936, 'type': 'noise', 'name': 'CIN_vacuum_020.wav', 'offset': 591364}], 'SNR': -11.513139593309146, 'listener': {'rotation': [{'sample': 47518.98564188513, 'angle': -142.4763675933749}, {'sample': 56400.98564188513, 'angle': -121.0380544044884}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06019', 'dimensions': '3.7871x3.1x2.5', 'target': {'position': [-0.3, 1.1, 1.6], 'view_vector': [0.504, 0.864, 0.0]}, 'listener': {'position': [0.4, 2.3, 1.6], 'view_vector': [-0.504, -0.864, 0.0]}, 'interferers': [{'position': [0.4, 1.2, 1.6]}, {'position': [0.5, 1.3, 1.6]}, {'position': [0.3, 1.1, 1.6]}]}, 'scene': 'S00079', 'target': {'name': 'T037_ABX_00032', 'time_start': 75272, 'time_end': 207572}, 'duration': 251672, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 251672, 'type': 'noise', 'name': 'CIN_hairdryer_018.wav', 'offset': 257437}, {'position': 2, 'time_start': 0, 'time_end': 251672, 'type': 'noise', 'name': 'CIN_hairdryer_003.wav', 'offset': 350686}], 'SNR': -0.625473240342945, 'listener': {'rotation': [{'sample': 81030.96238149199, 'angle': -139.69069940951664}, {'sample': 89918.96238149199, 'angle': -127.69236526369484}], 'hrir_filename': ['VP_E5-ED', 'VP_E5-BTE_fr', 'VP_E5-BTE_mid', 'VP_E5-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06046', 'dimensions': '5.8x3.6776x2.8', 'target': {'position': [-0.6, 3.9, 1.6], 'view_vector': [0.793, -0.61, 0.0]}, 'listener': {'position': [0.7, 2.9, 1.6], 'view_vector': [-0.793, 0.61, 0.0]}, 'interferers': [{'position': [0.3, 4.0, 1.6]}, {'position': [0.3, 4.3, 1.6]}, {'position': [-0.3, 2.5, 1.6]}]}, 'scene': 'S00080', 'target': {'name': 'T037_ACV_00737', 'time_start': 67536, 'time_end': 164115}, 'duration': 208215, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 208215, 'type': 'music', 'name': '32/4632.low.mp3', 'offset': 6558109}, {'position': 3, 'time_start': 0, 'time_end': 208215, 'type': 'noise', 'name': 'CIN_washing_122.wav', 'offset': 49189}], 'SNR': -9.47207418433279, 'listener': {'rotation': [{'sample': 50137.53713856303, 'angle': 167.54378898171228}, {'sample': 59166.53713856303, 'angle': 145.00238281272544}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06008', 'dimensions': '5.2606x3.3x3.3', 'target': {'position': [0.0, 3.1, 1.2], 'view_vector': [-0.141, -0.99, 0.0]}, 'listener': {'position': [-0.2, 1.7, 1.2], 'view_vector': [0.141, 0.99, 0.0]}, 'interferers': [{'position': [0.4, 3.9, 1.2]}, {'position': [-0.5, 3.8, 1.2]}, {'position': [0.5, 2.8, 1.2]}]}, 'scene': 'S00081', 'target': {'name': 'T037_GWC_00510', 'time_start': 72891, 'time_end': 161532}, 'duration': 205632, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 205632, 'type': 'noise', 'name': 'CIN_fan_011.wav', 'offset': 2533227}, {'position': 2, 'time_start': 0, 'time_end': 205632, 'type': 'noise', 'name': 'CIN_dishwasher_003.wav', 'offset': 130578}, {'position': 3, 'time_start': 0, 'time_end': 205632, 'type': 'noise', 'name': 'CIN_vacuum_026.wav', 'offset': 639602}], 'SNR': 0.6522565115744321, 'listener': {'rotation': [{'sample': 103113.88807895753, 'angle': 51.803576410093}, {'sample': 111891.88807895753, 'angle': 79.18857473219086}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06036', 'dimensions': '4.627x3.7x2.8', 'target': {'position': [-0.2, 1.2, 1.2], 'view_vector': [0.447, 0.894, 0.0]}, 'listener': {'position': [0.4, 2.4, 1.2], 'view_vector': [-0.447, -0.894, 0.0]}, 'interferers': [{'position': [-0.7, 2.5, 1.2]}, {'position': [-0.2, 3.4, 1.2]}, {'position': [0.0, 1.1, 1.2]}]}, 'scene': 'S00082', 'target': {'name': 'T037_CTX_02010', 'time_start': 84446, 'time_end': 226007}, 'duration': 270107, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 270107, 'type': 'noise', 'name': 'CIN_vacuum_026.wav', 'offset': 201479}, {'position': 3, 'time_start': 0, 'time_end': 270107, 'type': 'speech', 'name': 'nom_00610.wav', 'offset': 26227336}], 'SNR': -0.4097517846099734, 'listener': {'rotation': [{'sample': 102349.69727234698, 'angle': -145.32362473931153}, {'sample': 111259.69727234698, 'angle': -124.70689478728038}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06022', 'dimensions': '3.8x3.2079x2.5', 'target': {'position': [-0.5, 2.1, 1.6], 'view_vector': [0.743, -0.669, 0.0]}, 'listener': {'position': [0.5, 1.2, 1.6], 'view_vector': [-0.743, 0.669, 0.0]}, 'interferers': [{'position': [-0.4, 2.6, 1.6]}, {'position': [0.5, 2.5, 1.6]}, {'position': [-0.4, 2.7, 1.6]}]}, 'scene': 'S00083', 'target': {'name': 'T037_G0L_00841', 'time_start': 78172, 'time_end': 169459}, 'duration': 213559, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 213559, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 13627734}, {'position': 2, 'time_start': 0, 'time_end': 213559, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 38225993}, {'position': 3, 'time_start': 0, 'time_end': 213559, 'type': 'speech', 'name': 'nom_03397.wav', 'offset': 4576204}], 'SNR': 1.4910850059423186, 'listener': {'rotation': [{'sample': 79014.92969456207, 'angle': 170.18079382226867}, {'sample': 87523.92969456207, 'angle': 142.11582974755692}], 'hrir_filename': ['VP_E2-ED', 'VP_E2-BTE_fr', 'VP_E2-BTE_mid', 'VP_E2-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06035', 'dimensions': '4.5279x4.3x2.9', 'target': {'position': [0.0, 2.6, 1.2], 'view_vector': [-0.984, -0.179, 0.0]}, 'listener': {'position': [-1.1, 2.4, 1.2], 'view_vector': [0.984, 0.179, 0.0]}, 'interferers': [{'position': [-0.2, 3.2, 1.2]}, {'position': [-0.4, 1.1, 1.2]}, {'position': [0.9, 3.4, 1.2]}]}, 'scene': 'S00084', 'target': {'name': 'T037_CKE_02126', 'time_start': 86059, 'time_end': 254080}, 'duration': 298180, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 298180, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 2808949}, {'position': 2, 'time_start': 0, 'time_end': 298180, 'type': 'noise', 'name': 'CIN_kettle_002.wav', 'offset': 1232906}, {'position': 3, 'time_start': 0, 'time_end': 298180, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 3697211}], 'SNR': -7.947941773558221, 'listener': {'rotation': [{'sample': 121700.29631589336, 'angle': -17.99818528141762}, {'sample': 130815.29631589336, 'angle': 5.581058085058143}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06014', 'dimensions': '5.9x3.8085x2.4', 'target': {'position': [-0.1, 4.8, 1.6], 'view_vector': [0.236, -0.972, 0.0]}, 'listener': {'position': [0.7, 1.5, 1.6], 'view_vector': [-0.236, 0.972, 0.0]}, 'interferers': [{'position': [-0.5, 1.4, 1.6]}, {'position': [-0.3, 3.2, 1.6]}, {'position': [0.9, 2.8, 1.6]}]}, 'scene': 'S00085', 'target': {'name': 'T037_CHH_00543', 'time_start': 87257, 'time_end': 210296}, 'duration': 254396, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 254396, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 10587637}, {'position': 2, 'time_start': 0, 'time_end': 254396, 'type': 'music', 'name': '10/6610.low.mp3', 'offset': 5359266}, {'position': 3, 'time_start': 0, 'time_end': 254396, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 20372743}], 'SNR': -8.233711917522713, 'listener': {'rotation': [{'sample': 104713.18119945307, 'angle': 136.34601861004398}, {'sample': 113011.18119945307, 'angle': 109.46777351661025}], 'hrir_filename': ['KEMAR-ED', 'KEMAR-BTE_fr', 'KEMAR-BTE_mid', 'KEMAR-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06039', 'dimensions': '3.3x3.2x2.5', 'target': {'position': [-0.2, 2.3, 1.2], 'view_vector': [-0.1, -0.995, 0.0]}, 'listener': {'position': [-0.3, 1.3, 1.2], 'view_vector': [0.1, 0.995, 0.0]}, 'interferers': [{'position': [0.4, 2.2, 1.2]}, {'position': [-0.1, 2.3, 1.2]}, {'position': [0.6, 1.8, 1.2]}]}, 'scene': 'S00086', 'target': {'name': 'T037_A7D_01317', 'time_start': 87126, 'time_end': 174444}, 'duration': 218544, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 218544, 'type': 'speech', 'name': 'nof_03397.wav', 'offset': 19570931}, {'position': 2, 'time_start': 0, 'time_end': 218544, 'type': 'noise', 'name': 'CIN_microwave_012.wav', 'offset': 145416387}], 'SNR': 4.469153870291915, 'listener': {'rotation': [{'sample': 96010.25781024576, 'angle': 58.63311586477248}, {'sample': 104640.25781024576, 'angle': 79.04040973607489}], 'hrir_filename': ['VP_E12-ED', 'VP_E12-BTE_fr', 'VP_E12-BTE_mid', 'VP_E12-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06036', 'dimensions': '4.627x3.7x2.8', 'target': {'position': [-0.2, 1.2, 1.2], 'view_vector': [0.447, 0.894, 0.0]}, 'listener': {'position': [0.4, 2.4, 1.2], 'view_vector': [-0.447, -0.894, 0.0]}, 'interferers': [{'position': [-0.7, 2.5, 1.2]}, {'position': [-0.2, 3.4, 1.2]}, {'position': [0.0, 1.1, 1.2]}]}, 'scene': 'S00087', 'target': {'name': 'T037_H7W_00891', 'time_start': 78354, 'time_end': 166995}, 'duration': 211095, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 211095, 'type': 'noise', 'name': 'CIN_hairdryer_006.wav', 'offset': 721510}, {'position': 2, 'time_start': 0, 'time_end': 211095, 'type': 'noise', 'name': 'CIN_washing_010.wav', 'offset': 1054965}], 'SNR': 4.244975794084311, 'listener': {'rotation': [{'sample': 93651.26603123423, 'angle': -84.46839149050649}, {'sample': 102520.26603123423, 'angle': -115.99216711847491}], 'hrir_filename': ['VP_E8-ED', 'VP_E8-BTE_fr', 'VP_E8-BTE_mid', 'VP_E8-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06038', 'dimensions': '4.3x3.207x2.6', 'target': {'position': [-0.2, 2.6, 1.6], 'view_vector': [0.447, -0.894, 0.0]}, 'listener': {'position': [0.5, 1.2, 1.6], 'view_vector': [-0.447, 0.894, 0.0]}, 'interferers': [{'position': [0.3, 2.7, 1.6]}, {'position': [-0.5, 1.4, 1.6]}, {'position': [0.2, 3.0, 1.6]}]}, 'scene': 'S00088', 'target': {'name': 'T037_BN3_01491', 'time_start': 72960, 'time_end': 205260}, 'duration': 249360, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 249360, 'type': 'noise', 'name': 'CIN_kettle_021.wav', 'offset': 182096}, {'position': 3, 'time_start': 0, 'time_end': 249360, 'type': 'music', 'name': '39/4639.low.mp3', 'offset': 3347328}], 'SNR': -11.15097589207081, 'listener': {'rotation': [{'sample': 84698.33309197685, 'angle': 85.76408420406159}, {'sample': 93346.33309197685, 'angle': 109.78726848823847}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06019', 'dimensions': '3.7871x3.1x2.5', 'target': {'position': [-0.3, 1.1, 1.6], 'view_vector': [0.504, 0.864, 0.0]}, 'listener': {'position': [0.4, 2.3, 1.6], 'view_vector': [-0.504, -0.864, 0.0]}, 'interferers': [{'position': [0.4, 1.2, 1.6]}, {'position': [0.5, 1.3, 1.6]}, {'position': [0.3, 1.1, 1.6]}]}, 'scene': 'S00089', 'target': {'name': 'T037_HHC_00984', 'time_start': 85388, 'time_end': 176675}, 'duration': 220775, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 220775, 'type': 'noise', 'name': 'CIN_kettle_017.wav', 'offset': 226563}, {'position': 2, 'time_start': 0, 'time_end': 220775, 'type': 'music', 'name': '40/4640.low.mp3', 'offset': 9413661}], 'SNR': 2.076290631212945, 'listener': {'rotation': [{'sample': 121469.14359551224, 'angle': -95.21292019863436}, {'sample': 130690.14359551224, 'angle': -111.78760082632077}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06029', 'dimensions': '5.3243x3.7x2.1', 'target': {'position': [0.4, 3.8, 1.6], 'view_vector': [-0.447, -0.894, 0.0]}, 'listener': {'position': [-0.5, 2.0, 1.6], 'view_vector': [0.447, 0.894, 0.0]}, 'interferers': [{'position': [0.3, 3.6, 1.6]}, {'position': [0.6, 1.4, 1.6]}, {'position': [-0.8, 4.2, 1.6]}]}, 'scene': 'S00090', 'target': {'name': 'T037_H8L_01442', 'time_start': 66441, 'time_end': 174927}, 'duration': 219027, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 219027, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 26955905}, {'position': 3, 'time_start': 0, 'time_end': 219027, 'type': 'music', 'name': '38/4638.low.mp3', 'offset': 4300927}], 'SNR': -9.61524373229718, 'listener': {'rotation': [{'sample': 63209.6272272402, 'angle': 43.298727952167894}, {'sample': 71791.6272272402, 'angle': 54.0596161209912}], 'hrir_filename': ['VP_E12-ED', 'VP_E12-BTE_fr', 'VP_E12-BTE_mid', 'VP_E12-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06006', 'dimensions': '3.4x3.2559x2.5', 'target': {'position': [0.5, 1.0, 1.6], 'view_vector': [-0.6, 0.8, 0.0]}, 'listener': {'position': [-0.1, 1.8, 1.6], 'view_vector': [0.6, -0.8, 0.0]}, 'interferers': [{'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}, {'position': [0.5, 1.0, 1.6]}]}, 'scene': 'S00091', 'target': {'name': 'T037_CBT_02919', 'time_start': 71098, 'time_end': 260287}, 'duration': 304387, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 304387, 'type': 'music', 'name': '06/6606.low.mp3', 'offset': 4043979}, {'position': 2, 'time_start': 0, 'time_end': 304387, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 28034645}, {'position': 3, 'time_start': 0, 'time_end': 304387, 'type': 'noise', 'name': 'CIN_dishwasher_036.wav', 'offset': 1329276}], 'SNR': 1.1605700303635693, 'listener': {'rotation': [{'sample': 44076.618275831264, 'angle': -27.997084976985004}, {'sample': 53290.618275831264, 'angle': -47.68237170004761}], 'hrir_filename': ['VP_N4-ED', 'VP_N4-BTE_fr', 'VP_N4-BTE_mid', 'VP_N4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06039', 'dimensions': '3.3x3.2x2.5', 'target': {'position': [-0.2, 2.3, 1.2], 'view_vector': [-0.1, -0.995, 0.0]}, 'listener': {'position': [-0.3, 1.3, 1.2], 'view_vector': [0.1, 0.995, 0.0]}, 'interferers': [{'position': [0.4, 2.2, 1.2]}, {'position': [-0.1, 2.3, 1.2]}, {'position': [0.6, 1.8, 1.2]}]}, 'scene': 'S00092', 'target': {'name': 'T037_HR9_00494', 'time_start': 77075, 'time_end': 184238}, 'duration': 228338, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 228338, 'type': 'music', 'name': '00/12100.low.mp3', 'offset': 8212415}, {'position': 2, 'time_start': 0, 'time_end': 228338, 'type': 'speech', 'name': 'nof_03397.wav', 'offset': 11377351}, {'position': 3, 'time_start': 0, 'time_end': 228338, 'type': 'noise', 'name': 'CIN_microwave_012.wav', 'offset': 128129575}], 'SNR': -6.650394951399286, 'listener': {'rotation': [{'sample': 100548.46193173694, 'angle': 60.78376551862538}, {'sample': 109524.46193173694, 'angle': 76.88452327954134}], 'hrir_filename': ['VP_E6-ED', 'VP_E6-BTE_fr', 'VP_E6-BTE_mid', 'VP_E6-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06025', 'dimensions': '3.8x3.0263x3.4', 'target': {'position': [0.5, 2.3, 1.2], 'view_vector': [-0.874, -0.486, 0.0]}, 'listener': {'position': [-0.4, 1.8, 1.2], 'view_vector': [0.874, 0.486, 0.0]}, 'interferers': [{'position': [0.4, 1.2, 1.2]}, {'position': [-0.1, 2.8, 1.2]}, {'position': [-0.5, 2.8, 1.2]}]}, 'scene': 'S00093', 'target': {'name': 'T037_H98_00178', 'time_start': 78182, 'time_end': 206513}, 'duration': 250613, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 250613, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 17694445}, {'position': 2, 'time_start': 0, 'time_end': 250613, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 13563261}, {'position': 3, 'time_start': 0, 'time_end': 250613, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 23795773}], 'SNR': -4.7150205518533275, 'listener': {'rotation': [{'sample': 111106.48375773046, 'angle': 55.9840193475332}, {'sample': 120128.48375773046, 'angle': 33.7070148639079}], 'hrir_filename': ['VP_E4-ED', 'VP_E4-BTE_fr', 'VP_E4-BTE_mid', 'VP_E4-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06021', 'dimensions': '4.9x4.5918x2.3', 'target': {'position': [-1.1, 3.7, 1.2], 'view_vector': [0.351, -0.936, 0.0]}, 'listener': {'position': [-0.2, 1.3, 1.2], 'view_vector': [-0.351, 0.936, 0.0]}, 'interferers': [{'position': [-0.6, 3.3, 1.2]}, {'position': [1.0, 3.3, 1.2]}, {'position': [-1.1, 1.9, 1.2]}]}, 'scene': 'S00094', 'target': {'name': 'T037_CDY_00280', 'time_start': 77233, 'time_end': 171166}, 'duration': 215266, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 215266, 'type': 'speech', 'name': 'nof_05223.wav', 'offset': 31046144}, {'position': 2, 'time_start': 0, 'time_end': 215266, 'type': 'speech', 'name': 'nom_02484.wav', 'offset': 11274308}, {'position': 3, 'time_start': 0, 'time_end': 215266, 'type': 'music', 'name': '11/6611.low.mp3', 'offset': 13253696}], 'SNR': 5.5998972892974415, 'listener': {'rotation': [{'sample': 78325.98707038313, 'angle': 134.5323018270149}, {'sample': 87195.98707038313, 'angle': 120.16384711313819}], 'hrir_filename': ['VP_E1-ED', 'VP_E1-BTE_fr', 'VP_E1-BTE_mid', 'VP_E1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06037', 'dimensions': '7.7x3.3766x2.3', 'target': {'position': [0.0, 4.1, 1.6], 'view_vector': [0.287, 0.958, 0.0]}, 'listener': {'position': [0.6, 6.1, 1.6], 'view_vector': [-0.287, -0.958, 0.0]}, 'interferers': [{'position': [0.0, 3.8, 1.6]}, {'position': [-0.3, 3.6, 1.6]}, {'position': [0.2, 2.0, 1.6]}]}, 'scene': 'S00095', 'target': {'name': 'T037_EDJ_01126', 'time_start': 67500, 'time_end': 165402}, 'duration': 209502, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 209502, 'type': 'speech', 'name': 'mif_02484.wav', 'offset': 4253743}, {'position': 3, 'time_start': 0, 'time_end': 209502, 'type': 'speech', 'name': 'irm_02484.wav', 'offset': 25061034}], 'SNR': 3.0002321878899956, 'listener': {'rotation': [{'sample': 59989.881899837856, 'angle': -85.27869444342218}, {'sample': 68513.88189983786, 'angle': -102.86083600005846}], 'hrir_filename': ['VP_N1-ED', 'VP_N1-BTE_fr', 'VP_N1-BTE_mid', 'VP_N1-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06016', 'dimensions': '3.4x3.0706x2.5', 'target': {'position': [-0.3, 1.1, 1.2], 'view_vector': [-0.0, 1.0, 0.0]}, 'listener': {'position': [-0.3, 2.1, 1.2], 'view_vector': [0.0, -1.0, 0.0]}, 'interferers': [{'position': [0.4, 1.3, 1.2]}, {'position': [0.2, 1.0, 1.2]}, {'position': [0.2, 1.0, 1.2]}]}, 'scene': 'S00096', 'target': {'name': 'T037_CLX_01189', 'time_start': 71519, 'time_end': 178682}, 'duration': 222782, 'interferers': [{'position': 2, 'time_start': 0, 'time_end': 222782, 'type': 'music', 'name': '51/951.low.mp3', 'offset': 2646019}, {'position': 3, 'time_start': 0, 'time_end': 222782, 'type': 'noise', 'name': 'CIN_washing_007.wav', 'offset': 56266}], 'SNR': -2.165782027050758, 'listener': {'rotation': [{'sample': 86191.15221317316, 'angle': -65.27990813096652}, {'sample': 94171.15221317316, 'angle': -83.60202261759049}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06019', 'dimensions': '3.7871x3.1x2.5', 'target': {'position': [-0.3, 1.1, 1.6], 'view_vector': [0.504, 0.864, 0.0]}, 'listener': {'position': [0.4, 2.3, 1.6], 'view_vector': [-0.504, -0.864, 0.0]}, 'interferers': [{'position': [0.4, 1.2, 1.6]}, {'position': [0.5, 1.3, 1.6]}, {'position': [0.3, 1.1, 1.6]}]}, 'scene': 'S00097', 'target': {'name': 'T037_GW8_00543', 'time_start': 85268, 'time_end': 191108}, 'duration': 235208, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 235208, 'type': 'music', 'name': '08/6608.low.mp3', 'offset': 11187860}, {'position': 3, 'time_start': 0, 'time_end': 235208, 'type': 'speech', 'name': 'nom_01523.wav', 'offset': 21530446}], 'SNR': 1.3685465236226477, 'listener': {'rotation': [{'sample': 96227.95263703747, 'angle': -96.50871802019165}, {'sample': 105635.95263703747, 'angle': -115.125281366149}], 'hrir_filename': ['VP_N3-ED', 'VP_N3-BTE_fr', 'VP_N3-BTE_mid', 'VP_N3-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06012', 'dimensions': '4.2x3.2524x2.3', 'target': {'position': [-0.2, 3.1, 1.6], 'view_vector': [0.077, -0.997, 0.0]}, 'listener': {'position': [-0.1, 1.8, 1.6], 'view_vector': [-0.077, 0.997, 0.0]}, 'interferers': [{'position': [-0.6, 2.9, 1.6]}, {'position': [-0.5, 2.8, 1.6]}, {'position': [-0.1, 3.1, 1.6]}]}, 'scene': 'S00098', 'target': {'name': 'T037_H0F_00198', 'time_start': 77976, 'time_end': 191754}, 'duration': 235854, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 235854, 'type': 'speech', 'name': 'mim_02484.wav', 'offset': 15953175}, {'position': 2, 'time_start': 0, 'time_end': 235854, 'type': 'noise', 'name': 'CIN_hairdryer_023.wav', 'offset': 1264773}, {'position': 3, 'time_start': 0, 'time_end': 235854, 'type': 'music', 'name': '99/12099.low.mp3', 'offset': 4998004}], 'SNR': -3.9776177271402986, 'listener': {'rotation': [{'sample': 91573.3819750988, 'angle': 74.99272663725158}, {'sample': 100434.3819750988, 'angle': 85.36112007764115}], 'hrir_filename': ['VP_E11-ED', 'VP_E11-BTE_fr', 'VP_E11-BTE_mid', 'VP_E11-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06013', 'dimensions': '5.6x4.6875x3.4', 'target': {'position': [-0.6, 4.0, 1.6], 'view_vector': [0.981, -0.196, 0.0]}, 'listener': {'position': [0.4, 3.8, 1.6], 'view_vector': [-0.981, 0.196, 0.0]}, 'interferers': [{'position': [-1.1, 4.3, 1.6]}, {'position': [0.5, 1.2, 1.6]}, {'position': [-1.3, 2.5, 1.6]}]}, 'scene': 'S00099', 'target': {'name': 'T037_FAU_02016', 'time_start': 84122, 'time_end': 184670}, 'duration': 228770, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 228770, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 14543277}, {'position': 3, 'time_start': 0, 'time_end': 228770, 'type': 'speech', 'name': 'mim_03397.wav', 'offset': 8623215}], 'SNR': -2.236803690960299, 'listener': {'rotation': [{'sample': 74165.00493285504, 'angle': 134.88368390825934}, {'sample': 83452.00493285504, 'angle': 165.45442367402313}], 'hrir_filename': ['BuK-ED', 'BuK-BTE_fr', 'BuK-BTE_mid', 'BuK-BTE_rear']}}, {'dataset': 'train', 'room': {'name': 'R06012', 'dimensions': '4.2x3.2524x2.3', 'target': {'position': [-0.2, 3.1, 1.6], 'view_vector': [0.077, -0.997, 0.0]}, 'listener': {'position': [-0.1, 1.8, 1.6], 'view_vector': [-0.077, 0.997, 0.0]}, 'interferers': [{'position': [-0.6, 2.9, 1.6]}, {'position': [-0.5, 2.8, 1.6]}, {'position': [-0.1, 3.1, 1.6]}]}, 'scene': 'S00100', 'target': {'name': 'T037_G15_01927', 'time_start': 75764, 'time_end': 155144}, 'duration': 199244, 'interferers': [{'position': 1, 'time_start': 0, 'time_end': 199244, 'type': 'music', 'name': '40/4640.low.mp3', 'offset': 151174}, {'position': 2, 'time_start': 0, 'time_end': 199244, 'type': 'speech', 'name': 'nof_02484.wav', 'offset': 27584441}, {'position': 3, 'time_start': 0, 'time_end': 199244, 'type': 'noise', 'name': 'CIN_washing_119.wav', 'offset': 95231}], 'SNR': -1.9097854424586096, 'listener': {'rotation': [{'sample': 72388.94947211648, 'angle': 111.139879010017}, {'sample': 80450.94947211648, 'angle': 96.87065533622416}], 'hrir_filename': ['VP_E1-ED', 'VP_E1-BTE_fr', 'VP_E1-BTE_mid', 'VP_E1-BTE_rear']}}]
+[
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06025",
+            "dimensions": "3.8x3.0263x3.4",
+            "target": {
+                "position": [
+                    0.5000,
+                    2.3000,
+                    1.2000
+                ],
+                "view_vector": [
+                    -0.8740,
+                    -0.4860,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    -0.4000,
+                    1.8000,
+                    1.2000
+                ],
+                "view_vector": [
+                    0.8740,
+                    0.4860,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        0.4000,
+                        1.2000,
+                        1.2000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.1000,
+                        2.8000,
+                        1.2000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.5000,
+                        2.8000,
+                        1.2000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00001",
+        "target": {
+            "name": "T037_AEB_00383",
+            "time_start": 73968,
+            "time_end": 203622
+        },
+        "duration": 247722,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 247722,
+                "type": "speech",
+                "name": "nom_03397.wav",
+                "offset": 25420969
+            },
+            {
+                "position": 2,
+                "time_start": 0,
+                "time_end": 247722,
+                "type": "speech",
+                "name": "mif_02484.wav",
+                "offset": 18139523
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 247722,
+                "type": "speech",
+                "name": "mim_03397.wav",
+                "offset": 22799376
+            }
+        ],
+        "SNR": 4.4499,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 48762.0287,
+                    "angle": 57.7828
+                },
+                {
+                    "sample": 57675.0287,
+                    "angle": 32.7235
+                }
+            ],
+            "hrir_filename": [
+                "VP_N6-ED",
+                "VP_N6-BTE_fr",
+                "VP_N6-BTE_mid",
+                "VP_N6-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06049",
+            "dimensions": "4.8x3.7854x2.8",
+            "target": {
+                "position": [
+                    -0.5000,
+                    2.4000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.8090,
+                    0.5880,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    0.6000,
+                    3.2000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.8090,
+                    -0.5880,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        0.1000,
+                        1.3000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.5000,
+                        2.4000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.5000,
+                        1.4000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00002",
+        "target": {
+            "name": "T037_G0L_00841",
+            "time_start": 83942,
+            "time_end": 175229
+        },
+        "duration": 219329,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 219329,
+                "type": "noise",
+                "name": "CIN_vacuum_023.wav",
+                "offset": 703113
+            },
+            {
+                "position": 2,
+                "time_start": 0,
+                "time_end": 219329,
+                "type": "noise",
+                "name": "CIN_dishwasher_028.wav",
+                "offset": 245648
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 219329,
+                "type": "noise",
+                "name": "CIN_washing_027.wav",
+                "offset": 2789515
+            }
+        ],
+        "SNR": 2.3968,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 116125.5652,
+                    "angle": -171.1418
+                },
+                {
+                    "sample": 125653.5652,
+                    "angle": -150.5262
+                }
+            ],
+            "hrir_filename": [
+                "VP_N1-ED",
+                "VP_N1-BTE_fr",
+                "VP_N1-BTE_mid",
+                "VP_N1-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06027",
+            "dimensions": "6x4.4533x2.2",
+            "target": {
+                "position": [
+                    -1.2000,
+                    3.0000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.6590,
+                    0.7530,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    0.2000,
+                    4.6000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.6590,
+                    -0.7530,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        0.4000,
+                        2.3000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.6000,
+                        1.5000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.8000,
+                        1.1000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00003",
+        "target": {
+            "name": "T037_CH6_02005",
+            "time_start": 69138,
+            "time_end": 176301
+        },
+        "duration": 220401,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 220401,
+                "type": "music",
+                "name": "38/4638.low.mp3",
+                "offset": 5086335
+            },
+            {
+                "position": 2,
+                "time_start": 0,
+                "time_end": 220401,
+                "type": "speech",
+                "name": "nof_03397.wav",
+                "offset": 7787724
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 220401,
+                "type": "speech",
+                "name": "mim_02484.wav",
+                "offset": 24095884
+            }
+        ],
+        "SNR": -9.9160,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 83479.9805,
+                    "angle": -101.7228
+                },
+                {
+                    "sample": 91917.9805,
+                    "angle": -125.3147
+                }
+            ],
+            "hrir_filename": [
+                "BuK-ED",
+                "BuK-BTE_fr",
+                "BuK-BTE_mid",
+                "BuK-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06003",
+            "dimensions": "7.9x3.0038x2.8",
+            "target": {
+                "position": [
+                    0.4000,
+                    2.5000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.2360,
+                    0.9720,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    -0.4000,
+                    5.8000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.2360,
+                    -0.9720,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        -0.3000,
+                        3.7000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.3000,
+                        2.8000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.2000,
+                        3.9000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00004",
+        "target": {
+            "name": "T037_HHX_09726",
+            "time_start": 76637,
+            "time_end": 174539
+        },
+        "duration": 218639,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 218639,
+                "type": "noise",
+                "name": "CIN_washing_042.wav",
+                "offset": 293619
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 218639,
+                "type": "music",
+                "name": "08/6608.low.mp3",
+                "offset": 7316017
+            }
+        ],
+        "SNR": -7.3832,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 57792.0656,
+                    "angle": -46.8765
+                },
+                {
+                    "sample": 66558.0656,
+                    "angle": -75.4359
+                }
+            ],
+            "hrir_filename": [
+                "DADEC-ED",
+                "DADEC-BTE_fr",
+                "DADEC-BTE_mid",
+                "DADEC-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06017",
+            "dimensions": "5.4x4.8148x2.8",
+            "target": {
+                "position": [
+                    -1.3000,
+                    4.1000,
+                    1.2000
+                ],
+                "view_vector": [
+                    0.9970,
+                    0.0830,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    -0.1000,
+                    4.2000,
+                    1.2000
+                ],
+                "view_vector": [
+                    -0.9970,
+                    -0.0830,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        0.9000,
+                        1.1000,
+                        1.2000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.4000,
+                        1.7000,
+                        1.2000
+                    ]
+                },
+                {
+                    "position": [
+                        0.7000,
+                        2.7000,
+                        1.2000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00005",
+        "target": {
+            "name": "T037_HP0_01377",
+            "time_start": 69723,
+            "time_end": 157041
+        },
+        "duration": 201141,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 201141,
+                "type": "speech",
+                "name": "nof_03397.wav",
+                "offset": 31555672
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 201141,
+                "type": "noise",
+                "name": "CIN_washing_009.wav",
+                "offset": 3307830
+            }
+        ],
+        "SNR": -0.2358,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 44444.6163,
+                    "angle": -155.2135
+                },
+                {
+                    "sample": 53907.6163,
+                    "angle": -172.3023
+                }
+            ],
+            "hrir_filename": [
+                "VP_N3-ED",
+                "VP_N3-BTE_fr",
+                "VP_N3-BTE_mid",
+                "VP_N3-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06033",
+            "dimensions": "5.1x3.3392x2.9",
+            "target": {
+                "position": [
+                    0.6000,
+                    2.7000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.0000,
+                    -1.0000,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    0.6000,
+                    1.2000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.0000,
+                    1.0000,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        0.0000,
+                        3.3000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.4000,
+                        3.9000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.6000,
+                        3.6000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00006",
+        "target": {
+            "name": "T037_CDY_00280",
+            "time_start": 84213,
+            "time_end": 178146
+        },
+        "duration": 222246,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 222246,
+                "type": "music",
+                "name": "92/9592.low.mp3",
+                "offset": 6877071
+            },
+            {
+                "position": 2,
+                "time_start": 0,
+                "time_end": 222246,
+                "type": "noise",
+                "name": "CIN_vacuum_026.wav",
+                "offset": 263121
+            }
+        ],
+        "SNR": 2.7109,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 104533.7432,
+                    "angle": 68.5080
+                },
+                {
+                    "sample": 113694.7432,
+                    "angle": 82.7134
+                }
+            ],
+            "hrir_filename": [
+                "VP_E8-ED",
+                "VP_E8-BTE_fr",
+                "VP_E8-BTE_mid",
+                "VP_E8-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06032",
+            "dimensions": "6x3.1767x2.9",
+            "target": {
+                "position": [
+                    0.3000,
+                    4.0000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.3850,
+                    -0.9230,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    -0.2000,
+                    2.8000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.3850,
+                    0.9230,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        -0.3000,
+                        1.8000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.1000,
+                        1.5000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.5000,
+                        1.2000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00007",
+        "target": {
+            "name": "T037_H7W_00891",
+            "time_start": 70239,
+            "time_end": 158880
+        },
+        "duration": 202980,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 202980,
+                "type": "noise",
+                "name": "CIN_kettle_024.wav",
+                "offset": 70693
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 202980,
+                "type": "speech",
+                "name": "nom_02484.wav",
+                "offset": 19319159
+            }
+        ],
+        "SNR": -0.3911,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 68905.0422,
+                    "angle": 90.4128
+                },
+                {
+                    "sample": 78537.0422,
+                    "angle": 76.4667
+                }
+            ],
+            "hrir_filename": [
+                "VP_N3-ED",
+                "VP_N3-BTE_fr",
+                "VP_N3-BTE_mid",
+                "VP_N3-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06026",
+            "dimensions": "5.5x4.1291x2.9",
+            "target": {
+                "position": [
+                    0.5000,
+                    1.0000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.2540,
+                    0.9670,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    0.0000,
+                    2.9000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.2540,
+                    -0.9670,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        -0.4000,
+                        1.9000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.8000,
+                        4.2000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.9000,
+                        4.1000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00008",
+        "target": {
+            "name": "T037_H8L_01442",
+            "time_start": 83854,
+            "time_end": 192340
+        },
+        "duration": 236440,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 236440,
+                "type": "speech",
+                "name": "mim_03397.wav",
+                "offset": 7485920
+            },
+            {
+                "position": 2,
+                "time_start": 0,
+                "time_end": 236440,
+                "type": "speech",
+                "name": "irm_02484.wav",
+                "offset": 13497843
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 236440,
+                "type": "music",
+                "name": "11/6611.low.mp3",
+                "offset": 1071834
+            }
+        ],
+        "SNR": -9.9280,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 78148.2151,
+                    "angle": -101.2398
+                },
+                {
+                    "sample": 87071.2151,
+                    "angle": -76.4165
+                }
+            ],
+            "hrir_filename": [
+                "VP_N3-ED",
+                "VP_N3-BTE_fr",
+                "VP_N3-BTE_mid",
+                "VP_N3-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06020",
+            "dimensions": "5x3.232x3",
+            "target": {
+                "position": [
+                    0.2000,
+                    1.3000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.1000,
+                    0.9950,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    0.3000,
+                    2.3000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.1000,
+                    -0.9950,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        -0.3000,
+                        3.3000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.0000,
+                        3.4000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.3000,
+                        1.2000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00009",
+        "target": {
+            "name": "T037_HH3_10714",
+            "time_start": 85915,
+            "time_end": 219538
+        },
+        "duration": 263638,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 263638,
+                "type": "music",
+                "name": "10/6610.low.mp3",
+                "offset": 3154138
+            },
+            {
+                "position": 2,
+                "time_start": 0,
+                "time_end": 263638,
+                "type": "noise",
+                "name": "CIN_dishwasher_039.wav",
+                "offset": 45534371
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 263638,
+                "type": "speech",
+                "name": "mim_03397.wav",
+                "offset": 479536
+            }
+        ],
+        "SNR": -9.2201,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 86126.7382,
+                    "angle": -71.7249
+                },
+                {
+                    "sample": 94735.7382,
+                    "angle": -86.5137
+                }
+            ],
+            "hrir_filename": [
+                "VP_N6-ED",
+                "VP_N6-BTE_fr",
+                "VP_N6-BTE_mid",
+                "VP_N6-BTE_rear"
+            ]
+        }
+    },
+    {
+        "dataset": "train",
+        "room": {
+            "name": "R06031",
+            "dimensions": "5.1x3.0039x3.3",
+            "target": {
+                "position": [
+                    0.4000,
+                    3.4000,
+                    1.6000
+                ],
+                "view_vector": [
+                    -0.2170,
+                    -0.9760,
+                    0.0000
+                ]
+            },
+            "listener": {
+                "position": [
+                    0.0000,
+                    1.6000,
+                    1.6000
+                ],
+                "view_vector": [
+                    0.2170,
+                    0.9760,
+                    0.0000
+                ]
+            },
+            "interferers": [
+                {
+                    "position": [
+                        0.3000,
+                        3.4000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        -0.5000,
+                        3.6000,
+                        1.6000
+                    ]
+                },
+                {
+                    "position": [
+                        0.1000,
+                        3.5000,
+                        1.6000
+                    ]
+                }
+            ]
+        },
+        "scene": "S00010",
+        "target": {
+            "name": "T037_CKE_02126",
+            "time_start": 80731,
+            "time_end": 248752
+        },
+        "duration": 292852,
+        "interferers": [
+            {
+                "position": 1,
+                "time_start": 0,
+                "time_end": 292852,
+                "type": "noise",
+                "name": "CIN_microwave_002.wav",
+                "offset": 420188
+            },
+            {
+                "position": 3,
+                "time_start": 0,
+                "time_end": 292852,
+                "type": "speech",
+                "name": "irm_02484.wav",
+                "offset": 9217866
+            }
+        ],
+        "SNR": 3.3223,
+        "listener": {
+            "rotation": [
+                {
+                    "sample": 77571.4201,
+                    "angle": 53.6574
+                },
+                {
+                    "sample": 85460.4201,
+                    "angle": 76.6245
+                }
+            ],
+            "hrir_filename": [
+                "VP_E6-ED",
+                "VP_E6-BTE_fr",
+                "VP_E6-BTE_mid",
+                "VP_E6-BTE_rear"
+            ]
+        }
+    }
+]

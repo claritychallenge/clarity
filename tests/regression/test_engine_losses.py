@@ -14,7 +14,7 @@ def test_sisnr_loss(regtest):
     y = torch.randn(10, 1000)
     loss = si_snr_loss.forward(x, y)
 
-    regtest.write(f"SISNR loss {loss:0.7f}\n")
+    regtest.write(f"SISNR loss {loss:0.4f}\n")
 
 
 def test_snr_loss(regtest):
@@ -26,7 +26,7 @@ def test_snr_loss(regtest):
     y = torch.randn(10, 1000)
     loss = snr_loss.forward(x, y)
 
-    regtest.write(f"SNR loss {loss:0.7f}\n")
+    regtest.write(f"SNR loss {loss:0.6f}\n")
 
 
 def test_stoi_loss(regtest):

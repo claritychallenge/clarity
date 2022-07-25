@@ -1,6 +1,7 @@
 # Regression test
 # Use scene builder to build random scene
 
+import json
 import os
 
 from omegaconf import OmegaConf
@@ -30,4 +31,6 @@ def test_CEC2_scene_builder(regtest):
     sb.instantiate_scenes(dataset=dataset)
 
     print(len(sb.scenes))
-    regtest.write(f"{sb.scenes}")
+
+    with regtest:
+        print(json.dumps(sb.scenes, indent=4))

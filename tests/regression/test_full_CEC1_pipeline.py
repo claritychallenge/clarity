@@ -2,6 +2,8 @@
 # Pass some random data through code and compare with reference output
 # CEC1 scene_renderer, enhancer, compressor, MSBG and MBSTOI
 
+import os
+
 import numpy as np
 from scipy.io import wavfile
 from scipy.signal import unit_impulse
@@ -68,6 +70,9 @@ def test_full_CEC1_pipeline(regtest):
     }
 
     output_path = "tmp"
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
     renderer = Renderer(
         input_path="tests/test_data",
