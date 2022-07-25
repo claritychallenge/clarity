@@ -15,7 +15,6 @@
 import os
 import sys
 
-import sphinx_rtd_theme
 import clarity
 
 sys.path.insert(0, os.path.abspath(".."))
@@ -63,7 +62,6 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     #    "sphinx.ext.numpydoc",
-    "sphinx_rtd_theme",
     "myst_parser",
     "sphinx_markdown_tables",
     "sphinxcontrib.mermaid",
