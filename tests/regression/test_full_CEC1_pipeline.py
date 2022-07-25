@@ -2,7 +2,7 @@
 # Pass some random data through code and compare with reference output
 # CEC1 scene_renderer, enhancer, compressor, MSBG and MBSTOI
 
-import os
+import tempfile
 
 import numpy as np
 from scipy.io import wavfile
@@ -62,45 +62,43 @@ def test_full_CEC1_pipeline(regtest):
         },
         "azimuth_target_listener": -7.54,
         "azimuth_interferer_listener": -29.9,
-        "scene": "S00001",
+        "scene": "S06001",
         "dataset": ".",
         "pre_samples": 88200,
         "post_samples": 44100,
         "SNR": 0.586,
     }
 
-    output_path = "tmp"
+    with tempfile.TemporaryDirectory() as output_path:
 
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
+        renderer = Renderer(
+            input_path="tests/test_data",
+            output_path=output_path,
+            num_channels=3,
+        )
 
-    renderer = Renderer(
-        input_path="tests/test_data",
-        output_path=output_path,
-        num_channels=3,
-    )
+        renderer.render(
+            pre_samples=scene["pre_samples"],
+            post_samples=scene["post_samples"],
+            dataset=scene["dataset"],
+            target=scene["target"]["name"],
+            noise_type=scene["interferer"]["type"],
+            interferer=scene["interferer"]["name"],
+            room=scene["room"]["name"],
+            scene=scene["scene"],
+            offset=scene["interferer"]["offset"],
+            snr_dB=scene["SNR"],
+        )
 
-    renderer.render(
-        pre_samples=scene["pre_samples"],
-        post_samples=scene["post_samples"],
-        dataset=scene["dataset"],
-        target=scene["target"]["name"],
-        noise_type=scene["interferer"]["type"],
-        interferer=scene["interferer"]["name"],
-        room=scene["room"]["name"],
-        scene=scene["scene"],
-        offset=scene["interferer"]["offset"],
-        snr_dB=scene["SNR"],
-    )
+        _, reference = wavfile.read(f"{output_path}/S06001_target_anechoic.wav")
+        _, signal = wavfile.read(f"{output_path}/S06001_mixed_CH1.wav")
 
-    _, reference = wavfile.read(f"{output_path}/S06001_target_anechoic_CH1.wav")
-    _, signal = wavfile.read(f"{output_path}/S06001_mix_CH1.wav")
-    reference = reference.astype(float) / 32768.0
-    signal = signal.astype(float) / 32768.0
+    reference = reference.astype(float)  # / 32768.0
+    signal = signal.astype(float)  # / 32768.0
 
     # Truncate to just over 2 seconds - i.e. just use part of the signals to speed up the HASPI calculation a little
-    signal = signal[:100000, :]
-    reference = reference[:100000, :]
+    signal = signal[100000:200000, :]
+    reference = reference[100000:200000, :]
 
     # The data below doesn't really need to be meaningful.
     # The purpose of the test is not to see if the haspi score is reasonable
@@ -119,8 +117,8 @@ def test_full_CEC1_pipeline(regtest):
 
     msbg_ear_cfg = {"src_pos": "ff", "fs": fs, "equiv0dBSPL": 100, "ahr": 20}
 
-    audiogram_l = np.array([45, 50, 60, 65, 60, 65, 70, 80])
-    audiogram_r = np.array([45, 45, 60, 70, 60, 60, 80, 80])
+    audiogram_l = np.array([45, 20, 30, 35, 30, 45, 50, 50])
+    audiogram_r = np.array([45, 25, 30, 40, 30, 40, 50, 50])
     audiogram_cfs = np.array([250, 500, 1000, 2000, 3000, 4000, 6000, 8000])
 
     ear = Ear(**msbg_ear_cfg)
@@ -141,16 +139,16 @@ def test_full_CEC1_pipeline(regtest):
     out_r, _, _ = compressor.process(out_r)
 
     enhanced_audio = np.stack([out_l, out_r], axis=1)
-
-    enhanced_audio = np.tanh(enhanced_audio)
+    enhanced_audio = np.tanh(enhanced_audio) * 100  # * 10000
 
     # Create discrete delta function (DDF) signal for time alignment
     ddf_signal = np.zeros((np.shape(signal)))
     ddf_signal[:, 0] = unit_impulse(len(signal), int(MSBG_FS / 2))
     ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
 
+    # Pass through MSBG hearing loss model
     reference_processed = listen(ear, reference, left_audiogram, right_audiogram)
-    signal_processed = listen(ear, signal, left_audiogram, right_audiogram)
+    signal_processed = listen(ear, enhanced_audio, left_audiogram, right_audiogram)
 
     # Calculate channel-specific unit impulse delay due to HL model and audiograms
     delay = find_delay_impulse(ddf_signal, initial_value=int(MSBG_FS / 2))

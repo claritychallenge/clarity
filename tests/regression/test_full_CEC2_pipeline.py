@@ -2,7 +2,7 @@
 # Pass some random data through code and compare with reference output
 # scene_renderer, enhancer, compressor, haspi
 
-import os
+import tempfile
 
 import numpy as np
 from omegaconf import OmegaConf
@@ -93,19 +93,19 @@ def test_full_CEC2_pipeline(regtest):
 
     output_path = "tmp"
 
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
+    with tempfile.TemporaryDirectory() as output_path:
 
-    target, interferers, anechoic, head_turn = scene_renderer.generate_hoa_signals(
-        scene
-    )
+        target, interferers, anechoic, _head_turn = scene_renderer.generate_hoa_signals(
+            scene
+        )
 
-    scene_renderer.generate_binaural_signals(
-        scene, target, interferers, anechoic, output_path
-    )
+        scene_renderer.generate_binaural_signals(
+            scene, target, interferers, anechoic, output_path
+        )
 
-    _, reference = wavfile.read(f"{output_path}/S06001_target_anechoic_CH1.wav")
-    _, signal = wavfile.read(f"{output_path}/S06001_mix_CH1.wav")
+        _, reference = wavfile.read(f"{output_path}/S06001_target_anechoic_CH1.wav")
+        _, signal = wavfile.read(f"{output_path}/S06001_mix_CH1.wav")
+
     reference = reference.astype(float) / 32768.0
     signal = signal.astype(float) / 32768.0
 
