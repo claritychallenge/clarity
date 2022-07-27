@@ -296,7 +296,6 @@ path:
 
 ```
 
-markdown:
 The general form for overriding a parameter in the CLI is dot indexed. For the following entry in a <code>config.yaml</code> file:
 
 ``` yaml
@@ -431,14 +430,21 @@ If you used a more traditional Virtual Environment which is configured to save e
 called your environment `pyclarity` then the location will be
 `~/.virtualenv/pyclarity/lib/python<version>/site-packages/recipes/`.
 
-If you have installed pyclarity from GitHub then the recipes will be under `clarity/recipes/` in the cloned directory
+If you have installed pyclarity from GitHub then the recipes will be under `clarity/recipes/` in the cloned directory.
+
+If you are unsure where to find the files and are on a UNIX like operating system you can search for them with the
+following...
+
+``` bash
+find ~/ -type f -iname "config.yaml" | grep recipes
+```
 
 
 ``` python
 from omegaconf import DictConfig, OmegaConf
 
-# IMPORTANT - Modify the following line to reflect where the recipes are located
-cfg = OmegaConf.load("~/.virtualenv/pyclarity/lib/python3.10/site-packages/recipes/cec2/baseline/config.yaml")
+# IMPORTANT - Modify the following line to reflect where the recipes are located, see notes above
+cfg = OmegaConf.load("/home/<username>/.virtualenv/pyclarity/lib/python3.10/site-packages/recipes/cec2/baseline/config.yaml")
 assert isinstance(cfg, DictConfig)
 
 ```
@@ -464,7 +470,6 @@ cfg.path["scenes_folder"] = "${path.root}/scenes"
 ```
 
 
-markdown:
 (Side note: the Clarity tools come with higher level `recipe` scripts that are designed to be used from the command line. When working with these, default configurations can be overriden by passing command line arguments.)
 
 With the configuration modified, we can now instantiate our `NALR` and `Compressor` objects.
