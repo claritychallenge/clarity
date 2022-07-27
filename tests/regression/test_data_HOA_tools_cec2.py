@@ -1,6 +1,8 @@
+import numpy as np
+from scipy.spatial.transform import Rotation as R
+
 from clarity.data import HOA_tools_cec2 as hoa
-import numpy as np 
-from scipy.spatial.transform import Rotation as R 
+
 
 def test_compute_rotation_matrix(regtest):
     theta = 45
@@ -9,11 +11,13 @@ def test_compute_rotation_matrix(regtest):
     rotmat = hoa.compute_rotation_matrix.py_func(order, foa)
     regtest.write(f"Rotation matrix {rotmat}\n")
 
+
 def test_centred_element(regtest):
     np.random.seed(0)
     matrix = np.random.rand(9, 9)
     centred_element = hoa.centred_element.py_func(matrix, 0, 0)
     regtest.write(f"centered element {centred_element:0.3f}\n")
+
 
 def test_P(regtest):
     theta = 45
@@ -23,6 +27,7 @@ def test_P(regtest):
     p = hoa.P.py_func(0, 1, 0, order, rotmats)
     regtest.write(f"P value {p:0.3f}\n")
 
+
 def test_U(regtest):
     m = 0
     n = 0
@@ -30,8 +35,9 @@ def test_U(regtest):
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
     rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
-    u = hoa.U.py_func(m,n,order,rotmats)
+    u = hoa.U.py_func(m, n, order, rotmats)
     regtest.write(f"U value {u:0.3f}\n")
+
 
 def test_V(regtest):
     n = 0
@@ -40,8 +46,9 @@ def test_V(regtest):
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
     rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
     for i in range(3):
-        v = hoa.V.py_func(i-1,n,order,rotmats)
+        v = hoa.V.py_func(i - 1, n, order, rotmats)
         regtest.write(f"V[{i}] value {v:0.3f}\n")
+
 
 def test_W(regtest):
     n = 0
@@ -49,16 +56,18 @@ def test_W(regtest):
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
     rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
-    for i in range(3):    
-        w = hoa.W.py_func(i-1,n,order,rotmats)
+    for i in range(3):
+        w = hoa.W.py_func(i - 1, n, order, rotmats)
         regtest.write(f"W[{i}] value {w:0.3f}\n")
+
 
 def test_compute_UVW_coefficients(regtest):
     m = 0
     n = 2
     order = 2
-    u,v,w = hoa.compute_UVW_coefficients.py_func(m,n,order)
+    u, v, w = hoa.compute_UVW_coefficients.py_func(m, n, order)
     regtest.write(f"UVW coefficients {u:0.3f}, {v:0.3f}, {w:0.3f}\n")
+
 
 def test_compute_band_rotation(regtest):
     theta = 45
@@ -78,5 +87,7 @@ def test_compute_band_rotation(regtest):
 
     if n > 1:
         for i in np.arange(2, n + 1):
-            rot_mat, sub_matrices = hoa.compute_band_rotation.py_func(i, sub_matrices, rot_mat)
+            rot_mat, sub_matrices = hoa.compute_band_rotation.py_func(
+                i, sub_matrices, rot_mat
+            )
     regtest.write(f"Band rotations {rot_mat}, {sub_matrices}\n")
