@@ -408,25 +408,44 @@ from clarity.enhancer.nalr import NALR
 To allow for scalable and flexible running on both local and HPC platforms, many Clarity challenge CEC2 scripts and
 tools depend on [hydra](https://hydra.cc/) and [submitit](https://github.com/facebookincubator/submitit) for the
 configuration of Python code, for the setting of environment variables such as dataset directories, and for enabling
-parallisation of Python on both HPC and local machines. (A full description of how hydra and submitit is used in the
+parallelisation of Python on both HPC and local machines. (A full description of how
+[hydra](https://hydra.cc/docs/intro/) and [submitit](https://github.com/facebookincubator/submitit) is used in the
 Clarity challenges is out of the scope of this tutorial).
 
 
-In this notebook, we will be importing the baseline configuration file directly using `omegaconf`. The module can read a
+In this tutorial, we will be importing the baseline configuration file directly using `omegaconf`. The module can read a
 configuration file in YAML format and return a DictConfig object storing the configuration data.
+
+The configuration is included under the `clarity/recipes/cec2/baseline/config.yaml` from when you installed the
+`pyclarity** package.
+
+**IMPORTANT**
+
+The location of the `recipes` needs a little figuring out and will depend on how you have installed `pyclarity`.
+
+If you installed from PyPI using `pip` under a Miniconda virtual environment called `clarity` configured to
+store the virtual environments in the default location of `~/miniconda3/`  then the `recipes` directory will be under
+`~/.miniconda/envs/clarity/lib/python-<version>/recipes/`.
+
+If you used a more traditional Virtual Environment which is configured to save environments under `~/.virtualenv` and
+called your environment `pyclarity` then the location will be
+`~/.virtualenv/pyclarity/lib/python<version>/site-packages/recipes/`.
+
+If you have installed pyclarity from GitHub then the recipes will be under `clarity/recipes/` in the cloned directory
 
 
 ``` python
 from omegaconf import DictConfig, OmegaConf
 
-cfg = OmegaConf.load("clarity/recipes/cec2/baseline/config.yaml")
-assert type(cfg) == DictConfig
+# IMPORTANT - Modify the following line to reflect where the recipes are located
+cfg = OmegaConf.load("~/.virtualenv/pyclarity/lib/python3.10/site-packages/recipes/cec2/baseline/config.yaml")
+assert isinstance(cfg, DictConfig)
 
 ```
 
 
 We will need to override some of the standard paths provided in the baseline `config.yaml` to enable us to run the
-baseline on the demo data in this notebook environment.
+baseline on the demo data in this tutorial environment.
 
 
 We need to supply:
@@ -552,13 +571,12 @@ Finally, signals are stored as 16-bit integer audio and must be converted to flo
 So, using the `wavfile` module from `scipy.io` to read the file, we have,
 
 ``` python
-import os
+from pathlib import Path
 
 from scipy.io import wavfile
 
-fs, signal = wavfile.read(
-    os.path.join(cfg.path.scenes_folder, f"{scene_id}_mix_CH1.wav")
-)
+fs, signal = wavfile.read(Path(cfg.path.scenes_folder) / f"{scene_id}_mix_CH1.wav")
+
 
 signal = signal / 32768.0
 ```
@@ -570,6 +588,7 @@ We can plot the signal to check it looks OK,
 import matplotlib.pylab as plt
 
 plt.plot(signal)
+plt.show()
 ```
 
 
@@ -649,9 +668,8 @@ HASPI is an intrusive metric and requires an uncorrupted reference signal. These
 ``` python
 from clarity.evaluator.haspi import haspi_v2_be
 
-fs, reference = wavfile.read(
-    os.path.join(cfg.path.scenes_folder, f"{scene_id}_target_CH1.wav")
-)
+fs, reference = wavfile.read(Path(cfg.path.scenes_folder) / f"{scene_id}_target_CH1.wav")
+
 reference = reference / 32768.0
 ```
 
