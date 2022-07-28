@@ -12,12 +12,11 @@ def test_dsp_filter(regtest):
     signal = torch.reshape(signal, (1, 1, -1))
     signal.to(amfir.device)
     output = amfir(signal)
-    output = np.round(output.detach().numpy(), 6)
+    output = np.round(output.detach().numpy(), 4)
     regtest.write(f"signal output: \n{output}\n")
 
 
 def test_gha_audiogram(regtest):
-
     cfs = np.array([250, 500, 1000, 2000, 4000, 8000])
     for i in [1, 10, 30, 40]:
         np.random.seed(0)
