@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.evaluator.haspi.haspi &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../CONTRIBUTING.html">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <h1>Source code for clarity.evaluator.haspi.haspi</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">clarity.evaluator.haspi</span> <span class="kn">import</span> <span class="n">eb</span><span class="p">,</span> <span class="n">ebm</span><span class="p">,</span> <span class="n">ip</span>
+
+
+<div class="viewcode-block" id="haspi_v2"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.haspi.html#clarity.evaluator.haspi.haspi_v2">[docs]</a><span class="k">def</span> <span class="nf">haspi_v2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">HL</span><span class="p">,</span> <span class="n">Level1</span><span class="o">=</span><span class="mi">65</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the HASPI intelligibility index using the</span>
+<span class="sd">    auditory model followed by computing the envelope cepstral</span>
+<span class="sd">    correlation and BM vibration high-level covariance. The reference</span>
+<span class="sd">    signal presentation level for NH listeners is assumed to be 65 dB</span>
+<span class="sd">    SPL. The same model is used for both normal and impaired hearing. This</span>
+<span class="sd">    version of HASPI uses a modulation filterbank followed by an ensemble of</span>
+<span class="sd">    neural networks to compute the estimated intelligibility.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (): Clear input reference speech signal with no noise or distortion.</span>
+<span class="sd">              If a hearing loss is specified, no amplification should be provided.</span>
+<span class="sd">        fx (): Sampling rate in Hz for signal x</span>
+<span class="sd">        y (): Output signal with noise, distortion, HA gain, and/or processing.</span>
+<span class="sd">        fy (): Sampling rate in Hz for signal y.</span>
+<span class="sd">        HL (): (1,6) vector of hearing loss at the 6 audiometric frequencies</span>
+<span class="sd">                    [250, 500, 1000, 2000, 4000, 6000] Hz.</span>
+<span class="sd">        Level1 (): Optional input specifying level in dB SPL that corresponds to a</span>
+<span class="sd">              signal RMS = 1. Default is 65 dB SPL if argument not provided.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    Intel     Intelligibility estimated by passing the cepstral coefficients</span>
+<span class="sd">              through a modulation filterbank followed by an ensemble of</span>
+<span class="sd">              neural networks.</span>
+<span class="sd">    raw       vector of 10 cep corr modulation filterbank outputs, averaged</span>
+<span class="sd">              over basis funct 2-6.</span>
+
+<span class="sd">    James M. Kates, 5 August 2013.</span>
+
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Auditory model for intelligibility</span>
+    <span class="c1"># Reference is no processing, normal hearing</span>
+    <span class="n">itype</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Intelligibility model</span>
+    <span class="n">xenv</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">yenv</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fsamp</span> <span class="o">=</span> <span class="n">eb</span><span class="o">.</span><span class="n">EarModel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">HL</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">Level1</span><span class="p">)</span>
+
+    <span class="c1"># Envelope modulation features</span>
+
+    <span class="c1"># LP filter and subsample the envelope</span>
+    <span class="n">fLP</span> <span class="o">=</span> <span class="mi">320</span>
+    <span class="n">fsub</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">fLP</span>  <span class="c1"># subsample to span 2 octaves above the cutoff frequency</span>
+    <span class="n">xLP</span><span class="p">,</span> <span class="n">yLP</span> <span class="o">=</span> <span class="n">ebm</span><span class="o">.</span><span class="n">EnvFilt</span><span class="p">(</span><span class="n">xenv</span><span class="p">,</span> <span class="n">yenv</span><span class="p">,</span> <span class="n">fLP</span><span class="p">,</span> <span class="n">fsub</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+
+    <span class="c1"># Compute the ceptstral coefficients as a function of subsampled time</span>
+    <span class="n">nbasis</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># Use 6 basis functions</span>
+    <span class="n">thr</span> <span class="o">=</span> <span class="mf">2.5</span>  <span class="c1"># Silence threshold in dB SL</span>
+    <span class="n">dither</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># Dither in dB RMS to add to envelope signals</span>
+    <span class="n">xcep</span><span class="p">,</span> <span class="n">ycep</span> <span class="o">=</span> <span class="n">ebm</span><span class="o">.</span><span class="n">CepCoef</span><span class="p">(</span><span class="n">xLP</span><span class="p">,</span> <span class="n">yLP</span><span class="p">,</span> <span class="n">thr</span><span class="p">,</span> <span class="n">dither</span><span class="p">,</span> <span class="n">nbasis</span><span class="p">)</span>
+
+    <span class="c1"># Cepstral coeffifiencts filtered at each modulation rate</span>
+    <span class="c1"># Band center frequencies [2, 6, 10, 16, 25, 40, 64, 100, 160, 256] Hz</span>
+    <span class="c1"># Band edges [0, 4, 8, 12.5, 20.5, 30.5, 52.4, 78.1, 128, 200, 328] Hz</span>
+    <span class="n">xmod</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ebm</span><span class="o">.</span><span class="n">ModFilt</span><span class="p">(</span><span class="n">xcep</span><span class="p">,</span> <span class="n">ycep</span><span class="p">,</span> <span class="n">fsub</span><span class="p">)</span>
+
+    <span class="c1"># Cross-correlation between the cepstral coefficients for the degraded and ref signals at each modulation rate,</span>
+    <span class="c1"># averaged over basis functions 2-6</span>
+    <span class="n">aveCM</span> <span class="o">=</span> <span class="n">ebm</span><span class="o">.</span><span class="n">ModCorr</span><span class="p">(</span><span class="n">xmod</span><span class="p">,</span> <span class="n">ymod</span><span class="p">)</span>
+
+    <span class="c1"># Intelligibility prediction</span>
+    <span class="c1"># Get the neural network parameters and the weights for an ensemble of 10 networks</span>
+    <span class="n">NNparam</span><span class="p">,</span> <span class="n">Whid</span><span class="p">,</span> <span class="n">Wout</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">GetNeuralNet</span><span class="p">()</span>
+
+    <span class="c1"># Average the neural network outputs for the modulation filterbank values</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">NNfeedfwdEns</span><span class="p">(</span><span class="n">aveCM</span><span class="p">,</span> <span class="n">NNparam</span><span class="p">,</span> <span class="n">Whid</span><span class="p">,</span> <span class="n">Wout</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">b</span>
+
+    <span class="c1"># Return the intelligibility estimate and raw modulation filter outputs</span>
+    <span class="n">Intel</span> <span class="o">=</span> <span class="n">model</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">aveCM</span>
+
+    <span class="k">return</span> <span class="n">Intel</span><span class="p">,</span> <span class="n">raw</span></div>
+
+
+<div class="viewcode-block" id="haspi_v2_be"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.haspi.html#clarity.evaluator.haspi.haspi_v2_be">[docs]</a><span class="k">def</span> <span class="nf">haspi_v2_be</span><span class="p">(</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yl</span><span class="p">,</span> <span class="n">yr</span><span class="p">,</span> <span class="n">fs_signal</span><span class="p">,</span> <span class="n">audiogram_l</span><span class="p">,</span> <span class="n">audiogram_r</span><span class="p">,</span> <span class="n">audiogram_cfs</span><span class="p">,</span> <span class="n">Level</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Better ear HASPI.</span>
+
+<span class="sd">    Calculates HASPI for left and right ear and selects the better result.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        xl: left channel of reference signal</span>
+<span class="sd">        xr: right channel of reference signal</span>
+<span class="sd">        yl: left channel of processed signal</span>
+<span class="sd">        yr: right channel of processed signal</span>
+<span class="sd">        fs_signal: sampling rate for both signal</span>
+<span class="sd">        audiogram_l: left ear audiogram</span>
+<span class="sd">        audiogram_r: right ear audiogram</span>
+<span class="sd">        audiogram_cfs: audiogram frequencies</span>
+<span class="sd">        Level: level in dB SPL corresponding to RMS=1</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: beHASPI score</span>
+
+<span class="sd">    Zuzanna Podwinska, March 2022</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># HASPI assumes the following audiogram frequencies:</span>
+    <span class="n">aud</span> <span class="o">=</span> <span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">]</span>
+
+    <span class="c1"># Adjust listener.audiogram_levels_l and _r to match the frequencies above</span>
+    <span class="n">HL_l</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">audiogram_l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audiogram_cfs</span><span class="p">))</span> <span class="k">if</span> <span class="n">audiogram_cfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">aud</span>
+    <span class="p">]</span>
+    <span class="n">HL_r</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">audiogram_r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audiogram_cfs</span><span class="p">))</span> <span class="k">if</span> <span class="n">audiogram_cfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">aud</span>
+    <span class="p">]</span>
+
+    <span class="n">score_l</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">haspi_v2</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">fs_signal</span><span class="p">,</span> <span class="n">yl</span><span class="p">,</span> <span class="n">fs_signal</span><span class="p">,</span> <span class="n">HL_l</span><span class="p">,</span> <span class="n">Level</span><span class="p">)</span>
+    <span class="n">score_r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">haspi_v2</span><span class="p">(</span><span class="n">xr</span><span class="p">,</span> <span class="n">fs_signal</span><span class="p">,</span> <span class="n">yr</span><span class="p">,</span> <span class="n">fs_signal</span><span class="p">,</span> <span class="n">HL_r</span><span class="p">,</span> <span class="n">Level</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">score_l</span><span class="p">,</span> <span class="n">score_r</span><span class="p">)</span></div>
+</pre></div>
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

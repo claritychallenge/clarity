@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>clarity.predictor.torch_stoi module &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CONTRIBUTING.html">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.data.html">
+   clarity.data package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.HOA_tools_cec2.html">
+     clarity.data.HOA_tools_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.demo_data.html">
+     clarity.data.demo_data module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_builder_cec2.html">
+     clarity.data.scene_builder_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_renderer_cec1.html">
+     clarity.data.scene_renderer_cec1 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_renderer_cec2.html">
+     clarity.data.scene_renderer_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.utils.html">
+     clarity.data.utils module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.engine.html">
+   clarity.engine package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.engine.losses.html">
+     clarity.engine.losses module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.engine.system.html">
+     clarity.engine.system module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.enhancer.html">
+   clarity.enhancer package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.dnn.html">
+     clarity.enhancer.dnn package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.dnn.mc_conv_tasnet.html">
+       clarity.enhancer.dnn.mc_conv_tasnet module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.dsp.html">
+     clarity.enhancer.dsp package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+    <label for="toctree-checkbox-5">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.dsp.filter.html">
+       clarity.enhancer.dsp.filter module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.gha.html">
+     clarity.enhancer.gha package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.audiogram.html">
+       clarity.enhancer.gha.audiogram module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gainrule_camfit.html">
+       clarity.enhancer.gha.gainrule_camfit module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gha_interface.html">
+       clarity.enhancer.gha.gha_interface module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gha_utils.html">
+       clarity.enhancer.gha.gha_utils module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.enhancer.compressor.html">
+     clarity.enhancer.compressor module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.enhancer.nalr.html">
+     clarity.enhancer.nalr module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.evaluator.html">
+   clarity.evaluator package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.haspi.html">
+     clarity.evaluator.haspi package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+    <label for="toctree-checkbox-8">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.eb.html">
+       clarity.evaluator.haspi.eb module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.ebm.html">
+       clarity.evaluator.haspi.ebm module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.haspi.html">
+       clarity.evaluator.haspi.haspi module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.ip.html">
+       clarity.evaluator.haspi.ip module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.mbstoi.html">
+     clarity.evaluator.mbstoi package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+    <label for="toctree-checkbox-9">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.mbstoi.mbstoi.html">
+       clarity.evaluator.mbstoi.mbstoi module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.mbstoi.mbstoi_utils.html">
+       clarity.evaluator.mbstoi.mbstoi_utils module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.msbg.html">
+     clarity.evaluator.msbg package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+    <label for="toctree-checkbox-10">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.audiogram.html">
+       clarity.evaluator.msbg.audiogram module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.cochlea.html">
+       clarity.evaluator.msbg.cochlea module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.msbg.html">
+       clarity.evaluator.msbg.msbg module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.msbg_utils.html">
+       clarity.evaluator.msbg.msbg_utils module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.smearing.html">
+       clarity.evaluator.msbg.smearing module
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="clarity.predictor.html">
+   clarity.predictor package
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.predictor.torch_msbg.html">
+     clarity.predictor.torch_msbg module
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     clarity.predictor.torch_stoi module
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+
+<nav id="bd-toc-nav">
+    
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="module-clarity.predictor.torch_stoi">
+<span id="clarity-predictor-torch-stoi-module"></span><h1>clarity.predictor.torch_stoi module<a class="headerlink" href="#module-clarity.predictor.torch_stoi" title="Permalink to this heading">#</a></h1>
+<p>This implementation is from <a class="reference external" href="https://github.com/mpariente/pytorch_stoi">https://github.com/mpariente/pytorch_stoi</a>, please cite and star the repo.
+The pip version of torch_stoi does not include EPS in line 127 &amp; 128, hence could lead to sqrt(0)</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.NegSTOILoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.predictor.torch_stoi.</span></span><span class="sig-name descname"><span class="pre">NegSTOILoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#NegSTOILoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.NegSTOILoss" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="simple">
+<dt>Negated Short Term Objective Intelligibility (STOI) metric, to be used</dt><dd><p>as a loss function.
+Inspired from [1, 2, 3] but not exactly the same : cannot be used as
+the STOI metric directly (use pystoi instead). See Notes.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_rate</strong> (<em>int</em>) – sample rate of audio input</p></li>
+<li><p><strong>use_vad</strong> (<em>bool</em>) – Whether to use simple VAD (see Notes)</p></li>
+<li><p><strong>extended</strong> (<em>bool</em>) – Whether to compute extended version [3].</p></li>
+<li><p><strong>do_resample</strong> (<em>bool</em>) – Whether to resample audio input to <cite>FS</cite></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Shapes:</dt><dd><p>(time,) –&gt; (1, )
+(batch, time) –&gt; (batch, )
+(batch, n_src, time) –&gt; (batch, n_src)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>torch.Tensor of shape (batch, <a href="#id1"><span class="problematic" id="id2">*</span></a>, ), only the time dimension has
+been reduced.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function cannot be used to compute the “real” STOI metric as
+we applied some changes to speed-up loss computation. See Notes section.</p>
+</div>
+<p class="rubric">Notes</p>
+<p>In the NumPy version, some kind of simple VAD was used to remove the
+silent frames before chunking the signal into short-term envelope
+vectors. We don’t do the same here because removing frames in a
+batch is cumbersome and inefficient.
+If <cite>use_vad</cite> is set to True, instead we detect the silent frames and
+keep a mask tensor. At the end, the normalized correlation of
+short-term envelope vectors is masked using this mask (unfolded) and
+the mean is computed taking the mask values into account.</p>
+<p class="rubric">References</p>
+<dl class="simple">
+<dt>[1] C.H.Taal, R.C.Hendriks, R.Heusdens, J.Jensen ‘A Short-Time</dt><dd><p>Objective Intelligibility Measure for Time-Frequency Weighted Noisy
+Speech’, ICASSP 2010, Texas, Dallas.</p>
+</dd>
+<dt>[2] C.H.Taal, R.C.Hendriks, R.Heusdens, J.Jensen ‘An Algorithm for</dt><dd><p>Intelligibility Prediction of Time-Frequency Weighted Noisy Speech’,
+IEEE Transactions on Audio, Speech, and Language Processing, 2011.</p>
+</dd>
+<dt>[3] Jesper Jensen and Cees H. Taal, ‘An Algorithm for Predicting the</dt><dd><p>Intelligibility of Speech Masked by Modulated Noise Maskers’,
+IEEE Transactions on Audio, Speech and Language Processing, 2016.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.NegSTOILoss.detect_silent_frames">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detect_silent_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dyn_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framelen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#NegSTOILoss.detect_silent_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.NegSTOILoss.detect_silent_frames" title="Permalink to this definition">#</a></dt>
+<dd><p>Detects silent frames on input tensor.
+A frame is excluded if its energy is lower than max(energy) - dyn_range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – batch of original speech wav file  (batch, time)</p></li>
+<li><p><strong>dyn_range</strong> – Energy range to determine which frame is silent</p></li>
+<li><p><strong>framelen</strong> – Window size for energy evaluation</p></li>
+<li><p><strong>hop</strong> – Hop size for energy evaluation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>torch.BoolTensor, framewise mask.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.NegSTOILoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">est_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#NegSTOILoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.NegSTOILoss.forward" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute negative (E)STOI loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>est_targets</strong> (<em>torch.Tensor</em>) – Tensor containing target estimates.</p></li>
+<li><p><strong>targets</strong> (<em>torch.Tensor</em>) – Tensor containing clean targets.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Shapes:</dt><dd><p>(time,) –&gt; (1, )
+(batch, time) –&gt; (batch, )
+(batch, n_src, time) –&gt; (batch, n_src)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>torch.Tensor, the batch of negative STOI loss</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.NegSTOILoss.rowcol_norm">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rowcol_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#NegSTOILoss.rowcol_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.NegSTOILoss.rowcol_norm" title="Permalink to this definition">#</a></dt>
+<dd><p>Mean/variance normalize axis 2 and 1 of input vector</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.NegSTOILoss.stft">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#NegSTOILoss.stft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.NegSTOILoss.stft" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.masked_mean">
+<span class="sig-prename descclassname"><span class="pre">clarity.predictor.torch_stoi.</span></span><span class="sig-name descname"><span class="pre">masked_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#masked_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.masked_mean" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.masked_norm">
+<span class="sig-prename descclassname"><span class="pre">clarity.predictor.torch_stoi.</span></span><span class="sig-name descname"><span class="pre">masked_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#masked_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.masked_norm" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.predictor.torch_stoi.meanvar_norm">
+<span class="sig-prename descclassname"><span class="pre">clarity.predictor.torch_stoi.</span></span><span class="sig-name descname"><span class="pre">meanvar_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/predictor/torch_stoi.html#meanvar_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.predictor.torch_stoi.meanvar_norm" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

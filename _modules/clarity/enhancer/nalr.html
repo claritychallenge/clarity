@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.enhancer.nalr &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../CONTRIBUTING.html">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <h1>Source code for clarity.enhancer.nalr</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
+
+
+<div class="viewcode-block" id="firwin2"><a class="viewcode-back" href="../../../clarity.enhancer.nalr.html#clarity.enhancer.nalr.firwin2">[docs]</a><span class="k">def</span> <span class="nf">firwin2</span><span class="p">(</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">window</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">antisymmetric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;FIR filter design using the window method.</span>
+<span class="sd">    Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        n (int): The number of taps in the FIR filter.</span>
+<span class="sd">        f (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.</span>
+<span class="sd">        a (ndarray): The filter gains at the frequency sampling points.</span>
+<span class="sd">        window (string or (string, float), optional): See scipy.firwin2 (default: (None))</span>
+<span class="sd">        antisymmetric (bool, optional): Unused but present to main compatability with scipy firwin2.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">window_shape</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">window</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="n">window_type</span><span class="p">,</span> <span class="n">window_param</span> <span class="o">=</span> <span class="n">window</span> <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">window_type</span> <span class="o">=</span> <span class="n">window</span>
+
+    <span class="n">order</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">window_type</span> <span class="o">==</span> <span class="s2">&quot;kaiser&quot;</span><span class="p">:</span>
+        <span class="n">window_shape</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">kaiser</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">window_param</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">window_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fir2</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fir2</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">window_shape</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">b</span></div>
+
+
+<div class="viewcode-block" id="fir2"><a class="viewcode-back" href="../../../clarity.enhancer.nalr.html#clarity.enhancer.nalr.fir2">[docs]</a><span class="k">def</span> <span class="nf">fir2</span><span class="p">(</span><span class="n">nn</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">aa</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">npt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;FIR arbitrary shape filter design using the frequency sampling method.</span>
+<span class="sd">    Translation of MATLAB fir2.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nn (int): Order</span>
+<span class="sd">        ff (np.ndarray): Frequency breakpoints (0 &lt; F &lt; 1) where 1 is Nyquist rate.</span>
+<span class="sd">                        First and last elements must be 0 and 1 respectively</span>
+<span class="sd">        aa (np.ndarray): Magnitude breakpoints</span>
+<span class="sd">        npt (int, optional): Number of points for freq response interpolation</span>
+<span class="sd">            (default: max (smallest power of 2 greater than nn, 512))</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: nn + 1 filter coefficients</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Work with filter length instead of filter order</span>
+    <span class="n">nn</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">npt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">npt</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">nn</span> <span class="o">&gt;=</span> <span class="mi">1024</span> <span class="k">else</span> <span class="mi">512</span>
+        <span class="n">wind</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">hamming</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wind</span> <span class="o">=</span> <span class="n">npt</span>
+        <span class="n">npt</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">nn</span> <span class="o">&gt;=</span> <span class="mi">1024</span> <span class="k">else</span> <span class="mi">512</span>
+    <span class="n">lap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">npt</span> <span class="o">/</span> <span class="mi">25</span><span class="p">)</span>
+
+    <span class="n">nbrk</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ff</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">aa</span><span class="p">))</span>
+
+    <span class="n">ff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ff</span><span class="p">[</span><span class="n">nbrk</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nint</span> <span class="o">=</span> <span class="n">nbrk</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">npt</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">aa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nint</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">nb</span> <span class="o">-</span> <span class="n">lap</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">ne</span> <span class="o">=</span> <span class="n">nb</span> <span class="o">+</span> <span class="n">lap</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ne</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">ff</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">npt</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="n">ne</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">inc</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">nb</span> <span class="o">==</span> <span class="n">ne</span> <span class="k">else</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="n">nb</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">ne</span> <span class="o">-</span> <span class="n">nb</span><span class="p">)</span>
+        <span class="n">H</span><span class="p">[</span><span class="n">nb</span> <span class="p">:</span> <span class="p">(</span><span class="n">ne</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">inc</span> <span class="o">*</span> <span class="n">aa</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">inc</span><span class="p">)</span> <span class="o">*</span> <span class="n">aa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">nb</span> <span class="o">=</span> <span class="n">ne</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">nn</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">rad</span> <span class="o">=</span> <span class="o">-</span><span class="n">dt</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">npt</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">npt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">H</span><span class="p">,</span> <span class="n">H</span><span class="p">[</span><span class="n">npt</span> <span class="o">-</span> <span class="mi">2</span> <span class="p">:</span> <span class="mi">0</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">ht</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">nn</span><span class="p">]</span> <span class="o">*</span> <span class="n">wind</span>
+
+    <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="NALR"><a class="viewcode-back" href="../../../clarity.enhancer.nalr.html#clarity.enhancer.nalr.NALR">[docs]</a><span class="k">class</span> <span class="nc">NALR</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nfir</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            nfir: Order of the NAL-R EQ filter and the matching delay</span>
+<span class="sd">            fs: Sampling rate in Hz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nfir</span> <span class="o">=</span> <span class="n">nfir</span>
+        <span class="c1"># Processing parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmax</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">fs</span>
+
+        <span class="c1"># Audiometric frequencies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aud</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">])</span>
+
+        <span class="c1"># Design a flat filter having the same delay as the NAL-R filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nfir</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">[</span><span class="n">nfir</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<div class="viewcode-block" id="NALR.hl_interp"><a class="viewcode-back" href="../../../clarity.enhancer.nalr.html#clarity.enhancer.nalr.NALR.hl_interp">[docs]</a>    <span class="k">def</span> <span class="nf">hl_interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hl</span><span class="p">,</span> <span class="n">cfs</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hl</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cfs</span><span class="p">),</span> <span class="s2">&quot;Hearing losses and center frequencies don&#39;t match!&quot;</span>
+        <span class="n">hl_interpf</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">cfs</span><span class="p">,</span> <span class="n">hl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hl_interpf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aud</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NALR.build"><a class="viewcode-back" href="../../../clarity.enhancer.nalr.html#clarity.enhancer.nalr.NALR.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HL</span><span class="p">,</span> <span class="n">cfs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            HL: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            NAL-R FIR filter</span>
+<span class="sd">            delay</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">HL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hl_interp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">HL</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cfs</span><span class="p">))</span>
+        <span class="n">mloss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">HL</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mloss</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Compute the NAL-R frequency response at the audiometric frequencies</span>
+            <span class="n">bias</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">17</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">t3</span> <span class="o">=</span> <span class="n">HL</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">HL</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">HL</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">t3</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">:</span>
+                <span class="n">xave</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">t3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xave</span> <span class="o">=</span> <span class="mf">9.0</span> <span class="o">+</span> <span class="mf">0.116</span> <span class="o">*</span> <span class="p">(</span><span class="n">t3</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)</span>
+            <span class="n">gdB</span> <span class="o">=</span> <span class="n">xave</span> <span class="o">+</span> <span class="mf">0.31</span> <span class="o">*</span> <span class="n">HL</span> <span class="o">+</span> <span class="n">bias</span>
+            <span class="n">gdB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">gdB</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># Design the linear-phase FIR filter</span>
+            <span class="n">fv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aud</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmax</span>
+            <span class="p">)</span>  <span class="c1"># Frequency vector for the interpolation</span>
+            <span class="n">cfreq</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfir</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfir</span>
+            <span class="p">)</span>  <span class="c1"># Uniform frequency spacing from 0 to 1</span>
+            <span class="n">gdBv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gdB</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">gdB</span><span class="p">),</span> <span class="n">gdB</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>  <span class="c1"># gdB vector for the interpolation</span>
+            <span class="n">interpf</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">fv</span><span class="p">,</span> <span class="n">gdBv</span><span class="p">)</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="n">interpf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmax</span> <span class="o">*</span> <span class="n">cfreq</span><span class="p">)</span>
+            <span class="n">glin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">gain</span> <span class="o">/</span> <span class="mf">20.0</span><span class="p">)</span>
+            <span class="n">nalr</span> <span class="o">=</span> <span class="n">firwin2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nfir</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">glin</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nalr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">nalr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span></div>
+
+<div class="viewcode-block" id="NALR.apply"><a class="viewcode-back" href="../../../clarity.enhancer.nalr.html#clarity.enhancer.nalr.NALR.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nalr</span><span class="p">,</span> <span class="n">wav</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            nalr: built NAL-R FIR filter</span>
+<span class="sd">            wav: one dimensional wav signal</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            amplified signal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">wav</span><span class="p">,</span> <span class="n">nalr</span><span class="p">)</span></div></div>
+</pre></div>
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

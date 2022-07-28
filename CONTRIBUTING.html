@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Contributing to pyClarity &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributor Covenant Code of Conduct" href="CODE_OF_CONDUCT.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-pyclarity">
+   Using pyClarity
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#contributing-code">
+   Contributing Code
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-a-virtual-environment">
+     Use a Virtual Environment
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-development-dependencies">
+     Install Development Dependencies
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-an-issue">
+     Create an issue
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-a-fork">
+     Create a Fork
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#coding-style">
+     Coding Style
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#testing">
+     Testing
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="contributing-to-pyclarity">
+<h1>Contributing to pyClarity<a class="headerlink" href="#contributing-to-pyclarity" title="Permalink to this heading">#</a></h1>
+<p>We welcome and encourage you to contribute to the development of the pyClarity code base. These guidelines outline how you
+can do so.</p>
+<section id="using-pyclarity">
+<h2>Using pyClarity<a class="headerlink" href="#using-pyclarity" title="Permalink to this heading">#</a></h2>
+<p>You can contribute to the development of pyClarity simply by using it. If something isn’t clear then please do ask
+questions in the <span class="xref myst">Discussion</span>. If you find errors when running the code then please report them using the <span class="xref myst">Issues Bug
+Template</span>, or if there is a feature or improvement you think pyClarity would benefit from then suggest it using the
+<span class="xref myst">Issues Feature Template</span>.</p>
+<p>If you are new to GitHub and working collaboratively you may find the <a class="reference external" href="https://docs.github.com/en/issues">GitHub Issues</a>
+documentation useful.</p>
+</section>
+<section id="contributing-code">
+<h2>Contributing Code<a class="headerlink" href="#contributing-code" title="Permalink to this heading">#</a></h2>
+<p>If you have algorithms or code that you would like to contribute then please get in touch by emailing us at
+<a class="reference external" href="mailto:claritychallengecontact&#37;&#52;&#48;gmail&#46;com">claritychallengecontact<span>&#64;</span>gmail<span>&#46;</span>com</a>. We will be happy to help you integrate
+your contribution into the pyClarity framework; we can even help translate contributions from other languages, e.g. MATLAB.</p>
+<p>You are also very welcome to <a class="reference external" href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">fork</a> the repository and address bugs
+and features yourself and then create a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">pull request from the
+fork</a>.
+However, there are a number of practices and standards we ask that you adhere to in order to maintain the quality and
+maintainability of the code base.</p>
+<section id="use-a-virtual-environment">
+<h3>Use a Virtual Environment<a class="headerlink" href="#use-a-virtual-environment" title="Permalink to this heading">#</a></h3>
+<p>It is recommended that you use a <a class="reference external" href="https://realpython.com/python-virtual-environments-a-primer/">Virtual Environment</a> to
+undertake development.</p>
+</section>
+<section id="install-development-dependencies">
+<h3>Install Development Dependencies<a class="headerlink" href="#install-development-dependencies" title="Permalink to this heading">#</a></h3>
+<p>Before undertaking development you should install the development requirements defined by pyClarity.  To do so you can do one
+of the following</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install from Pip</span>
+pip install pyclarity.<span class="o">[</span>dev<span class="o">]</span>
+<span class="c1"># Install from GitHub using Pip</span>
+pip install git+ssh://github.com:claritychallenge/clarity.<span class="o">[</span>dev<span class="o">]</span>
+<span class="c1"># Install from local cloned Git repository</span>
+pip install <span class="s1">&#39;.[dev]&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="create-an-issue">
+<h3>Create an issue<a class="headerlink" href="#create-an-issue" title="Permalink to this heading">#</a></h3>
+<p>Before undertaking any development please create an <a class="reference external" href="https://github.com/claritychallenge/clarity/issues">Issue</a> for it
+here on the pyClarity repository. There are templates for <a class="reference external" href="https://github.com/claritychallenge/clarity/issues/new?assignees=&amp;labels=bug&amp;template=bug_report.md&amp;title=%5BBUG%5D">Bug
+Reports</a>
+and <a class="reference external" href="https://github.com/claritychallenge/clarity/issues/new?assignees=&amp;labels=enhancement&amp;template=feature_request.md&amp;title=%5BFEATURE%5D">Feature
+Requests</a>. This
+allows maintainers to keep an overview of what work is being undertaken and gives you the opportunity to discuss with
+them your intended solutions.</p>
+</section>
+<section id="create-a-fork">
+<h3>Create a Fork<a class="headerlink" href="#create-a-fork" title="Permalink to this heading">#</a></h3>
+<p>Once you have created an issue you can
+<a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks">fork</a> the
+pyClarity repository to your own account and create a branch on which to undertake development.</p>
+</section>
+<section id="coding-style">
+<h3>Coding Style<a class="headerlink" href="#coding-style" title="Permalink to this heading">#</a></h3>
+<p>We ask that you adhere to the <a class="reference external" href="https://pep8.org/">PEP8</a> coding style when writing your code. To facilitate this we use
+<a class="reference external" href="https://flake8.pycqa.org/en/latest/">flake8</a> and <a class="reference external" href="https://pycqa.github.io/isort/">isort</a>. Most popular Integrated
+Development Environments (IDEs) include plugins that will apply flake8 to your code on saving a file.</p>
+<p>For information on how to configure some popular IDEs see the following links.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://code.visualstudio.com/docs/python/linting">Linting Python in Visual Studio Code</a></p></li>
+<li><p><a class="reference external" href="https://plugins.jetbrains.com/plugin/11563-flake8-support">Flake8 support - PyCharm Plugin</a></p></li>
+<li><p><a class="reference external" href="https://github.com/purcell/flymake-python-pyflakes/">Emacs flymake-python-pyflakes</a></p></li>
+</ul>
+<p>Further we have implemented a <a class="reference external" href="https://pre-commit.com/"><code class="docutils literal notranslate"><span class="pre">pre-commit</span></code></a> hook to ensure flake8 and isort are applied each
+time you make a commit. Whilst the <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> package will have been installed in your environment when you need to
+install the configured hooks (which are defined in
+<a class="reference external" href="https://github.com/claritychallenge/clarity/blob/main/.pre-commit-config.yaml"><code class="docutils literal notranslate"><span class="pre">.precommit-config.yaml</span></code></a>) in your local
+repository. To do so run the following from the <code class="docutils literal notranslate"><span class="pre">clarity</span></code> directory…</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pre-commit install
+</pre></div>
+</div>
+<p>This installs <code class="docutils literal notranslate"><span class="pre">.git/hooks/pre-commit</span></code> commit hook which is triggered each time you make a new commit. When run this will
+automatically lint your code with flake8 and isort so please check the changes carefully.</p>
+<p>If your commit fails to pass the checks please read the error messages carefully to find out what has changed and what
+you need to manually fix.</p>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">#</a></h3>
+<p>All new code should be covered by <a class="reference external" href="https://carpentries-incubator.github.io/python-testing/04-units/index.html">unit
+tests</a> with at least 70% coverage and where
+appropriate <a class="reference external" href="https://carpentries-incubator.github.io/python-testing/07-integration/index.html">regression tests</a>. This
+includes bug fixes, when a test should be added that captures the bug.</p>
+<p>The <a class="reference external" href="https://docs.pytest.org/en/7.1.x/">pytest</a> framework is used and the conventions are followed under
+pyClarity. Tests reside under the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory (and optionally within a module directory), fixtures should be defined
+in <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> files whilst resources used should be placed under <code class="docutils literal notranslate"><span class="pre">tests/resources</span></code>.</p>
+<p>The Continuous Integration in place on GitHub Actions runs <code class="docutils literal notranslate"><span class="pre">pytest</span></code> on newly created pull-requests and these have to
+pass successfully before merging so it is useful to ensure they pass before you create pull requests at the very
+least. Sometimes it may be sensible to run them against commits too.</p>
+<p>To run the tests simply call <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from the root of the project folder.</p>
+</section>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="usage.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Usage</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="CODE_OF_CONDUCT.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Contributor Covenant Code of Conduct</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

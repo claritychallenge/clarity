@@ -1,0 +1,886 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>clarity.evaluator.haspi.eb module &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CONTRIBUTING.html">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.data.html">
+   clarity.data package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.HOA_tools_cec2.html">
+     clarity.data.HOA_tools_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.demo_data.html">
+     clarity.data.demo_data module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_builder_cec2.html">
+     clarity.data.scene_builder_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_renderer_cec1.html">
+     clarity.data.scene_renderer_cec1 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_renderer_cec2.html">
+     clarity.data.scene_renderer_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.utils.html">
+     clarity.data.utils module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.engine.html">
+   clarity.engine package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.engine.losses.html">
+     clarity.engine.losses module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.engine.system.html">
+     clarity.engine.system module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.enhancer.html">
+   clarity.enhancer package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.dnn.html">
+     clarity.enhancer.dnn package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.dnn.mc_conv_tasnet.html">
+       clarity.enhancer.dnn.mc_conv_tasnet module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.dsp.html">
+     clarity.enhancer.dsp package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+    <label for="toctree-checkbox-5">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.dsp.filter.html">
+       clarity.enhancer.dsp.filter module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.gha.html">
+     clarity.enhancer.gha package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.audiogram.html">
+       clarity.enhancer.gha.audiogram module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gainrule_camfit.html">
+       clarity.enhancer.gha.gainrule_camfit module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gha_interface.html">
+       clarity.enhancer.gha.gha_interface module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gha_utils.html">
+       clarity.enhancer.gha.gha_utils module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.enhancer.compressor.html">
+     clarity.enhancer.compressor module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.enhancer.nalr.html">
+     clarity.enhancer.nalr module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="clarity.evaluator.html">
+   clarity.evaluator package
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="clarity.evaluator.haspi.html">
+     clarity.evaluator.haspi package
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+    <label for="toctree-checkbox-8">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       clarity.evaluator.haspi.eb module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.ebm.html">
+       clarity.evaluator.haspi.ebm module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.haspi.html">
+       clarity.evaluator.haspi.haspi module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.ip.html">
+       clarity.evaluator.haspi.ip module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.mbstoi.html">
+     clarity.evaluator.mbstoi package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+    <label for="toctree-checkbox-9">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.mbstoi.mbstoi.html">
+       clarity.evaluator.mbstoi.mbstoi module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.mbstoi.mbstoi_utils.html">
+       clarity.evaluator.mbstoi.mbstoi_utils module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.msbg.html">
+     clarity.evaluator.msbg package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+    <label for="toctree-checkbox-10">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.audiogram.html">
+       clarity.evaluator.msbg.audiogram module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.cochlea.html">
+       clarity.evaluator.msbg.cochlea module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.msbg.html">
+       clarity.evaluator.msbg.msbg module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.msbg_utils.html">
+       clarity.evaluator.msbg.msbg_utils module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.smearing.html">
+       clarity.evaluator.msbg.smearing module
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.predictor.html">
+   clarity.predictor package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.predictor.torch_msbg.html">
+     clarity.predictor.torch_msbg module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.predictor.torch_stoi.html">
+     clarity.predictor.torch_stoi module
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+
+<nav id="bd-toc-nav">
+    
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="module-clarity.evaluator.haspi.eb">
+<span id="clarity-evaluator-haspi-eb-module"></span><h1>clarity.evaluator.haspi.eb module<a class="headerlink" href="#module-clarity.evaluator.haspi.eb" title="Permalink to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.BMaddnoise">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">BMaddnoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Level1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#BMaddnoise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.BMaddnoise" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to apply the IHC attenuation to the BM motion and to add a
+low-level Gaussian noise to give the auditory threshold.</p>
+<p>Args:
+x         BM motion to be attenuated
+thr       additive noise level in dB re:auditory threshold
+Level1    an input having RMS=1 corresponds to Leve1 dB SPL</p>
+<p>Returns:
+y         attenuated signal with threhsold noise added</p>
+<p>James M. Kates, 19 June 2012.
+Just additive noise, 2 Oct 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.BWadjust">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">BWadjust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BWmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BWmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Level1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#BWadjust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.BWadjust" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to compute the increase in auditory filter bandwidth in response
+to high signal levels.</p>
+<p>Args:
+control     envelope output in the control filter band
+BWmin       auditory filter bandwidth computed for the loss (or NH)
+BWmax       auditory filter bandwidth at maximum OHC damage
+Level1      RMS=1 corresponds to Level1 dB SPL</p>
+<p>Returned value:
+BW          filter bandwidth increased for high signal levels</p>
+<p>James M. Kates, 21 June 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.CenterFreq">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">CenterFreq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nchan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#CenterFreq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.CenterFreq" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to compute the ERB frequency spacing for the gammatone
+filter bank. The equation comes from Malcolm Slaney (1993).</p>
+<p>Calling variables
+nchan               number of filters in the filter bank
+shift     optional frequency shift of the filter bank specified as a</p>
+<blockquote>
+<div><p>fractional shift in distance along the BM. A positive shift
+is an increase in frequency (basal shift), and negative is
+a decrease in frequency (apical shift). The total length of
+the BM is normalized to 1. The frequency-to-distance map is
+from D.D. Greenwood (1990), JASA 87, 2592-2605, Eq (1).</p>
+</div></blockquote>
+<p>James M. Kates, 25 January 2007.
+Frequency shift added 22 August 2008.
+Lower and upper frequencies fixed at 80 and 8000 Hz, 19 June 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.EarModel">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">EarModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xsamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ysamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Level1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#EarModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.EarModel" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to implement a cochlear model that includes the middle ear,
+auditory filter bank, OHC dynamic-range compression, and IHC attenuation.
+The inputs are the reference and processed signals that are to be
+compared. The reference x is at the reference intensity (e.g. 65 dB SPL
+or with NAL-R amplification) and has no other processing. The processed
+signal y is the hearing-aid output, and is assumed to have the same or
+greater group delay compared to the reference. The function outputs are
+the envelopes of the signals after OHC compression and IHC loss
+attenuation.</p>
+<p>Args:
+x        reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)</p>
+<blockquote>
+<div><p>or to 65 dB SPL plus NAL-R gain (itype=2)</p>
+</div></blockquote>
+<p>xsamp    sampling rate for the reference signal, Hz
+y        processed signal (e.g. hearing-aid output) includes HA gain
+ysamp    sampling rate for the processed signal, Hz
+HL       audiogram giving the hearing loss in dB at six audiometric</p>
+<blockquote>
+<div><p>frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz</p>
+</div></blockquote>
+<dl>
+<dt>itype    purpose for the calculation:</dt><dd><dl class="simple">
+<dt>0=intelligibility: reference is nornal hearing and must not</dt><dd><p>include NAL-R EQ</p>
+</dd>
+</dl>
+<p>1=quality: reference does not include NAL-R EQ
+2=quality: reference already has NAL-R EQ applied</p>
+</dd>
+</dl>
+<p>Level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL</p>
+<p>Returns:
+xdB      envelope for the reference in each band
+xBM      BM motion for the reference in each band
+ydB      envelope for the processed signal in each band
+yBM      BM motion for the processed signal in each band
+xSL      compressed RMS average reference in each band converted to dB SL
+ySL      compressed RMS average output in each band converted to dB SL
+fsamp    sampling rate in Hz for the model outputs</p>
+<p>James M. Kates, 27 October 2011.
+BM motion added 30 Dec 2011.
+Revised 19 June 2012.
+Remove match of reference RMS level to processed 29 August 2012.
+IHC adaptation added 1 October 2012.
+BM envelope coverted to dB SL, 2 Oct 2012.
+Filterbank group delay corrected, 14 Dec 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.EnvAlign">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">EnvAlign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#EnvAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.EnvAlign" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to align the envelope of the processed signal to that of the
+reference signal.</p>
+<p>Args:
+x      envelope or BM motion of the reference signal
+y      envelope or BM motion of the output signal</p>
+<p>Returns:
+y      shifted output envelope to match the input</p>
+<p>James M. Kates, 28 October 2011.
+Absolute value of the cross-correlation peak removed, 22 June 2012.
+Cross-correlation range reduced, 13 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.EnvCompressBM">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">EnvCompressBM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">envsig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attnOHC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrLow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Level1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#EnvCompressBM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.EnvCompressBM" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to compute the cochlear compression in one auditory filter
+band. The gain is linear below the lower threshold, compressive with
+a compression ratio of CR:1 between the lower and upper thresholds,
+and reverts to linear above the upper threshold. The compressor
+assumes that auditory thresold is 0 dB SPL.</p>
+<p>Calling variables:
+envsig      analytic signal envelope (magnitude) returned by the</p>
+<blockquote>
+<div><p>gammatone filter bank</p>
+</div></blockquote>
+<p>bm        BM motion output by the filter bank
+control     analytic control envelope returned by the wide control</p>
+<blockquote>
+<div><p>path filter bank</p>
+</div></blockquote>
+<p>attnOHC     OHC attenuation at the input to the compressor
+thrLow      kneepoint for the low-level linear amplification
+CR          compression ratio
+fsamp               sampling rate in Hz
+Level1      dB reference level: a signal having an RMS value of 1 is</p>
+<blockquote>
+<div><p>assigned to Level1 dB SPL.</p>
+</div></blockquote>
+<p>Function outputs:
+y                   compressed version of the signal envelope
+b         compressed version of the BM motion</p>
+<p>James M. Kates, 19 January 2007.
+LP filter added 15 Feb 2007 (Ref: Zhang et al., 2001)
+Version to compress the envelope, 20 Feb 2007.
+Change in the OHC I/O function, 9 March 2007.
+Two-tone suppression added 22 August 2008.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.EnvSL">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">EnvSL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attnIHC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Level1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#EnvSL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.EnvSL" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to convert the compressed envelope returned by
+cochlea_envcomp to dB SL.</p>
+<p>Args
+env                 linear envelope after compression
+bm            linear basilar membrane vibration after compression
+attnIHC             IHC attenuation at the input to the synapse
+Level1              level in dB SPL corresponding to 1 RMS</p>
+<p>Return
+y                           envelope in dB SL
+b             BM vibration with envelope converted to dB SL</p>
+<p>James M. Kates, 20 Feb 07.
+IHC attenuation added 9 March 2007.
+Basilar membrane vibration conversion added 2 October 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.GammatoneBM">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">GammatoneBM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BWx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BWy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#GammatoneBM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.GammatoneBM" title="Permalink to this definition">#</a></dt>
+<dd><p>4th-order gammatone auditory filter. This implementation is based
+on the c program published on-line by Ning Ma, U. Sheffield, UK,
+that gives an implementation of the Martin Cooke (1991) filters:
+an impulse-invariant transformation of the gammatone filter. The
+signal is demodulated down to baseband using a complex exponential,
+and then passed through a cascade of four one-pole low-pass filters.</p>
+<p>This version filters two signals that have the same sampling rate and the
+same gammatone filter center frequencies. The lengths of the two signals
+should match; if they don’t, the signals are truncated to the shorter of
+the two lengths.</p>
+<p>Calling variables:
+x                   first sequence to be filtered
+BWx     bandwidth for x relative to that of a normal ear
+y                   second sequence to be filtered
+BWy     bandwidth for x relative to that of a normal ear
+fs          sampling rate in Hz
+cf          filter center frequency in Hz</p>
+<p>Returns:
+envx      filter envelope output (modulated down to baseband) 1st signal
+BMx       BM motion for the first signal
+envy      filter envelope output (modulated down to baseband) 2nd signal
+BMy       BM motion for the second signal
+James M. Kates, 8 Jan 2007.
+Vectorized version for efficient MATLAB execution, 4 February 2007.
+Cosine and sine generation, 29 June 2011.
+Output sine and cosine sequences, 19 June 2012.
+Cosine/sine loop speed increased, 9 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.GammatoneBW_demodulation">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">GammatoneBW_demodulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coscf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sincf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#GammatoneBW_demodulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.GammatoneBW_demodulation" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.GroupDelayComp">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">GroupDelayComp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xenv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BW</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfreq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#GroupDelayComp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.GroupDelayComp" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to compensate for the group delay of the gammatone filter bank.
+The group delay is computed for each filter at its center frequency. The
+firing rate output of the IHC model is then adjusted so that all outputs
+have the same group delay.</p>
+<dl class="simple">
+<dt>Calling variables:</dt><dd><p>xenv (np.ndarray): matrix of signal envelopes or BM motion
+BW (): gammatone filter bandwidths adjusted for loss
+cfreq (): center frequencies of the bands
+fsamp (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>yenv    envelopes or BM motion compensated for the group delay</p>
+</dd>
+</dl>
+<p>James M. Kates, 28 October 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.IHCadapt">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">IHCadapt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xBM</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#IHCadapt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.IHCadapt" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to provide inner hair cell (IHC) adaptation. The adaptation is
+based on an equivalent RC circuit model, and the derivatives are mapped
+into 1st-order backward differences. Rapid and short-term adaptation are
+provided. The input is the signal envelope in dB SL, with IHC attenuation
+already applied to the envelope. The outputs are the envelope in dB SL
+with adaptation providing overshoot of the long-term output level, and
+the BM motion is multiplied by a gain vs. time function that reproduces
+the adaptation. IHC attenuation and additive noise for the equivalent
+auditory threshold are provided by a subsequent call to eb_BMatten.</p>
+<p>Calling variables:
+xdB      signal envelope in one frequency band in dB SL</p>
+<blockquote>
+<div><p>contains OHC compression and IHC attenuation</p>
+</div></blockquote>
+<p>xBM      basilar membrane vibration with OHC compression but no IHC atten
+delta    overshoot factor = delta x steady-state
+fsamp    sampling rate in Hz</p>
+<p>Returns:
+ydB      envelope in dB SL with IHC adaptation
+yBM      BM motion multiplied by the IHC adaptation gain function</p>
+<p>James M. Kates, 1 October 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.InputAlign">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">InputAlign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#InputAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.InputAlign" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to provide approximate temporal alignment of the reference and
+processed output signals. Leading and trailing zeros are then pruned.
+The function assumes that the two sequences have the same sampling rate:
+call eb_Resamp24kHz for each sequence first, then call this function to
+align the signals.</p>
+<p>Calling variables:
+x       input reference sequence
+y       hearing-aid output sequence</p>
+<p>Returns:
+xp   pruned and shifted reference
+yp   pruned and shifted hearing-aid output</p>
+<p>James M. Kates, 12 July 2011.
+Match the length of the processed output to the reference for the
+purposes of computing the cross-covariance
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.LossParameters">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">LossParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">HL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfreq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#LossParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.LossParameters" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to apportion the hearing loss to the outer hair cells (OHC)
+and the inner hair cells (IHC) and to increase the bandwidth of the
+cochlear filters in proportion to the OHC fraction of the total loss.</p>
+<p>Calling variables:
+HL          hearing loss at the 6 audiometric frequencies
+cfreq               array containing the center frequencies of the gammatone filters</p>
+<blockquote>
+<div><p>arranged from low to high</p>
+</div></blockquote>
+<p>Returns:
+attnOHC     attenuation in dB for the OHC gammatone filters
+BW          OHC filter bandwidth expressed in terms of normal
+lowknee     Lower kneepoint for the low-level linear amplification
+CR          Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal</p>
+<blockquote>
+<div><p>hearing. Reduced in proportion to the OHC loss to 1:1.</p>
+</div></blockquote>
+<p>attnIHC     attenuation in dB for the input to the IHC synapse</p>
+<p>James M. Kates, 25 January 2007.
+Version for loss in dB and match of OHC loss to CR, 9 March 2007.
+Low-frequency extent changed to 80 Hz, 27 Oct 2011.
+Lower kneepoint set to 30 dB, 19 June 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.MiddleEar">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">MiddleEar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#MiddleEar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.MiddleEar" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to design the middle ear filters and process the input
+through the cascade of filters. The middle ear model is a 2-pole HP
+filter at 350 Hz in series with a 1-pole LP filter at 5000 Hz. The
+result is a rough approximation to the equal-loudness contour at
+threshold.</p>
+<dl class="simple">
+<dt>Calling variables:</dt><dd><p>x               input signal
+fsamp   sampling rate in Hz</p>
+</dd>
+<dt>Function output:</dt><dd><p>xout    filtered output</p>
+</dd>
+</dl>
+<p>James M. Kates, 18 January 2007.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.Resamp24kHz">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">Resamp24kHz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsampx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#Resamp24kHz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.Resamp24kHz" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to resample the input signal at 24 kHz. The input sampling rate
+is rounded to the nearest kHz to comput the sampling rate conversion
+ratio.</p>
+<p>Calling variables:
+x         input signal
+fsampx    sampling rate for the input in Hz</p>
+<p>Returned argument:
+y         signal resampled at 24 kHz
+fsamp     output sampling rate in Kz</p>
+<p>James M. Kates, 20 June 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.aveSL">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">aveSL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attnOHC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrLow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attnIHC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Level1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#aveSL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.aveSL" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to covert the RMS average output of the gammatone filter bank
+into dB SL. The gain is linear below the lower threshold, compressive
+with a compression ratio of CR:1 between the lower and upper thresholds,
+and reverts to linear above the upper threshold. The compressor
+assumes that auditory thresold is 0 dB SPL.</p>
+<p>Calling variables:
+env         analytic signal envelope (magnitude) returned by the</p>
+<blockquote>
+<div><p>gammatone filter bank, RMS average level</p>
+</div></blockquote>
+<p>control   control signal envelope
+attnOHC     OHC attenuation at the input to the compressor
+thrLow      kneepoint for the low-level linear amplification
+CR          compression ratio
+attnIHC     IHC attenuation at the input to the synapse
+Level1      dB reference level: a signal having an RMS value of 1 is</p>
+<blockquote>
+<div><p>assigned to Level1 dB SPL.</p>
+</div></blockquote>
+<p>Function output:
+xdB         compressed output in dB above the impaired threshold</p>
+<p>James M. Kates, 6 August 2007.
+Version for two-tone suppression, 29 August 2008.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

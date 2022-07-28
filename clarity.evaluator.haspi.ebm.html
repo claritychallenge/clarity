@@ -1,0 +1,671 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>clarity.evaluator.haspi.ebm module &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CONTRIBUTING.html">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.data.html">
+   clarity.data package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.HOA_tools_cec2.html">
+     clarity.data.HOA_tools_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.demo_data.html">
+     clarity.data.demo_data module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_builder_cec2.html">
+     clarity.data.scene_builder_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_renderer_cec1.html">
+     clarity.data.scene_renderer_cec1 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.scene_renderer_cec2.html">
+     clarity.data.scene_renderer_cec2 module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.data.utils.html">
+     clarity.data.utils module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.engine.html">
+   clarity.engine package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.engine.losses.html">
+     clarity.engine.losses module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.engine.system.html">
+     clarity.engine.system module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.enhancer.html">
+   clarity.enhancer package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.dnn.html">
+     clarity.enhancer.dnn package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.dnn.mc_conv_tasnet.html">
+       clarity.enhancer.dnn.mc_conv_tasnet module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.dsp.html">
+     clarity.enhancer.dsp package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+    <label for="toctree-checkbox-5">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.dsp.filter.html">
+       clarity.enhancer.dsp.filter module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.enhancer.gha.html">
+     clarity.enhancer.gha package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.audiogram.html">
+       clarity.enhancer.gha.audiogram module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gainrule_camfit.html">
+       clarity.enhancer.gha.gainrule_camfit module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gha_interface.html">
+       clarity.enhancer.gha.gha_interface module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.enhancer.gha.gha_utils.html">
+       clarity.enhancer.gha.gha_utils module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.enhancer.compressor.html">
+     clarity.enhancer.compressor module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.enhancer.nalr.html">
+     clarity.enhancer.nalr module
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="clarity.evaluator.html">
+   clarity.evaluator package
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="clarity.evaluator.haspi.html">
+     clarity.evaluator.haspi package
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+    <label for="toctree-checkbox-8">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.eb.html">
+       clarity.evaluator.haspi.eb module
+      </a>
+     </li>
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       clarity.evaluator.haspi.ebm module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.haspi.html">
+       clarity.evaluator.haspi.haspi module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.haspi.ip.html">
+       clarity.evaluator.haspi.ip module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.mbstoi.html">
+     clarity.evaluator.mbstoi package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+    <label for="toctree-checkbox-9">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.mbstoi.mbstoi.html">
+       clarity.evaluator.mbstoi.mbstoi module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.mbstoi.mbstoi_utils.html">
+       clarity.evaluator.mbstoi.mbstoi_utils module
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="clarity.evaluator.msbg.html">
+     clarity.evaluator.msbg package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+    <label for="toctree-checkbox-10">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.audiogram.html">
+       clarity.evaluator.msbg.audiogram module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.cochlea.html">
+       clarity.evaluator.msbg.cochlea module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.msbg.html">
+       clarity.evaluator.msbg.msbg module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.msbg_utils.html">
+       clarity.evaluator.msbg.msbg_utils module
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="clarity.evaluator.msbg.smearing.html">
+       clarity.evaluator.msbg.smearing module
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="clarity.predictor.html">
+   clarity.predictor package
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.predictor.torch_msbg.html">
+     clarity.predictor.torch_msbg module
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="clarity.predictor.torch_stoi.html">
+     clarity.predictor.torch_stoi module
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+
+<nav id="bd-toc-nav">
+    
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="module-clarity.evaluator.haspi.ebm">
+<span id="clarity-evaluator-haspi-ebm-module"></span><h1>clarity.evaluator.haspi.ebm module<a class="headerlink" href="#module-clarity.evaluator.haspi.ebm" title="Permalink to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.AddNoise">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">AddNoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ydB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrdB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#AddNoise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.AddNoise" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to add independent random Gaussian noise to the subsampled
+signal envelope in each auditory frequency band.</p>
+<p>Args:
+ydB      subsampled envelope in dB re:auditory threshold
+thrdB    additive noise RMS level (in dB)
+Level1   an input having RMS=1 corresponds to Level1 dB SPL</p>
+<p>Returns:
+zdB      envelope with threshold noise added, in dB re:auditory threshold</p>
+<p>James M. Kates, 23 April 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.CepCoef">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">CepCoef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrCep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrNerve</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbasis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#CepCoef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.CepCoef" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to compute the cepstral correlation coefficients between the
+reference signal and the distorted signal log envelopes. The silence
+portions of the signals are removed prior to the calculation based on the
+envelope of the reference signal. For each time sample, the log spectrum
+in dB SL is fitted with a set of half-cosine basis functions. The
+cepstral coefficients then form the input to the cepstral correlation
+calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>thrNerve</em>) – subsampled reference signal envelope in dB SL in each band</p></li>
+<li><p><strong>(</strong><strong>)</strong> – subsampled distorted output signal envelope</p></li>
+<li><p><strong>(</strong><strong>)</strong> – threshold in dB SPL to include sample in calculation</p></li>
+<li><p><strong>(</strong><strong>)</strong> – additive noise RMS for IHC firing (in dB)</p></li>
+<li><p><strong>use</strong> (<em>nbasis    number of cepstral basis functions to</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>xcep cepstral coefficient matrix for the ref signal (nsamp,nbasis) and ycep  cepstral coefficient matrix</dt><dd><p>for the output signal (nsamp,nbasis) each column is a separate basis function, from low to high</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>James M. Kates, 23 April 2015.
+Gammawarp version to fit the basis functions, 11 February 2019.
+Additive noise for IHC firing rates, 24 April 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.EnvFilt">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">EnvFilt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fcut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#EnvFilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.EnvFilt" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to lowpass filter and subsample the envelope in dB SL produced
+by the model of the auditory periphery. The LP filter uses a von Hann
+raised cosine window to ensure that there are no negative envelope values
+produced by the filtering operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xdB</strong> (<em>np.ndarray</em>) – env in dB SL for the ref signal in each auditory band</p></li>
+<li><p><strong>ydB</strong> (<em>np.ndarray</em>) – env in dB SL for the degraded signal in each auditory band</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>fsamp</em>) – LP filter cutoff frequency for the filtered envelope, Hz</p></li>
+<li><p><strong>(</strong><strong>)</strong> – subsampling frequency in Hz for the LP filtered envelopes</p></li>
+<li><p><strong>(</strong><strong>)</strong> – sampling rate in Hz for the signals xdB and ydB</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>xLP - LP filtered and subsampled reference signal envelope</dt><dd><p>Each frequency band is a separate column. yLP - LP filtered and subsampled
+degraded signal envelope</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>James M. Kates, 12 September 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.ModCorr">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">ModCorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xmod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ymod</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#ModCorr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.ModCorr" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to compute the cross-correlations between the input signal
+time-frequency envelope and the distortion time-frequency envelope. The
+cepstral coefficients or envelopes in each frequency band have been
+passed through the modulation filterbank using function ebm_ModFilt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Xmod</strong> (<em>np.array</em>) – cell array containing the reference signal output of the
+modulation filterbank. Xmod is of size {nchan,nmodfilt} where
+nchan is the number of frequency channels or cepstral basis
+functions in Xenv, and nmodfilt is the number of modulation
+filters used in the analysis. Each cell contains a column vector
+of length nsamp, where nsamp is the number of samples in each
+envelope sequence contained in the columns of Xenv.</p></li>
+<li><p><strong>envelope</strong> (<em>Ymod subsampled distorted output signal</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Output:</dt><dd><dl class="simple">
+<dt>float: aveCM modulation correlations averaged over basis functions 2-6</dt><dd><p>vector of size nmodfilt</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>James M. Kates, 21 February 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.ModFilt">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">ModFilt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Xenv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Yenv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsub</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#ModFilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.ModFilt" title="Permalink to this definition">#</a></dt>
+<dd><p>Function to apply an FIR modulation filterbank to the reference envelope
+signals contained in matrix Xenv and the processed signal envelope
+signals in matrix Yenv. Each column in Xenv and Yenv is a separate filter
+band or cepstral coefficient basis function. The modulation filters use a
+lowpass filter for the lowest modulation rate, and complex demodulation
+followed by a lowpass filter for the remaining bands. The onset and
+offset transients are removed from the FIR convolutions to temporally
+align the modulation filter outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Xenv</strong> (<em>np.ndarray</em>) – matrix containing the subsampled reference envelope values. Each
+column is a different frequency band or cepstral basis function
+arranged from low to high.</p></li>
+<li><p><strong>Yenv</strong> (<em>np.ndarray</em>) – matrix containing the subsampled processed envelope values</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>fsub</em>) – envelope sub-sampling rate in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Xmod a cell array containing the reference signal output of the</dt><dd><p>modulation filterbank. Xmod is of size {nchan,nmodfilt} where
+nchan is the number of frequency channels or cepstral basis
+functions in Xenv, and nmodfilt is the number of modulation
+filters used in the analysis. Each cell contains a column vector
+of length nsamp, where nsamp is the number of samples in each
+envelope sequence contained in the columns of Xenv.
+Ymod cell array containing the processed signal output of the
+modulation filterbank.
+cf vector of the modulation rate filter center frequencies</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>James M. Kates, 14 February 2019.
+Two matrix version of gwarp_ModFiltWindow, 19 February 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

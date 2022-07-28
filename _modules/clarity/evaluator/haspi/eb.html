@@ -1,0 +1,1173 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.evaluator.haspi.eb &#8212; pyclarity 0.1.0 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyclarity 0.1.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../introduction.html">
+  Introduction
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../usage.html">
+  Usage
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../CONTRIBUTING.html">
+  Contributing to pyClarity
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../CODE_OF_CONDUCT.html">
+  Contributor Covenant Code of Conduct
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <h1>Source code for clarity.evaluator.haspi.eb</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">cheby2</span><span class="p">,</span> <span class="n">correlate</span><span class="p">,</span> <span class="n">group_delay</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">resample_poly</span>
+
+
+<div class="viewcode-block" id="EarModel"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.EarModel">[docs]</a><span class="k">def</span> <span class="nf">EarModel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xsamp</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ysamp</span><span class="p">,</span> <span class="n">HL</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">Level1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to implement a cochlear model that includes the middle ear,</span>
+<span class="sd">    auditory filter bank, OHC dynamic-range compression, and IHC attenuation.</span>
+<span class="sd">    The inputs are the reference and processed signals that are to be</span>
+<span class="sd">    compared. The reference x is at the reference intensity (e.g. 65 dB SPL</span>
+<span class="sd">    or with NAL-R amplification) and has no other processing. The processed</span>
+<span class="sd">    signal y is the hearing-aid output, and is assumed to have the same or</span>
+<span class="sd">    greater group delay compared to the reference. The function outputs are</span>
+<span class="sd">    the envelopes of the signals after OHC compression and IHC loss</span>
+<span class="sd">    attenuation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    x        reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)</span>
+<span class="sd">               or to 65 dB SPL plus NAL-R gain (itype=2)</span>
+<span class="sd">    xsamp    sampling rate for the reference signal, Hz</span>
+<span class="sd">    y        processed signal (e.g. hearing-aid output) includes HA gain</span>
+<span class="sd">    ysamp    sampling rate for the processed signal, Hz</span>
+<span class="sd">    HL       audiogram giving the hearing loss in dB at six audiometric</span>
+<span class="sd">               frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz</span>
+<span class="sd">    itype    purpose for the calculation:</span>
+<span class="sd">             0=intelligibility: reference is nornal hearing and must not</span>
+<span class="sd">               include NAL-R EQ</span>
+<span class="sd">             1=quality: reference does not include NAL-R EQ</span>
+<span class="sd">             2=quality: reference already has NAL-R EQ applied</span>
+<span class="sd">    Level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    xdB      envelope for the reference in each band</span>
+<span class="sd">    xBM      BM motion for the reference in each band</span>
+<span class="sd">    ydB      envelope for the processed signal in each band</span>
+<span class="sd">    yBM      BM motion for the processed signal in each band</span>
+<span class="sd">    xSL      compressed RMS average reference in each band converted to dB SL</span>
+<span class="sd">    ySL      compressed RMS average output in each band converted to dB SL</span>
+<span class="sd">    fsamp    sampling rate in Hz for the model outputs</span>
+
+<span class="sd">    James M. Kates, 27 October 2011.</span>
+<span class="sd">    BM motion added 30 Dec 2011.</span>
+<span class="sd">    Revised 19 June 2012.</span>
+<span class="sd">    Remove match of reference RMS level to processed 29 August 2012.</span>
+<span class="sd">    IHC adaptation added 1 October 2012.</span>
+<span class="sd">    BM envelope coverted to dB SL, 2 Oct 2012.</span>
+<span class="sd">    Filterbank group delay corrected, 14 Dec 2012.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Processing parameters</span>
+    <span class="c1"># OHC and IHC parameters for the hearing loss</span>
+    <span class="c1"># Auditory filter center frequencies span 80 to 8000 Hz.</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="mi">32</span>  <span class="c1"># Use 32 auditory frequency bands</span>
+    <span class="n">mdelay</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Compensate for the gammatone group delay</span>
+    <span class="n">cfreq</span> <span class="o">=</span> <span class="n">CenterFreq</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>  <span class="c1"># Center frequencies on an ERB scale</span>
+
+    <span class="c1"># Cochlear model parameters for the processed signal</span>
+    <span class="n">attnOHCy</span><span class="p">,</span> <span class="n">BWminy</span><span class="p">,</span> <span class="n">lowkneey</span><span class="p">,</span> <span class="n">CRy</span><span class="p">,</span> <span class="n">attnIHCy</span> <span class="o">=</span> <span class="n">LossParameters</span><span class="p">(</span><span class="n">HL</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">)</span>
+
+    <span class="c1"># The cochlear model parameters for the reference are the same as for the hearing loss if calculating quality,</span>
+    <span class="c1"># but are for normal hearing if calculating intelligibility.</span>
+    <span class="k">if</span> <span class="n">itype</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">HLx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">HL</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">HLx</span> <span class="o">=</span> <span class="n">HL</span>
+    <span class="p">[</span><span class="n">attnOHCx</span><span class="p">,</span> <span class="n">BWminx</span><span class="p">,</span> <span class="n">lowkneex</span><span class="p">,</span> <span class="n">CRx</span><span class="p">,</span> <span class="n">attnIHCx</span><span class="p">]</span> <span class="o">=</span> <span class="n">LossParameters</span><span class="p">(</span><span class="n">HLx</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">)</span>
+
+    <span class="c1"># Parameters for the control filter bank</span>
+    <span class="n">HLmax</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="mf">0.02</span>  <span class="c1"># Basal shift of 0.02 of the basilar membrane length</span>
+    <span class="n">cfreq1</span> <span class="o">=</span> <span class="n">CenterFreq</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span>  <span class="c1"># Center frequencies for the control</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">BW1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">LossParameters</span><span class="p">(</span><span class="n">HLmax</span><span class="p">,</span> <span class="n">cfreq1</span><span class="p">)</span>
+    <span class="c1"># Maximum BW for the control</span>
+
+    <span class="c1"># Input signal adjustments</span>
+    <span class="c1"># Convert the signals to 24 kHz sampling rate.</span>
+    <span class="c1"># Using 24 kHz guarantees that all of the cochlear filters have the same shape independent of the incoming signal sampling rates</span>
+    <span class="n">x24</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Resamp24kHz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xsamp</span><span class="p">)</span>
+    <span class="n">y24</span><span class="p">,</span> <span class="n">fsamp</span> <span class="o">=</span> <span class="n">Resamp24kHz</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ysamp</span><span class="p">)</span>
+
+    <span class="c1"># Check file sizes</span>
+    <span class="n">nxy</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x24</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y24</span><span class="p">))</span>
+    <span class="n">x24</span> <span class="o">=</span> <span class="n">x24</span><span class="p">[:</span><span class="n">nxy</span><span class="p">]</span>
+    <span class="n">y24</span> <span class="o">=</span> <span class="n">y24</span><span class="p">[:</span><span class="n">nxy</span><span class="p">]</span>
+
+    <span class="c1"># Bulk broadband signal alignment</span>
+    <span class="n">x24</span><span class="p">,</span> <span class="n">y24</span> <span class="o">=</span> <span class="n">InputAlign</span><span class="p">(</span><span class="n">x24</span><span class="p">,</span> <span class="n">y24</span><span class="p">)</span>
+    <span class="n">nsamp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x24</span><span class="p">)</span>
+
+    <span class="c1"># For HASQI, here add NAL-R equalization if the quality reference doesn&#39;t already have it.</span>
+    <span class="c1"># if itype == 1:</span>
+    <span class="c1">#     pass</span>
+
+    <span class="c1"># Cochlear model</span>
+    <span class="c1"># Middle ear</span>
+    <span class="n">xmid</span> <span class="o">=</span> <span class="n">MiddleEar</span><span class="p">(</span><span class="n">x24</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+    <span class="n">ymid</span> <span class="o">=</span> <span class="n">MiddleEar</span><span class="p">(</span><span class="n">y24</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+
+    <span class="c1"># Initialize storage</span>
+    <span class="c1"># Reference and processed envelopes and BM motion</span>
+    <span class="n">xdB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nchan</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">))</span>
+    <span class="n">ydB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nchan</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">))</span>
+
+    <span class="c1"># Reference and processed average spectral values</span>
+    <span class="n">xave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>
+    <span class="n">yave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>  <span class="c1"># Processed</span>
+    <span class="n">xcave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>  <span class="c1"># Reference control</span>
+    <span class="n">ycave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>  <span class="c1"># Processed control</span>
+
+    <span class="c1"># Filter bandwidths adjusted for intensity</span>
+    <span class="n">BWx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>
+    <span class="n">BWy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>
+
+    <span class="n">xb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nchan</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">))</span>
+    <span class="n">yb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nchan</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">))</span>
+
+    <span class="c1"># Loop over each filter in the auditory filter bank</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="p">):</span>
+        <span class="c1"># Control signal envelopes for the reference and processed signals</span>
+        <span class="n">xcontrol</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ycontrol</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">GammatoneBM</span><span class="p">(</span>
+            <span class="n">xmid</span><span class="p">,</span> <span class="n">BW1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">ymid</span><span class="p">,</span> <span class="n">BW1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">fsamp</span><span class="p">,</span> <span class="n">cfreq1</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Adjust the auditory filter bandwidths for the average signal level</span>
+        <span class="n">BWx</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">BWadjust</span><span class="p">(</span><span class="n">xcontrol</span><span class="p">,</span> <span class="n">BWminx</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">BW1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Level1</span><span class="p">)</span>  <span class="c1"># Reference</span>
+        <span class="n">BWy</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">BWadjust</span><span class="p">(</span><span class="n">ycontrol</span><span class="p">,</span> <span class="n">BWminy</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">BW1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Level1</span><span class="p">)</span>  <span class="c1"># Processed</span>
+
+        <span class="c1"># Envelopes and BM motion of the reference and processed signals</span>
+        <span class="n">xenv</span><span class="p">,</span> <span class="n">xbm</span><span class="p">,</span> <span class="n">yenv</span><span class="p">,</span> <span class="n">ybm</span> <span class="o">=</span> <span class="n">GammatoneBM</span><span class="p">(</span><span class="n">xmid</span><span class="p">,</span> <span class="n">BWx</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">ymid</span><span class="p">,</span> <span class="n">BWy</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">fsamp</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+
+        <span class="c1"># RMS levels of the ref and output envelopes for linear metric</span>
+        <span class="n">xave</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xenv</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">yave</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">yenv</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">xcave</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xcontrol</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">ycave</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ycontrol</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="c1"># Cochlear compression for the signal envelopes and BM motion</span>
+        <span class="n">xc</span><span class="p">,</span> <span class="n">xb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">EnvCompressBM</span><span class="p">(</span>
+            <span class="n">xenv</span><span class="p">,</span> <span class="n">xbm</span><span class="p">,</span> <span class="n">xcontrol</span><span class="p">,</span> <span class="n">attnOHCx</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">lowkneex</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">CRx</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">fsamp</span><span class="p">,</span> <span class="n">Level1</span>
+        <span class="p">)</span>
+        <span class="n">yc</span><span class="p">,</span> <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">EnvCompressBM</span><span class="p">(</span>
+            <span class="n">yenv</span><span class="p">,</span> <span class="n">ybm</span><span class="p">,</span> <span class="n">ycontrol</span><span class="p">,</span> <span class="n">attnOHCy</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">lowkneey</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">CRy</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">fsamp</span><span class="p">,</span> <span class="n">Level1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Correct for the delay between the reference and output</span>
+        <span class="n">yc</span> <span class="o">=</span> <span class="n">EnvAlign</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">)</span>  <span class="c1"># Align processed envelope to reference</span>
+        <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">EnvAlign</span><span class="p">(</span><span class="n">xb</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>  <span class="c1"># Align processed BM motion to reference</span>
+
+        <span class="c1"># Convert the compressed envelopes and BM vibration envelopes to dB SPL</span>
+        <span class="n">xc</span><span class="p">,</span> <span class="n">xb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">EnvSL</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">xb</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">attnIHCx</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Level1</span><span class="p">)</span>
+        <span class="n">yc</span><span class="p">,</span> <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">EnvSL</span><span class="p">(</span><span class="n">yc</span><span class="p">,</span> <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">attnIHCy</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">Level1</span><span class="p">)</span>
+
+        <span class="c1"># Apply the IHC rapid and short-term adaptation</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Amount of overshoot</span>
+        <span class="n">xdB</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">xb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">IHCadapt</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">xb</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">delta</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+        <span class="n">ydB</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">IHCadapt</span><span class="p">(</span><span class="n">yc</span><span class="p">,</span> <span class="n">yb</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">delta</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+
+    <span class="c1"># Additive noise level to give the auditory threshold</span>
+    <span class="n">IHCthr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>  <span class="c1"># Additive noise level, dB re: auditory threshold</span>
+    <span class="n">xBM</span> <span class="o">=</span> <span class="n">BMaddnoise</span><span class="p">(</span><span class="n">xb</span><span class="p">,</span> <span class="n">IHCthr</span><span class="p">,</span> <span class="n">Level1</span><span class="p">)</span>
+    <span class="n">yBM</span> <span class="o">=</span> <span class="n">BMaddnoise</span><span class="p">(</span><span class="n">yb</span><span class="p">,</span> <span class="n">IHCthr</span><span class="p">,</span> <span class="n">Level1</span><span class="p">)</span>
+
+    <span class="c1"># Correct for the gammatone filterbank interchannel group delay.</span>
+    <span class="k">if</span> <span class="n">mdelay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">xdB</span> <span class="o">=</span> <span class="n">GroupDelayComp</span><span class="p">(</span><span class="n">xdB</span><span class="p">,</span> <span class="n">BWx</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+        <span class="n">ydB</span> <span class="o">=</span> <span class="n">GroupDelayComp</span><span class="p">(</span><span class="n">ydB</span><span class="p">,</span> <span class="n">BWx</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+        <span class="n">xBM</span> <span class="o">=</span> <span class="n">GroupDelayComp</span><span class="p">(</span><span class="n">xBM</span><span class="p">,</span> <span class="n">BWx</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+        <span class="n">yBM</span> <span class="o">=</span> <span class="n">GroupDelayComp</span><span class="p">(</span><span class="n">yBM</span><span class="p">,</span> <span class="n">BWx</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">)</span>
+
+    <span class="c1"># Convert average gammatone outputs to dB SPL</span>
+    <span class="n">xSL</span> <span class="o">=</span> <span class="n">aveSL</span><span class="p">(</span><span class="n">xave</span><span class="p">,</span> <span class="n">xcave</span><span class="p">,</span> <span class="n">attnOHCx</span><span class="p">,</span> <span class="n">lowkneex</span><span class="p">,</span> <span class="n">CRx</span><span class="p">,</span> <span class="n">attnIHCx</span><span class="p">,</span> <span class="n">Level1</span><span class="p">)</span>
+    <span class="n">ySL</span> <span class="o">=</span> <span class="n">aveSL</span><span class="p">(</span><span class="n">yave</span><span class="p">,</span> <span class="n">ycave</span><span class="p">,</span> <span class="n">attnOHCy</span><span class="p">,</span> <span class="n">lowkneey</span><span class="p">,</span> <span class="n">CRy</span><span class="p">,</span> <span class="n">attnIHCy</span><span class="p">,</span> <span class="n">Level1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">xdB</span><span class="p">,</span> <span class="n">xBM</span><span class="p">,</span> <span class="n">ydB</span><span class="p">,</span> <span class="n">yBM</span><span class="p">,</span> <span class="n">xSL</span><span class="p">,</span> <span class="n">ySL</span><span class="p">,</span> <span class="n">fsamp</span></div>
+
+
+<div class="viewcode-block" id="CenterFreq"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.CenterFreq">[docs]</a><span class="k">def</span> <span class="nf">CenterFreq</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to compute the ERB frequency spacing for the gammatone</span>
+<span class="sd">    filter bank. The equation comes from Malcolm Slaney (1993).</span>
+
+<span class="sd">    Calling variables</span>
+<span class="sd">    nchan		number of filters in the filter bank</span>
+<span class="sd">    shift     optional frequency shift of the filter bank specified as a</span>
+<span class="sd">              fractional shift in distance along the BM. A positive shift</span>
+<span class="sd">              is an increase in frequency (basal shift), and negative is</span>
+<span class="sd">              a decrease in frequency (apical shift). The total length of</span>
+<span class="sd">              the BM is normalized to 1. The frequency-to-distance map is</span>
+<span class="sd">              from D.D. Greenwood (1990), JASA 87, 2592-2605, Eq (1).</span>
+
+<span class="sd">    James M. Kates, 25 January 2007.</span>
+<span class="sd">    Frequency shift added 22 August 2008.</span>
+<span class="sd">    Lower and upper frequencies fixed at 80 and 8000 Hz, 19 June 2012.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lowFreq</span> <span class="o">=</span> <span class="mi">80</span>
+    <span class="n">highFreq</span> <span class="o">=</span> <span class="mi">8000</span>
+
+    <span class="c1"># Moore and Glasberg ERB values</span>
+    <span class="n">EarQ</span> <span class="o">=</span> <span class="mf">9.26449</span>
+    <span class="n">minBW</span> <span class="o">=</span> <span class="mf">24.7</span>
+
+    <span class="c1"># In the Matlab code, the loop below never evaluates (but the current code was trained with this bug)</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># This is to keep consistency with MATLAB code</span>
+    <span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="mf">165.4</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mf">2.1</span>  <span class="c1"># shift specified as a fraction of the total length</span>
+        <span class="c1"># Locations of the low and high frequencies on the BM between 0 and 1</span>
+        <span class="n">xLow</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="p">(</span><span class="n">lowFreq</span> <span class="o">/</span> <span class="n">A</span><span class="p">))</span>
+        <span class="n">xHigh</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="p">(</span><span class="n">highFreq</span> <span class="o">/</span> <span class="n">A</span><span class="p">))</span>
+        <span class="c1"># Shift the locations</span>
+        <span class="n">xLow</span> <span class="o">=</span> <span class="n">xLow</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span>
+        <span class="n">xHigh</span> <span class="o">=</span> <span class="n">xHigh</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span>
+        <span class="c1"># Compute the new frequency range</span>
+        <span class="n">lowFreq</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">xLow</span><span class="p">)</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span>
+        <span class="n">highFreq</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">xHigh</span><span class="p">)</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span>
+
+    <span class="c1"># All of the following expressions are derived in Apple TR #35, &quot;An Efficient Implementation of the Patterson-Holdsworth Cochlear</span>
+    <span class="c1"># Filter Bank&quot; by Malcolm Slaney.</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">EarQ</span> <span class="o">*</span> <span class="n">minBW</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">highFreq</span> <span class="o">+</span> <span class="n">EarQ</span> <span class="o">*</span> <span class="n">minBW</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lowFreq</span> <span class="o">+</span> <span class="n">EarQ</span> <span class="o">*</span> <span class="n">minBW</span><span class="p">))</span>
+        <span class="o">/</span> <span class="p">(</span><span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">highFreq</span> <span class="o">+</span> <span class="n">EarQ</span> <span class="o">*</span> <span class="n">minBW</span><span class="p">)</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">highFreq</span><span class="p">)</span>  <span class="c1"># Last center frequency is set to highFreq</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cf</span></div>
+
+
+<div class="viewcode-block" id="LossParameters"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.LossParameters">[docs]</a><span class="k">def</span> <span class="nf">LossParameters</span><span class="p">(</span><span class="n">HL</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to apportion the hearing loss to the outer hair cells (OHC)</span>
+<span class="sd">    and the inner hair cells (IHC) and to increase the bandwidth of the</span>
+<span class="sd">    cochlear filters in proportion to the OHC fraction of the total loss.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    HL		hearing loss at the 6 audiometric frequencies</span>
+<span class="sd">    cfreq		array containing the center frequencies of the gammatone filters</span>
+<span class="sd">                arranged from low to high</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    attnOHC	attenuation in dB for the OHC gammatone filters</span>
+<span class="sd">    BW		OHC filter bandwidth expressed in terms of normal</span>
+<span class="sd">    lowknee	Lower kneepoint for the low-level linear amplification</span>
+<span class="sd">    CR		Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal</span>
+<span class="sd">                hearing. Reduced in proportion to the OHC loss to 1:1.</span>
+<span class="sd">    attnIHC	attenuation in dB for the input to the IHC synapse</span>
+
+<span class="sd">    James M. Kates, 25 January 2007.</span>
+<span class="sd">    Version for loss in dB and match of OHC loss to CR, 9 March 2007.</span>
+<span class="sd">    Low-frequency extent changed to 80 Hz, 27 Oct 2011.</span>
+<span class="sd">    Lower kneepoint set to 30 dB, 19 June 2012.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Audiometric frequencies in Hz</span>
+    <span class="n">aud</span> <span class="o">=</span> <span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">]</span>
+
+    <span class="c1"># Interpolation to give the loss at the gammatone center frequencies</span>
+    <span class="c1"># Use linear interpolation in dB. The interpolation assumes that  cfreq[1] &lt; aud[1] and cfreq[nfilt] &gt; aud[6]</span>
+    <span class="n">nfilt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cfreq</span><span class="p">)</span>
+    <span class="n">fv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">aud</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">aud</span><span class="p">)],</span> <span class="p">[</span><span class="n">cfreq</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cfreq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="c1"># Interpolated gain in dB</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">cfreq</span><span class="p">,</span> <span class="n">fv</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">HL</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">HL</span><span class="p">)],</span> <span class="p">[</span><span class="n">HL</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">HL</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Make sure there are no negative losses</span>
+
+    <span class="c1"># Compression ratio changes linearly with ERB rate from 1.25:1 in the 80-Hz frequency band to 3.5:1 in the 8-kHz frequency band</span>
+    <span class="n">CR</span> <span class="o">=</span> <span class="mf">1.25</span> <span class="o">+</span> <span class="mf">2.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nfilt</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">nfilt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Maximum OHC sensitivity loss depends on the compression ratio.</span>
+    <span class="c1"># The compression I/O curves assume linear below 30 and above 100 dB SPL in normal ears.</span>
+    <span class="n">maxOHC</span> <span class="o">=</span> <span class="mi">70</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">CR</span><span class="p">))</span>  <span class="c1"># HC loss that results in 1:1 compression</span>
+    <span class="n">thrOHC</span> <span class="o">=</span> <span class="mf">1.25</span> <span class="o">*</span> <span class="n">maxOHC</span>  <span class="c1"># Loss threshold for adjusting the OHC parameters</span>
+
+    <span class="c1"># Apportion the loss in dB to the outer and inner hair cells based on the data of Moore et al (1999), JASA 106, 2761-2778.</span>
+    <span class="c1"># Reduce the CR towards 1:1 in proportion to the OHC loss.</span>
+    <span class="n">attnOHC</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    <span class="n">attnIHC</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+    <span class="n">attnOHC</span><span class="p">[</span><span class="n">loss</span> <span class="o">&gt;=</span> <span class="n">thrOHC</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">thrOHC</span><span class="p">[</span><span class="n">loss</span> <span class="o">&gt;=</span> <span class="n">thrOHC</span><span class="p">]</span>
+    <span class="n">attnIHC</span><span class="p">[</span><span class="n">loss</span> <span class="o">&gt;=</span> <span class="n">thrOHC</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">thrOHC</span><span class="p">[</span><span class="n">loss</span> <span class="o">&gt;=</span> <span class="n">thrOHC</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+        <span class="n">loss</span><span class="p">[</span><span class="n">loss</span> <span class="o">&gt;=</span> <span class="n">thrOHC</span><span class="p">]</span> <span class="o">-</span> <span class="n">thrOHC</span><span class="p">[</span><span class="n">loss</span> <span class="o">&gt;=</span> <span class="n">thrOHC</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Adjust the OHC bandwidth in proportion to the OHC loss</span>
+    <span class="n">BW</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nfilt</span><span class="p">)</span>
+    <span class="n">BW</span> <span class="o">=</span> <span class="n">BW</span> <span class="o">+</span> <span class="p">(</span><span class="n">attnOHC</span> <span class="o">/</span> <span class="mf">50.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">attnOHC</span> <span class="o">/</span> <span class="mf">50.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">6</span>
+
+    <span class="c1"># Compute the compression lower kneepoint and compression ratio</span>
+    <span class="n">lowknee</span> <span class="o">=</span> <span class="n">attnOHC</span> <span class="o">+</span> <span class="mi">30</span>
+    <span class="n">upamp</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">+</span> <span class="mi">70</span> <span class="o">/</span> <span class="n">CR</span>  <span class="c1"># Output level for an input of 100 dB SPL</span>
+
+    <span class="n">CR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span> <span class="o">-</span> <span class="n">lowknee</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">upamp</span> <span class="o">+</span> <span class="n">attnOHC</span> <span class="o">-</span> <span class="n">lowknee</span><span class="p">)</span>  <span class="c1"># OHC loss Compression ratio</span>
+
+    <span class="k">return</span> <span class="n">attnOHC</span><span class="p">,</span> <span class="n">BW</span><span class="p">,</span> <span class="n">lowknee</span><span class="p">,</span> <span class="n">CR</span><span class="p">,</span> <span class="n">attnIHC</span></div>
+
+
+<div class="viewcode-block" id="Resamp24kHz"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.Resamp24kHz">[docs]</a><span class="k">def</span> <span class="nf">Resamp24kHz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fsampx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to resample the input signal at 24 kHz. The input sampling rate</span>
+<span class="sd">    is rounded to the nearest kHz to comput the sampling rate conversion</span>
+<span class="sd">    ratio.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    x         input signal</span>
+<span class="sd">    fsampx    sampling rate for the input in Hz</span>
+
+<span class="sd">    Returned argument:</span>
+<span class="sd">    y         signal resampled at 24 kHz</span>
+<span class="sd">    fsamp     output sampling rate in Kz</span>
+
+<span class="sd">    James M. Kates, 20 June 2011.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Sampling rate information</span>
+    <span class="n">fsamp</span> <span class="o">=</span> <span class="mi">24000</span>
+    <span class="n">fy</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">fsamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>  <span class="c1"># output rate to nearest kHz</span>
+    <span class="n">fx</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">fsampx</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1"># Resample the signal</span>
+    <span class="k">if</span> <span class="n">fx</span> <span class="o">==</span> <span class="n">fy</span><span class="p">:</span>
+        <span class="c1"># No resampling performed if the rates match</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">elif</span> <span class="n">fx</span> <span class="o">&lt;</span> <span class="n">fy</span><span class="p">:</span>
+        <span class="c1"># Resample for the input rate lower than the output</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">resample_poly</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fx</span><span class="p">)</span>
+
+        <span class="c1"># Match the RMS level of the resampled signal to that of the input</span>
+        <span class="n">xRMS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">yRMS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">xRMS</span> <span class="o">/</span> <span class="n">yRMS</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Resample for the input rate higher than the output</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">resample_poly</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fx</span><span class="p">)</span>
+
+        <span class="c1"># Reduce the input signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)</span>
+        <span class="c1"># The power equalization is designed to match the signal intensities</span>
+        <span class="c1"># over the frequency range spanned by the gammatone filter bank.</span>
+        <span class="c1"># Chebyshev Type 2 LP</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="mi">7</span>
+        <span class="n">atten</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># sidelobe attenuation in dB</span>
+        <span class="n">fcutx</span> <span class="o">=</span> <span class="mi">21</span> <span class="o">/</span> <span class="n">fx</span>
+        <span class="n">bx</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cheby2</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">atten</span><span class="p">,</span> <span class="n">fcutx</span><span class="p">)</span>
+        <span class="n">xfilt</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">bx</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Reduce the resampled signal bandwisth to 21 kHz (-10.5 to +10.5 kHz)</span>
+        <span class="n">fcuty</span> <span class="o">=</span> <span class="mi">21</span> <span class="o">/</span> <span class="n">fy</span>
+        <span class="n">by</span><span class="p">,</span> <span class="n">ay</span> <span class="o">=</span> <span class="n">cheby2</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">atten</span><span class="p">,</span> <span class="n">fcuty</span><span class="p">)</span>
+        <span class="n">yfilt</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">ay</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Compute the input and output RMS levels within the 21 kHz bandwidth and match the output to the input</span>
+        <span class="n">xRMS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xfilt</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">yRMS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">yfilt</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">xRMS</span> <span class="o">/</span> <span class="n">yRMS</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">fsamp</span></div>
+
+
+<div class="viewcode-block" id="InputAlign"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.InputAlign">[docs]</a><span class="k">def</span> <span class="nf">InputAlign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to provide approximate temporal alignment of the reference and</span>
+<span class="sd">    processed output signals. Leading and trailing zeros are then pruned.</span>
+<span class="sd">    The function assumes that the two sequences have the same sampling rate:</span>
+<span class="sd">    call eb_Resamp24kHz for each sequence first, then call this function to</span>
+<span class="sd">    align the signals.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    x       input reference sequence</span>
+<span class="sd">    y       hearing-aid output sequence</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    xp   pruned and shifted reference</span>
+<span class="sd">    yp   pruned and shifted hearing-aid output</span>
+
+<span class="sd">    James M. Kates, 12 July 2011.</span>
+<span class="sd">    Match the length of the processed output to the reference for the</span>
+<span class="sd">    purposes of computing the cross-covariance</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Match the length of the processed output to the reference for the purposes of computing the cross-covariance</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">nsamp</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+
+    <span class="c1"># Determine the delay of the output relative to the reference</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">correlate</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">[:</span><span class="n">nsamp</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="n">nsamp</span><span class="p">]),</span> <span class="n">y</span><span class="p">[:</span><span class="n">nsamp</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">[:</span><span class="n">nsamp</span><span class="p">]),</span> <span class="s2">&quot;full&quot;</span>
+    <span class="p">)</span>  <span class="c1"># Matlab code uses xcov thus the subtraction of mean</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xy</span><span class="p">))</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="n">nsamp</span> <span class="o">-</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># Back up 2 msec to allow for dispersion</span>
+    <span class="n">fsamp</span> <span class="o">=</span> <span class="mi">24000</span>  <span class="c1"># Cochlear model input sampling rate in Hz</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">delay</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">fsamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>  <span class="c1"># Back up 2 ms</span>
+
+    <span class="c1"># Align the output with the reference allowing for the dispersion</span>
+    <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Output delayed relative to the reference</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="n">delay</span><span class="p">:</span><span class="n">ny</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">delay</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Output advanced relative to the reference</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">-</span><span class="n">delay</span><span class="p">),</span> <span class="n">y</span><span class="p">[:</span> <span class="n">ny</span> <span class="o">+</span> <span class="n">delay</span><span class="p">]))</span>
+
+    <span class="c1"># Find the start and end of the noiseless reference sequence</span>
+    <span class="n">xabs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xabs</span><span class="p">)</span>
+    <span class="n">xthr</span> <span class="o">=</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">xmax</span>  <span class="c1"># Zero detection threshold</span>
+
+    <span class="n">above_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">xabs</span> <span class="o">&gt;</span> <span class="n">xthr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nx0</span> <span class="o">=</span> <span class="n">above_threshold</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nx1</span> <span class="o">=</span> <span class="n">above_threshold</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Prune the sequences to remove the leading and trailing zeros</span>
+    <span class="k">if</span> <span class="n">nx1</span> <span class="o">&gt;</span> <span class="n">ny</span><span class="p">:</span>
+        <span class="n">nx1</span> <span class="o">=</span> <span class="n">ny</span>
+    <span class="n">xp</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">nx0</span> <span class="p">:</span> <span class="n">nx1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">yp</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">nx0</span> <span class="p">:</span> <span class="n">nx1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">xp</span><span class="p">,</span> <span class="n">yp</span></div>
+
+
+<div class="viewcode-block" id="MiddleEar"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.MiddleEar">[docs]</a><span class="k">def</span> <span class="nf">MiddleEar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to design the middle ear filters and process the input</span>
+<span class="sd">    through the cascade of filters. The middle ear model is a 2-pole HP</span>
+<span class="sd">    filter at 350 Hz in series with a 1-pole LP filter at 5000 Hz. The</span>
+<span class="sd">    result is a rough approximation to the equal-loudness contour at</span>
+<span class="sd">    threshold.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">        x		input signal</span>
+<span class="sd">        fsamp	sampling rate in Hz</span>
+
+<span class="sd">    Function output:</span>
+<span class="sd">        xout	filtered output</span>
+
+<span class="sd">    James M. Kates, 18 January 2007.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Design the 1-pole Butterworth LP using the bilinear transformation</span>
+    <span class="n">bLP</span><span class="p">,</span> <span class="n">aLP</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">fsamp</span><span class="p">))</span>
+
+    <span class="c1"># LP filter the input</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">bLP</span><span class="p">,</span> <span class="n">aLP</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Design the 2-pole Butterworth HP using the bilinear transformation</span>
+    <span class="n">bHP</span><span class="p">,</span> <span class="n">aHP</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">350</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">fsamp</span><span class="p">),</span> <span class="s2">&quot;high&quot;</span><span class="p">)</span>
+
+    <span class="c1"># HP fitler the signal</span>
+    <span class="n">xout</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">bHP</span><span class="p">,</span> <span class="n">aHP</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">xout</span></div>
+
+
+<div class="viewcode-block" id="GammatoneBM"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.GammatoneBM">[docs]</a><span class="k">def</span> <span class="nf">GammatoneBM</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">BWx</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">BWy</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">cf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    4th-order gammatone auditory filter. This implementation is based</span>
+<span class="sd">    on the c program published on-line by Ning Ma, U. Sheffield, UK,</span>
+<span class="sd">    that gives an implementation of the Martin Cooke (1991) filters:</span>
+<span class="sd">    an impulse-invariant transformation of the gammatone filter. The</span>
+<span class="sd">    signal is demodulated down to baseband using a complex exponential,</span>
+<span class="sd">    and then passed through a cascade of four one-pole low-pass filters.</span>
+
+<span class="sd">    This version filters two signals that have the same sampling rate and the</span>
+<span class="sd">    same gammatone filter center frequencies. The lengths of the two signals</span>
+<span class="sd">    should match; if they don&#39;t, the signals are truncated to the shorter of</span>
+<span class="sd">    the two lengths.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    x			first sequence to be filtered</span>
+<span class="sd">    BWx	    bandwidth for x relative to that of a normal ear</span>
+<span class="sd">    y			second sequence to be filtered</span>
+<span class="sd">    BWy	    bandwidth for x relative to that of a normal ear</span>
+<span class="sd">    fs		sampling rate in Hz</span>
+<span class="sd">    cf		filter center frequency in Hz</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    envx      filter envelope output (modulated down to baseband) 1st signal</span>
+<span class="sd">    BMx       BM motion for the first signal</span>
+<span class="sd">    envy      filter envelope output (modulated down to baseband) 2nd signal</span>
+<span class="sd">    BMy       BM motion for the second signal</span>
+<span class="sd">    James M. Kates, 8 Jan 2007.</span>
+<span class="sd">    Vectorized version for efficient MATLAB execution, 4 February 2007.</span>
+<span class="sd">    Cosine and sine generation, 29 June 2011.</span>
+<span class="sd">    Output sine and cosine sequences, 19 June 2012.</span>
+<span class="sd">    Cosine/sine loop speed increased, 9 August 2013.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Filter ERB from Moore and Glasberg (1983)</span>
+    <span class="n">earQ</span> <span class="o">=</span> <span class="mf">9.26449</span>
+    <span class="n">minBW</span> <span class="o">=</span> <span class="mf">24.7</span>
+    <span class="n">ERB</span> <span class="o">=</span> <span class="n">minBW</span> <span class="o">+</span> <span class="p">(</span><span class="n">cf</span> <span class="o">/</span> <span class="n">earQ</span><span class="p">)</span>
+
+    <span class="c1"># Check the lengths of the two signals</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">nsamp</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="n">nsamp</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span><span class="n">nsamp</span><span class="p">]</span>
+
+    <span class="c1"># Filter the first signal</span>
+    <span class="c1"># Initialize the filter coefficients</span>
+    <span class="n">tpt</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">fs</span>
+    <span class="n">tptBW</span> <span class="o">=</span> <span class="n">BWx</span> <span class="o">*</span> <span class="n">tpt</span> <span class="o">*</span> <span class="n">ERB</span> <span class="o">*</span> <span class="mf">1.019</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tptBW</span><span class="p">)</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">6.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a3</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a4</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a5</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">a3</span> <span class="o">-</span> <span class="n">a4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">+</span> <span class="n">a5</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the complex demodulation</span>
+    <span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">sincf</span><span class="p">,</span> <span class="n">coscf</span> <span class="o">=</span> <span class="n">GammatoneBW_demodulation</span><span class="p">(</span>
+        <span class="n">npts</span><span class="p">,</span> <span class="n">tpt</span><span class="p">,</span> <span class="n">cf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npts</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npts</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Filter the real and imaginary parts of the signal</span>
+    <span class="n">ureal</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">,</span> <span class="o">-</span><span class="n">a3</span><span class="p">,</span> <span class="o">-</span><span class="n">a4</span><span class="p">],</span> <span class="n">x</span> <span class="o">*</span> <span class="n">coscf</span><span class="p">)</span>
+    <span class="n">uimag</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">,</span> <span class="o">-</span><span class="n">a3</span><span class="p">,</span> <span class="o">-</span><span class="n">a4</span><span class="p">],</span> <span class="n">x</span> <span class="o">*</span> <span class="n">sincf</span><span class="p">)</span>
+
+    <span class="c1"># Extract the BM velocity and the envelope</span>
+    <span class="n">BMx</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="p">(</span><span class="n">ureal</span> <span class="o">*</span> <span class="n">coscf</span> <span class="o">+</span> <span class="n">uimag</span> <span class="o">*</span> <span class="n">sincf</span><span class="p">)</span>
+    <span class="n">envx</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ureal</span> <span class="o">*</span> <span class="n">ureal</span> <span class="o">+</span> <span class="n">uimag</span> <span class="o">*</span> <span class="n">uimag</span><span class="p">)</span>
+
+    <span class="c1"># Filter the second signal using the existing cosine and sine sequences</span>
+    <span class="n">tptBW</span> <span class="o">=</span> <span class="n">BWy</span> <span class="o">*</span> <span class="n">tpt</span> <span class="o">*</span> <span class="n">ERB</span> <span class="o">*</span> <span class="mf">1.019</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tptBW</span><span class="p">)</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">6.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a3</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a4</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a5</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">a3</span> <span class="o">-</span> <span class="n">a4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">+</span> <span class="n">a5</span><span class="p">)</span>
+
+    <span class="c1"># Filter the real and imaginary parts of the signal</span>
+    <span class="n">ureal</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">,</span> <span class="o">-</span><span class="n">a3</span><span class="p">,</span> <span class="o">-</span><span class="n">a4</span><span class="p">],</span> <span class="n">y</span> <span class="o">*</span> <span class="n">coscf</span><span class="p">)</span>
+    <span class="n">uimag</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">,</span> <span class="o">-</span><span class="n">a3</span><span class="p">,</span> <span class="o">-</span><span class="n">a4</span><span class="p">],</span> <span class="n">y</span> <span class="o">*</span> <span class="n">sincf</span><span class="p">)</span>
+
+    <span class="c1"># Extract the BM velocity and the envelope</span>
+    <span class="n">BMy</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="p">(</span><span class="n">ureal</span> <span class="o">*</span> <span class="n">coscf</span> <span class="o">+</span> <span class="n">uimag</span> <span class="o">*</span> <span class="n">sincf</span><span class="p">)</span>
+    <span class="n">envy</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ureal</span> <span class="o">*</span> <span class="n">ureal</span> <span class="o">+</span> <span class="n">uimag</span> <span class="o">*</span> <span class="n">uimag</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">envx</span><span class="p">,</span> <span class="n">BMx</span><span class="p">,</span> <span class="n">envy</span><span class="p">,</span> <span class="n">BMy</span></div>
+
+
+<div class="viewcode-block" id="GammatoneBW_demodulation"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.GammatoneBW_demodulation">[docs]</a><span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">GammatoneBW_demodulation</span><span class="p">(</span><span class="n">npts</span><span class="p">,</span> <span class="n">tpt</span><span class="p">,</span> <span class="n">cf</span><span class="p">,</span> <span class="n">coscf</span><span class="p">,</span> <span class="n">sincf</span><span class="p">):</span>
+    <span class="n">cn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">tpt</span> <span class="o">*</span> <span class="n">cf</span><span class="p">)</span>
+    <span class="n">sn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">tpt</span> <span class="o">*</span> <span class="n">cf</span><span class="p">)</span>
+    <span class="n">cold</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">sold</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">coscf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cold</span>
+    <span class="n">sincf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sold</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">npts</span><span class="p">):</span>
+        <span class="n">arg</span> <span class="o">=</span> <span class="n">cold</span> <span class="o">*</span> <span class="n">cn</span> <span class="o">+</span> <span class="n">sold</span> <span class="o">*</span> <span class="n">sn</span>
+        <span class="n">sold</span> <span class="o">=</span> <span class="n">sold</span> <span class="o">*</span> <span class="n">cn</span> <span class="o">-</span> <span class="n">cold</span> <span class="o">*</span> <span class="n">sn</span>
+        <span class="n">cold</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="n">coscf</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">cold</span>
+        <span class="n">sincf</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">sold</span>
+
+    <span class="k">return</span> <span class="n">sincf</span><span class="p">,</span> <span class="n">coscf</span></div>
+
+
+<div class="viewcode-block" id="BWadjust"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.BWadjust">[docs]</a><span class="k">def</span> <span class="nf">BWadjust</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">BWmin</span><span class="p">,</span> <span class="n">BWmax</span><span class="p">,</span> <span class="n">Level1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to compute the increase in auditory filter bandwidth in response</span>
+<span class="sd">    to high signal levels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    control     envelope output in the control filter band</span>
+<span class="sd">    BWmin       auditory filter bandwidth computed for the loss (or NH)</span>
+<span class="sd">    BWmax       auditory filter bandwidth at maximum OHC damage</span>
+<span class="sd">    Level1      RMS=1 corresponds to Level1 dB SPL</span>
+
+<span class="sd">    Returned value:</span>
+<span class="sd">    BW          filter bandwidth increased for high signal levels</span>
+
+<span class="sd">    James M. Kates, 21 June 2011.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Compute the control signal level</span>
+    <span class="n">cRMS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">control</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">cdB</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cRMS</span><span class="p">)</span> <span class="o">+</span> <span class="n">Level1</span>
+
+    <span class="c1"># Adjust the auditory filter bandwidth</span>
+    <span class="k">if</span> <span class="n">cdB</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="c1"># No BW adjustment for a signal below 50 dB SPL</span>
+        <span class="n">BW</span> <span class="o">=</span> <span class="n">BWmin</span>
+    <span class="k">elif</span> <span class="n">cdB</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="c1"># Maximum BW if signal is above 100 dB SPL</span>
+        <span class="n">BW</span> <span class="o">=</span> <span class="n">BWmax</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Linear interpolation between BW at 50 dB and max BW at 100 dB SPL</span>
+        <span class="n">BW</span> <span class="o">=</span> <span class="n">BWmin</span> <span class="o">+</span> <span class="p">((</span><span class="n">cdB</span> <span class="o">-</span> <span class="mi">50</span><span class="p">)</span> <span class="o">/</span> <span class="mi">50</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">BWmax</span> <span class="o">-</span> <span class="n">BWmin</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">BW</span></div>
+
+
+<div class="viewcode-block" id="EnvCompressBM"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.EnvCompressBM">[docs]</a><span class="k">def</span> <span class="nf">EnvCompressBM</span><span class="p">(</span><span class="n">envsig</span><span class="p">,</span> <span class="n">bm</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">attnOHC</span><span class="p">,</span> <span class="n">thrLow</span><span class="p">,</span> <span class="n">CR</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">,</span> <span class="n">Level1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to compute the cochlear compression in one auditory filter</span>
+<span class="sd">    band. The gain is linear below the lower threshold, compressive with</span>
+<span class="sd">    a compression ratio of CR:1 between the lower and upper thresholds,</span>
+<span class="sd">    and reverts to linear above the upper threshold. The compressor</span>
+<span class="sd">    assumes that auditory thresold is 0 dB SPL.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    envsig	analytic signal envelope (magnitude) returned by the</span>
+<span class="sd">                gammatone filter bank</span>
+<span class="sd">    bm        BM motion output by the filter bank</span>
+<span class="sd">    control	analytic control envelope returned by the wide control</span>
+<span class="sd">                path filter bank</span>
+<span class="sd">    attnOHC	OHC attenuation at the input to the compressor</span>
+<span class="sd">    thrLow	kneepoint for the low-level linear amplification</span>
+<span class="sd">    CR		compression ratio</span>
+<span class="sd">    fsamp		sampling rate in Hz</span>
+<span class="sd">    Level1	dB reference level: a signal having an RMS value of 1 is</span>
+<span class="sd">                assigned to Level1 dB SPL.</span>
+
+<span class="sd">    Function outputs:</span>
+<span class="sd">    y			compressed version of the signal envelope</span>
+<span class="sd">    b         compressed version of the BM motion</span>
+
+<span class="sd">    James M. Kates, 19 January 2007.</span>
+<span class="sd">    LP filter added 15 Feb 2007 (Ref: Zhang et al., 2001)</span>
+<span class="sd">    Version to compress the envelope, 20 Feb 2007.</span>
+<span class="sd">    Change in the OHC I/O function, 9 March 2007.</span>
+<span class="sd">    Two-tone suppression added 22 August 2008.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initialize the compression parameters</span>
+    <span class="n">thrHigh</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="c1"># Convert the control envelope to dB SPL</span>
+    <span class="n">small</span> <span class="o">=</span> <span class="mf">1e-30</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">small</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">Level1</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">logenv</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">logenv</span><span class="p">,</span> <span class="n">thrHigh</span><span class="p">)</span>  <span class="c1"># Clip signal levels above the upper threshold</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">logenv</span><span class="p">,</span> <span class="n">thrLow</span><span class="p">)</span>  <span class="c1"># Clip signal at the lower threshold</span>
+
+    <span class="c1"># Compute the compression gain in dB</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="o">-</span><span class="n">attnOHC</span> <span class="o">-</span> <span class="p">(</span><span class="n">logenv</span> <span class="o">-</span> <span class="n">thrLow</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">CR</span><span class="p">))</span>
+
+    <span class="c1"># Convert the gain to linear and apply a LP filter to give a 0.2 ms delay</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">gain</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="n">flp</span> <span class="o">=</span> <span class="mi">800</span>
+    <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">flp</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">fsamp</span><span class="p">))</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gain</span><span class="p">)</span>
+
+    <span class="c1"># Apply the gain to the signals</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">envsig</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">bm</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span></div>
+
+
+<div class="viewcode-block" id="EnvAlign"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.EnvAlign">[docs]</a><span class="k">def</span> <span class="nf">EnvAlign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to align the envelope of the processed signal to that of the</span>
+<span class="sd">    reference signal.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    x      envelope or BM motion of the reference signal</span>
+<span class="sd">    y      envelope or BM motion of the output signal</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    y      shifted output envelope to match the input</span>
+
+<span class="sd">    James M. Kates, 28 October 2011.</span>
+<span class="sd">    Absolute value of the cross-correlation peak removed, 22 June 2012.</span>
+<span class="sd">    Cross-correlation range reduced, 13 August 2013.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The MATLAB code limits the range of lags to search (to 100 ms) to save computation time - no such option exists in numpy,</span>
+    <span class="c1"># but the code below limits the delay to the same range as in Matlab, for consistent results</span>
+    <span class="n">fsamp</span> <span class="o">=</span> <span class="mi">24000</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Range in msec for the correlation</span>
+    <span class="n">lags</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">0.001</span> <span class="o">*</span> <span class="nb">range</span> <span class="o">*</span> <span class="n">fsamp</span><span class="p">)</span>  <span class="c1"># Range in samples</span>
+    <span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">lags</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">lags</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">correlate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;full&quot;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">xy</span><span class="p">[</span><span class="n">npts</span> <span class="o">-</span> <span class="n">lags</span> <span class="p">:</span> <span class="n">npts</span> <span class="o">+</span> <span class="n">lags</span><span class="p">])</span>  <span class="c1"># Limit the range in which</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="n">lags</span> <span class="o">-</span> <span class="n">location</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># Time shift the output sequence</span>
+    <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Output delayed relative to the reference</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="n">delay</span><span class="p">:</span><span class="n">npts</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">delay</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">delay</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Output advanced relative to the reference</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">-</span><span class="n">delay</span><span class="p">),</span> <span class="n">y</span><span class="p">[:</span> <span class="n">npts</span> <span class="o">+</span> <span class="n">delay</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="EnvSL"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.EnvSL">[docs]</a><span class="k">def</span> <span class="nf">EnvSL</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">bm</span><span class="p">,</span> <span class="n">attnIHC</span><span class="p">,</span> <span class="n">Level1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to convert the compressed envelope returned by</span>
+<span class="sd">    cochlea_envcomp to dB SL.</span>
+
+<span class="sd">    Args</span>
+<span class="sd">    env			linear envelope after compression</span>
+<span class="sd">    bm            linear basilar membrane vibration after compression</span>
+<span class="sd">    attnIHC		IHC attenuation at the input to the synapse</span>
+<span class="sd">    Level1		level in dB SPL corresponding to 1 RMS</span>
+
+<span class="sd">    Return</span>
+<span class="sd">    y				envelope in dB SL</span>
+<span class="sd">    b             BM vibration with envelope converted to dB SL</span>
+
+<span class="sd">    James M. Kates, 20 Feb 07.</span>
+<span class="sd">    IHC attenuation added 9 March 2007.</span>
+<span class="sd">    Basilar membrane vibration conversion added 2 October 2012.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert the envelope to dB SL</span>
+    <span class="n">small</span> <span class="o">=</span> <span class="mf">1e-30</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">Level1</span> <span class="o">-</span> <span class="n">attnIHC</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">env</span> <span class="o">+</span> <span class="n">small</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Convert the linear BM motion to have a dB SL envelope</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">small</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">env</span> <span class="o">+</span> <span class="n">small</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">bm</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span></div>
+
+
+<div class="viewcode-block" id="IHCadapt"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.IHCadapt">[docs]</a><span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">IHCadapt</span><span class="p">(</span><span class="n">xdB</span><span class="p">,</span> <span class="n">xBM</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to provide inner hair cell (IHC) adaptation. The adaptation is</span>
+<span class="sd">    based on an equivalent RC circuit model, and the derivatives are mapped</span>
+<span class="sd">    into 1st-order backward differences. Rapid and short-term adaptation are</span>
+<span class="sd">    provided. The input is the signal envelope in dB SL, with IHC attenuation</span>
+<span class="sd">    already applied to the envelope. The outputs are the envelope in dB SL</span>
+<span class="sd">    with adaptation providing overshoot of the long-term output level, and</span>
+<span class="sd">    the BM motion is multiplied by a gain vs. time function that reproduces</span>
+<span class="sd">    the adaptation. IHC attenuation and additive noise for the equivalent</span>
+<span class="sd">    auditory threshold are provided by a subsequent call to eb_BMatten.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    xdB      signal envelope in one frequency band in dB SL</span>
+<span class="sd">             contains OHC compression and IHC attenuation</span>
+<span class="sd">    xBM      basilar membrane vibration with OHC compression but no IHC atten</span>
+<span class="sd">    delta    overshoot factor = delta x steady-state</span>
+<span class="sd">    fsamp    sampling rate in Hz</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    ydB      envelope in dB SL with IHC adaptation</span>
+<span class="sd">    yBM      BM motion multiplied by the IHC adaptation gain function</span>
+
+<span class="sd">    James M. Kates, 1 October 2012.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Test the amount of overshoot</span>
+    <span class="n">dsmall</span> <span class="o">=</span> <span class="mf">1.0001</span>
+    <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="n">dsmall</span><span class="p">:</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">dsmall</span>
+
+    <span class="c1"># Initialize adaptation time constants</span>
+    <span class="n">tau1</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Rapid adaptation in msec</span>
+    <span class="n">tau2</span> <span class="o">=</span> <span class="mi">60</span>  <span class="c1"># Short-term adaptation in msec</span>
+    <span class="n">tau1</span> <span class="o">=</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">tau1</span>  <span class="c1"># Convert to seconds</span>
+    <span class="n">tau2</span> <span class="o">=</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">tau2</span>
+
+    <span class="c1"># Equivalent circuit parameters</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">fsamp</span>
+    <span class="n">R1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">delta</span>
+    <span class="n">R2</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">R1</span><span class="p">)</span>
+    <span class="n">R3</span> <span class="o">=</span> <span class="n">R2</span>
+    <span class="n">C1</span> <span class="o">=</span> <span class="n">tau1</span> <span class="o">*</span> <span class="p">(</span><span class="n">R1</span> <span class="o">+</span> <span class="n">R2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">R1</span> <span class="o">*</span> <span class="n">R2</span><span class="p">)</span>
+    <span class="n">C2</span> <span class="o">=</span> <span class="n">tau2</span> <span class="o">/</span> <span class="p">((</span><span class="n">R1</span> <span class="o">+</span> <span class="n">R2</span><span class="p">)</span> <span class="o">*</span> <span class="n">R3</span><span class="p">)</span>
+
+    <span class="c1"># Intermediate values used for the voltage update matrix inversion</span>
+    <span class="n">a11</span> <span class="o">=</span> <span class="n">R1</span> <span class="o">+</span> <span class="n">R2</span> <span class="o">+</span> <span class="n">R1</span> <span class="o">*</span> <span class="n">R2</span> <span class="o">*</span> <span class="p">(</span><span class="n">C1</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">a12</span> <span class="o">=</span> <span class="o">-</span><span class="n">R1</span>
+    <span class="n">a21</span> <span class="o">=</span> <span class="o">-</span><span class="n">R3</span>
+    <span class="n">a22</span> <span class="o">=</span> <span class="n">R2</span> <span class="o">+</span> <span class="n">R3</span> <span class="o">+</span> <span class="n">R2</span> <span class="o">*</span> <span class="n">R3</span> <span class="o">*</span> <span class="p">(</span><span class="n">C2</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">a11</span> <span class="o">*</span> <span class="n">a22</span> <span class="o">-</span> <span class="n">a21</span> <span class="o">*</span> <span class="n">a12</span><span class="p">)</span>
+
+    <span class="c1"># Additional intermediate values</span>
+    <span class="n">R1inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">R1</span>
+    <span class="n">R12C1</span> <span class="o">=</span> <span class="n">R1</span> <span class="o">*</span> <span class="n">R2</span> <span class="o">*</span> <span class="p">(</span><span class="n">C1</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">R23C2</span> <span class="o">=</span> <span class="n">R2</span> <span class="o">*</span> <span class="n">R3</span> <span class="o">*</span> <span class="p">(</span><span class="n">C2</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
+
+    <span class="c1"># Initalize the outputs and state of the equivalent circuit</span>
+    <span class="n">nsamp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdB</span><span class="p">)</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">xdB</span><span class="p">)</span>  <span class="c1"># Gain vector to apply to the BM motion, default is 1</span>
+    <span class="n">ydB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xdB</span><span class="p">)</span>
+    <span class="n">V1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">V2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">small</span> <span class="o">=</span> <span class="mf">1e-30</span>
+
+    <span class="c1"># Loop to process the envelope signal</span>
+    <span class="c1"># The gain asymptote is 1 for an input envelope of 0 dB SPL</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsamp</span><span class="p">):</span>
+        <span class="n">V0</span> <span class="o">=</span> <span class="n">xdB</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">b1</span> <span class="o">=</span> <span class="n">V0</span> <span class="o">*</span> <span class="n">R2</span> <span class="o">+</span> <span class="n">R12C1</span> <span class="o">*</span> <span class="n">V1</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="n">R23C2</span> <span class="o">*</span> <span class="n">V2</span>
+        <span class="n">V1</span> <span class="o">=</span> <span class="n">denom</span> <span class="o">*</span> <span class="p">(</span><span class="n">a22</span> <span class="o">*</span> <span class="n">b1</span> <span class="o">-</span> <span class="n">a12</span> <span class="o">*</span> <span class="n">b2</span><span class="p">)</span>
+        <span class="n">V2</span> <span class="o">=</span> <span class="n">denom</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">a21</span> <span class="o">*</span> <span class="n">b1</span> <span class="o">+</span> <span class="n">a11</span> <span class="o">*</span> <span class="n">b2</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">V0</span> <span class="o">-</span> <span class="n">V1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R1inv</span>
+        <span class="n">ydB</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span>
+
+    <span class="n">ydB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">ydB</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="p">(</span><span class="n">ydB</span> <span class="o">+</span> <span class="n">small</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">xdB</span> <span class="o">+</span> <span class="n">small</span><span class="p">)</span>
+
+    <span class="n">yBM</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">xBM</span>
+
+    <span class="k">return</span> <span class="n">ydB</span><span class="p">,</span> <span class="n">yBM</span></div>
+
+
+<div class="viewcode-block" id="BMaddnoise"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.BMaddnoise">[docs]</a><span class="k">def</span> <span class="nf">BMaddnoise</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">thr</span><span class="p">,</span> <span class="n">Level1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to apply the IHC attenuation to the BM motion and to add a</span>
+<span class="sd">    low-level Gaussian noise to give the auditory threshold.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    x         BM motion to be attenuated</span>
+<span class="sd">    thr       additive noise level in dB re:auditory threshold</span>
+<span class="sd">    Level1    an input having RMS=1 corresponds to Leve1 dB SPL</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    y         attenuated signal with threhsold noise added</span>
+
+<span class="sd">    James M. Kates, 19 June 2012.</span>
+<span class="sd">    Just additive noise, 2 Oct 2012.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gn</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">((</span><span class="n">thr</span> <span class="o">-</span> <span class="n">Level1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>  <span class="c1"># Linear gain for the noise</span>
+
+    <span class="c1"># rng = np.random.default_rng()</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">gn</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># Gaussian RMS=1, then attenuated</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">noise</span>
+
+    <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="GroupDelayComp"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.GroupDelayComp">[docs]</a><span class="k">def</span> <span class="nf">GroupDelayComp</span><span class="p">(</span><span class="n">xenv</span><span class="p">,</span> <span class="n">BW</span><span class="p">,</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">fsamp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to compensate for the group delay of the gammatone filter bank.</span>
+<span class="sd">    The group delay is computed for each filter at its center frequency. The</span>
+<span class="sd">    firing rate output of the IHC model is then adjusted so that all outputs</span>
+<span class="sd">    have the same group delay.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">        xenv (np.ndarray): matrix of signal envelopes or BM motion</span>
+<span class="sd">        BW (): gammatone filter bandwidths adjusted for loss</span>
+<span class="sd">        cfreq (): center frequencies of the bands</span>
+<span class="sd">        fsamp (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        yenv    envelopes or BM motion compensated for the group delay</span>
+
+<span class="sd">    James M. Kates, 28 October 2011.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Processing parameters</span>
+    <span class="n">nchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">BW</span><span class="p">)</span>
+
+    <span class="c1"># Filter ERB from Moore and Glasberg (1983)</span>
+    <span class="n">earQ</span> <span class="o">=</span> <span class="mf">9.26449</span>
+    <span class="n">minBW</span> <span class="o">=</span> <span class="mf">24.7</span>
+    <span class="n">ERB</span> <span class="o">=</span> <span class="n">minBW</span> <span class="o">+</span> <span class="p">(</span><span class="n">cfreq</span> <span class="o">/</span> <span class="n">earQ</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the gamatone filter coefficients</span>
+    <span class="n">tpt</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">fsamp</span>
+    <span class="n">tptBW</span> <span class="o">=</span> <span class="n">tpt</span> <span class="o">*</span> <span class="mf">1.019</span> <span class="o">*</span> <span class="n">BW</span> <span class="o">*</span> <span class="n">ERB</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tptBW</span><span class="p">)</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">6.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a3</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a4</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+    <span class="n">a5</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+
+    <span class="c1"># Compute the group delay in samples at fsamp for each filter</span>
+    <span class="n">gd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nchan</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">gd</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_delay</span><span class="p">(</span>
+            <span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">a5</span><span class="p">[</span><span class="n">n</span><span class="p">]],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="o">-</span><span class="n">a2</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="o">-</span><span class="n">a3</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="o">-</span><span class="n">a4</span><span class="p">[</span><span class="n">n</span><span class="p">]]),</span> <span class="mi">1</span>
+        <span class="p">)</span>
+    <span class="n">gd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">gd</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>  <span class="c1"># convert to integer samples</span>
+
+    <span class="c1"># Compute the delay correlation</span>
+    <span class="n">gmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">gd</span><span class="p">)</span>
+    <span class="n">gd</span> <span class="o">=</span> <span class="n">gd</span> <span class="o">-</span> <span class="n">gmin</span>  <span class="c1"># Remove the minimum delay from all the over values</span>
+    <span class="n">gmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">gd</span><span class="p">)</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="n">gmax</span> <span class="o">-</span> <span class="n">gd</span>  <span class="c1"># Samples delay needed to add to give alignment</span>
+
+    <span class="c1"># Add delay correction to each frequency band</span>
+    <span class="n">yenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">xenv</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">xenv</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">yenv</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">correct</span><span class="p">[</span><span class="n">n</span><span class="p">]),</span> <span class="n">r</span><span class="p">[:</span> <span class="n">npts</span> <span class="o">-</span> <span class="n">correct</span><span class="p">[</span><span class="n">n</span><span class="p">]]))</span>
+
+    <span class="k">return</span> <span class="n">yenv</span></div>
+
+
+<div class="viewcode-block" id="aveSL"><a class="viewcode-back" href="../../../../clarity.evaluator.haspi.eb.html#clarity.evaluator.haspi.eb.aveSL">[docs]</a><span class="k">def</span> <span class="nf">aveSL</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">attnOHC</span><span class="p">,</span> <span class="n">thrLow</span><span class="p">,</span> <span class="n">CR</span><span class="p">,</span> <span class="n">attnIHC</span><span class="p">,</span> <span class="n">Level1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to covert the RMS average output of the gammatone filter bank</span>
+<span class="sd">    into dB SL. The gain is linear below the lower threshold, compressive</span>
+<span class="sd">    with a compression ratio of CR:1 between the lower and upper thresholds,</span>
+<span class="sd">    and reverts to linear above the upper threshold. The compressor</span>
+<span class="sd">    assumes that auditory thresold is 0 dB SPL.</span>
+
+<span class="sd">    Calling variables:</span>
+<span class="sd">    env		analytic signal envelope (magnitude) returned by the</span>
+<span class="sd">                gammatone filter bank, RMS average level</span>
+<span class="sd">    control   control signal envelope</span>
+<span class="sd">    attnOHC	OHC attenuation at the input to the compressor</span>
+<span class="sd">    thrLow	kneepoint for the low-level linear amplification</span>
+<span class="sd">    CR		compression ratio</span>
+<span class="sd">    attnIHC	IHC attenuation at the input to the synapse</span>
+<span class="sd">    Level1	dB reference level: a signal having an RMS value of 1 is</span>
+<span class="sd">                assigned to Level1 dB SPL.</span>
+
+<span class="sd">    Function output:</span>
+<span class="sd">    xdB		compressed output in dB above the impaired threshold</span>
+
+<span class="sd">    James M. Kates, 6 August 2007.</span>
+<span class="sd">    Version for two-tone suppression, 29 August 2008.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the compression parameters</span>
+    <span class="n">thrHigh</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Upper compression threshold</span>
+
+    <span class="c1"># Convert the control to dB SPL</span>
+    <span class="n">small</span> <span class="o">=</span> <span class="mf">1e-30</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">small</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">Level1</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">logenv</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">logenv</span><span class="p">,</span> <span class="n">thrHigh</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">logenv</span><span class="p">,</span> <span class="n">thrLow</span><span class="p">)</span>
+
+    <span class="c1"># Compute compression gain in dB</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="o">-</span><span class="n">attnOHC</span> <span class="o">-</span> <span class="p">(</span><span class="n">logenv</span> <span class="o">-</span> <span class="n">thrLow</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">CR</span><span class="p">))</span>
+
+    <span class="c1"># Convert the signal envelope to dB SPL</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">small</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">Level1</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">logenv</span><span class="p">)</span>
+    <span class="n">logenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">logenv</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">xdB</span> <span class="o">=</span> <span class="n">logenv</span> <span class="o">+</span> <span class="n">gain</span> <span class="o">-</span> <span class="n">attnIHC</span>
+    <span class="n">xdB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">xdB</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">xdB</span></div>
+</pre></div>
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, pyclarity authors.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
