@@ -8,7 +8,7 @@ from clarity.enhancer.gha.audiogram import Audiogram
 def test_dsp_filter(regtest):
     amfir = filter.AudiometricFIR(sr=44100, nfir=220)
     torch.manual_seed(0)
-    signal = torch.rand(440, dtype=torch.float)
+    signal = torch.rand(10, dtype=torch.float)
     signal = torch.reshape(signal, (1, 1, -1))
     signal.to(amfir.device)
     output = amfir(signal)
