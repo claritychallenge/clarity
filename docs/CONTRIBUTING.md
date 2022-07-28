@@ -38,10 +38,10 @@ of the following
 
 ``` bash
 # Install from Pip
-pip install clarity.[dev]
+pip install pyclarity.[dev]
 # Install from GitHub using Pip
 pip install git+ssh://github.com:claritychallenge/clarity.[dev]
-# Install from local Git repository
+# Install from local cloned Git repository
 pip install '.[dev]'
 ```
 
