@@ -15,7 +15,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     the envelopes of the signals after OHC compression and IHC loss
     attenuation.
 
-    Calling arguments:
+    Args:
     x        reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)
                or to 65 dB SPL plus NAL-R gain (itype=2)
     xsamp    sampling rate for the reference signal, Hz
@@ -30,7 +30,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
              2=quality: reference already has NAL-R EQ applied
     Level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL
 
-    Returned values:
+    Returns:
     xdB      envelope for the reference in each band
     xBM      BM motion for the reference in each band
     ydB      envelope for the processed signal in each band
@@ -241,7 +241,7 @@ def LossParameters(HL, cfreq):
     cfreq		array containing the center frequencies of the gammatone filters
                 arranged from low to high
 
-    Returned values:
+    Returns:
     attnOHC	attenuation in dB for the OHC gammatone filters
     BW		OHC filter bandwidth expressed in terms of normal
     lowknee	Lower kneepoint for the low-level linear amplification
@@ -374,7 +374,7 @@ def InputAlign(x, y):
     x       input reference sequence
     y       hearing-aid output sequence
 
-    Returned values:
+    Returns:
     xp   pruned and shifted reference
     yp   pruned and shifted hearing-aid output
 
@@ -482,7 +482,7 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
     fs		sampling rate in Hz
     cf		filter center frequency in Hz
 
-    Returned values:
+    Returns:
     envx      filter envelope output (modulated down to baseband) 1st signal
     BMx       BM motion for the first signal
     envy      filter envelope output (modulated down to baseband) 2nd signal
@@ -576,7 +576,7 @@ def BWadjust(control, BWmin, BWmax, Level1):
     Function to compute the increase in auditory filter bandwidth in response
     to high signal levels.
 
-    Calling arguments:
+    Args:
     control     envelope output in the control filter band
     BWmin       auditory filter bandwidth computed for the loss (or NH)
     BWmax       auditory filter bandwidth at maximum OHC damage
@@ -670,11 +670,11 @@ def EnvAlign(x, y):
     Function to align the envelope of the processed signal to that of the
     reference signal.
 
-    Calling arguments:
+    Args:
     x      envelope or BM motion of the reference signal
     y      envelope or BM motion of the output signal
 
-    Returned values:
+    Returns:
     y      shifted output envelope to match the input
 
     James M. Kates, 28 October 2011.
@@ -711,7 +711,7 @@ def EnvSL(env, bm, attnIHC, Level1):
     Function to convert the compressed envelope returned by
     cochlea_envcomp to dB SL.
 
-    Calling arguments
+    Args
     env			linear envelope after compression
     bm            linear basilar membrane vibration after compression
     attnIHC		IHC attenuation at the input to the synapse
@@ -758,7 +758,7 @@ def IHCadapt(xdB, xBM, delta, fsamp):
     delta    overshoot factor = delta x steady-state
     fsamp    sampling rate in Hz
 
-    Returned values:
+    Returns:
     ydB      envelope in dB SL with IHC adaptation
     yBM      BM motion multiplied by the IHC adaptation gain function
 
@@ -828,12 +828,12 @@ def BMaddnoise(x, thr, Level1):
     Function to apply the IHC attenuation to the BM motion and to add a
     low-level Gaussian noise to give the auditory threshold.
 
-    Calling arguments:
+    Args:
     x         BM motion to be attenuated
     thr       additive noise level in dB re:auditory threshold
     Level1    an input having RMS=1 corresponds to Leve1 dB SPL
 
-    Returned values:
+    Returns:
     y         attenuated signal with threhsold noise added
 
     James M. Kates, 19 June 2012.
@@ -857,13 +857,13 @@ def GroupDelayComp(xenv, BW, cfreq, fsamp):
     have the same group delay.
 
     Calling variables:
-    xenv     matrix of signal envelopes or BM motion
-    BW       gammatone filter bandwidths adjusted for loss
-    cfreq    center frequencies of the bands
-    fsamp    sampling rate for the input signal in Hz (e.g. 24,000 Hz)
+        xenv (np.ndarray): matrix of signal envelopes or BM motion
+        BW (): gammatone filter bandwidths adjusted for loss
+        cfreq (): center frequencies of the bands
+        fsamp (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
 
-    Returned values:
-    yenv    envelopes or BM motion compensated for the group delay
+    Returns:
+        yenv    envelopes or BM motion compensated for the group delay
 
     James M. Kates, 28 October 2011.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.

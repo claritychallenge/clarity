@@ -1,17 +1,29 @@
+"""Compressor Class"""
 import numpy as np
 
 
 class Compressor:
     def __init__(
         self,
-        fs=44100,
-        attack=5,
-        release=20,
-        threshold=1,
-        attenuation=0.0001,
-        rms_buffer_size=0.2,
-        makeup_gain=1,
+        fs: int = 44100,
+        attack: int = 5,
+        release: int = 20,
+        threshold: int = 1,
+        attenuation: float = 0.0001,
+        rms_buffer_size: float = 0.2,
+        makeup_gain: int = 1,
     ):
+        """Instantiate the Compressor Class.
+
+        Args:
+            fs (int): (default = 44100)
+            attack (int): (default = 5)
+            release int: (default = 20)
+            threshold (int): (default = 1)
+            attenuation (float): (default = 0.0001)
+            rms_buffer_size (float): (default = 0.2)
+            makeup_gain (int): (default = 1)
+        """
         self.fs = fs
         self.rms_buffer_size = rms_buffer_size
         self.set_attack(attack)
@@ -25,17 +37,41 @@ class Compressor:
         self.win_len = int(self.rms_buffer_size * self.fs)
         self.window = np.ones(self.win_len)
 
-    def set_attack(self, t_msec):
+    def set_attack(self, t_msec: float) -> float:
+        """DESCRIPTION
+
+        Args:
+            t_msec (float): DESCRIPTION
+
+        Returns:
+            float: DESCRIPTION
+        """
         t_sec = t_msec / 1000
         reciprocal_time = 1 / t_sec
         self.attack = reciprocal_time / self.fs
 
-    def set_release(self, t_msec):
+    def set_release(self, t_msec: float) -> float:
+        """DESCRIPTION
+
+        Args:
+            t_msec (float): DESCRIPTION
+
+        Returns:
+            float: DESCRIPTION
+        """
         t_sec = t_msec / 1000
         reciprocal_time = 1 / t_sec
         self.release = reciprocal_time / self.fs
 
-    def process(self, signal):
+    def process(self, signal: np.array) -> np.array:
+        """DESCRIPTION
+
+        Args:
+            signal (np.array): DESCRIPTION
+
+        Returns:
+            np.array: DESCRIPTION
+        """
         padded_signal = np.concatenate((np.zeros(self.win_len - 1), signal))
         rms = np.sqrt(
             np.convolve(padded_signal**2, self.window, mode="valid") / self.win_len

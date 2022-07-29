@@ -491,18 +491,23 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
     return eh2008_nse
 
 
-def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
+def generate_key_percent(
+    sig: np.ndarray, thr_dB: float, winlen: int, percent_to_track: float = None
+):
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
     of rms, adaptively sets threshold after looking at histogram of whole recording
+
     Args:
         sig (ndarray): The signal to analyse
         thr_dB (float): fixed energy threshold (dB)
         winlen (int): length of window in samples
         percent_to_track (float, optional): Track a percentage of frames (default: {None})
+
     Raises:
         ValueError: percent_to_track is set too high
+
     Returns:
         (ndarray, float) -- "key" and rms threshold
             The key array of indices of samples used in rms calculation,
@@ -581,13 +586,17 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
     return key, used_thr_dB
 
 
-def measure_rms(signal, fs, dB_rel_rms, percent_to_track=None):
+def measure_rms(
+    signal: np.ndarray, fs: float, dB_rel_rms: float, percent_to_track: float = None
+) -> tuple:
     """Measure rms.
+
     A sophisticated method of measuring RMS in a file. It splits the signal up into
     short windows, performs  a histogram of levels, calculates an approximate RMS,
     and then uses that RMS to calculate a threshold level in the histogram and then
     re-measures the RMS only using those durations whose individual RMS exceed that
     threshold.
+
     Args:
         signal (ndarray): the signal of which to measure the rms
         fs (float): sampling frequency
@@ -633,15 +642,24 @@ def pad(signal, length):
     )
 
 
-def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False):
+def read_signal(
+    filename: str,
+    offset: int = 0,
+    nsamples: int = -1,
+    nchannels: int = 0,
+    offset_is_samples: bool = False,
+) -> np.ndarray:
     """Read a wavefile and return as numpy array of floats.
+
     Args:
         filename (string): Name of file to read
         offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
-        nchannels: expected number of channel (default: 0 = any number OK)
+        nsamples (int): Number of samples.
+        nchannels (int): expected number of channel (default: 0 = any number OK)
         offset_is_samples (bool): measurement units for offset (default: False)
+
     Returns:
-        ndarray: audio signal
+        np.ndarray: audio signal
     """
     try:
         wave_file = SoundFile(filename)
@@ -668,8 +686,15 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
     return x
 
 
-def write_signal(filename, x, fs, floating_point=True):
-    """Write a signal as fixed or floating point wav file."""
+def write_signal(filename: str, x, fs, floating_point: bool = True) -> None:
+    """Write a signal as fixed or floating point wav file.
+
+    Args:
+        filename (str):
+        x ():
+        fs ():
+        floating_point (bool):
+    """
 
     if fs != MSBG_FS:
         logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")

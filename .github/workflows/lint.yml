@@ -24,6 +24,19 @@ jobs:
       run: |
         pip install pre-commit isort flake8==3.9.2
         pre-commit install
-    - name: Run pre-commit checks including linting
+    - name: pre-commit
       run: |
+        echo "Running pre-commit on all files..."
+        echo ""
         pre-commit run --all-files
+    - name: Advise on installing pre-commit
+      run: |
+        echo "pre-commit checks have failed."
+        echo ""
+        echo "Please consider installing and configuring pre-commit to run locally. To do so..."
+        echo ""
+        echo " pip install pyclarity.[dev]"
+        echo " pre-commit install"
+        echo ""
+        echo "For more information please refer to https://claritychallenge.org/clarity/CONTRIBUTING.html"
+      if: always() && (steps.pre-commit.outcome == 'failure')

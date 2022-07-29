@@ -11,17 +11,18 @@ def EnvFilt(xdB, ydB, fcut, fsub, fsamp):
     raised cosine window to ensure that there are no negative envelope values
     produced by the filtering operation.
 
-    Calling arguments
-    xdB    matrix: env in dB SL for the ref signal in each auditory band
-    ydB    matrix: env in dB SL for the degraded signal in each auditory band
-    fcut   LP filter cutoff frequency for the filtered envelope, Hz
-    fsub   subsampling frequency in Hz for the LP filtered envelopes
-    fsamp  sampling rate in Hz for the signals xdB and ydB
+    Args:
+        xdB (np.ndarray): env in dB SL for the ref signal in each auditory band
+        ydB (np.ndarray): env in dB SL for the degraded signal in each auditory band
+        fcut ():  LP filter cutoff frequency for the filtered envelope, Hz
+        fsub ():  subsampling frequency in Hz for the LP filtered envelopes
+        fsamp ():  sampling rate in Hz for the signals xdB and ydB
 
-    Returned values:
-    xLP    LP filtered and subsampled reference signal envelope
-           Each frequency band is a separate column
-    yLP    LP filtered and subsampled degraded signal envelope
+    Returns:
+        tuple: xLP - LP filtered and subsampled reference signal envelope
+           Each frequency band is a separate column. yLP - LP filtered and subsampled
+           degraded signal envelope
+
 
     James M. Kates, 12 September 2019.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
@@ -78,17 +79,16 @@ def CepCoef(xdB, ydB, thrCep, thrNerve, nbasis):
     cepstral coefficients then form the input to the cepstral correlation
     calculation.
 
-    Calling variables:
-    xdB       subsampled reference signal envelope in dB SL in each band
-    ydB	    subsampled distorted output signal envelope
-    thrCep    threshold in dB SPL to include sample in calculation
-    thrNerve  additive noise RMS for IHC firing (in dB)
-    nbasis    number of cepstral basis functions to use
+    Args:
+        xdB ():      subsampled reference signal envelope in dB SL in each band
+        ydB ():	    subsampled distorted output signal envelope
+        thrCep ():   threshold in dB SPL to include sample in calculation
+        thrNerve (): additive noise RMS for IHC firing (in dB)
+        nbasis    number of cepstral basis functions to use
 
-    Output:
-    xcep      cepstral coefficient matrix for the ref signal (nsamp,nbasis)
-    ycep      cepstral coefficient matrix for the output signal (nsamp,nbasis)
-                each column is a separate basis function, from low to high
+    Returns:
+        tuple: xcep cepstral coefficient matrix for the ref signal (nsamp,nbasis) and ycep  cepstral coefficient matrix
+               for the output signal (nsamp,nbasis) each column is a separate basis function, from low to high
 
     James M. Kates, 23 April 2015.
     Gammawarp version to fit the basis functions, 11 February 2019.
@@ -147,12 +147,12 @@ def AddNoise(ydB, thrdB):
     Function to add independent random Gaussian noise to the subsampled
     signal envelope in each auditory frequency band.
 
-    Calling arguments:
+    Args:
     ydB      subsampled envelope in dB re:auditory threshold
     thrdB    additive noise RMS level (in dB)
     Level1   an input having RMS=1 corresponds to Level1 dB SPL
 
-    Returned values:
+    Returns:
     zdB      envelope with threshold noise added, in dB re:auditory threshold
 
     James M. Kates, 23 April 2019.
@@ -180,24 +180,24 @@ def ModFilt(Xenv, Yenv, fsub):
     offset transients are removed from the FIR convolutions to temporally
     align the modulation filter outputs.
 
-    Calling arguments:
-    Xenv     matrix containing the subsampled reference envelope values. Each
+    Args:
+        Xenv (np.ndarray) : matrix containing the subsampled reference envelope values. Each
              column is a different frequency band or cepstral basis function
              arranged from low to high.
-    Yenv     matrix containing the subsampled processed envelope values
-    fsub     envelope sub-sampling rate in Hz
+        Yenv (np.ndarray): matrix containing the subsampled processed envelope values
+        fsub (): envelope sub-sampling rate in Hz
 
-    Returned values:
-    Xmod     cell array containing the reference signal output of the
+    Returns:
+        tuple: Xmod a cell array containing the reference signal output of the
              modulation filterbank. Xmod is of size {nchan,nmodfilt} where
              nchan is the number of frequency channels or cepstral basis
              functions in Xenv, and nmodfilt is the number of modulation
              filters used in the analysis. Each cell contains a column vector
              of length nsamp, where nsamp is the number of samples in each
              envelope sequence contained in the columns of Xenv.
-    Ymod     cell array containing the processed signal output of the
+             Ymod cell array containing the processed signal output of the
              modulation filterbank.
-    cf       vector of the modulation rate filter center frequencies
+             cf vector of the modulation rate filter center frequencies
 
     James M. Kates, 14 February 2019.
     Two matrix version of gwarp_ModFiltWindow, 19 February 2019.
@@ -295,18 +295,18 @@ def ModCorr(Xmod, Ymod):
     cepstral coefficients or envelopes in each frequency band have been
     passed through the modulation filterbank using function ebm_ModFilt.
 
-    Calling variables:
-    Xmod	   cell array containing the reference signal output of the
+    Args:
+        Xmod (np.array): cell array containing the reference signal output of the
              modulation filterbank. Xmod is of size {nchan,nmodfilt} where
              nchan is the number of frequency channels or cepstral basis
              functions in Xenv, and nmodfilt is the number of modulation
              filters used in the analysis. Each cell contains a column vector
              of length nsamp, where nsamp is the number of samples in each
              envelope sequence contained in the columns of Xenv.
-    Ymod	   subsampled distorted output signal envelope
+        Ymod subsampled distorted output signal envelope
 
     Output:
-    aveCM    modulation correlations averaged over basis functions 2-6
+        float: aveCM modulation correlations averaged over basis functions 2-6
              vector of size nmodfilt
 
     James M. Kates, 21 February 2019.
