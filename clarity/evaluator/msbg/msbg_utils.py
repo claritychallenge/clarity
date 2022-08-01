@@ -304,15 +304,15 @@ def read_gtf_file(gtf_file):
     # Fix filename if necessary
     dirname = os.path.dirname(os.path.abspath(__file__))
     gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r") as fp:
+    with open(gtf_file, "r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
-        if type(data[key]) == list:
+        if isinstance(data[key], list):
             data[key] = np.array(data[key])
     return data
 
 
-def firwin2(n, f, a, window=None, antisymmetric=None):
+def firwin2(n, f, a, window=None, antisymmetric=None):  # pylint: disable=W0613
     """FIR filter design using the window method.
 
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -322,14 +322,15 @@ def firwin2(n, f, a, window=None, antisymmetric=None):
         f (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
         a (ndarray): The filter gains at the frequency sampling points.
         window (string or (string, float), optional): See scipy.firwin2 (default: (None))
-        antisymmetric (bool, optional): Unused but present to main compatability with scipy firwin2.
+        _antisymmetric (bool, optional): Unused but present to main compatability
+            with scipy firwin2.
 
     Returns:
         ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
 
     """
     window_shape = None
-    if type(window) == tuple:
+    if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
         window_type = window
@@ -517,14 +518,14 @@ def generate_key_percent(
     sig = sig.flatten()
     if winlen != math.floor(winlen):  # whoops on fractional indexing: 7-March 2002
         winlen = math.floor(winlen)
-        logging.warning(f"Window length must be integer: now {winlen}")
+        logging.warning("Window length must be integer: now %s", winlen)
 
     siglen = len(sig)
 
     expected = thr_dB
     # new Dec 2003. Possibly track percentage of frames rather than fixed threshold
     if percent_to_track is not None:
-        logging.info(f"tracking {percent_to_track} percentage of frames")
+        logging.info("tracking %s percentage of frames", percent_to_track)
     else:
         logging.info("tracking fixed threshold")
 
@@ -556,8 +557,7 @@ def generate_key_percent(
             inactive_ix = inactive_ix + n_bins[ix]
             if inactive_ix > inactive_bins:
                 break
-            else:
-                ix_count += 1
+            ix_count += 1
         if ix == 1:
             logging.warning("Counted every bin.........")
         elif ix == n_levels:
@@ -663,11 +663,11 @@ def read_signal(
     """
     try:
         wave_file = SoundFile(filename)
-    except:  # noqa E722
+    except Exception as e:
         # Ensure incorrect error (24 bit) is not generated
-        raise Exception(f"Unable to read {filename}.")
+        raise Exception(f"Unable to read {filename}.") from e
 
-    if nchannels != 0 and wave_file.channels != nchannels:
+    if nchannels not in (0, wave_file.channels):
         raise Exception(
             f"Wav file ({filename}) was expected to have {nchannels} channels."
         )
@@ -697,7 +697,7 @@ def write_signal(filename: str, x, fs, floating_point: bool = True) -> None:
     """
 
     if fs != MSBG_FS:
-        logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")
+        logging.warning("Sampling rate mismatch: %s with sr=%s.", filename, fs)
         # raise ValueError("Sampling rate mismatch")
 
     if floating_point is False:

@@ -73,7 +73,7 @@ def get_gaintable(
         max_output_level,
     )
 
-    sGt = dict()
+    sGt = {}
     sGt["sGt_uncorr"] = copy.deepcopy(output["sGt"])  # sGt without noisegate correction
 
     output = multifit_apply_noisegate(

@@ -1,7 +1,9 @@
 """
-This implementation is from https://github.com/mpariente/pytorch_stoi, please cite and star the repo.
-The pip version of torch_stoi does not include EPS in line 127 & 128, hence could lead to sqrt(0)
+This implementation is from https://github.com/mpariente/pytorch_stoi, please cite
+and star the repo. The pip version of torch_stoi does not include EPS in line 127 & 128,
+hence could lead to sqrt(0)
 """
+
 import numpy as np
 import torch
 import torchaudio
@@ -108,9 +110,8 @@ class NegSTOILoss(nn.Module):
         """
         if targets.shape != est_targets.shape:
             raise RuntimeError(
-                "targets and est_targets should have "
-                "the same shape, found {} and "
-                "{}".format(targets.shape, est_targets.shape)
+                "targets and est_targets should have the same shape,"
+                f"found {targets.shape} and {est_targets.shape}"
             )
         # Compute STOI loss without batch size.
         if targets.ndim == 1:

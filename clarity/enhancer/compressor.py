@@ -79,9 +79,9 @@ class Compressor:
         )
         comp_ratios = []
         curr_comp = 1
-        for i in range(len(rms)):
-            if rms[i] > self.threshold:
-                temp_comp = (rms[i] * self.attenuation) + (
+        for rms_i in rms:
+            if rms_i > self.threshold:
+                temp_comp = (rms_i * self.attenuation) + (
                     (1 - self.attenuation) * self.threshold
                 )
                 curr_comp = (curr_comp * (1 - self.attack)) + (temp_comp * self.attack)

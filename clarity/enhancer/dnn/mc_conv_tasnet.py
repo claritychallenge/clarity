@@ -20,11 +20,13 @@ def overlap_and_add(signal, frame_step, device):
         output_size = (frames - 1) * frame_step + frame_length
 
     Args:
-        signal: A [..., frames, frame_length] Tensor. All dimensions may be unknown, and rank must be at least 2.
+        signal: A [..., frames, frame_length] Tensor. All dimensions may be unknown,
+            and rank must be at least 2.
         frame_step: An integer denoting overlap offsets. Must be less than or equal to frame_length.
 
     Returns:
-        A Tensor with shape [..., output_size] containing the overlap-added frames of signal's inner-most two dimensions.
+        A Tensor with shape [..., output_size] containing the overlap-added frames of
+            signal's inner-most two dimensions.
         output_size = (frames - 1) * frame_step + frame_length
 
     Based on https://github.com/tensorflow/tensorflow/blob/r1.12/tensorflow/contrib/signal/python/ops/reconstruction_ops.py
@@ -86,7 +88,7 @@ class ConvTasNet(nn.Module):
             causal: causal or non-causal
             mask_nonlinear: use which non-linear function to generate mask
         """
-        super(ConvTasNet, self).__init__()
+        super().__init__()
 
         # Hyper-parameter
         (
@@ -145,7 +147,7 @@ class SpectralEncoder(nn.Module):
     """Estimation of the nonnegative mixture weight by a 1-D conv layer."""
 
     def __init__(self, L, N):
-        super(SpectralEncoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.L, self.N = L, N
         # Components
@@ -169,7 +171,7 @@ class SpatialEncoder(nn.Module):
     """Estimation of the nonnegative mixture weight by a 1-D conv layer."""
 
     def __init__(self, L, N, num_channels):
-        super(SpatialEncoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.L, self.N = L, N
         # Components
@@ -192,7 +194,7 @@ class SpatialEncoder(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self, N, L):
-        super(Decoder, self).__init__()
+        super().__init__()
         # device for overlap_and add
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         # Hyper-parameter
@@ -248,7 +250,7 @@ class TemporalConvNet(nn.Module):
             causal: causal or non-causal
             mask_nonlinear: use which non-linear function to generate mask
         """
-        super(TemporalConvNet, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.C, self.N_spec = C, N_spec
         self.mask_nonlinear = mask_nonlinear
@@ -259,7 +261,7 @@ class TemporalConvNet(nn.Module):
         bottleneck_conv1x1 = nn.Conv1d(N_spec + N_spat, B, 1, bias=False)
         # [M, B, K] -> [M, B, K]
         repeats = []
-        for r in range(R):
+        for _r in range(R):
             blocks = []
             for x in range(X):
                 dilation = 2**x
@@ -295,7 +297,7 @@ class TemporalConvNet(nn.Module):
         Returns:
             est_mask: [M, C, N, K]
         """
-        M, N, K = mixture_w.size()
+        M, _N, K = mixture_w.size()
         score = self.network(mixture_w)  # [M, N, K] -> [M, C*N, K]
         score = score.view(M, self.C, self.N_spec, K)  # [M, C*N, K] -> [M, C, N, K]
         if self.mask_nonlinear == "softmax":
@@ -321,13 +323,13 @@ class TemporalBlock(nn.Module):
         norm_type="gLN",
         causal=False,
     ):
-        super(TemporalBlock, self).__init__()
+        super().__init__()
         # [M, B, K] -> [M, H, K]
         conv1x1 = nn.Conv1d(in_channels, out_channels, 1, bias=False)
         prelu = nn.PReLU()
         norm = chose_norm(norm_type, out_channels)
         # [M, H, K] -> [M, B, K]
-        dsconv = DepthwiseSeparableConv(
+        dsconv = DepthwiseSeparableConv(  # pylint: disable=W1114
             out_channels,
             in_channels,
             kernel_size,
@@ -366,7 +368,7 @@ class DepthwiseSeparableConv(nn.Module):
         norm_type="gLN",
         causal=False,
     ):
-        super(DepthwiseSeparableConv, self).__init__()
+        super().__init__()
         # Use `groups` option to implement depthwise convolution
         # [M, H, K] -> [M, H, K]
         depthwise_conv = nn.Conv1d(
@@ -405,7 +407,7 @@ class Chomp1d(nn.Module):
     """To ensure the output length is the same as the input."""
 
     def __init__(self, chomp_size):
-        super(Chomp1d, self).__init__()
+        super().__init__()
         self.chomp_size = chomp_size
 
     def forward(self, x):
@@ -430,12 +432,12 @@ def chose_norm(norm_type, channel_size):
     """
     if norm_type == "gLN":
         return GlobalLayerNorm(channel_size)
-    elif norm_type == "cLN":
+    if norm_type == "cLN":
         return ChannelwiseLayerNorm(channel_size)
-    else:  # norm_type == "BN":
-        # Given input (M, C, K), nn.BatchNorm1d(C) will accumulate statics
-        # along M and K, so this BN usage is right.
-        return nn.BatchNorm1d(channel_size)
+    # norm_type == "BN":
+    # # Given input (M, C, K), nn.BatchNorm1d(C) will accumulate statics
+    # along M and K, so this BN usage is right.
+    return nn.BatchNorm1d(channel_size)
 
 
 # TODO: Use nn.LayerNorm to impl cLN to speed up
@@ -443,7 +445,7 @@ class ChannelwiseLayerNorm(nn.Module):
     """Channel-wise Layer Normalization (cLN)"""
 
     def __init__(self, channel_size):
-        super(ChannelwiseLayerNorm, self).__init__()
+        super().__init__()
         self.gamma = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.beta = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.reset_parameters()
@@ -470,7 +472,7 @@ class GlobalLayerNorm(nn.Module):
     """Global Layer Normalization (gLN)"""
 
     def __init__(self, channel_size):
-        super(GlobalLayerNorm, self).__init__()
+        super().__init__()
         self.gamma = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.beta = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.reset_parameters()

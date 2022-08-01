@@ -192,7 +192,8 @@ def add_this_target_to_scene(target, scene, pre_samples_range, post_samples_rang
         target (dict): target dict read from target metadata file
         scene (dict): complete scene dict
         pre_samples_range (list): parameters for number of samples prior to target onset
-        post_samples_range (list): parameters for number of samples to continue player after target offsets
+        post_samples_range (list): parameters for number of samples to continue
+            player after target offsets
     """
     scene_target = {}
     num_pre_samples = get_num_pre_samples(pre_samples_range)
@@ -267,11 +268,11 @@ def select_random_interferer(interferers, dataset, required_samples):
     ]
     try:
         interferer = random.choice(filtered_interferer_group)
-    except IndexError:
+    except IndexError as e:
         raise ValueError(
             f"No suitable interferer found for dataset {dataset} and required samples"
             f" {required_samples}"
-        )
+        ) from e
     return interferer
 
 
@@ -292,7 +293,7 @@ def get_random_interferer_offset(interferer, required_samples):
     masker_nsamples = interferer["nsamples"]
     latest_start = masker_nsamples - required_samples
     if latest_start < 0:
-        log.error(f"Interferer {interferer['ID']} does not has enough samples.")
+        log.error("Interferer %s does not has enough samples.", interferer["ID"])
 
     assert (
         latest_start >= 0
@@ -403,8 +404,7 @@ def generate_rotation(
     start_offset = random.uniform(*relative_start_time_range)
     duration = int(random.gauss(duration_mean, duration_sd))
     start_time = scene["target"]["time_start"] + start_offset
-    if start_time < 0:
-        start_time = 0
+    start_time = max(start_time, 0)
     end_time = start_time + duration
 
     # Head initially offset to left or right at random
@@ -487,12 +487,14 @@ class RoomBuilder:
 
     def load(self, filename):
         """Load the list of room from a json file."""
-        self.rooms = json.load(open(filename, "r", encoding="utf-8"))
+        with open(filename, "r", encoding="utf-8") as f:
+            self.rooms = json.load(f)
         self.rebuild_dict()
 
     def save_rooms(self, filename):
         """Save the list of rooms to a json file."""
-        json.dump(self.rooms, open(filename, "w", encoding="utf-8"), indent=2)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.rooms, f, indent=2)
 
 
 class SceneBuilder:
@@ -523,10 +525,11 @@ class SceneBuilder:
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
-        json.dump(self.scenes, open(filename, "w", encoding="utf-8"), indent=2)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.scenes, f, indent=2)
 
     def instantiate_scenes(self, dataset):
-        log.info(f"Initialise {dataset} scenes")
+        log.info("Initialise %s scenes", dataset)
         self.initialise_scenes(dataset, **self.scene_datasets)
         log.info("adding targets to scenes")
         self.add_target_to_scene(dataset, **self.target)
@@ -585,7 +588,8 @@ class SceneBuilder:
         Raises:
             Exception: _description_
         """
-        targets = json.load(open(target_speakers, "r", encoding="utf-8"))
+        with open(target_speakers, "r", encoding="utf-8") as f:
+            targets = json.load(f)
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
         scenes_dataset = [s for s in self.scenes if s["dataset"] == dataset]
@@ -626,7 +630,8 @@ class SceneBuilder:
     ):
         """Add interferer to the scene description file."""
         # Load and prepare speech interferer metadata
-        interferers_speech = json.load(open(speech_interferers, "r", encoding="utf-8"))
+        with open(speech_interferers, "r", encoding="utf-8") as f:
+            interferers_speech = json.load(f)
         for interferer in interferers_speech:
             interferer["ID"] = (
                 interferer["speaker"] + ".wav"
@@ -635,16 +640,18 @@ class SceneBuilder:
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        interferers_noise = json.load(open(noise_interferers, "r", encoding="utf-8"))
+        with open(noise_interferers, "r", encoding="utf-8") as f:
+            interferers_noise = json.load(f)
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
-        interferer_by_type = dict()
+        interferer_by_type = {}
         for interferer in interferers_noise:
             interferer_by_type.setdefault(interferer["class"], []).append(interferer)
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        interferers_music = json.load(open(music_interferers, "r", encoding="utf-8"))
+        with open(music_interferers, "r", encoding="utf-8") as f:
+            interferers_music = json.load(f)
         for interferer in interferers_music:
             interferer["ID"] = interferer[
                 "file"

@@ -36,7 +36,7 @@ def two_point_rotation(rotation: dict, origin: np.ndarray, duration: int) -> np.
     """
     angle_origin = np.arctan2(origin[1], origin[0])
     angles = [math.radians(r["angle"]) - angle_origin for r in rotation]
-    logger.info(f"angles={angles}")
+    logger.info("angles=%s", angles)
     theta = hoa.rotation_vector(
         angles[0], angles[1], duration, rotation[0]["sample"], rotation[1]["sample"]
     )
@@ -102,11 +102,13 @@ class SceneRenderer:
         self.hoa_rotator = HOARotator(self.ambisonic_order, resolution=0.1)
 
         # Build dictionary for looking up room data
-        rooms = json.load(open(f"{self.metadata.room_definitions}", "r"))
+        with open(f"{self.metadata.room_definitions}", "r", encoding="utf-8") as f:
+            rooms = json.load(f)
         self.room_dict = {room["name"]: room for room in rooms}
 
         # Fixed hrir metadata for hrir sets being used
-        self.metadata.hrir_metadata = json.load(open(self.metadata.hrir_metadata))
+        with open(self.metadata.hrir_metadata, encoding="utf-8") as f:
+            self.metadata.hrir_metadata = json.load(f)
 
     def make_interferer_filename(self, interferer: dict, dataset) -> str:
         """Construct filename for an interferer.
@@ -130,7 +132,7 @@ class SceneRenderer:
         Returns:
             list: List of full path filenames for interferers in scene.
         """
-        logger.info(f"number of interferers: {len(scene['interferers'])}")
+        logger.info("number of interferers: %s", len(scene["interferers"]))
         interferer_filenames = [
             self.make_interferer_filename(interferer, scene["dataset"])
             for interferer in scene["interferers"]
@@ -199,8 +201,8 @@ class SceneRenderer:
         l_pos = np.array(room["listener"]["position"])
         distance = np.linalg.norm(t_pos - l_pos)
         samples_delay = int(distance / SPEED_SOUND * FS)
-        logger.info(f'{room["target"]["position"]}, {room["listener"]["position"]}')
-        logger.info(f"target signal delay = {samples_delay} samples ({distance} m)")
+        logger.info("%s, %s", room["target"]["position"], room["listener"]["position"])
+        logger.info("target signal delay = %s samples %s m)", samples_delay, distance)
 
         # Values below for a source directly ahead of the listener
         anechoic_ir = np.array(
@@ -236,7 +238,9 @@ class SceneRenderer:
         hoa_target_anechoic = np.vstack(
             (np.zeros((samples_delay, n_chans)), hoa_target_anechoic)
         )
-        logger.info(f"{anechoic_ir.shape} {target.shape} {hoa_target_anechoic.shape}")
+        logger.info(
+            "%s, %s, %s", anechoic_ir.shape, target.shape, hoa_target_anechoic.shape
+        )
 
         return hoa_target_anechoic
 
@@ -259,7 +263,7 @@ class SceneRenderer:
         target_filt = convolve(target, SPEECH_FILTER, mode="full", method="fft")
         # rms of the target after speech weighted filter
         target_rms = np.sqrt(np.mean(target_filt**2))
-        logger.info(f"target rms: {target_rms}")
+        logger.info("target rms: %s", target_rms)
         target_hoair = self.paths.hoairs.format(dataset=scene["dataset"])
         target_hoair = f"{target_hoair}/HOA_{room_id}_t.wav"
         _fs, ir = wavfile.read(target_hoair)
@@ -297,7 +301,9 @@ class SceneRenderer:
         flat_hoa_interferers = sum(padded_interferers)
 
         logger.info(
-            f"hoa_target.shape={hoa_target.shape}; flat_hoa_interferers.shape={flat_hoa_interferers.shape}"
+            "hoa_target.shape=%s; flat_hoa_interferers.shape=%s",
+            hoa_target.shape,
+            flat_hoa_interferers.shape,
         )
 
         th = two_point_rotation(
@@ -327,7 +333,7 @@ class SceneRenderer:
         signal /= norm
         n_clipped = np.sum(np.abs(signal) > 1.0)
         if n_clipped > 0:
-            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+            logger.warning("Writing %s: %s samples clipped", filename, n_clipped)
             np.clip(signal, -1.0, 1.0, out=signal)
         signal_16 = (32767 * signal).astype(np.int16)
         wavfile.write(filename, FS, signal_16)

@@ -325,8 +325,8 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
     """
     # weights = np.array(hrir_metadata["weights"])
     matrix = np.array(hrir_metadata["matrix"])
-    logger.info(f"decoding signal with shape {ambisonic_signals.shape}")
-    logger.info(f"Decoding to {matrix.shape[0]} positions")
+    logger.info("decoding signal with shape %s", ambisonic_signals.shape)
+    logger.info("Decoding to %s positions", matrix.shape[0])
 
     # Decode to loudspeaker positions
 
@@ -361,15 +361,16 @@ def ambisonic_convolve(signal: np.ndarray, ir: np.ndarray, order: int) -> np.nda
     return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
 
 
-def compute_rms(input, axis=0) -> float:
-    """Compute Root Mean Square values along a given axis.
-
+def compute_rms(input_signal: np.ndarray, axis: int = 0):
+    """Compute rms values along a given axis.
     Args:
+        input_signal (np.ndarray): Input signal
         axis (int): Axis along which to compute the Root Mean Square. 0 (default) or 1.
 
     Returns:
         float: Root Mean Square for the given axis."""
-    return np.sqrt(np.mean(input**2, axis=axis))
+
+    return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
 def equalise_rms_levels(inputs: np.ndarray) -> np.ndarray:

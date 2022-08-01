@@ -1,5 +1,6 @@
 """
-Adopted from Asteroid https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py
+Adopted from Asteroid
+https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py
 """
 import pytorch_lightning as pl
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -33,7 +34,7 @@ class System(pl.LightningModule):
         """
         return self.model(*args, **kwargs)
 
-    def common_step(self, batch, batch_nb, train=True):
+    def common_step(self, batch, batch_nb, train=True):  # pylint: disable=W0613
         """Common forward step between training and validation.
         The function of this method is to unpack the data given by the loader,
         forward the batch through the model and compute the loss.
@@ -42,8 +43,8 @@ class System(pl.LightningModule):
         Args:
             batch: the object returned by the loader (a list of torch.Tensor
                 in most cases) but can be something else.
-            batch_nb (int): The number of the batch in the epoch.
-            train (bool): Whether in training mode. Needed only if the training
+            _batch_nb (int): The number of the batch in the epoch.
+            _train (bool): Whether in training mode. Needed only if the training
                 and validation steps are fundamentally different, otherwise,
                 pytorch-lightning handles the usual differences.
 

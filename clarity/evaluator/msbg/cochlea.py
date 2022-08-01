@@ -178,7 +178,7 @@ def recruitment(coch_sig, envelope, SPL_equiv_0dB, expansion_ratios, eq_loud_db)
     return coch_sig
 
 
-class Cochlea(object):
+class Cochlea:
     """Simulate the cochlea.
 
     Includes simulation of effects of bandwidth broadening (smearing) and recruitment.
@@ -220,7 +220,7 @@ class Cochlea(object):
             smear_params = HL_PARAMS[severity_level]["smear_params"]
             self.smearer = Smearer(*smear_params, fs)
 
-        logging.info(f"Severity level - {severity_level}")
+        logging.info("Severity level - %s", severity_level)
 
     def simulate(self, coch_sig, equiv_0dB_file_SPL):
         """Pass a signal through the cochlea.
