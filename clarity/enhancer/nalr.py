@@ -1,5 +1,5 @@
 import math
-from typing import Union
+from typing import Tuple, Union
 
 import numpy as np
 import scipy
@@ -27,6 +27,8 @@ def firwin2(
         np.ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
     """
     window_shape = None
+    window_type: Union[str, float, None]
+    window_param: Union[str, float]
     if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
@@ -45,7 +47,9 @@ def firwin2(
     return b
 
 
-def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray:
+def fir2(
+    nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None
+) -> Tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
     Translation of MATLAB fir2.
 
@@ -81,7 +85,7 @@ def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray
     df = np.diff(ff, n=1)
 
     npt += 1
-    nb = 0
+    nb: int = 0
     H[0] = aa[0]
 
     for i in np.arange(nint):

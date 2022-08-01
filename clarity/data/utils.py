@@ -1,4 +1,5 @@
 import os
+from typing import Literal, Union
 
 import numpy as np
 import scipy
@@ -13,12 +14,12 @@ SPEECH_FILTER = scipy.io.loadmat(
 SPEECH_FILTER = np.array(SPEECH_FILTER["filt"])
 
 
-def better_ear_speechweighted_snr(target: np.array, noise):
+def better_ear_speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> float:
     """Calculate effective better ear SNR.
 
     Args:
-        target (np.array):
-        noise ():
+        target (np.ndarray):
+        noise (np.ndarray):
 
     Returns:
     """
@@ -58,7 +59,7 @@ def speechweighted_snr(target, noise):
     return sw_snr
 
 
-def sum_signals(signals: list) -> np.ndarray:
+def sum_signals(signals: list) -> Union[np.ndarray, Literal[0]]:
     """Return sum of a list of signals.
 
     Signals are stored as a list of ndarrays whose size can vary in the first
@@ -76,14 +77,14 @@ def sum_signals(signals: list) -> np.ndarray:
     return sum(pad(x, max_length) for x in signals)
 
 
-def pad(signal: np.array, length: float) -> np.array:
+def pad(signal: np.ndarray, length: int) -> np.ndarray:
     """Zero pad signal to required length.
 
     Assumes required length is not less than input length.
 
     Args:
         signal (np.array):
-        length ():
+        length (int):
 
     Returns:
         np.array:
@@ -91,5 +92,5 @@ def pad(signal: np.array, length: float) -> np.array:
     # FIXME : Consider encapsulating in a 'try: ... except: ...' should the assertion not be met.
     assert length >= signal.shape[0]
     return np.pad(
-        signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
+        signal, ([(0, length - signal.shape[0])] + ([(0, 0)] * (len(signal.shape) - 1)))
     )

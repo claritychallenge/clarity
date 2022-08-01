@@ -1,5 +1,6 @@
 """Tools to support higher order ambisonic processing."""
 import logging
+from typing import List
 
 import numpy as np
 from numba import njit
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @njit
-def compute_rotation_matrix(n: int, foa_rotmat: np.array) -> np.array:
+def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     """Generate a rotation matrix to rotate HOA soundfield.
     Based on 'Rotation Matrices for Real Spherical Harmonics. Direct Determination
     by Recursion' Joseph Ivanic and Klaus Ruedenberg J. Phys. Chem. 1996, 100, 15,
@@ -373,7 +374,7 @@ def compute_rms(input_signal: np.ndarray, axis: int = 0):
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
-def equalise_rms_levels(inputs: np.ndarray) -> np.ndarray:
+def equalise_rms_levels(inputs: List[np.ndarray]) -> List[np.ndarray]:
     """Equalise RMS levels.
 
     Args:
@@ -400,17 +401,19 @@ def dB_to_gain(x: float) -> float:
     return 10 ** (0.05 * x)
 
 
-def smoothstep(x: np.array, x_min: float = 0, x_max: float = 1, N: int = 1) -> np.array:
+def smoothstep(
+    x: np.ndarray, x_min: float = 0, x_max: float = 1, N: int = 1
+) -> np.ndarray:
     """Apply the smoothstep function.
 
     Args:
-        x (np.array): input
+        x (np.ndarray): input
         x_min (float, optional): clamp minimum. Defaults to 0.
         x_max (float, optional): clamp maximum. Defaults to 1.
         N (int, optional): smoothing factor. Defaults to 1.
 
     Returns:
-        array: smoothstep values
+        np.ndarray: smoothstep values
     """
     x = np.clip((x - x_min) / (x_max - x_min), 0, 1)
 
@@ -425,7 +428,7 @@ def smoothstep(x: np.array, x_min: float = 0, x_max: float = 1, N: int = 1) -> n
 
 def rotation_control_vector(
     array_length: int, start_idx: int, end_idx: int, smoothness: int = 1
-) -> np.array:
+) -> np.ndarray:
     """Generate mapped rotation control vector for values of theta.
 
     Args:
@@ -451,7 +454,7 @@ def rotation_vector(
     signal_length: int,
     start_idx: int,
     end_idx: int,
-) -> np.array:
+) -> np.ndarray:
     """Compute the rotation vector.
 
     Args:

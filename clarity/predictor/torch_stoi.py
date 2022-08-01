@@ -3,7 +3,6 @@ This implementation is from https://github.com/mpariente/pytorch_stoi, please ci
 and star the repo. The pip version of torch_stoi does not include EPS in line 127 & 128,
 hence could lead to sqrt(0)
 """
-
 import numpy as np
 import torch
 import torchaudio
