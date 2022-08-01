@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @njit
-def compute_rotation_matrix(n, foa_rotmat):
+def compute_rotation_matrix(n: int, foa_rotmat: np.array) -> np.array:
     """Generate a rotation matrix to rotate HOA soundfield.
     Based on 'Rotation Matrices for Real Spherical Harmonics. Direct Determination
     by Recursion' Joseph Ivanic and Klaus Ruedenberg J. Phys. Chem. 1996, 100, 15,
@@ -24,11 +24,13 @@ def compute_rotation_matrix(n, foa_rotmat):
     and Interactive Audio, March 2019
     Operates on HOA of a given order rotates by azimuth theta
     and elevation phi
+
     Args:
         order (int): order of ambisonic soundfield
         foa_rotmat (arraylike): rotation matrix to expand
+
     Returns:
-        numpy.ndarray: HOA rotation matrix
+        np.ndarray: HOA rotation matrix
     """
     m = (n + 1) ** 2
     # construct rotamat for given order
@@ -50,12 +52,14 @@ def compute_rotation_matrix(n, foa_rotmat):
 
 
 @njit
-def centred_element(r, i, j):
+def centred_element(r: np.ndarray, i: int, j: int):
     """Get value from centered element indexing.
+
     Args:
         r (matrix): input matrix
         i (int): row index
         j (int): column index
+
     Returns:
         Any: matrix element
     """
@@ -67,12 +71,14 @@ def centred_element(r, i, j):
 @njit
 def P(i, a, b, el, r):
     """P function for rotation matrix calculation.
+
     Args:
         i (int): index
         a (int): 'a' value
         b (int): 'b' value
         el (int): order
         r (list(matrix)): rotation matrices
+
     Returns:
         float: P value
     """
@@ -94,11 +100,13 @@ def P(i, a, b, el, r):
 @njit
 def U(m, n, el, r):
     """U coefficient initialiser for rotation matrix calculation.
+
     Args:
         m (int): degree
         n (int): index
         el (int): order
         r (list(matrix)): rotation matrices
+
     Returns:
         float: U value
     """
@@ -108,11 +116,13 @@ def U(m, n, el, r):
 @njit
 def V(m, n, el, r):
     """V coefficient initialiser for rotation matrix calculation.
+
     Args:
         m (int): degree
         n (int): index
         el (int): order
         r (list(matrix)): rotation matrices
+
     Returns:
         float: V value
     """
@@ -136,11 +146,13 @@ def V(m, n, el, r):
 @njit
 def W(m, n, el, r):
     """W coefficient initialiser for rotation matrix calculation.
+
     Args:
         m (int): degree
         n (int): index
         el (int): order
         r (list(matrix)): rotation matrices
+
     Returns:
         float: W value
     """
@@ -155,10 +167,12 @@ def W(m, n, el, r):
 @njit
 def compute_UVW_coefficients(m, n, el):
     """Compute U, V and W coefficients for rotation matrix calculation.
+
     Args:
         m (index): degree
         n (index): index
         el (index): order
+
     Returns:
         tuple: u, v, w
     """
@@ -193,10 +207,12 @@ def compute_UVW_coefficients(m, n, el):
 @njit
 def compute_band_rotation(el, rotations, output):
     """Compute submatrix for rotation matrix.
+
     Args:
         el (int): order of submatrix
         rotations (list(matrix)): previous and current submatrices
         output (matrix): output destination
+
     Returns:
         matrix: rotation submatrix
     """
@@ -229,9 +245,11 @@ def compute_band_rotation(el, rotations, output):
 @njit
 def dot(A, B):
     """Wraps np.dot for numba #@njit.
+
     Args:
         A (Array)
         B (Array)
+
     Returns:
         Array: output
     """
@@ -267,9 +285,11 @@ class HOARotator:
 
     def rotate(self, signal, th):
         """Apply rotation to HOA signals using precomputed rotation matrices.
+
         Args:
             signal (array-like): ambisonic signals
             th (array-like): rotation vector (in radians)
+
         Returns:
             array-like: transformed ambisonic signals
         """
@@ -294,10 +314,12 @@ class HOARotator:
 
 def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
     """Perform binaural mixdown of ambisonic signals.
+
     Args:
         ambisonic_signals (array-like): inputs
         hrir_filename (string): name of HRIR file
         hrir_metadata (dict): data for channel selection and ambisonic decoding
+
     Returns:
         array: stereo audio
     """
@@ -324,28 +346,39 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
     return z
 
 
-def ambisonic_convolve(signal, ir, order):
+def ambisonic_convolve(signal: np.ndarray, ir: np.ndarray, order: int) -> np.ndarray:
     """Convolve HOAIRs with signals.
+
     Args:
         signal (ndarray[samples]): the signal to convole
         ir (ndarray[samples, channels]): the HOA impulse responses
         order (int, optional): ambisonic order.
+
     Returns:
-        ndarray[samples, channels]: the convolved signal
+        np.ndarray[samples, channels]: the convolved signal
     """
     n = (order + 1) ** 2
     return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
 
 
-def compute_rms(input_signal, axis=0):
-    """Compute rms values along a given axis."""
+def compute_rms(input_signal: np.ndarray, axis: int=0):
+    """Compute rms values along a given axis.
+    Args:
+        input_signal (np.ndarray): Input signal
+        axis (int): Axis along which to compute the Root Mean Square. 0 (default) or 1.
+
+    Returns:
+        float: Root Mean Square for the given axis."""
+    
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
-def equalise_rms_levels(inputs):
+def equalise_rms_levels(inputs: np.ndarray) -> np.ndarray:
     """Equalise RMS levels.
+
     Args:
         inputs (array): signals
+
     Returns:
         array: normalised signals
     """
@@ -355,18 +388,27 @@ def equalise_rms_levels(inputs):
     return outputs
 
 
-def dB_to_gain(x):
-    """Convert dB to gain."""
+def dB_to_gain(x: float) -> float:
+    """Convert dB to gain.
+
+    Args:
+        x (float):
+
+    Returns
+        float:
+    """
     return 10 ** (0.05 * x)
 
 
-def smoothstep(x, x_min=0, x_max=1, N=1):
+def smoothstep(x: np.array, x_min: float = 0, x_max: float = 1, N: int = 1) -> np.array:
     """Apply the smoothstep function.
+
     Args:
-        x (array): input
+        x (np.array): input
         x_min (float, optional): clamp minimum. Defaults to 0.
         x_max (float, optional): clamp maximum. Defaults to 1.
         N (int, optional): smoothing factor. Defaults to 1.
+
     Returns:
         array: smoothstep values
     """
@@ -381,13 +423,17 @@ def smoothstep(x, x_min=0, x_max=1, N=1):
     return result
 
 
-def rotation_control_vector(array_length, start_idx, end_idx, smoothness=1):
+def rotation_control_vector(
+    array_length: int, start_idx: int, end_idx: int, smoothness: int = 1
+) -> np.array:
     """Generate mapped rotation control vector for values of theta.
+
     Args:
         array_length (int)
         start_idx (int)
         end_idx (int)
         smoothness (int, optional) Defaults to 1.
+
     Returns:
         array: mapped rotation control vector
     """
@@ -399,16 +445,24 @@ def rotation_control_vector(array_length, start_idx, end_idx, smoothness=1):
     return idx
 
 
-def rotation_vector(start_angle, end_angle, signal_length, start_idx, end_idx):
+def rotation_vector(
+    start_angle: float,
+    end_angle: float,
+    signal_length: int,
+    start_idx: int,
+    end_idx: int,
+) -> np.array:
     """Compute the rotation vector.
+
     Args:
         start_angle (float)
         end_angle (float)
         signal_length (int)
         start_idx (int)
         end_idx (int)
+
     Returns:
-        _type_: _description_
+        np.array: _description_
     """
     turn_direction = -np.sign(start_angle - end_angle)
     increment = (np.abs(start_angle - end_angle) / signal_length) * turn_direction

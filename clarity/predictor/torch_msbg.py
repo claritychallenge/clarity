@@ -67,16 +67,16 @@ def generate_key_percent(signal, thr_dB, winlen):
 
 
 def measure_rms(signal, sr, dB_rel_rms):
-    """
-    measures toatal power of all 10 msec frams that are above a user-specified threshold
-    :param signal: input signal
-    :param sr: sampling rate
-    :param dB_rel_rms: threshold relative to first-stage rms
-        (if it is made of a 2*1 array, second value over rules.)
-        only single value supported currently
-    :return:
-    This is the percentage of frames that are required to be tracked for
-        measuring RMS (useful when DR compression changes histogram shape)
+    """Measures toatal power of all 10 msec frams that are above a user-specified threshold
+
+    Args:
+        signal: input signal
+        sr: sampling rate
+        dB_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array, second value over rules.)
+                    only single value supported currently
+    Returns:
+        tuple: The percentage of frames that are required to be tracked for measuring RMS (useful when DR compression
+               changes histogram shape)
     """
     win_secs = 0.01
     # first RMS is of all signal
@@ -114,13 +114,16 @@ def makesmearmat3(rl, ru, sr):
 
 
 def audfilt(rl, ru, size, sr):
-    """
-    calculate an auditory filter array
-    :param rl: broadening factor on the lower side
-    :param ru: broadening factor on the upper side
-    :param size:
-    :param sr:
-    :return:
+    """Calculate an auditory filter array
+
+    Args:
+        rl: broadening factor on the lower side
+        ru: broadening factor on the upper side
+        size:
+        sr:
+
+    Returns:
+        np.ndarray
     """
     aud_filter = np.zeros([size, size])
     aud_filter[0, 0] = 1.0

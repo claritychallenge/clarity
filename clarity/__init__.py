@@ -1,1 +1,2 @@
-__version__ = "2.0.3"
+"""pyClarity"""
+__version__ = "0.1.0"

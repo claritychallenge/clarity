@@ -34,6 +34,7 @@ def ec(
     We are searching for the level and time adjustments that maximise the
     intermediate correlation coefficients d.
     Could add location of source and interferer to this to reduce search space.
+
     Args:
         xl_hat(ndarray): clean L short-time DFT coefficients (single-sided) per freq bin and frame
         xr_hat(ndarray): clean R short-time DFT coefficients (single-sided) per freq bin and frame
@@ -51,6 +52,7 @@ def ec(
         p_ec_max (ndarray): empty grid for maximum values
         sigma_epsilon (ndarray): jitter for gammas
         sigma_delta (ndarray): jitter for taus
+
     Returns:
         d (ndarray): updated grid for intermediate intelligibility measure
         p_ec_max (ndarray): grid containing maximum values
@@ -234,8 +236,8 @@ def stft(x, win_size, fft_size):
 
 
 def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
-    """
-    Remove silent frames of x and y based on x
+    """Remove silent frames of x and y based on x
+
     A frame is excluded if its energy is lower than max(energy) - dyn_range
     The frame exclusion is based solely on x, the clean speech signal
     Based on mpariente/pystoi/utils.py

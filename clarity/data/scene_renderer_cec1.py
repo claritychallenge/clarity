@@ -51,11 +51,13 @@ class Renderer:
         self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
     ):
         """Read a wavefile and return as numpy array of floats.
+
         Args:
             filename (string): Name of file to read
             offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
             nchannels: expected number of channel (default: 0 = any number OK)
             offset_is_samples (bool): measurement units for offset (default: False)
+
         Returns:
             ndarray: audio signal
         """
@@ -122,6 +124,7 @@ class Renderer:
             signal (ndarray): The mono or stereo signal stored as array of floats
             brir (ndarray): The binaural room impulse response stored a 2xN array of floats
             n_tail (int): Truncate output to input signal length + n_tail
+
         Returns:
             ndarray: The convolved signals
 

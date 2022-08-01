@@ -28,6 +28,7 @@ class System(pl.LightningModule):
 
     def forward(self, *args, **kwargs):
         """Applies forward pass of the model.
+
         Returns:
             :class:`torch.Tensor`
         """
@@ -38,6 +39,7 @@ class System(pl.LightningModule):
         The function of this method is to unpack the data given by the loader,
         forward the batch through the model and compute the loss.
         Pytorch-lightning handles all the rest.
+
         Args:
             batch: the object returned by the loader (a list of torch.Tensor
                 in most cases) but can be something else.
@@ -45,6 +47,7 @@ class System(pl.LightningModule):
             _train (bool): Whether in training mode. Needed only if the training
                 and validation steps are fundamentally different, otherwise,
                 pytorch-lightning handles the usual differences.
+
         Returns:
             :class:`torch.Tensor` : The loss value on this batch.
         .. note::
@@ -62,10 +65,12 @@ class System(pl.LightningModule):
     def training_step(self, batch, batch_nb):
         """Pass data through the model and compute the loss.
         Backprop is **not** performed (meaning PL will do it for you).
+
         Args:
             batch: the object returned by the loader (a list of torch.Tensor
                 in most cases) but can be something else.
             batch_nb (int): The number of the batch in the epoch.
+
         Returns:
             torch.Tensor, the value of the loss.
         """
@@ -75,6 +80,7 @@ class System(pl.LightningModule):
 
     def validation_step(self, batch, batch_nb):
         """Need to overwrite PL validation_step to do validation.
+
         Args:
             batch: the object returned by the loader (a list of torch.Tensor
                 in most cases) but can be something else.

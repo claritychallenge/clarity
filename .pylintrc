@@ -199,6 +199,7 @@ ignore-mixin-members=yes
 # is inferred to be None.
 ignore-none=yes
 
+
 # This flag controls whether pylint should warn about no-member and similar
 # checks whenever an opaque object is returned when inferring. The inference
 # can return multiple potential results while evaluating a Python object, but
@@ -460,6 +461,7 @@ check-str-concat-over-line-jumps=no
 # one.
 allow-any-import-level=
 
+
 # Allow wildcard imports from modules that define __all__.
 allow-wildcard-with-all=no
 
@@ -482,6 +484,7 @@ import-graph=
 
 # Output a graph (.gv or any supported image format) of internal dependencies
 # to the given file (report RP0402 must not be disabled).
+
 int-import-graph=
 
 # Force import order to recognize a module as part of the standard
@@ -505,6 +508,7 @@ defining-attr-methods=__init__,
                       __new__,
                       setUp,
                       __post_init__
+
 
 # List of member names, which should be excluded from the protected access
 # warning.
@@ -546,6 +550,7 @@ max-branches=12
 # Maximum number of locals for function / method body.
 max-locals=15
 
+
 # Maximum number of parents for a class (see R0901).
 max-parents=7
 
@@ -562,9 +567,11 @@ max-statements=50
 min-public-methods=2
 
 
+
 [EXCEPTIONS]
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "BaseException, Exception".
 overgeneral-exceptions=BaseException,
                        Exception
+

@@ -123,6 +123,7 @@ class ConvTasNet(nn.Module):
         """
         Args:
             mixture: [M, T], M is batch size, T is #samples
+
         Returns:
             est_source: [M, C, T]
         """
@@ -157,6 +158,7 @@ class SpectralEncoder(nn.Module):
         """
         Args:
             mixture: [M, T], M is batch size, T is #samples
+
         Returns:
             mixture_w: [M, N, K], where K = (T-L)/(L/2)+1 = 2T/L-1
         """
@@ -205,6 +207,7 @@ class Decoder(nn.Module):
         Args:
             mixture_w: [M, N, K]
             est_mask: [M, C, N, K]
+
         Returns:
             est_source: [M, C, T]
         """
@@ -287,9 +290,11 @@ class TemporalConvNet(nn.Module):
     def forward(self, mixture_w):
         """
         Keep this API same with TasNet
+
         Args:
             mixture_w: [M, N, K], M is batch size
-        returns:
+
+        Returns:
             est_mask: [M, C, N, K]
         """
         M, _N, K = mixture_w.size()
@@ -418,6 +423,12 @@ class Chomp1d(nn.Module):
 def chose_norm(norm_type, channel_size):
     """The input of normlization will be (M, C, K), where M is batch size,
     C is channel size and K is sequence length.
+
+    Args:
+        normn_type ():
+        channel_size ():
+    Returns:
+
     """
     if norm_type == "gLN":
         return GlobalLayerNorm(channel_size)
@@ -447,6 +458,7 @@ class ChannelwiseLayerNorm(nn.Module):
         """
         Args:
             y: [M, N, K], M is batch size, N is channel size, K is length
+
         Returns:
             cLN_y: [M, N, K]
         """
@@ -473,6 +485,7 @@ class GlobalLayerNorm(nn.Module):
         """
         Args:
             y: [M, N, K], M is batch size, N is channel size, K is length
+
         Returns:
             gLN_y: [M, N, K]
         """
