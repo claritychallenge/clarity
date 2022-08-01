@@ -1,4 +1,3 @@
-import json
 import logging
 import math
 import os
@@ -297,31 +296,3 @@ def check_scene_exists(scene, output_path, num_channels):
     for filename in files_to_check:
         scene_exists = scene_exists and os.path.exists(filename)
     return scene_exists
-
-
-def main():
-
-    with open(
-        "/home/tu/datasets/clarity_CEC1_data/clarity_data/metadata/scenes.train.json",
-        "r",
-        encoding="utf-8",
-    ) as f:
-        scene = json.load(f)[0]
-
-    renderer = Renderer(
-        input_path="/home/tu/datasets/clarity_CEC1_data/clarity_data",
-        output_path=".",
-        num_channels=3,
-    )
-    renderer.render(
-        pre_samples=scene["pre_samples"],
-        post_samples=scene["post_samples"],
-        dataset=scene["dataset"],
-        target=scene["target"]["name"],
-        noise_type=scene["interferer"]["type"],
-        interferer=scene["interferer"]["name"],
-        room=scene["room"]["name"],
-        scene=scene["scene"],
-        offset=scene["interferer"]["offset"],
-        snr_dB=scene["SNR"],
-    )
