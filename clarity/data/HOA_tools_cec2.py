@@ -361,7 +361,7 @@ def ambisonic_convolve(signal: np.ndarray, ir: np.ndarray, order: int) -> np.nda
     return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
 
 
-def compute_rms(input_signal: np.ndarray, axis: int=0):
+def compute_rms(input_signal: np.ndarray, axis: int = 0):
     """Compute rms values along a given axis.
     Args:
         input_signal (np.ndarray): Input signal
@@ -369,7 +369,7 @@ def compute_rms(input_signal: np.ndarray, axis: int=0):
 
     Returns:
         float: Root Mean Square for the given axis."""
-    
+
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
