@@ -73,7 +73,7 @@ def fir2(
     else:
         wind = npt
         npt = 2.0 ** np.ceil(math.log(nn) / math.log(2)) if nn >= 1024 else 512
-    lap = np.fix(npt / 25)
+    lap = int(np.fix(npt / 25))
 
     nbrk = max(len(ff), len(aa))
 
@@ -81,7 +81,7 @@ def fir2(
     ff[nbrk - 1] = 1
 
     H = np.zeros(npt + 1)
-    nint = nbrk - 1
+    nint: int = nbrk - 1
     df = np.diff(ff, n=1)
 
     npt += 1
@@ -96,11 +96,11 @@ def fir2(
             ne = int(np.fix(ff[i + 1] * npt)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc = 0 if nb == ne else (j - nb) / (ne - nb)
-        H[nb : (ne + 1)] = inc * aa[i + 1] + (1 - inc) * aa[i]
+        inc = 0.0 if nb == ne else (j - nb) / (ne - nb)
+        H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])
         nb = ne + 1
 
-    dt = 0.5 * (nn - 1)
+    dt: float = 0.5 * (nn - 1)
     rad = -dt * 1j * math.pi * np.arange(0, npt) / (npt - 1)
     H = H * np.exp(rad)
 

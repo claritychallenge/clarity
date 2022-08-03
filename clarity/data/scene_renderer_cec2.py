@@ -298,7 +298,7 @@ class SceneRenderer:
         if self.equalise_loudness:
             padded_interferers = hoa.equalise_rms_levels(padded_interferers)
 
-        flat_hoa_interferers: float = sum(padded_interferers)
+        flat_hoa_interferers = np.sum(padded_interferers)
 
         logger.info(
             "hoa_target.shape=%s; flat_hoa_interferers.shape=%s",

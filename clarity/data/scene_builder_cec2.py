@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 # Get json output to round to 4 dp
-json.encoder.c_make_encoder = None
+json.encoder.c_make_encoder = None  # type: ignore
 
 
 class RoundingFloat(float):
@@ -24,7 +24,7 @@ class RoundingFloat(float):
     __repr__ = staticmethod(lambda x: format(x, ".4f"))
 
 
-json.encoder.float = RoundingFloat
+json.encoder.float = RoundingFloat  # type: ignore
 
 # rpf file Handling
 
