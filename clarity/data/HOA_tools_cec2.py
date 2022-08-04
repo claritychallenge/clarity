@@ -417,9 +417,9 @@ def smoothstep(
     """
     x = np.clip((x - x_min) / (x_max - x_min), 0, 1)
 
-    result = 0
-    for n in range(0, N + 1):
-        result += comb(N + n, n) * comb(2 * N + 1, N - n) * (-x) ** n
+    result = sum(
+        comb(N + n, n) * comb(2 * N + 1, N - n) * (-x) ** n for n in range(0, N + 1)
+    )
 
     result *= x ** (N + 1)
 

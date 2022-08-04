@@ -181,7 +181,7 @@ class NegSTOILoss(nn.Module):
 
         # Compute average (E)STOI w. or w/o VAD.
         sum_over = list(range(1, x_seg.ndim))  # Keep batch dim
-        if self.use_vad:
+        if mask_f is not None:
             corr_comp = corr_comp * mask_f
             correction = correction * mask_f.mean() + EPS
         # Return -(E)STOI to optimize for

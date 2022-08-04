@@ -97,7 +97,7 @@ def fir2(
 
         j = np.arange(nb, ne + 1)
         inc = 0.0 if nb == ne else (j - nb) / (ne - nb)
-        H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])
+        H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])  # type: ignore
         nb = ne + 1
 
     dt: float = 0.5 * (nn - 1)
