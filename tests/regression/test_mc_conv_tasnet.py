@@ -44,7 +44,7 @@ def test_convtasnet(regtest):
         "downsample_factor": 20,
         "wav_sample_len": None,
         "wav_silence_len": 0,
-        "num_channels": 2,
+        "num_channels": 6,
         "norm": 1,
         "testing": False,
     }
@@ -81,7 +81,6 @@ def test_convtasnet(regtest):
                 den_model = ConvTasNet(**cfg.mc_convtasnet)
                 den_model = torch.nn.parallel.DataParallel(den_model.to(device))
                 den_model.eval()
-                noisy = torch.reshape(noisy, (6, -1))
                 noisy = noisy.to(device)
                 if cfg.test_dataset["downsample_factor"] != 1:
                     proc = down_sample(noisy)
