@@ -81,7 +81,7 @@ def test_convtasnet(regtest):
                 den_model = ConvTasNet(**cfg.mc_convtasnet)
                 den_model = torch.nn.parallel.DataParallel(den_model.to(device))
                 den_model.eval()
-                noisy = torch.reshape(noisy, (1, 6, -1))
+                noisy = torch.reshape(noisy, (6, -1))
                 noisy = noisy.to(device)
                 if cfg.test_dataset["downsample_factor"] != 1:
                     proc = down_sample(noisy)
