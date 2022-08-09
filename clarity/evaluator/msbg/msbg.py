@@ -38,6 +38,7 @@ class Ear:
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv0dBSPL = equiv0dBSPL
         self.ahr = ahr
+        self.cochlea = None
 
     def set_audiogram(self, audiogram):
         if np.max(audiogram.levels[audiogram.levels is not None]) > 80:
@@ -64,7 +65,7 @@ class Ear:
             src_correction = f(HZ)
         else:
             logging.error(
-                f"Invalid src position ({src_pos}). Must be one of ff, df or ITU"
+                "Invalid src position (%s). Must be one of ff, df or ITU", src_pos
             )
             raise ValueError("Invalid src position")
         return src_correction
@@ -75,9 +76,10 @@ class Ear:
 
         Made more general, Mar2012, to include diffuse field as well as ITU reference points,
         that were included in DOS-versions of recruitment simulator, released ca 1999-2001,
-        and on hearing group website, Mar2012 variable [src_pos] takes one of 3 values: 'ff', 'df' and 'ITU'
-        free-field to cochlea filter forwards or backward direction, depends on 'backward' switch.
-        NO LONGER via 2 steps. ff to eardrum and then via middle ear: use same length FIR 5-12-97.
+        and on hearing group website, Mar2012 variable [src_pos] takes one of 3
+        values: 'ff', 'df' and 'ITU' free-field to cochlea filter forwards or backward direction,
+        depends on 'backward' switch. NO LONGER via 2 steps. ff to eardrum and then via middle ear:
+        use same length FIR 5-12-97.
 
         Args:
             ip_sig (ndarray): signal to process
@@ -167,7 +169,7 @@ class Ear:
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
 
-        logging.info(f"Processing {len(chans)} samples")
+        logging.info("Processing %s samples", len(chans))
 
         # Get single channel array and convert to list
         chans = Ear.array_to_list(chans)
@@ -184,7 +186,7 @@ class Ear:
         REF_RMS_DB = CALIB_DB_SPL - equiv_0dB_SPL
 
         # Measure RMS where 3rd arg is dB_rel_rms (how far below)
-        calculated_rms, idx, rel_dB_thresh, active = measure_rms(chans[0], fs, -12)
+        calculated_rms, idx, _rel_dB_thresh, _active = measure_rms(chans[0], fs, -12)
 
         # Rescale input data and check level after rescaling
         # This is to ensure that the following processing steps are applied correctly
@@ -194,13 +196,16 @@ class Ear:
             np.mean(np.power(chans[0][idx], 2.0))
         )
         logging.info(
-            f"Rescaling: leveldBSPL was {leveldBSPL:3.1f} dB SPL, now {new_rms_db:3.1f}dB SPL. Target SPL is {TARGET_SPL:3.1f} dB SPL."
+            "Rescaling: leveldBSPL was %3.1f dB SPL, now %3.1f dB SPL. Target SPL is %3.1f dB SPL.",
+            leveldBSPL,
+            new_rms_db,
+            TARGET_SPL,
         )
 
         # Add calibration signal at target SPL dB
         if add_calibration is True:
             if self.calibration_signal is None:
-                self.calibration_signal = Ear.make_calibration_signal(REF_RMS_DB)
+                self.calibration_signal = self.make_calibration_signal(REF_RMS_DB)
             chans = [
                 np.concatenate(
                     (self.calibration_signal[0], x, self.calibration_signal[1])

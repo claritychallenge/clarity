@@ -62,7 +62,8 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     alpha_0_db = 13
     # Constant for time shift deviation in seconds. Equation 6 Andersen et al. 2018
     tau_0 = 1.6e-3
-    # Constant for level shift deviation. Power for calculation of sigma delta gamma in equation 5 Andersen et al. 2018.
+    # Constant for level shift deviation. Power for calculation of sigma delta gamma
+    # in equation 5 Andersen et al. 2018.
     p = 1.6
 
     # Prepare signals, ensuring that inputs are column vectors
@@ -74,7 +75,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
     # Resample signals to 10 kHz
     if fs_signal != fs:
 
-        logging.debug(f"Resampling signals with sr={fs} for MBSTOI calculation.")
+        logging.debug("Resampling signals with sr=%s for MBSTOI calculation.", fs)
         # Assumes fs_signal is 44.1 kHz
         el = len(xl)
         xl = resample(xl, int(el * (fs / fs_signal) + 1))
@@ -96,7 +97,7 @@ def mbstoi(xl, xr, yl, yr, fs_signal, gridcoarseness=1):
 
     # STDFT and filtering
     # Get 1/3 octave band matrix
-    [H, cf, fids, freq_low, freq_high] = thirdoct(
+    [H, cf, fids, _freq_low, _freq_high] = thirdoct(
         fs, K, J, mn
     )  # (fs, nfft, num_bands, min_freq)
     cf = 2 * math.pi * cf  # This is now the angular frequency in radians per sec

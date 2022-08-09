@@ -11,6 +11,21 @@ In this repository, you will find code to support all Clarity Challenges, includ
 
 ## Installation
 
+
+### PyPI
+
+Clarity is available on the [Python Package Index (PyPI)](https://pypi.org/project/pyclarity) to install create and/or
+activate a virtual environment and then use `pip` to install.
+
+``` bash
+conda create --name clarity python=3.8
+conda activate clarity
+
+pip install pyclarity
+```
+
+### GitHub Cloning
+
 ```bash
 # First clone the repo
 git clone https://github.com/claritychallenge/clarity.git
@@ -22,6 +37,15 @@ conda activate clarity
 
 # Last install with pip
 pip install -e .
+```
+
+### GitHub pip install
+
+Alternatively `pip` allows you to install packages from GitHub sources directly. The following will install the current
+`main` branch.
+
+``` bash
+pip install -e git+https://github.com/claritychallenge/clarity.git@main
 ```
 
 ## Challenges

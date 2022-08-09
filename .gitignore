@@ -57,5 +57,7 @@ venv.bak/
 # Mac OS
 .DS_Store
 
+# Generated docs
+docs/clarity.*.rst
 # Emacs
 *~
