@@ -12,8 +12,9 @@ from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
 
 class Renderer:
     """
-    SceneGenerator of CEC1 training and development sets. The render() function generates all simulated signals for each
-    scene given the parameters specified in the metadata/scenes.train.json or metadata/scenes.dev.json file.
+    SceneGenerator of CEC1 training and development sets. The render() function generates all
+    simulated signals for each scene given the parameters specified in the
+    metadata/scenes.train.json or metadata/scenes.dev.json file.
     """
 
     def __init__(
@@ -50,21 +51,23 @@ class Renderer:
         self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
     ):
         """Read a wavefile and return as numpy array of floats.
+
         Args:
             filename (string): Name of file to read
             offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
             nchannels: expected number of channel (default: 0 = any number OK)
             offset_is_samples (bool): measurement units for offset (default: False)
+
         Returns:
             ndarray: audio signal
         """
         try:
             wave_file = SoundFile(filename)
-        except:  # noqa E722
+        except Exception as e:
             # Ensure incorrect error (24 bit) is not generated
-            raise Exception(f"Unable to read {filename}.")
+            raise Exception(f"Unable to read {filename}.") from e
 
-        if nchannels != 0 and wave_file.channels != nchannels:
+        if nchannels not in (0, wave_file.channels):
             raise Exception(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
@@ -85,7 +88,7 @@ class Renderer:
         """Write a signal as fixed or floating point wav file."""
 
         if fs != self.fs:
-            logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")
+            logging.warning("Sampling rate mismatch: %s with sr=%s.", filename, fs)
             # raise ValueError("Sampling rate mismatch")
 
         if floating_point is False:
@@ -121,6 +124,7 @@ class Renderer:
             signal (ndarray): The mono or stereo signal stored as array of floats
             brir (ndarray): The binaural room impulse response stored a 2xN array of floats
             n_tail (int): Truncate output to input signal length + n_tail
+
         Returns:
             ndarray: The convolved signals
 
@@ -209,7 +213,7 @@ class Renderer:
             interferer_at_ear = self.apply_brir(interferer, interferer_brir)
 
             # Scale interferer to obtain SNR specified in scene description
-            logging.info(f"Scaling interferer to obtain mixture SNR = {snr_dB} dB.")
+            logging.info("Scaling interferer to obtain mixture SNR = %s dB.", snr_dB)
 
             if snr_ref is None:
                 # snr_ref computed for first channel in the list and then
@@ -220,7 +224,7 @@ class Renderer:
                     pre_samples=pre_samples,
                     post_samples=post_samples,
                 )
-                logging.debug(f"Using channel {channel} as reference.")
+                logging.debug("Using channel %s as reference.", channel)
 
             # Apply snr_ref reference scaling to get 0 dB and then scale to target snr_dB
             interferer_at_ear = interferer_at_ear * snr_ref
@@ -295,32 +299,3 @@ def check_scene_exists(scene, output_path, num_channels):
     for filename in files_to_check:
         scene_exists = scene_exists and os.path.exists(filename)
     return scene_exists
-
-
-def main():
-    import json
-
-    scene = json.load(
-        open(
-            "/home/tu/datasets/clarity_CEC1_data/clarity_data/metadata/scenes.train.json",
-            "r",
-        )
-    )[0]
-
-    renderer = Renderer(
-        input_path="/home/tu/datasets/clarity_CEC1_data/clarity_data",
-        output_path=".",
-        num_channels=3,
-    )
-    renderer.render(
-        pre_samples=scene["pre_samples"],
-        post_samples=scene["post_samples"],
-        dataset=scene["dataset"],
-        target=scene["target"]["name"],
-        noise_type=scene["interferer"]["type"],
-        interferer=scene["interferer"]["name"],
-        room=scene["room"]["name"],
-        scene=scene["scene"],
-        offset=scene["interferer"]["offset"],
-        snr_dB=scene["SNR"],
-    )

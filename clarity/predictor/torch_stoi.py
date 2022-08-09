@@ -1,7 +1,9 @@
 """
-This implementation is from https://github.com/mpariente/pytorch_stoi, please cite and star the repo.
-The pip version of torch_stoi does not include EPS in line 127 & 128, hence could lead to sqrt(0)
+This implementation is from https://github.com/mpariente/pytorch_stoi, please cite
+and star the repo. The pip version of torch_stoi does not include EPS in line 127 & 128,
+hence could lead to sqrt(0)
 """
+
 import numpy as np
 import torch
 import torchaudio
@@ -18,6 +20,7 @@ class NegSTOILoss(nn.Module):
         as a loss function.
         Inspired from [1, 2, 3] but not exactly the same : cannot be used as
         the STOI metric directly (use pystoi instead). See Notes.
+
     Args:
         sample_rate (int): sample rate of audio input
         use_vad (bool): Whether to use simple VAD (see Notes)
@@ -27,12 +30,15 @@ class NegSTOILoss(nn.Module):
         (time,) --> (1, )
         (batch, time) --> (batch, )
         (batch, n_src, time) --> (batch, n_src)
+
     Returns:
         torch.Tensor of shape (batch, *, ), only the time dimension has
         been reduced.
+
     Warnings:
         This function cannot be used to compute the "real" STOI metric as
         we applied some changes to speed-up loss computation. See Notes section.
+
     Notes:
         In the NumPy version, some kind of simple VAD was used to remove the
         silent frames before chunking the signal into short-term envelope
@@ -42,7 +48,8 @@ class NegSTOILoss(nn.Module):
         keep a mask tensor. At the end, the normalized correlation of
         short-term envelope vectors is masked using this mask (unfolded) and
         the mean is computed taking the mask values into account.
-    References
+
+    References:
         [1] C.H.Taal, R.C.Hendriks, R.Heusdens, J.Jensen 'A Short-Time
             Objective Intelligibility Measure for Time-Frequency Weighted Noisy
             Speech', ICASSP 2010, Texas, Dallas.
@@ -88,21 +95,23 @@ class NegSTOILoss(nn.Module):
 
     def forward(self, est_targets: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         """Compute negative (E)STOI loss.
+
         Args:
             est_targets (torch.Tensor): Tensor containing target estimates.
             targets (torch.Tensor): Tensor containing clean targets.
+
         Shapes:
             (time,) --> (1, )
             (batch, time) --> (batch, )
             (batch, n_src, time) --> (batch, n_src)
+
         Returns:
             torch.Tensor, the batch of negative STOI loss
         """
         if targets.shape != est_targets.shape:
             raise RuntimeError(
-                "targets and est_targets should have "
-                "the same shape, found {} and "
-                "{}".format(targets.shape, est_targets.shape)
+                "targets and est_targets should have the same shape,"
+                f"found {targets.shape} and {est_targets.shape}"
             )
         # Compute STOI loss without batch size.
         if targets.ndim == 1:
@@ -183,11 +192,13 @@ class NegSTOILoss(nn.Module):
     def detect_silent_frames(x, dyn_range, framelen, hop):
         """Detects silent frames on input tensor.
         A frame is excluded if its energy is lower than max(energy) - dyn_range
+
         Args:
             x (torch.Tensor): batch of original speech wav file  (batch, time)
             dyn_range : Energy range to determine which frame is silent
             framelen : Window size for energy evaluation
             hop : Hop size for energy evaluation
+
         Returns:
             torch.BoolTensor, framewise mask.
         """

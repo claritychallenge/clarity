@@ -15,9 +15,9 @@ from scipy.signal import ellip, firwin, firwin2, freqz
 
 EPS = 1e-8
 # old msbg matlab
-ref_RMSdB = (
-    -31.2
-)  # set RMS so that peak of output file so that no clipping occurs, set so that equiv0dBfileSPL > 100dB for LOUD input files
+# set RMS so that peak of output file so that no clipping occurs, set so that
+# equiv0dBfileSPL > 100dB for LOUD input files
+ref_RMSdB = -31.2
 calib_dBSPL = (
     65  # what RMS of INPUT speech file translates to in real world (unweighted)
 )
@@ -52,8 +52,8 @@ def generate_key_percent(signal, thr_dB, winlen):
 
     used_thr_dB = expected.copy()
 
-    # histogram should produce a two-peaked curve: thresh should be set in valley between the two peaks, and set a bit
-    # above that, as it heads for main peak
+    # histogram should produce a two-peaked curve: thresh should be set in valley
+    # between the two peaks, and set a bit above that, as it heads for main peak
     frame_idx = np.where(every_dB >= expected)[0]
     valid_frames = len(frame_idx)
     key = np.zeros(valid_frames * winlen, dtype=np.int)
@@ -67,15 +67,16 @@ def generate_key_percent(signal, thr_dB, winlen):
 
 
 def measure_rms(signal, sr, dB_rel_rms):
-    """
-    measures toatal power of all 10 msec frams that are above a user-specified threshold
-    :param signal: input signal
-    :param sr: sampling rate
-    :param dB_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array, second value over rules.)
-    only single value supported currently
-    :return:
-    This is the percentage of frames that are required to be tracked for measuring RMS (useful when DR compression
-    changes histogram shape)
+    """Measures toatal power of all 10 msec frams that are above a user-specified threshold
+
+    Args:
+        signal: input signal
+        sr: sampling rate
+        dB_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array, second value over rules.)
+                    only single value supported currently
+    Returns:
+        tuple: The percentage of frames that are required to be tracked for measuring RMS (useful when DR compression
+               changes histogram shape)
     """
     win_secs = 0.01
     # first RMS is of all signal
@@ -113,17 +114,20 @@ def makesmearmat3(rl, ru, sr):
 
 
 def audfilt(rl, ru, size, sr):
+    """Calculate an auditory filter array
+
+    Args:
+        rl: broadening factor on the lower side
+        ru: broadening factor on the upper side
+        size:
+        sr:
+
+    Returns:
+        np.ndarray
     """
-    calculate an auditory filter array
-    :param rl: broadening factor on the lower side
-    :param ru: broadening factor on the upper side
-    :param size:
-    :param sr:
-    :return:
-    """
-    filter = np.zeros([size, size])
-    filter[0, 0] = 1.0
-    filter[0, 0] = filter[0, 0] / ((rl + ru) / 2)
+    aud_filter = np.zeros([size, size])
+    aud_filter[0, 0] = 1.0
+    aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
 
     g = np.zeros(size)
     for i in np.arange(2, size + 1, 1, dtype=np.int):
@@ -133,12 +137,12 @@ def audfilt(rl, ru, size, sr):
         pu = 4 * fhz / (erbhz * ru)
         j = np.arange(1, i, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
-        filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
+        aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
         j = np.arange(i, size + 1, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
-        filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
-        filter[i - 1, :] = filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
-    return filter
+        aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
+        aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
+    return aud_filter
 
 
 class MSBGHearingModel(nn.Module):
@@ -151,14 +155,15 @@ class MSBGHearingModel(nn.Module):
         src_posn="ff",
         kernel_size=1025,
     ):
-        super(MSBGHearingModel, self).__init__()
+        super().__init__()
         self.sr = sr
         self.spl_cali = spl_cali
         self.src_posn = src_posn
         self.kernel_size = kernel_size
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        """ settings for audiogram """
+        # settings for audiogram
+
         audiogram = np.array(audiogram)
         # audiometric = np.array([250, 500, 1000, 2000, 4000, 6000])
         audiometric = np.array(audiometric)
@@ -174,7 +179,8 @@ class MSBGHearingModel(nn.Module):
         interpf = interp1d(audiometric, audiogram)
         audiogram = interpf(audiogram_cfs)
 
-        """ settings for src_to_cochlea_filt """
+        # settings for src_to_cochlea_filt
+
         hz = np.array(
             [
                 0.0,
@@ -440,14 +446,21 @@ class MSBGHearingModel(nn.Module):
             .unsqueeze(1)
         )
 
-        """ settings for smearing"""
+        # Settings for smearing
+
         catch_up = 105.0  # dBHL where impaired catches up with normal
-        # recruitment simulation comes with 3 degrees of broadening of auditory filters: different set of centre freqs between simulations.
-        # check and categorise audiogram: currently ALWAYS recruit with x2 broadening: it's the smearing that changes
+
+        # recruitment simulation comes with 3 degrees of broadening of auditory filters:
+        # different set of centre freqs between simulations.
+        # check and categorise audiogram: currently ALWAYS recruit with x2 broadening:
+        # it's the smearing that changes
+
         impaired_freqs = np.where((audiogram_cfs >= 2000) & (audiogram_cfs <= 8000))[0]
         impaired_degree = np.mean(audiogram[impaired_freqs])
+
         # impairment degree affects smearing simulation, and now recruitment,
         # (assuming we do not have too much SEVERE losses present)
+
         current_dir = os.path.dirname(os.path.abspath(__file__))
         gtf_dir = os.path.join(current_dir, "../evaluator/msbg/msbg_hparams")
         if impaired_degree > 56:
@@ -475,7 +488,7 @@ class MSBGHearingModel(nn.Module):
             )
             bw_broaden_coef = 1
         # GT4Bank = loadmat(GT4Bankfile)
-        with open(GT4Bankfile, "r") as fp:
+        with open(GT4Bankfile, "r", encoding="utf-8") as fp:
             GT4Bank = json.load(fp)
 
         if severe_not_moderate > 0:
@@ -564,7 +577,8 @@ class MSBGHearingModel(nn.Module):
         self.expnsn_m1 = torch.tensor(
             cf_expnsn - 1, dtype=torch.float32, device=self.device
         )
-        # self.envlp_max = torch.tensor(10 ** (0.05 * (eq_loud_db - equiv0dBfileSPL)), dtype=torch.float32, device=self.device)
+        # self.envlp_max = torch.tensor(10 ** (0.05 * (eq_loud_db - equiv0dBfileSPL)),
+        # dtype=torch.float32, device=self.device)
         self.envlp_max = torch.tensor(
             10 ** (0.05 * (eq_loud_db - equiv_0dB_SPL)),
             dtype=torch.float32,
@@ -720,11 +734,11 @@ class MSBGHearingModel(nn.Module):
         ixhp = 0
         outputs = []
         for ixch in range(self.nchans):
-            """Gammaton filtering"""
+            # Gammaton filtering
             pass_n = torchaudio.functional.lfilter(
                 x, self.gtn_denoms[ixch, :], self.gtn_nums[ixch, :]
             )
-            for ixg in range(self.ngamma - 1):
+            for _ixg in range(self.ngamma - 1):
                 pass_n = torchaudio.functional.lfilter(
                     pass_n, self.gtn_denoms[ixch, :], self.gtn_nums[ixch, :]
                 )
@@ -739,7 +753,7 @@ class MSBGHearingModel(nn.Module):
                     pass_n_cali, self.hp_denoms[ixhp - 1, :], self.hp_nums[ixhp - 1, :]
                 )
 
-            """Get the envelope"""
+            # Get the envelope
             envlp_out = torchaudio.functional.lfilter(
                 torch.abs(pass_n_cali), self.chan_lpfA[ixch, :], self.chan_lpfB[ixch, :]
             )
@@ -809,14 +823,15 @@ class torchloudnorm(nn.Module):
         overlap=0.75,
         gamma_a=-70,
     ):
-        super(torchloudnorm, self).__init__()
+        super().__init__()
         self.sr = sr
         self.norm_lufs = norm_lufs
         self.kernel_size = kernel_size
         self.padding = kernel_size // 2
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        "for frequency weighting filters - account for the acoustic respose of the head and auditory system"
+        # for frequency weighting filters - account for the acoustic respose
+        # of the head and auditory system
         pyln_high_shelf_b = np.array([1.53090959, -2.65116903, 1.16916686])
         pyln_high_shelf_a = np.array([1.0, -1.66375011, 0.71265753])
 

@@ -21,11 +21,11 @@ def audfilt(rl, ru, sampfreq, asize=256):
 
     """
     asize = int(asize)
-    filter = np.zeros((asize, asize))
+    aud_filter = np.zeros((asize, asize))
 
-    filter[0, 0] = 1.0
+    aud_filter[0, 0] = 1.0
     # Dividing by the erb to remove spectral tilt from the excitation pattern
-    filter[0, 0] = filter[0, 0] / ((rl + ru) / 2)
+    aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
 
     g = np.zeros(asize)
     for i in np.linspace(1, asize - 1, asize - 1, dtype=int):
@@ -34,14 +34,14 @@ def audfilt(rl, ru, sampfreq, asize=256):
         # For lower side of the filter
         jj = np.arange(0, i)
         g = np.abs((i - jj) / i) * (4.0 * f_hz / (f_erb * rl))
-        filter[i, jj] = (1 + g) * np.exp(-g)
+        aud_filter[i, jj] = (1 + g) * np.exp(-g)
         # For upper side of the filter and centre
         jj = np.arange(i, asize)
         g = abs((i - jj) / i) * (4.0 * f_hz / (f_erb * ru))
-        filter[i, jj] = (1 + g) * np.exp(-g)
-        filter[i, :] = np.divide(filter[i, :], (f_erb * (rl + ru) / (2 * 24.7)))
+        aud_filter[i, jj] = (1 + g) * np.exp(-g)
+        aud_filter[i, :] = np.divide(aud_filter[i, :], (f_erb * (rl + ru) / (2 * 24.7)))
 
-    return filter
+    return aud_filter
 
 
 def make_smear_mat3(rl, ru, fs):
@@ -164,5 +164,5 @@ class Smearer:
         self.fs = fs
         self.f_smear = make_smear_mat3(rl, ru, fs)
 
-    def smear(self, input):
-        return smear3(self.f_smear, input)
+    def smear(self, input_signal):
+        return smear3(self.f_smear, input_signal)

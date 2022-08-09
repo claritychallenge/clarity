@@ -304,15 +304,15 @@ def read_gtf_file(gtf_file):
     # Fix filename if necessary
     dirname = os.path.dirname(os.path.abspath(__file__))
     gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r") as fp:
+    with open(gtf_file, "r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
-        if type(data[key]) == list:
+        if isinstance(data[key], list):
             data[key] = np.array(data[key])
     return data
 
 
-def firwin2(n, f, a, window=None, antisymmetric=None):
+def firwin2(n, f, a, window=None, antisymmetric=None):  # pylint: disable=W0613
     """FIR filter design using the window method.
 
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -322,14 +322,15 @@ def firwin2(n, f, a, window=None, antisymmetric=None):
         f (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
         a (ndarray): The filter gains at the frequency sampling points.
         window (string or (string, float), optional): See scipy.firwin2 (default: (None))
-        antisymmetric (bool, optional): Unused but present to main compatability with scipy firwin2.
+        _antisymmetric (bool, optional): Unused but present to main compatability
+            with scipy firwin2.
 
     Returns:
         ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
 
     """
     window_shape = None
-    if type(window) == tuple:
+    if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
         window_type = window
@@ -491,18 +492,23 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
     return eh2008_nse
 
 
-def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
+def generate_key_percent(
+    sig: np.ndarray, thr_dB: float, winlen: int, percent_to_track: float = None
+):
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
     of rms, adaptively sets threshold after looking at histogram of whole recording
+
     Args:
         sig (ndarray): The signal to analyse
         thr_dB (float): fixed energy threshold (dB)
         winlen (int): length of window in samples
         percent_to_track (float, optional): Track a percentage of frames (default: {None})
+
     Raises:
         ValueError: percent_to_track is set too high
+
     Returns:
         (ndarray, float) -- "key" and rms threshold
             The key array of indices of samples used in rms calculation,
@@ -512,14 +518,14 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
     sig = sig.flatten()
     if winlen != math.floor(winlen):  # whoops on fractional indexing: 7-March 2002
         winlen = math.floor(winlen)
-        logging.warning(f"Window length must be integer: now {winlen}")
+        logging.warning("Window length must be integer: now %s", winlen)
 
     siglen = len(sig)
 
     expected = thr_dB
     # new Dec 2003. Possibly track percentage of frames rather than fixed threshold
     if percent_to_track is not None:
-        logging.info(f"tracking {percent_to_track} percentage of frames")
+        logging.info("tracking %s percentage of frames", percent_to_track)
     else:
         logging.info("tracking fixed threshold")
 
@@ -551,8 +557,7 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
             inactive_ix = inactive_ix + n_bins[ix]
             if inactive_ix > inactive_bins:
                 break
-            else:
-                ix_count += 1
+            ix_count += 1
         if ix == 1:
             logging.warning("Counted every bin.........")
         elif ix == n_levels:
@@ -581,13 +586,17 @@ def generate_key_percent(sig, thr_dB, winlen, percent_to_track=None):
     return key, used_thr_dB
 
 
-def measure_rms(signal, fs, dB_rel_rms, percent_to_track=None):
+def measure_rms(
+    signal: np.ndarray, fs: float, dB_rel_rms: float, percent_to_track: float = None
+) -> tuple:
     """Measure rms.
+
     A sophisticated method of measuring RMS in a file. It splits the signal up into
     short windows, performs  a histogram of levels, calculates an approximate RMS,
     and then uses that RMS to calculate a threshold level in the histogram and then
     re-measures the RMS only using those durations whose individual RMS exceed that
     threshold.
+
     Args:
         signal (ndarray): the signal of which to measure the rms
         fs (float): sampling frequency
@@ -633,23 +642,32 @@ def pad(signal, length):
     )
 
 
-def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False):
+def read_signal(
+    filename: str,
+    offset: int = 0,
+    nsamples: int = -1,
+    nchannels: int = 0,
+    offset_is_samples: bool = False,
+) -> np.ndarray:
     """Read a wavefile and return as numpy array of floats.
+
     Args:
         filename (string): Name of file to read
         offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
-        nchannels: expected number of channel (default: 0 = any number OK)
+        nsamples (int): Number of samples.
+        nchannels (int): expected number of channel (default: 0 = any number OK)
         offset_is_samples (bool): measurement units for offset (default: False)
+
     Returns:
-        ndarray: audio signal
+        np.ndarray: audio signal
     """
     try:
         wave_file = SoundFile(filename)
-    except:  # noqa E722
+    except Exception as e:
         # Ensure incorrect error (24 bit) is not generated
-        raise Exception(f"Unable to read {filename}.")
+        raise Exception(f"Unable to read {filename}.") from e
 
-    if nchannels != 0 and wave_file.channels != nchannels:
+    if nchannels not in (0, wave_file.channels):
         raise Exception(
             f"Wav file ({filename}) was expected to have {nchannels} channels."
         )
@@ -668,11 +686,18 @@ def read_signal(filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=
     return x
 
 
-def write_signal(filename, x, fs, floating_point=True):
-    """Write a signal as fixed or floating point wav file."""
+def write_signal(filename: str, x, fs, floating_point: bool = True) -> None:
+    """Write a signal as fixed or floating point wav file.
+
+    Args:
+        filename (str):
+        x ():
+        fs ():
+        floating_point (bool):
+    """
 
     if fs != MSBG_FS:
-        logging.warning(f"Sampling rate mismatch: {filename} with sr={fs}.")
+        logging.warning("Sampling rate mismatch: %s with sr=%s.", filename, fs)
         # raise ValueError("Sampling rate mismatch")
 
     if floating_point is False:

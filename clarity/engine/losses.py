@@ -4,8 +4,8 @@ from clarity.predictor.torch_stoi import NegSTOILoss
 
 
 class SISNRLoss(torch.nn.Module):
-    def __init__(self):
-        super(SISNRLoss, self).__init__()
+    # def __init__(self):  # removed as does nothing
+    #    super(SISNRLoss, self).__init__()
 
     def cal_sisnr(self, x, s, eps=1e-8):
         """
@@ -21,9 +21,7 @@ class SISNRLoss(torch.nn.Module):
 
         if x.shape != s.shape:
             raise RuntimeError(
-                "Dimention mismatch when calculate si-snr, {} vs {}".format(
-                    x.shape, s.shape
-                )
+                f"Dimension mismatch when calculate si-snr, {x.shape} vs {s.shape}"
             )
         x_zm = x - torch.mean(x, dim=-1, keepdim=True)
         s_zm = s - torch.mean(s, dim=-1, keepdim=True)
@@ -40,7 +38,7 @@ class SISNRLoss(torch.nn.Module):
 
 class SNRLoss(torch.nn.Module):
     def __init__(self, tao=1e-3):
-        super(SNRLoss, self).__init__()
+        super().__init__()
         self.tao = tao
 
     def l2norm(self, mat, keepdim=False):
@@ -49,9 +47,7 @@ class SNRLoss(torch.nn.Module):
     def forward(self, x, s, eps=1e-8):
         if x.shape != s.shape:
             raise RuntimeError(
-                "Dimention mismatch when calculate si-snr, {} vs {}".format(
-                    x.shape, s.shape
-                )
+                f"Dimension mismatch when calculate si-snr, {x.shape} vs {s.shape}"
             )
 
         loss = 10 * torch.log10(
@@ -62,7 +58,7 @@ class SNRLoss(torch.nn.Module):
 
 class STOILoss(torch.nn.Module):
     def __init__(self, sr):
-        super(STOILoss, self).__init__()
+        super().__init__()
         self.NegSTOI = NegSTOILoss(sample_rate=sr)
 
     def forward(self, x, s):
@@ -71,7 +67,7 @@ class STOILoss(torch.nn.Module):
 
 class STOILevelLoss(torch.nn.Module):
     def __init__(self, sr, alpha, block_size=0.4, overlap=0.7, gamma_a=-70):
-        super(STOILevelLoss, self).__init__()
+        super().__init__()
         self.NegSTOI = NegSTOILoss(sample_rate=sr)
         self.alpha = alpha
 
@@ -112,5 +108,4 @@ class STOILevelLoss(torch.nn.Module):
         loudness_x = self.measure_loudness(x)
         loudness_s = self.measure_loudness(s)
         LevelLoss = self.alpha * self.cal_mse(loudness_x, loudness_s)
-        STOILoss = self.NegSTOI(x, s).mean()
-        return LevelLoss + STOILoss
+        return LevelLoss + self.NegSTOI(x, s).mean()
