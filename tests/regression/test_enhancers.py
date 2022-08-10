@@ -1,28 +1,28 @@
-import numpy as np
-import sys
-import torch
-from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
-from scipy.io import wavfile
 import json
+import os
+import tempfile
+
+import numpy as np
+import torch
+
 from clarity.enhancer.dsp import filter
 from clarity.enhancer.gha.audiogram import Audiogram
-from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable 
-from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
-import os
-import tempfile 
+from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
+from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
-        "fs": 44100,
-        "ahr": 20,
-        "audf": None,
-        "cfg_file": "prerelease_combination3_smooth",
-        "noisegatelevels": None,
-        "noisegateslope": 0,
-        "cr_level": 0,
-        "max_output_level": 100,
-        "equiv0dBSPL": 100,
-        "test_nbits": 16
-    }
+    "fs": 44100,
+    "ahr": 20,
+    "audf": None,
+    "cfg_file": "prerelease_combination3_smooth",
+    "noisegatelevels": None,
+    "noisegateslope": 0,
+    "cr_level": 0,
+    "max_output_level": 100,
+    "equiv0dBSPL": 100,
+    "test_nbits": 16,
+}
+
 
 def test_dsp_filter(regtest):
     amfir = filter.AudiometricFIR(sr=44100, nfir=220)
@@ -50,66 +50,49 @@ def test_gha_audiogram(regtest):
             f"Audiogram new: \n{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
         )
 
+
 def test_GHA_inputs(regtest):
-    
+
     enhancer = gha(**gha_params)
-    
-    listeners = json.load(open("tests/test_data/metadata/listeners.json"))
-    listener = listeners["L0001"]
-    cfs = np.array(listener["audiogram_cfs"], dtype="int")
-    audiogram_left = np.array(
-                listener["audiogram_levels_l"]
-                )
-    audiogram_right = np.array(
-                listener["audiogram_levels_r"]
-            )
-    audiogram = Audiogram(
-                cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right
-            )
-    infile_names = [f'tests/test_data/scenes/S06001_mix_CH{ch}.wav' for ch in range(1,4)]
+
+    infile_names = [
+        f"tests/test_data/scenes/S06001_mix_CH{ch}.wav" for ch in range(1, 4)
+    ]
     fd_merged, merged_filename = tempfile.mkstemp(
-                   prefix="clarity-merged-", suffix=".wav" 
-                   ) 
+        prefix="clarity-merged-", suffix=".wav"
+    )
     enhancer.create_HA_inputs(infile_names, merged_filename)
-    
+
     signal = enhancer.read_signal(merged_filename)
     np.set_printoptions(threshold=100)
     regtest.write(f"signal output: \n{signal[:,0]}\n")
 
 
 def test_GHA_config(regtest):
-    
+
     enhancer = gha(**gha_params)
     listeners = json.load(open("tests/test_data/metadata/listeners.json"))
     listener = listeners["L0001"]
     cfs = np.array(listener["audiogram_cfs"], dtype="int")
-    audiogram_left = np.array(
-                listener["audiogram_levels_l"]
-                )
-    audiogram_right = np.array(
-                listener["audiogram_levels_r"]
-            )
-    audiogram = Audiogram(
-                cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right
-            )
-    
-    cfg_template = os.path.join( 
-            os.path.dirname(os.path.abspath(__file__)), 
-            "cfg_files", 
-            f"{enhancer.cfg_file}_template.cfg", 
-        ) 
-    gaintable = get_gaintable( 
-            audiogram, 
-            enhancer.noisegatelevels, 
-            enhancer.noisegateslope, 
-            enhancer.cr_level, 
-            enhancer.max_output_level, 
-        ) 
-    formatted_sGt = format_gaintable(gaintable, noisegate_corr=True) 
+    audiogram_left = np.array(listener["audiogram_levels_l"])
+    audiogram_right = np.array(listener["audiogram_levels_r"])
+    audiogram = Audiogram(cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right)
 
-    config = enhancer.create_configured_cfgfile("input", "output", formatted_sGt, cfg_template)
+    cfg_template = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "cfg_files",
+        f"{enhancer.cfg_file}_template.cfg",
+    )
+    gaintable = get_gaintable(
+        audiogram,
+        enhancer.noisegatelevels,
+        enhancer.noisegateslope,
+        enhancer.cr_level,
+        enhancer.max_output_level,
+    )
+    formatted_sGt = format_gaintable(gaintable, noisegate_corr=True)
+
+    config = enhancer.create_configured_cfgfile(
+        "input", "output", formatted_sGt, cfg_template
+    )
     regtest.write(f"config output: \n{config}\n")
-
-
-
-
