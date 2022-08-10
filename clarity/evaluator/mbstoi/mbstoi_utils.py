@@ -34,11 +34,12 @@ def ec(
     We are searching for the level and time adjustments that maximise the
     intermediate correlation coefficients d.
     Could add location of source and interferer to this to reduce search space.
+
     Args:
-        xl_hat(ndarray): clean L short-time DFT coefficients (single-sided) per frequency bin and frame
-        xr_hat(ndarray): clean R short-time DFT coefficients (single-sided) per frequency bin and frame
-        yl_hat(ndarray): proc. L short-time DFT coefficients (single-sided) per frequency bin and frame
-        yr_hat(ndarray): proc. R short-time DFT coefficients (single-sided) per frequency bin and frame
+        xl_hat(ndarray): clean L short-time DFT coefficients (single-sided) per freq bin and frame
+        xr_hat(ndarray): clean R short-time DFT coefficients (single-sided) per freq bin and frame
+        yl_hat(ndarray): proc. L short-time DFT coefficients (single-sided) per freq bin and frame
+        yr_hat(ndarray): proc. R short-time DFT coefficients (single-sided) per freq bin and frame
         J (int): number of one-third octave bands
         N (int): number of frames for intermediate intelligibility measure
         fids (ndarray): indices of frequency band edges
@@ -51,6 +52,7 @@ def ec(
         p_ec_max (ndarray): empty grid for maximum values
         sigma_epsilon (ndarray): jitter for gammas
         sigma_delta (ndarray): jitter for taus
+
     Returns:
         d (ndarray): updated grid for intermediate intelligibility measure
         p_ec_max (ndarray): grid containing maximum values
@@ -104,8 +106,10 @@ def ec(
             rhoy = np.expand_dims(rhoy, axis=0)
             rhoy = rhoy - np.mean(rhoy)
 
-            # Evaluate parts of intermediate correlation - EC stage exhaustive search over ITD/ILD values
-            # These correspond to equations 7 and 8 in Andersen et al. 2018
+            # Evaluate parts of intermediate correlation - EC stage exhaustive search
+            # over ITD/ILD values. These correspond to equations 7 and 8 in
+            # Andersen et al. 2018
+
             # Calculate Exy
             firstpart = firstpartfunc(Lx, Ly, Rx, Ry, ntaus, gammas, epsexp)
             secondpart = secondpartfunc(Lx, Ly, rhoy, rhox, tauexp, epsdelexp, gammas)
@@ -132,18 +136,18 @@ def ec(
             if np.min(abs(exx * eyy), axis=0).all() < 1e-40:
                 d[i, jj] = -1
                 continue
-            else:
-                p = np.divide(exx, eyy)
-                tmp = p.max(axis=0)
-                idx1 = p.argmax(axis=0)
 
-                # Return overall maximum and index
-                p_ec_max[i, jj] = tmp.max()
-                idx2 = tmp.argmax()
-                d[i, jj] = np.divide(
-                    exy[idx1[idx2], idx2],
-                    np.sqrt(exx[idx1[idx2], idx2] * eyy[idx1[idx2], idx2]),
-                )
+            p = np.divide(exx, eyy)
+            tmp = p.max(axis=0)
+            idx1 = p.argmax(axis=0)
+
+            # Return overall maximum and index
+            p_ec_max[i, jj] = tmp.max()
+            idx2 = tmp.argmax()
+            d[i, jj] = np.divide(
+                exy[idx1[idx2], idx2],
+                np.sqrt(exx[idx1[idx2], idx2] * eyy[idx1[idx2], idx2]),
+            )
 
     return d, p_ec_max
 
@@ -224,16 +228,16 @@ def stft(x, win_size, fft_size):
     w = np.hanning(win_size + 2)[1:-1]
     x = x.flatten()
 
-    for i in range(len(frames)):
-        ii = list(range(frames[i], (frames[i] + win_size), 1))
+    for i, frame in enumerate(frames):
+        ii = list(range(frame, (frame + win_size), 1))
         stft_out[i, :] = np.fft.fft(x[ii] * w, n=fft_size, axis=0)
 
     return stft_out
 
 
 def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
-    """
-    Remove silent frames of x and y based on x
+    """Remove silent frames of x and y based on x
+
     A frame is excluded if its energy is lower than max(energy) - dyn_range
     The frame exclusion is based solely on x, the clean speech signal
     Based on mpariente/pystoi/utils.py

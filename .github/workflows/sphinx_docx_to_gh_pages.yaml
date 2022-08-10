@@ -4,32 +4,30 @@ name: Sphinx docs to gh-pages
 on:
   push:
     branches:
-      - master
-
-# workflow_dispatch:        # Un comment line if you also want to trigger action manually
+      - main
+      - ns-rse/16-documentation
 
 jobs:
   sphinx_docs_to_gh-pages:
     runs-on: ubuntu-latest
     name: Sphinx docs to gh-pages
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.9
       - name: Installing the Documentation requirements
         run: |
+          pip3 install git+https://github.com/Dzordzu/sphinx-markdown-tables.git@markdown-patch
           pip3 install .[docs]
       - name: Running Sphinx to gh-pages Action
         uses: ns-rse/action-sphinx-docs-to-gh-pages@main
         with:
-          # When testing set this branch to your branch, when working switch to master. It WILL fail if not
-          # defined as it defaults to 'main'.
-          branch: master
+          branch: ns-rse/16-documentation # Test on branch, switch to main when working
           dir_docs: docs
-          sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb
+          sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb'
           sphinxapiopts: '--separate -o . ../'
           sphinxopts: ''

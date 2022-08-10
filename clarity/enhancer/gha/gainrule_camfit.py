@@ -142,8 +142,6 @@ def freq_interp_sh(f_in, y_in, f):
         ndarray: interpolated levels corresponding to filterbank frequencies
 
     """
-    import numpy as np
-    from scipy.interpolate import interp1d
 
     # Checks
     if np.size(f[0]) > 1:
@@ -239,7 +237,7 @@ def gainrule_camfit_linear(
             intercepts = freq_interp_sh(
                 intercept_frequencies, intercepts, sFitmodel["frequencies"][0][0]
             )
-    except:  # noqa E722
+    except Exception:  # noqa E722
         intercepts = freq_interp_sh(
             intercept_frequencies, intercepts, sFitmodel["frequencies"]
         )
@@ -503,7 +501,7 @@ def gainrule_camfit_compr(
         )
         noisegate_slope[:, i] = noisegateslope * np.ones(np.size(sFitmodel_frequencies))
 
-    logging.info(f"Noisegate levels are {noisegate_level}")
+    logging.info("Noisegate levels are %s", noisegate_level)
 
     output = {}
     output["sGt"] = sGt

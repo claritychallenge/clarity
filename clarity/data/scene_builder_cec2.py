@@ -42,9 +42,11 @@ def get_vector(text, vector_name):
     """Get a vector quantity from the rpf file.
     Will read rpf vector quantities, eg.
     "sourceViewVectors = -0.095,-0.995, 0.000"
+
     Args:
         text (str): string contents of the rpf file
         vector_name (str): name of vector to extract (e.g. "sourceViewVectors")
+
     Returns:
         list[float]: vector as list of floats
     """
@@ -55,23 +57,38 @@ def get_vector(text, vector_name):
     return x
 
 
-def get_room_dims(text):
-    """Find the room dimensions in the rpf file."""
+def get_room_dims(text: str) -> list:
+    """Find the room dimensions in the rpf file.
+
+    Args:
+        text (str): String to be searched for room dimensions (string to be searched for is of the form 'ProjectName =
+    CuboidRoom_5.9x3.4186x2.9').
+
+
+    Returns:
+        list: List of the three dimensions of the room.
+    """
     # Room dimensions appear in the file like this,
     #    ProjectName = CuboidRoom_5.9x3.4186x2.9
     roomdims = re.findall(r"ProjectName = .*", text)[0]
     return roomdims.split("=")[-1].split("_")[-1]
 
 
-def get_room_name(text):
-    """Find the room name in the rpf file."""
-    # The room name will be 'R' followed by 5 digits.
+def get_room_name(text: str) -> str:
+    """Find the room name in the rpf file.
+
+    Args:
+        text (str): String to be searched for room name ('R' followed by 5 digits).
+
+    Returns:
+        str: The room name.
+    """
     return re.findall(r"R\d\d\d\d\d", text)[0]
 
 
 def read_rpf_file(rpf_filename):
     """Process an rpf file and return key contents as a dictionary."""
-    with open(rpf_filename, "r") as f:
+    with open(rpf_filename, "r", encoding="utf-8") as f:
         text = f.read()
 
     rpf_dict = {}
@@ -102,9 +119,11 @@ def build_room(target_file, interferer_files):
     """Build room json file from contents of related rpf files.
     Note, there is an rpf file for each source in the scene. All of these
     files are read and a single scene json file is constructed.
+
     Args:
         target_file (str): rpf file containing the target position
         interferer_files (list[str]): list of files containing the interferer positions
+
     Returns:
         dict: dictionary representation of the scene following CEC2 scene.json format
     """
@@ -168,11 +187,13 @@ def add_this_target_to_scene(target, scene, pre_samples_range, post_samples_rang
     Adds given target to given scene. Target details will be taken
     from the target dict but the start time will be
     according to the CEC2 target start time specification.
+
     Args:
         target (dict): target dict read from target metadata file
         scene (dict): complete scene dict
         pre_samples_range (list): parameters for number of samples prior to target onset
-        post_samples_range (list): parameters for number of samples to continue player after target offsets
+        post_samples_range (list): parameters for number of samples to continue
+            player after target offsets
     """
     scene_target = {}
     num_pre_samples = get_num_pre_samples(pre_samples_range)
@@ -205,8 +226,10 @@ def select_interferer_types(allowed_n_interferers):
     The number of interferer is drawn randomly from list of allowed valued.
     The type of each is chosen randomly but there is not allowed to be
     more than 1 music source.
+
     Args:
         allowed_n_interferers (list): list of allowed number of interferers
+
     Returns:
         list(InterfererType): list of interferer types to use
     """
@@ -226,12 +249,15 @@ def select_random_interferer(interferers, dataset, required_samples):
     """Randomly select an interferer.
     Interferers stored as list of list. First randomly select a sublist
     then randomly select an item from sublist matching constraints.
+
     Args:
         interferers (list(list)): interferers as list of lists
         dataset (str): desired data [train, dev, eval]
         required_samples (int): required number of samples
+
     Raises:
         ValueError: if no suitable interferer is found
+
     Returns:
         dict: the interferer dict
     """
@@ -243,11 +269,11 @@ def select_random_interferer(interferers, dataset, required_samples):
     ]
     try:
         interferer = random.choice(filtered_interferer_group)
-    except IndexError:
+    except IndexError as e:
         raise ValueError(
             f"No suitable interferer found for dataset {dataset} and required samples"
             f" {required_samples}"
-        )
+        ) from e
     return interferer
 
 
@@ -257,16 +283,18 @@ def get_random_interferer_offset(interferer, required_samples):
     segment will be extracted. Randomly selected but with care for it not to start
     too late, i.e. such that the required samples would overrun the end of the masker
     signal will be used is taken.
+
     Args:
         interferer (dict): the interferer metadata
         required_samples (int): number of samples that is going to be required
+
     Returns:
         int: a valid randomly selected offset
     """
     masker_nsamples = interferer["nsamples"]
     latest_start = masker_nsamples - required_samples
     if latest_start < 0:
-        log.error(f"Interferer {interferer['ID']} does not has enough samples.")
+        log.error("Interferer %s does not has enough samples.", interferer["ID"])
 
     assert (
         latest_start >= 0
@@ -291,6 +319,7 @@ def add_interferer_to_scene_inner(
     each subcondition is equally represented even if the number of exemplars of
     each subcondition is different.
     Note, there is no return. The scene is modified in place.
+
     Args:
         scene (dict): the scene description
         interferers (dict): the interferer metadata
@@ -354,6 +383,7 @@ def generate_rotation(
 ):
     """Generate a suitable head rotation for the given scene.
     Based on behavioural studies by Hadley et al. TODO: find ref
+
     Args:
         scene (dict): the scene description
         head_turn_cfg (dict): head turn hyperparameters
@@ -365,6 +395,7 @@ def generate_rotation(
         angle_final_range (tuple)
         duration_mean - mean of the duration of the turn
         duration_sd - standard deviation of the duration of the turn
+
     Returns:
         list(dict): list of dicts with keys "sample" and "view_vector"
         specifying the head motion.
@@ -374,8 +405,7 @@ def generate_rotation(
     start_offset = random.uniform(*relative_start_time_range)
     duration = int(random.gauss(duration_mean, duration_sd))
     start_time = scene["target"]["time_start"] + start_offset
-    if start_time < 0:
-        start_time = 0
+    start_time = max(start_time, 0)
     end_time = start_time + duration
 
     # Head initially offset to left or right at random
@@ -435,6 +465,7 @@ class RoomBuilder:
         self, rpf_location, n_interferers=N_INTERFERERS, n_rooms=N_SCENES, start_room=1
     ):
         """Build a list of rooms by extracting info from RAVEN rpf files.
+
         Args:
             rpf_location (str): path to where rpf files are stored
             n_interferers (int, optional): number of interferer definitions to expect.
@@ -457,16 +488,18 @@ class RoomBuilder:
 
     def load(self, filename):
         """Load the list of room from a json file."""
-        self.rooms = json.load(open(filename, "r"))
+        with open(filename, "r", encoding="utf-8") as f:
+            self.rooms = json.load(f)
         self.rebuild_dict()
 
     def save_rooms(self, filename):
         """Save the list of rooms to a json file."""
-        json.dump(self.rooms, open(filename, "w"), indent=2)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.rooms, f, indent=2)
 
 
 class SceneBuilder:
-    """Functions for building a list scenes."""
+    """Class with methods for building a list of scenes."""
 
     def __init__(
         self,
@@ -493,10 +526,11 @@ class SceneBuilder:
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
-        json.dump(self.scenes, open(filename, "w"), indent=2)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.scenes, f, indent=2)
 
     def instantiate_scenes(self, dataset):
-        log.info(f"Initialise {dataset} scenes")
+        log.info("Initialise %s scenes", dataset)
         self.initialise_scenes(dataset, **self.scene_datasets)
         log.info("adding targets to scenes")
         self.add_target_to_scene(dataset, **self.target)
@@ -510,6 +544,7 @@ class SceneBuilder:
     def initialise_scenes(self, dataset, n_scenes, room_selection, scene_start_index):
         """
         Initialise the scenes for a given dataset.
+
         Args:
             dataset: train, dev, or eval set
             n_scenes: number of scenes to generate
@@ -550,10 +585,12 @@ class SceneBuilder:
     ):
         """Add target info to the scenes.
         Target speaker file set via config.
+
         Raises:
             Exception: _description_
         """
-        targets = json.load(open(target_speakers, "r"))
+        with open(target_speakers, "r", encoding="utf-8") as f:
+            targets = json.load(f)
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
         scenes_dataset = [s for s in self.scenes if s["dataset"] == dataset]
@@ -594,7 +631,8 @@ class SceneBuilder:
     ):
         """Add interferer to the scene description file."""
         # Load and prepare speech interferer metadata
-        interferers_speech = json.load(open(speech_interferers, "r"))
+        with open(speech_interferers, "r", encoding="utf-8") as f:
+            interferers_speech = json.load(f)
         for interferer in interferers_speech:
             interferer["ID"] = (
                 interferer["speaker"] + ".wav"
@@ -603,16 +641,18 @@ class SceneBuilder:
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        interferers_noise = json.load(open(noise_interferers, "r"))
+        with open(noise_interferers, "r", encoding="utf-8") as f:
+            interferers_noise = json.load(f)
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
-        interferer_by_type = dict()
+        interferer_by_type = {}
         for interferer in interferers_noise:
             interferer_by_type.setdefault(interferer["class"], []).append(interferer)
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        interferers_music = json.load(open(music_interferers, "r"))
+        with open(music_interferers, "r", encoding="utf-8") as f:
+            interferers_music = json.load(f)
         for interferer in interferers_music:
             interferer["ID"] = interferer[
                 "file"
