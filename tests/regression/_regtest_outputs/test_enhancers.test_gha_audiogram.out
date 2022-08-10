@@ -1,0 +1,40 @@
+Audiogram original:
+[ 250  500 1000 2000 4000 8000]
+[2. 1. 2. 2. 2. 1.]
+[2. 1. 1. 2. 1. 2.]
+['NOTHING', 'NOTHING']
+Audiogram new:
+[ 500 1000 2000]
+[1. 2. 2.]
+[1. 1. 2.]
+['NOTHING', 'NOTHING']
+Audiogram original:
+[ 250  500 1000 2000 4000 8000]
+[16. 14. 15. 16. 17. 15.]
+[17. 14. 13. 17. 14. 16.]
+['MILD', 'MILD']
+Audiogram new:
+[ 500 1000 2000]
+[14. 15. 16.]
+[14. 13. 17.]
+['MILD', 'MILD']
+Audiogram original:
+[ 250  500 1000 2000 4000 8000]
+[47. 43. 46. 47. 50. 45.]
+[50. 41. 40. 52. 42. 47.]
+['MODERATE', 'MODERATE']
+Audiogram new:
+[ 500 1000 2000]
+[43. 46. 47.]
+[41. 40. 52.]
+['MODERATE', 'MODERATE']
+Audiogram original:
+[ 250  500 1000 2000 4000 8000]
+[62. 58. 61. 63. 67. 60.]
+[66. 54. 53. 69. 56. 63.]
+['SEVERE', 'SEVERE']
+Audiogram new:
+[ 500 1000 2000]
+[58. 61. 63.]
+[54. 53. 69.]
+['SEVERE', 'SEVERE']
