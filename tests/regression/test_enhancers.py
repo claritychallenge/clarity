@@ -1,5 +1,4 @@
 import json
-import os
 import tempfile
 
 import numpy as np
@@ -78,11 +77,8 @@ def test_GHA_config(regtest):
     audiogram_right = np.array(listener["audiogram_levels_r"])
     audiogram = Audiogram(cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right)
 
-    cfg_template = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "cfg_files",
-        f"{enhancer.cfg_file}_template.cfg",
-    )
+    cfg_template = f"tests/test_data/openMHA/{enhancer.cfg_file}_template.cfg"
+
     gaintable = get_gaintable(
         audiogram,
         enhancer.noisegatelevels,
