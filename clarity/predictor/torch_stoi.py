@@ -3,6 +3,7 @@ This implementation is from https://github.com/mpariente/pytorch_stoi, please ci
 and star the repo. The pip version of torch_stoi does not include EPS in line 127 & 128,
 hence could lead to sqrt(0)
 """
+
 import numpy as np
 import torch
 import torchaudio
@@ -181,7 +182,7 @@ class NegSTOILoss(nn.Module):
 
         # Compute average (E)STOI w. or w/o VAD.
         sum_over = list(range(1, x_seg.ndim))  # Keep batch dim
-        if mask_f is not None:
+        if self.use_vad:
             corr_comp = corr_comp * mask_f
             correction = correction * mask_f.mean() + EPS
         # Return -(E)STOI to optimize for

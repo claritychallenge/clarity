@@ -1,6 +1,4 @@
 """Compressor Class"""
-from typing import Any, List, Tuple
-
 import numpy as np
 
 
@@ -39,7 +37,7 @@ class Compressor:
         self.win_len = int(self.rms_buffer_size * self.fs)
         self.window = np.ones(self.win_len)
 
-    def set_attack(self, t_msec: float) -> None:
+    def set_attack(self, t_msec: float) -> float:
         """DESCRIPTION
 
         Args:
@@ -52,7 +50,7 @@ class Compressor:
         reciprocal_time = 1 / t_sec
         self.attack = reciprocal_time / self.fs
 
-    def set_release(self, t_msec: float) -> None:
+    def set_release(self, t_msec: float) -> float:
         """DESCRIPTION
 
         Args:
@@ -65,9 +63,7 @@ class Compressor:
         reciprocal_time = 1 / t_sec
         self.release = reciprocal_time / self.fs
 
-    def process(
-        self, signal: np.ndarray
-    ) -> Tuple[Any, np.ndarray[Any, np.dtype[Any]], List[Any]]:
+    def process(self, signal: np.array) -> np.array:
         """DESCRIPTION
 
         Args:
@@ -81,8 +77,8 @@ class Compressor:
             np.convolve(padded_signal**2, self.window, mode="valid") / self.win_len
             + self.eps
         )
-        comp_ratios: list = []
-        curr_comp: float = 1.0
+        comp_ratios = []
+        curr_comp = 1
         for rms_i in rms:
             if rms_i > self.threshold:
                 temp_comp = (rms_i * self.attenuation) + (
@@ -92,4 +88,4 @@ class Compressor:
             else:
                 curr_comp = (1 * self.release) + curr_comp * (1 - self.release)
             comp_ratios.append(curr_comp)
-        return (signal * np.array(comp_ratios) * self.makeup_gain), rms, comp_ratios
+        return signal * np.array(comp_ratios) * self.makeup_gain, rms, comp_ratios

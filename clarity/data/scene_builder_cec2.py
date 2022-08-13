@@ -15,16 +15,16 @@ log = logging.getLogger(__name__)
 
 
 # Get json output to round to 4 dp
-json.encoder.c_make_encoder = None  # type: ignore
+json.encoder.c_make_encoder = None
 
 
 class RoundingFloat(float):
     """Round a float to 4 decimal places."""
 
-    __repr__ = staticmethod(lambda x: format(x, ".4f"))  # type: ignore
+    __repr__ = staticmethod(lambda x: format(x, ".4f"))
 
 
-json.encoder.float = RoundingFloat  # type: ignore
+json.encoder.float = RoundingFloat
 
 # rpf file Handling
 

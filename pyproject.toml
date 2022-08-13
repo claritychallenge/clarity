@@ -30,10 +30,3 @@ exclude = '''
   )/
 )
 '''
-
-[tool.mypy]
-ignore_missing_imports = true
-exclude = [
-    "docs/*",
-    "build/*"
-    ]

@@ -1,6 +1,5 @@
 """Tools to support higher order ambisonic processing."""
 import logging
-from typing import List
 
 import numpy as np
 from numba import njit
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @njit
-def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
+def compute_rotation_matrix(n: int, foa_rotmat: np.array) -> np.array:
     """Generate a rotation matrix to rotate HOA soundfield.
     Based on 'Rotation Matrices for Real Spherical Harmonics. Direct Determination
     by Recursion' Joseph Ivanic and Klaus Ruedenberg J. Phys. Chem. 1996, 100, 15,
@@ -374,7 +373,7 @@ def compute_rms(input_signal: np.ndarray, axis: int = 0):
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
-def equalise_rms_levels(inputs: List[np.ndarray]) -> List[np.ndarray]:
+def equalise_rms_levels(inputs: np.ndarray) -> np.ndarray:
     """Equalise RMS levels.
 
     Args:
@@ -401,25 +400,23 @@ def dB_to_gain(x: float) -> float:
     return 10 ** (0.05 * x)
 
 
-def smoothstep(
-    x: np.ndarray, x_min: float = 0, x_max: float = 1, N: int = 1
-) -> np.ndarray:
+def smoothstep(x: np.array, x_min: float = 0, x_max: float = 1, N: int = 1) -> np.array:
     """Apply the smoothstep function.
 
     Args:
-        x (np.ndarray): input
+        x (np.array): input
         x_min (float, optional): clamp minimum. Defaults to 0.
         x_max (float, optional): clamp maximum. Defaults to 1.
         N (int, optional): smoothing factor. Defaults to 1.
 
     Returns:
-        np.ndarray: smoothstep values
+        array: smoothstep values
     """
     x = np.clip((x - x_min) / (x_max - x_min), 0, 1)
 
-    result = sum(
-        comb(N + n, n) * comb(2 * N + 1, N - n) * (-x) ** n for n in range(0, N + 1)
-    )
+    result = 0
+    for n in range(0, N + 1):
+        result += comb(N + n, n) * comb(2 * N + 1, N - n) * (-x) ** n
 
     result *= x ** (N + 1)
 
@@ -428,7 +425,7 @@ def smoothstep(
 
 def rotation_control_vector(
     array_length: int, start_idx: int, end_idx: int, smoothness: int = 1
-) -> np.ndarray:
+) -> np.array:
     """Generate mapped rotation control vector for values of theta.
 
     Args:
@@ -454,7 +451,7 @@ def rotation_vector(
     signal_length: int,
     start_idx: int,
     end_idx: int,
-) -> np.ndarray:
+) -> np.array:
     """Compute the rotation vector.
 
     Args:

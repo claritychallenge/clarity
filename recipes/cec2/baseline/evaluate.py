@@ -107,7 +107,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 audiogram_cfs=cfs,
             )
             logger.info(f"The HASPI score is {si}")
-            csv_lines.append([scene, listener, str(si)])
+            csv_lines.append([scene, listener, si])
 
             if cfg.evaluate.cal_unprocessed_si:
                 if cfg.evaluate.set_random_seed:
@@ -131,7 +131,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                     audiogram_cfs=cfs,
                 )
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
-                unproc_csv_lines.append([scene, listener, str(si_unproc)])
+                unproc_csv_lines.append([scene, listener, si_unproc])
 
     with open(si_file, "w") as csv_f:
         csv_writer = csv.writer(
