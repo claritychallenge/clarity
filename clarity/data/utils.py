@@ -1,5 +1,12 @@
 import os
-from typing import Literal, Union
+import sys
+
+if sys.version_info >= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+
+from typing import Union
 
 import numpy as np
 import scipy
