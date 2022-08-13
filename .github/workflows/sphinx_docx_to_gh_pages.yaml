@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - ns-rse/16-documentation
 
 jobs:
   sphinx_docs_to_gh-pages:
@@ -26,7 +25,7 @@ jobs:
       - name: Running Sphinx to gh-pages Action
         uses: ns-rse/action-sphinx-docs-to-gh-pages@main
         with:
-          branch: ns-rse/16-documentation # Test on branch, switch to main when working
+          branch: main # Test on branch, switch to main when working
           dir_docs: docs
           sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb'
           sphinxapiopts: '--separate -o . ../'

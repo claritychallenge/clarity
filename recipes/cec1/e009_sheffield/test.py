@@ -50,8 +50,8 @@ def run(cfg: DictConfig) -> None:
                 den_model.load_state_dict(
                     torch.load(den_model_path, map_location=device)
                 )
-                den_model = torch.nn.parallel.DataParallel(den_model.to(device))
-                den_model.eval()
+                _den_model = torch.nn.parallel.DataParallel(den_model.to(device))
+                _den_model.eval()
 
                 # load amplification module
                 amp_model = AudiometricFIR(**cfg.fir)
@@ -61,8 +61,8 @@ def run(cfg: DictConfig) -> None:
                 amp_model.load_state_dict(
                     torch.load(amp_model_path, map_location=device)
                 )
-                amp_model = torch.nn.parallel.DataParallel(amp_model.to(device))
-                amp_model.eval()
+                _amp_model = torch.nn.parallel.DataParallel(amp_model.to(device))
+                _amp_model.eval()
 
                 noisy = noisy.to(device)
                 if cfg.downsample_factor != 1:

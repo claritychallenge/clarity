@@ -1,0 +1,49 @@
+* clarity/enhancer/nalr.py
+** DONE clarity/enhancer/nalr.py:98: error: Slice index must be an integer or None
+   H[nb : (ne + 1)] = inc * aa[i + 1] + (1 - inc) * aa[i]
+| Variable | Type        | Notes                                                                 |
+| H        | np.ndarray  | Values from nb to ne +1 are the range which is being set to the value |
+| nb       | int         |                                                                       |
+| ne       | ?           | Should be int (hence message), but could be ne = nb + lap - 1         |
+|          |             | lap should be an int as its the result of np.fix()                    |
+
+Could it be np.fix() is inappropriate here since it rounds an array of floats to nearest integer towards zero and
+returns floats? Yes that was it int(np.fix(npt / 25)) resolved it.
+** TODO clarity/enhancer/nalr.py:98: error: Unsupported operand types for - ("int" and "object")
+   H[nb : (ne + 1)] = inc * aa[i + 1] + (1 - inc) * aa[i]
+
+~aa~ is an array passed into the function
+~inc~ is set on the previous line and _it_ is the object since...
+
+        inc: float = 0.0 if nb == ne else (j - nb) / (ne - nb)
+
+...raises the following error...
+
+clarity/enhancer/nalr.py:97: error: Incompatible types in assignment (expression has type "object", variable has type "float")
+
+If re-writing to...
+
+        if nb == ne:
+            inc = 0.0
+        else:
+        inc = (j - nb) / (ne - nb)
+
+..it raises the error...
+
+clarity/enhancer/nalr.py:100: error: Incompatible types in assignment (expression has type "ndarray[Any,
+dtype[floating[Any]]]", variable has type "float")
+
+...and looking back a step ~j~ is an array :-?
+** DONE clarity/enhancer/nalr.py:99: error: Incompatible types in assignment (expression has type "Union[Any, floating[Any]]", variable has type "int")
+* clarity/data/scene_builder_cec2.py
+** DONE clarity/data/scene_builder_cec2.py:18: error: Module has no attribute "c_make_encoder"
+I understand what this is doing but don't know how to solve the type error so have ignored it.
+** DONE clarity/data/scene_builder_cec2.py:27: error: Module has no attribute "float"
+I understand what this is doing but don't know how to solve the type error so have ignored it.
+* clarity/predictor/torch_stoi.py
+** TODO clarity/predictor/torch_stoi.py:183: error: Item "None" of "Optional[Tensor]" has no attribute "mean"
+~correction = correction * mask_f.mean() + EPS~
+
+~mask_f~ is defined further back on lines 143-154 and may be ~None~
+* clarity/data/scene_renderer_cec2.py
+** DONE clarity/data/scene_renderer_cec2.py:301: error: Argument 1 to "sum" has incompatible type "List[ndarray[Any, Any]]"; expected "Iterable[float]"

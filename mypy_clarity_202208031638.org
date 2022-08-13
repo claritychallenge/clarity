@@ -1,0 +1,9 @@
+* clarity/enhancer/nalr.py
+** TODO clarity/enhancer/nalr.py:100: error: Unsupported operand types for - ("int" and "object")
+* clarity/data/HOA_tools_cec2.py
+** TODO clarity/data/HOA_tools_cec2.py:404: error: Incompatible types in assignment (expression has type "ndarray[Any, dtype[signedinteger[Any]]]", variable has type "int")
+Reverted result: np.ndarray back to original result = 0 because the change caused flake8 to fail
+** TODO clarity/data/HOA_tools_cec2.py:406: error: Incompatible return value type (got "int", expected "ndarray[Any, Any]")
+Related to above, typehint suggests result should be np.ndarray but appears to return int.
+* clarity/predictor/torch_stoi.py
+** TODO clarity/predictor/torch_stoi.py:186: error: Item "None" of "Optional[Tensor]" has no attribute "mean"

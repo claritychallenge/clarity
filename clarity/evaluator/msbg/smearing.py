@@ -153,10 +153,10 @@ def smear3(f_smear, inbuffer):
 
 class Smearer:
 
-    rl: np.ndarray = None
-    ru: np.ndarray = None
-    fs: np.ndarray = None
-    f_smear: np.ndarray = None
+    rl: np.ndarray
+    ru: np.ndarray
+    fs: np.ndarray
+    f_smear: np.ndarray
 
     def __init__(self, rl, ru, fs):
         self.rl = rl

@@ -1,5 +1,5 @@
 import math
-from typing import Union
+from typing import Tuple, Union
 
 import numpy as np
 import scipy
@@ -27,6 +27,8 @@ def firwin2(
         np.ndarray:  The filter coefficients of the FIR filter, as a 1-D array of length n.
     """
     window_shape = None
+    window_type: Union[str, float, None]
+    window_param: Union[str, float]
     if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
@@ -45,7 +47,9 @@ def firwin2(
     return b
 
 
-def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray:
+def fir2(
+    nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None
+) -> Tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
     Translation of MATLAB fir2.
 
@@ -69,7 +73,7 @@ def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray
     else:
         wind = npt
         npt = 2.0 ** np.ceil(math.log(nn) / math.log(2)) if nn >= 1024 else 512
-    lap = np.fix(npt / 25)
+    lap = int(np.fix(npt / 25))
 
     nbrk = max(len(ff), len(aa))
 
@@ -77,11 +81,11 @@ def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray
     ff[nbrk - 1] = 1
 
     H = np.zeros(npt + 1)
-    nint = nbrk - 1
+    nint: int = nbrk - 1
     df = np.diff(ff, n=1)
 
     npt += 1
-    nb = 0
+    nb: int = 0
     H[0] = aa[0]
 
     for i in np.arange(nint):
@@ -92,11 +96,11 @@ def fir2(nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None) -> np.ndarray
             ne = int(np.fix(ff[i + 1] * npt)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc = 0 if nb == ne else (j - nb) / (ne - nb)
-        H[nb : (ne + 1)] = inc * aa[i + 1] + (1 - inc) * aa[i]
+        inc = 0.0 if nb == ne else (j - nb) / (ne - nb)
+        H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])  # type: ignore
         nb = ne + 1
 
-    dt = 0.5 * (nn - 1)
+    dt: float = 0.5 * (nn - 1)
     rad = -dt * 1j * math.pi * np.arange(0, npt) / (npt - 1)
     H = H * np.exp(rad)
 

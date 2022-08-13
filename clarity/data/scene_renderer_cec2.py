@@ -43,7 +43,7 @@ def two_point_rotation(rotation: dict, origin: np.ndarray, duration: int) -> np.
     return theta
 
 
-def pad_signal_start_end(signal: np.array, delay: int, duration: int) -> np.array:
+def pad_signal_start_end(signal: np.ndarray, delay: int, duration: int) -> np.ndarray:
     """Pad signal at start and end.
 
     Args:
@@ -303,7 +303,8 @@ class SceneRenderer:
         logger.info(
             "hoa_target.shape=%s; flat_hoa_interferers.shape=%s",
             hoa_target.shape,
-            flat_hoa_interferers.shape,
+            # flat_hoa_interferers.shape,
+            flat_hoa_interferers,
         )
 
         th = two_point_rotation(
@@ -322,7 +323,9 @@ class SceneRenderer:
             th,
         )
 
-    def save_signal_16bit(self, filename: str, signal: np.array, norm: float = 1.0):
+    def save_signal_16bit(
+        self, filename: str, signal: np.ndarray, norm: float = 1.0
+    ) -> None:
         """Saves a signal to a 16 bit wav file.
 
         Args:
@@ -345,7 +348,7 @@ class SceneRenderer:
         hoa_interferer: np.ndarray,
         hoa_target_anechoic: np.ndarray,
         out_path: str,
-    ):
+    ) -> None:
         """Generate and write binaural signals.
 
         Args:

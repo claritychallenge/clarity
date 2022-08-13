@@ -1,0 +1,80 @@
+First pass checking types using ~mypy~
+
+* clarity/evaluator/msbg/smearing.py
+** DONE clarity/evaluator/msbg/smearing.py:156: error: Incompatible types in assignment (expression has type "None", variable has type "ndarray[Any, Any]")
+** DONE clarity/evaluator/msbg/smearing.py:157: error: Incompatible types in assignment (expression has type "None", variable has type "ndarray[Any, Any]")
+** DONE clarity/evaluator/msbg/smearing.py:158: error: Incompatible types in assignment (expression has type "None", variable has type "ndarray[Any, Any]")
+** DONE clarity/evaluator/msbg/smearing.py:159: error: Incompatible types in assignment (expression has type "None", variable has type "ndarray[Any, Any]")
+
+* clarity/enhancer/nalr.py
+** DONE clarity/enhancer/nalr.py:38: error: Cannot determine type of "window_param"
+** TODO clarity/enhancer/nalr.py:96: error: Slice index must be an integer or None
+** TODO clarity/enhancer/nalr.py:96: error: Unsupported operand types for - ("int" and "object")
+** TODO clarity/enhancer/nalr.py:97: error: Incompatible types in assignment (expression has type "Union[Any, floating[Any]]", variable has type "int")
+** DONE clarity/enhancer/nalr.py:108: error: Incompatible return value type (got "Tuple[Any, int]", expected "ndarray[Any,Any]")
+
+* clarity/enhancer/compressor.py
+** DONE clarity/enhancer/compressor.py:40: error: Missing return statement
+** DONE clarity/enhancer/compressor.py:53: error: Missing return statement
+** DONE clarity/enhancer/compressor.py:66: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/enhancer/compressor.py:66: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/enhancer/compressor.py:89: error: Incompatible types in assignment (expression has type "float", variable has type "int")
+** DONE clarity/enhancer/compressor.py:91: error: Unsupported left operand type for ** (np.array?)
+NOTE : Check return type for def process():
+
+* clarity/data/utils.py
+** DONE clarity/data/utils.py:16: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/utils.py:16: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/data/utils.py:31: error: Value of type np.array? is not indexable
+** DONE clarity/data/utils.py:32: error: Value of type np.array? is not indexable
+NOTE : Check return type for def better_ear_speech_weighted_snr():
+
+* clarity/data/utils.py:76
+** DONE clarity/data/utils.py:76: error: Incompatible return value type (got "Union[ndarray[Any, Any], Literal[0]]", expected "ndarray[Any, Any]")
+NOTE: Check return type for def sum_signals():
+
+* clarity/data/utils.py
+** DONE clarity/data/utils.py:79: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/utils.py:79: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/data/utils.py:92: error: np.array? has no attribute "shape"
+** DONE clarity/data/utils.py:94: error: np.array? has no attribute "shape"
+
+* scene_builder_cec2.py
+** TODO clarity/data/scene_builder_cec2.py:18: error: Module has no attribute "c_make_encoder"
+** TODO clarity/data/scene_builder_cec2.py:27: error: Module has no attribute "float"
+
+* clarity/data/HOA_tools_cec2.py
+** DONE clarity/data/HOA_tools_cec2.py:17: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/HOA_tools_cec2.py:17: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/data/HOA_tools_cec2.py:388: error: Incompatible return value type (got "List[Any]", expected "ndarray[Any, Any]")
+** DONE clarity/data/HOA_tools_cec2.py:403: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/HOA_tools_cec2.py:403: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/data/HOA_tools_cec2.py:415: error: Unsupported left operand type for - (np.array?)
+** DONE clarity/data/HOA_tools_cec2.py:419: error: Unsupported operand type for unary - (np.array?)
+** DONE clarity/data/HOA_tools_cec2.py:421: error: Unsupported left operand type for **** (np.array?)
+** DONE clarity/data/HOA_tools_cec2.py:428: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/HOA_tools_cec2.py:428: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/data/HOA_tools_cec2.py:444: error: Value of type variable "_SCT" of "array" cannot be "int"
+** DONE clarity/data/HOA_tools_cec2.py:444: error: Unsupported left operand type for ** (np.array?)
+** DONE clarity/data/HOA_tools_cec2.py:454: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/HOA_tools_cec2.py:454: note: Perhaps you need "Callable[...]" or a callback protocol?
+
+* clarity/predictor/torch_stoi.py
+** TODO clarity/predictor/torch_stoi.py:187: error: Item "None" of "Optional[Tensor]" has no attribute "mean"
+
+* clarity/data/scene_renderer_cec2
+** DONE clarity/data/scene_renderer_cec2.py:46: error: Function "numpy.core.multiarray.array" is not valid as a type
+** DONE clarity/data/scene_renderer_cec2.py:46: note: Perhaps you need "Callable[...]" or a callback protocol?
+** DONE clarity/data/scene_renderer_cec2.py:57: error: np.array? has no attribute "shape"
+** DONE clarity/data/scene_renderer_cec2.py:60: error: Value of type np.array? is not indexable
+** DONE clarity/data/scene_renderer_cec2.py:63: error: np.array? has no attribute "shape"
+** DONE clarity/data/scene_renderer_cec2.py:64: error: np.array? has no attribute "shape"
+** TODO clarity/data/scene_renderer_cec2.py:299: error: Incompatible types in assignment (expression has type "ndarray[Any, Any]", variable has type "List[np.array?]")
+** TODO clarity/data/scene_renderer_cec2.py:299: error: Argument 1 to "equalise_rms_levels" has incompatible type "List[np.array?]"; expected "ndarray[Any, Any]"
+** TODO clarity/data/scene_renderer_cec2.py:306: error: "Literal[0]" has no attribute "shape"
+** TODO clarity/data/scene_renderer_cec2.py:325: error: Function "numpy.core.multiarray.array" is not valid as a type
+** TODO clarity/data/scene_renderer_cec2.py:325: note: Perhaps you need "Callable[...]" or a callback protocol?
+** TODO clarity/data/scene_renderer_cec2.py:333: error: Unsupported left operand type for / (np.array?)
+** TODO clarity/data/scene_renderer_cec2.py:338: error: "int" has no attribute "astype"
+
+Found 45 errors in 8 files (checked 42 source files)
