@@ -65,9 +65,7 @@ class Compressor:
         reciprocal_time = 1 / t_sec
         self.release = reciprocal_time / self.fs
 
-    def process(
-        self, signal: np.ndarray
-    ) -> Tuple[Any, np.ndarray[Any, np.dtype[Any]], List[Any]]:
+    def process(self, signal: np.ndarray) -> Tuple[Any, np.ndarray, List[Any]]:
         """DESCRIPTION
 
         Args:
