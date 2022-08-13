@@ -1,0 +1,85 @@
+path:
+  root: ???
+  metadata_dir: ${path.root}/test_data/metadata
+
+random_seed: 0
+shuffle_rooms: False
+
+# Build rooms
+room_datasets:
+  train:
+    rpf_location: ${path.root}/clarity_data/dev/rooms/rpf
+    n_interferers: 3
+    n_rooms: 200
+    start_room: 1
+
+# Instantiate_scenes
+scene_datasets:
+  train:
+    n_scenes: 10
+    room_selection: RANDOM
+    scene_start_index: 1
+
+target:
+  target_speakers: ${path.metadata_dir}/target_speech_list.json
+  target_selection: SEQUENTIAL
+  pre_samples_range: [66150, 88200]
+  post_samples_range: [44100, 44100]
+
+snr_range:
+  train: [-12, 6]
+
+interferer:
+  speech_interferers: ${path.metadata_dir}/masker_speech_list.json
+  noise_interferers: ${path.metadata_dir}/masker_nonspeech_list.json
+  music_interferers: ${path.metadata_dir}/masker_music_list.json
+  number: [2, 3]
+  start_time_range: [0, 0]
+  end_early_time_range: [0, 0]
+
+listener:
+  heads: ["BuK", "DADEC", "KEMAR", "VP_E1",  "VP_E2", "VP_E4", "VP_E5", "VP_E6", "VP_E7", "VP_E8", "VP_E9", "VP_E11", "VP_E12", "VP_E13", "VP_N1", "VP_N3", "VP_N4", "VP_N5", "VP_N6"]
+  channels: ["ED", "BTE_fr", "BTE_mid", "BTE_rear"]
+  # parameters all in units of samples or degrees
+  # The time at which the head turn starts relative to target speaker onset
+  relative_start_time_range: [-28004, 38147]  # -0.635 s to 0.865 s
+  # Rotations have a normally distributed duration
+  duration_mean: 8820
+  duration_sd: 441  # 100 ms
+  # Head is initially pointing away from talker, uniform within a range
+  # Note it can be either offset to left or right - drawn at random
+  angle_initial_mean: 25
+  angle_initial_sd: 5
+  # Head turns to point at the speaker within some margin
+  angle_final_range: [0, 10]
+
+# Render scenes
+render_starting_chunk: 0  # there are (6000 train + 2500 dev) / (12 + 5) = 500 trunks in total. If multi_run, should be 0, 10, 20, 30, ..., 490 if render_n_chunk_to_process=10
+render_n_chunk_to_process: 10  # i.e. (12 train + 5 dev) * 10 scenes to render. If not multi_run, set 50
+
+scene_renderer:
+  demo:
+    paths:
+      hoairs: ${path.root}/clarity_data/dev/rooms/HOA_IRs
+      hrirs: ${path.root}/clarity_data/hrir/HRIRs_MAT
+      scenes: ${path.root}/clarity_data/demo/scenes
+      targets: ${path.root}/clarity_data/dev/targets
+      interferers: ${path.root}/clarity_data/dev/interferers/{type}
+    metadata:
+      room_definitions: ${path.metadata_dir}/rooms.demo.json
+      scene_definitions: ${path.metadata_dir}/scenes.demo.json
+      hrir_metadata: ${path.metadata_dir}/hrir_data.json
+    chunk_size: 5
+
+render_params:
+  ambisonic_order: 6
+  equalise_loudness: False
+  reference_channel: 1
+  channel_norms: [12.0, 3.0, 3.0, 3.0]
+
+hydra:
+  run:
+    dir: .
+
+defaults:
+  - override hydra/launcher: cec2_submitit_local

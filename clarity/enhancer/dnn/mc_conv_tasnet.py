@@ -171,24 +171,23 @@ class SpatialEncoder(nn.Module):
     """Estimation of the nonnegative mixture weight by a 1-D conv layer."""
 
     def __init__(self, L, N, num_channels):
-        super().__init__()
+        super(SpatialEncoder, self).__init__()
         # Hyper-parameter
         self.L, self.N = L, N
         # Components
         # 50% overlap
-        self.conv2d_U = nn.Conv1d(
-            1, N, kernel_size=(num_channels, L), stride=(1, L // 2), bias=False
+        self.conv1d_U = nn.Conv1d(
+            num_channels, N, kernel_size=L, stride=L // 2, bias=False
         )
 
     def forward(self, mixture):
         """
         Args:
-            mixture: [M, T], M is batch size, T is #samples
+            mixture: [M, num_channels, T], M is batch size, T is #samples
         Returns:
             mixture_w: [M, N, K], where K = (T-L)/(L/2)+1 = 2T/L-1
         """
-        mixture = torch.unsqueeze(mixture, 1)  # [M, 1, T]
-        mixture_w = F.relu(self.conv2d_U(mixture)).squeeze(2)  # [M, N, K]
+        mixture_w = F.relu(self.conv1d_U(mixture))  # [M, N, K]
         return mixture_w
 
 
