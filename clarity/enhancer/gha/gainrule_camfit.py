@@ -152,7 +152,7 @@ def freq_interp_sh(f_in, y_in, f):
         y_in = y_in[0]
 
     vals = np.pad(
-        f_in.astype(np.float), 1, constant_values=((0.5 * f_in[0], 2 * f_in[-1]))
+        f_in.astype(float), 1, constant_values=((0.5 * f_in[0], 2 * f_in[-1]))
     )
     yvals = np.pad(y_in, 1, constant_values=((y_in[0], y_in[-1])))
 
