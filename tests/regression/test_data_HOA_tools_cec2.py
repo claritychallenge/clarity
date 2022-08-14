@@ -1,4 +1,5 @@
 import numpy as np
+from numba.typed import List
 from scipy.spatial.transform import Rotation as R
 
 from clarity.data import HOA_tools_cec2 as hoa
@@ -34,7 +35,7 @@ def test_U(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
+    rotmats = List([foa, hoa.compute_rotation_matrix(order, foa)])
     u = hoa.U.py_func(m, n, order, rotmats)
     regtest.write(f"U value {u:0.3f}\n")
 
@@ -44,7 +45,7 @@ def test_V(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
+    rotmats = List([foa, hoa.compute_rotation_matrix(order, foa)])
     for i in range(3):
         v = hoa.V.py_func(i - 1, n, order, rotmats)
         regtest.write(f"V[{i}] value {v:0.3f}\n")
@@ -55,7 +56,7 @@ def test_W(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
+    rotmats = List([foa, hoa.compute_rotation_matrix(order, foa)])
     for i in range(3):
         w = hoa.W.py_func(i - 1, n, order, rotmats)
         regtest.write(f"W[{i}] value {w:0.3f}\n")
@@ -84,10 +85,12 @@ def test_compute_band_rotation(regtest):
 
     sub_matrices = [np.eye(i * 2 + 1) for i in np.arange(n + 1)]
     sub_matrices[1] = foa_rotmat
+    typed_sub_matrices = List()
+    [typed_sub_matrices.append(x) for x in sub_matrices]
 
     if n > 1:
         for i in np.arange(2, n + 1):
-            rot_mat, sub_matrices = hoa.compute_band_rotation.py_func(
-                i, sub_matrices, rot_mat
+            rot_mat, typed_sub_matrices = hoa.compute_band_rotation.py_func(
+                i, typed_sub_matrices, rot_mat
             )
     regtest.write(f"Band rotations {rot_mat}, {sub_matrices}\n")
