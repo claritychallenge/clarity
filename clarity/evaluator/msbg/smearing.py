@@ -1,3 +1,4 @@
+"""Temporal smearing component of MSBG model."""
 import math
 
 import numpy as np
@@ -152,6 +153,7 @@ def smear3(f_smear, inbuffer):
 
 
 class Smearer:
+    """Class to hold the re-usable smearing filter."""
 
     rl: np.ndarray
     ru: np.ndarray
@@ -164,5 +166,6 @@ class Smearer:
         self.fs = fs
         self.f_smear = make_smear_mat3(rl, ru, fs)
 
-    def smear(self, input_signal):
+    def smear(self, input_signal: np.ndarray) -> np.ndarray:
+        """Smear a given input signal."""
         return smear3(self.f_smear, input_signal)
