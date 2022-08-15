@@ -13,6 +13,15 @@ from scipy.fftpack import fft
 from scipy.interpolate import interp1d
 from scipy.signal import ellip, firwin, firwin2, freqz
 
+from clarity.evaluator.msbg.msbg_utils import (
+    DF_ED,
+    FF_ED,
+    HZ,
+    ITU_ERP_DRP,
+    ITU_HZ,
+    MIDEAR,
+)
+
 EPS = 1e-8
 # old msbg matlab
 # set RMS so that peak of output file so that no clipping occurs, set so that
@@ -33,7 +42,7 @@ equiv_0dB_SPL = equiv0dBSPL + ahr
 
 def generate_key_percent(signal, thr_dB, winlen):
     if winlen != np.floor(winlen):
-        winlen = int(np.floor(winlen))
+        winlen = np.int(np.floor(winlen))
         print("\nGenerate_key_percent: \t Window length must be integer")
 
     siglen = len(signal)
@@ -41,7 +50,7 @@ def generate_key_percent(signal, thr_dB, winlen):
     non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
 
     nframes = 0
-    totframes = int(np.floor(siglen / winlen))
+    totframes = np.int(np.floor(siglen / winlen))
     every_dB = np.zeros(totframes)
 
     for ix in range(totframes):
@@ -56,12 +65,12 @@ def generate_key_percent(signal, thr_dB, winlen):
     # between the two peaks, and set a bit above that, as it heads for main peak
     frame_idx = np.where(every_dB >= expected)[0]
     valid_frames = len(frame_idx)
-    key = np.zeros(valid_frames * winlen, dtype=int)
+    key = np.zeros(valid_frames * winlen, dtype=np.int)
 
     # convert frame numbers into indices for signal
     for ix in range(valid_frames):
         key[ix * winlen : ix * winlen + winlen] = np.arange(
-            frame_idx[ix] * winlen, frame_idx[ix] * winlen + winlen, dtype=int
+            frame_idx[ix] * winlen, frame_idx[ix] * winlen + winlen, dtype=np.int
         )
     return key, used_thr_dB
 
@@ -84,7 +93,7 @@ def measure_rms(signal, sr, dB_rel_rms):
     # use this RMS to generate key threshold to more accurate RMS
     key_thr_dB = np.max([20 * np.log10(first_stage_rms) + dB_rel_rms, -80])
     key, used_thr_dB = generate_key_percent(
-        signal, key_thr_dB, int(np.round(win_secs * sr))
+        signal, key_thr_dB, np.int(np.round(win_secs * sr))
     )
     # active = 100.0 * len(key) / len(signal)
     rms = np.sqrt(np.mean(signal[key] ** 2))
@@ -94,18 +103,18 @@ def measure_rms(signal, sr, dB_rel_rms):
 
 def makesmearmat3(rl, ru, sr):
     fftsize = 512
-    nyquist = int(fftsize // 2)
+    nyquist = np.int(fftsize // 2)
     fnor = audfilt(1, 1, nyquist, sr)
     fwid = audfilt(rl, ru, nyquist, sr)
     fnext = np.hstack([fnor, np.zeros([nyquist, nyquist // 2])])
 
-    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=int):
+    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=np.int):
         fnext[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
             fnor[
                 i - 1, np.max([1, 2 * i - 3 * nyquist // 2]) - 1 : (2 * i - nyquist - 1)
             ]
         )
-    fsmear = np.linalg.lstsq(fnext, fwid, rcond=-1)[
+    fsmear = np.linalg.lstsq(fnext, fwid)[
         0
     ]  # https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
     fsmear = fsmear[:nyquist, :]
@@ -130,15 +139,15 @@ def audfilt(rl, ru, size, sr):
     aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
 
     g = np.zeros(size)
-    for i in np.arange(2, size + 1, 1, dtype=int):
+    for i in np.arange(2, size + 1, 1, dtype=np.int):
         fhz = (i - 1) * sr / (2 * size)
         erbhz = 24.7 * ((fhz * 0.00437) + 1)
         pl = 4 * fhz / (erbhz * rl)
         pu = 4 * fhz / (erbhz * ru)
-        j = np.arange(1, i, dtype=int)
+        j = np.arange(1, i, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
-        j = np.arange(i, size + 1, dtype=int)
+        j = np.arange(i, size + 1, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
         aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
@@ -181,253 +190,23 @@ class MSBGHearingModel(nn.Module):
 
         # settings for src_to_cochlea_filt
 
-        hz = np.array(
-            [
-                0.0,
-                20.0,
-                25.0,
-                31.5,
-                40.0,
-                50.0,
-                63.0,
-                80.0,
-                100.0,
-                125.0,
-                160.0,
-                200.0,
-                250.0,
-                315.0,
-                400.0,
-                500.0,
-                630.0,
-                750.0,
-                800.0,
-                1000.0,
-                1250.0,
-                1500.0,
-                1600.0,
-                2000.0,
-                2500.0,
-                3000.0,
-                3150.0,
-                4000.0,
-                5000.0,
-                6000.0,
-                6300.0,
-                8000.0,
-                9000.0,
-                10000.0,
-                11200.0,
-                12500.0,
-                14000.0,
-                15000.0,
-                16000.0,
-                20000.0,
-                48000,
-            ]
-        )
-        midear = np.array(
-            [
-                50.0,
-                39.6,
-                32.0,
-                25.85,
-                21.4,
-                18.5,
-                15.9,
-                14.1,
-                12.4,
-                11.0,
-                9.6,
-                8.3,
-                7.4,
-                6.2,
-                4.8,
-                3.8,
-                3.3,
-                2.9,
-                2.6,
-                2.6,
-                4.5,
-                5.4,
-                6.1,
-                8.5,
-                10.4,
-                7.3,
-                7.0,
-                6.6,
-                7.0,
-                9.2,
-                10.2,
-                12.2,
-                10.8,
-                10.1,
-                12.7,
-                15.0,
-                18.2,
-                23.8,
-                32.3,
-                50.0,
-                50.0,
-            ]
-        )
-        ff_ed = np.array(
-            [
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.1,
-                0.3,
-                0.5,
-                0.9,
-                1.4,
-                1.6,
-                1.7,
-                2.5,
-                2.7,
-                2.6,
-                2.6,
-                3.2,
-                5.2,
-                6.6,
-                12.0,
-                16.8,
-                15.3,
-                15.2,
-                14.2,
-                10.7,
-                7.1,
-                6.4,
-                1.8,
-                -0.9,
-                -1.6,
-                1.9,
-                4.9,
-                2.0,
-                -2.0,
-                2.5,
-                2.5,
-                2.5,
-            ]
-        )
-        df_ed = [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.1,
-            0.3,
-            0.4,
-            0.5,
-            1.0,
-            1.6,
-            1.7,
-            2.2,
-            2.7,
-            2.9,
-            3.8,
-            5.3,
-            6.8,
-            7.2,
-            10.2,
-            14.9,
-            14.5,
-            14.4,
-            12.7,
-            10.8,
-            8.9,
-            8.7,
-            8.5,
-            6.2,
-            5.0,
-            4.5,
-            4.0,
-            3.3,
-            2.6,
-            2.0,
-            2.0,
-            2.0,
-        ]
-        ITU_Hz = [
-            0,
-            100,
-            125,
-            160,
-            200,
-            250,
-            315,
-            400,
-            500,
-            630,
-            800,
-            1000,
-            1250,
-            1600,
-            2000,
-            2500,
-            3150,
-            4000,
-            5000,
-            6300,
-            8000,
-            10000,
-            20000,
-            48000,
-        ]
-        ITU_erp_drp = [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.3,
-            0.2,
-            0.5,
-            0.6,
-            0.7,
-            1.1,
-            1.7,
-            2.6,
-            4.2,
-            6.5,
-            9.4,
-            10.3,
-            6.6,
-            3.2,
-            3.3,
-            16,
-            14.4,
-            14.4,
-            14.4,
-        ]
         if src_posn == "ff":
-            src_corrn = ff_ed
+            src_corrn = FF_ED
         elif src_posn == "df":
-            src_corrn = df_ed
+            src_corrn = DF_ED
         elif src_posn == "ITU":
-            interf_itu = interp1d(ITU_Hz, ITU_erp_drp)
-            src_corrn = interf_itu(hz)
+            interf_itu = interp1d(ITU_HZ, ITU_ERP_DRP)
+            src_corrn = interf_itu(HZ)
         nyquist = sr / 2
-        ixf_useful = np.where(hz < nyquist)[0]
-        hz_used = np.append(hz[ixf_useful], nyquist)
-        corrn = src_corrn - midear
-        interf_corrn = interp1d(hz, corrn)
+        ixf_useful = np.where(HZ < nyquist)[0]
+        hz_used = np.append(HZ[ixf_useful], nyquist)
+        corrn = src_corrn - MIDEAR
+        interf_corrn = interp1d(HZ, corrn)
         last_corrn = interf_corrn(nyquist)
         corrn_used = np.append(corrn[ixf_useful], last_corrn)
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
-        n_wdw = int(2 * np.floor((sr / 16e3) * 368 / 2))
+        n_wdw = np.int(2 * np.floor((sr / 16e3) * 368 / 2))
         coch_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
