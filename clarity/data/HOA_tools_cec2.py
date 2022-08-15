@@ -4,6 +4,7 @@ from typing import List
 
 import numpy as np
 from numba import njit
+from numba.typed import List as TypedList
 from scipy.signal import convolve
 from scipy.spatial.transform import Rotation as R
 from scipy.special import comb
@@ -45,9 +46,14 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     sub_matrices = [np.eye(i * 2 + 1) for i in np.arange(n + 1)]
     sub_matrices[1] = foa_rotmat
 
+    typed_sub_matrices = TypedList()
+    [typed_sub_matrices.append(x) for x in sub_matrices]
+
     if n > 1:
         for i in np.arange(2, n + 1):
-            rot_mat, sub_matrices = compute_band_rotation(i, sub_matrices, rot_mat)
+            rot_mat, typed_sub_matrices = compute_band_rotation(
+                i, typed_sub_matrices, rot_mat
+            )
 
     return rot_mat
 

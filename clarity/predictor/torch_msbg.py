@@ -33,7 +33,7 @@ equiv_0dB_SPL = equiv0dBSPL + ahr
 
 def generate_key_percent(signal, thr_dB, winlen):
     if winlen != np.floor(winlen):
-        winlen = np.int(np.floor(winlen))
+        winlen = int(np.floor(winlen))
         print("\nGenerate_key_percent: \t Window length must be integer")
 
     siglen = len(signal)
@@ -41,7 +41,7 @@ def generate_key_percent(signal, thr_dB, winlen):
     non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
 
     nframes = 0
-    totframes = np.int(np.floor(siglen / winlen))
+    totframes = int(np.floor(siglen / winlen))
     every_dB = np.zeros(totframes)
 
     for ix in range(totframes):
@@ -56,12 +56,12 @@ def generate_key_percent(signal, thr_dB, winlen):
     # between the two peaks, and set a bit above that, as it heads for main peak
     frame_idx = np.where(every_dB >= expected)[0]
     valid_frames = len(frame_idx)
-    key = np.zeros(valid_frames * winlen, dtype=np.int)
+    key = np.zeros(valid_frames * winlen, dtype=int)
 
     # convert frame numbers into indices for signal
     for ix in range(valid_frames):
         key[ix * winlen : ix * winlen + winlen] = np.arange(
-            frame_idx[ix] * winlen, frame_idx[ix] * winlen + winlen, dtype=np.int
+            frame_idx[ix] * winlen, frame_idx[ix] * winlen + winlen, dtype=int
         )
     return key, used_thr_dB
 
@@ -84,7 +84,7 @@ def measure_rms(signal, sr, dB_rel_rms):
     # use this RMS to generate key threshold to more accurate RMS
     key_thr_dB = np.max([20 * np.log10(first_stage_rms) + dB_rel_rms, -80])
     key, used_thr_dB = generate_key_percent(
-        signal, key_thr_dB, np.int(np.round(win_secs * sr))
+        signal, key_thr_dB, int(np.round(win_secs * sr))
     )
     # active = 100.0 * len(key) / len(signal)
     rms = np.sqrt(np.mean(signal[key] ** 2))
@@ -94,18 +94,18 @@ def measure_rms(signal, sr, dB_rel_rms):
 
 def makesmearmat3(rl, ru, sr):
     fftsize = 512
-    nyquist = np.int(fftsize // 2)
+    nyquist = int(fftsize // 2)
     fnor = audfilt(1, 1, nyquist, sr)
     fwid = audfilt(rl, ru, nyquist, sr)
     fnext = np.hstack([fnor, np.zeros([nyquist, nyquist // 2])])
 
-    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=np.int):
+    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=int):
         fnext[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
             fnor[
                 i - 1, np.max([1, 2 * i - 3 * nyquist // 2]) - 1 : (2 * i - nyquist - 1)
             ]
         )
-    fsmear = np.linalg.lstsq(fnext, fwid)[
+    fsmear = np.linalg.lstsq(fnext, fwid, rcond=-1)[
         0
     ]  # https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
     fsmear = fsmear[:nyquist, :]
@@ -130,15 +130,15 @@ def audfilt(rl, ru, size, sr):
     aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
 
     g = np.zeros(size)
-    for i in np.arange(2, size + 1, 1, dtype=np.int):
+    for i in np.arange(2, size + 1, 1, dtype=int):
         fhz = (i - 1) * sr / (2 * size)
         erbhz = 24.7 * ((fhz * 0.00437) + 1)
         pl = 4 * fhz / (erbhz * rl)
         pu = 4 * fhz / (erbhz * ru)
-        j = np.arange(1, i, dtype=np.int)
+        j = np.arange(1, i, dtype=int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
-        j = np.arange(i, size + 1, dtype=np.int)
+        j = np.arange(i, size + 1, dtype=int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
         aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
@@ -427,7 +427,7 @@ class MSBGHearingModel(nn.Module):
         corrn_used = np.append(corrn[ixf_useful], last_corrn)
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
-        n_wdw = np.int(2 * np.floor((sr / 16e3) * 368 / 2))
+        n_wdw = int(2 * np.floor((sr / 16e3) * 368 / 2))
         coch_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
