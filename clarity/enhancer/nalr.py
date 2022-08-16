@@ -96,8 +96,8 @@ def fir2(
             ne = int(np.fix(ff[i + 1] * npt)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc = 0.0 if nb == ne else (j - nb) / (ne - nb)
-        H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])  # type: ignore
+        inc: Union[float, np.ndarray] = 0.0 if nb == ne else (j - nb) / (ne - nb)
+        H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])
         nb = ne + 1
 
     dt: float = 0.5 * (nn - 1)

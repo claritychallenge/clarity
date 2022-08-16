@@ -1,7 +1,9 @@
+"""Support for the MSBG hearing loss model."""
 import json
 import logging
 import math
 import os
+from typing import Optional, Tuple, Union
 
 import numpy as np
 import scipy
@@ -16,202 +18,46 @@ WIN_SECS = 0.01
 MSBG_FS = 44100
 TEST_NBITS = 16
 
+# fmt: off
 HZ = np.array(
     [
-        0.0,
-        20.0,
-        25.0,
-        31.5,
-        40.0,
-        50.0,
-        63.0,
-        80.0,
-        100.0,
-        125.0,
-        160.0,
-        200.0,
-        250.0,
-        315.0,
-        400.0,
-        500.0,
-        630.0,
-        750.0,
-        800.0,
-        1000.0,
-        1250.0,
-        1500.0,
-        1600.0,
-        2000.0,
-        2500.0,
-        3000.0,
-        3150.0,
-        4000.0,
-        5000.0,
-        6000.0,
-        6300.0,
-        8000.0,
-        9000.0,
-        10000.0,
-        11200.0,
-        12500.0,
-        14000.0,
-        15000.0,
-        16000.0,
-        20000.0,
-        48000,
+        0.0, 20.0, 25.0, 31.5, 40.0, 50.0, 63.0, 80.0, 100.0, 125.0, 160.0, 200.0,
+        250.0, 315.0, 400.0, 500.0, 630.0, 750.0, 800.0, 1000.0, 1250.0, 1500.0,
+        1600.0, 2000.0, 2500.0, 3000.0, 3150.0, 4000.0, 5000.0, 6000.0, 6300.0,
+        8000.0, 9000.0, 10000.0, 11200.0, 12500.0, 14000.0, 15000.0, 16000.0,
+        20000.0, 48000,
     ]
 )
 
 MIDEAR = np.array(
     [
-        50.0,
-        39.6,
-        32.0,
-        25.85,
-        21.4,
-        18.5,
-        15.9,
-        14.1,
-        12.4,
-        11.0,
-        9.6,
-        8.3,
-        7.4,
-        6.2,
-        4.8,
-        3.8,
-        3.3,
-        2.9,
-        2.6,
-        2.6,
-        4.5,
-        5.4,
-        6.1,
-        8.5,
-        10.4,
-        7.3,
-        7.0,
-        6.6,
-        7.0,
-        9.2,
-        10.2,
-        12.2,
-        10.8,
-        10.1,
-        12.7,
-        15.0,
-        18.2,
-        23.8,
-        32.3,
-        50.0,
-        50.0,
+        50.0, 39.6, 32.0, 25.85, 21.4, 18.5, 15.9, 14.1, 12.4, 11.0, 9.6, 8.3, 7.4,
+        6.2, 4.8, 3.8, 3.3, 2.9, 2.6, 2.6, 4.5, 5.4, 6.1, 8.5, 10.4, 7.3, 7.0, 6.6,
+        7.0, 9.2, 10.2, 12.2, 10.8, 10.1, 12.7, 15.0, 18.2, 23.8, 32.3, 50.0, 50.0,
     ]
 )
-
-# ------------------------------------------------------------------------------
 
 # Free field (frontal)FF_ED correction for threshold (was ISO std Table 1 - 4.2 dB)
 # i.e. relative to 0.0 dB at 1000 Hz, Shaw 1974
 
 FF_ED = np.array(
     [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.1,
-        0.3,
-        0.5,
-        0.9,
-        1.4,
-        1.6,
-        1.7,
-        2.5,
-        2.7,
-        2.6,
-        2.6,
-        3.2,
-        5.2,
-        6.6,
-        12.0,
-        16.8,
-        15.3,
-        15.2,
-        14.2,
-        10.7,
-        7.1,
-        6.4,
-        1.8,
-        -0.9,
-        -1.6,
-        1.9,
-        4.9,
-        2.0,
-        -2.0,
-        2.5,
-        2.5,
-        2.5,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.9, 1.4,
+        1.6, 1.7, 2.5, 2.7, 2.6, 2.6, 3.2, 5.2, 6.6, 12.0, 16.8, 15.3, 15.2, 14.2,
+        10.7, 7.1, 6.4, 1.8, -0.9, -1.6, 1.9, 4.9, 2.0, -2.0, 2.5, 2.5, 2.5,
     ]
 )
-
-# ------------------------------------------------------------------------------
 
 # DIFFUSE field ( relative to 0.0 dB at 1000Hz)
 # from 2008 file [corrections08.m] used in Samsung collaboration
 
 DF_ED = np.array(
     [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.1,
-        0.3,
-        0.4,
-        0.5,
-        1.0,
-        1.6,
-        1.7,
-        2.2,
-        2.7,
-        2.9,
-        3.8,
-        5.3,
-        6.8,
-        7.2,
-        10.2,
-        14.9,
-        14.5,
-        14.4,
-        12.7,
-        10.8,
-        8.9,
-        8.7,
-        8.5,
-        6.2,
-        5.0,
-        4.5,
-        4.0,
-        3.3,
-        2.6,
-        2.0,
-        2.0,
-        2.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.4, 0.5, 1.0,
+        1.6, 1.7, 2.2, 2.7, 2.9, 3.8, 5.3, 6.8, 7.2, 10.2, 14.9, 14.5, 14.4,
+        12.7, 10.8, 8.9, 8.7, 8.5, 6.2, 5.0, 4.5, 4.0, 3.3, 2.6, 2.0, 2.0, 2.0,
     ]
 )
-
-
-# ------------------------------------------------------------------------------
 
 # ITU Rec P 58 08/96 Head and Torso Simulator transfer fns. from Peter Hugher BTRL,
 # 4-June-2001. Negative of values in Table 14a of ITU P58 (05/2013), accessible at
@@ -221,65 +67,20 @@ DF_ED = np.array(
 
 ITU_HZ = np.array(
     [
-        0,
-        100,
-        125,
-        160,
-        200,
-        250,
-        315,
-        400,
-        500,
-        630,
-        800,
-        1000,
-        1250,
-        1600,
-        2000,
-        2500,
-        3150,
-        4000,
-        5000,
-        6300,
-        8000,
-        10000,
-        20000,
-        48000,
+        0, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
+        2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 20000, 48000,
     ]
 )
-
 # Ear Reference Point to Drum Reference Point (ERP-DRP) transfer function,
 # Table 14A/P.58, sect 6.2. NB negative of table since defined other way round.
 
 ITU_ERP_DRP = np.array(
     [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.3,
-        0.2,
-        0.5,
-        0.6,
-        0.7,
-        1.1,
-        1.7,
-        2.6,
-        4.2,
-        6.5,
-        9.4,
-        10.3,
-        6.6,
-        3.2,
-        3.3,
-        16,
-        14.4,
-        14.4,
-        14.4,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.5, 0.6, 0.7, 1.1, 1.7, 2.6, 4.2,
+        6.5, 9.4, 10.3, 6.6, 3.2, 3.3, 16, 14.4, 14.4, 14.4
     ]
 )
-
+# fmt: on
 
 # Ideal pre-emphasis (starts off as SII 1997), then rescaled for Moore et al. 2008
 # NB last two are -15dB/oct before rescaling below
@@ -348,7 +149,9 @@ def firwin2(n, f, a, window=None, antisymmetric=None):  # pylint: disable=W0613
     return b
 
 
-def fir2(nn, ff, aa, npt=None):
+def fir2(
+    nn: int, ff: np.ndarray, aa: np.ndarray, npt: Optional[int] = None
+) -> Tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
     Translation of MATLAB fir2.
@@ -362,19 +165,21 @@ def fir2(nn, ff, aa, npt=None):
             (default: max (smallest power of 2 greater than nn, 512))
 
     Returns:
-        ndarray: nn + 1 filter coefficients
+        ndarray: nn + 1 filter coefficients, 1
 
     """
     # Work with filter length instead of filter order
     nn += 1
 
     if npt is None:
-        npt = 2.0 ** np.ceil(math.log(nn) / math.log(2)) if nn >= 1024 else 512
+        new_npt: int = 2 ** np.ceil(math.log(nn) / math.log(2)) if nn >= 1024 else 512
         wind = scipy.signal.hamming(nn)
     else:
         wind = npt
-        npt = 2.0 ** np.ceil(math.log(nn) / math.log(2)) if nn >= 1024 else 512
-    lap = np.fix(npt / 25)
+        new_npt = 2 ** np.ceil(math.log(nn) / math.log(2)) if nn >= 1024 else 512
+    npt = new_npt
+
+    lap = np.fix(npt / 25).astype(int)
 
     nbrk = max(len(ff), len(aa))
 
@@ -392,12 +197,12 @@ def fir2(nn, ff, aa, npt=None):
     for i in np.arange(nint):
         if df[i] == 0:
             nb = int(np.ceil(nb - lap / 2))
-            ne = nb + lap - 1
+            ne: int = nb + lap - 1
         else:
             ne = int(np.fix(ff[i + 1] * npt)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc = 0 if nb == ne else (j - nb) / (ne - nb)
+        inc: Union[float, np.ndarray] = 0.0 if nb == ne else (j - nb) / (ne - nb)
         H[nb : (ne + 1)] = inc * aa[i + 1] + (1 - inc) * aa[i]
         nb = ne + 1
 
@@ -413,7 +218,17 @@ def fir2(nn, ff, aa, npt=None):
     return b, 1
 
 
-def gen_tone(freq, duration, fs=44100, level=0):
+def gen_tone(
+    freq: float, duration: float, fs: float = 44100.0, level: float = 0.0
+) -> np.ndarray:
+    """Generate a pure tone.
+
+    Args:
+        freq (float): Frequency of tone in Hz.
+        duration (float): Duration of tone in seconds.
+        fs (float, optional): Sample rate of generated tone in Hz. (default: 44100)
+        level (float, optional): Level of tone in dB SPL. (default: 0)
+    """
     return (
         1.4142
         * np.power(10, (0.05 * level))
@@ -421,7 +236,12 @@ def gen_tone(freq, duration, fs=44100, level=0):
     )
 
 
-def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
+def gen_eh2008_speech_noise(
+    duration: float,
+    fs: float = 44100.0,
+    level: Optional[float] = None,
+    supplied_b: Optional[np.ndarray] = None,
+) -> np.ndarray:
     """Generate speech shaped noise.
 
     Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and
@@ -431,8 +251,8 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
     EarHEar 2008 paper, Moore et al.
 
     Args:
-        duration (int): Duration of signal in seconds
-        fs (int): Sampling rate
+        duration (float): Duration of signal in seconds
+        fs (float): Sampling rate
         level (float, optional): Normalise to level dB if present
         supplied_b (ndarray, optional): High-pass filter
             (default: uses built-in pre-emphasis filter)
@@ -441,9 +261,8 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
         ndarray: Noise signal
 
     """
-    duration = int(duration)
     fs = int(fs)
-    n_samples = duration * fs
+    n_samples = int(duration * fs)
 
     # this rescales so that we get -7.5 dB/oct up to 8kHz, and -13 dB/oct above that
     norm_freq = GEN_NOISE_HZ / (fs / 2)
@@ -467,12 +286,12 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
     nburst = np.random.random((1, n_samples + len(b))) - 0.5
 
     # remove low-freq noise that may bias RMS estimate, -33dB at 50 Hz
-    eh2008_nse1 = scipy.signal.lfilter(b, 1, nburst)
+    eh2008_nse = scipy.signal.lfilter(b, 1, nburst)
 
     # high-pass filter to remove low freqs (will be 2-pass with filtfilt)
-    hpfB, hpfA = scipy.signal.ellip(3, 0.1, 50, 100 / (fs / 2), "high")
-    padlen = 3 * (max(len(hpfA), len(hpfB)) - 1)
-    eh2008_nse = scipy.signal.filtfilt(hpfB, hpfA, eh2008_nse1, padlen=padlen).flatten()
+    hpf = scipy.signal.ellip(3, 0.1, 50, 100 / (fs / 2), "high")
+    padlen = 3 * (max(len(hpf[1]), len(hpf[0])) - 1)
+    eh2008_nse = scipy.signal.filtfilt(*hpf, eh2008_nse, padlen=padlen).flatten()
 
     # this introduces a delay so remove it, ie time-ADVANCE audio
     # compensating shift to time-align all filter outputs
@@ -493,8 +312,11 @@ def gen_eh2008_speech_noise(duration, fs=44100, level=None, supplied_b=None):
 
 
 def generate_key_percent(
-    sig: np.ndarray, thr_dB: float, winlen: int, percent_to_track: float = None
-):
+    sig: np.ndarray,
+    thr_dB: float,
+    winlen: int,
+    percent_to_track: Optional[float] = None,
+) -> Tuple[np.ndarray, float]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
@@ -686,14 +508,16 @@ def read_signal(
     return x
 
 
-def write_signal(filename: str, x, fs, floating_point: bool = True) -> None:
+def write_signal(
+    filename: str, x: np.ndarray, fs: float, floating_point: bool = True
+) -> None:
     """Write a signal as fixed or floating point wav file.
 
     Args:
-        filename (str):
-        x ():
-        fs ():
-        floating_point (bool):
+        filename (str): name of file in to write to
+        x (ndarray): signal to write
+        fs (float): sampling frequency
+        floating_point (bool): write as floating point else an ints (default: True)
     """
 
     if fs != MSBG_FS:

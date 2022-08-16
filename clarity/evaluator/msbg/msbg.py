@@ -1,3 +1,4 @@
+"""Implementation of the MSBG hearing loss model."""
 import logging
 import math
 
@@ -41,6 +42,7 @@ class Ear:
         self.cochlea = None
 
     def set_audiogram(self, audiogram):
+        """Set the audiogram to be used."""
         if np.max(audiogram.levels[audiogram.levels is not None]) > 80:
             logging.warning(
                 "Impairment too severe: Suggest you limit audiogram max to 80-90 dB HL, \
