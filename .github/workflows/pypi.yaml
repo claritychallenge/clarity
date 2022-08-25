@@ -20,6 +20,7 @@ jobs:
         run: |
           pip3 install .
           pip3 install .[pypi]
+          pip3 install git+https://github.com/python-versioneer/python-versioneer/pull/294/commits/0337a75f1cc781f4a7ea35baab9545ae964b0ec7
       - name: Build package
         run: |
           python -m build
