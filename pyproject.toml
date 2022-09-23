@@ -36,3 +36,8 @@ exclude = [
     "docs/*",
     "build/*"
     ]
+
+[tool.coverage.run]
+omit = [
+    "clarity/_version.py"
+]
