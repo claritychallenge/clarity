@@ -27,6 +27,7 @@ jobs:
           python -m build --no-isolation
       - name: Publish package to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        repository_url: https://test.pypi.org/legacy/
         with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
