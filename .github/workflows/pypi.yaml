@@ -27,9 +27,9 @@ jobs:
           python -m build --no-isolation
       - name: Publish package to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        repository_url: https://test.pypi.org/legacy/
         with:
           user: __token__
+          repository_url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
       - name: Publish package to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
