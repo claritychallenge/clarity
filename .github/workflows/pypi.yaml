@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - ns-rse/49-versioneer-pypi
 
 jobs:
   build-release:
