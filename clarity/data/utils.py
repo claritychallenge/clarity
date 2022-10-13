@@ -32,8 +32,11 @@ def better_ear_speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> floa
     """
     if np.ndim(target) == 1:
         # analysis left ear and right ear for single channel target
-        left_snr = speechweighted_snr(target, noise[:, 0])
-        right_snr = speechweighted_snr(target, noise[:, 1])
+        try:
+            left_snr = speechweighted_snr(target, noise[:, 0])
+            right_snr = speechweighted_snr(target, noise[:, 1])
+        except IndexError:
+            raise
     else:
         # analysis left ear and right ear for two channel target
         left_snr = speechweighted_snr(target[:, 0], noise[:, 0])
@@ -43,19 +46,26 @@ def better_ear_speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> floa
     return be_snr
 
 
-def speechweighted_snr(target, noise):
+def speechweighted_snr(target: np.array, noise: np.array) -> float:
     """Apply speech weighting filter to signals and get SNR.
 
     Args:
         target (np.array):
-        noise ():
+        noise (np.array):
 
     Returns:
+        (float):
+    Signal Noise Ratio
     """
-    target_filt = scipy.signal.convolve(
-        target, SPEECH_FILTER, mode="full", method="fft"
-    )
-    noise_filt = scipy.signal.convolve(noise, SPEECH_FILTER, mode="full", method="fft")
+    try:
+        target_filt = scipy.signal.convolve(
+            target, SPEECH_FILTER, mode="full", method="fft"
+        )
+        noise_filt = scipy.signal.convolve(
+            noise, SPEECH_FILTER, mode="full", method="fft"
+        )
+    except ValueError:
+        raise
 
     # rms of the target after speech weighted filter
     targ_rms = np.sqrt(np.mean(target_filt**2))
@@ -97,7 +107,10 @@ def pad(signal: np.ndarray, length: int) -> np.ndarray:
         np.array:
     """
     # FIXME : Consider encapsulating in a 'try: ... except: ...' should the assertion not be met.
-    assert length >= signal.shape[0]
+    try:
+        assert length >= signal.shape[0]
+    except AssertionError:
+        raise
     return np.pad(
         signal, ([(0, length - signal.shape[0])] + ([(0, 0)] * (len(signal.shape) - 1)))
     )
