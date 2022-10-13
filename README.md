@@ -65,7 +65,7 @@ Current challenge(s)
 Upcoming challenges
 
 - The first Cadenza Challenge will launch Spring 2023. Join the [Cadenza Challenge
-  Group](https://groups.google.com/g/cadenza-challenge)
+  Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
 
 Previous challenges
 
