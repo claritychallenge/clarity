@@ -44,8 +44,6 @@ def test_better_ear_speechweighted_snr(
     target: np.ndarray, noise: np.ndarray, expected: float
 ) -> None:
     """Test of better_ear_speechweighted_snr()."""
-    print(f"np.ndim(target)      : {np.ndim(target)}")
-    print(f"np.ndim(noise)       : {np.ndim(noise)}")
     better_ear_signal_noise_ratio = better_ear_speechweighted_snr(target, noise)
     assert isinstance(better_ear_signal_noise_ratio, float)
     assert better_ear_signal_noise_ratio == expected

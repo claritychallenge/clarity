@@ -28,7 +28,7 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     and elevation phi
 
     Args:
-        order (int): order of ambisonic soundfield
+        n (int): order of ambisonic soundfield
         foa_rotmat (arraylike): rotation matrix to expand
 
     Returns:
@@ -71,12 +71,14 @@ def centred_element(r: np.ndarray, i: int, j: int):
         Any: matrix element
     """
     offset = int((r.shape[0] - 1) / 2)
+    if i > r.shape[0] or j > r.shape[1]:
+        raise IndexError
     output = r[i + offset, j + offset]
     return output
 
 
 @njit
-def P(i, a, b, el, r):
+def P(i: int, a: int, b: int, el: int, r: List[np.ndarray]) -> float:
     """P function for rotation matrix calculation.
 
     Args:
@@ -89,23 +91,19 @@ def P(i, a, b, el, r):
     Returns:
         float: P value
     """
-    p = 0.0
     if b == el:
-        p = (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, el - 1)) - (
+        return (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, el - 1)) - (
             centred_element(r[1], i, -1) * centred_element(r[el - 1], a, -el + 1)
         )
     elif b == -el:
-        p = (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, -el + 1)) + (
-            centred_element(r[1], i, -1) * centred_element(r[el - 1], a, el - 1)
-        )
-    else:
-        p = centred_element(r[1], i, 0) * centred_element(r[el - 1], a, b)
-
-    return p
+        return (
+            centred_element(r[1], i, 1) * centred_element(r[el - 1], a, -el + 1)
+        ) + (centred_element(r[1], i, -1) * centred_element(r[el - 1], a, el - 1))
+    return centred_element(r[1], i, 0) * centred_element(r[el - 1], a, b)
 
 
 @njit
-def U(m, n, el, r):
+def U(m: int, n: int, el: int, r: List[np.ndarray]) -> float:
     """U coefficient initialiser for rotation matrix calculation.
 
     Args:
@@ -121,7 +119,7 @@ def U(m, n, el, r):
 
 
 @njit
-def V(m, n, el, r):
+def V(m: int, n: int, el: int, r: List[np.ndarray]) -> float:
     """V coefficient initialiser for rotation matrix calculation.
 
     Args:
@@ -133,25 +131,19 @@ def V(m, n, el, r):
     Returns:
         float: V value
     """
-    d = 0
+    d = 0 if m == 0 else 1.0
     if m == 0:
         return P(1, 1, n, el, r) + P(-1, -1, n, el, r)
     elif m > 0:
         if m == 1:
-            d = 1.0
-        return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (
-            1 - d
-        )
-    else:
-        if m == -1:
-            d = 1.0
-        return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(
-            1 + d
-        )
+            return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (
+                1 - d
+            )
+    return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(1 + d)
 
 
 @njit
-def W(m, n, el, r):
+def W(m: int, n: int, el: int, r: List[np.ndarray]) -> float:
     """W coefficient initialiser for rotation matrix calculation.
 
     Args:
@@ -183,6 +175,7 @@ def compute_UVW_coefficients(m, n, el):
     Returns:
         tuple: u, v, w
     """
+    # d = 0 if m == 0 else 1
     d = 0
     if m == 0:
         d = 1
@@ -223,8 +216,6 @@ def compute_band_rotation(el, rotations, output):
     Returns:
         matrix: rotation submatrix
     """
-    # print(f'entering band rotation with l = {el}')
-
     for mm, m in enumerate(np.arange(-el, el + 1, 1)):
         for nn, n in enumerate(np.arange(-el, el + 1, 1)):
             u, v, w = compute_UVW_coefficients(m, n, el)
@@ -250,7 +241,7 @@ def compute_band_rotation(el, rotations, output):
 
 
 @njit
-def dot(A, B):
+def dot(A: np.ndarray, B: np.ndarray) -> np.ndarray:
     """Wraps np.dot for numba #@njit.
 
     Args:
@@ -368,7 +359,7 @@ def ambisonic_convolve(signal: np.ndarray, ir: np.ndarray, order: int) -> np.nda
     return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
 
 
-def compute_rms(input_signal: np.ndarray, axis: int = 0):
+def compute_rms(input_signal: np.ndarray, axis: int = 0) -> np.ndarray:
     """Compute rms values along a given axis.
     Args:
         input_signal (np.ndarray): Input signal
@@ -446,8 +437,10 @@ def rotation_control_vector(
     Returns:
         array: mapped rotation control vector
     """
-    assert end_idx > start_idx
-    assert array_length > end_idx
+    if start_idx > end_idx:
+        raise ValueError(f"start_idx ({start_idx}) > end_idx ({end_idx})")
+    if end_idx > array_length:
+        raise ValueError(f"array_length ({array_length}) > end_idx {end_idx}")
     x = np.arange(0, array_length)
     idx = smoothstep(x, x_min=start_idx, x_max=end_idx, N=smoothness)
     idx = np.array(np.floor(idx * (array_length - 1)), dtype=int)
@@ -474,7 +467,14 @@ def rotation_vector(
         np.array: _description_
     """
     turn_direction = -np.sign(start_angle - end_angle)
-    increment = (np.abs(start_angle - end_angle) / signal_length) * turn_direction
+    #    end_angle / signal_length
+    with np.errstate(divide="raise"):
+        try:
+            increment = (
+                np.abs(start_angle - end_angle) / signal_length
+            ) * turn_direction
+        except FloatingPointError:
+            raise
     theta = np.arange(start_angle, end_angle, increment)
     idx = rotation_control_vector(signal_length, start_idx, end_idx)
     return theta[idx]
