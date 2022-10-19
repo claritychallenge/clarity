@@ -1,7 +1,8 @@
 import numpy as np
 from numba import jit
-from scipy.signal import butter, cheby2, correlate, group_delay, lfilter, resample_poly
+from scipy.signal import butter, cheby2, correlate, group_delay, lfilter, resample_poly, firwin, convolve
 from scipy.interpolate import interp1d
+
 
 def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     """
@@ -133,10 +134,10 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
         xenv, xbm, yenv, ybm = GammatoneBM(xmid, BWx[n], ymid, BWy[n], fsamp, cfreq[n])
 
         # RMS levels of the ref and output envelopes for linear metric
-        xave[n] = np.sqrt(np.mean(xenv**2))
-        yave[n] = np.sqrt(np.mean(yenv**2))
-        xcave[n] = np.sqrt(np.mean(xcontrol**2))
-        ycave[n] = np.sqrt(np.mean(ycontrol**2))
+        xave[n] = np.sqrt(np.mean(xenv ** 2))
+        yave[n] = np.sqrt(np.mean(yenv ** 2))
+        xcave[n] = np.sqrt(np.mean(xcontrol ** 2))
+        ycave[n] = np.sqrt(np.mean(ycontrol ** 2))
 
         # Cochlear compression for the signal envelopes and BM motion
         xc, xb[n] = EnvCompressBM(
@@ -291,7 +292,7 @@ def LossParameters(HL, cfreq):
 
     attnOHC[loss >= thrOHC] = 0.8 * thrOHC[loss >= thrOHC]
     attnIHC[loss >= thrOHC] = 0.2 * thrOHC[loss >= thrOHC] + (
-        loss[loss >= thrOHC] - thrOHC[loss >= thrOHC]
+            loss[loss >= thrOHC] - thrOHC[loss >= thrOHC]
     )
 
     # Adjust the OHC bandwidth in proportion to the OHC loss
@@ -339,8 +340,8 @@ def Resamp24kHz(x, fsampx):
         y = resample_poly(x, fy, fx)
 
         # Match the RMS level of the resampled signal to that of the input
-        xRMS = np.sqrt(np.mean(x**2))
-        yRMS = np.sqrt(np.mean(y**2))
+        xRMS = np.sqrt(np.mean(x ** 2))
+        yRMS = np.sqrt(np.mean(y ** 2))
         y = (xRMS / yRMS) * y
 
     else:
@@ -364,8 +365,8 @@ def Resamp24kHz(x, fsampx):
 
         # Compute the input and output RMS levels within the 21 kHz bandwidth and
         # match the output to the input
-        xRMS = np.sqrt(np.mean(xfilt**2))
-        yRMS = np.sqrt(np.mean(yfilt**2))
+        xRMS = np.sqrt(np.mean(xfilt ** 2))
+        yRMS = np.sqrt(np.mean(yfilt ** 2))
         y = (xRMS / yRMS) * y
 
     return y, fsamp
@@ -429,8 +430,8 @@ def InputAlign(x, y):
 
     # Prune the sequences to remove the leading and trailing zeros
     nx1 = min(nx1, ny)
-    xp = x[nx0 : nx1 + 1]
-    yp = y[nx0 : nx1 + 1]
+    xp = x[nx0: nx1 + 1]
+    yp = y[nx0: nx1 + 1]
 
     return xp, yp
 
@@ -599,7 +600,7 @@ def BWadjust(control, BWmin, BWmax, Level1):
     """
 
     # Compute the control signal level
-    cRMS = np.sqrt(np.mean(control**2))
+    cRMS = np.sqrt(np.mean(control ** 2))
     cdB = 20 * np.log10(cRMS) + Level1
 
     # Adjust the auditory filter bandwidth
@@ -702,7 +703,7 @@ def EnvAlign(x, y):
     lags = min(lags, npts)
 
     xy = correlate(x, y, "full")
-    location = np.argmax(xy[npts - lags : npts + lags])  # Limit the range in which
+    location = np.argmax(xy[npts - lags: npts + lags])  # Limit the range in which
     delay = lags - location - 1
 
     # Time shift the output sequence
@@ -968,6 +969,7 @@ def aveSL(env, control, attnOHC, thrLow, CR, attnIHC, Level1):
 
     return xdB
 
+
 def EnvSmooth(env, segsize, fsamp):
     """
     Function to smooth the envelope returned by the cochlear model. The
@@ -995,7 +997,7 @@ def EnvSmooth(env, segsize, fsamp):
     test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
     if test > 0:
         # Force window length to be even
-        nwin = nwin+1
+        nwin = nwin + 1
     window = np.hanning(nwin)  # Raised cosine von Hann window
     wsum = np.sum(window)  # Sum for normalization
 
@@ -1023,7 +1025,7 @@ def EnvSmooth(env, segsize, fsamp):
         for n in range(1, nseg - 1):
             nstart = int(nstart + nhalf)
             nstop = int(nstart + nwin)
-            smooth[k, n] = sum(r[nstart:nstop]*window.conj().transpose())/wsum
+            smooth[k, n] = sum(r[nstart:nstop] * window.conj().transpose()) / wsum
 
         # The last (half) windowed segment
         nstart = nstart + nhalf
@@ -1070,45 +1072,45 @@ def melcor9(x, y, thr, addnoise, segsize):
     """
 
     # Processing parameters
-    nbands = x.shape[1]
+    nbands = x.shape[0]
     small = 1.0e-30
 
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
     nbasis = 6  # Number of cepstral coefficients to be used
-    freq = range(0, nbasis)
-    k = range(0, nbands)
+    freq = np.arange(nbasis)
+    k = np.arange(nbands)
     cepm = np.zeros((nbands, nbasis))
-    for nb in range(1, nbasis + 1):
-        basis = np.cos(freq(nb) * np.pi * k/(nbands-1))
-        cepm[:, nb] = basis / np.norm(basis)
+    for nb in range(nbasis):
+        basis = np.cos(k * float(freq[nb]) * np.pi / float((nbands - 1)))
+        cepm[:, nb] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
-    xLinear= 10**(x / 20)  # Convert envelope dB to linear (specific loudness)
-    xsum = np.sum(xLinear, 1)/nbands  # Proportional to loudness in sones
+    xLinear = 10 ** (x / 20)  # Convert envelope dB to linear (specific loudness)
+    xsum = np.sum(xLinear, 0) / nbands  # Proportional to loudness in sones
     xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
-    index = (xsum > thr).nonzero()  # Identify those segments above threshold
-    nsamp = index.shape[1]  # Number of segments above threshold
+    index = np.where(xsum > thr)[0]  # Identify those segments above threshold
+    nsamp = index.shape[0]  # Number of segments above threshold
 
     # Modulation filter bands, segment size is 8 msec
     edge = np.array([4, 8, 12.5, 20, 32, 50, 80])  # 8 bands covering 0 to 125 Hz
     nmod = 1 + edge.shape[0]  # Number of modulation filter bands
 
+    # Exit if not enough segments above zero
     CMave = 0
     CMlow = 0
     CMhigh = 0
     CMmod = np.zeros(nmod)
-    # Exit if not enough segments above zero
     if nsamp <= 1:
         print('Function eb.melcor9: Signal below threshold, outputs set to 0.')
         return CMave, CMlow, CMhigh, CMmod
 
     # Remove the silent intervals
-    x = x[:, index + 1]
-    y = y[:, index + 1]
+    x = x[:, index]
+    y = y[:, index]
 
     # Add the low-level noise to the envelopes
-    x = x + addnoise * np.standard_normal(x.shape)
-    y = y + addnoise * np.standard_normal(y.shape)
+    x = x + addnoise * np.random.standard_normal(x.shape)
+    y = y + addnoise * np.random.standard_normal(y.shape)
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
@@ -1128,69 +1130,71 @@ def melcor9(x, y, thr, addnoise, segsize):
         ycep[k, :] = ycep[k, :] - np.mean(ycep[k, :], axis=0)
 
     # Envelope sampling parameters
-    fsub = 1000.0 / (0.5*segsize)  # Envelope sampling frequency in Hz
+    fsub = 1000.0 / (0.5 * segsize)  # Envelope sampling frequency in Hz
     fnyq = 0.5 * fsub  # Envelope Nyquist frequency
 
     # Design the linear-phase envelope modulation filters
-    nfir = np.around(128*(fnyq/125))  # Adjust filter length to sampling rate
-    nfir = 2 * np.floor(nfir/2)  # Force an even filter length
+    nfir = np.around(128 * (fnyq / 125))  # Adjust filter length to sampling rate
+    nfir = int(2 * np.floor(nfir / 2))  # Force an even filter length
     nfir2 = nfir / 2
-    b = np.array(nmod)
-    b[0] = firwin(nfir, edge[1]/fnyq, window="hann", pass_zero='lowpass')  # LP filter 0-4 Hz
-    b[nmod] = firwin(nfir, edge[nmod-2]/fnyq, window="hann", pass_zero='highpass')  # HP 80-125 Hz
+    b = np.zeros((nmod, nfir + 1))
+    # TODO implement matlab fir1 -> scipy.signal.firwin is not exactly the same
+    b[0, :] = firwin(nfir + 1, float(edge[0] / fnyq), fs=fsub, window="hann", pass_zero='lowpass')  # LP filter 0-4 Hz
+    b[nmod - 1, :] = firwin(nfir + 1, float(edge[nmod - 2] / fnyq), fs=fsub, window="hann",
+                            pass_zero='highpass')  # HP 80-125 Hz
     for m in range(1, nmod - 2):
-        b[m] = firwin(nfir, np.array([edge[m-1], edge[m]])/fnyq, window="hann", pass_zero='lowpass')  # Bandpass filter
+        b[m, :] = firwin(nfir + 1, [edge[m - 1] / fnyq, edge[m] / fnyq], fs=fsub, window="hann")  # Bandpass filter
 
     # Convolve the input and output envelopes with the modulation filters
-    X = np.array((nmod,nbasis))
+    X = np.zeros((nmod, nbasis, nsamp))
     Y = X
     for m in range(nmod):
         for j in range(nbasis):
-            c = np.convolve(b[m], xcep[j, :], mode='full')
-            X[m, j] = c[(nfir2+1) :(nfir2+nsamp)]  # Remove the transients
-            c = np.convolve(b[m], ycep[j,:], mode='full')
-            Y[m, j] = c[(nfir2+1):(nfir2+nsamp)]  # Remove the transients
+            c = convolve(b[m], xcep[j, :], mode='full')
+            X[m, j, :] = c[int(nfir2): int(nfir2 + nsamp)]  # Remove the transients
+            c = convolve(b[m], ycep[j, :], mode='full')
+            Y[m, j, :] = c[int(nfir2): int(nfir2 + nsamp)]  # Remove the transients
 
     # Compute the cross-covariance matrix
-    CM = np.zeros((nmod,nbasis))
+    CM = np.zeros((nmod, nbasis))
     for m in range(nmod):
         for j in range(nbasis):
             #  Index j gives the input reference band
             xj = X[m, j]  # Input freq band j, modulation freq m
             xj = xj - np.mean(xj)
-            xsum = np.sum(xj**2)
+            xsum = np.sum(xj ** 2)
 
             # Processed signal band
-            yj = Y[m,j]  # Input freq band j, modulation freq m
+            yj = Y[m, j]  # Input freq band j, modulation freq m
             yj = yj - np.mean(yj)
-            ysum = np.sum(yj**2)
+            ysum = np.sum(yj ** 2)
 
             # Cross-correlate the reference and processed signals
             if (xsum < small) or (ysum < small):
                 CM[m, j] = 0
             else:
-                CM[m, j] = np.abs(np.sum(xj*yj))/np.sqrt(xsum * ysum)
+                CM[m, j] = np.abs(np.sum(xj * yj)) / np.sqrt(xsum * ysum)
 
     # Average over the  modulation filters and basis functions 2 - 6
     for m in range(nmod):
         for j in range(1, nbasis):
             CMave = CMave + CM[m, j]
 
-    CMave = CMave / (nmod*(nbasis-1))
+    CMave = CMave / (nmod * (nbasis - 1))
 
     # Average over the four lower modulation filters
     for m in range(4):
         for j in range(1, nbasis):
-            CMlow = CMlow + CM[m,j]
+            CMlow = CMlow + CM[m, j]
 
-    CMlow = CMlow / (4*(nbasis-1))
+    CMlow = CMlow / (4 * (nbasis - 1))
 
     #  Average over the four upper modulation filters
     for m in range(4, 8):
         for j in range(1, nbasis):
             CMhigh = CMhigh + CM[m, j]
 
-    CMhigh = CMhigh / (4*(nbasis-1))
+    CMhigh = CMhigh / (4 * (nbasis - 1))
 
     # Average each modulation frequency over the basis functions
     for m in range(nmod):
@@ -1198,7 +1202,7 @@ def melcor9(x, y, thr, addnoise, segsize):
         for j in range(1, nbasis):
             ave = ave + CM[m, j]
 
-        CMmod[m] = ave/(nbasis-1)
+        CMmod[m] = ave / (nbasis - 1)
 
     return CMave, CMlow, CMhigh, CMmod
 
@@ -1236,9 +1240,9 @@ def SpectDiff(xSL, ySL):
     # Convert the dB SL to linear magnitude values. Because of the auditory
     # filter bank, the OHC compression, and auditory threshold, the linear
     # values are closely related to specific loudness.
-    nbands = xSL.shape[1]
-    x = 10 ** (xSL/20)
-    y = 10 ** (ySL/20)
+    nbands = xSL.shape[0]
+    x = 10 ** (xSL / 20)
+    y = 10 ** (ySL / 20)
 
     # Normalize the level of the reference and degraded signals to have the
     # same loudness. Thus overall level is ignored while differences in
@@ -1264,8 +1268,8 @@ def SpectDiff(xSL, ySL):
 
     # Compute the slope difference
     dslope = np.zeros(3)
-    dx = (x[1:nbands] - x[0:nbands-1])
-    dy = (y[1:nbands] - y[0:nbands-1])
+    dx = (x[1:nbands] - x[0:nbands - 1])
+    dy = (y[1:nbands] - y[0:nbands - 1])
     d = dx - dy  # Slope difference
     dslope[0] = np.sum(np.abs(d))
     dslope[1] = nbands * np.std(d)
@@ -1274,7 +1278,7 @@ def SpectDiff(xSL, ySL):
     return dloud, dnorm, dslope
 
 
-def BMcovary(xBM,yBM,segsize,fsamp):
+def BMcovary(xBM, yBM, segsize, fsamp):
     """
     Function to compute the cross-covariance (normalized cross-correlation)
     between the reference and processed signals in each auditory band. The
@@ -1302,30 +1306,30 @@ def BMcovary(xBM,yBM,segsize,fsamp):
 
     # Lag for computing the cross-covariance
     lagsize = 1.0  # Lag (+/-) in msec
-    maxlag = np.around(lagsize * (0.001*fsamp))  # Lag in samples
+    maxlag = np.around(lagsize * (0.001 * fsamp))  # Lag in samples
 
     # Compute the segment window
-    nwin = np.around(segsize*(0.001*fsamp))  # Segment size in samples
-    test = nwin - 2 * np.floor(nwin/2)  #  0=even, 1=odd
+    nwin = int(np.around(segsize * (0.001 * fsamp)))  # Segment size in samples
+    test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
     if test > 0:
         nwin = nwin + 1  # Force window length to be even
 
     window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
-    wincorr = 1 / np.correlate(window, window, "full")# Window autocorrelation, inverted
-    wincorr = wincorr[-maxlag: maxlag]
+    wincorr = 1 / correlate(window, window, "full")  # Window autocorrelation, inverted
+    wincorr = wincorr[int(len(window) - 1 - maxlag): int(maxlag + len(window))]
     winsum2 = 1.0 / np.sum(window ** 2)  # Window power, inverted
 
     # The first segment has a half window
-    nhalf = nwin/2
+    nhalf = int(nwin / 2)
     halfwindow = window[nhalf: nwin]
-    halfcorr = 1 / np.correplate(halfwindow, halfwindow, "full")
-    halfcorr = halfcorr[-maxlag: maxlag]
+    halfcorr = 1 / correlate(halfwindow, halfwindow, "full")
+    halfcorr = halfcorr[int(len(halfwindow) - 1 - maxlag): int(maxlag + len(halfwindow))]
     halfsum2 = 1.0 / np.sum(halfwindow ** 2)  # MS sum normalization, first segment
 
     # Number of segments
     nchan = xBM.shape[0]
     npts = xBM.shape[1]
-    nseg = 1 + np.floor(npts/nwin) + np.floor((npts-nwin/2)/nwin)
+    nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
     sigMSx = np.zeros((nchan, nseg))
     sigMSy = sigMSx
     sigcov = sigMSx
@@ -1338,49 +1342,48 @@ def BMcovary(xBM,yBM,segsize,fsamp):
         y = yBM[k, :]
 
         # The first (half) windowed segment
-        nstart = 1
-        segx = x[nstart:nhalf] * halfwindow  # Window the reference
-        segy = y[nstart:nhalf] * halfwindow  # Window the processed signal
+        nstart = 0
+        segx = x[nstart: nhalf] * halfwindow  # Window the reference
+        segy = y[nstart: nhalf] * halfwindow  # Window the processed signal
         segx = segx - np.mean(segx)  # Make 0-mean
         segy = segy - np.mean(segy)
         MSx = np.sum(segx ** 2) * halfsum2  # Normalize signal MS value by the window
         MSy = np.sum(segy ** 2) * halfsum2
-        c = np.correlate(segx, segy, ' full')
-        c = c[-maxlag: maxlag]
+        c = correlate(segx, segy, 'full')
+        c = c[int(len(segx) - 1 - maxlag): int(maxlag + len(segx))]
         Mxy = np.max(np.abs(c * halfcorr))  # Unbiased cross-correlation
         if (MSx > small) and (MSy > small):
-            sigcov[k, 1] = Mxy/np.sqrt(MSx*MSy)  # Normalized cross-covariance
+            sigcov[k, 0] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
         else:
-            sigcov[k, 1] = 0.0
+            sigcov[k, 0] = 0.0
 
-        sigMSx[k, 1] = MSx  # Save the reference MS level
-        sigMSy[k, 1] = MSy
+        sigMSx[k, 0] = MSx  # Save the reference MS level
+        sigMSy[k, 0] = MSy
 
         # Loop over the remaining full segments, 50% overlap
-        for n in range(1, nseg-1):
+        for n in range(1, nseg - 1):
             nstart = nstart + nhalf
-            nstop = nstart + nwin - 1
-            segx = x[nstart: nstop]  * window  # Window the reference
+            nstop = nstart + nwin
+            segx = x[nstart: nstop] * window  # Window the reference
             segy = y[nstart: nstop] * window  # Window the processed signal
             segx = segx - np.mean(segx)  # Make 0-mean
             segy = segy - np.mean(segy)
             MSx = np.sum(segx ** 2) * winsum2  # Normalize signal MS value by the window
             MSy = np.sum(segy ** 2) * winsum2
-            c = np.correlate(segx, segy, ' full')
-            c = c[-maxlag: maxlag]
+            c = correlate(segx, segy, 'full')
+            c = c[int(len(segx) - 1 - maxlag): int(maxlag + len(segx))]
             Mxy = np.max(np.abs(c * wincorr))  # Unbiased cross-corr
             if (MSx > small) and (MSy > small):
-                sigcov[k, n] = Mxy / np.sqrt(MSx*MSy)  # Normalized cross-covariance
+                sigcov[k, n] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
             else:
                 sigcov[k, n] = 0.0
 
             sigMSx[k, n] = MSx  # Save the reference MS level
             sigMSy[k, n] = MSy  # Save the reference MS level
 
-
         # The last (half) windowed segment
         nstart = nstart + nhalf
-        nstop = nstart + nhalf - 1
+        nstop = nstart + nhalf
         segx = x[nstart: nstop] * window[0:nhalf]  # Window the reference
         segy = y[nstart:nstop] * window[0:nhalf]  # Window the processed signal
         segx = segx - np.mean(segx)  # Make 0-mean
@@ -1388,17 +1391,17 @@ def BMcovary(xBM,yBM,segsize,fsamp):
         MSx = np.sum(segx ** 2) * halfsum2  # Normalize signal MS value by the window
         MSy = np.sum(segy ** 2) * halfsum2
 
-        c = np.correlate(segx, segy, ' full')
-        c = c[-maxlag: maxlag]
+        c = np.correlate(segx, segy, 'full')
+        c = c[int(len(segx) - 1 - maxlag): int(maxlag + len(segx))]
 
         Mxy = np.max(np.abs(c * halfcorr))  # Unbiased cross-correlation
         if (MSx > small) and (MSy > small):
-            sigcov[k, nseg] = Mxy/np.sqrt(MSx*MSy)  # Normalized cross-covariance
+            sigcov[k, nseg - 1] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
         else:
-            sigcov[k, nseg] = 0.0
+            sigcov[k, nseg - 1] = 0.0
 
-        sigMSx[k, nseg] = MSx  # Save the reference MS level
-        sigMSy[k, nseg] = MSy  # Save the reference MS level
+        sigMSx[k, nseg - 1] = MSx  # Save the reference MS level
+        sigMSy[k, nseg - 1] = MSy  # Save the reference MS level
 
     # Limit the cross-covariance to lie between 0 and 1
     sigcov = np.clip(sigcov, 0, 1)
@@ -1408,6 +1411,7 @@ def BMcovary(xBM,yBM,segsize,fsamp):
     sigMSy = 2.0 * sigMSy
 
     return sigcov, sigMSx, sigMSy
+
 
 def AveCovary2(sigcov, sigMSx, thr):
     """
@@ -1451,10 +1455,10 @@ def AveCovary2(sigcov, sigMSx, thr):
     cfreq = CenterFreq(nchan)  # Center frequencies in Hz on an ERB scale
     p = np.array([1, 3, 5, 5, 5, 5])  # LP filter order
     fcut = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])  # Cutoff frequencies in Hz
-    fsync = np.zeros((6,nchan))  # Array of filter freq resp vs band center freq
+    fsync = np.zeros((6, nchan))  # Array of filter freq resp vs band center freq
     for n in range(6):
         fc2p = fcut[n] ** (2 * p[n])
-        freq2p = cfreq ** (2*p[n])
+        freq2p = cfreq ** (2 * p[n])
         fsync[n, :] = np.sqrt(fc2p / (fc2p + freq2p))
 
     # Find the segments that lie sufficiently above the threshold.
@@ -1462,8 +1466,8 @@ def AveCovary2(sigcov, sigMSx, thr):
     sigLinear = 10 ** (sigRMS / 20)  # Linear amplitude (specific loudness)
     xsum = np.sum(sigLinear, 0) / nchan  # Intensity averaged over frequency bands
     xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
-    index = (xsum > thr).nonzero() # Identify those segments above threshold
-    nseg = index.shape[1]  # Number of segments above threshold
+    index = np.argwhere(xsum > thr).T.squeeze()  # Identify those segments above threshold
+    nseg = index.shape[0]  # Number of segments above threshold
 
     # Exit if not enough segments above zero
     if nseg <= 1:
@@ -1478,7 +1482,7 @@ def AveCovary2(sigcov, sigMSx, thr):
 
     # Compute the time-frequency weights. The weight=1 if a segment in a
     # frequency band is above threshold, and weight=0 if below threshold.
-    weight = np.zeros((nchan,nseg))  # No IHC synchronization roll-off
+    weight = np.zeros((nchan, nseg))  # No IHC synchronization roll-off
     wsync1 = weight  # Loss of IHC synchronization at high frequencies
     wsync2 = weight
     wsync3 = weight
@@ -1489,12 +1493,12 @@ def AveCovary2(sigcov, sigMSx, thr):
         for n in range(nseg):
             if sigRMS[k, n] > thr:  # Thresh in dB SL for including time-freq tile
                 weight[k, n] = 1
-                wsync1[k, n] = fsync[1, k]
-                wsync2[k, n] = fsync[2, k]
-                wsync3[k, n] = fsync[3, k]
-                wsync4[k, n] = fsync[4, k]
-                wsync5[k, n] = fsync[5, k]
-                wsync6[k, n] = fsync[6, k]
+                wsync1[k, n] = fsync[0, k]
+                wsync2[k, n] = fsync[1, k]
+                wsync3[k, n] = fsync[2, k]
+                wsync4[k, n] = fsync[3, k]
+                wsync5[k, n] = fsync[4, k]
+                wsync6[k, n] = fsync[5, k]
 
     # Sum the weighted covariance values
     csum = np.sum(np.sum(weight * sigcov))  # Sum of weighted time-freq tiles
