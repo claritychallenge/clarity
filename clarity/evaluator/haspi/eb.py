@@ -1070,6 +1070,8 @@ def melcor9(x, y, thr, addnoise, segsize):
 
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
+    # import matlab.engine
+    # eng = matlab.engine.start_matlab()
 
     # Processing parameters
     nbands = x.shape[0]
@@ -1092,8 +1094,8 @@ def melcor9(x, y, thr, addnoise, segsize):
     nsamp = index.shape[0]  # Number of segments above threshold
 
     # Modulation filter bands, segment size is 8 msec
-    edge = np.array([4, 8, 12.5, 20, 32, 50, 80])  # 8 bands covering 0 to 125 Hz
-    nmod = 1 + edge.shape[0]  # Number of modulation filter bands
+    edge = [4., 8., 12.5, 20., 32., 50., 80.]  # 8 bands covering 0 to 125 Hz
+    nmod = 1 + len(edge)  # Number of modulation filter bands
 
     # Exit if not enough segments above zero
     CMave = 0
@@ -1138,16 +1140,16 @@ def melcor9(x, y, thr, addnoise, segsize):
     nfir = int(2 * np.floor(nfir / 2))  # Force an even filter length
     nfir2 = nfir / 2
     b = np.zeros((nmod, nfir + 1))
-    # TODO implement matlab fir1 -> scipy.signal.firwin is not exactly the same
-    b[0, :] = firwin(nfir + 1, float(edge[0] / fnyq), fs=fsub, window="hann", pass_zero='lowpass')  # LP filter 0-4 Hz
-    b[nmod - 1, :] = firwin(nfir + 1, float(edge[nmod - 2] / fnyq), fs=fsub, window="hann",
-                            pass_zero='highpass')  # HP 80-125 Hz
-    for m in range(1, nmod - 2):
-        b[m, :] = firwin(nfir + 1, [edge[m - 1] / fnyq, edge[m] / fnyq], fs=fsub, window="hann")  # Bandpass filter
+
+    b[0, :] = firwin(nfir + 1, edge[0] / fnyq, window="hann", pass_zero='lowpass')  # LP filter 0-4 Hz
+    b[nmod - 1, :] = firwin(nfir + 1, edge[nmod - 2] / fnyq, window="hann", pass_zero='highpass')  # HP 80-125 Hz
+    for m in range(1, nmod - 1):
+        b[m, :] = firwin(nfir + 1, [edge[m - 1] / fnyq, edge[m] / fnyq],
+                         window="hann", pass_zero='bandpass')  # Bandpass filter
 
     # Convolve the input and output envelopes with the modulation filters
     X = np.zeros((nmod, nbasis, nsamp))
-    Y = X
+    Y = np.zeros((nmod, nbasis, nsamp))
     for m in range(nmod):
         for j in range(nbasis):
             c = convolve(b[m], xcep[j, :], mode='full')
@@ -1315,15 +1317,17 @@ def BMcovary(xBM, yBM, segsize, fsamp):
         nwin = nwin + 1  # Force window length to be even
 
     window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
-    wincorr = 1 / correlate(window, window, "full")  # Window autocorrelation, inverted
+    wincorr = correlate(window, window, "full")  # Window autocorrelation, inverted
     wincorr = wincorr[int(len(window) - 1 - maxlag): int(maxlag + len(window))]
+    wincorr = 1 / wincorr
     winsum2 = 1.0 / np.sum(window ** 2)  # Window power, inverted
 
     # The first segment has a half window
     nhalf = int(nwin / 2)
     halfwindow = window[nhalf: nwin]
-    halfcorr = 1 / correlate(halfwindow, halfwindow, "full")
+    halfcorr = correlate(halfwindow, halfwindow, "full")
     halfcorr = halfcorr[int(len(halfwindow) - 1 - maxlag): int(maxlag + len(halfwindow))]
+    halfcorr = 1 / halfcorr
     halfsum2 = 1.0 / np.sum(halfwindow ** 2)  # MS sum normalization, first segment
 
     # Number of segments
@@ -1331,8 +1335,8 @@ def BMcovary(xBM, yBM, segsize, fsamp):
     npts = xBM.shape[1]
     nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
     sigMSx = np.zeros((nchan, nseg))
-    sigMSy = sigMSx
-    sigcov = sigMSx
+    sigMSy = np.zeros((nchan, nseg))
+    sigcov = np.zeros((nchan, nseg))
 
     # Loop to compute the signal mean-squared level in each band for each
     # segment and to compute the cross-corvariances.
@@ -1483,12 +1487,12 @@ def AveCovary2(sigcov, sigMSx, thr):
     # Compute the time-frequency weights. The weight=1 if a segment in a
     # frequency band is above threshold, and weight=0 if below threshold.
     weight = np.zeros((nchan, nseg))  # No IHC synchronization roll-off
-    wsync1 = weight  # Loss of IHC synchronization at high frequencies
-    wsync2 = weight
-    wsync3 = weight
-    wsync4 = weight
-    wsync5 = weight
-    wsync6 = weight
+    wsync1 = np.zeros((nchan, nseg))  # Loss of IHC synchronization at high frequencies
+    wsync2 = np.zeros((nchan, nseg))
+    wsync3 = np.zeros((nchan, nseg))
+    wsync4 = np.zeros((nchan, nseg))
+    wsync5 = np.zeros((nchan, nseg))
+    wsync6 = np.zeros((nchan, nseg))
     for k in range(nchan):
         for n in range(nseg):
             if sigRMS[k, n] > thr:  # Thresh in dB SL for including time-freq tile
@@ -1504,7 +1508,7 @@ def AveCovary2(sigcov, sigMSx, thr):
     csum = np.sum(np.sum(weight * sigcov))  # Sum of weighted time-freq tiles
     wsum = np.sum(np.sum(weight))  # Total number of tiles above thresold
     fsum = np.zeros(6)
-    ssum = fsum
+    ssum = np.zeros(6)
     fsum[0] = np.sum(np.sum(wsync1 * sigcov))  # Sum of weighted time-freq tiles
     ssum[0] = np.sum(np.sum(wsync1))  # Total number of tiles above thresold
     fsum[1] = np.sum(np.sum(wsync2 * sigcov))  # Sum of weighted time-freq tiles

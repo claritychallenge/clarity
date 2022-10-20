@@ -72,11 +72,11 @@ def haaqi_v1(x, fx, y, fy, HL, eq, Level1=65):
     # syncov=ave cross-covariance with added IHC loss of synchronization at HF
     thr = 2.5  # Threshold in dB SL for including time-freq tile
     avecov, syncov = eb.AveCovary2(sigcov, sigMSx, thr)
-    BMsync5 = syncov[5]  # Ave segment coherence with IHC loss of sync
+    BMsync5 = syncov[4]  # Ave segment coherence with IHC loss of sync
 
     # Extract and normalize the spectral features
     # Dloud:std
-    d = dloud[2]  # Loudness difference std
+    d = dloud[1]  # Loudness difference std
     d = d / 2.5  # Scale the value
     d = 1.0 - d  # 1=perfect, 0=bad
     d = min(d, 1)
@@ -84,7 +84,7 @@ def haaqi_v1(x, fx, y, fy, HL, eq, Level1=65):
     Dloud = d
 
     # Dnorm:std
-    d = dnorm[2]  # Slope difference std
+    d = dnorm[1]  # Slope difference std
     d = d / 25  # Scale the value
     d = 1.0 - d  # 1=perfect, 0=bad
     d = min(d, 1)
