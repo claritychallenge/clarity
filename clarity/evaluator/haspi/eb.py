@@ -3,13 +3,14 @@ from numba import jit
 from scipy.signal import (
     butter,
     cheby2,
+    convolve,
     correlate,
+    firwin,
     group_delay,
     lfilter,
     resample_poly,
-    firwin,
-    convolve,
 )
+
 from clarity.enhancer.nalr import NALR
 
 
@@ -1084,12 +1085,9 @@ def melcor9(x, y, thr, addnoise, segsize):
 
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
-    # import matlab.engine
-    # eng = matlab.engine.start_matlab()
 
     # Processing parameters
     nbands = x.shape[0]
-    small = 1.0e-30
 
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
     nbasis = 6  # Number of cepstral coefficients to be used
@@ -1130,7 +1128,6 @@ def melcor9(x, y, thr, addnoise, segsize):
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
-
     xcep = np.zeros((nbasis, nsamp))  # Input
     ycep = np.zeros((nbasis, nsamp))  # Output
     for n in range(nsamp):
@@ -1152,7 +1149,6 @@ def melcor9(x, y, thr, addnoise, segsize):
     # Design the linear-phase envelope modulation filters
     nfir = np.around(128 * (fnyq / 125))  # Adjust filter length to sampling rate
     nfir = int(2 * np.floor(nfir / 2))  # Force an even filter length
-    nfir2 = nfir / 2
     b = np.zeros((nmod, nfir + 1))
 
     b[0, :] = firwin(
@@ -1169,6 +1165,44 @@ def melcor9(x, y, thr, addnoise, segsize):
             pass_zero="bandpass",
         )  # Bandpass filter
 
+    CM = melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep)
+
+    # Average over the  modulation filters and basis functions 2 - 6
+    for m in range(nmod):
+        for j in range(1, nbasis):
+            CMave += CM[m, j]
+
+    CMave = CMave / (nmod * (nbasis - 1))
+
+    # Average over the four lower modulation filters
+    for m in range(4):
+        for j in range(1, nbasis):
+            CMlow += CM[m, j]
+
+    CMlow = CMlow / (4 * (nbasis - 1))
+
+    #  Average over the four upper modulation filters
+    for m in range(4, 8):
+        for j in range(1, nbasis):
+            CMhigh += CM[m, j]
+
+    CMhigh = CMhigh / (4 * (nbasis - 1))
+
+    # Average each modulation frequency over the basis functions
+    for m in range(nmod):
+        ave = 0
+        for j in range(1, nbasis):
+            ave += CM[m, j]
+
+        CMmod[m] = ave / (nbasis - 1)
+
+    return CMave, CMlow, CMhigh, CMmod
+
+
+def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep):
+    """Compute the cross-covariance matrix."""
+    small = 1.0e-30
+    nfir2 = nfir / 2
     # Convolve the input and output envelopes with the modulation filters
     X = np.zeros((nmod, nbasis, nsamp))
     Y = np.zeros((nmod, nbasis, nsamp))
@@ -1198,37 +1232,7 @@ def melcor9(x, y, thr, addnoise, segsize):
                 CM[m, j] = 0
             else:
                 CM[m, j] = np.abs(np.sum(xj * yj)) / np.sqrt(xsum * ysum)
-
-    # Average over the  modulation filters and basis functions 2 - 6
-    for m in range(nmod):
-        for j in range(1, nbasis):
-            CMave = CMave + CM[m, j]
-
-    CMave = CMave / (nmod * (nbasis - 1))
-
-    # Average over the four lower modulation filters
-    for m in range(4):
-        for j in range(1, nbasis):
-            CMlow = CMlow + CM[m, j]
-
-    CMlow = CMlow / (4 * (nbasis - 1))
-
-    #  Average over the four upper modulation filters
-    for m in range(4, 8):
-        for j in range(1, nbasis):
-            CMhigh = CMhigh + CM[m, j]
-
-    CMhigh = CMhigh / (4 * (nbasis - 1))
-
-    # Average each modulation frequency over the basis functions
-    for m in range(nmod):
-        ave = 0
-        for j in range(1, nbasis):
-            ave = ave + CM[m, j]
-
-        CMmod[m] = ave / (nbasis - 1)
-
-    return CMave, CMlow, CMhigh, CMmod
+    return CM
 
 
 def SpectDiff(xSL, ySL):
