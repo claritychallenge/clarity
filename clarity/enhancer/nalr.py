@@ -139,7 +139,8 @@ class NALR:
         """
         Args:
             HL: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz
-
+            cfs: center frequencies of the hearing thresholds. If None, the default
+                values are used.
         Returns:
             NAL-R FIR filter
             delay
