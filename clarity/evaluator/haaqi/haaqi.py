@@ -52,7 +52,8 @@ def haaqi_v1(x, fx, y, fy, HL, eq, Level1=65):
     thr = 2.5  # Silence threshold: sum across bands, dB above aud threshold
     addnoise = 0.0  # dditive noise in dB SL to condition cross-covariances
     CepAve, CepLow, CepHigh, CepModVector = eb.melcor9(
-        xdB, ydB, thr, addnoise, segsize)  # 8 modulation freq bands
+        xdB, ydB, thr, addnoise, segsize
+    )  # 8 modulation freq bands
 
     # Linear changes in the long-term spectra
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
@@ -91,13 +92,15 @@ def haaqi_v1(x, fx, y, fy, HL, eq, Level1=65):
 
     # Construct the models
     # Nonlinear model
-    Nonlin = 0.754 * (CepHigh ** 3) + 0.246 * BMsync5  # Combined envelope and TFS
+    Nonlin = 0.754 * (CepHigh**3) + 0.246 * BMsync5  # Combined envelope and TFS
 
     # Linear model
     Linear = 0.329 * Dloud + 0.671 * Dnorm  # Linear fit
 
     # Combined model
-    Combined = 0.336 * Nonlin + 0.001 * Linear + 0.501 * (Nonlin ** 2) + 0.161 * (Linear ** 2)  # Polynomial sum
+    Combined = (
+        0.336 * Nonlin + 0.001 * Linear + 0.501 * (Nonlin**2) + 0.161 * (Linear**2)
+    )  # Polynomial sum
 
     # Raw data
     raw = [CepHigh, BMsync5, Dloud, Dnorm]
