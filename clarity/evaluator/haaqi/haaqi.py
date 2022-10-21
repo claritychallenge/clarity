@@ -1,5 +1,3 @@
-import numpy as np
-
 from clarity.evaluator.haspi import eb
 
 

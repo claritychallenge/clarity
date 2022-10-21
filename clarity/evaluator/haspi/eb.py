@@ -1,7 +1,6 @@
 import numpy as np
 from numba import jit
 from scipy.signal import butter, cheby2, correlate, group_delay, lfilter, resample_poly, firwin, convolve
-from scipy.interpolate import interp1d
 
 
 def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
