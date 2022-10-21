@@ -135,7 +135,7 @@ class NALR:
         hl_interpf = scipy.interpolate.interp1d(cfs, hl)
         return hl_interpf(self.aud)
 
-    def build(self, HL, cfs):
+    def build(self, HL, cfs=None):
         """
         Args:
             HL: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz
@@ -144,6 +144,9 @@ class NALR:
             NAL-R FIR filter
             delay
         """
+        if cfs is None:
+            cfs = [250, 500, 1000, 2000, 4000, 6000]
+
         HL = self.hl_interp(np.array(HL), np.array(cfs))
         mloss = np.max(HL)
         if mloss > 0:
