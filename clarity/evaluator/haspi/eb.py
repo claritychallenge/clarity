@@ -106,7 +106,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, fsamp)
-        nalr_fir, _ = enhancer.build(HL)
+        nalr_fir, _ = enhancer.build(HL, None)
         pass
 
     # Cochlear model
