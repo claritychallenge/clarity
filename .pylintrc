@@ -78,8 +78,8 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=C0103,
-        R0801,
+disable=R0801,
+        #C0103,
         raw-checker-failed,
         bad-inline-option,
         locally-disabled,
@@ -574,4 +574,3 @@ min-public-methods=2
 # "BaseException, Exception".
 overgeneral-exceptions=BaseException,
                        Exception
-

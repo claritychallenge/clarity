@@ -1,3 +1,4 @@
+"""Utilities for MBSTOI processing."""
 import logging
 
 import numpy as np
@@ -6,102 +7,140 @@ from scipy.signal import find_peaks
 EPS = np.finfo("float").eps
 
 
-def ec(
-    xl_hat,
-    xr_hat,
-    yl_hat,
-    yr_hat,
-    J,
-    N,
-    fids,
-    cf,
-    taus,
-    ntaus,
-    gammas,
-    ngammas,
-    d,
-    p_ec_max,
-    sigma_epsilon,
-    sigma_delta,
+def equalisation_cancellation(
+    left_ear_clean_hat: np.ndarray,
+    right_ear_clean_hat: np.ndarray,
+    left_ear_noisy_hat: np.ndarray,
+    right_ear_noisy_hat: np.ndarray,
+    n_third_octave_bands: int,
+    n_frames: int,
+    frequency_band_edges_indices: np.ndarray,
+    centre_frequencies: np.ndarray,
+    taus: np.ndarray,
+    n_taus: int,
+    gammas: np.ndarray,
+    n_gammas: int,
+    intermediate_intelligibility_measure_grid: np.ndarray,
+    p_ec_max: np.ndarray,
+    sigma_epsilon: np.ndarray,
+    sigma_delta: np.ndarray,
 ):
     """Run the equalisation-cancellation (EC) stage of the MBSTOI metric.
-    The EC loop evaluates one huge equation in every iteration.
-    See referenced notes for details.
-    The left and right ear signals are level adjusted by gamma (in dB) and time
-    shifted by tau relative to one-another and are thereafter subtracted.
-    The processed signals are treated similarly.
-    To obtain performance similar to that of humans,the EC stage adds jitter
-    We are searching for the level and time adjustments that maximise the
-    intermediate correlation coefficients d.
-    Could add location of source and interferer to this to reduce search space.
 
-    Args:
-        xl_hat(ndarray): clean L short-time DFT coefficients (single-sided) per freq bin and frame
-        xr_hat(ndarray): clean R short-time DFT coefficients (single-sided) per freq bin and frame
-        yl_hat(ndarray): proc. L short-time DFT coefficients (single-sided) per freq bin and frame
-        yr_hat(ndarray): proc. R short-time DFT coefficients (single-sided) per freq bin and frame
-        J (int): number of one-third octave bands
-        N (int): number of frames for intermediate intelligibility measure
-        fids (ndarray): indices of frequency band edges
-        cf (ndarray): centre frequencies
-        taus (ndarray): interaural delay (tau) values
-        ntaus (int): number tau values
-        gammas (ndarray): interaural level difference (gamma) values
-        ngammas (int): number gamma values
-        d (ndarray): grid for intermediate intelligibility measure
-        p_ec_max (ndarray): empty grid for maximum values
-        sigma_epsilon (ndarray): jitter for gammas
-        sigma_delta (ndarray): jitter for taus
+    The EC loop evaluates one huge equation in every iteration (see referenced notes for details). The left and right
+    ear signals are level adjusted by gamma (in dB) and time shifted by tau relative to one-another and are thereafter
+    subtracted. The processed signals are treated similarly. To obtain performance similar to that of humans,the EC stage adds
+    jitter. We are searching for the level and time adjustments that maximise the intermediate correlation coefficients
+    d. Could add location of source and interferer to this to reduce search space.
 
-    Returns:
-        d (ndarray): updated grid for intermediate intelligibility measure
-        p_ec_max (ndarray): grid containing maximum values
+    Parameters
+    ----------
+    left_ear_clean_hat : np.ndarray
+        Noisy/processed left eat short-time DFT coefficients (single-sided) per frequency bin and frame.
+    right_ear_clean_hat : np.ndarray
+        Noisy/processed left eat short-time DFT coefficients (single-sided) per frequency bin and frame.
+    left_ear_noisy_hat : np.ndarray
+        Noisy/processed right eat short-time DFT coefficients (single-sided) per frequency bin and frame.
+    right_ear_noisy_hat : np.ndarray
+        Noisy/processed right eat short-time DFT coefficients (single-sided) per frequency bin and frame.
+    n_third_octave_bands: int
+        Number of one-third octave bands.
+    n_frames : int
+        Number of frames for intermediate intelligibility measure.
+    fids : np.ndarray
+        Indices of frequency band edges.
+    cf : np.ndarray
+        Centre frequencies.
+    taus : np.ndarray
+        Interaural delay (tau) values.
+    n_taus : int
+        Number of tau values.
+    gammas : np.ndarray
+        Interaural level difference (gamma) values.
+    ngammas : int
+        Number of gamma values.
+    intermediate_intelligibility_measure_grid : np.ndarray
+        Grid for intermediate intelligibility measure.
+    p_ec_max : np.ndarray
+        Empty grid for maximum values.
+    sigma_epsilon : np.ndarray
+        Jitter for gammas.
+    sigma_delta : np.ndarray
+        Jitter for taus.
+
+    Returns
+    -------
+    Tuple(np.ndarray, np.ndarray)
+        Tuple of d a np.ndarray of updated grid for intermediate intelligibility measure and the np.ndarray grid
+    containing maximum values.
     """
-
     taus = np.expand_dims(taus, axis=0)
     sigma_delta = np.expand_dims(sigma_delta, axis=0)
     sigma_epsilon = np.expand_dims(sigma_epsilon, axis=0)
     gammas = np.expand_dims(gammas, axis=0)
     epsexp = np.exp(2 * np.log(10) ** 2 * sigma_epsilon**2)
 
-    for i in range(J):  # per frequency band
-        tauexp = np.exp(-1j * cf[i] * taus)
-        tauexp2 = np.exp(-1j * 2 * cf[i] * taus)
-        deltexp = np.exp(-2 * cf[i] ** 2 * sigma_delta**2)
+    # per frequency band
+    for i in range(n_third_octave_bands):  # pylint: disable=invalid-name
+        tauexp = np.exp(-1j * centre_frequencies[i] * taus)
+        tauexp2 = np.exp(-1j * 2 * centre_frequencies[i] * taus)
+        deltexp = np.exp(-2 * centre_frequencies[i] ** 2 * sigma_delta**2)
         epsdelexp = np.exp(
             0.5
             * (
-                np.ones((ntaus, 1))
+                np.ones((n_taus, 1))
                 * (
                     np.log(10) ** 2 * sigma_epsilon**2
-                    - cf[i] ** 2 * np.transpose(sigma_delta) ** 2
+                    - centre_frequencies[i] ** 2 * np.transpose(sigma_delta) ** 2
                 )
-                * np.ones((1, ngammas))
+                * np.ones((1, n_gammas))
             )
         )
-
-        for jj in range(np.shape(d)[1]):  # per frame
-            seg_xl = xl_hat[int(fids[i, 0] - 1) : int(fids[i, 1]), jj : (jj + N)]
-            seg_xr = xr_hat[int(fids[i, 0] - 1) : int(fids[i, 1]), jj : (jj + N)]
-            seg_yl = yl_hat[int(fids[i, 0] - 1) : int(fids[i, 1]), jj : (jj + N)]
-            seg_yr = yr_hat[int(fids[i, 0] - 1) : int(fids[i, 1]), jj : (jj + N)]
+        # per frame
+        for jj in range(
+            np.shape(intermediate_intelligibility_measure_grid)[1]
+        ):  # pylint: disable=invalid-name
+            seg_xl = left_ear_clean_hat[
+                int(frequency_band_edges_indices[i, 0] - 1) : int(
+                    frequency_band_edges_indices[i, 1]
+                ),
+                jj : (jj + n_frames),
+            ]
+            seg_xr = right_ear_clean_hat[
+                int(frequency_band_edges_indices[i, 0] - 1) : int(
+                    frequency_band_edges_indices[i, 1]
+                ),
+                jj : (jj + n_frames),
+            ]
+            seg_yl = left_ear_noisy_hat[
+                int(frequency_band_edges_indices[i, 0] - 1) : int(
+                    frequency_band_edges_indices[i, 1]
+                ),
+                jj : (jj + n_frames),
+            ]
+            seg_yr = right_ear_noisy_hat[
+                int(frequency_band_edges_indices[i, 0] - 1) : int(
+                    frequency_band_edges_indices[i, 1]
+                ),
+                jj : (jj + n_frames),
+            ]
 
             # All normalised by subtracting mean
-            Lx = np.sum(np.conj(seg_xl) * seg_xl, axis=0)
-            Lx = np.expand_dims(Lx, axis=0)
-            Lx = Lx - np.mean(Lx)
-            Rx = np.sum(np.conj(seg_xr) * seg_xr, axis=0)
-            Rx = np.expand_dims(Rx, axis=0)
-            Rx = Rx - np.mean(Rx)
+            left_ear_clean = np.sum(np.conj(seg_xl) * seg_xl, axis=0)
+            left_ear_clean = np.expand_dims(left_ear_clean, axis=0)
+            left_ear_clean = left_ear_clean - np.mean(left_ear_clean)
+            right_ear_clean = np.sum(np.conj(seg_xr) * seg_xr, axis=0)
+            right_ear_clean = np.expand_dims(right_ear_clean, axis=0)
+            right_ear_clean = right_ear_clean - np.mean(right_ear_clean)
             rhox = np.sum(np.conj(seg_xr) * seg_xl, axis=0)
             rhox = np.expand_dims(rhox, axis=0)
             rhox = rhox - np.mean(rhox)
-            Ly = np.sum(np.conj(seg_yl) * seg_yl, axis=0)
-            Ly = np.expand_dims(Ly, axis=0)
-            Ly = Ly - np.mean(Ly)
-            Ry = np.sum(np.conj(seg_yr) * seg_yr, axis=0)
-            Ry = np.expand_dims(Ry, axis=0)
-            Ry = Ry - np.mean(Ry)
+            left_ear_noisy = np.sum(np.conj(seg_yl) * seg_yl, axis=0)
+            left_ear_noisy = np.expand_dims(left_ear_noisy, axis=0)
+            left_ear_noisy = left_ear_noisy - np.mean(left_ear_noisy)
+            right_ear_noisy = np.sum(np.conj(seg_yr) * seg_yr, axis=0)
+            right_ear_noisy = np.expand_dims(right_ear_noisy, axis=0)
+            right_ear_noisy = right_ear_noisy - np.mean(right_ear_noisy)
             rhoy = np.sum(np.conj(seg_yr) * seg_yl, axis=0)
             rhoy = np.expand_dims(rhoy, axis=0)
             rhoy = rhoy - np.mean(rhoy)
@@ -111,50 +150,116 @@ def ec(
             # Andersen et al. 2018
 
             # Calculate Exy
-            firstpart = firstpartfunc(Lx, Ly, Rx, Ry, ntaus, gammas, epsexp)
-            secondpart = secondpartfunc(Lx, Ly, rhoy, rhox, tauexp, epsdelexp, gammas)
-            thirdpart = thirdpartfunc(Rx, Ry, rhoy, rhox, tauexp, epsdelexp, gammas)
-            fourthpart = fourthpartfunc(rhox, rhoy, tauexp2, ngammas, deltexp)
+            firstpart = firstpartfunc(
+                left_ear_clean,
+                left_ear_noisy,
+                right_ear_clean,
+                right_ear_noisy,
+                n_taus,
+                gammas,
+                epsexp,
+            )
+            secondpart = secondpartfunc(
+                left_ear_clean, left_ear_noisy, rhoy, rhox, tauexp, epsdelexp, gammas
+            )
+            thirdpart = thirdpartfunc(
+                right_ear_clean, right_ear_noisy, rhoy, rhox, tauexp, epsdelexp, gammas
+            )
+            fourthpart = fourthpartfunc(rhox, rhoy, tauexp2, n_gammas, deltexp)
             exy = np.real(firstpart - secondpart - thirdpart + fourthpart)
 
             # Calculate Exx
-            firstpart = firstpartfunc(Lx, Lx, Rx, Rx, ntaus, gammas, epsexp)
-            secondpart = secondpartfunc(Lx, Lx, rhox, rhox, tauexp, epsdelexp, gammas)
-            thirdpart = thirdpartfunc(Rx, Rx, rhox, rhox, tauexp, epsdelexp, gammas)
-            fourthpart = fourthpartfunc(rhox, rhox, tauexp2, ngammas, deltexp)
+            firstpart = firstpartfunc(
+                left_ear_clean,
+                left_ear_clean,
+                right_ear_clean,
+                right_ear_clean,
+                n_taus,
+                gammas,
+                epsexp,
+            )
+            secondpart = secondpartfunc(
+                left_ear_clean, left_ear_clean, rhox, rhox, tauexp, epsdelexp, gammas
+            )
+            thirdpart = thirdpartfunc(
+                right_ear_clean, right_ear_clean, rhox, rhox, tauexp, epsdelexp, gammas
+            )
+            fourthpart = fourthpartfunc(rhox, rhox, tauexp2, n_gammas, deltexp)
             exx = np.real(firstpart - secondpart - thirdpart + fourthpart)
 
             # Calculate Eyy
-            firstpart = firstpartfunc(Ly, Ly, Ry, Ry, ntaus, gammas, epsexp)
-            secondpart = secondpartfunc(Ly, Ly, rhoy, rhoy, tauexp, epsdelexp, gammas)
-            thirdpart = thirdpartfunc(Ry, Ry, rhoy, rhoy, tauexp, epsdelexp, gammas)
-            fourthpart = fourthpartfunc(rhoy, rhoy, tauexp2, ngammas, deltexp)
+            firstpart = firstpartfunc(
+                left_ear_noisy,
+                left_ear_noisy,
+                right_ear_noisy,
+                right_ear_noisy,
+                n_taus,
+                gammas,
+                epsexp,
+            )
+            secondpart = secondpartfunc(
+                left_ear_noisy, left_ear_noisy, rhoy, rhoy, tauexp, epsdelexp, gammas
+            )
+            thirdpart = thirdpartfunc(
+                right_ear_noisy, right_ear_noisy, rhoy, rhoy, tauexp, epsdelexp, gammas
+            )
+            fourthpart = fourthpartfunc(rhoy, rhoy, tauexp2, n_gammas, deltexp)
             eyy = np.real(firstpart - secondpart - thirdpart + fourthpart)
 
             # Ensure that intermediate correlation will be sensible and compute it
             # If all minimum values are less than 1e-40, set d[i,jj] to -1
             if np.min(abs(exx * eyy), axis=0).all() < 1e-40:
-                d[i, jj] = -1
+                intermediate_intelligibility_measure_grid[i, jj] = -1
                 continue
 
-            p = np.divide(exx, eyy)
-            tmp = p.max(axis=0)
-            idx1 = p.argmax(axis=0)
+            proportion = np.divide(exx, eyy)
+            tmp = proportion.max(axis=0)
+            idx1 = proportion.argmax(axis=0)
 
             # Return overall maximum and index
             p_ec_max[i, jj] = tmp.max()
             idx2 = tmp.argmax()
-            d[i, jj] = np.divide(
+            intermediate_intelligibility_measure_grid[i, jj] = np.divide(
                 exy[idx1[idx2], idx2],
                 np.sqrt(exx[idx1[idx2], idx2] * eyy[idx1[idx2], idx2]),
             )
 
-    return d, p_ec_max
+    return (intermediate_intelligibility_measure_grid, p_ec_max)
 
 
-def firstpartfunc(L1, L2, R1, R2, ntaus, gammas, epsexp):
+# pylint: disable=invalid-name,fixme
+def firstpartfunc(
+    L1: np.ndarray,
+    L2: np.ndarray,
+    R1: np.ndarray,
+    R2: np.ndarray,
+    n_taus: int,
+    gammas: np.ndarray,
+    epsexp,
+):
+    # FixMe : Complete Docstring
+    """Need a description
+
+    Parameters
+    ----------
+    L1: ???
+        ???
+    L2: ???
+        ???
+    R1: ???
+        ???
+    R2: ???
+        ???
+    n_taus: ???
+        ???
+    gammas: ???
+        ???
+
+    Returns
+    -------
+    """
     result = (
-        np.ones((ntaus, 1))
+        np.ones((n_taus, 1))
         * (
             (
                 10 ** (2 * gammas) * np.sum(L1 * L2)
@@ -168,7 +273,32 @@ def firstpartfunc(L1, L2, R1, R2, ntaus, gammas, epsexp):
     return result
 
 
-def secondpartfunc(L1, L2, rho1, rho2, tauexp, epsdelexp, gammas):
+def secondpartfunc(
+    L1: np.ndarray, L2: np.ndarray, rho1, rho2, tauexp, epsdelexp, gammas: np.ndarray
+):
+    # FixMe : Complete Docstring
+    """Need a description
+
+    Parameters
+    ----------
+    L1: ???
+        ???
+    L2: ???
+        ???
+    rho1: ???
+        ???
+    rho2: ???
+        ???
+    tauexp: ???
+        ???
+    epsdelexp: ???
+        ???
+    gammas: ???
+        ???
+
+    Returns
+    -------
+    """
     result = (
         2
         * (
@@ -183,7 +313,30 @@ def secondpartfunc(L1, L2, rho1, rho2, tauexp, epsdelexp, gammas):
     return result
 
 
-def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas):
+def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas: np.ndarray):
+    # FixMe : Complete docstring
+    """Need a description
+
+    Parameters
+    ----------
+    R1: ???
+        ???
+    R2: ???
+        ???
+    rho1: ???
+        ???
+    rho2: ???
+        ???
+    tauexp: ???
+        ???
+    epsdelexp: ???
+        ???
+    gammas: ???
+        ???
+
+    Returns
+    -------
+    """
     result = (
         2
         * np.transpose(
@@ -196,60 +349,105 @@ def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas):
     return result
 
 
-def fourthpartfunc(rho1, rho2, tauexp2, ngammas, deltexp):
+def fourthpartfunc(rho1, rho2, tauexp2, n_gammas, deltexp):
+    # FixMe : Complete docstring
+    """Need a description
+
+    Parameters
+    ----------
+    rho1: ???
+        ???
+    rho2: ???
+        ???
+    tauexp2: ???
+        ???
+    n_gammas: ???
+        ???
+    deltexp: ???
+        ???
+
+    Returns
+    -------
+    """
     result = (
         2
         * np.transpose(
             np.real(np.dot(rho1, np.conj(np.transpose(rho2))))
             + deltexp * np.real(np.dot(rho1, np.transpose(rho2) * tauexp2))
         )
-        * np.ones((1, ngammas))
+        * np.ones((1, n_gammas))
     )
 
     return result
 
 
-def stft(x, win_size, fft_size):
-    """Short-time Fourier transform based on MBSTOI MATLAB code.
+# pylint: enable=invalid-name,fixme
 
-    Args:
-        x (ndarray): input signal
-        win_size (int): N, the size of the window and the signal frames
-        fft_size (int): Nfft, the size of the fft in samples (zero-padding or not)
+
+def stft(signal: np.ndarray, win_size: int, fft_size: int) -> np.ndarray:
+    """Short-time Fourier transform based on MBSTOI Matlab code.
+
+    Parameters
+    ----------
+    signal: np.ndarray
+        Input signal
+    win_size: int
+        The size of the window and the signal frames.
+    fft_size: int
+        The size of the fft in samples (zero-padding or not).
 
     Returns
-        ndarray: 2D complex array, the short-time Fourier transform of x.
-
+    -------
+    np.ndarray:
+        The short-time Fourier transform of signal.
     """
     hop = int(win_size / 2)
-    frames = list(range(0, len(x) - win_size, hop))
+    frames = list(range(0, len(signal) - win_size, hop))
     stft_out = np.zeros((len(frames), fft_size), dtype=np.complex128)
 
-    w = np.hanning(win_size + 2)[1:-1]
-    x = x.flatten()
+    hanning_window = np.hanning(win_size + 2)[1:-1]
+    signal = signal.flatten()
 
+    # pylint: disable=invalid-name
     for i, frame in enumerate(frames):
         ii = list(range(frame, (frame + win_size), 1))
-        stft_out[i, :] = np.fft.fft(x[ii] * w, n=fft_size, axis=0)
+        stft_out[i, :] = np.fft.fft(signal[ii] * hanning_window, n=fft_size, axis=0)
+    # pylint: enable=invalid-name
 
     return stft_out
 
 
-def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
+def remove_silent_frames(
+    left_ear_clean: np.ndarray,
+    right_ear_clean: np.ndarray,
+    left_ear_noisy: np.ndarray,
+    right_ear_noisy: np.ndarray,
+    dynamic_range: np.ndarray,
+    frame_length: int,
+    hop: float,
+):
     """Remove silent frames of x and y based on x
 
     A frame is excluded if its energy is lower than max(energy) - dyn_range
     The frame exclusion is based solely on x, the clean speech signal
     Based on mpariente/pystoi/utils.py
 
-    Args:
-        xl (ndarray): clean input signal left channel
-        xr (ndarray): clean input signal right channel
-        yl (ndarray): degraded/processed signal left channel
-        yr (ndarray): degraded/processed signal right channel
-        dyn_range (ndarray): range, energy range to determine which frame is silent, 40
-        framelen (int): N, window size for energy evaluation, 256
-        hop (int): K, hop size for energy evaluation, 128
+    Parameters
+    ----------
+    left_ear_clean: np.ndarray
+        clean input signal left channel
+    right_ear_clean: np.ndarray
+        clean input signal right channel
+    left_ear_noisy: ndarray
+        degraded/processed signal left channel
+    right_ear_noisy: ndarray
+        degraded/processed signal right channel
+    dyn_range: ndarray
+        range, energy range to determine which frame is silent, 40
+    framelen: int
+        N, window size for energy evaluation, 256
+    hop: int
+        K, hop size for energy evaluation, 128
 
     Returns :
         xl (ndarray): xl without the silent frames
@@ -257,23 +455,35 @@ def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
         yl (ndarray): yl without the silent frames in x
         yl (ndarray): yl without the silent frames in x
     """
-    dyn_range = int(dyn_range)
+    dyn_range = int(dynamic_range)
     hop = int(hop)
 
     # Compute Mask
-    w = np.hanning(framelen + 2)[1:-1]
+    hanning_window = np.hanning(frame_length + 2)[1:-1]
 
     xl_frames = np.array(
-        [w * xl[i : i + framelen] for i in range(0, len(xl) - framelen, hop)]
+        [
+            hanning_window * left_ear_clean[i : i + frame_length]
+            for i in range(0, len(left_ear_clean) - frame_length, hop)
+        ]
     )
     xr_frames = np.array(
-        [w * xr[i : i + framelen] for i in range(0, len(xr) - framelen, hop)]
+        [
+            hanning_window * right_ear_clean[i : i + frame_length]
+            for i in range(0, len(right_ear_clean) - frame_length, hop)
+        ]
     )
     yl_frames = np.array(
-        [w * yl[i : i + framelen] for i in range(0, len(yl) - framelen, hop)]
+        [
+            hanning_window * left_ear_noisy[i : i + frame_length]
+            for i in range(0, len(left_ear_noisy) - frame_length, hop)
+        ]
     )
     yr_frames = np.array(
-        [w * yr[i : i + framelen] for i in range(0, len(yr) - framelen, hop)]
+        [
+            hanning_window * right_ear_noisy[i : i + frame_length]
+            for i in range(0, len(right_ear_noisy) - frame_length, hop)
+        ]
     )
 
     # Compute energies in dB
@@ -294,47 +504,54 @@ def remove_silent_frames(xl, xr, yl, yr, dyn_range, framelen, hop):
     yr_frames = yr_frames[mask]
 
     # init zero arrays to hold x, y with silent frames removed
-    n_sil = (len(xl_frames) - 1) * hop + framelen
+    n_sil = (len(xl_frames) - 1) * hop + frame_length
     xl_sil = np.zeros(n_sil)
     xr_sil = np.zeros(n_sil)
     yl_sil = np.zeros(n_sil)
     yr_sil = np.zeros(n_sil)
 
     for i in range(xl_frames.shape[0]):
-        xl_sil[range(i * hop, i * hop + framelen)] += xl_frames[i, :]
-        xr_sil[range(i * hop, i * hop + framelen)] += xr_frames[i, :]
-        yl_sil[range(i * hop, i * hop + framelen)] += yl_frames[i, :]
-        yr_sil[range(i * hop, i * hop + framelen)] += yr_frames[i, :]
+        xl_sil[range(i * hop, i * hop + frame_length)] += xl_frames[i, :]
+        xr_sil[range(i * hop, i * hop + frame_length)] += xr_frames[i, :]
+        yl_sil[range(i * hop, i * hop + frame_length)] += yl_frames[i, :]
+        yr_sil[range(i * hop, i * hop + frame_length)] += yr_frames[i, :]
 
     return xl_sil, xr_sil, yl_sil, yr_sil
 
 
-def thirdoct(fs, nfft, num_bands, min_freq):
-    """Returns the 1/3 octave band matrix and its center frequencies
-    Based on mpariente/pystoi
+def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
+    """Returns the 1/3 octave band matrix and its center frequencies based on mpariente/pystoi.
 
-    Args:
-        fs (int): sampling rate
-        nfft (int): FFT size
-        num_bands (int): number of one-third octave bands
-        min_freq (int): center frequency of the lowest one-third octave band
+    Parameters
+    ----------
+    fs: int
+        Frequency sampling rate.
+    n_fft: int
+        Number of FFT. FFT == ???
+    num_bands: int
+        Number of one-third octave bands.
+    min_freq: int
+        Center frequencey of the lowest one-third octave band.
 
-    Returns:
-        obm (ndarray): octave band matrix
-        cf (ndarray): center frequencies
-        fids (ndarray): indices of frequency band edges
-
+    Returns
+    -------
+    tuple: octave_band_matrix : np.ndarray, centre_frequencies: np.ndarray, frequency_band_edges_indices: np.ndarray,
+    freq_low: float, freq_high: fkiat
+        Tuple of Numpy arrays for  Octave Band Matrix, Center Frequencies, Indices of Frequency Band Edges, Low
+    frequency and High frequency.
     """
-    f = np.linspace(0, fs, nfft + 1)
+    # pylint: disable=invalid-name
+    f = np.linspace(0, frequency_sampling, nfft + 1)
     f = f[: int(nfft / 2) + 1]
     k = np.array(range(num_bands)).astype(float)
-    cf = np.power(2.0 ** (1.0 / 3), k) * min_freq
+    # pylint: enable=invalid-name
+    centre_frequencies = np.power(2.0 ** (1.0 / 3), k) * min_freq
     freq_low = min_freq * np.power(2.0, (2 * k - 1) / 6)
     freq_high = min_freq * np.power(2.0, (2 * k + 1) / 6)
-    obm = np.zeros((num_bands, len(f)))  # a verifier
-    fids = np.zeros((num_bands, 2))
+    octave_band_matrix = np.zeros((num_bands, len(f)))  # a verifier
+    firequency_band_edges_indices = np.zeros((num_bands, 2))
 
-    for i in range(len(cf)):
+    for i in range(len(centre_frequencies)):  # pylint: disable=invalid-name
         # Match 1/3 oct band freq with fft frequency bin
         f_bin = np.argmin(np.square(f - freq_low[i]))
         freq_low[i] = f[f_bin]
@@ -343,16 +560,34 @@ def thirdoct(fs, nfft, num_bands, min_freq):
         freq_high[i] = f[f_bin]
         fh_ii = f_bin
         # Assign to the octave band matrix
-        obm[i, fl_ii:fh_ii] = 1
-        fids[i, :] = [fl_ii + 1, fh_ii]
+        octave_band_matrix[i, fl_ii:fh_ii] = 1
+        firequency_band_edges_indices[i, :] = [fl_ii + 1, fh_ii]
 
-    cf = cf[np.newaxis, :]
+    centre_frequencies = centre_frequencies[np.newaxis, :]
 
-    return obm, cf, fids, freq_low, freq_high
+    return (
+        octave_band_matrix,
+        centre_frequencies,
+        firequency_band_edges_indices,
+        freq_low,
+        freq_high,
+    )
 
 
-def find_delay_impulse(ddf, initial_value=22050):
-    """Find binaural delay in signal ddf given initial location of unit impulse, initial_value."""
+def find_delay_impulse(ddf: np.ndarray, initial_value: int = 22050):
+    """Find binaural delay in signal ddf given initial location of unit impulse, initial_value.
+
+    Parameters
+    ----------
+    ddf: np.ndarray
+        ???
+    initial_value: int
+        Initial value (default: 22050)
+
+    Returns
+    -------
+
+    """
     pk0 = find_peaks(ddf[:, 0])
     pk1 = find_peaks(ddf[:, 1])
     delay = np.zeros((2, 1))
