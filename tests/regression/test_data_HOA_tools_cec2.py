@@ -6,6 +6,7 @@ from clarity.data import HOA_tools_cec2 as hoa
 
 
 def test_compute_rotation_matrix(regtest):
+    np.random.seed(0)
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
