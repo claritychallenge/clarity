@@ -5,6 +5,8 @@ Authors
  * Peter Plantinga 2020
  * Mirco Ravanelli 2020
  * Sung-Lin Yeh 2020
+
+Modified by Zehai Tu for uncertainty estimation with ensemble
 """
 import speechbrain as sb
 import torch

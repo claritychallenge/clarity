@@ -100,6 +100,7 @@ lm_weight: 0.00
 ctc_weight_decode: 0.40
 topk: 10
 n_ensembles: 6
+temperature: 1
 
 ############################## models ################################
 
