@@ -1,12 +1,12 @@
 # Regression test
-
+import pytest
 import torch
 
 from clarity.predictor.torch_msbg import MSBGHearingModel, torchloudnorm
 from clarity.predictor.torch_stoi import NegSTOILoss
 
 
-def test_torch_msbg_stoi(regtest):
+def test_torch_msbg_stoi():
 
     torch.manual_seed(0)
     torch.set_num_threads(1)
@@ -24,12 +24,11 @@ def test_torch_msbg_stoi(regtest):
     stoi_loss = stoi_loss.forward(x.cpu(), y.cpu()).mean()
     estoi_loss = estoi_loss.forward(x.cpu(), y.cpu()).mean()
 
-    regtest.write(
-        f"Torch MSBG STOILoss {stoi_loss:0.5f}, ESTOILoss {estoi_loss:0.5f}\n"
-    )
+    assert stoi_loss == pytest.approx(-0.46197575330734253)
+    assert estoi_loss == pytest.approx(-0.3299955725669861)
 
 
-def test_torchloudnorm(regtest):
+def test_torchloudnorm():
 
     torch.manual_seed(0)
     torch.set_num_threads(1)
@@ -41,4 +40,4 @@ def test_torchloudnorm(regtest):
     y = ln(x)
     div = (y / (x + 1e-8)).cpu().mean()
 
-    regtest.write(f"Torch Loudnorm div is {div:0.4f}\n")
+    assert div == pytest.approx(0.011114642024040222)
