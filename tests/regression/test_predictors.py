@@ -24,8 +24,8 @@ def test_torch_msbg_stoi():
     stoi_loss = stoi_loss.forward(x.cpu(), y.cpu()).mean()
     estoi_loss = estoi_loss.forward(x.cpu(), y.cpu()).mean()
 
-    assert stoi_loss == pytest.approx(-0.46197575330734253)
-    assert estoi_loss == pytest.approx(-0.3299955725669861)
+    assert stoi_loss == pytest.approx(-0.46197575330734253, rel=1e-4)
+    assert estoi_loss == pytest.approx(-0.3299955725669861, rel=1e-4)
 
 
 def test_torchloudnorm():
@@ -40,4 +40,4 @@ def test_torchloudnorm():
     y = ln(x)
     div = (y / (x + 1e-8)).cpu().mean()
 
-    assert div == pytest.approx(0.011114642024040222)
+    assert div == pytest.approx(0.011114642024040222, rel=1e-4)
