@@ -48,31 +48,21 @@ def mbstoi(
 ) -> float:
     """Implementation of the Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.
 
-    Parameters
-    ----------
-    left_ear_clean : np.ndarray
-        Clean speech signal from left ear.
-    right_ear_clean : np.ndarray
-        Clean speech signal from right ear.
-    left_ear_noisy : np.ndarray
-        Noisy/processed speech signal from left ear.
-    right_ear_noisy : np.ndarray
-        Noisy/processed speech signal from right ear.
-    fs_signal : int
-        Frequency sample rate of signal.
-    gridcoarseness : int
-        Grid coarseness as denominator of ntaus and ngammas (default: 1).
+    Args:
+        left_ear_clean (np.ndarray): Clean speech signal from left ear.
+        right_ear_clean (np.ndarray): Clean speech signal from right ear.
+        left_ear_noisy (np.ndarray) : Noisy/processed speech signal from left ear.
+        right_ear_noisy (np.ndarray) : Noisy/processed speech signal from right ear.
+        fs_signal (int) : Frequency sample rate of signal.
+        gridcoarseness (int) : Grid coarseness as denominator of ntaus and ngammas (default: 1).
 
-    Returns
-    -------
-    float
-        mbtsoi index d.
+    Returns:
+        float : mbtsoi index d.
 
-    Notes
-    -----
-    All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the original Matlab software are owned
-    by oticon a/s and/or Aalborg University. please see details at `http://ah-andersen.net/code/
-    <http://ah-andersen.net/code/>`_
+    Notes:
+        All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the original Matlab software are
+        owned by oticon a/s and/or Aalborg University. please see details at
+        `http://ah-andersen.net/code/<http://ah-andersen.net/code/>`
 
 
     .. [1] A. H. Andersen, J. M. de Haan, Z.-H. Tan, and J. Jensen (2018) Refinement and validation of the binaural

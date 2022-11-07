@@ -29,50 +29,34 @@ def equalisation_cancellation(
 
     The EC loop evaluates one huge equation in every iteration (see referenced notes for details). The left and right
     ear signals are level adjusted by gamma (in dB) and time shifted by tau relative to one-another and are thereafter
-    subtracted. The processed signals are treated similarly. To obtain performance similar to that of humans,the EC stage adds
-    jitter. We are searching for the level and time adjustments that maximise the intermediate correlation coefficients
-    d. Could add location of source and interferer to this to reduce search space.
+    subtracted. The processed signals are treated similarly. To obtain performance similar to that of humans,the EC
+    stage adds jitter. We are searching for the level and time adjustments that maximise the intermediate correlation
+    coefficients d. Could add location of source and interferer to this to reduce search space.
 
-    Parameters
-    ----------
-    left_ear_clean_hat : np.ndarray
-        Noisy/processed left eat short-time DFT coefficients (single-sided) per frequency bin and frame.
-    right_ear_clean_hat : np.ndarray
-        Noisy/processed left eat short-time DFT coefficients (single-sided) per frequency bin and frame.
-    left_ear_noisy_hat : np.ndarray
-        Noisy/processed right eat short-time DFT coefficients (single-sided) per frequency bin and frame.
-    right_ear_noisy_hat : np.ndarray
-        Noisy/processed right eat short-time DFT coefficients (single-sided) per frequency bin and frame.
-    n_third_octave_bands: int
-        Number of one-third octave bands.
-    n_frames : int
-        Number of frames for intermediate intelligibility measure.
-    fids : np.ndarray
-        Indices of frequency band edges.
-    cf : np.ndarray
-        Centre frequencies.
-    taus : np.ndarray
-        Interaural delay (tau) values.
-    n_taus : int
-        Number of tau values.
-    gammas : np.ndarray
-        Interaural level difference (gamma) values.
-    ngammas : int
-        Number of gamma values.
-    intermediate_intelligibility_measure_grid : np.ndarray
-        Grid for intermediate intelligibility measure.
-    p_ec_max : np.ndarray
-        Empty grid for maximum values.
-    sigma_epsilon : np.ndarray
-        Jitter for gammas.
-    sigma_delta : np.ndarray
-        Jitter for taus.
+    Args:
+        left_ear_clean_hat (np.ndarray) : Clean left ear short-time DFT coefficients (single-sided) per frequency
+    bin and frame.
+        right_ear_clean_hat (np.ndarray) : Clean right ear short-time DFT coefficients (single-sided) per frequency bin and frame.
+        left_ear_noisy_hat (np.ndarray) : Noisy/processed left ear short-time DFT coefficients (single-sided) per
+    frequency bin and frame.
+        right_ear_noisy_hat (np.ndarray) : Noisy/processed right eat short-time DFT coefficients (single-sided) per
+    frequency bin and frame.
+    n_third_octave_bands (int) : Number of one-third octave bands.
+    n_frames (int) : Number of frames for intermediate intelligibility measure.
+    fids (np.ndarray) : Indices of frequency band edges.
+    cf (np.ndarray) : Centre frequencies.
+    taus (np.ndarray) : Interaural delay (tau) values.
+    n_taus (int) : Number of tau values.
+    gammas (np.ndarray) : Interaural level difference (gamma) values.
+    ngammas (int) : Number of gamma values.
+    intermediate_intelligibility_measure_grid (np.ndarray) : Grid for intermediate intelligibility measure.
+    p_ec_max (np.ndarray) : Empty grid for maximum values.
+    sigma_epsilon (np.ndarray) : Jitter for gammas.
+    sigma_delta (np.ndarray) : Jitter for taus.
 
-    Returns
-    -------
-    Tuple(np.ndarray, np.ndarray)
-        Tuple of d a np.ndarray of updated grid for intermediate intelligibility measure and the np.ndarray grid
-    containing maximum values.
+    Returns:
+        intermediate_intelligibility_measure_grid (np.ndarray) : updated grid for intermediate intelligibility measure
+        p_ec_max (np.ndarray) : grid containing maximum values.
     """
     taus = np.expand_dims(taus, axis=0)
     sigma_delta = np.expand_dims(sigma_delta, axis=0)
@@ -240,23 +224,15 @@ def firstpartfunc(
     # FixMe : Complete Docstring
     """Need a description
 
-    Parameters
-    ----------
-    L1: ???
-        ???
-    L2: ???
-        ???
-    R1: ???
-        ???
-    R2: ???
-        ???
-    n_taus: ???
-        ???
-    gammas: ???
-        ???
+    Args:
+        L1 (???) : ???
+        L2 (???) : ???
+        R1 (???) : ???
+        R2 (???) : ???
+        n_taus (???) : ???
+        gammas (???) : ???
 
-    Returns
-    -------
+    Returns:
     """
     result = (
         np.ones((n_taus, 1))
@@ -279,25 +255,16 @@ def secondpartfunc(
     # FixMe : Complete Docstring
     """Need a description
 
-    Parameters
-    ----------
-    L1: ???
-        ???
-    L2: ???
-        ???
-    rho1: ???
-        ???
-    rho2: ???
-        ???
-    tauexp: ???
-        ???
-    epsdelexp: ???
-        ???
-    gammas: ???
-        ???
+    Args:
+        L1 (???) : ???
+        L2 (???) : ???
+        rho1 (???) : ???
+        rho2 (???) : ???
+        tauexp (???) : ???
+        epsdelexp (???) : ???
+        gammas (???) : ???
 
-    Returns
-    -------
+    Returns:
     """
     result = (
         2
@@ -317,25 +284,16 @@ def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas: np.ndarray):
     # FixMe : Complete docstring
     """Need a description
 
-    Parameters
-    ----------
-    R1: ???
-        ???
-    R2: ???
-        ???
-    rho1: ???
-        ???
-    rho2: ???
-        ???
-    tauexp: ???
-        ???
-    epsdelexp: ???
-        ???
-    gammas: ???
-        ???
+    Args:
+        R1 (???) : ???
+        R2 (???) : ???
+        rho1 (???) : ???
+        rho2 (???) : ???
+        tauexp (???) : ???
+        epsdelexp (???) : ???
+        gammas (???) : ???
 
-    Returns
-    -------
+    Returns:
     """
     result = (
         2
@@ -353,21 +311,14 @@ def fourthpartfunc(rho1, rho2, tauexp2, n_gammas, deltexp):
     # FixMe : Complete docstring
     """Need a description
 
-    Parameters
-    ----------
-    rho1: ???
-        ???
-    rho2: ???
-        ???
-    tauexp2: ???
-        ???
-    n_gammas: ???
-        ???
-    deltexp: ???
-        ???
+    Args:
+    rho1 (???) : ???
+    rho2 (???) : ???
+    tauexp2 (???) : ???
+    n_gammas (???) : ???
+    deltexp (???) : ???
 
     Returns
-    -------
     """
     result = (
         2
@@ -387,19 +338,13 @@ def fourthpartfunc(rho1, rho2, tauexp2, n_gammas, deltexp):
 def stft(signal: np.ndarray, win_size: int, fft_size: int) -> np.ndarray:
     """Short-time Fourier transform based on MBSTOI Matlab code.
 
-    Parameters
-    ----------
-    signal: np.ndarray
-        Input signal
-    win_size: int
-        The size of the window and the signal frames.
-    fft_size: int
-        The size of the fft in samples (zero-padding or not).
+    Args:
+        signal (np.ndarray) : Input signal
+        win_size (int) : The size of the window and the signal frames.
+        fft_size (int) : The size of the fft in samples (zero-padding or not).
 
-    Returns
-    -------
-    np.ndarray:
-        The short-time Fourier transform of signal.
+    Returns:
+        stft_out (np.ndarray) : The short-time Fourier transform of signal.
     """
     hop = int(win_size / 2)
     frames = list(range(0, len(signal) - win_size, hop))
@@ -422,9 +367,9 @@ def remove_silent_frames(
     right_ear_clean: np.ndarray,
     left_ear_noisy: np.ndarray,
     right_ear_noisy: np.ndarray,
-    dynamic_range: np.ndarray,
-    frame_length: int,
-    hop: float,
+    dynamic_range: np.ndarray = 40,
+    frame_length: int = 256,
+    hop: float = 128,
 ):
     """Remove silent frames of x and y based on x
 
@@ -432,28 +377,20 @@ def remove_silent_frames(
     The frame exclusion is based solely on x, the clean speech signal
     Based on mpariente/pystoi/utils.py
 
-    Parameters
-    ----------
-    left_ear_clean: np.ndarray
-        clean input signal left channel
-    right_ear_clean: np.ndarray
-        clean input signal right channel
-    left_ear_noisy: ndarray
-        degraded/processed signal left channel
-    right_ear_noisy: ndarray
-        degraded/processed signal right channel
-    dyn_range: ndarray
-        range, energy range to determine which frame is silent, 40
-    framelen: int
-        N, window size for energy evaluation, 256
-    hop: int
-        K, hop size for energy evaluation, 128
+    Args:
+        left_ear_clean (np.ndarray) : Clean input signal left channel.
+        right_ear_clean (np.ndarray) : Clean input signal right channel.
+        left_ear_noisy (np.ndarray) : Degraded/processed signal left channel.
+        right_ear_noisy (np.ndarray) : Degraded/processed signal right channel.
+        dyn_range (np.ndarray) : Range, energy range to determine which frame is silent (default : 40).
+        framelen (int) : Window size for energy evaluation (default : 256).
+        hop (int) : Hop size for energy evaluation (default : 128).
 
     Returns :
-        xl (ndarray): xl without the silent frames
-        xr (ndarray): xr without the silent frames
-        yl (ndarray): yl without the silent frames in x
-        yl (ndarray): yl without the silent frames in x
+        xl_sil (np.ndarray): left_ear_clean without the silent frames.
+        xr_sil (np.ndarray): right_ear_clean without the silent frames.
+        yl_sil (np.ndarray): left_ear_noisy without the silent frames in xl_sil.
+        yr_sil (np.ndarray): right_ear_noisy without the silent frames in rl_sil.
     """
     dyn_range = int(dynamic_range)
     hop = int(hop)
@@ -522,23 +459,18 @@ def remove_silent_frames(
 def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
     """Returns the 1/3 octave band matrix and its center frequencies based on mpariente/pystoi.
 
-    Parameters
-    ----------
-    fs: int
-        Frequency sampling rate.
-    n_fft: int
-        Number of FFT. FFT == ???
-    num_bands: int
-        Number of one-third octave bands.
-    min_freq: int
-        Center frequencey of the lowest one-third octave band.
+    Args:
+        fs (int) : Frequency sampling rate.
+        n_fft (int) : Number of FFT. FFT == ???
+        num_bands (int) : Number of one-third octave bands.
+        min_freq (int) : Center frequencey of the lowest one-third octave band.
 
-    Returns
-    -------
-    tuple: octave_band_matrix : np.ndarray, centre_frequencies: np.ndarray, frequency_band_edges_indices: np.ndarray,
-    freq_low: float, freq_high: fkiat
-        Tuple of Numpy arrays for  Octave Band Matrix, Center Frequencies, Indices of Frequency Band Edges, Low
-    frequency and High frequency.
+    Returns:
+        octave_band_matrix (np.ndarray) :
+        centre_frequencies (np.ndarray) : Centre frequencies.
+        frequency_band_edges_indices (np.ndarray) : Indices of Frequency Band Edges
+        freq_low (float) : Lowest frequency.
+        freq_high (float) : Highest frequency
     """
     # pylint: disable=invalid-name
     f = np.linspace(0, frequency_sampling, nfft + 1)
@@ -549,7 +481,7 @@ def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
     freq_low = min_freq * np.power(2.0, (2 * k - 1) / 6)
     freq_high = min_freq * np.power(2.0, (2 * k + 1) / 6)
     octave_band_matrix = np.zeros((num_bands, len(f)))  # a verifier
-    firequency_band_edges_indices = np.zeros((num_bands, 2))
+    frequency_band_edges_indices = np.zeros((num_bands, 2))
 
     for i in range(len(centre_frequencies)):  # pylint: disable=invalid-name
         # Match 1/3 oct band freq with fft frequency bin
@@ -561,14 +493,14 @@ def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
         fh_ii = f_bin
         # Assign to the octave band matrix
         octave_band_matrix[i, fl_ii:fh_ii] = 1
-        firequency_band_edges_indices[i, :] = [fl_ii + 1, fh_ii]
+        frequency_band_edges_indices[i, :] = [fl_ii + 1, fh_ii]
 
     centre_frequencies = centre_frequencies[np.newaxis, :]
 
     return (
         octave_band_matrix,
         centre_frequencies,
-        firequency_band_edges_indices,
+        frequency_band_edges_indices,
         freq_low,
         freq_high,
     )
@@ -577,15 +509,11 @@ def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
 def find_delay_impulse(ddf: np.ndarray, initial_value: int = 22050):
     """Find binaural delay in signal ddf given initial location of unit impulse, initial_value.
 
-    Parameters
-    ----------
-    ddf: np.ndarray
-        ???
-    initial_value: int
-        Initial value (default: 22050)
+    Args:
+        ddf (np.ndarray) :
+        initial_value: (int) : Initial value (default: 22050)
 
-    Returns
-    -------
+    Returns:
 
     """
     pk0 = find_peaks(ddf[:, 0])
