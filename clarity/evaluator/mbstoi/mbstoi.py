@@ -4,7 +4,7 @@ import logging
 import math
 
 import numpy as np
-import yaml
+import yaml  # type: ignore
 from scipy.signal import resample
 
 from clarity.evaluator.mbstoi.mbstoi_utils import (
