@@ -99,3 +99,44 @@ def hasqi_v2(x, fx, y, fy, HL, eq, level1=65):
     # Raw data
     raw = [cep_corr, bm_sync5, d_loud, d_slope]
     return combined, non_lin, linear, raw
+
+
+def hasqi_v2_be(
+    xl, xr, yl, yr, fs_signal, audiogram_l, audiogram_r, audiogram_cfs, level=100
+) -> float:
+    """Better ear HASQI.
+
+    Calculates HASQI for left and right ear and selects the better result.
+
+    Args:
+        xl: left channel of reference signal
+        xr: right channel of reference signal
+        yl: left channel of processed signal
+        yr: right channel of processed signal
+        fs_signal: sampling rate for both signal
+        audiogram_l: left ear audiogram
+        audiogram_r: right ear audiogram
+        audiogram_cfs: audiogram frequencies
+        level: level in dB SPL corresponding to RMS=1
+
+    Returns:
+        float: beHASQI score
+
+    Gerardo Roa Dabike, November 2022
+    """
+
+    # HASQI assumes the following audiogram frequencies:
+    aud = [250, 500, 1000, 2000, 4000, 6000]
+
+    # Adjust listener.audiogram_levels_l and _r to match the frequencies above
+    hl_l = [
+        audiogram_l[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+    ]
+    hl_r = [
+        audiogram_r[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+    ]
+
+    score_l, _, _, _ = hasqi_v2(xl, fs_signal, yl, fs_signal, hl_l, level)
+    score_r, _, _, _ = hasqi_v2(xr, fs_signal, yr, fs_signal, hl_r, level)
+
+    return max(score_l, score_r)
