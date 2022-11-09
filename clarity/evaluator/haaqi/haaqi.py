@@ -56,8 +56,8 @@ def haaqi_v1(
     # Envelope and long-term average spectral features
     # Smooth the envelope outputs: 250 Hz sub-sampling rate
     segsize = 8  # Averaging segment size in msec
-    xdb = eb.EnvSmooth(xenv, segsize, fsamp)
-    ydb = eb.EnvSmooth(yenv, segsize, fsamp)
+    xdb = eb.env_smooth(xenv, segsize, fsamp)
+    ydb = eb.env_smooth(yenv, segsize, fsamp)
 
     # Mel cepstrum correlation after passing through modulation filterbank
     thr = 2.5  # Silence threshold: sum across bands, dB above aud threshold
@@ -70,18 +70,18 @@ def haaqi_v1(
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    dloud_vector, dnorm_vector, _ = eb.SpectDiff(xsl, ysl)
+    dloud_vector, dnorm_vector, _ = eb.spect_diff(xsl, ysl)
 
     # Temporal fine structure (TFS) correlation measurements
     # Compute the time-frequency segment covariances
     segcov = 16  # Segment size for the covariance calculation
-    sigcov, sigmsx, _ = eb.BMcovary(xbm, ybm, segcov, fsamp)
+    sigcov, sigmsx, _ = eb.bm_covary(xbm, ybm, segcov, fsamp)
 
     # Average signal segment cross-covariance
     # avecov=weighted ave of cross-covariances, using only data above threshold
     # syncov=ave cross-covariance with added IHC loss of synchronization at HF
     thr = 2.5  # Threshold in dB SL for including time-freq tile
-    _, syncov = eb.AveCovary2(sigcov, sigmsx, thr)
+    _, syncov = eb.ave_covary2(sigcov, sigmsx, thr)
     bmsync5 = syncov[4]  # Ave segment coherence with IHC loss of sync
 
     # Extract and normalize the spectral features

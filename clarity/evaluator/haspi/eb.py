@@ -984,7 +984,7 @@ def aveSL(env, control, attnOHC, thrLow, CR, attnIHC, Level1):
     return xdB
 
 
-def EnvSmooth(env, segsize, fsamp):
+def env_smooth(env, segsize, fsamp):
     """
     Function to smooth the envelope returned by the cochlear model. The
     envelope is divided into segments having a 50% overlap. Each segment is
@@ -1236,7 +1236,7 @@ def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep):
     return CM
 
 
-def SpectDiff(xSL, ySL):
+def spect_diff(xSL, ySL):
     """
     Function to compute changes in the long-term spectrum and spectral slope.
     The metric is based on the spectral distortion metric of Moore and Tan
@@ -1307,7 +1307,7 @@ def SpectDiff(xSL, ySL):
     return dloud, dnorm, dslope
 
 
-def BMcovary(xBM, yBM, segsize, fsamp):
+def bm_covary(xBM, yBM, segsize, fsamp):
     """
     Function to compute the cross-covariance (normalized cross-correlation)
     between the reference and processed signals in each auditory band. The
@@ -1448,7 +1448,7 @@ def BMcovary(xBM, yBM, segsize, fsamp):
     return sigcov, sigMSx, sigMSy
 
 
-def AveCovary2(sigcov, sigMSx, thr):
+def ave_covary2(sigcov, sigMSx, thr):
     """
     Function to compute the average cross-covariance between the reference
     and processed signals in each auditory band. The silent time-frequency
