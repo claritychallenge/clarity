@@ -5,7 +5,7 @@ from clarity.evaluator.haaqi import haaqi_v1
 
 
 def test_haaqi_v1() -> None:
-    """Test for hasqi_v2 index"""
+    """Test for haaqi_v1 index"""
     np.random.seed(0)
     sr = 16000
     x = np.random.uniform(-1, 1, sr * 10)
