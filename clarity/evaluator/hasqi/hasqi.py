@@ -48,7 +48,7 @@ def hasqi_v2(x, fx, y, fy, HL, eq, level1=65):
     # xy=vector of coefficients 1-6
     thr = 2.5  # Silence threshold: sum across bands, dB above aud threshold
     addnoise = 0.0  # Additive noise in dB SL to condition cross-covariances
-    CepCorr, xy = eb.melcor(xdB, ydB, thr, addnoise)
+    cep_corr, xy = eb.melcor(xdB, ydB, thr, addnoise)
 
     # Linear changes in the log-term spectra
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
@@ -66,34 +66,36 @@ def hasqi_v2(x, fx, y, fy, HL, eq, level1=65):
     # syncov=ave cross-covariance with added IHC loss of synchronization at HF
     thr = 2.5  # Threshold in dB SL for including time-freq tile
     avecov, syncov = eb.ave_covary2(sigcov, sigMSx, thr)
-    BMsync5 = syncov[4]  # Ave segment coherence with IHC loss of sync
+    bm_sync5 = syncov[4]  # Ave segment coherence with IHC loss of sync
 
     # Extract and normalize the spectral features
     # Dloud:std
-    d = dloud(2)  # Loudness difference std
+    d = dloud[1]  # Loudness difference std
     d = d / 2.5  # Scale the value
     d = 1.0 - d  # 1=perfect, 0=bad
     d = min(d, 1)
     d = max(d, 0)
-    Dloud = d
+    d_loud = d
 
     # Dslope:std
-    d = dslope(2)  # Slope difference std
+    d = dslope[1]  # Slope difference std
     d = 1.0 - d
     d = min(d, 1)
     d = max(d, 0)
-    Dslope = d
+    d_slope = d
 
     # Construct the models
     # Nonlinear model
-    Nonlin = (CepCorr**2) * BMsync5  # Combined envelope and temporal fine structure
+    non_lin = (
+        cep_corr**2
+    ) * bm_sync5  # Combined envelope and temporal fine structure
 
     # Linear model
-    Linear = 0.579 * Dloud + 0.421 * Dslope  # Linear fit
+    linear = 0.579 * d_loud + 0.421 * d_slope  # Linear fit
 
     # Combined model
-    Combined = Nonlin * Linear  # Product of nonlinear x linear
+    combined = non_lin * linear  # Product of nonlinear x linear
 
     # Raw data
-    raw = [CepCorr, BMsync5, Dloud, Dslope]
-    return Combined, Nonlin, Linear, raw
+    raw = [cep_corr, bm_sync5, d_loud, d_slope]
+    return combined, non_lin, linear, raw
