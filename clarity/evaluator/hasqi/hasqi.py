@@ -1,7 +1,7 @@
 from clarity.evaluator.haspi import eb
 
 
-def hasqi_v2(x, fx, y, fy, HL, eq, Level1=65):
+def hasqi_v2(x, fx, y, fy, HL, eq, level1=65):
     """
     Function to compute the HASQI version 2 quality index using the
     auditory model followed by computing the envelope cepstral
@@ -35,7 +35,7 @@ def hasqi_v2(x, fx, y, fy, HL, eq, Level1=65):
 
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
-    xenv, xBM, yenv, yBM, xSL, ySL, fsamp = eb.EarModel(x, fx, y, fy, HL, eq, Level1)
+    xenv, xBM, yenv, yBM, xSL, ySL, fsamp = eb.EarModel(x, fx, y, fy, HL, eq, level1)
 
     # Envelope and long-term average spectral features
     # Smooth the envelope outputs: 125 Hz sub-sampling rate
