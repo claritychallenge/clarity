@@ -28,9 +28,8 @@ def test_dsp_filter(regtest):
     torch.manual_seed(0)
     signal = torch.rand(10, dtype=torch.float)
     signal = torch.reshape(signal, (1, 1, -1))
-    signal.to(amfir.device)
-    output = amfir(signal)
-    output = np.round(output.detach().numpy(), 4)
+    output = amfir(signal.to(amfir.device))
+    output = np.round(output.detach().cpu().numpy(), 4)
     regtest.write(f"signal output: \n{output}\n")
 
 

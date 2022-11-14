@@ -152,6 +152,7 @@ class NALR:
 
         hl = self.hl_interp(np.array(hl), np.array(cfs))
         mloss = np.max(hl)
+
         if mloss > 0:
             # Compute the NAL-R frequency response at the audiometric frequencies
             bias = np.array([-17, -8, 1, -1, -2, -2])

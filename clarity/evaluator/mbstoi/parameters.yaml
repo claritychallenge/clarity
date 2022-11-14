@@ -1,0 +1,24 @@
+sample_rate: 10000  # sample rate of proposed intelligibility measure in hz
+n_frame: 256  # window support in samples
+fft_size_in_samples: 512  # fft size in samples
+n_third_octave_bands: 15  # number of one-third octave bands
+centre_freq_first_third_octave_hz: 150  # centre frequency of first 1/3 octave band in hz
+n_frames: 30  # number of frames for intermediate intelligibility measure (length analysis window)
+dyn_range: 40  # speech dynamic range in db
+# values to define ec grid
+tau_min: -0.001  # minimum interaural delay compensation in seconds. b: -0.01.
+tau_max: 0.001  # maximum interaural delay compensation in seconds. b: 0.01.
+gamma_min: -20  # minimum interaural level compensation in db
+gamma_max: 20  # maximum interaural level compensation in db
+# constants for jitter
+# itd compensation standard deviation in seconds. equation 6 andersen et al. 2018 refinement
+sigma_delta_0: 0.000065
+# ild compensation standard deviation.  equation 5 andersen et al. 2018
+sigma_epsilon_0: 1.5
+# constant for level shift deviation in db. equation 5 andersen et al. 2018
+alpha_0_db: 13
+# constant for time shift deviation in seconds. equation 6 andersen et al. 2018
+tau_0: 0.0016
+# constant for level shift deviation. power for calculation of sigma delta gamma
+# in equation 5 andersen et al. 2018.
+level_shift_deviation: 1.6
