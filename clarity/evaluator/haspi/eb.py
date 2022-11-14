@@ -106,7 +106,8 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, fsamp)
-        nalr_fir, _ = enhancer.build(HL, None)
+        aud = [250, 500, 1000, 2000, 4000, 6000]
+        nalr_fir, _ = enhancer.build(HL, aud)
         x24 = convolve(x24, nalr_fir)  # Apply the NAL-R filter
         x24 = x24[nfir : nfir + nsamp]
 
