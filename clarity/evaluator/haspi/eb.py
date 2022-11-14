@@ -11,6 +11,9 @@ from scipy.signal import (
     resample_poly,
 )
 
+from clarity.enhancer.nalr import NALR
+
+
 
 def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     """
@@ -56,6 +59,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     BM envelope coverted to dB SL, 2 Oct 2012.
     Filterbank group delay corrected, 14 Dec 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+    Updated by Gerardo Roa Dabike, September 2022.
     """
 
     # Processing parameters
@@ -100,8 +104,12 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     nsamp = len(x24)
 
     # For HASQI, here add NAL-R equalization if the quality reference doesn't already have it.
-    # if itype == 1:
-    #     pass
+    if itype == 1:
+        nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
+        enhancer = NALR(nfir, fsamp)
+        nalr_fir, _ = enhancer.build(HL, None)
+        x24 = convolve(x24, nalr_fir)  # Apply the NAL-R filter
+        x24 = x24[nfir : nfir + nsamp]
 
     # Cochlear model
     # Middle ear

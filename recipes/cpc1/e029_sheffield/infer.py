@@ -61,6 +61,7 @@ class ASR(sb.core.Brain):
 
         self.test_search = S2STransformerBeamSearch(
             modules=test_search_modules,
+            n_ensembles=self.hparams.n_ensembles,
             bos_index=self.hparams.bos_index,
             eos_index=self.hparams.eos_index,
             blank_index=self.hparams.blank_index,
@@ -70,9 +71,9 @@ class ASR(sb.core.Brain):
             ctc_weight=self.hparams.ctc_weight_decode,
             lm_weight=self.hparams.lm_weight,
             lm_modules=self.hparams.lm_model,
-            temperature=1,
+            temperature=self.hparams.temperature,
             temperature_lm=1,
-            topk=10,
+            topk=self.hparams.topk,
             using_eos_threshold=False,
             length_normalization=True,
         )
