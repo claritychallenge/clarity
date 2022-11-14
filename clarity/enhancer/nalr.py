@@ -138,7 +138,7 @@ class NALR:
     def build(
         self,
         hl: np.ndarray,
-        cfs: np.ndarray = np.array([250, 500, 1000, 2000, 3000, 4000, 6000, 8000]),
+        cfs: np.ndarray = None,
     ):
         """
         Args:
@@ -149,6 +149,8 @@ class NALR:
             NAL-R FIR filter
             delay
         """
+        if cfs is None:
+            cfs = np.array([250, 500, 1000, 2000, 3000, 6000])
 
         hl = self.hl_interp(np.array(hl), np.array(cfs))
         mloss = np.max(hl)
