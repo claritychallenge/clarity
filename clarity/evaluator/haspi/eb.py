@@ -14,7 +14,6 @@ from scipy.signal import (
 from clarity.enhancer.nalr import NALR
 
 
-
 def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     """
     Function to implement a cochlear model that includes the middle ear,
