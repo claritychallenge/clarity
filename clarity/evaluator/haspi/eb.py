@@ -106,7 +106,8 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, fsamp)
-        nalr_fir, _ = enhancer.build(HL, None)
+        aud = [250, 500, 1000, 2000, 4000, 6000]
+        nalr_fir, _ = enhancer.build(HL, aud)
         x24 = convolve(x24, nalr_fir)  # Apply the NAL-R filter
         x24 = x24[nfir : nfir + nsamp]
 
@@ -1049,6 +1050,102 @@ def env_smooth(env, segsize, fsamp):
         )
 
     return smooth
+
+
+def melcor(x, y, thr, addnoise):
+    """
+    Function to compute the cross-correlations between the input signal
+    time-frequency envelope and the distortion time-frequency envelope. For
+    each time interval, the log spectrum is fitted with a set of half-cosine
+    basis functions. The spectrum weighted by the basis functions corresponds
+    to mel cepstral coefficients computed in the frequency domain. The
+    amplitude-normalized cross-covariance between the time-varying basis
+    functions for the input and output signals is then computed.
+
+    Arguments:
+        x : subsampled input signal envelope in dB SL in each critical band
+        y : subsampled distorted output signal envelope
+        thr : threshold in dB SPL to include segment in calculation
+        addnoise : additive Gaussian noise to ensure 0 cross-corr at low levels
+
+    Returns:
+        m1 : average cepstral correlation 2-6, input vs output
+        xy : individual cepstral correlations, input vs output
+
+    James M. Kates, 24 October 2006.
+    Difference signal removed for cochlear model, 31 January 2007.
+    Absolute value added 13 May 2011.
+    Changed to loudness criterion for silence threhsold, 28 August 2012.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Processing parameters
+    nbands = x.shape[0]
+
+    # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
+    nbasis = 6  # Number of cepstral coefficients to be used
+    freq = np.arange(nbasis)
+    k = np.arange(nbands)
+    cepm = np.zeros((nbands, nbasis))
+    for nb in range(nbasis):
+        basis = np.cos(k * float(freq[nb]) * np.pi / float((nbands - 1)))
+        cepm[:, nb] = basis / np.linalg.norm(basis)
+
+    # Find the segments that lie sufficiently above the quiescent rate
+    xLinear = 10 ** (x / 20)  # Convert envelope dB to linear (specific loudness)
+    xsum = np.sum(xLinear, 0) / nbands  # Proportional to loudness in sones
+    xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
+    index = np.where(xsum > thr)[0]  # Identify those segments above threshold
+    nsamp = index.shape[0]  # Number of segments above threshold
+
+    # Exit if not enough segments above zero
+    m1 = 0
+    xy = 0
+    if nsamp <= 1:
+        print("Function eb.melcor: Signal below threshold, outputs set to 0.")
+        return m1, xy
+
+    # Remove the silent intervals
+    x = x[:, index]
+    y = y[:, index]
+
+    # Add the low-level noise to the envelopes
+    x = x + addnoise * np.random.standard_normal(x.shape)
+    y = y + addnoise * np.random.standard_normal(y.shape)
+
+    # Compute the mel cepstrum coefficients using only those segments
+    # above threshold
+    xcep = np.zeros((nbasis, nsamp))  # Input
+    ycep = np.zeros((nbasis, nsamp))  # Output
+    for n in range(nsamp):
+        for k in range(nbasis):
+            xcep[k, n] = np.sum(x[:, n] * cepm[:, k])
+            ycep[k, n] = np.sum(y[:, n] * cepm[:, k])
+
+    # Remove the average value from the cepstral coefficients. The
+    # cross-correlation thus becomes a cross-covariance, and there
+    # is no effect of the absolute signal level in dB.
+    for k in range(nbasis):
+        xcep[k, :] = xcep[k, :] - np.mean(xcep[k, :], axis=0)
+        ycep[k, :] = ycep[k, :] - np.mean(ycep[k, :], axis=0)
+
+    # Normalized cross-correlations between the time-varying cepstral coeff
+    xy = np.zeros(nbasis)  # Input vs output
+    small = 1.0e-30
+    for k in range(nbasis):
+        xsum = np.sum(xcep[k, :] ** 2)
+        ysum = np.sum(ycep[k, :] ** 2)
+        if (xsum < small) or (ysum < small):
+            xy[k] = 0.0
+        else:
+            xy[k] = np.abs(np.sum(xcep[k, :] * ycep[k, :]) / np.sqrt(xsum * ysum))
+
+    #
+    # % Figure of merit is the average of the cepstral correlations, ignoring
+    # % the first (average spectrum level).
+    m1 = np.sum(xy[1:nbasis]) / (nbasis - 1)
+    return m1, xy
 
 
 def melcor9(x, y, thr, addnoise, segsize):
