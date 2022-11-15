@@ -113,7 +113,7 @@ def fir2(
 
 
 class NALR:
-    def __init__(self, nfir, fs):
+    def __init__(self, nfir: int, fs: int):
         """
         Args:
             nfir: Order of the NAL-R EQ filter and the matching delay
@@ -130,15 +130,23 @@ class NALR:
         self.delay = np.zeros(nfir + 1)
         self.delay[nfir // 2] = 1.0
 
-    def hl_interp(self, hl, cfs):
-        assert len(hl) == len(cfs), "Hearing losses and center frequencies don't match!"
-        hl_interpf = scipy.interpolate.interp1d(cfs, hl)
+    def hl_interp(self, hl: np.ndarray, cfs: np.ndarray):
+        try:
+            hl_interpf = scipy.interpolate.interp1d(cfs, hl)
+        except ValueError:
+            raise ValueError(
+                "Hearing losses (hl) and center frequencies (cfs) don't match!"
+            )
         return hl_interpf(self.aud)
 
-    def build(self, HL, cfs=None):
+    def build(
+        self,
+        hl: np.ndarray,
+        cfs: np.ndarray = None,
+    ):
         """
         Args:
-            HL: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz
+            hl: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz
             cfs: center frequencies of the hearing thresholds. If None, the default
                 values are used.
         Returns:
@@ -146,19 +154,20 @@ class NALR:
             delay
         """
         if cfs is None:
-            cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
+            cfs = np.array([250, 500, 1000, 2000, 3000, 6000])
 
-        HL = self.hl_interp(np.array(HL), np.array(cfs))
-        mloss = np.max(HL)
+        hl = self.hl_interp(np.array(hl), np.array(cfs))
+        mloss = np.max(hl)
+
         if mloss > 0:
             # Compute the NAL-R frequency response at the audiometric frequencies
             bias = np.array([-17, -8, 1, -1, -2, -2])
-            t3 = HL[1] + HL[2] + HL[3]
+            t3 = hl[1] + hl[2] + hl[3]
             if t3 <= 180:
                 xave = 0.05 * t3
             else:
                 xave = 9.0 + 0.116 * (t3 - 180)
-            gdB = xave + 0.31 * HL + bias
+            gdB = xave + 0.31 * hl + bias
             gdB = np.clip(gdB, a_min=0, a_max=None)
 
             # Design the linear-phase FIR filter
@@ -179,7 +188,7 @@ class NALR:
             nalr = self.delay.copy()
         return nalr, self.delay
 
-    def apply(self, nalr, wav):
+    def apply(self, nalr: np.ndarray, wav: np.ndarray):
         """
         Args:
             nalr: built NAL-R FIR filter
