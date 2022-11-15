@@ -131,8 +131,12 @@ class NALR:
         self.delay[nfir // 2] = 1.0
 
     def hl_interp(self, hl: np.ndarray, cfs: np.ndarray):
-        assert len(hl) == len(cfs), "Hearing losses and center frequencies don't match!"
-        hl_interpf = scipy.interpolate.interp1d(cfs, hl)
+        try:
+            hl_interpf = scipy.interpolate.interp1d(cfs, hl)
+        except ValueError:
+            raise ValueError(
+                "Hearing losses (hl) and center frequencies (cfs) don't match!"
+            )
         return hl_interpf(self.aud)
 
     def build(
