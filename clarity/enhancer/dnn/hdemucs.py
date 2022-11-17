@@ -4,7 +4,7 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
 from torchaudio.transforms import Fade
 
 
-def source_separation(mix, model, sample_rate, segment=10.0, overlap=0.1, device=None):
+def apply_separation(mix, model, sample_rate, segment=10.0, overlap=0.1, device=None):
     """Separate audio into sources using the model.
     Args:
         mix (torch.Tensor): Audio tensor of shape (batch, channels, time).
@@ -70,7 +70,7 @@ def source_separation(mix, model, sample_rate, segment=10.0, overlap=0.1, device
 
 
 def separate_hdemucs(audio_track=None, segment=10.0, overlap=0.1, device=None):
-    """Separate audio track using HDDemucs.
+    """Separate audio track using HDemucs.
     Args:
         audio_track (str): Paths of audio track.
         segment (float): Length of audio segments in seconds.
@@ -94,7 +94,7 @@ def separate_hdemucs(audio_track=None, segment=10.0, overlap=0.1, device=None):
     # Load audio
     waveform, sample_rate = torchaudio.load(audio_track)
 
-    sources = source_separation(
+    sources = apply_separation(
         waveform, model, sample_rate, segment=segment, overlap=overlap, device=device
     ).squeeze(0)
 
