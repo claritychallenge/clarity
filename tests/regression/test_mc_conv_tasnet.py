@@ -35,6 +35,7 @@ def test_convtasnet(regtest):
         "norm_type": "cLN",
         "causal": True,
         "mask_nonlinear": "relu",
+        "device": "cpu",
     }
 
     cfg["test_dataset"] = {
