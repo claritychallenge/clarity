@@ -2,6 +2,7 @@
 Adopted from https://github.com/kaituoxu/Conv-TasNet
 """
 import math
+from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -194,7 +195,7 @@ class SpatialEncoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, N, L, device: str = None):
+    def __init__(self, N, L, device: Optional[str] = None):
         super().__init__()
         # device for overlap_and add
         if device is None:
