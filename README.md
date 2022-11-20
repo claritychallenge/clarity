@@ -15,7 +15,7 @@ Cadenza challenges join the [Cadenza Challenge Group](https://groups.google.com/
 In this repository, you will find code to support all Clarity and Cadenza Challenges, including baselines, toolkits, and
 systems from participants. **We encourage you to make your system/model open source and contribute to this repository.**
 
-### The 2nd Clarity Enhancement Challenge (CEC2) has launched! [Take part](https://claritychallenge.github.io/clarity_CC_doc/docs/category/taking-part):fire::fire::fire:
+### The 2nd Clarity Enhancement Challenge (CEC2) Online Workshop [Register Now!](https://claritychallenge.org/clarity2022-CEC2-workshop/):fire::fire::fire:
 
 ## Installation
 
