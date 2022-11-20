@@ -23,6 +23,7 @@ def overlap_and_add(signal, frame_step, device):
         signal: A [..., frames, frame_length] Tensor. All dimensions may be unknown,
             and rank must be at least 2.
         frame_step: An integer denoting overlap offsets. Must be less than or equal to frame_length.
+        device: Whether to use 'cpu' or 'cuda' for processing.
 
     Returns:
         A Tensor with shape [..., output_size] containing the overlap-added frames of
@@ -72,6 +73,7 @@ class ConvTasNet(nn.Module):
         norm_type="cLN",
         causal=False,
         mask_nonlinear="relu",
+        device=None,
     ):
         """
         Args:
@@ -113,7 +115,7 @@ class ConvTasNet(nn.Module):
         self.separator = TemporalConvNet(
             N_spec, N_spat, B, H, P, X, R, C, norm_type, causal, mask_nonlinear
         )
-        self.decoder = Decoder(N_spec, L)
+        self.decoder = Decoder(N_spec, L, device)
         # init
         for p in self.parameters():
             if p.dim() > 1:
@@ -192,10 +194,13 @@ class SpatialEncoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, N, L):
+    def __init__(self, N, L, device: str = None):
         super().__init__()
         # device for overlap_and add
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
         # Hyper-parameter
         self.N, self.L = N, L
         # Components
