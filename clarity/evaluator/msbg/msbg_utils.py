@@ -409,7 +409,10 @@ def generate_key_percent(
 
 
 def measure_rms(
-    signal: np.ndarray, fs: float, dB_rel_rms: float, percent_to_track: float = None
+    signal: np.ndarray,
+    fs: float,
+    dB_rel_rms: float,
+    percent_to_track: Optional[float] = None,
 ) -> tuple:
     """Measure rms.
 
