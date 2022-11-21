@@ -118,7 +118,7 @@ def test_full_CEC1_pipeline(regtest):
     msbg_ear_cfg = {
         "src_pos": "ff",
         "sample_frequency": sample_frequency,
-        "equiv0dBSPL": 100,
+        "equiv_0db_spl": 100,
         "ahr": 20,
     }
 
