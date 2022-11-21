@@ -443,7 +443,7 @@ def measure_rms(
     signal: np.ndarray,
     sample_frequency: float,
     db_rel_rms: float,
-    percent_to_track: float = None,
+    percent_to_track: Optional[float] = None,
 ) -> tuple:
     """Measure Root Mean Square.
 
