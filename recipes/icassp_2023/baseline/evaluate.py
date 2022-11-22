@@ -11,7 +11,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
-from clarity.evaluator.haspi import hasqi_v2_be
+from clarity.evaluator.hasqi import hasqi_v2_be
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +121,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             logger.info(
                 f"The combined score is {si} (haspi {si_haspi}, hasqi {si_hasqi})"
             )
-            csv_lines.append([scene, listener, str(si), si_haspi, si_hasqi])
+            csv_lines.append([scene, listener, str(si), str(si_haspi), str(si_hasqi)])
 
             if cfg.evaluate.cal_unprocessed_si:
                 if cfg.evaluate.set_random_seed:
