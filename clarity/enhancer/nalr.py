@@ -1,5 +1,5 @@
 import math
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import numpy as np
 import scipy
@@ -10,8 +10,8 @@ def firwin2(
     n: int,
     f: np.ndarray,
     a: np.ndarray,
-    window: Union[str, float] = None,
-    antisymmetric: bool = None,
+    window: Optional[Union[str, float]] = None,
+    antisymmetric: Optional[bool] = None,
 ) -> np.ndarray:
     """FIR filter design using the window method.
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -48,7 +48,7 @@ def firwin2(
 
 
 def fir2(
-    nn: int, ff: np.ndarray, aa: np.ndarray, npt: int = None
+    nn: int, ff: np.ndarray, aa: np.ndarray, npt: Optional[int] = None
 ) -> Tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
     Translation of MATLAB fir2.

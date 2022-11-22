@@ -163,13 +163,17 @@ class MSBGHearingModel(nn.Module):
         spl_cali=True,
         src_posn="ff",
         kernel_size=1025,
+        device=None,
     ):
         super().__init__()
         self.sr = sr
         self.spl_cali = spl_cali
         self.src_posn = src_posn
         self.kernel_size = kernel_size
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
 
         # settings for audiogram
 

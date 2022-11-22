@@ -15,11 +15,9 @@ def test_torch_msbg_stoi(regtest):
 
     audiogram = [45, 35, 30, 45, 50, 50]
     audiometric = [250, 500, 1000, 2000, 4000, 6000]
-    msbg = MSBGHearingModel(audiogram=audiogram, audiometric=audiometric)
+    msbg = MSBGHearingModel(audiogram=audiogram, audiometric=audiometric, device="cpu")
 
     x = torch.randn(2, 44100)
-    if torch.cuda.is_available():
-        x = x.cuda()
     y = msbg(x)
     stoi_loss = stoi_loss.forward(x.cpu(), y.cpu()).mean()
     estoi_loss = estoi_loss.forward(x.cpu(), y.cpu()).mean()
@@ -36,8 +34,7 @@ def test_torchloudnorm(regtest):
     ln = torchloudnorm()
 
     x = torch.randn(2, 44100)
-    if torch.cuda.is_available():
-        x = x.cuda()
+    x = x.cpu()
     y = ln(x)
     div = (y / (x + 1e-8)).cpu().mean()
 
