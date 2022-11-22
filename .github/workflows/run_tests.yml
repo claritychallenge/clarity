@@ -36,8 +36,7 @@ jobs:
       - name: Server Architecture
         run: |
           python -c "import numpy as np; print(np.show_config())"
-          uname -a
-          cat /proc/cpuinfo
+          cat  /proc/cpuinfo | grep "model name"
       - name: Run pytest
         run: |
           pytest --cov=clarity .
