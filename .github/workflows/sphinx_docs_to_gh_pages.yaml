@@ -3,8 +3,8 @@ name: Sphinx docs to gh-pages
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v*
 
 jobs:
   sphinx_docs_to_gh-pages:
@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4.3.0
         with:
           python-version: 3.9
       - name: Installing the Documentation requirements
