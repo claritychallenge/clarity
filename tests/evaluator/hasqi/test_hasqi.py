@@ -16,4 +16,4 @@ def test_hasqi_v2() -> None:
     level1 = 65
 
     score, _, _, _ = hasqi_v2(x, sr, y, sr, hl, eq, level1)
-    assert score == pytest.approx(0.0017926034736339314, rel=1e-4)
+    assert score == pytest.approx(0.0017928489334036453, rel=1e-7)
