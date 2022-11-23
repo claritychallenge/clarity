@@ -1,4 +1,5 @@
-# Implementation of the Sheffield entry E009 for the first Clarity enhancement challenge (CEC1)
+# E009 - Implementation of the Sheffield entry for the first Clarity enhancement challenge (CEC1)
+
 This repository contains the PyTorch implementation of "[A Two-Stage End-to-End System for Speech-in-Noise Hearing Aid Processing](https://claritychallenge.github.io/clarity2021-workshop/papers/Clarity_2021_paper_tu.pdf)", the Sheffield entry E009 for the first [Clarity enhancement challenge (CEC1)](https://claritychallenge.github.io/clarity2021-workshop/results.html). The system consists of a [Conv-TasNet](https://github.com/kaituoxu/Conv-TasNet) based denoising module, and a finite-inpulse-response (FIR) filter based amplification module. A differentiable approximation to the [Cambridge MSBG model](https://github.com/claritychallenge/clarity_CEC1/tree/master/projects/MSBG) released in the CEC1 is used in the loss function.
 
 ## Train
