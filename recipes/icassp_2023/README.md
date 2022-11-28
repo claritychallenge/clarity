@@ -91,10 +91,19 @@ In the `baseline/' folder, we provide code for running the baseline enhancement 
 
 The baseline enhancement simply takes the 6 channel hearing aid inputs and reduces this to a stereo hearing aid output by passing through the 'front' microphone signal of the left and right ear.
 
-To run the baseline enhancement system, firstly specify `root` in config.yaml. You can also define your own `path.exp_folder` to store enhanced signals and evaluated results. Then run:
+To run the baseline enhancement system, firstly specify `root` in `config.yaml` to point to where you have installed the clarity data. You can also define your own `path.exp_folder` to store enhanced signals and evaluated results.
+
+
+Then run:
 
 ```bash
-python enhance.py
+python3 enhance.py
+```
+
+Alternatively, you can provide the root variable on the command line, e.g.,
+
+```bash
+python3 enhance.py path.root=/Volumes/data/clarity_CEC2_data
 ```
 
 The folder `enhanced_signals` will appear in the `exp` folder.
@@ -103,7 +112,7 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 The `evaluate.py`  will first pass signals through a provided hearing aid amplification stage using a NAL-R [[1](#references)] fitting amplification and a simple automatic gain compressor. The amplification is determined by the audiograms defined by the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. After amplification, the evaluate function calculates the better-ear HASPI  [[2](#references)] and better-ear HASQI  [[3](#references)] scores. The average of these two is computed and returned for each signal.
 
-Specify `path.exp_folder` to store the results, and specify `evaluate.cal_unprocessed_si` to decide whether compute HASPI scores for unprocessed scenes. Then run:
+To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
 ```bash
 python evaluate.py
