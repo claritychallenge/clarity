@@ -22,6 +22,7 @@ soft_clip: True
 
 evaluate:
   set_random_seed: True
+  small_test: False
 
 # hydra config
 hydra:

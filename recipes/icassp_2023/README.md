@@ -115,14 +115,36 @@ The `evaluate.py`  will first pass signals through a provided hearing aid amplif
 To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
 ```bash
-python evaluate.py
+python3 evaluate.py
+```
+
+The full evaluation set is 7500 scene-listener pairs and will take a long time to run. A standard small set which uses 1/15 of the data has been defined and can be run with
+
+```bash
+python3 evaluate.py evaluate.small_test=True
 ```
 
 A csv file containing the HASPI, HASQI and combined scores will be generated in the `exp_folder`.
 
 When computing HASPI and HASQI, the `_target_anechoic_CH1.wav` is used as the reference, with its level normalised to match that of the corresponding `_target_CH1.wav`.
 
-The score for the baseline enhancement is TBD. Please note: HASPI and HASQI employ random thresholding noise so you will not get identical scores unless the random seed is set (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). However, if the seed is not set the differences between runs should be small (order of 1e-6).
+### Reporting results
+
+Once the evaluation script has completed, the final result can be reported with
+
+```bash
+python3 report_score.py
+```
+
+Or if you have run the small evaluation
+
+```bash
+python3 report_score.py evaluate.small_test=True
+```
+
+The score for the baseline enhancement is 0.171 overall (0.332 HASPI; 0.009 HASQI).
+
+Please note: HASPI and HASQI employ random thresholding noise so you will not get identical scores unless the random seed is set (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). However, if the seed is not set the differences between runs should be small (order of 1e-6).
 
 ## References
 
