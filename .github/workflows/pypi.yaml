@@ -2,7 +2,8 @@ name: Publish package to PyPi
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   build-release:
@@ -22,8 +23,14 @@ jobs:
           pip3 install .[pypi]
       - name: Build package
         run: |
-          python -m build
-      - name: Publish package
+          python -m build --no-isolation
+      - name: Publish package to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      - name: Publish package to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
