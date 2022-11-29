@@ -1,7 +1,7 @@
 from clarity.evaluator.haspi import eb
 
 
-def hasqi_v2(x, fx, y, fy, HL, eq, level1=65):
+def hasqi_v2(x, fx, y, fy, HL, eq, level1=100):
     """
     Function to compute the HASQI version 2 quality index using the
     auditory model followed by computing the envelope cepstral
@@ -89,7 +89,6 @@ def hasqi_v2(x, fx, y, fy, HL, eq, level1=65):
     non_lin = (
         cep_corr**2
     ) * bm_sync5  # Combined envelope and temporal fine structure
-
     # Linear model
     linear = 0.579 * d_loud + 0.421 * d_slope  # Linear fit
 

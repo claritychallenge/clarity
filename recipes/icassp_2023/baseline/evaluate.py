@@ -116,7 +116,8 @@ def run_calculate_si(cfg: DictConfig) -> None:
         scenes_listeners, cfg.evaluate.small_test
     )
 
-    results_file = ResultsFile("scores.csv").write_header()
+    results_file = ResultsFile("scores.csv")
+    results_file.write_header()
 
     for scene, listener in tqdm(scene_listener_pairs):
         logger.info(f"Running evaluation: scene {scene}, listener {listener}")
@@ -135,6 +136,8 @@ def run_calculate_si(cfg: DictConfig) -> None:
         fs_ref_target, ref_target = wavfile.read(
             scenes_folder / f"{scene}_target_CH1.wav"
         )
+        ref_anechoic = ref_anechoic / 32768.0
+        ref_target = ref_target / 32768.0
 
         assert fs_ref_anechoic == fs_ref_target == fs_signal == cfg.nalr.fs
 
