@@ -142,7 +142,7 @@ Or if you have run the small evaluation
 python report_score.py evaluate.small_test=True
 ```
 
-The score for the baseline enhancement is 0.171 overall (0.332 HASPI; 0.009 HASQI).
+The score for the baseline enhancement is 0.185 overall (0.239 HASPI; 0.132 HASQI).
 
 Please note: HASPI and HASQI employ random thresholding noise so you will not get identical scores unless the random seed is set (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). However, if the seed is not set the differences between runs should be small (order of 1e-6).
 
