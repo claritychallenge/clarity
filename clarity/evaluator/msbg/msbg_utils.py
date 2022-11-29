@@ -105,8 +105,8 @@ def read_gtf_file(gtf_file: str) -> Dict:
     # Fix filename if necessary
     dirname = os.path.dirname(os.path.abspath(__file__))
     gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r", encoding="utf-8") as file_pointer:
-        data = json.load(file_pointer)
+    with open(gtf_file, "r", encoding="utf-8") as fp:
+        data = json.load(fp)
     for key in data:
         if isinstance(data[key], list):
             data[key] = np.array(data[key])
@@ -115,7 +115,7 @@ def read_gtf_file(gtf_file: str) -> Dict:
 
 def firwin2(
     n_taps: int,
-    sample_frequency: np.ndarray,
+    frequencies: np.ndarray,
     filter_gains: np.ndarray,
     window: Union[None, str, tuple] = None,
     antisymmetric: Optional[bool] = None,
@@ -126,7 +126,7 @@ def firwin2(
 
     Args:
         n_taps (int): The number of taps in the FIR filter.
-        sample_frequency (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
+        frequencies (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
         window (string or (string, float), optional): See scipy.firwin2 (default: (None))
         antisymmetric (bool, optional): Unused but present to main compatability
@@ -149,9 +149,9 @@ def firwin2(
         window_shape = scipy.signal.kaiser(n_taps, window_param)
 
     if window_shape is None:
-        filter_coef, _ = fir2(order, sample_frequency, filter_gains)
+        filter_coef, _ = fir2(order, frequencies, filter_gains)
     else:
-        filter_coef, _ = fir2(order, sample_frequency, filter_gains, window_shape)
+        filter_coef, _ = fir2(order, frequencies, filter_gains, window_shape)
 
     return filter_coef
 
