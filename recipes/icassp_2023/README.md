@@ -97,13 +97,13 @@ To run the baseline enhancement system, firstly specify `root` in `config.yaml` 
 Then run:
 
 ```bash
-python3 enhance.py
+python enhance.py
 ```
 
 Alternatively, you can provide the root variable on the command line, e.g.,
 
 ```bash
-python3 enhance.py path.root=/Volumes/data/clarity_CEC2_data
+python enhance.py path.root=/Volumes/data/clarity_CEC2_data
 ```
 
 The folder `enhanced_signals` will appear in the `exp` folder.
@@ -115,13 +115,13 @@ The `evaluate.py`  will first pass signals through a provided hearing aid amplif
 To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
 ```bash
-python3 evaluate.py
+python evaluate.py
 ```
 
 The full evaluation set is 7500 scene-listener pairs and will take a long time to run. A standard small set which uses 1/15 of the data has been defined and can be run with
 
 ```bash
-python3 evaluate.py evaluate.small_test=True
+python evaluate.py evaluate.small_test=True
 ```
 
 A csv file containing the HASPI, HASQI and combined scores will be generated in the `exp_folder`.
@@ -133,13 +133,13 @@ When computing HASPI and HASQI, the `_target_anechoic_CH1.wav` is used as the re
 Once the evaluation script has completed, the final result can be reported with
 
 ```bash
-python3 report_score.py
+python report_score.py
 ```
 
 Or if you have run the small evaluation
 
 ```bash
-python3 report_score.py evaluate.small_test=True
+python report_score.py evaluate.small_test=True
 ```
 
 The score for the baseline enhancement is 0.171 overall (0.332 HASPI; 0.009 HASQI).
