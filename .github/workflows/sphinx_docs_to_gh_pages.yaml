@@ -23,7 +23,7 @@ jobs:
           pip3 install .[docs]
       - name: Copying recipe README.md
         run: |
-         rsync -av --exclude-from="docs/recipe_rsync_exclude.txt" recipes doc/.
+         rsync -av --exclude-from="docs/recipe_rsync_exclude.txt" recipes docs/.
       - name: Running Sphinx to gh-pages Action
         uses: ns-rse/action-sphinx-docs-to-gh-pages@main
         with:
