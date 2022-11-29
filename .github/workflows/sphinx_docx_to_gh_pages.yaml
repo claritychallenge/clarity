@@ -21,6 +21,9 @@ jobs:
       - name: Installing the Documentation requirements
         run: |
           pip3 install .[docs]
+      - name: Copying recipe README.md
+        run: |
+         rsync -av --exclude-from="recipe_rsync_exclude.txt" recipes doc/.
       - name: Running Sphinx to gh-pages Action
         uses: ns-rse/action-sphinx-docs-to-gh-pages@main
         with:
