@@ -1,4 +1,5 @@
-## Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners
+# E032 - Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners
+
 The implementation of ["Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners"](https://arxiv.org/abs/2204.04287), accepted to InterSpeech 2022. For the 1st Clarity Prediction Challenge (CPC1) programme and details, please see [here](https://claritychallenge.github.io/clarity2022-workshop/programme.html).
 
 Please note: This code provides the implementation of the LS(LibriSpeech) + CPC1 model, as shown in the third row of Table 2 in the paper. Since the generation of CLS data (LS train-clean-100 set added with noises from the training set in CEC1) and the training with CLS data are over-complicated, the scripts are not provided here. Anyway, the improvement with CLS is limited...

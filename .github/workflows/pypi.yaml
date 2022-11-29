@@ -24,7 +24,7 @@ jobs:
           pip3 install .[pypi]
       - name: Build package
         run: |
-          python -m build
+          python -m build --no-isolation
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
