@@ -158,7 +158,7 @@ def firwin2(
 
 def fir2(
     filter_length: int,
-    sample_frequency: np.ndarray,
+    frequencies: np.ndarray,
     filter_gains: np.ndarray,
     n_interpolate: Optional[int] = None,
 ) -> Tuple[np.ndarray, int]:
@@ -168,7 +168,7 @@ def fir2(
 
     Args:
         filter_length (int): Order
-        sample_frequency (ndarray): The frequency sampling points (0 < sample_frequency < 1) where 1 is Nyquist rate.
+        frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where 1 is Nyquist rate.
                         First and last elements must be 0 and 1 respectively.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
         n_interpolate (int, optional): Number of points for freq response interpolation
@@ -193,14 +193,14 @@ def fir2(
 
     lap = np.fix(n_interpolate / 25).astype(int)
 
-    nbrk = max(len(sample_frequency), len(filter_gains))
+    nbrk = max(len(frequencies), len(filter_gains))
 
-    sample_frequency[0] = 0
-    sample_frequency[nbrk - 1] = 1
+    frequencies[0] = 0
+    frequencies[nbrk - 1] = 1
 
     H = np.zeros(n_interpolate + 1)
     nint = nbrk - 1
-    df = np.diff(sample_frequency, n=1)
+    df = np.diff(frequencies, n=1)
 
     n_interpolate += 1
     nb = 0
@@ -211,7 +211,7 @@ def fir2(
             nb = int(np.ceil(nb - lap / 2))
             ne: int = nb + lap - 1
         else:
-            ne = int(np.fix(sample_frequency[i + 1] * n_interpolate)) - 1
+            ne = int(np.fix(frequencies[i + 1] * n_interpolate)) - 1
 
         j = np.arange(nb, ne + 1)
         inc: Union[float, np.ndarray] = 0.0 if nb == ne else (j - nb) / (ne - nb)

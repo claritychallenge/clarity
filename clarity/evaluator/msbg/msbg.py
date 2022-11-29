@@ -40,7 +40,6 @@ class Ear:
             ahr (): ???
         """
         self.sample_frequency = sample_frequency
-        #        self.calibration_signal = None
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv_0db_spl = equiv_0db_spl
         self.ahr = ahr
