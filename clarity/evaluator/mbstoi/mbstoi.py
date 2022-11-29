@@ -55,6 +55,22 @@ def mbstoi(
         right_ear_noisy (np.ndarray) : Noisy/processed speech signal from right ear.
         fs_signal (int) : Frequency sample rate of signal.
         gridcoarseness (int) : Grid coarseness as denominator of ntaus and ngammas (default: 1).
+        sample_rate (int) :  Sample Rate.
+        n_frame (int) :  Number of Frames.
+        fft_size_in_samples (int) :  ??? size in samples.
+        n_third_octave_bands (int) : Number of third octave bands.
+        centre_freq_first_third_octave_hz (int) :  150,
+        n_frames (int) :  Number of Frames.
+        dyn_range (int) : Dynamic Range.
+        tau_min (float) : Min Tau the ???
+        tau_max (float) : Max Tau the ???
+        gamma_min (int) : Minimum gamma the ???
+        gamma_max (int) : Maximum gamma the ???
+        sigma_delta_0 (float) : ???
+        sigma_epsilon_0 (float) : ???
+        alpha_0_db (int) : ???
+        tau_0 (float) : ???
+        level_shift_deviation (float) : ???
 
     Returns:
         float : mbtsoi index d.
