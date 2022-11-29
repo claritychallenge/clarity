@@ -1598,16 +1598,17 @@ def ave_covary2(sigcov, sigMSx, thr):
     sigLinear = 10 ** (sigRMS / 20)  # Linear amplitude (specific loudness)
     xsum = np.sum(sigLinear, 0) / nchan  # Intensity averaged over frequency bands
     xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
-    index = np.argwhere(
-        xsum > thr
-    ).T.squeeze()  # Identify those segments above threshold
+    index = np.argwhere(xsum > thr).T  # Identify those segments above threshold
+    if index.size != 1:
+        index = index.squeeze()
     nseg = index.shape[0]  # Number of segments above threshold
 
     # Exit if not enough segments above zero
     if nseg <= 1:
         print("Function eb.AveCovary: Ave signal below threshold, outputs set to 0.")
         avecov = 0
-        syncov = 0
+        # syncov = 0
+        syncov = [0] * 6
         return avecov, syncov
 
     # Remove the silent segments
