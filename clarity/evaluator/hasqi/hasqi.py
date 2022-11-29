@@ -1,7 +1,7 @@
 from clarity.evaluator.haspi import eb
 
 
-def hasqi_v2(x, fx, y, fy, HL, eq, level1=100):
+def hasqi_v2(x, fx, y, fy, HL, level1=65, eq=0):
     """
     Function to compute the HASQI version 2 quality index using the
     auditory model followed by computing the envelope cepstral
