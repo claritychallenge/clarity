@@ -61,3 +61,6 @@ venv.bak/
 docs/clarity.*.rst
 # Emacs
 *~
+
+# Sound files
+*.wav
