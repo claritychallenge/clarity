@@ -1,8 +1,8 @@
 ## Machine learning challenges for hearing aid processing.
 <p align="center">
-  <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="250" hspace="40"/>
+  <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="200" hspace="40"/>
   
-  <img src="docs/images/cadenza_logo.png" alt="Cadenza Challenge" width="300" hspace="40"/>
+  <img src="docs/images/cadenza_logo.png" alt="Cadenza Challenge" width="250" hspace="40"/>
 </p>
 
 We are organising a series of machine learning challenges to enhance hearing-aid signal processing and to better predict
