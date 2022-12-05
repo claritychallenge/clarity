@@ -10,11 +10,9 @@ from clarity.predictor.torch_stoi import NegSTOILoss
 
 CPUINFO = get_cpu_info()
 
-print(f"CPUINFO['brand_raw'] : {CPUINFO['brand_raw']}")
-
 
 @pytest.mark.skipif(
-    re.match("E5-2673", CPUINFO["brand_raw"]),
+    re.search("E5-2673", CPUINFO["brand_raw"]),
     reason="Xeon E5-2673 CPU arch gives a different value",
 )
 def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
@@ -39,7 +37,7 @@ def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
 
 
 @pytest.mark.skipif(
-    not re.match("E5-2673", CPUINFO["brand_raw"]),
+    not re.search("E5-2673", CPUINFO["brand_raw"]),
     reason="Test value obtained with Xeon E5-2673",
 )
 def test_torch_msbg_stoi_xeon_e5_2673_cpu(regtest):
