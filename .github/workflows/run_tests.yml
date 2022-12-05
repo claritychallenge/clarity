@@ -33,7 +33,7 @@ jobs:
           pip install -e .[tests]
           pip install -e .[docs]
           pip install -e .[dev]
-      - name: What does Python see about the CPU?
+      - name: CPU information
         run: |
           python -m cpuinfo --json
       - name: Run pytest
