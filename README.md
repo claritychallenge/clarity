@@ -63,7 +63,7 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge(s)
 
-- [The ICASSP 2023 Enhancement Challenge](./recipes/icassp2023)
+- [The ICASSP 2023 Enhancement Challenge](./recipes/icassp_2023)
 
 Upcoming challenges
 
