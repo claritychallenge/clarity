@@ -10,6 +10,8 @@ from clarity.predictor.torch_stoi import NegSTOILoss
 
 CPUINFO = get_cpu_info()
 
+print(f"CPUINFO['brand_raw'] : {CPUINFO['brand_raw']}")
+
 
 @pytest.mark.skipif(
     re.match("E5-2673", CPUINFO["brand_raw"]),
