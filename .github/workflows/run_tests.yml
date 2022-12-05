@@ -26,9 +26,6 @@ jobs:
         uses: actions/setup-python@v4.3.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: What does Python see about the CPU?
-        run: |
-          python -m cpuinfo
       - name: Install dependencies
         run: |
           sudo apt-get update -yq
@@ -39,6 +36,9 @@ jobs:
           pip install -e .[tests]
           pip install -e .[docs]
           pip install -e .[dev]
+      - name: What does Python see about the CPU?
+        run: |
+          python -m cpuinfo --json
       - name: Run pytest
         run: |
           pytest --cov=clarity .
