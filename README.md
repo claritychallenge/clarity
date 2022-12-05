@@ -1,10 +1,21 @@
 ## Machine learning challenges for hearing aid processing.
 
-<p align="center">
+<div align="center">
   <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="200" hspace="40"/>
 
   <img src="docs/images/cadenza_logo.png" alt="Cadenza Challenge" width="250" hspace="40"/>
-</p>
+
+[![PyPI version](https://badge.fury.io/py/pyclarity.svg)](https://badge.fury.io/py/pyclarity)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyclarity)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
+
+![PyPI](https://img.shields.io/pypi/v/pyclarity?label=ICASSP%202023%20Challenge%20-%20pypi)
+![PyPI](https://img.shields.io/static/v1?label=CEC2%20Challenge%20-%20pypi&message=v0.1.1&color=orange)
+
+</div>
+
+--------------------------------------------------------------------------------
 
 We are organising a series of machine learning challenges to enhance hearing-aid signal processing and to better predict
 how people perceive speech-in-noise (Clarity) and speech-in-music (Cadenza). For further details of the Clarity Project
