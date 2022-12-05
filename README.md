@@ -1,9 +1,12 @@
-## Machine learning challenges for hearing aid processing.
-
 <div align="center">
+
+# Machine learning challenges for hearing aid processing.
+
   <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="200" hspace="40"/>
 
   <img src="docs/images/cadenza_logo.png" alt="Cadenza Challenge" width="250" hspace="40"/>
+
+<p>
 
 [![PyPI version](https://badge.fury.io/py/pyclarity.svg)](https://badge.fury.io/py/pyclarity)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyclarity)
@@ -12,6 +15,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/pyclarity?label=ICASSP%202023%20Challenge%20-%20pypi)
 ![PyPI](https://img.shields.io/static/v1?label=CEC2%20Challenge%20-%20pypi&message=v0.1.1&color=orange)
+</p>
 
 </div>
 
