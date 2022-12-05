@@ -71,6 +71,8 @@ def centred_element(r: np.ndarray, i: int, j: int):
         Any: matrix element
     """
     offset = int((r.shape[0] - 1) / 2)
+    if i > r.shape[0] or j > r.shape[1]:
+        raise IndexError
     output = r[i + offset, j + offset]
     return output
 
@@ -446,8 +448,12 @@ def rotation_control_vector(
     Returns:
         array: mapped rotation control vector
     """
-    assert end_idx > start_idx
-    assert array_length > end_idx
+    # assert end_idx > start_idx
+    # assert array_length > end_idx
+    if start_idx > end_idx:
+        raise ValueError(f"start_idx ({start_idx}) > end_idx ({end_idx})")
+    if end_idx > array_length:
+        raise ValueError(f"array_length ({array_length}) > end_idx {end_idx}")
     x = np.arange(0, array_length)
     idx = smoothstep(x, x_min=start_idx, x_max=end_idx, N=smoothness)
     idx = np.array(np.floor(idx * (array_length - 1)), dtype=int)
@@ -474,7 +480,13 @@ def rotation_vector(
         np.array: _description_
     """
     turn_direction = -np.sign(start_angle - end_angle)
-    increment = (np.abs(start_angle - end_angle) / signal_length) * turn_direction
+    with np.errstate(divide="raise"):
+        try:
+            increment = (
+                np.abs(start_angle - end_angle) / signal_length
+            ) * turn_direction
+        except FloatingPointError:
+            raise
     theta = np.arange(start_angle, end_angle, increment)
     idx = rotation_control_vector(signal_length, start_idx, end_idx)
     return theta[idx]

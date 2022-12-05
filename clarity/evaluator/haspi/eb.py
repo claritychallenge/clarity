@@ -1,6 +1,17 @@
 import numpy as np
 from numba import jit
-from scipy.signal import butter, cheby2, correlate, group_delay, lfilter, resample_poly
+from scipy.signal import (
+    butter,
+    cheby2,
+    convolve,
+    correlate,
+    firwin,
+    group_delay,
+    lfilter,
+    resample_poly,
+)
+
+from clarity.enhancer.nalr import NALR
 
 
 def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
@@ -47,6 +58,7 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     BM envelope coverted to dB SL, 2 Oct 2012.
     Filterbank group delay corrected, 14 Dec 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+    Updated by Gerardo Roa Dabike, September 2022.
     """
 
     # Processing parameters
@@ -91,8 +103,13 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     nsamp = len(x24)
 
     # For HASQI, here add NAL-R equalization if the quality reference doesn't already have it.
-    # if itype == 1:
-    #     pass
+    if itype == 1:
+        nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
+        enhancer = NALR(nfir, fsamp)
+        aud = [250, 500, 1000, 2000, 4000, 6000]
+        nalr_fir, _ = enhancer.build(HL, aud)
+        x24 = convolve(x24, nalr_fir)  # Apply the NAL-R filter
+        x24 = x24[nfir : nfir + nsamp]
 
     # Cochlear model
     # Middle ear
@@ -966,3 +983,682 @@ def aveSL(env, control, attnOHC, thrLow, CR, attnIHC, Level1):
     xdB = np.maximum(xdB, 0)
 
     return xdB
+
+
+def env_smooth(env, segsize, fsamp):
+    """
+    Function to smooth the envelope returned by the cochlear model. The
+    envelope is divided into segments having a 50% overlap. Each segment is
+    windowed, summed, and divided by the window sum to produce the average.
+    A raised cosine window is used. The envelope sub-sampling frequency is
+    2*(1000/segsize).
+
+    Arguments:
+        xenv: matrix of envelopes in each of the auditory bands
+        segsize: averaging segment size in msec
+        fsamp: input envelope sampling rate in Hz
+
+    Returns:
+        smooth: matrix of subsampled windowed averages in each band
+
+    James M. Kates, 26 January 2007.
+    Final half segment added 27 August 2012.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Compute the window
+    nwin = int(np.around(segsize * (0.001 * fsamp)))  # Segment size in samples
+    test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
+    if test > 0:
+        # Force window length to be even
+        nwin = nwin + 1
+    window = np.hanning(nwin)  # Raised cosine von Hann window
+    wsum = np.sum(window)  # Sum for normalization
+
+    #  The first segment has a half window
+    nhalf = int(nwin / 2)
+    halfwindow = window[nhalf:nwin]
+    halfsum = np.sum(halfwindow)
+
+    # Number of segments and assign the matrix storage
+    nchan = np.size(env, 0)
+    npts = np.size(env, 1)
+    nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
+    smooth = np.zeros((nchan, nseg))
+
+    #  Loop to compute the envelope in each frequency band
+    for k in range(nchan):
+        # Extract the envelope in the frequency band
+        r = env[k, :]
+
+        # The first (half) windowed segment
+        nstart = 0
+        smooth[k, 0] = np.sum(r[nstart:nhalf] * halfwindow.conj().transpose()) / halfsum
+
+        # Loop over the remaining full segments, 50% overlap
+        for n in range(1, nseg - 1):
+            nstart = int(nstart + nhalf)
+            nstop = int(nstart + nwin)
+            smooth[k, n] = sum(r[nstart:nstop] * window.conj().transpose()) / wsum
+
+        # The last (half) windowed segment
+        nstart = nstart + nhalf
+        nstop = nstart + nhalf
+        smooth[k, nseg - 1] = (
+            np.sum(r[nstart:nstop] * window[:nhalf].conj().transpose()) / halfsum
+        )
+
+    return smooth
+
+
+def melcor(x, y, thr, addnoise):
+    """
+    Function to compute the cross-correlations between the input signal
+    time-frequency envelope and the distortion time-frequency envelope. For
+    each time interval, the log spectrum is fitted with a set of half-cosine
+    basis functions. The spectrum weighted by the basis functions corresponds
+    to mel cepstral coefficients computed in the frequency domain. The
+    amplitude-normalized cross-covariance between the time-varying basis
+    functions for the input and output signals is then computed.
+
+    Arguments:
+        x : subsampled input signal envelope in dB SL in each critical band
+        y : subsampled distorted output signal envelope
+        thr : threshold in dB SPL to include segment in calculation
+        addnoise : additive Gaussian noise to ensure 0 cross-corr at low levels
+
+    Returns:
+        m1 : average cepstral correlation 2-6, input vs output
+        xy : individual cepstral correlations, input vs output
+
+    James M. Kates, 24 October 2006.
+    Difference signal removed for cochlear model, 31 January 2007.
+    Absolute value added 13 May 2011.
+    Changed to loudness criterion for silence threhsold, 28 August 2012.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Processing parameters
+    nbands = x.shape[0]
+
+    # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
+    nbasis = 6  # Number of cepstral coefficients to be used
+    freq = np.arange(nbasis)
+    k = np.arange(nbands)
+    cepm = np.zeros((nbands, nbasis))
+    for nb in range(nbasis):
+        basis = np.cos(k * float(freq[nb]) * np.pi / float((nbands - 1)))
+        cepm[:, nb] = basis / np.linalg.norm(basis)
+
+    # Find the segments that lie sufficiently above the quiescent rate
+    xLinear = 10 ** (x / 20)  # Convert envelope dB to linear (specific loudness)
+    xsum = np.sum(xLinear, 0) / nbands  # Proportional to loudness in sones
+    xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
+    index = np.where(xsum > thr)[0]  # Identify those segments above threshold
+    nsamp = index.shape[0]  # Number of segments above threshold
+
+    # Exit if not enough segments above zero
+    m1 = 0
+    xy = 0
+    if nsamp <= 1:
+        print("Function eb.melcor: Signal below threshold, outputs set to 0.")
+        return m1, xy
+
+    # Remove the silent intervals
+    x = x[:, index]
+    y = y[:, index]
+
+    # Add the low-level noise to the envelopes
+    x = x + addnoise * np.random.standard_normal(x.shape)
+    y = y + addnoise * np.random.standard_normal(y.shape)
+
+    # Compute the mel cepstrum coefficients using only those segments
+    # above threshold
+    xcep = np.zeros((nbasis, nsamp))  # Input
+    ycep = np.zeros((nbasis, nsamp))  # Output
+    for n in range(nsamp):
+        for k in range(nbasis):
+            xcep[k, n] = np.sum(x[:, n] * cepm[:, k])
+            ycep[k, n] = np.sum(y[:, n] * cepm[:, k])
+
+    # Remove the average value from the cepstral coefficients. The
+    # cross-correlation thus becomes a cross-covariance, and there
+    # is no effect of the absolute signal level in dB.
+    for k in range(nbasis):
+        xcep[k, :] = xcep[k, :] - np.mean(xcep[k, :], axis=0)
+        ycep[k, :] = ycep[k, :] - np.mean(ycep[k, :], axis=0)
+
+    # Normalized cross-correlations between the time-varying cepstral coeff
+    xy = np.zeros(nbasis)  # Input vs output
+    small = 1.0e-30
+    for k in range(nbasis):
+        xsum = np.sum(xcep[k, :] ** 2)
+        ysum = np.sum(ycep[k, :] ** 2)
+        if (xsum < small) or (ysum < small):
+            xy[k] = 0.0
+        else:
+            xy[k] = np.abs(np.sum(xcep[k, :] * ycep[k, :]) / np.sqrt(xsum * ysum))
+
+    #
+    # % Figure of merit is the average of the cepstral correlations, ignoring
+    # % the first (average spectrum level).
+    m1 = np.sum(xy[1:nbasis]) / (nbasis - 1)
+    return m1, xy
+
+
+def melcor9(x, y, thr, addnoise, segsize):
+    """
+    Function to compute the cross-correlations between the input signal
+    time-frequency envelope and the distortion time-frequency envelope. For
+    each time interval, the log spectrum is fitted with a set of half-cosine
+    basis functions. The spectrum weighted by the basis functions corresponds
+    to mel cepstral coefficients computed in the frequency domain. The
+    amplitude-normalized cross-covariance between the time-varying basis
+    functions for the input and output signals is then computed for each of
+    the 8 modulation frequencies.
+
+    Arguments:
+        x : subsampled input signal envelope in dB SL in each critical band
+        y : subsampled distorted output signal envelope
+        thr : threshold in dB SPL to include segment in calculation
+        addnoise : additive Gaussian noise to ensure 0 cross-corr at low levels
+        segsize : segment size in ms used for the envelope LP filter (8 msec)
+
+    Returns:
+        CMave : average of the modulation correlations across analysis frequency
+            bands and modulation frequency bands, basis functions 2 -6
+        CMlow : average over the four lower mod freq bands, 0 - 20 Hz
+        CMhigh : average over the four higher mod freq bands, 20 - 125 Hz
+        CMmod : vector of cross-correlations by modulation frequency,
+            averaged over ananlysis frequency band
+
+    James M. Kates, 24 October 2006.
+    Difference signal removed for cochlear model, 31 January 2007.
+    Absolute value added 13 May 2011.
+    Changed to loudness criterion for silence threshold, 28 August 2012.
+    Version using envelope modulation filters, 15 July 2014.
+    Modulation frequency vector output added 27 August 2014.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Processing parameters
+    nbands = x.shape[0]
+
+    # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
+    nbasis = 6  # Number of cepstral coefficients to be used
+    freq = np.arange(nbasis)
+    k = np.arange(nbands)
+    cepm = np.zeros((nbands, nbasis))
+    for nb in range(nbasis):
+        basis = np.cos(k * float(freq[nb]) * np.pi / float((nbands - 1)))
+        cepm[:, nb] = basis / np.linalg.norm(basis)
+
+    # Find the segments that lie sufficiently above the quiescent rate
+    xLinear = 10 ** (x / 20)  # Convert envelope dB to linear (specific loudness)
+    xsum = np.sum(xLinear, 0) / nbands  # Proportional to loudness in sones
+    xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
+    index = np.where(xsum > thr)[0]  # Identify those segments above threshold
+    nsamp = index.shape[0]  # Number of segments above threshold
+
+    # Modulation filter bands, segment size is 8 msec
+    edge = [4.0, 8.0, 12.5, 20.0, 32.0, 50.0, 80.0]  # 8 bands covering 0 to 125 Hz
+    nmod = 1 + len(edge)  # Number of modulation filter bands
+
+    # Exit if not enough segments above zero
+    CMave = 0
+    CMlow = 0
+    CMhigh = 0
+    CMmod = np.zeros(nmod)
+    if nsamp <= 1:
+        print("Function eb.melcor9: Signal below threshold, outputs set to 0.")
+        return CMave, CMlow, CMhigh, CMmod
+
+    # Remove the silent intervals
+    x = x[:, index]
+    y = y[:, index]
+
+    # Add the low-level noise to the envelopes
+    x = x + addnoise * np.random.standard_normal(x.shape)
+    y = y + addnoise * np.random.standard_normal(y.shape)
+
+    # Compute the mel cepstrum coefficients using only those segments
+    # above threshold
+    xcep = np.zeros((nbasis, nsamp))  # Input
+    ycep = np.zeros((nbasis, nsamp))  # Output
+    for n in range(nsamp):
+        for k in range(nbasis):
+            xcep[k, n] = np.sum(x[:, n] * cepm[:, k])
+            ycep[k, n] = np.sum(y[:, n] * cepm[:, k])
+
+    # Remove the average value from the cepstral coefficients. The
+    # cross-correlation thus becomes a cross-covariance, and there
+    # is no effect of the absolute signal level in dB.
+    for k in range(nbasis):
+        xcep[k, :] = xcep[k, :] - np.mean(xcep[k, :], axis=0)
+        ycep[k, :] = ycep[k, :] - np.mean(ycep[k, :], axis=0)
+
+    # Envelope sampling parameters
+    fsub = 1000.0 / (0.5 * segsize)  # Envelope sampling frequency in Hz
+    fnyq = 0.5 * fsub  # Envelope Nyquist frequency
+
+    # Design the linear-phase envelope modulation filters
+    nfir = np.around(128 * (fnyq / 125))  # Adjust filter length to sampling rate
+    nfir = int(2 * np.floor(nfir / 2))  # Force an even filter length
+    b = np.zeros((nmod, nfir + 1))
+
+    b[0, :] = firwin(
+        nfir + 1, edge[0] / fnyq, window="hann", pass_zero="lowpass"
+    )  # LP filter 0-4 Hz
+    b[nmod - 1, :] = firwin(
+        nfir + 1, edge[nmod - 2] / fnyq, window="hann", pass_zero="highpass"
+    )  # HP 80-125 Hz
+    for m in range(1, nmod - 1):
+        b[m, :] = firwin(
+            nfir + 1,
+            [edge[m - 1] / fnyq, edge[m] / fnyq],
+            window="hann",
+            pass_zero="bandpass",
+        )  # Bandpass filter
+
+    CM = melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep)
+
+    # Average over the  modulation filters and basis functions 2 - 6
+    for m in range(nmod):
+        for j in range(1, nbasis):
+            CMave += CM[m, j]
+
+    CMave = CMave / (nmod * (nbasis - 1))
+
+    # Average over the four lower modulation filters
+    for m in range(4):
+        for j in range(1, nbasis):
+            CMlow += CM[m, j]
+
+    CMlow = CMlow / (4 * (nbasis - 1))
+
+    #  Average over the four upper modulation filters
+    for m in range(4, 8):
+        for j in range(1, nbasis):
+            CMhigh += CM[m, j]
+
+    CMhigh = CMhigh / (4 * (nbasis - 1))
+
+    # Average each modulation frequency over the basis functions
+    for m in range(nmod):
+        ave = 0
+        for j in range(1, nbasis):
+            ave += CM[m, j]
+
+        CMmod[m] = ave / (nbasis - 1)
+
+    return CMave, CMlow, CMhigh, CMmod
+
+
+def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep):
+    """Compute the cross-covariance matrix."""
+    small = 1.0e-30
+    nfir2 = nfir / 2
+    # Convolve the input and output envelopes with the modulation filters
+    X = np.zeros((nmod, nbasis, nsamp))
+    Y = np.zeros((nmod, nbasis, nsamp))
+    for m in range(nmod):
+        for j in range(nbasis):
+            c = convolve(b[m], xcep[j, :], mode="full")
+            X[m, j, :] = c[int(nfir2) : int(nfir2 + nsamp)]  # Remove the transients
+            c = convolve(b[m], ycep[j, :], mode="full")
+            Y[m, j, :] = c[int(nfir2) : int(nfir2 + nsamp)]  # Remove the transients
+
+    # Compute the cross-covariance matrix
+    CM = np.zeros((nmod, nbasis))
+    for m in range(nmod):
+        for j in range(nbasis):
+            #  Index j gives the input reference band
+            xj = X[m, j]  # Input freq band j, modulation freq m
+            xj = xj - np.mean(xj)
+            xsum = np.sum(xj**2)
+
+            # Processed signal band
+            yj = Y[m, j]  # Input freq band j, modulation freq m
+            yj = yj - np.mean(yj)
+            ysum = np.sum(yj**2)
+
+            # Cross-correlate the reference and processed signals
+            if (xsum < small) or (ysum < small):
+                CM[m, j] = 0
+            else:
+                CM[m, j] = np.abs(np.sum(xj * yj)) / np.sqrt(xsum * ysum)
+    return CM
+
+
+def spect_diff(xSL, ySL):
+    """
+    Function to compute changes in the long-term spectrum and spectral slope.
+    The metric is based on the spectral distortion metric of Moore and Tan
+    (JAES, Vol 52, pp 900-914). The log envelopes in dB SL are converted to
+    linear to approximate specific loudness. The outputs are the sum of the
+    absolute differences, the standard deviation of the differences, and the
+    maximum absolute difference. The same three outputs are provided for the
+    normalized spectral difference and for the slope. The output is
+    calibrated so that a processed signal having 0 amplitude produces a
+    value of 1 for the spectrum difference.
+
+    Abs diff: weight all deviations uniformly
+    Std diff: weight larger deviations more than smaller deviations
+    Max diff: only weight the largest deviation
+
+    Arguments:
+        xSL : reference signal spectrum in dB SL
+        ySL : degraded signal spectrum in dB SL
+
+    Returns:
+        dloud (np.array) : [sum abs diff, std dev diff, max diff] spectra
+        dnorm (np.array) : [sum abs diff, std dev diff, max diff] norm spectra
+        dslope (np.array) : [sum abs diff, std dev diff, max diff] slope
+
+    James M. Kates, 28 June 2012.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Convert the dB SL to linear magnitude values. Because of the auditory
+    # filter bank, the OHC compression, and auditory threshold, the linear
+    # values are closely related to specific loudness.
+    nbands = xSL.shape[0]
+    x = 10 ** (xSL / 20)
+    y = 10 ** (ySL / 20)
+
+    # Normalize the level of the reference and degraded signals to have the
+    # same loudness. Thus overall level is ignored while differences in
+    # spectral shape are measured.
+    xsum = np.sum(x)
+    x /= xsum  # Loudness sum = 1 (arbitrary amplitude, proportional to sones)
+    ysum = np.sum(y)
+    y /= ysum
+
+    # Compute the spectrum difference
+    dloud = np.zeros(3)
+    d = x - y  # Difference in specific loudness in each band
+    dloud[0] = np.sum(np.abs(d))
+    dloud[1] = nbands * np.std(d)  # Biased std: second moment
+    dloud[2] = np.max(np.abs(d))
+
+    # Compute the normalized spectrum difference
+    dnorm = np.zeros(3)
+    d = (x - y) / (x + y)  # Relative difference in specific loudness
+    dnorm[0] = np.sum(np.abs(d))
+    dnorm[1] = nbands * np.std(d)
+    dnorm[2] = np.max(np.abs(d))
+
+    # Compute the slope difference
+    dslope = np.zeros(3)
+    dx = x[1:nbands] - x[0 : nbands - 1]
+    dy = y[1:nbands] - y[0 : nbands - 1]
+    d = dx - dy  # Slope difference
+    dslope[0] = np.sum(np.abs(d))
+    dslope[1] = nbands * np.std(d)
+    dslope[2] = np.max(np.abs(d))
+
+    return dloud, dnorm, dslope
+
+
+def bm_covary(xBM, yBM, segsize, fsamp):
+    """
+    Function to compute the cross-covariance (normalized cross-correlation)
+    between the reference and processed signals in each auditory band. The
+    signals are divided into segments having 50% overlap.
+
+    Arguments:
+        xBM : BM movement, reference signal
+        yBM : BM movement, processed signal
+        segsize : signal segment size, msec
+        fsamp : sampling rate in Hz
+
+    Returns:
+        sigcov (np.array) : [nchan,nseg] of cross-covariance values
+        sigMSx (np.array) : [nchan,nseg] of MS input signal energy values
+        sigMSy (np.array) : [nchan,nseg] of MS processed signal energy values
+
+    James M. Kates, 28 August 2012.
+    Output amplitude adjustment added, 30 october 2012.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Initialize parameters
+    small = 1.0e-30
+
+    # Lag for computing the cross-covariance
+    lagsize = 1.0  # Lag (+/-) in msec
+    maxlag = np.around(lagsize * (0.001 * fsamp))  # Lag in samples
+
+    # Compute the segment window
+    nwin = int(np.around(segsize * (0.001 * fsamp)))  # Segment size in samples
+    test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
+    if test > 0:
+        nwin = nwin + 1  # Force window length to be even
+
+    window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
+    wincorr = correlate(window, window, "full")  # Window autocorrelation, inverted
+    wincorr = wincorr[int(len(window) - 1 - maxlag) : int(maxlag + len(window))]
+    wincorr = 1 / wincorr
+    winsum2 = 1.0 / np.sum(window**2)  # Window power, inverted
+
+    # The first segment has a half window
+    nhalf = int(nwin / 2)
+    halfwindow = window[nhalf:nwin]
+    halfcorr = correlate(halfwindow, halfwindow, "full")
+    halfcorr = halfcorr[
+        int(len(halfwindow) - 1 - maxlag) : int(maxlag + len(halfwindow))
+    ]
+    halfcorr = 1 / halfcorr
+    halfsum2 = 1.0 / np.sum(halfwindow**2)  # MS sum normalization, first segment
+
+    # Number of segments
+    nchan = xBM.shape[0]
+    npts = xBM.shape[1]
+    nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
+    sigMSx = np.zeros((nchan, nseg))
+    sigMSy = np.zeros((nchan, nseg))
+    sigcov = np.zeros((nchan, nseg))
+
+    # Loop to compute the signal mean-squared level in each band for each
+    # segment and to compute the cross-corvariances.
+    for k in range(nchan):
+        # Extract the BM motion in the frequency band
+        x = xBM[k, :]
+        y = yBM[k, :]
+
+        # The first (half) windowed segment
+        nstart = 0
+        segx = x[nstart:nhalf] * halfwindow  # Window the reference
+        segy = y[nstart:nhalf] * halfwindow  # Window the processed signal
+        segx = segx - np.mean(segx)  # Make 0-mean
+        segy = segy - np.mean(segy)
+        MSx = np.sum(segx**2) * halfsum2  # Normalize signal MS value by the window
+        MSy = np.sum(segy**2) * halfsum2
+        c = correlate(segx, segy, "full")
+        c = c[int(len(segx) - 1 - maxlag) : int(maxlag + len(segx))]
+        Mxy = np.max(np.abs(c * halfcorr))  # Unbiased cross-correlation
+        if (MSx > small) and (MSy > small):
+            sigcov[k, 0] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
+        else:
+            sigcov[k, 0] = 0.0
+
+        sigMSx[k, 0] = MSx  # Save the reference MS level
+        sigMSy[k, 0] = MSy
+
+        # Loop over the remaining full segments, 50% overlap
+        for n in range(1, nseg - 1):
+            nstart = nstart + nhalf
+            nstop = nstart + nwin
+            segx = x[nstart:nstop] * window  # Window the reference
+            segy = y[nstart:nstop] * window  # Window the processed signal
+            segx = segx - np.mean(segx)  # Make 0-mean
+            segy = segy - np.mean(segy)
+            MSx = np.sum(segx**2) * winsum2  # Normalize signal MS value by the window
+            MSy = np.sum(segy**2) * winsum2
+            c = correlate(segx, segy, "full")
+            c = c[int(len(segx) - 1 - maxlag) : int(maxlag + len(segx))]
+            Mxy = np.max(np.abs(c * wincorr))  # Unbiased cross-corr
+            if (MSx > small) and (MSy > small):
+                sigcov[k, n] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
+            else:
+                sigcov[k, n] = 0.0
+
+            sigMSx[k, n] = MSx  # Save the reference MS level
+            sigMSy[k, n] = MSy  # Save the reference MS level
+
+        # The last (half) windowed segment
+        nstart = nstart + nhalf
+        nstop = nstart + nhalf
+        segx = x[nstart:nstop] * window[0:nhalf]  # Window the reference
+        segy = y[nstart:nstop] * window[0:nhalf]  # Window the processed signal
+        segx = segx - np.mean(segx)  # Make 0-mean
+        segy = segy - np.mean(segy)
+        MSx = np.sum(segx**2) * halfsum2  # Normalize signal MS value by the window
+        MSy = np.sum(segy**2) * halfsum2
+
+        c = np.correlate(segx, segy, "full")
+        c = c[int(len(segx) - 1 - maxlag) : int(maxlag + len(segx))]
+
+        Mxy = np.max(np.abs(c * halfcorr))  # Unbiased cross-correlation
+        if (MSx > small) and (MSy > small):
+            sigcov[k, nseg - 1] = Mxy / np.sqrt(
+                MSx * MSy
+            )  # Normalized cross-covariance
+        else:
+            sigcov[k, nseg - 1] = 0.0
+
+        sigMSx[k, nseg - 1] = MSx  # Save the reference MS level
+        sigMSy[k, nseg - 1] = MSy  # Save the reference MS level
+
+    # Limit the cross-covariance to lie between 0 and 1
+    sigcov = np.clip(sigcov, 0, 1)
+
+    # Adjust the BM magnitude to correspond to the envelope in dB SL
+    sigMSx = 2.0 * sigMSx
+    sigMSy = 2.0 * sigMSy
+
+    return sigcov, sigMSx, sigMSy
+
+
+def ave_covary2(sigcov, sigMSx, thr):
+    """
+    Function to compute the average cross-covariance between the reference
+    and processed signals in each auditory band. The silent time-frequency
+    tiles are removed from consideration. The cross-covariance is computed
+    for each segment in each frequency band. The values are weighted by 1
+    for inclusion or 0 if the tile is below threshold. The sum of the
+    covariance values across time and frequency are then divided by the total
+    number of tiles above thresold. The calculation is a modification of
+    Tan et al. (JAES 2004). The cross-covariance is also output with a
+    frequency weighting that reflects the loss of IHC synchronization at high
+    frequencies (Johnson, JASA 1980).
+
+    Arguments:
+        sigcov (np.array) : [nchan,nseg] of cross-covariance values
+        sigMSx (np.array) : [nchan,nseg] of reference signal MS values
+        thr : threshold in dB SL to include segment ave over freq in average
+
+    Returns:
+        avecov : cross-covariance in segments averaged over time and frequency
+        syncov : cross-coraviance array, 6 different weightings for loss of
+              IHC synchronization at high frequencies:
+              LP Filter Order     Cutoff Freq, kHz
+                1              1.5
+                3              2.0
+                5              2.5, 3.0, 3.5, 4.0
+
+    James M. Kates, 28 August 2012.
+    Adjusted for BM vibration in dB SL, 30 October 2012.
+    Threshold for including time-freq tile modified, 30 January 2013.
+    Version for different sync loss, 15 February 2013.
+
+    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+    """
+
+    # Array dimensions
+    nchan = sigcov.shape[0]
+
+    # Initialize the LP filter for loss of IHC synchronization
+    cfreq = CenterFreq(nchan)  # Center frequencies in Hz on an ERB scale
+    p = np.array([1, 3, 5, 5, 5, 5])  # LP filter order
+    fcut = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])  # Cutoff frequencies in Hz
+    fsync = np.zeros((6, nchan))  # Array of filter freq resp vs band center freq
+    for n in range(6):
+        fc2p = fcut[n] ** (2 * p[n])
+        freq2p = cfreq ** (2 * p[n])
+        fsync[n, :] = np.sqrt(fc2p / (fc2p + freq2p))
+
+    # Find the segments that lie sufficiently above the threshold.
+    sigRMS = np.sqrt(sigMSx)  # Convert squared amplitude to dB envelope
+    sigLinear = 10 ** (sigRMS / 20)  # Linear amplitude (specific loudness)
+    xsum = np.sum(sigLinear, 0) / nchan  # Intensity averaged over frequency bands
+    xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
+    index = np.argwhere(xsum > thr).T  # Identify those segments above threshold
+    if index.size != 1:
+        index = index.squeeze()
+    nseg = index.shape[0]  # Number of segments above threshold
+
+    # Exit if not enough segments above zero
+    if nseg <= 1:
+        print("Function eb.AveCovary: Ave signal below threshold, outputs set to 0.")
+        avecov = 0
+        # syncov = 0
+        syncov = [0] * 6
+        return avecov, syncov
+
+    # Remove the silent segments
+    sigcov = sigcov[:, index]
+    sigRMS = sigRMS[:, index]
+
+    # Compute the time-frequency weights. The weight=1 if a segment in a
+    # frequency band is above threshold, and weight=0 if below threshold.
+    weight = np.zeros((nchan, nseg))  # No IHC synchronization roll-off
+    wsync1 = np.zeros((nchan, nseg))  # Loss of IHC synchronization at high frequencies
+    wsync2 = np.zeros((nchan, nseg))
+    wsync3 = np.zeros((nchan, nseg))
+    wsync4 = np.zeros((nchan, nseg))
+    wsync5 = np.zeros((nchan, nseg))
+    wsync6 = np.zeros((nchan, nseg))
+    for k in range(nchan):
+        for n in range(nseg):
+            if sigRMS[k, n] > thr:  # Thresh in dB SL for including time-freq tile
+                weight[k, n] = 1
+                wsync1[k, n] = fsync[0, k]
+                wsync2[k, n] = fsync[1, k]
+                wsync3[k, n] = fsync[2, k]
+                wsync4[k, n] = fsync[3, k]
+                wsync5[k, n] = fsync[4, k]
+                wsync6[k, n] = fsync[5, k]
+
+    # Sum the weighted covariance values
+    csum = np.sum(np.sum(weight * sigcov))  # Sum of weighted time-freq tiles
+    wsum = np.sum(np.sum(weight))  # Total number of tiles above thresold
+    fsum = np.zeros(6)
+    ssum = np.zeros(6)
+    fsum[0] = np.sum(np.sum(wsync1 * sigcov))  # Sum of weighted time-freq tiles
+    ssum[0] = np.sum(np.sum(wsync1))  # Total number of tiles above thresold
+    fsum[1] = np.sum(np.sum(wsync2 * sigcov))  # Sum of weighted time-freq tiles
+    ssum[1] = np.sum(np.sum(wsync2))  # Total number of tiles above thresold
+    fsum[2] = np.sum(np.sum(wsync3 * sigcov))  # Sum of weighted time-freq tiles
+    ssum[2] = np.sum(np.sum(wsync3))  # Total number of tiles above thresold
+    fsum[3] = np.sum(np.sum(wsync4 * sigcov))  # Sum of weighted time-freq tiles
+    ssum[3] = np.sum(np.sum(wsync4))  # Total number of tiles above thresold
+    fsum[4] = np.sum(np.sum(wsync5 * sigcov))  # Sum of weighted time-freq tiles
+    ssum[4] = np.sum(np.sum(wsync5))  # Total number of tiles above thresold
+    fsum[5] = np.sum(np.sum(wsync6 * sigcov))  # Sum of weighted time-freq tiles
+    ssum[5] = np.sum(np.sum(wsync6))  # Total number of tiles above thresold
+
+    # Exit if not enough segments above zero
+    if wsum < 1:
+        avecov = 0
+        print("Function eb.AveCovary: Signal tiles below threshold, outputs set to 0.")
+    else:
+        avecov = csum / wsum
+    syncov = fsum / ssum
+
+    return avecov, syncov

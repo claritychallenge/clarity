@@ -2,13 +2,13 @@
 requires = [
   "setuptools >= 40.9.0",
   "wheel",
+  "versioneer"
   ]
-
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "--cov"
+addopts = "--cov clarity"
 testpaths = [
     "tests",
 ]
@@ -36,3 +36,8 @@ exclude = [
     "docs/*",
     "build/*"
     ]
+
+[tool.coverage.run]
+omit = [
+    "clarity/_version.py"
+]

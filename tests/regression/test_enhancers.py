@@ -24,13 +24,12 @@ gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making chan
 
 
 def test_dsp_filter(regtest):
-    amfir = filter.AudiometricFIR(sr=44100, nfir=220)
+    amfir = filter.AudiometricFIR(sr=44100, nfir=220, device="cpu")
     torch.manual_seed(0)
     signal = torch.rand(10, dtype=torch.float)
     signal = torch.reshape(signal, (1, 1, -1))
-    signal.to(amfir.device)
-    output = amfir(signal)
-    output = np.round(output.detach().numpy(), 4)
+    output = amfir(signal.to(amfir.device))
+    output = np.round(output.detach().cpu().numpy(), 4)
     regtest.write(f"signal output: \n{output}\n")
 
 

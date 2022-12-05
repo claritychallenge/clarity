@@ -35,6 +35,7 @@ def test_convtasnet(regtest):
         "norm_type": "cLN",
         "causal": True,
         "mask_nonlinear": "relu",
+        "device": "cpu",
     }
 
     cfg["test_dataset"] = {
@@ -84,10 +85,11 @@ def test_convtasnet(regtest):
                 den_model.eval()
 
                 noisy = torch.reshape(noisy, (1, 6, -1))
-                noisy = noisy.to(device)
+                noisy = noisy.to(device).cpu()
                 if cfg.test_dataset["downsample_factor"] != 1:
                     proc = down_sample(noisy)
                 enhanced = (den_model(proc)).squeeze(1)
+                enhanced = enhanced.cpu()
                 if cfg.test_dataset["downsample_factor"] != 1:
                     enhanced = up_sample(enhanced)
                 enhanced = torch.clamp(enhanced, -1, 1)

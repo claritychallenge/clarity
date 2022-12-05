@@ -162,7 +162,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 cfg["mbstoi"]["fs"],
                 cfg["mbstoi"]["gridcoarseness"],
             )
-            csv_lines.append([scene, listener, sii])
+            csv_lines.append([scene, listener, sii])  # type: ignore
 
     with open(sii_file, "w") as csv_f:
         csv_writer = csv.writer(
