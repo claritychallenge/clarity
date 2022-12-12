@@ -59,6 +59,8 @@ venv.bak/
 
 # Generated docs
 docs/clarity.*.rst
+docs/recipes.*.rst
+
 # Emacs
 *~
 
