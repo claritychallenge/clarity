@@ -1,4 +1,4 @@
-# Regression test
+"""Regression Tests for CEC2"""
 # Pass some random data through code and compare with reference output
 # scene_renderer, enhancer, compressor, haspi
 
@@ -149,18 +149,16 @@ def test_full_CEC2_pipeline(regtest):
     enhanced_audio = np.tanh(enhanced_audio)
 
     sii_enhanced = haspi_v2_be(
-        xl=reference[:, 0],
-        xr=reference[:, 1],
-        yl=enhanced_audio[:, 0],
-        yr=enhanced_audio[:, 1],
+        reference_left=reference[:, 0],
+        reference_right=reference[:, 1],
+        processed_left=enhanced_audio[:, 0],
+        processed_right=enhanced_audio[:, 1],
         fs_signal=fs,
-        audiogram_l=audiogram_l,
-        audiogram_r=audiogram_r,
+        audiogram_left=audiogram_l,
+        audiogram_right=audiogram_r,
         audiogram_cfs=audiogram_cfs,
     )
 
-    print(f"Enhanced audio HASPI score is {sii_enhanced}")
-
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced[0]:0.7f}\n")
 
     # Enhanced audio HASPI score is 0.2994066

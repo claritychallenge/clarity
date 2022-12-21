@@ -35,7 +35,7 @@ def hasqi_v2(x, fx, y, fy, HL, eq=1, level1=65):
 
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
-    xenv, xBM, yenv, yBM, xSL, ySL, fsamp = eb.EarModel(x, fx, y, fy, HL, eq, level1)
+    xenv, xBM, yenv, yBM, xSL, ySL, fsamp = eb.ear_model(x, fx, y, fy, HL, eq, level1)
 
     # Envelope and long-term average spectral features
     # Smooth the envelope outputs: 125 Hz sub-sampling rate
@@ -54,7 +54,7 @@ def hasqi_v2(x, fx, y, fy, HL, eq=1, level1=65):
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    dloud, dnorm, dslope = eb.spect_diff(xSL, ySL)
+    dloud, dnorm, dslope = eb.spectrum_diff(xSL, ySL)
 
     # Temporal fine structure correlation measurements
     # Compute the time-frequency segment covariances
