@@ -97,13 +97,13 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             ref = ref_anechoic * rms_target / rms_anechoic
 
             si = haspi_v2_be(
-                xl=ref[:, 0],
-                xr=ref[:, 1],
-                yl=proc[:, 0],
-                yr=proc[:, 1],
+                reference_left=ref[:, 0],
+                reference_right=ref[:, 1],
+                processed_left=proc[:, 0],
+                processed_right=proc[:, 1],
                 fs_signal=fs_ref_anechoic,
-                audiogram_l=audiogram_left,
-                audiogram_r=audiogram_right,
+                audiogram_left=audiogram_left,
+                audiogram_right=audiogram_right,
                 audiogram_cfs=cfs,
             )
             logger.info(f"The HASPI score is {si}")
@@ -121,13 +121,13 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 )
                 unproc = unproc / 32768.0
                 si_unproc = haspi_v2_be(
-                    xl=ref[:, 0],
-                    xr=ref[:, 1],
-                    yl=unproc[:, 0],
-                    yr=unproc[:, 1],
+                    reference_left=ref[:, 0],
+                    reference_right=ref[:, 1],
+                    processed_left=unproc[:, 0],
+                    processed_right=unproc[:, 1],
                     fs_signal=fs_ref_anechoic,
-                    audiogram_l=audiogram_left,
-                    audiogram_r=audiogram_right,
+                    audiogram_left=audiogram_left,
+                    audiogram_right=audiogram_right,
                     audiogram_cfs=cfs,
                 )
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
