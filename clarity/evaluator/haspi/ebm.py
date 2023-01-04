@@ -62,9 +62,7 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
     benv = benv / np.sum(benv)
 
     # LP filter for the envelopes at fsamp
-    reference_env = convolve2d(
-        reference_db, np.expand_dims(benv, 1), "full"
-    )  # 2D convolution
+    reference_env = convolve2d(reference_db, np.expand_dims(benv, 1), "full")
     reference_env = reference_env[nhalf : nhalf + nsamp, :]
     processed_env = convolve2d(processed_db, np.expand_dims(benv, 1), "full")
     processed_env = processed_env[nhalf : nhalf + nsamp, :]
@@ -171,10 +169,8 @@ def add_noise(reference_db, thresh_db):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Additive noise sequence
-    # rng = np.random.default_rng()
-    noise = thresh_db * np.random.standard_normal(
-        reference_db.shape
-    )  # Gaussian noise with RMS=1, then scaled
+    # Gaussian noise with RMS=1, then scaled
+    noise = thresh_db * np.random.standard_normal(reference_db.shape)
 
     # Add the noise to the signal envelope
     return reference_db + noise
@@ -265,12 +261,10 @@ def fir_modulation_filter(
     nhalf = nfir / 2
 
     # Design the family of lowpass windows
-    filter_coefficients = (
-        []
-    )  # Filter coefficients, one filter impulse response per list element
+    filter_coefficients = []
     for k in range(nmod):
         coefficient = np.hanning(nfir[k] + 1)
-        coefficient = coefficient / np.sum(coefficient)
+        coefficient /= np.sum(coefficient)
         filter_coefficients.append(coefficient)
 
     # Pre-compute the cosine and sine arrays
@@ -291,9 +285,7 @@ def fir_modulation_filter(
     reference_modulation = np.zeros((nchan, nmod, nsamp))
     processed_modulation = np.zeros((nchan, nmod, nsamp))
     for k in range(nmod):  # Loop over the modulation filters
-        coefficient = filter_coefficients[
-            k
-        ]  # Extract the lowpass filter impulse response
+        coefficient = filter_coefficients[k]
         transient_duration = int(nhalf[k])  # Transient duration for the filter
         _cosine = cosine[k]  # Cosine and sine for complex modulation
         _sine = sine[k]
@@ -382,11 +374,11 @@ def modulation_cross_correlation(reference_modulation, processed_modulation):
         for j in range(nchan):
             # Index j gives the input reference band
             x_j = reference_modulation[j, m]  # Input freq band j, modulation freq m
-            x_j = x_j - np.mean(x_j)
+            x_j -= np.mean(x_j)
             xsum = np.sum(x_j**2)
             # Processed signal band
             y_j = processed_modulation[j, m]  # Processed freq band j, modulation freq m
-            y_j = y_j - np.mean(y_j)
+            y_j -= np.mean(y_j)
             ysum = np.sum(y_j**2)
             # Cross-correlate the reference and processed signals
             if (xsum < small) or (ysum < small):
