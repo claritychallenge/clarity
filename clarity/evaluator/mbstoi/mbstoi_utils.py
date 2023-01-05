@@ -81,32 +81,32 @@ def equalisation_cancellation(
             )
         )
         # per frame
-        for jj in range(
+        for j in range(
             np.shape(intermediate_intelligibility_measure_grid)[1]
         ):  # pylint: disable=invalid-name
             seg_xl = left_ear_clean_hat[
                 int(frequency_band_edges_indices[i, 0] - 1) : int(
                     frequency_band_edges_indices[i, 1]
                 ),
-                jj : (jj + n_frames),
+                j : (j + n_frames),
             ]
             seg_xr = right_ear_clean_hat[
                 int(frequency_band_edges_indices[i, 0] - 1) : int(
                     frequency_band_edges_indices[i, 1]
                 ),
-                jj : (jj + n_frames),
+                j : (j + n_frames),
             ]
             seg_yl = left_ear_noisy_hat[
                 int(frequency_band_edges_indices[i, 0] - 1) : int(
                     frequency_band_edges_indices[i, 1]
                 ),
-                jj : (jj + n_frames),
+                j : (j + n_frames),
             ]
             seg_yr = right_ear_noisy_hat[
                 int(frequency_band_edges_indices[i, 0] - 1) : int(
                     frequency_band_edges_indices[i, 1]
                 ),
-                jj : (jj + n_frames),
+                j : (j + n_frames),
             ]
 
             # All normalised by subtracting mean
@@ -193,7 +193,7 @@ def equalisation_cancellation(
             # Ensure that intermediate correlation will be sensible and compute it
             # If all minimum values are less than 1e-40, set d[i,jj] to -1
             if np.min(abs(exx * eyy), axis=0).all() < 1e-40:
-                intermediate_intelligibility_measure_grid[i, jj] = -1
+                intermediate_intelligibility_measure_grid[i, j] = -1
                 continue
 
             proportion = np.divide(exx, eyy)
@@ -201,9 +201,9 @@ def equalisation_cancellation(
             idx1 = proportion.argmax(axis=0)
 
             # Return overall maximum and index
-            p_ec_max[i, jj] = tmp.max()
+            p_ec_max[i, j] = tmp.max()
             idx2 = tmp.argmax()
-            intermediate_intelligibility_measure_grid[i, jj] = np.divide(
+            intermediate_intelligibility_measure_grid[i, j] = np.divide(
                 exy[idx1[idx2], idx2],
                 np.sqrt(exx[idx1[idx2], idx2] * eyy[idx1[idx2], idx2]),
             )

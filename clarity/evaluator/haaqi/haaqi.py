@@ -24,15 +24,15 @@ def haaqi_v1(
     Arguments:
         x (ndarray):  Clear input reference speech signal with no noise or distortion.
             If a hearing loss is specified, NAL-R equalization is optional
-        fx: Sampling rate in Hz for signal x
-        y:  Output signal with noise, distortion, HA gain, and/or processing.
-        fy: Sampling rate in Hz for signal y.
-        hl: (1,6) vector of hearing loss at the 6 audiometric frequencies
+        fx (int): Sampling rate in Hz for signal x
+        y (np.ndarray):  Output signal with noise, distortion, HA gain, and/or processing.
+        fy (int): Sampling rate in Hz for signal y.
+        hl (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric frequencies
         [250, 500, 1000, 2000, 4000, 6000] Hz.
-        eq: Flag to provide equalization for the hearing loss to signal x:
+        eq (int): Flag to provide equalization for the hearing loss to signal x:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
-        level1: Optional input specifying level in dB SPL that corresponds to a
+        level1 (int): Optional input specifying level in dB SPL that corresponds to a
            signal RMS = 1. Default is 65 dB SPL if argument not provided.
            Default: 65
 
@@ -50,7 +50,7 @@ def haaqi_v1(
 
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
-    xenv, xbm, yenv, ybm, xsl, ysl, fsamp = eb.EarModel(x, fx, y, fy, hl, eq, level1)
+    xenv, xbm, yenv, ybm, xsl, ysl, fsamp = eb.ear_model(x, fx, y, fy, hl, eq, level1)
 
     # ---------------------------------------
     # Envelope and long-term average spectral features
@@ -70,7 +70,7 @@ def haaqi_v1(
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    dloud_vector, dnorm_vector, _ = eb.spect_diff(xsl, ysl)
+    dloud_vector, dnorm_vector, _ = eb.spectrum_diff(xsl, ysl)
 
     # Temporal fine structure (TFS) correlation measurements
     # Compute the time-frequency segment covariances
