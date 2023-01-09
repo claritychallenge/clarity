@@ -1,7 +1,9 @@
 from clarity.evaluator.haspi import eb
 
 
-def hasqi_v2(x, fx, y, fy, HL, eq=1, level1=65):
+def hasqi_v2(
+    reference, reference_freq, processed, processed_freq, hearing_loss, eq=1, level1=65
+):
     """
     Function to compute the HASQI version 2 quality index using the
     auditory model followed by computing the envelope cepstral
@@ -11,12 +13,12 @@ def hasqi_v2(x, fx, y, fy, HL, eq=1, level1=65):
     impaired hearing.
 
     Arguments:
-    x			Clear input reference speech signal with no noise or distortion.
+    reference (np.ndarray): Clear input reference speech signal with no noise or distortion.
               If a hearing loss is specified, NAL-R equalization is optional
-    fx        Sampling rate in Hz for signal x
-    y			Output signal with noise, distortion, HA gain, and/or processing.
-    fy        Sampling rate in Hz for signal y.
-    HL		(1,6) vector of hearing loss at the 6 audiometric frequencies
+    reference_freq (int): Sampling rate in Hz for reference signal.
+    processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or processing.
+    processed_freq (int): Sampling rate in Hz for processed signal.
+    hearing_loss (np.ndarray): vector of hearing loss at the 6 audiometric frequencies
                   [250, 500, 1000, 2000, 4000, 6000] Hz.
     eq        Flag to provide equalization for the hearing loss to signal x:
                 1 = no EQ has been provided, the function will add NAL-R
@@ -35,7 +37,9 @@ def hasqi_v2(x, fx, y, fy, HL, eq=1, level1=65):
 
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
-    xenv, xBM, yenv, yBM, xSL, ySL, fsamp = eb.ear_model(x, fx, y, fy, HL, eq, level1)
+    xenv, xBM, yenv, yBM, xSL, ySL, fsamp = eb.ear_model(
+        reference, reference_freq, processed, processed_freq, hearing_loss, eq, level1
+    )
 
     # Envelope and long-term average spectral features
     # Smooth the envelope outputs: 125 Hz sub-sampling rate
