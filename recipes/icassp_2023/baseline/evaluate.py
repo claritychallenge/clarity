@@ -14,7 +14,7 @@ from tqdm import tqdm
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
-from clarity.evaluator.hasqi import hasqi_v2_be
+from clarity.evaluator.hasqi import hasqi_v2_better_ear
 
 logger = logging.getLogger(__name__)
 
@@ -164,7 +164,9 @@ def run_calculate_si(cfg: DictConfig) -> None:
         ref = ref_anechoic * rms_target / rms_anechoic
 
         haspi_score = compute_metric(haspi_v2_be, amplified, ref, audiogram, fs_signal)
-        hasqi_score = compute_metric(hasqi_v2_be, amplified, ref, audiogram, fs_signal)
+        hasqi_score = compute_metric(
+            hasqi_v2_better_ear, amplified, ref, audiogram, fs_signal
+        )
         score = 0.5 * (hasqi_score + haspi_score)
 
         results_file.add_result(

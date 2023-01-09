@@ -1304,7 +1304,7 @@ def env_smooth(envelopes: np.ndarray, segment_size, freq_sample):
     return smooth
 
 
-def melcor(reference, distorted, threshold, addnoise):
+def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     """
     Compute the cross-correlations between the input signal time-frequency
     envelope and the distortion time-frequency envelope.
