@@ -19,9 +19,9 @@ def convert_a_to_b_format(
 
     Args:
         flu (np.ndarray): Front-left-up audio
-        frd (np.ndarray): Front-left-up audio
-        bld (np.ndarray): Front-left-up audio
-        bru (np.ndarray): Front-left-up audio
+        frd (np.ndarray): Front-right-down audio
+        bld (np.ndarray): Back-left-down audio
+        bru (np.ndarray): Back-right-up audio
 
     Raises:
         TypeError: input must be numpy array
