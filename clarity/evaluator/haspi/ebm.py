@@ -340,28 +340,28 @@ def fir_modulation_filter(
 
 def modulation_cross_correlation(reference_modulation, processed_modulation):
     """
-    Compute the cross-correlations between the input signal time-frequency
-    envelope and the distortion time-frequency envelope. The cepstral
-    coefficients or envelopes in each frequency band have been passed
-    through the modulation filterbank using function ebm_ModFilt.
+     Compute the cross-correlations between the input signal time-frequency
+     envelope and the distortion time-frequency envelope. The cepstral
+     coefficients or envelopes in each frequency band have been passed
+     through the modulation filterbank using function ebm_ModFilt.
 
-    Args:
-        Xmod (np.array): cell array containing the reference signal output of the
-             modulation filterbank. Xmod is of size {nchan,nmodfilt} where
-             nchan is the number of frequency channels or cepstral basis
-             functions in Xenv, and nmodfilt is the number of modulation
-             filters used in the analysis. Each cell contains a column vector
-             of length nsamp, where nsamp is the number of samples in each
-             envelope sequence contained in the columns of Xenv.
-        Ymod subsampled distorted output signal envelope
+     Args:
+     reference_modulation (np.array): cell array containing the reference signal output of the
+              modulation filterbank. Xmod is of size {nchan,nmodfilt} where
+              nchan is the number of frequency channels or cepstral basis
+              functions in Xenv, and nmodfilt is the number of modulation
+              filters used in the analysis. Each cell contains a column vector
+              of length nsamp, where nsamp is the number of samples in each
+              envelope sequence contained in the columns of Xenv.
+    processed_modulation (np.ndarray): subsampled distorted output signal envelope
 
-    Output:
-        float: aveCM modulation correlations averaged over basis functions 2-6
-             vector of size nmodfilt
+     Output:
+         float: aveCM modulation correlations averaged over basis functions 2-6
+              vector of size nmodfilt
 
-    Updates:
-    James M. Kates, 21 February 2019.
-    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+     Updates:
+     James M. Kates, 21 February 2019.
+     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Processing parameters
     nchan = reference_modulation.shape[0]  # Number of basis functions
