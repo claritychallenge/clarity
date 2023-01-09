@@ -11,7 +11,10 @@ from scipy.special import comb
 
 logger = logging.getLogger(__name__)
 
-def convert_a_to_b_format(flu: np.ndarray, frd: np.ndarray, bld: np.ndarray, bru: np.ndarray):
+
+def convert_a_to_b_format(
+    flu: np.ndarray, frd: np.ndarray, bld: np.ndarray, bru: np.ndarray
+):
     """Converts 1st order A format audio into 1st order B format
 
     Args:
@@ -25,19 +28,20 @@ def convert_a_to_b_format(flu: np.ndarray, frd: np.ndarray, bld: np.ndarray, bru
         ValueError: all inputs must have same dimensions
 
     Returns:
-        nd.array: 4xN array containing B-format audio. indexed w,x,y,z 
+        nd.array: 4xN array containing B-format audio. indexed w,x,y,z
     """
-    
+
     shapes = [flu.shape, frd.shape, bld.shape, bru.shape]
     if not all(shape == shapes[0] for shape in shapes):
         raise ValueError("All inputs need to have same dimensions")
-        
-    w = flu+frd+bld+bru
-    x = (flu-bld)+(frd-bru)
-    y = (flu-bru)-(frd-bld)
-    z = (flu-bld)+(bru-frd)
 
-    return np.stack([w,x,y,z])
+    w = flu + frd + bld + bru
+    x = (flu - bld) + (frd - bru)
+    y = (flu - bru) - (frd - bld)
+    z = (flu - bld) + (bru - frd)
+
+    return np.stack([w, x, y, z])
+
 
 # Code for generation ambisonic rotation matrices
 @njit
