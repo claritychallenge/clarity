@@ -31,12 +31,12 @@ def haaqi_v1(
     Arguments:
     reference (ndarray):  Clear input reference speech signal with no noise or distortion.
             If a hearing loss is specified, NAL-R equalization is optional
-    reference_freq (int): Sampling rate in Hz for signal x
+    reference_freq (int): Sampling rate in Hz for reference signal.
     processed (np.ndarray):  Output signal with noise, distortion, HA gain, and/or processing.
-    processed_freq (int): Sampling rate in Hz for signal y.
+    processed_freq (int): Sampling rate in Hz for processed signal.
     hearling_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric frequencies
         [250, 500, 1000, 2000, 4000, 6000] Hz.
-    equaliser (int): Flag to provide equalization for the hearing loss to signal processed:
+    equalisation (int): Flag to provide equalization for the hearing loss to signal processed:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
     level1 (int): Optional input specifying level in dB SPL that corresponds to a
@@ -62,7 +62,7 @@ def haaqi_v1(
     # Reference is no processing or NAL-R, impaired hearing
     (
         reference_db,
-        xbmreference_basilar_membrane,
+        reference_basilar_membrane,
         processed_db,
         processed_basilar_membrane,
         reference_sl,
@@ -99,7 +99,7 @@ def haaqi_v1(
     # Temporal fine structure (TFS) correlation measurements
     # Compute the time-frequency segment covariances
     signal_cross_covariance, reference_mean_square, _ = eb.bm_covary(
-        xbmreference_basilar_membrane,
+        reference_basilar_membrane,
         processed_basilar_membrane,
         segment_covariance,
         freq_sample,
