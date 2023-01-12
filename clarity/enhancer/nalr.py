@@ -153,10 +153,11 @@ class NALR:
             NAL-R FIR filter
             delay
         """
-        if cfs is None:
-            cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
 
-        hl = self.hl_interp(np.array(hl), np.array(cfs))
+        # Apply interpolation only if cfs is not None
+        if cfs is not None:
+            hl = self.hl_interp(np.array(hl), np.array(cfs))
+
         mloss = np.max(hl)
 
         if mloss > 0:
