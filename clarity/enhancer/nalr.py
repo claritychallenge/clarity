@@ -154,7 +154,7 @@ class NALR:
             delay
         """
         if cfs is None:
-            cfs = np.array([250, 500, 1000, 2000, 3000, 6000])
+            cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
 
         hl = self.hl_interp(np.array(hl), np.array(cfs))
         mloss = np.max(hl)
