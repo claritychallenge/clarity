@@ -36,7 +36,7 @@ def convert_a_to_b_format(
     if not all(shape == shapes[0] for shape in shapes):
         raise ValueError("All inputs need to have same dimensions")
 
-    w = 0.5 * (front_left_up + front_right_down + back_left_down + back_right_up)
+    w = 0.5 * sum([front_left_up, front_right_down, back_left_down, back_right_up])
     x = 0.5 * (front_left_up - back_left_down) + (front_right_down - back_right_up)
     y = 0.5 * (front_left_up - back_right_up) - (front_right_down - back_left_down)
     z = 0.5 * (front_left_up - back_left_down) + (back_right_up - front_right_down)
