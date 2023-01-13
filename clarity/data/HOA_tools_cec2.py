@@ -13,15 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 def convert_a_to_b_format(
-    flu: np.ndarray, frd: np.ndarray, bld: np.ndarray, bru: np.ndarray
+    front_left_up: np.ndarray, front_right_down: np.ndarray, back_left_down: np.ndarray, back_right_up: np.ndarray
 ):
-    """Converts 1st order A format audio into 1st order B format
+    """Converts 1st order A format audio into 1st order B format.
+    For more information on ambisonic formats see Gerzon, Michael A.. “Ambisonics. Part two: Studio techniques.” (1975).
 
     Args:
-        flu (np.ndarray): Front-left-up audio
-        frd (np.ndarray): Front-right-down audio
-        bld (np.ndarray): Back-left-down audio
-        bru (np.ndarray): Back-right-up audio
+        front_left_up (np.ndarray): Front-left-up audio
+        front_right_down (np.ndarray): Front-right-down audio
+        back_left_down (np.ndarray): Back-left-down audio
+        back_right_up (np.ndarray): Back-right-up audio
 
     Raises:
         TypeError: input must be numpy array
@@ -31,14 +32,14 @@ def convert_a_to_b_format(
         nd.array: 4xN array containing B-format audio. indexed w,x,y,z
     """
 
-    shapes = [flu.shape, frd.shape, bld.shape, bru.shape]
+    shapes = [front_left_up.shape, front_right_down.shape, back_left_down.shape, back_right_up.shape]
     if not all(shape == shapes[0] for shape in shapes):
         raise ValueError("All inputs need to have same dimensions")
 
-    w = flu + frd + bld + bru
-    x = (flu - bld) + (frd - bru)
-    y = (flu - bru) - (frd - bld)
-    z = (flu - bld) + (bru - frd)
+    w = (front_left_up + front_right_down + back_left_down + back_right_up)
+    x = (front_left_up - back_left_down) + (front_right_down - back_right_up)
+    y = (front_left_up - back_right_up) - (front_right_down - back_left_down)
+    z = (front_left_up - back_left_down) + (back_right_up - front_right_down)
 
     return np.stack([w, x, y, z])
 
