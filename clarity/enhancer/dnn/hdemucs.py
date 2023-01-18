@@ -1,6 +1,6 @@
 import torch
 import torchaudio
-from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
+from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 from torchaudio.transforms import Fade
 
 
@@ -80,12 +80,14 @@ def separate_hdemucs(audio_track=None, segment=10.0, overlap=0.1, device=None):
         torch.Tensor: Separated audio tensor of shape (sources, channels, time).
     """
     # Load model
-    bundle = HDEMUCS_HIGH_MUSDB_PLUS
+    bundle = HDEMUCS_HIGH_MUSDB
     model = bundle.get_model()
     sources_list = model.sources
 
     if device is None:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    elif device.type == "gpu":
+        device = torch.device("cuda:0")
     else:
         device = torch.device(device)
 
