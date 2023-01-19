@@ -12,9 +12,47 @@ from scipy.special import comb
 logger = logging.getLogger(__name__)
 
 
+def convert_a_to_b_format(
+    front_left_up: np.ndarray,
+    front_right_down: np.ndarray,
+    back_left_down: np.ndarray,
+    back_right_up: np.ndarray,
+):
+    """Converts 1st order A format audio into 1st order B format.
+    For more information on ambisonic formats see Gerzon, Michael A.. “Ambisonics. Part two: Studio techniques.” (1975).
+
+    Args:
+        front_left_up (np.ndarray): Front-left-up audio
+        front_right_down (np.ndarray): Front-right-down audio
+        back_left_down (np.ndarray): Back-left-down audio
+        back_right_up (np.ndarray): Back-right-up audio
+
+    Raises:
+        TypeError: input must be numpy array
+        ValueError: all inputs must have same dimensions
+
+    Returns:
+        nd.array: 4xN array containing B-format audio. indexed w,x,y,z
+    """
+
+    shapes = [
+        front_left_up.shape,
+        front_right_down.shape,
+        back_left_down.shape,
+        back_right_up.shape,
+    ]
+    if not all(shape == shapes[0] for shape in shapes):
+        raise ValueError("All inputs need to have same dimensions")
+
+    w = 0.5 * sum([front_left_up, front_right_down, back_left_down, back_right_up])
+    x = 0.5 * (front_left_up - back_left_down) + (front_right_down - back_right_up)
+    y = 0.5 * (front_left_up - back_right_up) - (front_right_down - back_left_down)
+    z = 0.5 * (front_left_up - back_left_down) + (back_right_up - front_right_down)
+
+    return np.stack([w, x, y, z])
+
+
 # Code for generation ambisonic rotation matrices
-
-
 @njit
 def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     """Generate a rotation matrix to rotate HOA soundfield.
