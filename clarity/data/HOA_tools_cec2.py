@@ -13,7 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 def convert_a_to_b_format(
-    front_left_up: np.ndarray, front_right_down: np.ndarray, back_left_down: np.ndarray, back_right_up: np.ndarray
+    front_left_up: np.ndarray,
+    front_right_down: np.ndarray,
+    back_left_down: np.ndarray,
+    back_right_up: np.ndarray,
 ):
     """Converts 1st order A format audio into 1st order B format.
     For more information on ambisonic formats see Gerzon, Michael A.. “Ambisonics. Part two: Studio techniques.” (1975).
@@ -32,7 +35,12 @@ def convert_a_to_b_format(
         nd.array: 4xN array containing B-format audio. indexed w,x,y,z
     """
 
-    shapes = [front_left_up.shape, front_right_down.shape, back_left_down.shape, back_right_up.shape]
+    shapes = [
+        front_left_up.shape,
+        front_right_down.shape,
+        back_left_down.shape,
+        back_right_up.shape,
+    ]
     if not all(shape == shapes[0] for shape in shapes):
         raise ValueError("All inputs need to have same dimensions")
 
