@@ -1,6 +1,7 @@
 import torch
-from torchaudio.utils import download_asset
 import torchaudio
+from torchaudio.utils import download_asset
+
 from clarity.enhancer.dnn.hdemucs import apply_separation, separate_hdemucs
 
 
