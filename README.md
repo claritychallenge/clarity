@@ -13,6 +13,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyclarity)](https://pypi.org/project/pyclarity/)
 [![codecov.io](https://codecov.io/github/claritychallenge/clarity/coverage.svg?branch=main)](https://app.codecov.io/gh/claritychallenge/clarity)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202023%20Challenge%20-%20pypi&message=v0.2.1&color=orange)](https://pypi.org/project/pyclarity/0.2.1/)
