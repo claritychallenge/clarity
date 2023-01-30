@@ -1,3 +1,4 @@
+"""Utilities for data generation."""
 import os
 import sys
 

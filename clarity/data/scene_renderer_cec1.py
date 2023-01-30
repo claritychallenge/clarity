@@ -1,3 +1,4 @@
+"""Scene rendering for CEC1 challenge."""
 import logging
 import math
 import os

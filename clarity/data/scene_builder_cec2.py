@@ -235,7 +235,7 @@ def add_this_target_to_scene(
 
 
 # SNR handling
-def generate_snr(snr_range: list[int]) -> float:
+def generate_snr(snr_range: List[int]) -> float:
     """Generate a random Signal Noise Ratio.
 
     Args:
@@ -345,8 +345,8 @@ def add_interferer_to_scene_inner(
     scene: dict,
     interferers: dict,
     number: list,
-    start_time_range: list[int],
-    end_early_time_range: list[int],
+    start_time_range: List[int],
+    end_early_time_range: List[int],
 ):
     """Randomly select interferers and add them to the given scene.
     A random number of interferers is chosen, then each is given a random type
