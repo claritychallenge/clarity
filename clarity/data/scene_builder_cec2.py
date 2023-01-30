@@ -49,7 +49,7 @@ def get_vector(text: str, vector_name: str) -> List[float]:
         vector_name (str): name of vector to extract (e.g. "sourceViewVectors")
 
     Returns:
-        list[float]: vector as list of floats
+        List[float]: vector as list of floats
     """
     findall_str = f".*{vector_name}.*"
     x_str = re.findall(findall_str, text)
@@ -123,14 +123,14 @@ def read_rpf_file(rpf_filename: str) -> Dict:
     return rpf_dict
 
 
-def build_room(target_file: str, interferer_files: list[str]) -> Dict:
+def build_room(target_file: str, interferer_files: List[str]) -> Dict:
     """Build room json file from contents of related rpf files.
     Note, there is an rpf file for each source in the scene. All of these
     files are read and a single scene json file is constructed.
 
     Args:
         target_file (str): rpf file containing the target position
-        interferer_files (list[str]): list of files containing the interferer positions
+        interferer_files (List[str]): list of files containing the interferer positions
 
     Returns:
         dict: dictionary representation of the scene following CEC2 scene.json format
