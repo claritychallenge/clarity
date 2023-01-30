@@ -6,6 +6,7 @@ import math
 import random
 import re
 from enum import Enum
+from typing import Dict, List
 
 import numpy as np
 from tqdm import tqdm
@@ -38,7 +39,7 @@ def set_random_seed(random_seed):
         np.random.seed(random_seed)
 
 
-def get_vector(text: str, vector_name: str) -> list[float]:
+def get_vector(text: str, vector_name: str) -> List[float]:
     """Get a vector quantity from the rpf file.
     Will read rpf vector quantities, eg.
     "sourceViewVectors = -0.095,-0.995, 0.000"
@@ -57,7 +58,7 @@ def get_vector(text: str, vector_name: str) -> list[float]:
     return x
 
 
-def get_room_dims(text: str) -> list:
+def get_room_dims(text: str) -> List:
     """Find the room dimensions in the rpf file.
 
     Args:
@@ -86,7 +87,7 @@ def get_room_name(text: str) -> str:
     return re.findall(r"R\d\d\d\d\d", text)[0]
 
 
-def read_rpf_file(rpf_filename: str) -> dict:
+def read_rpf_file(rpf_filename: str) -> Dict:
     """Process an rpf file and return key contents as a dictionary.
 
     Args:
@@ -122,7 +123,7 @@ def read_rpf_file(rpf_filename: str) -> dict:
     return rpf_dict
 
 
-def build_room(target_file: str, interferer_files: list[str]) -> dict:
+def build_room(target_file: str, interferer_files: list[str]) -> Dict:
     """Build room json file from contents of related rpf files.
     Note, there is an rpf file for each source in the scene. All of these
     files are read and a single scene json file is constructed.
@@ -157,7 +158,7 @@ def build_room(target_file: str, interferer_files: list[str]) -> dict:
 
 def make_rpf_filename_dict(
     rpf_location: str, scene_str: str, n_interferers: int
-) -> dict:
+) -> Dict:
     """Construct dictionary storing all rpf files that will be processed.
 
     Args:
@@ -256,7 +257,7 @@ class InterfererType(Enum):
     MUSIC = "music"
 
 
-def select_interferer_types(allowed_n_interferers: list) -> list[InterfererType]:
+def select_interferer_types(allowed_n_interferers: list) -> List[InterfererType]:
     """Select the interferer types to use.
 
     The number of interferer is drawn randomly from list of allowed valued.
@@ -282,8 +283,8 @@ def select_interferer_types(allowed_n_interferers: list) -> list[InterfererType]
 
 
 def select_random_interferer(
-    interferers: list[list], dataset: str, required_samples: int
-) -> dict:
+    interferers: List[list], dataset: str, required_samples: int
+) -> Dict:
     """Randomly select an interferer.
     Interferers stored as list of list. First randomly select a sublist
     then randomly select an item from sublist matching constraints.
@@ -422,7 +423,7 @@ def generate_rotation(
     angle_initial_mean: float,
     angle_initial_sd: float,
     angle_final_range: tuple,
-) -> list[dict]:
+) -> List[dict]:
     """Generate a suitable head rotation for the given scene.
     Based on behavioural studies by Hadley et al. TODO: find ref
 

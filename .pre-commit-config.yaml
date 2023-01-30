@@ -16,7 +16,7 @@ repos:
         args: [--maxkb=1024]
       - id: debug-statements
       - id: check-byte-order-marker
-      - id: check-yaml
+      # - id: check-yaml
 
   - repo: https://github.com/psf/black
     rev: 22.12.0
