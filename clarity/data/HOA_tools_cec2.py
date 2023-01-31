@@ -56,14 +56,9 @@ def convert_a_to_b_format(
 @njit
 def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     """Generate a rotation matrix to rotate HOA soundfield.
-    Based on 'Rotation Matrices for Real Spherical Harmonics. Direct Determination
-    by Recursion' Joseph Ivanic and Klaus Ruedenberg J. Phys. Chem. 1996, 100, 15,
-    6342–6347 and Gorzel, M., Allen, A., Kelly, I., Kammerl, J., Gungormusler,
-    A., Yeh, H., and Boland, F., "Efficient Encoding and Decoding of Binaural Sound
-    with Resonance Audio", In proc. of the AES International Conference on Immersive
-    and Interactive Audio, March 2019
-    Operates on HOA of a given order rotates by azimuth theta
-    and elevation phi
+
+    Based on [1]_ and [2]_. Operates on HOA of a given order rotates by azimuth theta
+    and elevation phi.
 
     Args:
         order (int): order of ambisonic soundfield
@@ -71,6 +66,18 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
 
     Returns:
         np.ndarray: HOA rotation matrix
+
+    References:
+    .. [1] Ivanic J, Ruedenberg K (1996) Rotation Matrices for Real Spherical Harmonics.
+           Direct Determination J. Phys. Chem. 1996, 100(15):6342–6347. Available at
+           <https://pubs.acs.org/doi/10.1021/jp953350u> and
+           <https://doi.org/10.1021/JP9833350>
+
+    .. [2] Gorzel M, Allen A, Kelly I, Kammerl J, Gungormusler, A, Yeh H, Boland F
+           Efficient Encoding and Decoding of Binaural Sound with Resonance Audio
+           In Proc. of the AES International Conference on Immersive and Interactive
+           Audio, March 2019. Available at
+           <https://www.aes.org/e-lib/browse.cfm?elib=20446>
     """
     m = (n + 1) ** 2
     # construct rotamat for given order
@@ -116,30 +123,40 @@ def centred_element(reference: np.ndarray, row: int, col: int):
 
 
 @njit
-def P(i, a, b, el, r):
+def P(i, a, b, order, rotation_matrices):
     """P function for rotation matrix calculation.
 
     Args:
         i (int): index
         a (int): 'a' value
         b (int): 'b' value
-        el (int): order
+        order (int): order
         r (list(matrix)): rotation matrices
 
     Returns:
         float: P value
     """
     p = 0.0
-    if b == el:
-        p = (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, el - 1)) - (
-            centred_element(r[1], i, -1) * centred_element(r[el - 1], a, -el + 1)
+    if b == order:
+        p = (
+            centred_element(rotation_matrices[1], i, 1)
+            * centred_element(rotation_matrices[order - 1], a, order - 1)
+        ) - (
+            centred_element(rotation_matrices[1], i, -1)
+            * centred_element(rotation_matrices[order - 1], a, -order + 1)
         )
-    elif b == -el:
-        p = (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, -el + 1)) + (
-            centred_element(r[1], i, -1) * centred_element(r[el - 1], a, el - 1)
+    elif b == -order:
+        p = (
+            centred_element(rotation_matrices[1], i, 1)
+            * centred_element(rotation_matrices[order - 1], a, -order + 1)
+        ) + (
+            centred_element(rotation_matrices[1], i, -1)
+            * centred_element(rotation_matrices[order - 1], a, order - 1)
         )
     else:
-        p = centred_element(r[1], i, 0) * centred_element(r[el - 1], a, b)
+        p = centred_element(rotation_matrices[1], i, 0) * centred_element(
+            rotation_matrices[order - 1], a, b
+        )
 
     return p
 
@@ -149,7 +166,7 @@ def U(degree, n, order, rotation_matrices):
     """U coefficient initialiser for rotation matrix calculation.
 
     Args:
-        rotation_degree (int): Number of degrees to rotate by.
+        rotation_degree (int): Upper parameters of spherical harmonic component Y and n the lower.
         n (int): index
         order (int): order
         rotation_matrices (list(matrix)): rotation matrices
@@ -165,7 +182,7 @@ def V(degree, n, order, rotation_matrices):
     """V coefficient initialiser for rotation matrix calculation.
 
     Args:
-        degree (int): degree valid values are 0, 1 and -1.
+        degree (int): valid inputs are `int(|m|) <= order`.
         n (int): index
         order (int): order
         rotation_matrices (list(matrix)): rotation matrices
@@ -407,7 +424,7 @@ def ambisonic_convolve(
 
     Args:
         signal (ndarray[samples]): the signal to convole
-        hoa_impules_response (ndarray[samples, channels]): the HOA impulse responses
+        hoa_impulse_response (ndarray[samples, channels]): the HOA impulse responses
         order (int, optional): ambisonic order.
 
     Returns:
