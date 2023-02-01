@@ -60,7 +60,14 @@ def test_P(
     """Test for P() function."""
     # FixMe : how long is the list of matrices that is passed in?
     assert (
-        P(i, a, b, order, r=[random_matrix, random_matrix, random_matrix]) == expected
+        P(
+            i,
+            a,
+            b,
+            order,
+            rotation_matrices=[random_matrix, random_matrix, random_matrix],
+        )
+        == expected
     )
 
 
@@ -68,11 +75,11 @@ def test_P_index_error(random_matrix: np.ndarray) -> None:
     """Test P() raises IndexError if invalid indices to r are provided."""
     # FixMe : how long is the list of matrices that is passed in?
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=1, order=1, r=[random_matrix])
+        assert P(i=1, a=5, b=1, order=1, rotation_matrices=[random_matrix])
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=1, order=-1, r=[random_matrix])
+        assert P(i=1, a=5, b=1, order=-1, rotation_matrices=[random_matrix])
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=4, order=3, r=[random_matrix])
+        assert P(i=1, a=5, b=4, order=3, rotation_matrices=[random_matrix])
 
 
 @pytest.mark.parametrize(
