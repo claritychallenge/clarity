@@ -16,7 +16,6 @@ CPUINFO = get_cpu_info()
     reason="Xeon E5-2673 CPU arch gives a different value",
 )
 def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     stoi_loss = NegSTOILoss(sample_rate=44100)
@@ -41,7 +40,6 @@ def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
     reason="Test value obtained with Xeon E5-2673",
 )
 def test_torch_msbg_stoi_xeon_e5_2673_cpu(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     stoi_loss = NegSTOILoss(sample_rate=44100)
@@ -62,7 +60,6 @@ def test_torch_msbg_stoi_xeon_e5_2673_cpu(regtest):
 
 
 def test_torchloudnorm(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     ln = torchloudnorm()

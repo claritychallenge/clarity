@@ -97,7 +97,6 @@ def mbstoi(
 
     # Resample signals to 10 kHz
     if fs_signal != sample_rate:
-
         logging.debug(
             "Resampling signals with sr=%s for MBSTOI calculation.", sample_rate
         )
