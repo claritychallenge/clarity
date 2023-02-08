@@ -29,7 +29,6 @@ class Renderer:
         post_duration=1.0,
         test_nbits=16,
     ):
-
         self.input_path = input_path
         self.output_path = output_path
         self.fs = fs
@@ -173,7 +172,6 @@ class Renderer:
         pre_samples=88200,
         post_samples=44100,
     ):
-
         brir_stem = f"{self.input_path}/{dataset}/rooms/brir/brir_{room}"
         anechoic_brir_stem = f"{self.input_path}/{dataset}/rooms/brir/anech_brir_{room}"
         target_fn = f"{self.input_path}/{dataset}/targets/{target}.wav"
@@ -256,7 +254,7 @@ class Renderer:
         outputs.append((f"{prefix}_target_anechoic.wav", target_anechoic))
 
         # Write all output files
-        for (filename, signal) in outputs:
+        for filename, signal in outputs:
             self.write_signal(filename, signal, self.fs)
 
 

@@ -70,7 +70,6 @@ def test_full_CEC1_pipeline(regtest):
     }
 
     with tempfile.TemporaryDirectory() as output_path:
-
         renderer = Renderer(
             input_path="tests/test_data",
             output_path=output_path,

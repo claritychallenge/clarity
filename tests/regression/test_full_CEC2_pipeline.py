@@ -94,7 +94,6 @@ def test_full_CEC2_pipeline(regtest):
     output_path = "tmp"
 
     with tempfile.TemporaryDirectory() as output_path:
-
         target, interferers, anechoic, _head_turn = scene_renderer.generate_hoa_signals(
             scene
         )
