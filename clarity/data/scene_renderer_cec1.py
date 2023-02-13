@@ -298,7 +298,7 @@ class Renderer:
         outputs.append((f"{prefix}_target_anechoic.wav", target_anechoic))
 
         # Write all output files
-        for (filename, signal) in outputs:
+        for filename, signal in outputs:
             self.write_signal(filename, signal, self.sample_rate)
 
 
