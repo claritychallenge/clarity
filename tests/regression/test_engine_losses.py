@@ -6,7 +6,6 @@ from clarity.engine.losses import SISNRLoss, SNRLoss, STOILevelLoss, STOILoss
 
 
 def test_sisnr_loss(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     si_snr_loss = SISNRLoss()
@@ -18,7 +17,6 @@ def test_sisnr_loss(regtest):
 
 
 def test_snr_loss(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     snr_loss = SNRLoss()
@@ -30,7 +28,6 @@ def test_snr_loss(regtest):
 
 
 def test_stoi_loss(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     stoi_loss = STOILoss(sr=16000)
@@ -42,7 +39,6 @@ def test_stoi_loss(regtest):
 
 
 def test_stoi_level_loss(regtest):
-
     torch.manual_seed(0)
     torch.set_num_threads(1)
     stoi_level_loss = STOILevelLoss(sr=16000, alpha=0.5)

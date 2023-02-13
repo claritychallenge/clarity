@@ -30,7 +30,6 @@ class Renderer:
         post_duration=1.0,
         test_nbits=16,
     ):
-
         self.input_path = input_path
         self.output_path = output_path
         self.sample_rate = sample_rate
@@ -215,7 +214,6 @@ class Renderer:
         pre_samples=88200,
         post_samples=44100,
     ):
-
         brir_stem = f"{self.input_path}/{dataset}/rooms/brir/brir_{room}"
         anechoic_brir_stem = f"{self.input_path}/{dataset}/rooms/brir/anech_brir_{room}"
         target_fn = f"{self.input_path}/{dataset}/targets/{target}.wav"
