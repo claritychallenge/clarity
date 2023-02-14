@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from clarity.data.HOA_tools_cec2 import (  # HOARotator,; ambisonic_convolve,; binaural_mixdown,; compute_band_rotation,; compute_rotation_matrix,; dB_to_gain,; dot,; smoothstep,
+from clarity.data.HOA_tools_cec2 import (  # HOARotator,; ambisonic_convolve,; binaural_mixdown,; compute_band_rotation,; compute_rotation_matrix,;  dot,; dot,
     P,
     U,
     V,
@@ -10,9 +10,11 @@ from clarity.data.HOA_tools_cec2 import (  # HOARotator,; ambisonic_convolve,; b
     centred_element,
     compute_rms,
     compute_UVW_coefficients,
+    dB_to_gain,
     equalise_rms_levels,
     rotation_control_vector,
     rotation_vector,
+    smoothstep,
 )
 
 
@@ -22,7 +24,7 @@ def test_compute_rotation_matrix() -> None:
 
 
 @pytest.mark.parametrize(
-    "i, j, expected",
+    "row, col, expected",
     [
         (1, 1, 0.8840922122960315),
         (45, 54, 0.2378095805520779),
@@ -30,22 +32,22 @@ def test_compute_rotation_matrix() -> None:
     ],
 )
 def test_centred_element(
-    random_matrix: np.ndarray, i: int, j: int, expected: float
+    random_matrix: np.ndarray, row: int, col: int, expected: float
 ) -> None:
     """Test for centered_element() function."""
-    assert centred_element(random_matrix, i, j) == expected
+    assert centred_element(random_matrix, row, col) == expected
 
 
 def test_centred_element_index_error(random_matrix: np.ndarray) -> None:
     """Test centered_element() raises an IndexError if centering is outside of matrix dimensions."""
     with pytest.raises(IndexError):
-        centred_element(random_matrix, i=101, j=2)
+        centred_element(random_matrix, row=101, col=2)
     with pytest.raises(IndexError):
-        centred_element(random_matrix, i=1, j=102)
+        centred_element(random_matrix, row=1, col=102)
 
 
 @pytest.mark.parametrize(
-    "i, a, b, el, expected",
+    "i, a, b, order, expected",
     [
         (1, 1, 2, 2, -0.3475073926260553),
         (1, 1, 2, -2, 0.6814353682034401),
@@ -53,39 +55,58 @@ def test_centred_element_index_error(random_matrix: np.ndarray) -> None:
     ],
 )
 def test_P(
-    i: int, a: int, b: int, el: int, random_matrix: np.ndarray, expected: float
+    i: int, a: int, b: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for P() function."""
     # FixMe : how long is the list of matrices that is passed in?
-    assert P(i, a, b, el, r=[random_matrix, random_matrix, random_matrix]) == expected
+    assert (
+        P(
+            i,
+            a,
+            b,
+            order,
+            rotation_matrices=[random_matrix, random_matrix, random_matrix],
+        )
+        == expected
+    )
 
 
 def test_P_index_error(random_matrix: np.ndarray) -> None:
     """Test P() raises IndexError if invalid indices to r are provided."""
     # FixMe : how long is the list of matrices that is passed in?
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=1, el=1, r=[random_matrix])
+        assert P(i=1, a=5, b=1, order=1, rotation_matrices=[random_matrix])
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=1, el=-1, r=[random_matrix])
+        assert P(i=1, a=5, b=1, order=-1, rotation_matrices=[random_matrix])
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=4, el=3, r=[random_matrix])
+        assert P(i=1, a=5, b=4, order=3, rotation_matrices=[random_matrix])
 
 
 @pytest.mark.parametrize(
-    "m, n, el, expected",
+    "degree, n, order, expected",
     [
         (1, 2, 2, 0.8066335578037782),
         (1, 2, -2, 0.647932971103906),
         (1, 2, 2, 0.504340149676519),
     ],
 )
-def test_U(m: int, n: int, el: int, random_matrix: np.ndarray, expected: float) -> None:
-    """Test for XX function."""
-    assert U(m, n, el, r=[random_matrix, random_matrix, random_matrix]) == expected
+def test_U(
+    degree: int, n: int, order: int, random_matrix: np.ndarray, expected: float
+) -> None:
+    """Test for U function."""
+    assert (
+        U(
+            degree,
+            n,
+            order,
+            rotation_matrices=[random_matrix, random_matrix, random_matrix],
+        )
+        == expected
+    )
 
 
 @pytest.mark.parametrize(
-    "m, n, el, expected",
+    "degree, n, order, expected",
     [
         (0, 2, 2, -0.02607000059684761),
         (1, 2, 2, -0.8041211269599031),
@@ -93,26 +114,46 @@ def test_U(m: int, n: int, el: int, random_matrix: np.ndarray, expected: float) 
         (-1, 2, -2, 0.5668224726503112),
     ],
 )
-def test_V(m: int, n: int, el: int, random_matrix: np.ndarray, expected: float) -> None:
+def test_V(
+    degree: int, n: int, order: int, random_matrix: np.ndarray, expected: float
+) -> None:
     """Test for V() function."""
-    assert V(m, n, el, r=[random_matrix, random_matrix, random_matrix]) == expected
+    assert (
+        V(
+            degree,
+            n,
+            order,
+            rotation_matrices=[random_matrix, random_matrix, random_matrix],
+        )
+        == expected
+    )
 
 
 @pytest.mark.parametrize(
-    "m, n, el, expected",
+    "degree, n, order, expected",
     [
         (0, 2, 2, 0.0),
         (1, 2, 2, -0.18322112315448064),
         (-1, 2, 2, -0.3501066433176404),
     ],
 )
-def test_W(m: int, n: int, el: int, random_matrix: np.ndarray, expected: float) -> None:
+def test_W(
+    degree: int, n: int, order: int, random_matrix: np.ndarray, expected: float
+) -> None:
     """Test for W() function."""
-    assert W(m, n, el, r=[random_matrix, random_matrix, random_matrix]) == expected
+    assert (
+        W(
+            degree,
+            n,
+            order,
+            rotation_matrices=[random_matrix, random_matrix, random_matrix],
+        )
+        == expected
+    )
 
 
 @pytest.mark.parametrize(
-    "m, n, el, expected",
+    "degree, n, order, expected",
     [
         (0, 2, 2, (0.5773502691896257, -0.28867513459481287, -0.0)),
         (1, 2, 2, (0.5, 0.3535533905932738, -0.0)),
@@ -120,15 +161,17 @@ def test_W(m: int, n: int, el: int, random_matrix: np.ndarray, expected: float) 
         # (-1, 2, 1, (-0.0, np.nan, -0.0)),  # FixMe : This is probably going to cause problems how to capture?
     ],
 )
-def test_compute_UVW_coefficients(m: int, n: int, el: int, expected: float) -> None:
+def test_compute_UVW_coefficients(
+    degree: int, n: int, order: int, expected: float
+) -> None:
     """Test for computer_UVW_coefficients() function."""
-    assert compute_UVW_coefficients(m, n, el) == expected
+    assert compute_UVW_coefficients(degree, n, order) == expected
 
 
 def test_compute_UVW_coefficients_zero_division_error() -> None:
     """Test computer_UVW_coefficients() raises ZeroDivisionError"""
     with pytest.raises(ZeroDivisionError):
-        compute_UVW_coefficients(m=-1, n=2, el=-2)
+        compute_UVW_coefficients(degree=-1, n=2, order=-2)
 
 
 # FixMe : Not yet working, I don't understand how to get the `output` passed in correctly
@@ -152,7 +195,7 @@ def test_compute_UVW_coefficients_zero_division_error() -> None:
 #     ],
 # )
 # def test_dot(A: np.ndarray, B: np.ndarray, expected: np.ndarray) -> None:
-#     """Test for XX function."""
+#     """Test for dot() function."""
 #     np.testing.assert_array_equal(dot(A, B), expected)
 
 
@@ -161,6 +204,7 @@ def test_HOARotator() -> None:
     assert True
 
 
+# FixMe : need examples of hrir_metadata dictionary to be able to write a tests for this
 def test_binaural_mixdown() -> None:
     """Test for binaural_mixdown() function."""
     assert True
@@ -204,14 +248,52 @@ def test_equalise_rms_levels(random_matrix: np.ndarray) -> None:
     assert equalise_rms_levels(inputs=[random_matrix, random_matrix])
 
 
-def test_dB_to_gain() -> None:
+@pytest.mark.parametrize(
+    "db, gain", [(10, 3.1622776601683795), (20, 10.0), (0.045, 1.0051942600951387)]
+)
+def test_dB_to_gain(db: float, gain: float) -> None:
     """Test for XX function."""
-    assert True
+    assert dB_to_gain(db) == gain
 
 
-def test_smoothstep() -> None:
-    """Test for XX function."""
-    assert True
+@pytest.mark.parametrize(
+    "x, x_min, x_max, N, expected",
+    [
+        (
+            np.asarray([100, 200, 300, 400]),
+            10,
+            300,
+            1,
+            np.asarray([0.229161, 0.725286, 1.0, 1.0]),
+        ),
+        (
+            np.asarray([10, 200, 300, 4000]),
+            10,
+            300,
+            1,
+            np.asarray([0.0, 0.725286, 1.0, 1.0]),
+        ),
+        (
+            np.asarray([10, -200, 300, 4000]),
+            -200,
+            300,
+            1,
+            np.asarray([0.381024, 0.0, 1.0, 1.0]),
+        ),
+        (
+            np.asarray([10, -50, 300, 4000]),
+            -200,
+            300,
+            1,
+            np.asarray([0.381024, 0.216, 1.0, 1.0]),
+        ),
+    ],
+)
+def test_smoothstep(
+    x: np.ndarray, x_min: float, x_max: float, N: int, expected
+) -> None:
+    """Test for smoothstep() function."""
+    np.testing.assert_array_almost_equal(smoothstep(x, x_min, x_max, N), expected)
 
 
 @pytest.mark.parametrize(
@@ -294,7 +376,6 @@ def test_rotation_vector(
         rotation_vector(start_angle, end_angle, signal_length, start_idx, end_idx),
         expected,
     )
-    assert True
 
 
 def test_rotation_vector_floating_point_error() -> None:
