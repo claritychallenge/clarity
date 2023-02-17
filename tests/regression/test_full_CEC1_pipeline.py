@@ -70,7 +70,6 @@ def test_full_CEC1_pipeline(regtest):
     }
 
     with tempfile.TemporaryDirectory() as output_path:
-
         renderer = Renderer(
             input_path="tests/test_data",
             output_path=output_path,
@@ -113,9 +112,14 @@ def test_full_CEC1_pipeline(regtest):
         "rms_buffer_size": 0.064,
     }
 
-    fs = 44100
+    sample_frequency = 44100
 
-    msbg_ear_cfg = {"src_pos": "ff", "fs": fs, "equiv0dBSPL": 100, "ahr": 20}
+    msbg_ear_cfg = {
+        "src_pos": "ff",
+        "sample_frequency": sample_frequency,
+        "equiv_0db_spl": 100,
+        "ahr": 20,
+    }
 
     audiogram_l = np.array([45, 20, 30, 35, 30, 45, 50, 50])
     audiogram_r = np.array([45, 25, 30, 40, 30, 40, 50, 50])

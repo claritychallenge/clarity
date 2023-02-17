@@ -2,7 +2,8 @@ name: Publish package to PyPi
 
 on:
   push:
-    branches: [master]
+    tags:
+      - v*
 
 jobs:
   build-release:
@@ -13,19 +14,25 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4.3.0
         with:
           python-version: 3.9
       - name: Installing the package
         run: |
+          pip3 install versioneer
           pip3 install .
           pip3 install .[pypi]
       - name: Build package
         run: |
-          python -m build
-      - name: Publish package
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+          python -m build --no-isolation
+      - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Upload release artifacts to Release Notes
+        uses: Roang-zero1/github-upload-release-artifacts-action@v2
+        with:
+          args "dist/"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

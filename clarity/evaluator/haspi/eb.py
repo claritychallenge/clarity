@@ -1,3 +1,4 @@
+"""Module for ???"""
 import numpy as np
 from numba import jit
 from scipy.signal import (
@@ -13,49 +14,74 @@ from scipy.signal import (
 
 from clarity.enhancer.nalr import NALR
 
+# pylint: disable=line-too-long
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-statements
 
-def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
+
+def ear_model(
+    reference,
+    reference_freq,
+    processed,
+    processed_freq,
+    hearing_loss,
+    itype,
+    level1,
+    nchan=32,
+    m_delay=1,
+    shift=0.02,
+):
     """
-    Function to implement a cochlear model that includes the middle ear,
-    auditory filter bank, OHC dynamic-range compression, and IHC attenuation.
-    The inputs are the reference and processed signals that are to be
-    compared. The reference x is at the reference intensity (e.g. 65 dB SPL
-    or with NAL-R amplification) and has no other processing. The processed
-    signal y is the hearing-aid output, and is assumed to have the same or
-    greater group delay compared to the reference. The function outputs are
-    the envelopes of the signals after OHC compression and IHC loss
-    attenuation.
+    Function that implements a cochlear model that includes the middle ear,
+    auditory filter bank, Outer Hair Cell (OHC) dynamic-range compression,
+    and Inner Hair Cell (IHC) attenuation.
 
-    Args:
-    x        reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)
+    The inputs are the reference and processed signals that are to be
+    compared. The reference is at the reference intensity (e.g. 65 dB SPL
+    or with NAL-R amplification) and has no other processing. The processed
+    signal is the hearing-aid output, and is assumed to have the same or
+    greater group delay compared to the reference.
+
+    The function outputs the envelopes of the signals after OHC compression
+    and IHC loss attenuation.
+
+    Arguments:
+    reference (np.ndarray): reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)
                or to 65 dB SPL plus NAL-R gain (itype=2)
-    xsamp    sampling rate for the reference signal, Hz
-    y        processed signal (e.g. hearing-aid output) includes HA gain
-    ysamp    sampling rate for the processed signal, Hz
-    HL       audiogram giving the hearing loss in dB at six audiometric
+    reference_freq (int): sampling rate for the reference signal, Hz
+    processed (np.ndarray): processed signal (e.g. hearing-aid output) includes HA gain
+    processed_freq (int): sampling rate for the processed signal, Hz
+    hearing_loss (np.ndarray): audiogram giving the hearing loss in dB at six audiometric
                frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz
-    itype    purpose for the calculation:
+    itype (int): purpose for the calculation:
              0=intelligibility: reference is nornal hearing and must not
                include NAL-R EQ
              1=quality: reference does not include NAL-R EQ
              2=quality: reference already has NAL-R EQ applied
-    Level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL
+    level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL
+    nchan (int): auditory frequency bands
+    m_delay (int): Compensate for the gammatone group delay.
+    shift (float): Basal shift of the basilar membrane length
 
     Returns:
-    xdB      envelope for the reference in each band
-    xBM      BM motion for the reference in each band
-    ydB      envelope for the processed signal in each band
-    yBM      BM motion for the processed signal in each band
-    xSL      compressed RMS average reference in each band converted to dB SL
-    ySL      compressed RMS average output in each band converted to dB SL
-    fsamp    sampling rate in Hz for the model outputs
+    reference_db (): envelope for the reference in each band
+    reference_basilar_membrane (): BM motion for the reference in each band
+    processed_db (): envelope for the processed signal in each band
+    processed_basilar_membrane (): BM motion for the processed signal in each band
+    reference_sl (): compressed RMS average reference in each band converted to dB SL
+    processed_sl (): compressed RMS average output in each band converted to dB SL
+    freq_sample (): sampling rate in Hz for the model outputs
 
+    Updates:
     James M. Kates, 27 October 2011.
-    BM motion added 30 Dec 2011.
+    Basilar Membrane added 30 Dec 2011.
     Revised 19 June 2012.
     Remove match of reference RMS level to processed 29 August 2012.
     IHC adaptation added 1 October 2012.
-    BM envelope coverted to dB SL, 2 Oct 2012.
+    Basilar Membrane envelope converted to dB SL, 2 Oct 2012.
     Filterbank group delay corrected, 14 Dec 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     Updated by Gerardo Roa Dabike, September 2022.
@@ -64,211 +90,326 @@ def EarModel(x, xsamp, y, ysamp, HL, itype, Level1):
     # Processing parameters
     # OHC and IHC parameters for the hearing loss
     # Auditory filter center frequencies span 80 to 8000 Hz.
-    nchan = 32  # Use 32 auditory frequency bands
-    mdelay = 1  # Compensate for the gammatone group delay
-    cfreq = CenterFreq(nchan)  # Center frequencies on an ERB scale
+    _center_freq = center_frequency(nchan)  # Center frequencies on an ERB scale
 
     # Cochlear model parameters for the processed signal
-    attnOHCy, BWminy, lowkneey, CRy, attnIHCy = LossParameters(HL, cfreq)
+    (
+        attn_ohc_y,
+        bandwidth_min_y,
+        low_knee_y,
+        compression_ratio_y,
+        attn_ihc_y,
+    ) = loss_parameters(hearing_loss, _center_freq)
 
     # The cochlear model parameters for the reference are the same as for the hearing
     # loss if calculating quality, but are for normal hearing if calculating intelligibility.
     if itype == 0:
-        HLx = [0] * len(HL)
+        hearing_loss_x = [0] * len(hearing_loss)
     else:
-        HLx = HL
-    [attnOHCx, BWminx, lowkneex, CRx, attnIHCx] = LossParameters(HLx, cfreq)
+        hearing_loss_x = hearing_loss
+    [
+        attn_ohc_x,
+        bandwidth_min_x,
+        low_knee_x,
+        compression_ratio_x,
+        attn_ihc_x,
+    ] = loss_parameters(hearing_loss_x, _center_freq)
 
     # Parameters for the control filter bank
-    HLmax = [100, 100, 100, 100, 100, 100]
-    shift = 0.02  # Basal shift of 0.02 of the basilar membrane length
-    cfreq1 = CenterFreq(nchan, shift)  # Center frequencies for the control
-    _, BW1, _, _, _ = LossParameters(HLmax, cfreq1)
+    hl_max = [100, 100, 100, 100, 100, 100]
+    _center_freq_control = center_frequency(
+        nchan, shift
+    )  # Center frequencies for the control
+    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
     # Maximum BW for the control
 
     # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
     # Using 24 kHz guarantees that all of the cochlear filters have the same shape
     # independent of the incoming signal sampling rates
-    x24, _ = Resamp24kHz(x, xsamp)
-    y24, fsamp = Resamp24kHz(y, ysamp)
+    reference_24hz, _ = resample_24khz(reference, reference_freq)
+    processed_24hz, freq_sample = resample_24khz(processed, processed_freq)
 
     # Check file sizes
-    nxy = min(len(x24), len(y24))
-    x24 = x24[:nxy]
-    y24 = y24[:nxy]
+    min_signal_length = min(len(reference_24hz), len(processed_24hz))
+    reference_24hz = reference_24hz[:min_signal_length]
+    processed_24hz = processed_24hz[:min_signal_length]
 
     # Bulk broadband signal alignment
-    x24, y24 = InputAlign(x24, y24)
-    nsamp = len(x24)
+    reference_24hz, processed_24hz = input_align(reference_24hz, processed_24hz)
+    nsamp = len(reference_24hz)
 
     # For HASQI, here add NAL-R equalization if the quality reference doesn't already have it.
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
-        enhancer = NALR(nfir, fsamp)
+        enhancer = NALR(nfir, freq_sample)
         aud = [250, 500, 1000, 2000, 4000, 6000]
-        nalr_fir, _ = enhancer.build(HL, aud)
-        x24 = convolve(x24, nalr_fir)  # Apply the NAL-R filter
-        x24 = x24[nfir : nfir + nsamp]
+        nalr_fir, _ = enhancer.build(hearing_loss, aud)
+        reference_24hz = convolve(reference_24hz, nalr_fir)  # Apply the NAL-R filter
+        reference_24hz = reference_24hz[nfir : nfir + nsamp]
 
     # Cochlear model
     # Middle ear
-    xmid = MiddleEar(x24, fsamp)
-    ymid = MiddleEar(y24, fsamp)
+    reference_mid = middle_ear(reference_24hz, freq_sample)
+    processed_mid = middle_ear(processed_24hz, freq_sample)
 
     # Initialize storage
     # Reference and processed envelopes and BM motion
-    xdB = np.zeros((nchan, nsamp))
-    ydB = np.zeros((nchan, nsamp))
+    reference_db = np.zeros((nchan, nsamp))
+    processed_db = np.zeros((nchan, nsamp))
 
     # Reference and processed average spectral values
-    xave = np.zeros(nchan)
-    yave = np.zeros(nchan)  # Processed
-    xcave = np.zeros(nchan)  # Reference control
-    ycave = np.zeros(nchan)  # Processed control
+    reference_average = np.zeros(nchan)
+    processed_average = np.zeros(nchan)
+    reference_control_average = np.zeros(nchan)
+    processed_control_average = np.zeros(nchan)
 
     # Filter bandwidths adjusted for intensity
-    BWx = np.zeros(nchan)
-    BWy = np.zeros(nchan)
+    reference_bandwidth = np.zeros(nchan)
+    processed_bandwidth = np.zeros(nchan)
 
-    xb = np.zeros((nchan, nsamp))
-    yb = np.zeros((nchan, nsamp))
+    reference_b = np.zeros((nchan, nsamp))
+    processed_b = np.zeros((nchan, nsamp))
 
     # Loop over each filter in the auditory filter bank
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
-        xcontrol, _, ycontrol, _ = GammatoneBM(
-            xmid, BW1[n], ymid, BW1[n], fsamp, cfreq1[n]
+        reference_control, _, processed_control, _ = gammatone_basilar_membrane(
+            reference_mid,
+            bandwidth_1[n],
+            processed_mid,
+            bandwidth_1[n],
+            freq_sample,
+            _center_freq_control[n],
         )
 
         # Adjust the auditory filter bandwidths for the average signal level
-        BWx[n] = BWadjust(xcontrol, BWminx[n], BW1[n], Level1)  # Reference
-        BWy[n] = BWadjust(ycontrol, BWminy[n], BW1[n], Level1)  # Processed
+        reference_bandwidth[n] = bandwidth_adjust(
+            reference_control, bandwidth_min_x[n], bandwidth_1[n], level1
+        )
+        processed_bandwidth[n] = bandwidth_adjust(
+            processed_control, bandwidth_min_y[n], bandwidth_1[n], level1
+        )
 
         # Envelopes and BM motion of the reference and processed signals
-        xenv, xbm, yenv, ybm = GammatoneBM(xmid, BWx[n], ymid, BWy[n], fsamp, cfreq[n])
+        xenv, xbm, yenv, ybm = gammatone_basilar_membrane(
+            reference_mid,
+            reference_bandwidth[n],
+            processed_mid,
+            processed_bandwidth[n],
+            freq_sample,
+            _center_freq[n],
+        )
 
         # RMS levels of the ref and output envelopes for linear metric
-        xave[n] = np.sqrt(np.mean(xenv**2))
-        yave[n] = np.sqrt(np.mean(yenv**2))
-        xcave[n] = np.sqrt(np.mean(xcontrol**2))
-        ycave[n] = np.sqrt(np.mean(ycontrol**2))
+        reference_average[n] = np.sqrt(np.mean(xenv**2))
+        processed_average[n] = np.sqrt(np.mean(yenv**2))
+        reference_control_average[n] = np.sqrt(np.mean(reference_control**2))
+        processed_control_average[n] = np.sqrt(np.mean(processed_control**2))
 
         # Cochlear compression for the signal envelopes and BM motion
-        xc, xb[n] = EnvCompressBM(
-            xenv, xbm, xcontrol, attnOHCx[n], lowkneex[n], CRx[n], fsamp, Level1
+        reference_cochlear_compression, reference_b[n] = env_compress_basilar_membrane(
+            xenv,
+            xbm,
+            reference_control,
+            attn_ohc_x[n],
+            low_knee_x[n],
+            compression_ratio_x[n],
+            freq_sample,
+            level1,
         )
-        yc, yb[n] = EnvCompressBM(
-            yenv, ybm, ycontrol, attnOHCy[n], lowkneey[n], CRy[n], fsamp, Level1
+        processed_cochlear_compression, processed_b[n] = env_compress_basilar_membrane(
+            yenv,
+            ybm,
+            processed_control,
+            attn_ohc_y[n],
+            low_knee_y[n],
+            compression_ratio_y[n],
+            freq_sample,
+            level1,
         )
 
         # Correct for the delay between the reference and output
-        yc = EnvAlign(xc, yc)  # Align processed envelope to reference
-        yb[n] = EnvAlign(xb[n], yb[n])  # Align processed BM motion to reference
+        processed_cochlear_compression = envelope_align(
+            reference_cochlear_compression, processed_cochlear_compression
+        )  # Align processed envelope to reference
+        processed_b[n] = envelope_align(
+            reference_b[n], processed_b[n]
+        )  # Align processed BM motion to reference
 
         # Convert the compressed envelopes and BM vibration envelopes to dB SPL
-        xc, xb[n] = EnvSL(xc, xb[n], attnIHCx[n], Level1)
-        yc, yb[n] = EnvSL(yc, yb[n], attnIHCy[n], Level1)
+        reference_cochlear_compression, reference_b[n] = envelope_sl(
+            reference_cochlear_compression, reference_b[n], attn_ihc_x[n], level1
+        )
+        processed_cochlear_compression, processed_b[n] = envelope_sl(
+            processed_cochlear_compression, processed_b[n], attn_ihc_y[n], level1
+        )
 
         # Apply the IHC rapid and short-term adaptation
         delta = 2  # Amount of overshoot
-        xdB[n], xb[n] = IHCadapt(xc, xb[n], delta, fsamp)
-        ydB[n], yb[n] = IHCadapt(yc, yb[n], delta, fsamp)
+        reference_db[n], reference_b[n] = inner_hair_cell_adaptation(
+            reference_cochlear_compression, reference_b[n], delta, freq_sample
+        )
+        processed_db[n], processed_b[n] = inner_hair_cell_adaptation(
+            processed_cochlear_compression, processed_b[n], delta, freq_sample
+        )
 
     # Additive noise level to give the auditory threshold
-    IHCthr = -10  # Additive noise level, dB re: auditory threshold
-    xBM = BMaddnoise(xb, IHCthr, Level1)
-    yBM = BMaddnoise(yb, IHCthr, Level1)
+    ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
+    reference_basilar_membrane = basilar_membrane_add_noise(
+        reference_b, ihc_threshold, level1
+    )
+    processed_basilar_membrane = basilar_membrane_add_noise(
+        processed_b, ihc_threshold, level1
+    )
 
     # Correct for the gammatone filterbank interchannel group delay.
-    if mdelay > 0:
-        xdB = GroupDelayComp(xdB, BWx, cfreq, fsamp)
-        ydB = GroupDelayComp(ydB, BWx, cfreq, fsamp)
-        xBM = GroupDelayComp(xBM, BWx, cfreq, fsamp)
-        yBM = GroupDelayComp(yBM, BWx, cfreq, fsamp)
+    if m_delay > 0:
+        reference_db = group_delay_compensate(
+            reference_db, reference_bandwidth, _center_freq, freq_sample
+        )
+        processed_db = group_delay_compensate(
+            processed_db, reference_bandwidth, _center_freq, freq_sample
+        )
+        reference_basilar_membrane = group_delay_compensate(
+            reference_basilar_membrane, reference_bandwidth, _center_freq, freq_sample
+        )
+        processed_basilar_membrane = group_delay_compensate(
+            processed_basilar_membrane, reference_bandwidth, _center_freq, freq_sample
+        )
 
     # Convert average gammatone outputs to dB SPL
-    xSL = aveSL(xave, xcave, attnOHCx, lowkneex, CRx, attnIHCx, Level1)
-    ySL = aveSL(yave, ycave, attnOHCy, lowkneey, CRy, attnIHCy, Level1)
+    reference_sl = convert_rms_to_sl(
+        reference_average,
+        reference_control_average,
+        attn_ohc_x,
+        low_knee_x,
+        compression_ratio_x,
+        attn_ihc_x,
+        level1,
+    )
+    processed_sl = convert_rms_to_sl(
+        processed_average,
+        processed_control_average,
+        attn_ohc_y,
+        low_knee_y,
+        compression_ratio_y,
+        attn_ihc_y,
+        level1,
+    )
 
-    return xdB, xBM, ydB, yBM, xSL, ySL, fsamp
+    return (
+        reference_db,
+        reference_basilar_membrane,
+        processed_db,
+        processed_basilar_membrane,
+        reference_sl,
+        processed_sl,
+        freq_sample,
+    )
 
 
-def CenterFreq(nchan, shift=None):
+def center_frequency(
+    nchan,
+    shift=None,
+    low_freq=80,
+    high_freq=8000,
+    ear_q=9.26449,
+    min_bw=24.7,
+):
     """
-    Function to compute the ERB frequency spacing for the gammatone
-    filter bank. The equation comes from Malcolm Slaney (1993).
+    Compute the Equivalent Rectangular Bandwidth_[1] frequency spacing for the gammatone filter bank. The equation
+    comes from Malcolm Slaney[2]_ .
 
-    Calling variables
-    nchan		number of filters in the filter bank
-    shift     optional frequency shift of the filter bank specified as a
+    Arguments:
+    nchan (int): number of filters in the filter bank
+    low_freq (int): Low Frequency level.
+    high_freq (int): High Frequency level.
+    shift (): optional frequency shift of the filter bank specified as a
               fractional shift in distance along the BM. A positive shift
               is an increase in frequency (basal shift), and negative is
               a decrease in frequency (apical shift). The total length of
               the BM is normalized to 1. The frequency-to-distance map is
-              from D.D. Greenwood (1990), JASA 87, 2592-2605, Eq (1).
+              from D.D. Greenwood[3]_.
+    ear_q (float):
+    min_bw (float):
 
+    Returns:
+
+
+    References:
+    .. [1] Moore BCJ, Glasberg BR (1983) Suggested formulae for calculating
+           auditory-filter bandwidths and excitation patterns. J Acoustical
+           Soc America 74:750-753. Available at
+           <https://doi.org/10.1121/1.389861>
+    .. [2] Slaney M (1993) An Efficient Implemtnation of the Patterson-
+           Holdsworth Auditory Filter Bank. Available at:
+           <https://asset-pdf.scinapse.io/prod/396690109/396690109.pdf>.
+    .. [3] Greenwood DD (1990) A cochlear frequency-position function for
+           several species--29 years later. J Acoust Soc Am 87(6):2592-
+           2605. Available at
+           <https://doi.o10.1121/1.399052>
+
+    Updates:
     James M. Kates, 25 January 2007.
     Frequency shift added 22 August 2008.
     Lower and upper frequencies fixed at 80 and 8000 Hz, 19 June 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    lowFreq = 80
-    highFreq = 8000
-
-    # Moore and Glasberg ERB values
-    EarQ = 9.26449
-    minBW = 24.7
 
     # In the Matlab code, the loop below never evaluates
     # (but the current code was trained with this bug)
     shift = None  # This is to keep consistency with MATLAB code
     if shift is not None:
         k = 1
-        A = 165.4
+        A = 165.4  # pylint: disable=invalid-name
         a = 2.1  # shift specified as a fraction of the total length
         # Locations of the low and high frequencies on the BM between 0 and 1
-        xLow = (1 / a) * np.log10(k + (lowFreq / A))
-        xHigh = (1 / a) * np.log10(k + (highFreq / A))
+        x_low = (1 / a) * np.log10(k + (low_freq / A))
+        x_high = (1 / a) * np.log10(k + (high_freq / A))
         # Shift the locations
-        xLow = xLow * (1 + shift)
-        xHigh = xHigh * (1 + shift)
+        x_low = x_low * (1 + shift)
+        x_high = x_high * (1 + shift)
         # Compute the new frequency range
-        lowFreq = A * (10 ** (a * xLow) - k)
-        highFreq = A * (10 ** (a * xHigh) - k)
+        low_freq = A * (10 ** (a * x_low) - k)
+        high_freq = A * (10 ** (a * x_high) - k)
 
     # All of the following expressions are derived in Apple TR #35,
     # "An Efficient Implementation of the Patterson-Holdsworth Cochlear
-    # Filter Bank" by Malcolm Slaney.
-    cf = -(EarQ * minBW) + np.exp(
+    # Filter Bank" by Malcolm Slaney. https://engineering.purdue.edu/~malcolm/apple/tr35/PattersonsEar.pdf
+    _center_freq = -(ear_q * min_bw) + np.exp(
         np.arange(1, nchan)
-        * (-np.log(highFreq + EarQ * minBW) + np.log(lowFreq + EarQ * minBW))
+        * (-np.log(high_freq + ear_q * min_bw) + np.log(low_freq + ear_q * min_bw))
         / (nchan - 1)
-    ) * (highFreq + EarQ * minBW)
-    cf = np.insert(cf, 0, highFreq)  # Last center frequency is set to highFreq
-    cf = np.flip(cf)
-    return cf
+    ) * (high_freq + ear_q * min_bw)
+    _center_freq = np.insert(
+        _center_freq, 0, high_freq
+    )  # Last center frequency is set to highFreq
+    _center_freq = np.flip(_center_freq)
+    return _center_freq
 
 
-def LossParameters(HL, cfreq):
+def loss_parameters(hearing_loss, center_freq, audiometric_freq=None):
     """
-    Function to apportion the hearing loss to the outer hair cells (OHC)
-    and the inner hair cells (IHC) and to increase the bandwidth of the
-    cochlear filters in proportion to the OHC fraction of the total loss.
+    Apportion the hearing loss to the outer hair cells (OHC) and the inner
+    hair cells (IHC) and to increase the bandwidth of the cochlear filters
+    in proportion to the OHC fraction of the total loss.
 
-    Calling variables:
-    HL		hearing loss at the 6 audiometric frequencies
-    cfreq		array containing the center frequencies of the gammatone filters
-                arranged from low to high
+    Arguments:
+    hearing_loss (np.ndarray): hearing loss at the 6 audiometric frequencies
+    center_freq (np.ndarray): array containing the center frequencies of the
+        gammatone filters arranged from low to high
+    audiometric_freq (list):
 
     Returns:
-    attnOHC	attenuation in dB for the OHC gammatone filters
-    BW		OHC filter bandwidth expressed in terms of normal
-    lowknee	Lower kneepoint for the low-level linear amplification
-    CR		Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal
-                hearing. Reduced in proportion to the OHC loss to 1:1.
-    attnIHC	attenuation in dB for the input to the IHC synapse
+    attenuated_ohc (): attenuation in dB for the OHC gammatone filters
+    bandwidth (): OHC filter bandwidth expressed in terms of normal
+    low_knee (): Lower kneepoint for the low-level linear amplification
+    compression_ratio (): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal
+        hearing. Reduced in proportion to the OHC loss to 1:1.
+    attenuated_ihc ():	attenuation in dB for the input to the IHC synapse
 
+    Updates:
     James M. Kates, 25 January 2007.
     Version for loss in dB and match of OHC loss to CR, 9 March 2007.
     Low-frequency extent changed to 80 Hz, 27 Oct 2011.
@@ -276,133 +417,157 @@ def LossParameters(HL, cfreq):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Audiometric frequencies in Hz
-    aud = [250, 500, 1000, 2000, 4000, 6000]
+    if audiometric_freq is None:
+        audiometric_freq = [250, 500, 1000, 2000, 4000, 6000]
 
     # Interpolation to give the loss at the gammatone center frequencies
     # Use linear interpolation in dB. The interpolation assumes that
     # cfreq[1] < aud[1] and cfreq[nfilt] > aud[6]
-    nfilt = len(cfreq)
-    fv = np.insert(aud, [0, len(aud)], [cfreq[0], cfreq[-1]])
+    nfilt = len(center_freq)
+    f_v = np.insert(
+        audiometric_freq, [0, len(audiometric_freq)], [center_freq[0], center_freq[-1]]
+    )
 
     # Interpolated gain in dB
-    loss = np.interp(cfreq, fv, np.insert(HL, [0, len(HL)], [HL[0], HL[-1]]))
+    loss = np.interp(
+        center_freq,
+        f_v,
+        np.insert(
+            hearing_loss, [0, len(hearing_loss)], [hearing_loss[0], hearing_loss[-1]]
+        ),
+    )
     loss = np.maximum(loss, 0)
     # Make sure there are no negative losses
 
     # Compression ratio changes linearly with ERB rate from 1.25:1 in the 80-Hz
     # frequency band to 3.5:1 in the 8-kHz frequency band
-    CR = 1.25 + 2.25 * np.arange(nfilt) / (nfilt - 1)
+    compression_ratio = 1.25 + 2.25 * np.arange(nfilt) / (nfilt - 1)
 
     # Maximum OHC sensitivity loss depends on the compression ratio.
     # The compression I/O curves assume linear below 30 and above 100 dB SPL in normal ears.
-    maxOHC = 70 * (1 - (1 / CR))  # HC loss that results in 1:1 compression
-    thrOHC = 1.25 * maxOHC  # Loss threshold for adjusting the OHC parameters
+    max_ohc = 70 * (
+        1 - (1 / compression_ratio)
+    )  # HC loss that results in 1:1 compression
+    theoretical_ohc = 1.25 * max_ohc  # Loss threshold for adjusting the OHC parameters
 
     # Apportion the loss in dB to the outer and inner hair cells based on the data of
     # Moore et al (1999), JASA 106, 2761-2778.
 
     # Reduce the CR towards 1:1 in proportion to the OHC loss.
-    attnOHC = 0.8 * np.copy(loss)
-    attnIHC = 0.2 * np.copy(loss)
+    attenuated_ohc = 0.8 * np.copy(loss)
+    attnenuated_ihc = 0.2 * np.copy(loss)
 
-    attnOHC[loss >= thrOHC] = 0.8 * thrOHC[loss >= thrOHC]
-    attnIHC[loss >= thrOHC] = 0.2 * thrOHC[loss >= thrOHC] + (
-        loss[loss >= thrOHC] - thrOHC[loss >= thrOHC]
+    attenuated_ohc[loss >= theoretical_ohc] = (
+        0.8 * theoretical_ohc[loss >= theoretical_ohc]
     )
+    attnenuated_ihc[loss >= theoretical_ohc] = 0.2 * theoretical_ohc[
+        loss >= theoretical_ohc
+    ] + (loss[loss >= theoretical_ohc] - theoretical_ohc[loss >= theoretical_ohc])
 
     # Adjust the OHC bandwidth in proportion to the OHC loss
-    BW = np.ones(nfilt)
-    BW = BW + (attnOHC / 50.0) + 2.0 * (attnOHC / 50.0) ** 6
+    bandwidth = np.ones(nfilt)
+    bandwidth = bandwidth + (attenuated_ohc / 50.0) + 2.0 * (attenuated_ohc / 50.0) ** 6
 
     # Compute the compression lower kneepoint and compression ratio
-    lowknee = attnOHC + 30
-    upamp = 30 + 70 / CR  # Output level for an input of 100 dB SPL
+    low_knee = attenuated_ohc + 30
+    upamp = 30 + (70 / compression_ratio)  # Output level for an input of 100 dB SPL
 
-    CR = (100 - lowknee) / (upamp + attnOHC - lowknee)  # OHC loss Compression ratio
+    compression_ratio = (100 - low_knee) / (
+        upamp + attenuated_ohc - low_knee
+    )  # OHC loss Compression ratio
 
-    return attnOHC, BW, lowknee, CR, attnIHC
+    return attenuated_ohc, bandwidth, low_knee, compression_ratio, attnenuated_ihc
 
 
-def Resamp24kHz(x, fsampx):
+def resample_24khz(reference_signal, reference_freq, freq_sample_hz=24000):
     """
-    Function to resample the input signal at 24 kHz. The input sampling rate
-    is rounded to the nearest kHz to comput the sampling rate conversion
+    Resample the input signal at 24 kHz. The input sampling rate is
+    rounded to the nearest kHz to compute the sampling rate conversion
     ratio.
 
-    Calling variables:
-    x         input signal
-    fsampx    sampling rate for the input in Hz
+    Arguments:
+    reference_signal (np.ndarray): input signal
+    reference_freq (int): sampling rate for the input in Hz
+    freq_sample_hz (int): Frequency sample in Hz
 
-    Returned argument:
-    y         signal resampled at 24 kHz
-    fsamp     output sampling rate in Kz
+    Returns:
+    reference_signal_24         signal resampled at kHz (default 24Khz)
+    freq_sample_hz     output sampling rate in Hz
 
+    Updates
     James M. Kates, 20 June 2011.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
     # Sampling rate information
-    fsamp = 24000
-    fy = round(fsamp / 1000)  # output rate to nearest kHz
-    fx = round(fsampx / 1000)
+    sample_rate_target_khz = round(freq_sample_hz / 1000)  # output rate to nearest kHz
+    reference_freq_khz = round(reference_freq / 1000)
 
     # Resample the signal
-    if fx == fy:
+    if reference_freq_khz == sample_rate_target_khz:
         # No resampling performed if the rates match
-        y = x
-    elif fx < fy:
+        return reference_signal, freq_sample_hz
+
+    if reference_freq_khz < sample_rate_target_khz:
         # Resample for the input rate lower than the output
-        y = resample_poly(x, fy, fx)
+        resample_signal = resample_poly(
+            reference_signal, sample_rate_target_khz, reference_freq_khz
+        )
 
         # Match the RMS level of the resampled signal to that of the input
-        xRMS = np.sqrt(np.mean(x**2))
-        yRMS = np.sqrt(np.mean(y**2))
-        y = (xRMS / yRMS) * y
+        reference_rms = np.sqrt(np.mean(reference_signal**2))
+        resample_rms = np.sqrt(np.mean(resample_signal**2))
+        resample_signal = (reference_rms / resample_rms) * resample_signal
 
-    else:
-        # Resample for the input rate higher than the output
-        y = resample_poly(x, fy, fx)
+        return resample_signal, freq_sample_hz
 
-        # Reduce the input signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)
-        # The power equalization is designed to match the signal intensities
-        # over the frequency range spanned by the gammatone filter bank.
-        # Chebyshev Type 2 LP
-        order = 7
-        atten = 30  # sidelobe attenuation in dB
-        fcutx = 21 / fx
-        bx, ax = cheby2(order, atten, fcutx)
-        xfilt = lfilter(bx, ax, x, axis=0)
+    # Resample for the input rate higher than the output
+    resample_signal = resample_poly(
+        reference_signal, sample_rate_target_khz, reference_freq_khz
+    )
 
-        # Reduce the resampled signal bandwisth to 21 kHz (-10.5 to +10.5 kHz)
-        fcuty = 21 / fy
-        by, ay = cheby2(order, atten, fcuty)
-        yfilt = lfilter(by, ay, y, axis=0)
+    # Reduce the input signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)
+    # The power equalization is designed to match the signal intensities
+    # over the frequency range spanned by the gammatone filter bank.
+    # Chebyshev Type 2 LP
+    order = 7
+    attenuation = 30  # sidelobe attenuation in dB
+    reference_freq_cut = 21 / reference_freq_khz
+    reference_b, reference_a = cheby2(order, attenuation, reference_freq_cut)
+    reference_filter = lfilter(reference_b, reference_a, reference_signal, axis=0)
 
-        # Compute the input and output RMS levels within the 21 kHz bandwidth and
-        # match the output to the input
-        xRMS = np.sqrt(np.mean(xfilt**2))
-        yRMS = np.sqrt(np.mean(yfilt**2))
-        y = (xRMS / yRMS) * y
+    # Reduce the resampled signal bandwisth to 21 kHz (-10.5 to +10.5 kHz)
+    resample_freq_cut = 21 / sample_rate_target_khz
+    target_b, target_a = cheby2(order, attenuation, resample_freq_cut)
+    target_filter = lfilter(target_b, target_a, resample_signal, axis=0)
 
-    return y, fsamp
+    # Compute the input and output RMS levels within the 21 kHz bandwidth and
+    # match the output to the input
+    reference_rms = np.sqrt(np.mean(reference_filter**2))
+    resample_rms = np.sqrt(np.mean(target_filter**2))
+    resample_signal = (reference_rms / resample_rms) * resample_signal
+
+    return resample_signal, freq_sample_hz
 
 
-def InputAlign(x, y):
+def input_align(reference, processed):
     """
-    Function to provide approximate temporal alignment of the reference and
-    processed output signals. Leading and trailing zeros are then pruned.
+    Approximate temporal alignment of the reference and processed output
+    signals. Leading and trailing zeros are then pruned.
+
     The function assumes that the two sequences have the same sampling rate:
     call eb_Resamp24kHz for each sequence first, then call this function to
     align the signals.
 
-    Calling variables:
-    x       input reference sequence
-    y       hearing-aid output sequence
+    Arguments:
+    reference (np.ndarray): input reference sequence
+    processed (np.ndarray): hearing-aid output sequence
 
     Returns:
-    xp   pruned and shifted reference
-    yp   pruned and shifted hearing-aid output
+    reference (np.ndarray): pruned and shifted reference
+    processed (np.ndarray): pruned and shifted hearing-aid output
 
+    Updates:
     James M. Kates, 12 July 2011.
     Match the length of the processed output to the reference for the
     purposes of computing the cross-covariance
@@ -411,16 +576,18 @@ def InputAlign(x, y):
 
     # Match the length of the processed output to the reference for the purposes
     # of computing the cross-covariance
-    nx = len(x)
-    ny = len(y)
-    nsamp = min(nx, ny)
+    reference_n = len(reference)
+    processed_n = len(processed)
+    min_sample_length = min(reference_n, processed_n)
 
     # Determine the delay of the output relative to the reference
-    xy = correlate(
-        x[:nsamp] - np.mean(x[:nsamp]), y[:nsamp] - np.mean(y[:nsamp]), "full"
+    reference_processed_correlation = correlate(
+        reference[:min_sample_length] - np.mean(reference[:min_sample_length]),
+        processed[:min_sample_length] - np.mean(processed[:min_sample_length]),
+        "full",
     )  # Matlab code uses xcov thus the subtraction of mean
-    index = np.argmax(np.abs(xy))
-    delay = nsamp - index - 1
+    index = np.argmax(np.abs(reference_processed_correlation))
+    delay = min_sample_length - index - 1
 
     # Back up 2 msec to allow for dispersion
     fsamp = 24000  # Cochlear model input sampling rate in Hz
@@ -429,67 +596,76 @@ def InputAlign(x, y):
     # Align the output with the reference allowing for the dispersion
     if delay > 0:
         # Output delayed relative to the reference
-        y = np.concatenate((y[delay:ny], np.zeros(delay)))
+        processed = np.concatenate((processed[delay:processed_n], np.zeros(delay)))
     else:
         # Output advanced relative to the reference
-        y = np.concatenate((np.zeros(-delay), y[: ny + delay]))
+        processed = np.concatenate((np.zeros(-delay), processed[: processed_n + delay]))
 
     # Find the start and end of the noiseless reference sequence
-    xabs = np.abs(x)
-    xmax = np.max(xabs)
-    xthr = 0.001 * xmax  # Zero detection threshold
+    reference_abs = np.abs(reference)
+    reference_max = np.max(reference_abs)
+    reference_threshold = 0.001 * reference_max  # Zero detection threshold
 
-    above_threshold = np.where(xabs > xthr)[0]
-    nx0 = above_threshold[0]
-    nx1 = above_threshold[-1]
+    above_threshold = np.where(reference_abs > reference_threshold)[0]
+    reference_n_above_threshold = above_threshold[0]
+    reference_n_below_threshold = above_threshold[-1]
 
     # Prune the sequences to remove the leading and trailing zeros
-    nx1 = min(nx1, ny)
-    xp = x[nx0 : nx1 + 1]
-    yp = y[nx0 : nx1 + 1]
+    reference_n_below_threshold = min(reference_n_below_threshold, processed_n)
 
-    return xp, yp
+    return (
+        reference[reference_n_above_threshold : reference_n_below_threshold + 1],
+        processed[reference_n_above_threshold : reference_n_below_threshold + 1],
+    )
 
 
-def MiddleEar(x, fsamp):
+def middle_ear(reference, freq_sample):
     """
-    Function to design the middle ear filters and process the input
-    through the cascade of filters. The middle ear model is a 2-pole HP
-    filter at 350 Hz in series with a 1-pole LP filter at 5000 Hz. The
-    result is a rough approximation to the equal-loudness contour at
-    threshold.
+    Design the middle ear filters and process the input through the
+    cascade of filters. The middle ear model is a 2-pole HP filter
+    at 350 Hz in series with a 1-pole LP filter at 5000 Hz. The
+    result is a rough approximation to the equal-loudness contour
+    at threshold.
 
-    Calling variables:
-        x		input signal
-        fsamp	sampling rate in Hz
+    Arguments:
+    reference (np.ndarray):	input signal
+    freq_sample (int): sampling rate in Hz
 
-    Function output:
-        xout	filtered output
+    Returns:
+    xout (): filtered output
 
+    Updates:
     James M. Kates, 18 January 2007.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
     # Design the 1-pole Butterworth LP using the bilinear transformation
-    bLP, aLP = butter(1, 5000 / (0.5 * fsamp))
+    butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
 
     # LP filter the input
-    y = lfilter(bLP, aLP, x)
+    y = lfilter(butterworth_low_pass, low_pass, reference)
 
     # Design the 2-pole Butterworth HP using the bilinear transformation
-    bHP, aHP = butter(2, 350 / (0.5 * fsamp), "high")
+    butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
 
     # HP fitler the signal
-    xout = lfilter(bHP, aHP, y)
-
-    return xout
+    return lfilter(butterworth_high_pass, high_pass, y)
 
 
-def GammatoneBM(x, BWx, y, BWy, fs, cf):
+def gammatone_basilar_membrane(
+    reference,
+    reference_bandwidth,
+    processed,
+    processed_bandwidth,
+    freq_sample,
+    center_freq,
+    ear_q=9.26449,
+    min_bandwidth=24.7,
+):
     """
     4th-order gammatone auditory filter. This implementation is based
-    on the c program published on-line by Ning Ma, U. Sheffield, UK,
-    that gives an implementation of the Martin Cooke (1991) filters:
+    on the c program published on-line by Ning Ma, U. Sheffield, UK[1]_
+    that gives an implementation of the Martin Cooke filters[2]_:
     an impulse-invariant transformation of the gammatone filter. The
     signal is demodulated down to baseband using a complex exponential,
     and then passed through a cascade of four one-pole low-pass filters.
@@ -499,19 +675,32 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
     should match; if they don't, the signals are truncated to the shorter of
     the two lengths.
 
-    Calling variables:
-    x			first sequence to be filtered
-    BWx	    bandwidth for x relative to that of a normal ear
-    y			second sequence to be filtered
-    BWy	    bandwidth for x relative to that of a normal ear
-    fs		sampling rate in Hz
-    cf		filter center frequency in Hz
+    Arguments:
+    reference (): first sequence to be filtered
+    reference_bandwidth: bandwidth for x relative to that of a normal ear
+    processed (): second sequence to be filtered
+    processed_bandwidth (): bandwidth for x relative to that of a normal ear
+    freq_sample (): sampling rate in Hz
+    center_frequency (int): filter center frequency in Hz
+    ear_q: (float): ???
+    min_bandwidth (float): ???
 
     Returns:
-    envx      filter envelope output (modulated down to baseband) 1st signal
-    BMx       BM motion for the first signal
-    envy      filter envelope output (modulated down to baseband) 2nd signal
-    BMy       BM motion for the second signal
+    reference_envelope (): filter envelope output (modulated down to baseband) 1st signal
+    reference_basilar_membrane (): Basilar Membrane for the first signal
+    processed_envelope (): filter envelope output (modulated down to baseband) 2nd signal
+    processed_basilar_membrane (): Basilar Membrane for the second signal
+
+    References:
+    .. [1] Ma N, Green P, Barker J, Coy A (2007) Exploiting correlogram
+           structure for robust speech recognition with multiple speech
+           sources. Speech Communication, 49 (12): 874-891. Availab at
+           <https://doi.org/10.1016/j.specom.2007.05.003>
+           <https://staffwww.dcs.shef.ac.uk/people/N.Ma/resources/gammatone/>
+    .. [2] Cooke, M. (1993) Modelling auditory processing and organisation.
+           Cambridge University Press
+
+    Updates:
     James M. Kates, 8 Jan 2007.
     Vectorized version for efficient MATLAB execution, 4 February 2007.
     Cosine and sine generation, 29 June 2011.
@@ -519,144 +708,171 @@ def GammatoneBM(x, BWx, y, BWy, fs, cf):
     Cosine/sine loop speed increased, 9 August 2013.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    # Filter ERB from Moore and Glasberg (1983)
-    earQ = 9.26449
-    minBW = 24.7
-    ERB = minBW + (cf / earQ)
+    # Filter Equivalent Rectangular Bandwidth from Moore and Glasberg (1983) doi: 10.1121/1.389861
+    erb = min_bandwidth + (center_freq / ear_q)
 
-    # Check the lengths of the two signals
-    nx = len(x)
-    ny = len(y)
-    nsamp = min(nx, ny)
-    x = x[:nsamp]
-    y = y[:nsamp]
+    # Check the lengths of the two signals and trim to shortest
+    min_sample = min(len(reference), len(processed))
+    x = reference[:min_sample]
+    y = processed[:min_sample]
 
     # Filter the first signal
     # Initialize the filter coefficients
-    tpt = 2 * np.pi / fs
-    tptBW = BWx * tpt * ERB * 1.019
-    a = np.exp(-tptBW)
-    a1 = 4.0 * a
-    a2 = -6.0 * a * a
-    a3 = 4.0 * a * a * a
-    a4 = -a * a * a * a
-    a5 = 4.0 * a * a
-    gain = 2.0 * (1 - a1 - a2 - a3 - a4) / (1 + a1 + a5)
+    tpt = 2 * np.pi / freq_sample
+    tpt_bw = reference_bandwidth * tpt * erb * 1.019
+    a = np.exp(-tpt_bw)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
 
     # Initialize the complex demodulation
     npts = len(x)
-    sincf, coscf = GammatoneBW_demodulation(
-        npts, tpt, cf, np.zeros(npts), np.zeros(npts)
+    sincf, coscf = gammatone_bandwidth_demodulation(
+        npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
     )
 
     # Filter the real and imaginary parts of the signal
-    ureal = lfilter([1, a1, a5], [1, -a1, -a2, -a3, -a4], x * coscf)
-    uimag = lfilter([1, a1, a5], [1, -a1, -a2, -a3, -a4], x * sincf)
+    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
+    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * sincf)
 
     # Extract the BM velocity and the envelope
-    BMx = gain * (ureal * coscf + uimag * sincf)
-    envx = gain * np.sqrt(ureal * ureal + uimag * uimag)
+    reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+    reference_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
 
     # Filter the second signal using the existing cosine and sine sequences
-    tptBW = BWy * tpt * ERB * 1.019
-    a = np.exp(-tptBW)
-    a1 = 4.0 * a
-    a2 = -6.0 * a * a
-    a3 = 4.0 * a * a * a
-    a4 = -a * a * a * a
-    a5 = 4.0 * a * a
-    gain = 2.0 * (1 - a1 - a2 - a3 - a4) / (1 + a1 + a5)
+    tpt_bw = processed_bandwidth * tpt * erb * 1.019
+    a = np.exp(-tpt_bw)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
 
     # Filter the real and imaginary parts of the signal
-    ureal = lfilter([1, a1, a5], [1, -a1, -a2, -a3, -a4], y * coscf)
-    uimag = lfilter([1, a1, a5], [1, -a1, -a2, -a3, -a4], y * sincf)
+    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * coscf)
+    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * sincf)
 
     # Extract the BM velocity and the envelope
-    BMy = gain * (ureal * coscf + uimag * sincf)
-    envy = gain * np.sqrt(ureal * ureal + uimag * uimag)
+    processed_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+    processed_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
 
-    return envx, BMx, envy, BMy
+    return (
+        reference_envelope,
+        reference_basilar_membrane,
+        processed_envelope,
+        processed_basilar_membrane,
+    )
 
 
 @jit(nopython=True)
-def GammatoneBW_demodulation(npts, tpt, cf, coscf, sincf):
-    cn = np.cos(tpt * cf)
-    sn = np.sin(tpt * cf)
-    cold = 1
-    sold = 0
-    coscf[0] = cold
-    sincf[0] = sold
-    for n in range(1, npts):
-        arg = cold * cn + sold * sn
-        sold = sold * cn - cold * sn
-        cold = arg
-        coscf[n] = cold
-        sincf[n] = sold
+def gammatone_bandwidth_demodulation(
+    npts, tpt, center_freq, center_freq_cos, center_freq_sin
+):
+    """Gamma tone bandwidth demodulation
 
-    return sincf, coscf
+    Arguments:
+    npts (): ???
+    tpt (): ???
+    center_freq (): ???
+    center_freq_cos (): ???
+    sincf (): ???
 
-
-def BWadjust(control, BWmin, BWmax, Level1):
+    Returns:
+    sincf (): ???
+    coscf (): ???
     """
-    Function to compute the increase in auditory filter bandwidth in response
-    to high signal levels.
+    cos_n = np.cos(tpt * center_freq)
+    sin_n = np.sin(tpt * center_freq)
+    cold = 1.0
+    sold = 0.0
+    center_freq_cos[0] = cold
+    center_freq_sin[0] = sold
+    for n in range(1, npts):
+        arg = cold * cos_n + sold * sin_n
+        sold = sold * cos_n - cold * sin_n
+        cold = arg
+        center_freq_cos[n] = cold
+        center_freq_sin[n] = sold
 
-    Args:
-    control     envelope output in the control filter band
-    BWmin       auditory filter bandwidth computed for the loss (or NH)
-    BWmax       auditory filter bandwidth at maximum OHC damage
-    Level1      RMS=1 corresponds to Level1 dB SPL
+    return center_freq_sin, center_freq_cos
 
-    Returned value:
-    BW          filter bandwidth increased for high signal levels
 
+def bandwidth_adjust(control, bandwidth_min, bandwidth_max, level1):
+    """
+    Compute the increase in auditory filter bandwidth in response to high
+    signal levels.
+
+    Arguments:
+    control (): envelope output in the control filter band
+    bandwidth_min (): auditory filter bandwidth computed for the loss (or NH)
+    bandwidth_max (): auditory filter bandwidth at maximum OHC damage
+    level1 ():     RMS=1 corresponds to Level1 dB SPL
+
+    Returns:
+    bandwidth (): filter bandwidth increased for high signal levels
+
+    Updates:
     James M. Kates, 21 June 2011.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
     # Compute the control signal level
-    cRMS = np.sqrt(np.mean(control**2))
-    cdB = 20 * np.log10(cRMS) + Level1
+    control_rms = np.sqrt(np.mean(control**2))
+    control_db = 20 * np.log10(control_rms) + level1
 
     # Adjust the auditory filter bandwidth
-    if cdB < 50:
+    if control_db < 50:
         # No BW adjustment for a signal below 50 dB SPL
-        BW = BWmin
-    elif cdB > 100:
+        return bandwidth_min
+    if control_db > 100:
         # Maximum BW if signal is above 100 dB SPL
-        BW = BWmax
-    else:
-        # Linear interpolation between BW at 50 dB and max BW at 100 dB SPL
-        BW = BWmin + ((cdB - 50) / 50) * (BWmax - BWmin)
-
-    return BW
+        return bandwidth_max
+    return bandwidth_min + ((control_db - 50) / 50) * (bandwidth_max - bandwidth_min)
 
 
-def EnvCompressBM(envsig, bm, control, attnOHC, thrLow, CR, fsamp, Level1):
+def env_compress_basilar_membrane(
+    envsig,
+    bm,  # pylint: disable=invalid-name
+    control,
+    attn_ohc,
+    threshold_low,
+    compression_ratio,
+    fsamp,
+    level1,
+    small=1e-30,
+    threshold_high=100,
+):
     """
-    Function to compute the cochlear compression in one auditory filter
-    band. The gain is linear below the lower threshold, compressive with
-    a compression ratio of CR:1 between the lower and upper thresholds,
+    Compute the cochlear compression in one auditory filter band. The
+    gain is linear below the lower threshold, compressive with a
+    compression ratio of CR:1 between the lower and upper thresholds,
     and reverts to linear above the upper threshold. The compressor
     assumes that auditory thresold is 0 dB SPL.
 
-    Calling variables:
-    envsig	analytic signal envelope (magnitude) returned by the
+    Arguments:
+    envsig (): analytic signal envelope (magnitude) returned by the
                 gammatone filter bank
-    bm        BM motion output by the filter bank
-    control	analytic control envelope returned by the wide control
+    bm (): BM motion output by the filter bank
+    control (): analytic control envelope returned by the wide control
                 path filter bank
-    attnOHC	OHC attenuation at the input to the compressor
-    thrLow	kneepoint for the low-level linear amplification
-    CR		compression ratio
-    fsamp		sampling rate in Hz
-    Level1	dB reference level: a signal having an RMS value of 1 is
+    attn_ohc (): OHC attenuation at the input to the compressor
+    threshold_Low (): kneepoint for the low-level linear amplification
+    compression_ratio (): compression ratio
+    fsamp (): sampling rate in Hz
+    level1 (): dB reference level: a signal having an RMS value of 1 is
                 assigned to Level1 dB SPL.
+    small (): ???
+    threshold_high: kneepoint for the high-level linear amplification
 
-    Function outputs:
-    y			compressed version of the signal envelope
-    b         compressed version of the BM motion
+    Returns:
+    compressed_signal (): compressed version of the signal envelope
+    compressed_basilar_membrane (): compressed version of the BM motion
 
+    Updates:
     James M. Kates, 19 January 2007.
     LP filter added 15 Feb 2007 (Ref: Zhang et al., 2001)
     Version to compress the envelope, 20 Feb 2007.
@@ -665,17 +881,18 @@ def EnvCompressBM(envsig, bm, control, attnOHC, thrLow, CR, fsamp, Level1):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Initialize the compression parameters
-    thrHigh = 100
+    threshold_high = 100
 
     # Convert the control envelope to dB SPL
-    small = 1e-30
     logenv = np.maximum(control, small)
-    logenv = Level1 + 20 * np.log10(logenv)
-    logenv = np.minimum(logenv, thrHigh)  # Clip signal levels above the upper threshold
-    logenv = np.maximum(logenv, thrLow)  # Clip signal at the lower threshold
+    logenv = level1 + 20 * np.log10(logenv)
+    logenv = np.minimum(
+        logenv, threshold_high
+    )  # Clip signal levels above the upper threshold
+    logenv = np.maximum(logenv, threshold_low)  # Clip signal at the lower threshold
 
     # Compute the compression gain in dB
-    gain = -attnOHC - (logenv - thrLow) * (1 - (1 / CR))
+    gain = -attn_ohc - (logenv - threshold_low) * (1 - (1 / compression_ratio))
 
     # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
     gain = 10 ** (gain / 20)
@@ -684,24 +901,26 @@ def EnvCompressBM(envsig, bm, control, attnOHC, thrLow, CR, fsamp, Level1):
     gain = lfilter(b, a, gain)
 
     # Apply the gain to the signals
-    y = gain * envsig
-    b = gain * bm
+    compressed_signal = gain * envsig
+    compressed_basilar_membrane = gain * bm
 
-    return y, b
+    return compressed_signal, compressed_basilar_membrane
 
 
-def EnvAlign(x, y):
+def envelope_align(reference, output, freq_sample=24000, corr_range=100):
     """
-    Function to align the envelope of the processed signal to that of the
-    reference signal.
+    Align the envelope of the processed signal to that of the reference
+    signal.
 
-    Args:
-    x      envelope or BM motion of the reference signal
-    y      envelope or BM motion of the output signal
-
+    Arguments:
+    reference (): envelope or BM motion of the reference signal
+    output (): envelope or BM motion of the output signal
+    freq_sample (int): Frequency sample rate in Hz
+    corr_range (int): range in msec for the correlation
     Returns:
-    y      shifted output envelope to match the input
+    y (): shifted output envelope to match the input
 
+    Updates:
     James M. Kates, 28 October 2011.
     Absolute value of the cross-correlation peak removed, 22 June 2012.
     Cross-correlation range reduced, 13 August 2013.
@@ -711,65 +930,63 @@ def EnvAlign(x, y):
     # The MATLAB code limits the range of lags to search (to 100 ms) to save
     # computation time - no such option exists in numpy, but the code below limits the delay
     # to the same range as in Matlab, for consistent results
-    fsamp = 24000
-    corr_range = 100  # Range in msec for the correlation
-    lags = round(0.001 * corr_range * fsamp)  # Range in samples
-    npts = len(x)
+    lags = round(0.001 * corr_range * freq_sample)  # Range in samples
+    npts = len(reference)
     lags = min(lags, npts)
 
-    xy = correlate(x, y, "full")
-    location = np.argmax(xy[npts - lags : npts + lags])  # Limit the range in which
+    ref_out_correlation = correlate(reference, output, "full")
+    location = np.argmax(
+        ref_out_correlation[npts - lags : npts + lags]
+    )  # Limit the range in which
     delay = lags - location - 1
 
     # Time shift the output sequence
     if delay > 0:
         # Output delayed relative to the reference
-        y = np.concatenate((y[delay:npts], np.zeros(delay)))
-    elif delay < 0:
-        # Output advanced relative to the reference
-        y = np.concatenate((np.zeros(-delay), y[: npts + delay]))
-
-    return y
+        return np.concatenate((output[delay:npts], np.zeros(delay)))
+    return np.concatenate((np.zeros(-delay), output[: npts + delay]))
 
 
-def EnvSL(env, bm, attnIHC, Level1):
+def envelope_sl(reference, basilar_membrane, attnenuated_ihc, level1, small=1e-30):
     """
-    Function to convert the compressed envelope returned by
-    cochlea_envcomp to dB SL.
+    Convert the compressed envelope returned by cochlear_envcomp to dB SL.
 
-    Args
-    env			linear envelope after compression
-    bm            linear basilar membrane vibration after compression
-    attnIHC		IHC attenuation at the input to the synapse
-    Level1		level in dB SPL corresponding to 1 RMS
+    Arguments:
+    reference (): linear envelope after compression
+    basilar_membrane (): linear Basilar Membrane vibration after compression
+    attnenuated_ihc (): IHC attenuation at the input to the synapse
+    level1 (): level in dB SPL corresponding to 1 RMS
+    small (float): ???
 
-    Return
-    y				envelope in dB SL
-    b             BM vibration with envelope converted to dB SL
+    Returns:
+    _reference (): reference envelope in dB SL
+    _basilar_membrane (): Basilar Membrane vibration with envelope converted to dB SL
 
+    Updates:
     James M. Kates, 20 Feb 07.
     IHC attenuation added 9 March 2007.
     Basilar membrane vibration conversion added 2 October 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Convert the envelope to dB SL
-    small = 1e-30
-    y = Level1 - attnIHC + 20 * np.log10(env + small)
-    y = np.maximum(y, 0)
+    _reference = level1 - attnenuated_ihc + 20 * np.log10(reference + small)
+    _reference = np.maximum(_reference, 0)
 
     # Convert the linear BM motion to have a dB SL envelope
-    gain = (y + small) / (env + small)
-    b = gain * bm
+    gain = (_reference + small) / (reference + small)
+    _basilar_membrane = gain * basilar_membrane
 
-    return y, b
+    return _reference, _basilar_membrane
 
 
 @jit(nopython=True)
-def IHCadapt(xdB, xBM, delta, fsamp):
+def inner_hair_cell_adaptation(
+    reference_db, reference_basilar_membrane, delta, freq_sample
+):
     """
-    Function to provide inner hair cell (IHC) adaptation. The adaptation is
-    based on an equivalent RC circuit model, and the derivatives are mapped
-    into 1st-order backward differences. Rapid and short-term adaptation are
+    Provide inner hair cell (IHC) adaptation. The adaptation is based on an
+    equivalent RC circuit model, and the derivatives are mapped into
+    1st-order backward differences. Rapid and short-term adaptation are
     provided. The input is the signal envelope in dB SL, with IHC attenuation
     already applied to the envelope. The outputs are the envelope in dB SL
     with adaptation providing overshoot of the long-term output level, and
@@ -777,17 +994,18 @@ def IHCadapt(xdB, xBM, delta, fsamp):
     the adaptation. IHC attenuation and additive noise for the equivalent
     auditory threshold are provided by a subsequent call to eb_BMatten.
 
-    Calling variables:
-    xdB      signal envelope in one frequency band in dB SL
+    Arguments:
+    reference_db (np.ndarray): signal envelope in one frequency band in dB SL
              contains OHC compression and IHC attenuation
-    xBM      basilar membrane vibration with OHC compression but no IHC atten
-    delta    overshoot factor = delta x steady-state
-    fsamp    sampling rate in Hz
+    reference_basilar_membrane (): basilar membrane vibration with OHC compression but no IHC atten
+    delta (): overshoot factor = delta x steady-state
+    freq_sample (int): sampling rate in Hz
 
     Returns:
-    ydB      envelope in dB SL with IHC adaptation
-    yBM      BM motion multiplied by the IHC adaptation gain function
+    output_db ():     envelope in dB SL with IHC adaptation
+    output_basilar_membrane (): Basilar Membrane multiplied by the IHC adaptation gain function
 
+    Updates:
     James M. Kates, 1 October 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
@@ -802,190 +1020,220 @@ def IHCadapt(xdB, xBM, delta, fsamp):
     tau2 = 0.001 * tau2
 
     # Equivalent circuit parameters
-    T = 1 / fsamp
-    R1 = 1 / delta
-    R2 = 0.5 * (1 - R1)
-    R3 = R2
-    C1 = tau1 * (R1 + R2) / (R1 * R2)
-    C2 = tau2 / ((R1 + R2) * R3)
+    freq_sample_inverse = 1 / freq_sample
+    r_1 = 1 / delta
+    r_2 = 0.5 * (1 - r_1)
+    r_3 = r_2
+    c_1 = tau1 * (r_1 + r_2) / (r_1 * r_2)
+    c_2 = tau2 / ((r_1 + r_2) * r_3)
 
     # Intermediate values used for the voltage update matrix inversion
-    a11 = R1 + R2 + R1 * R2 * (C1 / T)
-    a12 = -R1
-    a21 = -R3
-    a22 = R2 + R3 + R2 * R3 * (C2 / T)
-    denom = 1 / (a11 * a22 - a21 * a12)
+    a11 = r_1 + r_2 + r_1 * r_2 * (c_1 / freq_sample_inverse)
+    a12 = -r_1
+    a21 = -r_3
+    a22 = r_2 + r_3 + r_2 * r_3 * (c_2 / freq_sample_inverse)
+    denom = 1 / ((a11 * a22) - (a21 * a12))
 
     # Additional intermediate values
-    R1inv = 1 / R1
-    R12C1 = R1 * R2 * (C1 / T)
-    R23C2 = R2 * R3 * (C2 / T)
+    r_1_inv = 1 / r_1
+    product_r1_r2_c1 = r_1 * r_2 * (c_1 / freq_sample_inverse)
+    product_r2_r3_c2 = r_2 * r_3 * (c_2 / freq_sample_inverse)
 
     # Initalize the outputs and state of the equivalent circuit
-    nsamp = len(xdB)
-    gain = np.ones_like(xdB)  # Gain vector to apply to the BM motion, default is 1
-    ydB = np.zeros_like(xdB)
-    V1 = 0
-    V2 = 0
+    nsamp = len(reference_db)
+    gain = np.ones_like(
+        reference_db
+    )  # Gain vector to apply to the BM motion, default is 1
+    output_db = np.zeros_like(reference_db)
+    v_1 = 0
+    v_2 = 0
     small = 1e-30
 
     # Loop to process the envelope signal
     # The gain asymptote is 1 for an input envelope of 0 dB SPL
     for n in range(nsamp):
-        V0 = xdB[n]
-        b1 = V0 * R2 + R12C1 * V1
-        b2 = R23C2 * V2
-        V1 = denom * (a22 * b1 - a12 * b2)
-        V2 = denom * (-a21 * b1 + a11 * b2)
-        out = (V0 - V1) * R1inv
-        ydB[n] = out
+        v_0 = reference_db[n]
+        b_1 = v_0 * r_2 + product_r1_r2_c1 * v_1
+        b_2 = product_r2_r3_c2 * v_2
+        v_1 = denom * (a22 * b_1 - a12 * b_2)
+        v_2 = denom * (-a21 * b_1 + a11 * b_2)
+        out = (v_0 - v_1) * r_1_inv
+        output_db[n] = out
 
-    ydB = np.maximum(ydB, 0)
-    gain = (ydB + small) / (xdB + small)
+    output_db = np.maximum(output_db, 0)
+    gain = (output_db + small) / (reference_db + small)
 
-    yBM = gain * xBM
+    output_basilar_membrane = gain * reference_basilar_membrane
 
-    return ydB, yBM
+    return output_db, output_basilar_membrane
 
 
-def BMaddnoise(x, thr, Level1):
+def basilar_membrane_add_noise(reference, threshold, level1):
     """
-    Function to apply the IHC attenuation to the BM motion and to add a
+    Apply the IHC attenuation to the BM motion and to add a
     low-level Gaussian noise to give the auditory threshold.
 
-    Args:
-    x         BM motion to be attenuated
-    thr       additive noise level in dB re:auditory threshold
-    Level1    an input having RMS=1 corresponds to Leve1 dB SPL
+    Arguments:
+    reference ():         BM motion to be attenuated
+    threshold (): additive noise level in dB re:auditory threshold
+    level1 (): an input having RMS=1 corresponds to Leve1 dB SPL
 
     Returns:
-    y         attenuated signal with threhsold noise added
+    Attenuated signal with threhsold noise added
 
+    Updates:
     James M. Kates, 19 June 2012.
     Just additive noise, 2 Oct 2012.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    gn = 10 ** ((thr - Level1) / 20)  # Linear gain for the noise
+    gain = 10 ** ((threshold - level1) / 20)  # Linear gain for the noise
 
     # rng = np.random.default_rng()
-    noise = gn * np.random.standard_normal(x.shape)  # Gaussian RMS=1, then attenuated
-    y = x + noise
+    noise = gain * np.random.standard_normal(
+        reference.shape
+    )  # Gaussian RMS=1, then attenuated
+    return reference + noise
 
-    return y
 
-
-def GroupDelayComp(xenv, BW, cfreq, fsamp):
+def group_delay_compensate(
+    reference,
+    bandwidths,
+    center_freq,
+    freq_sample,
+    ear_q=9.26449,
+    min_bandwidth=24.7,
+):
     """
-    Function to compensate for the group delay of the gammatone filter bank.
-    The group delay is computed for each filter at its center frequency. The
-    firing rate output of the IHC model is then adjusted so that all outputs
-    have the same group delay.
+    Compensate for the group delay of the gammatone filter bank. The group
+    delay is computed for each filter at its center frequency. The firing
+    rate output of the IHC model is then adjusted so that all outputs have
+    the same group delay.
 
-    Calling variables:
-        xenv (np.ndarray): matrix of signal envelopes or BM motion
-        BW (): gammatone filter bandwidths adjusted for loss
-        cfreq (): center frequencies of the bands
-        fsamp (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
+    Arguments:
+    xenv (np.ndarray): matrix of signal envelopes or BM motion
+    bandwidths (): gammatone filter bandwidths adjusted for loss
+    center_freq (): center frequencies of the bands
+    freq_sample (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
+    ear_q (float):
+    min_bandwidth (float) :
 
     Returns:
-        yenv    envelopes or BM motion compensated for the group delay
+    processed (): envelopes or BM motion compensated for the group delay.
 
+    Updates:
     James M. Kates, 28 October 2011.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Processing parameters
-    nchan = len(BW)
+    nchan = len(bandwidths)
 
     # Filter ERB from Moore and Glasberg (1983)
-    earQ = 9.26449
-    minBW = 24.7
-    ERB = minBW + (cfreq / earQ)
+    erb = min_bandwidth + (center_freq / ear_q)
 
     # Initialize the gamatone filter coefficients
-    tpt = 2 * np.pi / fsamp
-    tptBW = tpt * 1.019 * BW * ERB
-    a = np.exp(-tptBW)
-    a1 = 4.0 * a
-    a2 = -6.0 * a * a
-    a3 = 4.0 * a * a * a
-    a4 = -a * a * a * a
-    a5 = 4.0 * a * a
+    tpt = 2 * np.pi / freq_sample
+    tpt_bandwidth = tpt * 1.019 * bandwidths * erb
+    a = np.exp(-tpt_bandwidth)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
 
     # Compute the group delay in samples at fsamp for each filter
-    gd = np.zeros(nchan)
+    _group_delay = np.zeros(nchan)
     for n in range(nchan):
-        _, gd[n] = group_delay(
-            ([1, a1[n], a5[n]], [1, -a1[n], -a2[n], -a3[n], -a4[n]]), 1
+        _, _group_delay[n] = group_delay(
+            ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
         )
-    gd = np.round(gd).astype("int")  # convert to integer samples
+    _group_delay = np.round(_group_delay).astype("int")  # convert to integer samples
 
     # Compute the delay correlation
-    gmin = np.min(gd)
-    gd = gd - gmin  # Remove the minimum delay from all the over values
-    gmax = np.max(gd)
-    correct = gmax - gd  # Samples delay needed to add to give alignment
+    group_delay_min = np.min(_group_delay)
+    _group_delay = (
+        _group_delay - group_delay_min
+    )  # Remove the minimum delay from all the over values
+    group_delay_max = np.max(_group_delay)
+    correct = (
+        group_delay_max - _group_delay
+    )  # Samples delay needed to add to give alignment
 
     # Add delay correction to each frequency band
-    yenv = np.zeros(xenv.shape)
+    processed = np.zeros(reference.shape)
     for n in range(nchan):
-        r = xenv[n]
-        npts = len(r)
-        yenv[n] = np.concatenate((np.zeros(correct[n]), r[: npts - correct[n]]))
+        ref = reference[n]
+        npts = len(ref)
+        processed[n] = np.concatenate((np.zeros(correct[n]), ref[: npts - correct[n]]))
 
-    return yenv
+    return processed
 
 
-def aveSL(env, control, attnOHC, thrLow, CR, attnIHC, Level1):
+def convert_rms_to_sl(
+    reference,
+    control,
+    attnenuated_ohc,
+    threshold_low,
+    compression_ratio,
+    attnenuated_ihc,
+    level1,
+    threshold_high=100,
+    small=1e-30,
+):
     """
-    Function to covert the RMS average output of the gammatone filter bank
+    Covert the Root Mean Square average output of the gammatone filter bank
     into dB SL. The gain is linear below the lower threshold, compressive
     with a compression ratio of CR:1 between the lower and upper thresholds,
     and reverts to linear above the upper threshold. The compressor
     assumes that auditory thresold is 0 dB SPL.
 
-    Calling variables:
-    env		analytic signal envelope (magnitude) returned by the
-                gammatone filter bank, RMS average level
-    control   control signal envelope
-    attnOHC	OHC attenuation at the input to the compressor
-    thrLow	kneepoint for the low-level linear amplification
-    CR		compression ratio
-    attnIHC	IHC attenuation at the input to the synapse
-    Level1	dB reference level: a signal having an RMS value of 1 is
+    Arguments:
+    reference (): analytic signal envelope (magnitude) returned by the
+    gammatone filter bank, RMS average level
+    control (): control signal envelope
+    attenuated_ohc (): OHC attenuation at the input to the compressor
+    threshold_low (): kneepoint for the low-level linear amplification
+    compression_ratio (): compression ratio
+    attenuated_ihc (): IHC attenuation at the input to the synapse
+    level1 (): dB reference level: a signal having an RMS value of 1 is
                 assigned to Level1 dB SPL.
+    threshold_high (int):
+    small (float):
 
-    Function output:
-    xdB		compressed output in dB above the impaired threshold
+    Returns:
+    reference_db (): compressed output in dB above the impaired threshold
 
+    Updates:
     James M. Kates, 6 August 2007.
     Version for two-tone suppression, 29 August 2008.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
     # Initialize the compression parameters
-    thrHigh = 100  # Upper compression threshold
+    threshold_high = 100  # Upper compression threshold
 
     # Convert the control to dB SPL
     small = 1e-30
-    logenv = np.maximum(control, small)
-    logenv = Level1 + 20 * np.log10(logenv)
-    logenv = np.minimum(logenv, thrHigh)
-    logenv = np.maximum(logenv, thrLow)
+    control_db_spl = np.maximum(control, small)
+    control_db_spl = level1 + 20 * np.log10(control_db_spl)
+    control_db_spl = np.minimum(control_db_spl, threshold_high)
+    control_db_spl = np.maximum(control_db_spl, threshold_low)
 
     # Compute compression gain in dB
-    gain = -attnOHC - (logenv - thrLow) * (1 - (1 / CR))
+    gain = -attnenuated_ohc - (control_db_spl - threshold_low) * (
+        1 - (1 / compression_ratio)
+    )
 
     # Convert the signal envelope to dB SPL
-    logenv = np.maximum(env, small)
-    logenv = Level1 + 20 * np.log10(logenv)
-    logenv = np.maximum(logenv, 0)
-    xdB = logenv + gain - attnIHC
-    xdB = np.maximum(xdB, 0)
+    control_db_spl = np.maximum(reference, small)
+    control_db_spl = level1 + 20 * np.log10(control_db_spl)
+    control_db_spl = np.maximum(control_db_spl, 0)
+    reference_db = control_db_spl + gain - attnenuated_ihc
+    reference_db = np.maximum(reference_db, 0)
 
-    return xdB
+    return reference_db
 
 
-def env_smooth(env, segsize, fsamp):
+def env_smooth(envelopes: np.ndarray, segment_size, freq_sample):
     """
     Function to smooth the envelope returned by the cochlear model. The
     envelope is divided into segments having a 50% overlap. Each segment is
@@ -994,43 +1242,47 @@ def env_smooth(env, segsize, fsamp):
     2*(1000/segsize).
 
     Arguments:
-        xenv: matrix of envelopes in each of the auditory bands
-        segsize: averaging segment size in msec
-        fsamp: input envelope sampling rate in Hz
+    envelopes (np.ndarray): matrix of envelopes in each of the auditory bands
+    segment_size: averaging segment size in msec
+    freq_sample (int): input envelope sampling rate in Hz
 
     Returns:
-        smooth: matrix of subsampled windowed averages in each band
+    smooth: matrix of subsampled windowed averages in each band
 
+    Updates:
     James M. Kates, 26 January 2007.
     Final half segment added 27 August 2012.
-
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Compute the window
-    nwin = int(np.around(segsize * (0.001 * fsamp)))  # Segment size in samples
-    test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
+    n_samples = int(
+        np.around(segment_size * (0.001 * freq_sample))
+    )  # Segment size in samples
+    test = n_samples - 2 * np.floor(n_samples / 2)  # 0=even, 1=odd
     if test > 0:
         # Force window length to be even
-        nwin = nwin + 1
-    window = np.hanning(nwin)  # Raised cosine von Hann window
+        n_samples = n_samples + 1
+    window = np.hanning(n_samples)  # Raised cosine von Hann window
     wsum = np.sum(window)  # Sum for normalization
 
     #  The first segment has a half window
-    nhalf = int(nwin / 2)
-    halfwindow = window[nhalf:nwin]
+    nhalf = int(n_samples / 2)
+    halfwindow = window[nhalf:n_samples]
     halfsum = np.sum(halfwindow)
 
     # Number of segments and assign the matrix storage
-    nchan = np.size(env, 0)
-    npts = np.size(env, 1)
-    nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
-    smooth = np.zeros((nchan, nseg))
+    n_channels = np.size(envelopes, 0)
+    npts = np.size(envelopes, 1)
+    nseg = int(
+        1 + np.floor(npts / n_samples) + np.floor((npts - n_samples / 2) / n_samples)
+    )
+    smooth = np.zeros((n_channels, nseg))
 
     #  Loop to compute the envelope in each frequency band
-    for k in range(nchan):
+    for k in range(n_channels):
         # Extract the envelope in the frequency band
-        r = env[k, :]
+        r = envelopes[k, :]  # pylint: disable=invalid-name
 
         # The first (half) windowed segment
         nstart = 0
@@ -1039,7 +1291,7 @@ def env_smooth(env, segsize, fsamp):
         # Loop over the remaining full segments, 50% overlap
         for n in range(1, nseg - 1):
             nstart = int(nstart + nhalf)
-            nstop = int(nstart + nwin)
+            nstop = int(nstart + n_samples)
             smooth[k, n] = sum(r[nstart:nstop] * window.conj().transpose()) / wsum
 
         # The last (half) windowed segment
@@ -1052,105 +1304,120 @@ def env_smooth(env, segsize, fsamp):
     return smooth
 
 
-def melcor(x, y, thr, addnoise):
+def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     """
-    Function to compute the cross-correlations between the input signal
-    time-frequency envelope and the distortion time-frequency envelope. For
-    each time interval, the log spectrum is fitted with a set of half-cosine
-    basis functions. The spectrum weighted by the basis functions corresponds
-    to mel cepstral coefficients computed in the frequency domain. The
-    amplitude-normalized cross-covariance between the time-varying basis
-    functions for the input and output signals is then computed.
+    Compute the cross-correlations between the input signal time-frequency
+    envelope and the distortion time-frequency envelope.
+
+    For each time interval, the log spectrum is fitted with a set of
+    half-cosine basis functions. The spectrum weighted by the basis
+    functions corresponds to Mel Cepstral Coefficients computed in the
+    frequency domain. The amplitude-normalized cross-covariance between
+    the time-varying basis functions for the input and output signals is
+    then computed.
 
     Arguments:
-        x : subsampled input signal envelope in dB SL in each critical band
-        y : subsampled distorted output signal envelope
-        thr : threshold in dB SPL to include segment in calculation
-        addnoise : additive Gaussian noise to ensure 0 cross-corr at low levels
+    reference (): subsampled input signal envelope in dB SL in each critical band
+    distorted (): subsampled distorted output signal envelope
+    threshold (): threshold in dB SPL to include segment in calculation
+    addnoise (): additive Gaussian noise to ensure 0 cross-corr at low levels
 
     Returns:
-        m1 : average cepstral correlation 2-6, input vs output
-        xy : individual cepstral correlations, input vs output
+    average_cepstral_correlation : average cepstral correlation 2-6, input vs output
+    individual_cepstral_correlations : individual cepstral correlations, input vs output
 
+    Updates:
     James M. Kates, 24 October 2006.
     Difference signal removed for cochlear model, 31 January 2007.
     Absolute value added 13 May 2011.
     Changed to loudness criterion for silence threhsold, 28 August 2012.
-
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Processing parameters
-    nbands = x.shape[0]
+    nbands = reference.shape[0]
 
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
     nbasis = 6  # Number of cepstral coefficients to be used
     freq = np.arange(nbasis)
     k = np.arange(nbands)
-    cepm = np.zeros((nbands, nbasis))
-    for nb in range(nbasis):
-        basis = np.cos(k * float(freq[nb]) * np.pi / float((nbands - 1)))
-        cepm[:, nb] = basis / np.linalg.norm(basis)
+    mel_cepstral = np.zeros((nbands, nbasis))
+    for n in range(nbasis):
+        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        mel_cepstral[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
-    xLinear = 10 ** (x / 20)  # Convert envelope dB to linear (specific loudness)
-    xsum = np.sum(xLinear, 0) / nbands  # Proportional to loudness in sones
+    reference_linear = 10 ** (
+        reference / 20
+    )  # Convert envelope dB to linear (specific loudness)
+    xsum = np.sum(reference_linear, 0) / nbands  # Proportional to loudness in sones
     xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
-    index = np.where(xsum > thr)[0]  # Identify those segments above threshold
+    index = np.where(xsum > threshold)[0]  # Identify those segments above threshold
     nsamp = index.shape[0]  # Number of segments above threshold
 
     # Exit if not enough segments above zero
-    m1 = 0
-    xy = 0
+    average_cepstral_correlation = 0
+    individual_cepstral_correlations = 0
     if nsamp <= 1:
         print("Function eb.melcor: Signal below threshold, outputs set to 0.")
-        return m1, xy
+        return average_cepstral_correlation, individual_cepstral_correlations
 
     # Remove the silent intervals
-    x = x[:, index]
-    y = y[:, index]
+    ref = reference[:, index]
+    proc = distorted[:, index]
 
     # Add the low-level noise to the envelopes
-    x = x + addnoise * np.random.standard_normal(x.shape)
-    y = y + addnoise * np.random.standard_normal(y.shape)
+    ref = ref + addnoise * np.random.standard_normal(ref.shape)
+    proc = proc + addnoise * np.random.standard_normal(proc.shape)
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
-    xcep = np.zeros((nbasis, nsamp))  # Input
-    ycep = np.zeros((nbasis, nsamp))  # Output
+    reference_cep = np.zeros((nbasis, nsamp))  # Input
+    processed_cep = np.zeros((nbasis, nsamp))  # Output
     for n in range(nsamp):
         for k in range(nbasis):
-            xcep[k, n] = np.sum(x[:, n] * cepm[:, k])
-            ycep[k, n] = np.sum(y[:, n] * cepm[:, k])
+            reference_cep[k, n] = np.sum(ref[:, n] * mel_cepstral[:, k])
+            processed_cep[k, n] = np.sum(proc[:, n] * mel_cepstral[:, k])
 
     # Remove the average value from the cepstral coefficients. The
     # cross-correlation thus becomes a cross-covariance, and there
     # is no effect of the absolute signal level in dB.
     for k in range(nbasis):
-        xcep[k, :] = xcep[k, :] - np.mean(xcep[k, :], axis=0)
-        ycep[k, :] = ycep[k, :] - np.mean(ycep[k, :], axis=0)
+        reference_cep[k, :] = reference_cep[k, :] - np.mean(reference_cep[k, :], axis=0)
+        processed_cep[k, :] = processed_cep[k, :] - np.mean(processed_cep[k, :], axis=0)
 
     # Normalized cross-correlations between the time-varying cepstral coeff
-    xy = np.zeros(nbasis)  # Input vs output
+    individual_cepstral_correlations = np.zeros(nbasis)  # Input vs output
     small = 1.0e-30
     for k in range(nbasis):
-        xsum = np.sum(xcep[k, :] ** 2)
-        ysum = np.sum(ycep[k, :] ** 2)
+        xsum = np.sum(reference_cep[k, :] ** 2)
+        ysum = np.sum(processed_cep[k, :] ** 2)
         if (xsum < small) or (ysum < small):
-            xy[k] = 0.0
+            individual_cepstral_correlations[k] = 0.0
         else:
-            xy[k] = np.abs(np.sum(xcep[k, :] * ycep[k, :]) / np.sqrt(xsum * ysum))
+            individual_cepstral_correlations[k] = np.abs(
+                np.sum(reference_cep[k, :] * processed_cep[k, :]) / np.sqrt(xsum * ysum)
+            )
 
     #
     # % Figure of merit is the average of the cepstral correlations, ignoring
     # % the first (average spectrum level).
-    m1 = np.sum(xy[1:nbasis]) / (nbasis - 1)
-    return m1, xy
+    average_cepstral_correlation = np.sum(
+        individual_cepstral_correlations[1:nbasis]
+    ) / (nbasis - 1)
+    return average_cepstral_correlation, individual_cepstral_correlations
 
 
-def melcor9(x, y, thr, addnoise, segsize):
+def melcor9(
+    reference,
+    distorted,
+    threshold,
+    add_noise,
+    segment_size,
+    n_cepstral_coef=6.0,
+):
     """
-    Function to compute the cross-correlations between the input signal
+    Compute the cross-correlations between the input signal
     time-frequency envelope and the distortion time-frequency envelope. For
     each time interval, the log spectrum is fitted with a set of half-cosine
     basis functions. The spectrum weighted by the basis functions corresponds
@@ -1160,183 +1427,240 @@ def melcor9(x, y, thr, addnoise, segsize):
     the 8 modulation frequencies.
 
     Arguments:
-        x : subsampled input signal envelope in dB SL in each critical band
-        y : subsampled distorted output signal envelope
-        thr : threshold in dB SPL to include segment in calculation
-        addnoise : additive Gaussian noise to ensure 0 cross-corr at low levels
-        segsize : segment size in ms used for the envelope LP filter (8 msec)
+    reference (): subsampled input signal envelope in dB SL in each critical band
+    distorted (): subsampled distorted output signal envelope
+    threshold (): threshold in dB SPL to include segment in calculation
+    add_noise (): additive Gaussian noise to ensure 0 cross-corr at low levels
+    segment_size (): segment size in ms used for the envelope LP filter (8 msec)
+    n_cepstral_coef (int): Number of cepstral ceofficients
 
     Returns:
-        CMave : average of the modulation correlations across analysis frequency
-            bands and modulation frequency bands, basis functions 2 -6
-        CMlow : average over the four lower mod freq bands, 0 - 20 Hz
-        CMhigh : average over the four higher mod freq bands, 20 - 125 Hz
-        CMmod : vector of cross-correlations by modulation frequency,
+    mel_cepstral_average (): average of the modulation correlations across analysis frequency
+        bands and modulation frequency bands, basis functions 2 -6
+    mel_cepstral_low (): average over the four lower mod freq bands, 0 - 20 Hz
+    mel_cepstral_high (): average over the four higher mod freq bands, 20 - 125 Hz
+    mel_cepstral_modulation (): vector of cross-correlations by modulation frequency,
             averaged over ananlysis frequency band
 
+    Updates:
     James M. Kates, 24 October 2006.
     Difference signal removed for cochlear model, 31 January 2007.
     Absolute value added 13 May 2011.
     Changed to loudness criterion for silence threshold, 28 August 2012.
     Version using envelope modulation filters, 15 July 2014.
     Modulation frequency vector output added 27 August 2014.
-
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Processing parameters
-    nbands = x.shape[0]
+    nbands = reference.shape[0]
 
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
-    nbasis = 6  # Number of cepstral coefficients to be used
-    freq = np.arange(nbasis)
+    n_cepstral_coef = 6  # Number of cepstral coefficients to be used
+    freq = np.arange(n_cepstral_coef)
     k = np.arange(nbands)
-    cepm = np.zeros((nbands, nbasis))
-    for nb in range(nbasis):
-        basis = np.cos(k * float(freq[nb]) * np.pi / float((nbands - 1)))
-        cepm[:, nb] = basis / np.linalg.norm(basis)
+    cepm = np.zeros((nbands, n_cepstral_coef))
+    for n in range(n_cepstral_coef):
+        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        cepm[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
-    xLinear = 10 ** (x / 20)  # Convert envelope dB to linear (specific loudness)
-    xsum = np.sum(xLinear, 0) / nbands  # Proportional to loudness in sones
-    xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
-    index = np.where(xsum > thr)[0]  # Identify those segments above threshold
-    nsamp = index.shape[0]  # Number of segments above threshold
+    reference_linear = 10 ** (
+        reference / 20
+    )  # Convert envelope dB to linear (specific loudness)
+    reference_sum = (
+        np.sum(reference_linear, 0) / nbands
+    )  # Proportional to loudness in sones
+    reference_sum = 20 * np.log10(
+        reference_sum
+    )  # Convert back to dB (loudness in phons)
+    index = np.where(reference_sum > threshold)[
+        0
+    ]  # Identify those segments above threshold
+    segments_above_threshold = index.shape[0]  # Number of segments above threshold
 
     # Modulation filter bands, segment size is 8 msec
     edge = [4.0, 8.0, 12.5, 20.0, 32.0, 50.0, 80.0]  # 8 bands covering 0 to 125 Hz
-    nmod = 1 + len(edge)  # Number of modulation filter bands
+    n_modulation_filter_bands = 1 + len(edge)  # Number of modulation filter bands
 
     # Exit if not enough segments above zero
-    CMave = 0
-    CMlow = 0
-    CMhigh = 0
-    CMmod = np.zeros(nmod)
-    if nsamp <= 1:
+    mel_cepstral_average = 0
+    mel_cepstral_low = 0
+    mel_cepstral_high = 0
+    mel_cepstral_modulation = np.zeros(n_modulation_filter_bands)
+    if segments_above_threshold <= 1:
         print("Function eb.melcor9: Signal below threshold, outputs set to 0.")
-        return CMave, CMlow, CMhigh, CMmod
+        return (
+            mel_cepstral_average,
+            mel_cepstral_low,
+            mel_cepstral_high,
+            mel_cepstral_modulation,
+        )
 
     # Remove the silent intervals
-    x = x[:, index]
-    y = y[:, index]
+    _reference = reference[:, index]
+    _distorted = distorted[:, index]
 
     # Add the low-level noise to the envelopes
-    x = x + addnoise * np.random.standard_normal(x.shape)
-    y = y + addnoise * np.random.standard_normal(y.shape)
+    _reference = _reference + add_noise * np.random.standard_normal(_reference.shape)
+    _distorted = _distorted + add_noise * np.random.standard_normal(_distorted.shape)
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
-    xcep = np.zeros((nbasis, nsamp))  # Input
-    ycep = np.zeros((nbasis, nsamp))  # Output
-    for n in range(nsamp):
-        for k in range(nbasis):
-            xcep[k, n] = np.sum(x[:, n] * cepm[:, k])
-            ycep[k, n] = np.sum(y[:, n] * cepm[:, k])
+    reference_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Input
+    distorted_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Output
+    for n in range(segments_above_threshold):
+        for k in range(n_cepstral_coef):
+            reference_cep[k, n] = np.sum(_reference[:, n] * cepm[:, k])
+            distorted_cep[k, n] = np.sum(_distorted[:, n] * cepm[:, k])
 
     # Remove the average value from the cepstral coefficients. The
     # cross-correlation thus becomes a cross-covariance, and there
     # is no effect of the absolute signal level in dB.
-    for k in range(nbasis):
-        xcep[k, :] = xcep[k, :] - np.mean(xcep[k, :], axis=0)
-        ycep[k, :] = ycep[k, :] - np.mean(ycep[k, :], axis=0)
+    for k in range(n_cepstral_coef):
+        reference_cep[k, :] = reference_cep[k, :] - np.mean(reference_cep[k, :], axis=0)
+        distorted_cep[k, :] = distorted_cep[k, :] - np.mean(distorted_cep[k, :], axis=0)
 
     # Envelope sampling parameters
-    fsub = 1000.0 / (0.5 * segsize)  # Envelope sampling frequency in Hz
-    fnyq = 0.5 * fsub  # Envelope Nyquist frequency
+    sampling_freq = 1000.0 / (0.5 * segment_size)  # Envelope sampling frequency in Hz
+    nyquist_freq = 0.5 * sampling_freq  # Envelope Nyquist frequency
 
     # Design the linear-phase envelope modulation filters
-    nfir = np.around(128 * (fnyq / 125))  # Adjust filter length to sampling rate
-    nfir = int(2 * np.floor(nfir / 2))  # Force an even filter length
-    b = np.zeros((nmod, nfir + 1))
+    n_fir = np.around(
+        128 * (nyquist_freq / 125)
+    )  # Adjust filter length to sampling rate
+    n_fir = int(2 * np.floor(n_fir / 2))  # Force an even filter length
+    b = np.zeros((n_modulation_filter_bands, n_fir + 1))
 
+    # LP filter 0-4 Hz
     b[0, :] = firwin(
-        nfir + 1, edge[0] / fnyq, window="hann", pass_zero="lowpass"
-    )  # LP filter 0-4 Hz
-    b[nmod - 1, :] = firwin(
-        nfir + 1, edge[nmod - 2] / fnyq, window="hann", pass_zero="highpass"
-    )  # HP 80-125 Hz
-    for m in range(1, nmod - 1):
+        n_fir + 1, edge[0] / nyquist_freq, window="hann", pass_zero="lowpass"
+    )
+    # HP 80-125 Hz
+    b[n_modulation_filter_bands - 1, :] = firwin(
+        n_fir + 1,
+        edge[n_modulation_filter_bands - 2] / nyquist_freq,
+        window="hann",
+        pass_zero="highpass",
+    )
+    # Bandpass filter
+    for m in range(1, n_modulation_filter_bands - 1):
         b[m, :] = firwin(
-            nfir + 1,
-            [edge[m - 1] / fnyq, edge[m] / fnyq],
+            n_fir + 1,
+            [edge[m - 1] / nyquist_freq, edge[m] / nyquist_freq],
             window="hann",
             pass_zero="bandpass",
-        )  # Bandpass filter
+        )
 
-    CM = melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep)
+    mel_cepstral_cross_covar = melcor9_crosscovmatrix(
+        b,
+        n_modulation_filter_bands,
+        n_cepstral_coef,
+        segments_above_threshold,
+        n_fir,
+        reference_cep,
+        distorted_cep,
+    )
 
     # Average over the  modulation filters and basis functions 2 - 6
-    for m in range(nmod):
-        for j in range(1, nbasis):
-            CMave += CM[m, j]
+    for m in range(n_modulation_filter_bands):
+        for j in range(1, n_cepstral_coef):
+            mel_cepstral_average += mel_cepstral_cross_covar[m, j]
 
-    CMave = CMave / (nmod * (nbasis - 1))
+    mel_cepstral_average = mel_cepstral_average / (
+        n_modulation_filter_bands * (n_cepstral_coef - 1)
+    )
 
     # Average over the four lower modulation filters
     for m in range(4):
-        for j in range(1, nbasis):
-            CMlow += CM[m, j]
+        for j in range(1, n_cepstral_coef):
+            mel_cepstral_low += mel_cepstral_cross_covar[m, j]
 
-    CMlow = CMlow / (4 * (nbasis - 1))
+    mel_cepstral_low = mel_cepstral_low / (4 * (n_cepstral_coef - 1))
 
     #  Average over the four upper modulation filters
     for m in range(4, 8):
-        for j in range(1, nbasis):
-            CMhigh += CM[m, j]
+        for j in range(1, n_cepstral_coef):
+            mel_cepstral_high += mel_cepstral_cross_covar[m, j]
 
-    CMhigh = CMhigh / (4 * (nbasis - 1))
+    mel_cepstral_high = mel_cepstral_high / (4 * (n_cepstral_coef - 1))
 
     # Average each modulation frequency over the basis functions
-    for m in range(nmod):
+    for m in range(n_modulation_filter_bands):
         ave = 0
-        for j in range(1, nbasis):
-            ave += CM[m, j]
+        for j in range(1, n_cepstral_coef):
+            ave += mel_cepstral_cross_covar[m, j]
 
-        CMmod[m] = ave / (nbasis - 1)
+        mel_cepstral_modulation[m] = ave / (n_cepstral_coef - 1)
 
-    return CMave, CMlow, CMhigh, CMmod
+    return (
+        mel_cepstral_average,
+        mel_cepstral_low,
+        mel_cepstral_high,
+        mel_cepstral_modulation,
+    )
 
 
-def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, xcep, ycep):
-    """Compute the cross-covariance matrix."""
+def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, reference_cep, processed_cep):
+    """Compute the cross-covariance matrix.
+
+    Arguments:
+    b (): ???
+    nmod (): ???
+    nbasis (): ???
+    nsamp (): ???
+    nfir (): ???
+    xcep (): ???
+    ycep (): ???
+
+    Returns:
+    cross_covariance_matrix ():
+    """
     small = 1.0e-30
     nfir2 = nfir / 2
     # Convolve the input and output envelopes with the modulation filters
-    X = np.zeros((nmod, nbasis, nsamp))
-    Y = np.zeros((nmod, nbasis, nsamp))
+    reference = np.zeros((nmod, nbasis, nsamp))
+    processed = np.zeros((nmod, nbasis, nsamp))
     for m in range(nmod):
         for j in range(nbasis):
-            c = convolve(b[m], xcep[j, :], mode="full")
-            X[m, j, :] = c[int(nfir2) : int(nfir2 + nsamp)]  # Remove the transients
-            c = convolve(b[m], ycep[j, :], mode="full")
-            Y[m, j, :] = c[int(nfir2) : int(nfir2 + nsamp)]  # Remove the transients
+            c = convolve(b[m], reference_cep[j, :], mode="full")
+            reference[m, j, :] = c[
+                int(nfir2) : int(nfir2 + nsamp)
+            ]  # Remove the transients
+            c = convolve(b[m], processed_cep[j, :], mode="full")
+            processed[m, j, :] = c[
+                int(nfir2) : int(nfir2 + nsamp)
+            ]  # Remove the transients
 
     # Compute the cross-covariance matrix
-    CM = np.zeros((nmod, nbasis))
+    cross_covariance_matrix = np.zeros((nmod, nbasis))
     for m in range(nmod):
         for j in range(nbasis):
             #  Index j gives the input reference band
-            xj = X[m, j]  # Input freq band j, modulation freq m
-            xj = xj - np.mean(xj)
-            xsum = np.sum(xj**2)
+            x_j = reference[m, j]  # Input freq band j, modulation freq m
+            x_j = x_j - np.mean(x_j)
+            reference_sum = np.sum(x_j**2)
 
             # Processed signal band
-            yj = Y[m, j]  # Input freq band j, modulation freq m
-            yj = yj - np.mean(yj)
-            ysum = np.sum(yj**2)
+            y_j = processed[m, j]  # Input freq band j, modulation freq m
+            y_j = y_j - np.mean(y_j)
+            processed_sum = np.sum(y_j**2)
 
             # Cross-correlate the reference and processed signals
-            if (xsum < small) or (ysum < small):
-                CM[m, j] = 0
+            if (reference_sum < small) or (processed_sum < small):
+                cross_covariance_matrix[m, j] = 0
             else:
-                CM[m, j] = np.abs(np.sum(xj * yj)) / np.sqrt(xsum * ysum)
-    return CM
+                cross_covariance_matrix[m, j] = np.abs(np.sum(x_j * y_j)) / np.sqrt(
+                    reference_sum * processed_sum
+                )
+    return cross_covariance_matrix
 
 
-def spect_diff(xSL, ySL):
+def spectrum_diff(reference_sl, processed_sl):
     """
-    Function to compute changes in the long-term spectrum and spectral slope.
-    The metric is based on the spectral distortion metric of Moore and Tan
+    Compute changes in the long-term spectrum and spectral slope.
+
+    The metric is based on the spectral distortion metric of Moore and Tan[1]_
     (JAES, Vol 52, pp 900-914). The log envelopes in dB SL are converted to
     linear to approximate specific loudness. The outputs are the sum of the
     absolute differences, the standard deviation of the differences, and the
@@ -1350,80 +1674,102 @@ def spect_diff(xSL, ySL):
     Max diff: only weight the largest deviation
 
     Arguments:
-        xSL : reference signal spectrum in dB SL
-        ySL : degraded signal spectrum in dB SL
+        reference_sl (np.ndarray): reference signal spectrum in dB SL
+        processed_sl (np.ndarray): degraded signal spectrum in dB SL
 
     Returns:
         dloud (np.array) : [sum abs diff, std dev diff, max diff] spectra
         dnorm (np.array) : [sum abs diff, std dev diff, max diff] norm spectra
         dslope (np.array) : [sum abs diff, std dev diff, max diff] slope
 
-    James M. Kates, 28 June 2012.
+    References:
+    .. [1] Moore BCJ, Tan, CT (2004) Development and Validation of a Method
+           for Predicting the Perceived Naturalness of Sounds Subjected to
+           Spectral Distortion J Audio Eng Soc 52(9):900-914. Available at.
+           <http://www.aes.org/e-lib/browse.cfm?elib=13018>.
 
+    Updates:
+    James M. Kates, 28 June 2012.
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Convert the dB SL to linear magnitude values. Because of the auditory
     # filter bank, the OHC compression, and auditory threshold, the linear
     # values are closely related to specific loudness.
-    nbands = xSL.shape[0]
-    x = 10 ** (xSL / 20)
-    y = 10 ** (ySL / 20)
+    nbands = reference_sl.shape[0]
+    reference_linear_magnitude = 10 ** (reference_sl / 20)
+    processed_linear_magnitude = 10 ** (processed_sl / 20)
 
     # Normalize the level of the reference and degraded signals to have the
     # same loudness. Thus overall level is ignored while differences in
     # spectral shape are measured.
-    xsum = np.sum(x)
-    x /= xsum  # Loudness sum = 1 (arbitrary amplitude, proportional to sones)
-    ysum = np.sum(y)
-    y /= ysum
+    reference_sum = np.sum(reference_linear_magnitude)
+    reference_linear_magnitude /= (
+        reference_sum  # Loudness sum = 1 (arbitrary amplitude, proportional to sones)
+    )
+    processed_sum = np.sum(processed_linear_magnitude)
+    processed_linear_magnitude /= processed_sum
 
     # Compute the spectrum difference
     dloud = np.zeros(3)
-    d = x - y  # Difference in specific loudness in each band
-    dloud[0] = np.sum(np.abs(d))
-    dloud[1] = nbands * np.std(d)  # Biased std: second moment
-    dloud[2] = np.max(np.abs(d))
+    diff_spectrum = (
+        reference_linear_magnitude - processed_linear_magnitude
+    )  # Difference in specific loudness in each band
+    dloud[0] = np.sum(np.abs(diff_spectrum))
+    dloud[1] = nbands * np.std(diff_spectrum)  # Biased std: second moment
+    dloud[2] = np.max(np.abs(diff_spectrum))
 
     # Compute the normalized spectrum difference
     dnorm = np.zeros(3)
-    d = (x - y) / (x + y)  # Relative difference in specific loudness
-    dnorm[0] = np.sum(np.abs(d))
-    dnorm[1] = nbands * np.std(d)
-    dnorm[2] = np.max(np.abs(d))
+    diff_normalised_spectrum = (
+        reference_linear_magnitude - processed_linear_magnitude
+    ) / (
+        reference_linear_magnitude + processed_linear_magnitude
+    )  # Relative difference in specific loudness
+    dnorm[0] = np.sum(np.abs(diff_normalised_spectrum))
+    dnorm[1] = nbands * np.std(diff_normalised_spectrum)
+    dnorm[2] = np.max(np.abs(diff_normalised_spectrum))
 
     # Compute the slope difference
     dslope = np.zeros(3)
-    dx = x[1:nbands] - x[0 : nbands - 1]
-    dy = y[1:nbands] - y[0 : nbands - 1]
-    d = dx - dy  # Slope difference
-    dslope[0] = np.sum(np.abs(d))
-    dslope[1] = nbands * np.std(d)
-    dslope[2] = np.max(np.abs(d))
+    reference_slope = (
+        reference_linear_magnitude[1:nbands]
+        - reference_linear_magnitude[0 : nbands - 1]
+    )
+    processed_slope = (
+        processed_linear_magnitude[1:nbands]
+        - processed_linear_magnitude[0 : nbands - 1]
+    )
+    diff_slope = reference_slope - processed_slope  # Slope difference
+    dslope[0] = np.sum(np.abs(diff_slope))
+    dslope[1] = nbands * np.std(diff_slope)
+    dslope[2] = np.max(np.abs(diff_slope))
 
     return dloud, dnorm, dslope
 
 
-def bm_covary(xBM, yBM, segsize, fsamp):
+def bm_covary(
+    reference_basilar_membrane, processed_basilar_membrane, segment_size, freq_sample
+):
     """
-    Function to compute the cross-covariance (normalized cross-correlation)
-    between the reference and processed signals in each auditory band. The
+    Compute the cross-covariance (normalized cross-correlation) between
+    the reference and processed signals in each auditory band. The
     signals are divided into segments having 50% overlap.
 
     Arguments:
-        xBM : BM movement, reference signal
-        yBM : BM movement, processed signal
-        segsize : signal segment size, msec
-        fsamp : sampling rate in Hz
+    reference_basilar_membrane (): Basilar Membrane movement, reference signal
+    processed_basilar_membrane (): Basilar Membrane movement, processed signal
+    segment_size (): signal segment size, msec
+    freq_sample (int): sampling rate in Hz
 
     Returns:
-        sigcov (np.array) : [nchan,nseg] of cross-covariance values
-        sigMSx (np.array) : [nchan,nseg] of MS input signal energy values
-        sigMSy (np.array) : [nchan,nseg] of MS processed signal energy values
+    signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
+    reference_mean_square (np.array) : [nchan,nseg] of MS input signal energy values
+    processed_mean_square (np.array) : [nchan,nseg] of MS processed signal energy values
 
+    Updates:
     James M. Kates, 28 August 2012.
     Output amplitude adjustment added, 30 october 2012.
-
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
@@ -1432,10 +1778,12 @@ def bm_covary(xBM, yBM, segsize, fsamp):
 
     # Lag for computing the cross-covariance
     lagsize = 1.0  # Lag (+/-) in msec
-    maxlag = np.around(lagsize * (0.001 * fsamp))  # Lag in samples
+    maxlag = np.around(lagsize * (0.001 * freq_sample))  # Lag in samples
 
     # Compute the segment window
-    nwin = int(np.around(segsize * (0.001 * fsamp)))  # Segment size in samples
+    nwin = int(
+        np.around(segment_size * (0.001 * freq_sample))
+    )  # Segment size in samples
     test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
     if test > 0:
         nwin = nwin + 1  # Force window length to be even
@@ -1457,175 +1805,239 @@ def bm_covary(xBM, yBM, segsize, fsamp):
     halfsum2 = 1.0 / np.sum(halfwindow**2)  # MS sum normalization, first segment
 
     # Number of segments
-    nchan = xBM.shape[0]
-    npts = xBM.shape[1]
+    nchan = reference_basilar_membrane.shape[0]
+    npts = reference_basilar_membrane.shape[1]
     nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
-    sigMSx = np.zeros((nchan, nseg))
-    sigMSy = np.zeros((nchan, nseg))
-    sigcov = np.zeros((nchan, nseg))
+    reference_mean_square = np.zeros((nchan, nseg))
+    processed_mean_square = np.zeros((nchan, nseg))
+    signal_cross_covariance = np.zeros((nchan, nseg))
 
     # Loop to compute the signal mean-squared level in each band for each
     # segment and to compute the cross-corvariances.
     for k in range(nchan):
         # Extract the BM motion in the frequency band
-        x = xBM[k, :]
-        y = yBM[k, :]
+        x = reference_basilar_membrane[k, :]
+        y = processed_basilar_membrane[k, :]
 
         # The first (half) windowed segment
         nstart = 0
-        segx = x[nstart:nhalf] * halfwindow  # Window the reference
-        segy = y[nstart:nhalf] * halfwindow  # Window the processed signal
-        segx = segx - np.mean(segx)  # Make 0-mean
-        segy = segy - np.mean(segy)
-        MSx = np.sum(segx**2) * halfsum2  # Normalize signal MS value by the window
-        MSy = np.sum(segy**2) * halfsum2
-        c = correlate(segx, segy, "full")
-        c = c[int(len(segx) - 1 - maxlag) : int(maxlag + len(segx))]
-        Mxy = np.max(np.abs(c * halfcorr))  # Unbiased cross-correlation
-        if (MSx > small) and (MSy > small):
-            sigcov[k, 0] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
+        reference_seg = x[nstart:nhalf] * halfwindow  # Window the reference
+        processed_seg = y[nstart:nhalf] * halfwindow  # Window the processed signal
+        reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+        processed_seg = processed_seg - np.mean(processed_seg)
+        ref_mean_square = (
+            np.sum(reference_seg**2) * halfsum2
+        )  # Normalize signal MS value by the window
+        proc_mean_squared = np.sum(processed_seg**2) * halfsum2
+        correlation = correlate(reference_seg, processed_seg, "full")
+        correlation = correlation[
+            int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+        ]
+        unbiased_cross_correlation = np.max(
+            np.abs(correlation * halfcorr)
+        )  # Unbiased cross-correlation
+        if (ref_mean_square > small) and (proc_mean_squared > small):
+            signal_cross_covariance[k, 0] = unbiased_cross_correlation / np.sqrt(
+                ref_mean_square * proc_mean_squared
+            )  # Normalized cross-covariance
         else:
-            sigcov[k, 0] = 0.0
+            signal_cross_covariance[k, 0] = 0.0
 
-        sigMSx[k, 0] = MSx  # Save the reference MS level
-        sigMSy[k, 0] = MSy
+        # Save the reference MS level
+        reference_mean_square[k, 0] = ref_mean_square
+        processed_mean_square[k, 0] = proc_mean_squared
 
         # Loop over the remaining full segments, 50% overlap
         for n in range(1, nseg - 1):
             nstart = nstart + nhalf
             nstop = nstart + nwin
-            segx = x[nstart:nstop] * window  # Window the reference
-            segy = y[nstart:nstop] * window  # Window the processed signal
-            segx = segx - np.mean(segx)  # Make 0-mean
-            segy = segy - np.mean(segy)
-            MSx = np.sum(segx**2) * winsum2  # Normalize signal MS value by the window
-            MSy = np.sum(segy**2) * winsum2
-            c = correlate(segx, segy, "full")
-            c = c[int(len(segx) - 1 - maxlag) : int(maxlag + len(segx))]
-            Mxy = np.max(np.abs(c * wincorr))  # Unbiased cross-corr
-            if (MSx > small) and (MSy > small):
-                sigcov[k, n] = Mxy / np.sqrt(MSx * MSy)  # Normalized cross-covariance
+            reference_seg = x[nstart:nstop] * window  # Window the reference
+            processed_seg = y[nstart:nstop] * window  # Window the processed signal
+            reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+            processed_seg = processed_seg - np.mean(processed_seg)
+            ref_mean_square = (
+                np.sum(reference_seg**2) * winsum2
+            )  # Normalize signal MS value by the window
+            proc_mean_squared = np.sum(processed_seg**2) * winsum2
+            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlation[
+                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            ]
+            unbiased_cross_correlation = np.max(
+                np.abs(correlation * wincorr)
+            )  # Unbiased cross-corr
+            if (ref_mean_square > small) and (proc_mean_squared > small):
+                signal_cross_covariance[k, n] = unbiased_cross_correlation / np.sqrt(
+                    ref_mean_square * proc_mean_squared
+                )  # Normalized cross-covariance
             else:
-                sigcov[k, n] = 0.0
+                signal_cross_covariance[k, n] = 0.0
 
-            sigMSx[k, n] = MSx  # Save the reference MS level
-            sigMSy[k, n] = MSy  # Save the reference MS level
+            reference_mean_square[k, n] = ref_mean_square  # Save the reference MS level
+            processed_mean_square[
+                k, n
+            ] = proc_mean_squared  # Save the reference MS level
 
         # The last (half) windowed segment
         nstart = nstart + nhalf
         nstop = nstart + nhalf
-        segx = x[nstart:nstop] * window[0:nhalf]  # Window the reference
-        segy = y[nstart:nstop] * window[0:nhalf]  # Window the processed signal
-        segx = segx - np.mean(segx)  # Make 0-mean
-        segy = segy - np.mean(segy)
-        MSx = np.sum(segx**2) * halfsum2  # Normalize signal MS value by the window
-        MSy = np.sum(segy**2) * halfsum2
+        reference_seg = x[nstart:nstop] * window[0:nhalf]  # Window the reference
+        processed_seg = y[nstart:nstop] * window[0:nhalf]  # Window the processed signal
+        reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+        processed_seg = processed_seg - np.mean(processed_seg)
+        ref_mean_square = (
+            np.sum(reference_seg**2) * halfsum2
+        )  # Normalize signal MS value by the window
+        proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-        c = np.correlate(segx, segy, "full")
-        c = c[int(len(segx) - 1 - maxlag) : int(maxlag + len(segx))]
+        correlation = np.correlate(reference_seg, processed_seg, "full")
+        correlation = correlation[
+            int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+        ]
 
-        Mxy = np.max(np.abs(c * halfcorr))  # Unbiased cross-correlation
-        if (MSx > small) and (MSy > small):
-            sigcov[k, nseg - 1] = Mxy / np.sqrt(
-                MSx * MSy
+        unbiased_cross_correlation = np.max(
+            np.abs(correlation * halfcorr)
+        )  # Unbiased cross-correlation
+        if (ref_mean_square > small) and (proc_mean_squared > small):
+            signal_cross_covariance[k, nseg - 1] = unbiased_cross_correlation / np.sqrt(
+                ref_mean_square * proc_mean_squared
             )  # Normalized cross-covariance
         else:
-            sigcov[k, nseg - 1] = 0.0
+            signal_cross_covariance[k, nseg - 1] = 0.0
 
-        sigMSx[k, nseg - 1] = MSx  # Save the reference MS level
-        sigMSy[k, nseg - 1] = MSy  # Save the reference MS level
+        # Save the referenceand processed MS level
+        reference_mean_square[k, nseg - 1] = ref_mean_square
+        processed_mean_square[k, nseg - 1] = proc_mean_squared
 
     # Limit the cross-covariance to lie between 0 and 1
-    sigcov = np.clip(sigcov, 0, 1)
+    signal_cross_covariance = np.clip(signal_cross_covariance, 0, 1)
 
     # Adjust the BM magnitude to correspond to the envelope in dB SL
-    sigMSx = 2.0 * sigMSx
-    sigMSy = 2.0 * sigMSy
+    reference_mean_square *= 2.0
+    processed_mean_square *= 2.0
 
-    return sigcov, sigMSx, sigMSy
+    return signal_cross_covariance, reference_mean_square, processed_mean_square
 
 
-def ave_covary2(sigcov, sigMSx, thr):
+def ave_covary2(
+    signal_cross_covariance: np.ndarray,
+    reference_signal_mean_square: np.ndarray,
+    threshold_db,
+    lp_filter_order=None,
+    freq_cutoff=None,
+):
     """
-    Function to compute the average cross-covariance between the reference
-    and processed signals in each auditory band. The silent time-frequency
-    tiles are removed from consideration. The cross-covariance is computed
-    for each segment in each frequency band. The values are weighted by 1
-    for inclusion or 0 if the tile is below threshold. The sum of the
-    covariance values across time and frequency are then divided by the total
-    number of tiles above thresold. The calculation is a modification of
-    Tan et al. (JAES 2004). The cross-covariance is also output with a
-    frequency weighting that reflects the loss of IHC synchronization at high
-    frequencies (Johnson, JASA 1980).
+    Compute the average cross-covariance between the reference and processed
+    signals in each auditory band.
+
+    The silent time-frequency tiles are removed from consideration. The
+    cross-covariance is computed for each segment in each frequency band. The
+    values are weighted by 1 for inclusion or 0 if the tile is below
+    threshold. The sum of the covariance values across time and frequency are
+    then divided by the total number of tiles above thresold. The calculation
+    is a modification of Tan et al.[1]_ . The cross-covariance is also output
+    with a frequency weighting that reflects the loss of IHC synchronization at high
+    frequencies Johnson[2]_.
 
     Arguments:
-        sigcov (np.array) : [nchan,nseg] of cross-covariance values
-        sigMSx (np.array) : [nchan,nseg] of reference signal MS values
-        thr : threshold in dB SL to include segment ave over freq in average
+    signal_cross_covariance (np.array): [nchan,nseg] of cross-covariance values
+    reference_signal_mean_square (np.array): [nchan,nseg] of reference signal MS
+        values
+    threshold_db (): threshold in dB SL to include segment ave over freq in
+        average
+    lp_filter (list): LP filter order
+    freq_cutoff (list): Cutoff frequencies in Hz
 
     Returns:
-        avecov : cross-covariance in segments averaged over time and frequency
-        syncov : cross-coraviance array, 6 different weightings for loss of
+    average_covariance (): cross-covariance in segments averaged over time and
+        frequency
+    ihc_sync_covariance (): cross-coraviance array, 6 different weightings for loss of
               IHC synchronization at high frequencies:
               LP Filter Order     Cutoff Freq, kHz
                 1              1.5
                 3              2.0
                 5              2.5, 3.0, 3.5, 4.0
 
+    References:
+
+    .. [1] Tan CT, Moore, BCJ, Zacharov N, Mattila VV (2004) Predicting the Perceived
+           Quality of Nonlinearly Distorted Music and Speech Signals. J Audio Eng Soc
+           52(9):900-914. Available at.
+           <http://www.aes.org/e-lib/browse.cfm?elib=13013>.
+
+    .. [2] Johnson DH (1980) The relationship between spike rate and synchrony in
+           responses of auditory‐nerve fibers to single tones J Acoustocal Soc of Am
+           68:1115 Available at.
+           <https://doi.org/10.1121/1.384982>
+    Updates:
     James M. Kates, 28 August 2012.
     Adjusted for BM vibration in dB SL, 30 October 2012.
     Threshold for including time-freq tile modified, 30 January 2013.
     Version for different sync loss, 15 February 2013.
-
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Array dimensions
-    nchan = sigcov.shape[0]
+    n_channels = signal_cross_covariance.shape[0]
 
     # Initialize the LP filter for loss of IHC synchronization
-    cfreq = CenterFreq(nchan)  # Center frequencies in Hz on an ERB scale
-    p = np.array([1, 3, 5, 5, 5, 5])  # LP filter order
-    fcut = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])  # Cutoff frequencies in Hz
-    fsync = np.zeros((6, nchan))  # Array of filter freq resp vs band center freq
+    # Center frequencies in Hz on an ERB scale
+    _center_freq = center_frequency(n_channels)
+    # Default LP filter order
+    if lp_filter_order is None:
+        lp_filter_order = np.array([1, 3, 5, 5, 5, 5])
+    # Default cutoff frequencies in Hz
+    if freq_cutoff is None:
+        freq_cutoff = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
+    fsync = np.zeros((6, n_channels))  # Array of filter freq resp vs band center freq
     for n in range(6):
-        fc2p = fcut[n] ** (2 * p[n])
-        freq2p = cfreq ** (2 * p[n])
+        fc2p = freq_cutoff[n] ** (2 * lp_filter_order[n])
+        freq2p = _center_freq ** (2 * lp_filter_order[n])
         fsync[n, :] = np.sqrt(fc2p / (fc2p + freq2p))
 
     # Find the segments that lie sufficiently above the threshold.
-    sigRMS = np.sqrt(sigMSx)  # Convert squared amplitude to dB envelope
-    sigLinear = 10 ** (sigRMS / 20)  # Linear amplitude (specific loudness)
-    xsum = np.sum(sigLinear, 0) / nchan  # Intensity averaged over frequency bands
-    xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
-    index = np.argwhere(
-        xsum > thr
-    ).T.squeeze()  # Identify those segments above threshold
+    # Convert squared amplitude to dB envelope
+    signal_rms = np.sqrt(reference_signal_mean_square)
+    # Linear amplitude (specific loudness)
+    signal_linear_amplitude = 10 ** (signal_rms / 20)
+    # Intensity averaged over frequency bands
+    reference_mean = np.sum(signal_linear_amplitude, 0) / n_channels
+    # Convert back to dB (loudness in phons)
+    reference_mean = 20 * np.log10(reference_mean)
+    # Identify those segments above threshold
+    index = np.argwhere(reference_mean > threshold_db).T
+    if index.size != 1:
+        index = index.squeeze()
     nseg = index.shape[0]  # Number of segments above threshold
 
     # Exit if not enough segments above zero
     if nseg <= 1:
         print("Function eb.AveCovary: Ave signal below threshold, outputs set to 0.")
-        avecov = 0
-        syncov = 0
-        return avecov, syncov
+        average_covariance = 0
+        # syncov = 0
+        ihc_sync_covariance = [0] * 6
+        return average_covariance, ihc_sync_covariance
 
     # Remove the silent segments
-    sigcov = sigcov[:, index]
-    sigRMS = sigRMS[:, index]
+    signal_cross_covariance = signal_cross_covariance[:, index]
+    signal_rms = signal_rms[:, index]
 
     # Compute the time-frequency weights. The weight=1 if a segment in a
     # frequency band is above threshold, and weight=0 if below threshold.
-    weight = np.zeros((nchan, nseg))  # No IHC synchronization roll-off
-    wsync1 = np.zeros((nchan, nseg))  # Loss of IHC synchronization at high frequencies
-    wsync2 = np.zeros((nchan, nseg))
-    wsync3 = np.zeros((nchan, nseg))
-    wsync4 = np.zeros((nchan, nseg))
-    wsync5 = np.zeros((nchan, nseg))
-    wsync6 = np.zeros((nchan, nseg))
-    for k in range(nchan):
+    weight = np.zeros((n_channels, nseg))  # No IHC synchronization roll-off
+    wsync1 = np.zeros(
+        (n_channels, nseg)
+    )  # Loss of IHC synchronization at high frequencies
+    wsync2 = np.zeros((n_channels, nseg))
+    wsync3 = np.zeros((n_channels, nseg))
+    wsync4 = np.zeros((n_channels, nseg))
+    wsync5 = np.zeros((n_channels, nseg))
+    wsync6 = np.zeros((n_channels, nseg))
+    for k in range(n_channels):
         for n in range(nseg):
-            if sigRMS[k, n] > thr:  # Thresh in dB SL for including time-freq tile
+            if (
+                signal_rms[k, n] > threshold_db
+            ):  # Thresh in dB SL for including time-freq tile
                 weight[k, n] = 1
                 wsync1[k, n] = fsync[0, k]
                 wsync2[k, n] = fsync[1, k]
@@ -1635,29 +2047,33 @@ def ave_covary2(sigcov, sigMSx, thr):
                 wsync6[k, n] = fsync[5, k]
 
     # Sum the weighted covariance values
-    csum = np.sum(np.sum(weight * sigcov))  # Sum of weighted time-freq tiles
+    csum = np.sum(
+        np.sum(weight * signal_cross_covariance)
+    )  # Sum of weighted time-freq tiles
     wsum = np.sum(np.sum(weight))  # Total number of tiles above thresold
-    fsum = np.zeros(6)
-    ssum = np.zeros(6)
-    fsum[0] = np.sum(np.sum(wsync1 * sigcov))  # Sum of weighted time-freq tiles
-    ssum[0] = np.sum(np.sum(wsync1))  # Total number of tiles above thresold
-    fsum[1] = np.sum(np.sum(wsync2 * sigcov))  # Sum of weighted time-freq tiles
-    ssum[1] = np.sum(np.sum(wsync2))  # Total number of tiles above thresold
-    fsum[2] = np.sum(np.sum(wsync3 * sigcov))  # Sum of weighted time-freq tiles
-    ssum[2] = np.sum(np.sum(wsync3))  # Total number of tiles above thresold
-    fsum[3] = np.sum(np.sum(wsync4 * sigcov))  # Sum of weighted time-freq tiles
-    ssum[3] = np.sum(np.sum(wsync4))  # Total number of tiles above thresold
-    fsum[4] = np.sum(np.sum(wsync5 * sigcov))  # Sum of weighted time-freq tiles
-    ssum[4] = np.sum(np.sum(wsync5))  # Total number of tiles above thresold
-    fsum[5] = np.sum(np.sum(wsync6 * sigcov))  # Sum of weighted time-freq tiles
-    ssum[5] = np.sum(np.sum(wsync6))  # Total number of tiles above thresold
+    sum_weighted_time_freq = np.zeros(6)
+    tiles_above_threshold = np.zeros(6)
+    # Sum of weighted time-freq tiles
+    sum_weighted_time_freq[0] = np.sum(np.sum(wsync1 * signal_cross_covariance))
+    sum_weighted_time_freq[1] = np.sum(np.sum(wsync2 * signal_cross_covariance))
+    sum_weighted_time_freq[2] = np.sum(np.sum(wsync3 * signal_cross_covariance))
+    sum_weighted_time_freq[3] = np.sum(np.sum(wsync4 * signal_cross_covariance))
+    sum_weighted_time_freq[4] = np.sum(np.sum(wsync5 * signal_cross_covariance))
+    sum_weighted_time_freq[5] = np.sum(np.sum(wsync6 * signal_cross_covariance))
+    # Total number of tiles above thresold
+    tiles_above_threshold[2] = np.sum(np.sum(wsync3))
+    tiles_above_threshold[0] = np.sum(np.sum(wsync1))
+    tiles_above_threshold[1] = np.sum(np.sum(wsync2))
+    tiles_above_threshold[3] = np.sum(np.sum(wsync4))
+    tiles_above_threshold[4] = np.sum(np.sum(wsync5))
+    tiles_above_threshold[5] = np.sum(np.sum(wsync6))
 
     # Exit if not enough segments above zero
     if wsum < 1:
-        avecov = 0
+        average_covariance = 0
         print("Function eb.AveCovary: Signal tiles below threshold, outputs set to 0.")
     else:
-        avecov = csum / wsum
-    syncov = fsum / ssum
+        average_covariance = csum / wsum
+    ihc_sync_covariance = sum_weighted_time_freq / tiles_above_threshold
 
-    return avecov, syncov
+    return average_covariance, ihc_sync_covariance

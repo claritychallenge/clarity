@@ -1,38 +1,42 @@
+"""Functions for ???"""
+from typing import Dict
+
 import numpy as np
 
 
-def GetNeuralNet():
+def get_neural_net():
     """
-    Function to provide the weights derived for the ensemble of ten neural
+    Provide the weights derived for the ensemble of ten neural
     networks used for the HASPI_v2 intelligibility model. The neural networks
     have ten inputs, 4 neurons in the hidden layer, and one output neuron.
     The logsig activation function is used.
 
-    Calling arguments: None
+    Arguments: None
 
     Returned values:
-    NNparam  vector of parameters defining the neural network
-    Whid     cell array 10 x 1 for the weights linking the input to the hidden
+    neural_net_params (dict): parameters defining the neural network
+    weights_hidden (): cell array 10 x 1 for the weights linking the input to the hidden
              layer. Each cell is a 11 x 4 matrix of weights
-    Wout     call array 5 x 1 for the weights linking the hidden to the output
+    weights_out (): call array 5 x 1 for the weights linking the hidden to the output
              layer. Each cell is a 5 x 1 vector of weights.
-    b        normalization so that the maximum neural net output is exactly 1.
+    normalization_factor (): normalization so that the maximum neural net output is exactly 1.
 
+    Updates:
     James M. Kates, 8 October 2019.
     Version for new neural network using actual TFS scores, 24 October 2019.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Set up the neural network parameters
-    NNparam = np.zeros(6)
-    NNparam[0] = 10  # Number of neurons in the input layer
-    NNparam[1] = 4  # Number of neurons in the hidden layer
-    NNparam[2] = 1  # Number of neurons in the output layer
-    NNparam[3] = 1  # Activation function is logsig
-    NNparam[4] = 0  # No offset for the activation function
-    NNparam[5] = 1  # Maximum activation function value
+    neural_net_params = {}
+    neural_net_params["input_layer"] = 10  # Number of neurons in the input layer
+    neural_net_params["hidden_layer"] = 4  # Number of neurons in the hidden layer
+    neural_net_params["output_layer"] = 1  # Number of neurons in the output layer
+    neural_net_params["activation_function"] = 1  # Activation function is logsig
+    neural_net_params["offset_activation"] = 0  # No offset for the activation function
+    neural_net_params["maximum_activation"] = 1  # Maximum activation function value
 
     # Input to hidden layer weights
-    Whid = [
+    weights_hidden = [
         np.array(  # 1
             [
                 [4.9980, -13.0590, 9.5478, -11.6760],
@@ -186,7 +190,7 @@ def GetNeuralNet():
     ]
 
     # Hidden to output layer weights
-    Wout = [
+    weights_out = [
         np.array([[-0.1316, -2.5182, 1.6401, -3.2093, 1.7924]]).T,  # 1
         np.array([[-0.1653, 1.7375, 1.5526, -3.2349, -2.2877]]).T,  # 2
         np.array([[0.1847, -3.1987, -2.4941, 2.7106, -1.8048]]).T,  # 3
@@ -199,26 +203,28 @@ def GetNeuralNet():
         np.array([[0.1024, -0.9517, 2.2123, -2.4008, -3.1655]]).T,  # 10
     ]
 
-    # Normalization factor
-    b = 0.9508
+    normalization_factor = 0.9508
 
-    return NNparam, Whid, Wout, b
+    return neural_net_params, weights_hidden, weights_out, normalization_factor
 
 
-def NNfeedfwdEns(data, NNparam, Whid, Wout):
+def nn_feed_forward_ensemble(
+    data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
+) -> float:
     """
     Function to compute the neural network ensemble response to a set of
     inputs. The neural network is defined in NNfeedforwardZ.
 
-    Calling arguments:
-    data      array of features input to the neural network
-    NNparam   vector of neural network paramters
-    Whid      cell array of hidden layer weights for each network
-    Wout      cell array of output layer weights for each network
+    Args:
+    data (np.ndarray): array of features input to the neural network
+    neural_net_params (dict): vector of neural network paramters
+    weights_hidden (list): cell array of hidden layer weights for each network
+    weights_out (list): cell array of output layer weights for each network
 
-    Returned value:
+    Returns:
     model     neural network output vector averaged over the ensemble
 
+    Updates:
     James M. Kates, 20 September 2011.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
@@ -227,14 +233,15 @@ def NNfeedfwdEns(data, NNparam, Whid, Wout):
         data = np.expand_dims(data, 0)
 
     ncond = data.shape[0]  # Number of conditions in the input data
-    K = len(Whid)  # Number of networks in the ensemble
+    n_networks = len(weights_hidden)  # Number of networks in the ensemble
 
     # Ensemble average of the predictions over the set of neural networks used for training
-    predict = np.zeros((ncond, K))
-    for k in range(K):
+    predict = np.zeros((ncond, n_networks))
+    for k in range(n_networks):
         for n in range(ncond):
-            d = data[n, :]
-            _, output = NNfeedforward(d, NNparam, Whid[k], Wout[k])
+            _, output = nn_feed_forward(
+                data[n, :], neural_net_params, weights_hidden[k], weights_out[k]
+            )
             predict[n, k] = output[1]
 
     model = np.mean(predict, 1)
@@ -242,9 +249,11 @@ def NNfeedfwdEns(data, NNparam, Whid, Wout):
     return model
 
 
-def NNfeedforward(data, NNparam, Whid, Wout):
+def nn_feed_forward(
+    data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
+):
     """
-    Function to compute the outputs at each layer of a neural network given
+    Compute the outputs at each layer of a neural network given
     the input to the network and the weights. The activiation function is an
     offset logistic function that gives either a logsig or hyperbolic
     tangent; the outputs from each layer have been reduced by the offset. The
@@ -253,35 +262,28 @@ def NNfeedforward(data, NNparam, Whid, Wout):
     by the function, and the remaining values correspond to the outputs at
     each neuron in the layer.
 
-    Calling arguments:
-    data       feature vector input to the neural network
-    NNparam    network parameters from NNinit
-    Whid       matrix of weights for the hidden layer
-    Wout       matrix of weights for the output layer
+    Args:
+    data (np.ndarray): feature vector input to the neural network.
+    neural_net_params (dict): network parameters from get_neural_net().
+    weights_hidden (list): matrix of weights for the hidden layer.
+    weights_out (list): matrix of weights for the output layer.
 
-    Returned values:
-    hidden     vector of outputs from the hidden layer
-    output     vector of outputs from the output layer
+    Returns:
+    hidden (): vector of outputs from the hidden layer.
+    output (): vector of outputs from the output layer.
 
+    Updates:
     James M. Kates, 26 October 2010.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Correct Wout shape
-    if len(Wout.shape) == 1:
-        Wout = np.expand_dims(Wout, 1)
-
-    # Extract parameters from the parameter array
-    nx = int(NNparam[0])
-    nhid = int(NNparam[1])
-    nout = int(NNparam[2])
-    beta = float(NNparam[3])
-    offset = float(NNparam[4])
-    again = float(NNparam[5])
+    if len(weights_out.shape) == 1:
+        weights_out = np.expand_dims(weights_out, 1)
 
     # Initialize the array storage
-    x = np.zeros(nx + 1)
-    hidden = np.zeros(nhid + 1)
-    output = np.zeros(nout + 1)
+    x = np.zeros(neural_net_params["input_layer"] + 1)
+    hidden = np.zeros(neural_net_params["hidden_layer"] + 1)
+    output = np.zeros(neural_net_params["output_layer"] + 1)
 
     # Initialize the nodes used for constants
     x[0] = 1
@@ -289,17 +291,23 @@ def NNfeedforward(data, NNparam, Whid, Wout):
     output[0] = 1
 
     # Input layer
-    for i in range(1, nx + 1):
+    for i in range(1, neural_net_params["input_layer"] + 1):
         x[i] = data[i - 1]
 
     # Response of the hidden layer
-    for j in range(1, nhid + 1):
-        sumhid = np.sum(Whid[:, j - 1] * x)
-        hidden[j] = (again / (1 + np.exp(-beta * sumhid))) - offset
+    for j in range(1, neural_net_params["hidden_layer"] + 1):
+        sumhid = np.sum(weights_hidden[:, j - 1] * x)
+        hidden[j] = (
+            neural_net_params["maximum_activation"]
+            / (1 + np.exp(-neural_net_params["activation_function"] * sumhid))
+        ) - neural_net_params["offset_activation"]
 
     # Response of the output layer
-    for k in range(1, nout + 1):
-        sumout = np.sum(Wout[:, k - 1] * hidden)
-        output[k] = (again / (1 + np.exp(-beta * sumout))) - offset
+    for k in range(1, neural_net_params["output_layer"] + 1):
+        sumout = np.sum(weights_out[:, k - 1] * hidden)
+        output[k] = (
+            neural_net_params["maximum_activation"]
+            / (1 + np.exp(-neural_net_params["activation_function"] * sumout))
+        ) - neural_net_params["offset_activation"]
 
     return hidden, output

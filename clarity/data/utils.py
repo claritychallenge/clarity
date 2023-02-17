@@ -1,3 +1,4 @@
+"""Utilities for data generation."""
 import os
 import sys
 
@@ -29,6 +30,8 @@ def better_ear_speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> floa
         noise (np.ndarray):
 
     Returns:
+        (float)
+    Maximum Signal Noise Ratio between left and right channel.
     """
     if np.ndim(target) == 1:
         # analysis left ear and right ear for single channel target
@@ -105,7 +108,6 @@ def pad(signal: np.ndarray, length: int) -> np.ndarray:
     Returns:
         np.array:
     """
-    # FIXME : Consider encapsulating in a 'try: ... except: ...' should the assertion not be met.
     try:
         assert length >= signal.shape[0]
     except AssertionError:

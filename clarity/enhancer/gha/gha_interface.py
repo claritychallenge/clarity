@@ -26,7 +26,6 @@ class GHAHearingAid:
         equiv0dBSPL=100,
         test_nbits=16,
     ):
-
         if audf is None:
             audf = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
         if noisegatelevels is None:

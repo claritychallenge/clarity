@@ -148,7 +148,6 @@ class ASR(sb.core.Brain):
 
         # log stats and save checkpoint at end-of-epoch
         if stage == sb.Stage.VALID and sb.utils.distributed.if_main_process():
-
             # report different epoch stages according current stage
             current_epoch = self.hparams.epoch_counter.current
             if current_epoch <= self.hparams.stage_one_epochs:
@@ -224,7 +223,6 @@ class ASR(sb.core.Brain):
 
             # Load latest checkpoint to resume training if interrupted
             if self.checkpointer is not None:
-
                 # do not reload the weights if training is interrupted right before stage 2
                 group = current_optimizer.param_groups[0]
                 if "momentum" not in group:

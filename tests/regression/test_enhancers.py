@@ -50,7 +50,6 @@ def test_gha_audiogram(regtest):
 
 
 def test_GHA_inputs(regtest):
-
     enhancer = gha(**gha_params)
 
     infile_names = [
@@ -67,7 +66,6 @@ def test_GHA_inputs(regtest):
 
 
 def test_GHA_config(regtest):
-
     enhancer = gha(**gha_params)
     listeners = json.load(open("tests/test_data/metadata/listeners.json"))
     listener = listeners["L0001"]

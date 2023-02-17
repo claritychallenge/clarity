@@ -63,3 +63,6 @@ docs/recipes.*.rst
 
 # Emacs
 *~
+
+# Sound files
+*.wav

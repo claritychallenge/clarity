@@ -87,7 +87,8 @@ disable=R0801,
         suppressed-message,
         useless-suppression,
         deprecated-pragma,
-        use-symbolic-message-instead
+        use-symbolic-message-instead,
+        logging-fstring-interpolation
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -388,10 +389,20 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i,
+good-names=a,
+           b,
+           c,
+           i,
            j,
            k,
+           m,
+           n,
+           x,
+           fx,
+           y,
+           fy,
            ex,
+           fp,
            Run,
            _
 
