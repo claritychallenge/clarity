@@ -1,0 +1,33 @@
+path:
+  root: /media/gerardo/Extended/cadenza_data.demo/task1
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio/musdb18hq
+  train_file: ${path.metadata_dir}/musdb18_train.json
+  valid_file: ${path.metadata_dir}/musdb18_valid.demo.json
+  listeners_file: ${path.metadata_dir}/listeners.demo.json
+  exp_folder: ./exp # folder to store enhanced signals and final results
+
+nalr:
+  nfir: 220
+  fs: 44100
+
+compressor:
+  threshold: 0.35
+  attenuation: 0.1
+  attack: 50
+  release: 1000
+  rms_buffer_size: 0.064
+
+soft_clip: True
+
+separator:
+  device: ~
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
