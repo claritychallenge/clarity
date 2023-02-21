@@ -177,10 +177,10 @@ def test_non_xeon_8272cl_cpu(
     # Enhanced audio HASPI score is 0.2994066
 
 
-# @pytest.mark.skipif(
-#     not re.search("8272CL", CPUINFO["brand_raw"]),
-#     reason="Xeon 8272CL CPU arch gives a different value",
-# )
+@pytest.mark.skipif(
+    not re.search("8272CL", CPUINFO["brand_raw"]),
+    reason="Xeon 8272CL CPU arch gives a different value",
+)
 def test_xeon_8272cl_cpu(
     regtest,
     tmp_path,
