@@ -132,7 +132,7 @@ A csv file containing the eight HAAQI scores and the combined score will be gene
 To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined
-(in the given recipe, the random seed for each signal is set the last eight digits of the song md5).
+(in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
 
 We ran evaluation for the baseline for five times, and the average overall score is XXX +/- XXXX.
