@@ -53,7 +53,7 @@ def separate_sources(
 
     Based on https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html
     """
-    if device is None:
+    device = mix.device if device is None else torch.device(device)
         device = mix.device
     else:
         device = torch.device(device)
