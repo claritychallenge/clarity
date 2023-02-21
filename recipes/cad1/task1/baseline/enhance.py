@@ -21,7 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 def separate_sources(
-    model,
+    model: torch.nn.Module,
+    mix: torch.Tensor,
+    sample_rate: int,
+    segment: float,
+    overlap: float,
+    device: Union[torch.device, str]
     mix,
     sample_rate,
     segment=10.0,
