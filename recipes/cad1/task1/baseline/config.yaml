@@ -1,5 +1,5 @@
 path:
-  root: /media/gerardo/Extended/cadenza_data.demo/task1
+  root: ???
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.root}/audio/musdb18hq
   train_file: ${path.metadata_dir}/musdb18_train.json
