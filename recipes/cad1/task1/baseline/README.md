@@ -86,7 +86,7 @@ cadenza_data
 ## 2. Baseline
 
 In the `baseline/` folder, we provide code for running the baseline enhancement system and performing the objective evaluation.
-Note that we use hydra for config handling. For more information, see [here](https://hydra.cc/docs/intro/).
+Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 ### 2.1 Enhancement
 
