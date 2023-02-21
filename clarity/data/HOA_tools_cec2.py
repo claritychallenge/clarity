@@ -56,14 +56,9 @@ def convert_a_to_b_format(
 @njit
 def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     """Generate a rotation matrix to rotate HOA soundfield.
-    Based on 'Rotation Matrices for Real Spherical Harmonics. Direct Determination
-    by Recursion' Joseph Ivanic and Klaus Ruedenberg J. Phys. Chem. 1996, 100, 15,
-    6342–6347 and Gorzel, M., Allen, A., Kelly, I., Kammerl, J., Gungormusler,
-    A., Yeh, H., and Boland, F., "Efficient Encoding and Decoding of Binaural Sound
-    with Resonance Audio", In proc. of the AES International Conference on Immersive
-    and Interactive Audio, March 2019
-    Operates on HOA of a given order rotates by azimuth theta
-    and elevation phi
+
+    Based on [1]_ and [2]_. Operates on HOA of a given order rotates by azimuth theta
+    and elevation phi.
 
     Args:
         order (int): order of ambisonic soundfield
@@ -71,6 +66,18 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
 
     Returns:
         np.ndarray: HOA rotation matrix
+
+    References:
+    .. [1] Ivanic J, Ruedenberg K (1996) Rotation Matrices for Real Spherical Harmonics.
+           Direct Determination J. Phys. Chem. 1996, 100(15):6342–6347. Available at
+           <https://pubs.acs.org/doi/10.1021/jp953350u> and
+           <https://doi.org/10.1021/JP9833350>
+
+    .. [2] Gorzel M, Allen A, Kelly I, Kammerl J, Gungormusler, A, Yeh H, Boland F
+           Efficient Encoding and Decoding of Binaural Sound with Resonance Audio
+           In Proc. of the AES International Conference on Immersive and Interactive
+           Audio, March 2019. Available at
+           <https://www.aes.org/e-lib/browse.cfm?elib=20446>
     """
     m = (n + 1) ** 2
     # construct rotamat for given order
@@ -97,122 +104,138 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
 
 
 @njit
-def centred_element(r: np.ndarray, i: int, j: int):
+def centred_element(reference: np.ndarray, row: int, col: int):
     """Get value from centered element indexing.
 
     Args:
-        r (matrix): input matrix
-        i (int): row index
-        j (int): column index
+        reference (matrix): reference input matrix
+        row (int): row index
+        col (int): column index
 
     Returns:
         Any: matrix element
     """
-    offset = int((r.shape[0] - 1) / 2)
-    if i > r.shape[0] or j > r.shape[1]:
+    offset = int((reference.shape[0] - 1) / 2)
+    if row > reference.shape[0] or col > reference.shape[1]:
         raise IndexError
-    output = r[i + offset, j + offset]
+    output = reference[row + offset, col + offset]
     return output
 
 
 @njit
-def P(i, a, b, el, r):
+def P(i, a, b, order, rotation_matrices):
     """P function for rotation matrix calculation.
 
     Args:
         i (int): index
         a (int): 'a' value
         b (int): 'b' value
-        el (int): order
+        order (int): order
         r (list(matrix)): rotation matrices
 
     Returns:
         float: P value
     """
     p = 0.0
-    if b == el:
-        p = (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, el - 1)) - (
-            centred_element(r[1], i, -1) * centred_element(r[el - 1], a, -el + 1)
+    if b == order:
+        p = (
+            centred_element(rotation_matrices[1], i, 1)
+            * centred_element(rotation_matrices[order - 1], a, order - 1)
+        ) - (
+            centred_element(rotation_matrices[1], i, -1)
+            * centred_element(rotation_matrices[order - 1], a, -order + 1)
         )
-    elif b == -el:
-        p = (centred_element(r[1], i, 1) * centred_element(r[el - 1], a, -el + 1)) + (
-            centred_element(r[1], i, -1) * centred_element(r[el - 1], a, el - 1)
+    elif b == -order:
+        p = (
+            centred_element(rotation_matrices[1], i, 1)
+            * centred_element(rotation_matrices[order - 1], a, -order + 1)
+        ) + (
+            centred_element(rotation_matrices[1], i, -1)
+            * centred_element(rotation_matrices[order - 1], a, order - 1)
         )
     else:
-        p = centred_element(r[1], i, 0) * centred_element(r[el - 1], a, b)
+        p = centred_element(rotation_matrices[1], i, 0) * centred_element(
+            rotation_matrices[order - 1], a, b
+        )
 
     return p
 
 
 @njit
-def U(m, n, el, r):
+def U(degree, n, order, rotation_matrices):
     """U coefficient initialiser for rotation matrix calculation.
 
     Args:
-        m (int): degree
+        rotation_degree (int): Upper parameters of spherical harmonic component Y and n the lower.
         n (int): index
-        el (int): order
-        r (list(matrix)): rotation matrices
+        order (int): order
+        rotation_matrices (list(matrix)): rotation matrices
 
     Returns:
         float: U value
     """
-    return P(0, m, n, el, r)
+    return P(0, degree, n, order, rotation_matrices)
 
 
 @njit
-def V(m, n, el, r):
+def V(degree, n, order, rotation_matrices):
     """V coefficient initialiser for rotation matrix calculation.
 
     Args:
-        m (int): degree
+        degree (int): valid inputs are `int(|m|) <= order`.
         n (int): index
-        el (int): order
-        r (list(matrix)): rotation matrices
+        order (int): order
+        rotation_matrices (list(matrix)): rotation matrices
 
     Returns:
         float: V value
     """
     d = 0
-    if m == 0:
-        return P(1, 1, n, el, r) + P(-1, -1, n, el, r)
-    elif m > 0:
-        if m == 1:
-            d = 1.0
-        return P(1, m - 1, n, el, r) * np.sqrt(1 + d) - P(-1, -m + 1, n, el, r) * (
-            1 - d
+    if degree == 0:
+        return P(1, 1, n, order, rotation_matrices) + P(
+            -1, -1, n, order, rotation_matrices
         )
+    elif degree > 0:
+        if degree == 1:
+            d = 1.0
+        return P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
+            -1, -degree + 1, n, order, rotation_matrices
+        ) * (1 - d)
     else:
-        if m == -1:
+        if degree == -1:
             d = 1.0
-        return P(1, m + 1, n, el, r) * (1 - d) + P(-1, -m - 1, n, el, r) * np.sqrt(
-            1 + d
-        )
+        return P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
+            -1, -degree - 1, n, order, rotation_matrices
+        ) * np.sqrt(1 + d)
 
 
 @njit
-def W(m, n, el, r):
+def W(degree, n, order, rotation_matrices):
     """W coefficient initialiser for rotation matrix calculation.
 
     Args:
-        m (int): degree
+        degree (int): degree
         n (int): index
-        el (int): order
-        r (list(matrix)): rotation matrices
+        order (int): order
+        rotation_matrices (list(matrix)): rotation matrices
 
     Returns:
         float: W value
     """
-    if m == 0:
+    if degree == 0:
         return 0.0
-    elif m > 0:
-        return P(1, m + 1, n, el, r) + P(-1, -m - 1, n, el, r)
+    elif degree > 0:
+        return P(1, degree + 1, n, order, rotation_matrices) + P(
+            -1, -degree - 1, n, order, rotation_matrices
+        )
     else:
-        return P(1, m - 1, n, el, r) - P(-1, -m + 1, n, el, r)
+        return P(1, degree - 1, n, order, rotation_matrices) - P(
+            -1, -degree + 1, n, order, rotation_matrices
+        )
 
 
 @njit
-def compute_UVW_coefficients(m, n, el):
+def compute_UVW_coefficients(degree, n, order):
     """Compute U, V and W coefficients for rotation matrix calculation.
 
     Args:
@@ -223,28 +246,32 @@ def compute_UVW_coefficients(m, n, el):
     Returns:
         tuple: u, v, w
     """
-    d = 0
-    if m == 0:
-        d = 1
-    denom = float((el + n) * (el - n))
-    if np.abs(n) == el:
-        denom = float(2 * el * (2 * el - 1))
+    d = 1 if degree == 0 else 0
+    denom = (
+        float(2 * order * (2 * order - 1))
+        if np.abs(n) == order
+        else float((order + n) * (order - n))
+    )
 
-    one_over_denom = 1.0 / denom
-    u = np.sqrt(float((el + m) * (el - m)) * one_over_denom)
+    inverse_denom = 1.0 / denom
+    u = np.sqrt(float((order + degree) * (order - degree)) * inverse_denom)
     v = (
         0.5
         * np.sqrt(
             (1.0 + d)
-            * float(el + np.abs(m) - 1)
-            * (float(el + np.abs(m)))
-            * one_over_denom
+            * float(order + np.abs(degree) - 1)
+            * (float(order + np.abs(degree)))
+            * inverse_denom
         )
         * (1.0 - 2.0 * d)
     )
     w = (
         -0.5
-        * np.sqrt(float(el - np.abs(m) - 1) * float(el - np.abs(m)) * one_over_denom)
+        * np.sqrt(
+            float(order - np.abs(degree) - 1)
+            * float(order - np.abs(degree))
+            * inverse_denom
+        )
         * (1.0 - d)
     )
 
@@ -252,12 +279,12 @@ def compute_UVW_coefficients(m, n, el):
 
 
 @njit
-def compute_band_rotation(el, rotations, output):
+def compute_band_rotation(order, rotation_matrices, output):
     """Compute submatrix for rotation matrix.
 
     Args:
-        el (int): order of submatrix
-        rotations (list(matrix)): previous and current submatrices
+        order (int): order of submatrix
+        rotationmatrices (list(matrix)): previous and current submatrices
         output (matrix): output destination
 
     Returns:
@@ -265,28 +292,25 @@ def compute_band_rotation(el, rotations, output):
     """
     # print(f'entering band rotation with l = {el}')
 
-    for mm, m in enumerate(np.arange(-el, el + 1, 1)):
-        for nn, n in enumerate(np.arange(-el, el + 1, 1)):
-            u, v, w = compute_UVW_coefficients(m, n, el)
+    for row, m in enumerate(np.arange(-order, order + 1, 1)):
+        for col, n in enumerate(np.arange(-order, order + 1, 1)):
+            u, v, w = compute_UVW_coefficients(m, n, order)
             if np.abs(u) > 0.0:
-                uu = U(m, n, el, rotations)
-                u *= uu
+                u *= U(m, n, order, rotation_matrices)
             if np.abs(v) > 0.0:
-                vv = V(m, n, el, rotations)
-                v *= vv
+                v *= V(m, n, order, rotation_matrices)
             if np.abs(w) > 0.0:
-                ww = W(m, n, el, rotations)
-                w *= ww
-            rotations[el][mm, nn] = u + v + w
+                w *= W(m, n, order, rotation_matrices)
+            rotation_matrices[order][row, col] = u + v + w
 
-    starting_index = el * el
+    starting_index = order * order
 
     output[
-        starting_index : (starting_index + (el * 2 + 1)),
-        starting_index : (starting_index + (el * 2 + 1)),
-    ] = rotations[el]
+        starting_index : (starting_index + (order * 2 + 1)),
+        starting_index : (starting_index + (order * 2 + 1)),
+    ] = rotation_matrices[order]
 
-    return output, rotations
+    return output, rotation_matrices
 
 
 @njit
@@ -330,19 +354,19 @@ class HOARotator:
             foa_rotmat = np.linalg.inv(foa_rotmat)
             self.rotmat[i, :, :] = compute_rotation_matrix(order, foa_rotmat)
 
-    def rotate(self, signal, th):
+    def rotate(self, signal, rotation_vector):
         """Apply rotation to HOA signals using precomputed rotation matrices.
 
         Args:
             signal (array-like): ambisonic signals
-            th (array-like): rotation vector (in radians)
+            rotation_vector (array-like): rotation vector (in radians)
 
         Returns:
             array-like: transformed ambisonic signals
         """
         # Convert to lookup table indices
         # NOTE: Using generators below - using list comprehensions is *much* slower
-        theta_i = (th / np.pi * 180) / self.resolution  # convert to index
+        theta_i = (rotation_vector / np.pi * 180) / self.resolution  # convert to index
         theta_0 = np.floor(theta_i).astype(int)
         n_entries = self.rotmat.shape[0]  # size of table
         t_r0 = (self.rotmat[t % n_entries] for t in theta_0)
@@ -372,8 +396,8 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
     """
     # weights = np.array(hrir_metadata["weights"])
     matrix = np.array(hrir_metadata["matrix"])
-    logger.info("decoding signal with shape %s", ambisonic_signals.shape)
-    logger.info("Decoding to %s positions", matrix.shape[0])
+    logger.info(f"Decoding signal with shape {ambisonic_signals.shape}")
+    logger.info("Decoding to {matrix.shape[0]} positions")
 
     # Decode to loudspeaker positions
 
@@ -384,31 +408,38 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
     inv_matrix = np.linalg.pinv(matrix[:, 0:n_chans])
     y = np.dot(ambisonic_signals, inv_matrix)
 
-    z = np.zeros([y.shape[0] + hrir["M_data"].shape[0] - 1, 2])
+    stereo_audio = np.zeros([y.shape[0] + hrir["M_data"].shape[0] - 1, 2])
     hrir_data = hrir["M_data"][:, hrir_metadata["selected_channels"], :]
     for i in np.arange(y.shape[1]):
-        z[:, 0] += convolve(y[:, i], hrir_data[:, i, 0])
-        z[:, 1] += convolve(y[:, i], hrir_data[:, i, 1])
+        stereo_audio[:, 0] += convolve(y[:, i], hrir_data[:, i, 0])
+        stereo_audio[:, 1] += convolve(y[:, i], hrir_data[:, i, 1])
 
-    return z
+    return stereo_audio
 
 
-def ambisonic_convolve(signal: np.ndarray, ir: np.ndarray, order: int) -> np.ndarray:
-    """Convolve HOAIRs with signals.
+def ambisonic_convolve(
+    signal: np.ndarray, hoa_impulse_responses: np.ndarray, order: int
+) -> np.ndarray:
+    """Convolve HOA Impulse Responses with signals.
 
     Args:
         signal (ndarray[samples]): the signal to convole
-        ir (ndarray[samples, channels]): the HOA impulse responses
+        hoa_impulse_response (ndarray[samples, channels]): the HOA impulse responses
         order (int, optional): ambisonic order.
 
     Returns:
         np.ndarray[samples, channels]: the convolved signal
     """
     n = (order + 1) ** 2
-    return np.array([convolve(ir_, signal) for ir_ in ir[:, 0:n].T]).T
+    return np.array(
+        [
+            convolve(impulse_response, signal)
+            for impulse_response in hoa_impulse_responses[:, 0:n].T
+        ]
+    ).T
 
 
-def compute_rms(input_signal: np.ndarray, axis: int = 0):
+def compute_rms(input_signal: np.ndarray, axis: int = 0) -> float:
     """Compute rms values along a given axis.
     Args:
         input_signal (np.ndarray): Input signal
@@ -473,14 +504,14 @@ def smoothstep(
 
 
 def rotation_control_vector(
-    array_length: int, start_idx: int, end_idx: int, smoothness: int = 1
+    array_length: int, start_index: int, end_index: int, smoothness: int = 1
 ) -> np.ndarray:
     """Generate mapped rotation control vector for values of theta.
 
     Args:
-        array_length (int)
-        start_idx (int)
-        end_idx (int)
+        array_length (int): Length of array
+        start_index (int): Start position
+        end_index (int)
         smoothness (int, optional) Defaults to 1.
 
     Returns:
@@ -488,14 +519,13 @@ def rotation_control_vector(
     """
     # assert end_idx > start_idx
     # assert array_length > end_idx
-    if start_idx > end_idx:
-        raise ValueError(f"start_idx ({start_idx}) > end_idx ({end_idx})")
-    if end_idx > array_length:
-        raise ValueError(f"array_length ({array_length}) > end_idx {end_idx}")
+    if start_index > end_index:
+        raise ValueError(f"start_index ({start_index}) > end_index ({end_index})")
+    if end_index > array_length:
+        raise ValueError(f"array_length ({array_length}) > end_index {end_index}")
     x = np.arange(0, array_length)
-    idx = smoothstep(x, x_min=start_idx, x_max=end_idx, N=smoothness)
-    idx = np.array(np.floor(idx * (array_length - 1)), dtype=int)
-    return idx
+    idx = smoothstep(x, x_min=start_index, x_max=end_index, N=smoothness)
+    return np.array(np.floor(idx * (array_length - 1)), dtype=int)
 
 
 def rotation_vector(

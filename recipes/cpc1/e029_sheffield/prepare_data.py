@@ -151,7 +151,6 @@ def generate_data_split(
     if_msbg=False,
     if_ref=False,
 ):
-
     with open(orig_data_json, "r") as f:
         all_data_list = json.load(f)
 

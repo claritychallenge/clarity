@@ -1,3 +1,4 @@
+"""Scene rendering for CEC1 challenge."""
 import logging
 import math
 import os
@@ -22,19 +23,18 @@ class Renderer:
         input_path,
         output_path,
         num_channels=1,
-        fs=44100,
+        sample_rate=44100,
         ramp_duration=0.5,
         tail_duration=0.2,
         pre_duration=2.0,
         post_duration=1.0,
         test_nbits=16,
     ):
-
         self.input_path = input_path
         self.output_path = output_path
-        self.fs = fs
+        self.sample_rate = sample_rate
         self.ramp_duration = ramp_duration
-        self.n_tail = int(tail_duration * fs)
+        self.n_tail = int(tail_duration * sample_rate)
         self.pre_duration = pre_duration
         self.post_duration = post_duration
         self.test_nbits = test_nbits
@@ -59,7 +59,7 @@ class Renderer:
             offset_is_samples (bool): measurement units for offset (default: False)
 
         Returns:
-            ndarray: audio signal
+            np.ndarray: audio signal
         """
         try:
             wave_file = SoundFile(filename)
@@ -72,8 +72,10 @@ class Renderer:
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
-        if wave_file.samplerate != self.fs:
-            raise Exception(f"Sampling rate is not {self.fs} for filename {filename}.")
+        if wave_file.samplerate != self.sample_rate:
+            raise Exception(
+                f"Sampling rate is not {self.sample_rate} for filename {filename}."
+            )
 
         if not offset_is_samples:  # Default behaviour
             offset = int(offset * wave_file.samplerate)
@@ -84,38 +86,63 @@ class Renderer:
         x = wave_file.read(frames=nsamples)
         return x
 
-    def write_signal(self, filename, x, fs, floating_point=True):
-        """Write a signal as fixed or floating point wav file."""
+    def write_signal(
+        self,
+        filename: str,
+        signal: np.ndarray,
+        sample_rate: int,
+        floating_point: bool = True,
+    ) -> None:
+        """Write a signal as fixed or floating point wav file.
 
-        if fs != self.fs:
-            logging.warning("Sampling rate mismatch: %s with sr=%s.", filename, fs)
+        Args:
+            filename (string): Name of file to write to.
+            signal (np.ndarray): Array to write.
+            sample_rate (int): Sample Rate
+            floating_point (bool): Whether to write as subtype of floating point
+
+        Returns:
+            None: Does not return anything, writes signal to given filename.
+        """
+
+        if sample_rate != self.sample_rate:
+            logging.warning(
+                f"Sampling rate mismatch: {filename} with sample rate={sample_rate}."
+            )
             # raise ValueError("Sampling rate mismatch")
 
         if floating_point is False:
             if self.test_nbits == 16:
                 subtype = "PCM_16"
                 # If signal is float and we want int16
-                x *= 32768
-                x = x.astype(np.dtype("int16"))
-                assert np.max(x) <= 32767 and np.min(x) >= -32768
+                signal *= 32768
+                signal = signal.astype(np.dtype("int16"))
+                assert np.max(signal) <= 32767 and np.min(signal) >= -32768
             elif self.test_nbits == 24:
                 subtype = "PCM_24"
         else:
             subtype = "FLOAT"
 
-        soundfile.write(filename, x, fs, subtype=subtype)
+        soundfile.write(filename, signal, sample_rate, subtype=subtype)
 
-    def apply_ramp(self, x, dur):
-        """Apply half cosine ramp into and out of signal
+    def apply_ramp(self, signal, ramp_duration):
+        """Apply half cosine ramp into and out of signal.
 
-        dur - ramp duration in seconds
+        Args:
+            signal (np.ndarray): signal to be ramped.
+            ramp_duration (int): ramp duration in seconds.
+
+        Returns:
+            np.ndarray: Signal ramped into and out of by cosine function.
         """
-        ramp = np.cos(np.linspace(math.pi, 2 * math.pi, int(self.fs * dur)))
+        ramp = np.cos(
+            np.linspace(math.pi, 2 * math.pi, int(self.sample_rate * ramp_duration))
+        )
         ramp = (ramp + 1) / 2
-        y = np.array(x)
-        y[0 : len(ramp)] *= ramp
-        y[-len(ramp) :] *= ramp[::-1]
-        return y
+        signal_ramped = np.array(signal)
+        signal_ramped[0 : len(ramp)] *= ramp
+        signal_ramped[-len(ramp) :] *= ramp[::-1]
+        return signal_ramped
 
     def apply_brir(self, signal, brir):
         """Convolve a signal with a BRIR.
@@ -143,37 +170,50 @@ class Renderer:
         output = np.vstack([signal_l, signal_r]).T
         return output[0:output_len, :]
 
-    def compute_snr(self, target, noise, pre_samples=0, post_samples=-1):
-        """Return the SNR.
+    def compute_snr(
+        self, target: np.ndarray, noise: np.ndarray, pre_samples=0, post_samples=-1
+    ):
+        """Return the Signal Noise Ratio (SNR).
+
         Take the overlapping segment of the noise and get the speech-weighted
-        better ear SNR. (Note, SNR is a ratio -- not in dB.)
+        better ear Signal Noise Ratio. (Note, SNR is a ratio -- not in dB.)
+
+        Args:
+            target (np.ndarray): Target signal.
+            noise (np.ndarray): Noise (should be same length as target)
+
+        Returns:
+            float: signal_noise_ratio for better ear.
         """
 
-        pre_samples = int(self.fs * self.pre_duration)
-        post_samples = int(self.fs * self.post_duration)
+        pre_samples = int(self.sample_rate * self.pre_duration)
+        post_samples = int(self.sample_rate * self.post_duration)
 
         segment_target = target[pre_samples:-post_samples]
         segment_noise = noise[pre_samples:-post_samples]
-        assert len(segment_target) == len(segment_noise)
+        try:
+            assert len(segment_target) == len(segment_noise)
+        except AssertionError as e:
+            raise ValueError(
+                f"Target ({len(segment_target)}) differs in length from Noise ({len(segment_noise)})"
+            ) from e
 
         snr = better_ear_speechweighted_snr(segment_target, segment_noise)
-
         return snr
 
     def render(
         self,
-        target,
-        noise_type,
-        interferer,
-        room,
-        scene,
+        target: str,
+        noise_type: str,
+        interferer: str,
+        room: str,
+        scene: str,
         offset,
-        snr_dB,
+        snr_dB: int,
         dataset,
         pre_samples=88200,
         post_samples=44100,
     ):
-
         brir_stem = f"{self.input_path}/{dataset}/rooms/brir/brir_{room}"
         anechoic_brir_stem = f"{self.input_path}/{dataset}/rooms/brir/anech_brir_{room}"
         target_fn = f"{self.input_path}/{dataset}/targets/{target}.wav"
@@ -184,7 +224,7 @@ class Renderer:
         target = self.read_signal(target_fn)
         target = np.pad(target, [(pre_samples, post_samples)])
 
-        interferer = self.read_signal(
+        interferer_signal = self.read_signal(
             interferer_fn, offset=offset, nsamples=len(target), offset_is_samples=True
         )
 
@@ -192,12 +232,14 @@ class Renderer:
             logging.debug("Target and interferer have different lengths")
 
         # Apply 500ms half-cosine ramp
-        interferer = self.apply_ramp(interferer, dur=self.ramp_duration)
+        interferer_signal = self.apply_ramp(
+            interferer_signal, ramp_duration=self.ramp_duration
+        )
 
         prefix = f"{self.output_path}/{scene}"
         outputs = [
             (f"{prefix}_target.wav", target),
-            (f"{prefix}_interferer.wav", interferer),
+            (f"{prefix}_interferer.wav", interferer_signal),
         ]
 
         snr_ref = None
@@ -210,7 +252,7 @@ class Renderer:
 
             # Apply the BRIRs
             target_at_ear = self.apply_brir(target, target_brir)
-            interferer_at_ear = self.apply_brir(interferer, interferer_brir)
+            interferer_at_ear = self.apply_brir(interferer_signal, interferer_brir)
 
             # Scale interferer to obtain SNR specified in scene description
             logging.info("Scaling interferer to obtain mixture SNR = %s dB.", snr_dB)
@@ -256,15 +298,17 @@ class Renderer:
         outputs.append((f"{prefix}_target_anechoic.wav", target_anechoic))
 
         # Write all output files
-        for (filename, signal) in outputs:
-            self.write_signal(filename, signal, self.fs)
+        for filename, signal in outputs:
+            self.write_signal(filename, signal, self.sample_rate)
 
 
-def check_scene_exists(scene, output_path, num_channels):
+def check_scene_exists(scene: dict, output_path: str, num_channels: int) -> bool:
     """Checks correct dataset directory for full set of pre-existing files.
 
     Args:
         scene (dict): dictionary defining the scene to be generated.
+        output_path (str): Path files should be saved to.
+        num_channels (int): Number of channels
 
     Returns:
         status: boolean value indicating whether scene signals exist

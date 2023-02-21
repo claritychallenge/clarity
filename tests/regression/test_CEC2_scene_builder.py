@@ -10,7 +10,6 @@ from clarity.data.scene_builder_cec2 import RoomBuilder, SceneBuilder, set_rando
 
 
 def test_CEC2_scene_builder(regtest):
-
     cfg = OmegaConf.load("tests/test_data/configs/test_CEC2_scene_builder.yaml")
     cfg.path.root = "tests"
     set_random_seed(cfg.random_seed)
