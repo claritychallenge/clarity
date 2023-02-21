@@ -145,7 +145,7 @@ def decompose_signal(
     return signal_stems
 
 
-def apply_nalr(
+def apply_baseline_ha(
     enhancer,
     compressor,
     signal: np.ndarray,
@@ -202,7 +202,9 @@ def process_stems_for_listener(
         audiogram = audiogram_left if stem_str.startswith("l") else audiogram_right
 
         # Apply NALR prescription to stem_signal
-        proc_signal = apply_nalr(enhancer, compressor, stem_signal, audiogram, cfs)
+        proc_signal = apply_baseline_ha(
+            enhancer, compressor, stem_signal, audiogram, cfs
+        )
         processed_stems[stem_str] = proc_signal
     return processed_stems
 
