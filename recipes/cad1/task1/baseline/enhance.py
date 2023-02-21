@@ -95,7 +95,7 @@ def separate_sources(
     return final.cpu().detach().numpy()
 
 
-def get_device(device):
+def get_device(device: str) -> tuple:
     """Get device."""
     if device is None:
         if torch.cuda.is_available():
