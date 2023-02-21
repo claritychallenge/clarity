@@ -4,7 +4,7 @@ import tempfile
 import numpy as np
 import pytest
 
-from recipes.cadenza1.task1.baseline.evaluate import (
+from recipes.cad1.task1.baseline.evaluate import (
     ResultsFile,
     compute_haaqi,
     make_song_listener_list,

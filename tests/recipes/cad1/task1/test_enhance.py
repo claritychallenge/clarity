@@ -4,8 +4,8 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from recipes.cadenza1.task1.baseline.enhance import (
-    apply_nalr,
+from recipes.cad1.task1.baseline.enhance import (
+    apply_baseline_ha,
     decompose_signal,
     denormalize_signals,
     get_device,
@@ -163,7 +163,7 @@ def test_decompose_signal(regtest):
     regtest.write(f"output: \n{output}\n")
 
 
-def test_apply_nalr(regtest):
+def test_apply_baseline_ha(regtest):
     np.random.seed(987654321)
     # Create mock inputs
     signal = np.random.normal(size=44100)
@@ -177,7 +177,7 @@ def test_apply_nalr(regtest):
     )
 
     # Call the apply_nalr function and check that the output is as expected
-    output = apply_nalr(enhancer, compressor, signal, listener_audiogram, cfs)
+    output = apply_baseline_ha(enhancer, compressor, signal, listener_audiogram, cfs)
     regtest.write(f"output: \n{output}\n")
 
 
