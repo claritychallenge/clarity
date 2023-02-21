@@ -171,9 +171,9 @@ def test_non_xeon_8272cl_cpu(
         audiogram_cfs=audiogram_cfs,
     )
 
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced[0]:0.7f}\n")
 
-    # Enhanced audio HASPI score is 0.2994066
+    # Enhanced audio HASPI score is 0.2994140
 
 
 @pytest.mark.skipif(
@@ -252,6 +252,6 @@ def test_xeon_8272cl_cpu(
         audiogram_cfs=audiogram_cfs,
     )
 
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced[0]:0.7f}\n")
 
     # Enhanced audio HASPI score is 0.2994066
