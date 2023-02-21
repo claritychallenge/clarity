@@ -99,6 +99,8 @@ def get_device(device):
     """Get device."""
     if device is None:
         if torch.cuda.is_available():
+            return torch.device("cude"), "cuda"
+        return torch.device("cpu"), "cpu"
             return torch.device("cuda"), "cuda"
         else:
             return torch.device("cpu"), "cpu"
