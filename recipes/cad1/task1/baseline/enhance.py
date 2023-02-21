@@ -41,7 +41,7 @@ def separate_sources(
         model (torch.nn.Module): model to use for separation
         mix (torch.Tensor): mixture to separate, shape (batch, channels, time)
         sample_rate (int): sampling rate of the mixture
-        segment (int): segment length in seconds
+        segment (float): segment length in seconds
         overlap (float): overlap between segments, between 0 and 1
         device (torch.device, str, or None): if provided, device on which to
             execute the computation, otherwise `mix.device` is assumed.
