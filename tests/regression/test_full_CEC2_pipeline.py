@@ -107,7 +107,6 @@ def test_non_xeon_8272cl_cpu(
     demo_metadata: OmegaConf = DEMO_METADATA,
     scene_renderer: SceneRenderer = SCENE_RENDERER,
 ) -> None:
-
     target, interferers, anechoic, _head_turn = scene_renderer.generate_hoa_signals(
         scene
     )
@@ -189,7 +188,6 @@ def test_xeon_8272cl_cpu(
     demo_metadata: OmegaConf = DEMO_METADATA,
     scene_renderer: SceneRenderer = SCENE_RENDERER,
 ) -> None:
-
     target, interferers, anechoic, _head_turn = scene_renderer.generate_hoa_signals(
         scene
     )
