@@ -100,7 +100,7 @@ The remixing is performed by summing the amplified VDBO stems.
 The baseline will generate a left and right signal for each VDBO stem and a remixed signal, totalling 9 signals per song-listener.
 
 To run the baseline enhancement system, firstly specify `paths.root` in `config.yaml` to point to
-where you have installed the clarity data. You can also define your own `path.exp_folder` to store enhanced
+where you have installed the Cadenza data. You can also define your own `path.exp_folder` to store enhanced
 signals and evaluated results.
 Then run:
 ```bash
