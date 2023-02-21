@@ -129,7 +129,7 @@ python evaluate.py
 ```
 A csv file containing the eight HAAQI scores and the combined score will be generated in the `path.exp_folder`.
 
-To check the HAAQI code, see [here](../../clarity/evaluator/haaqi).
+To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not determined
 (in the given recipe, the random seed for each signal is set the last eight digits of the song md5).
