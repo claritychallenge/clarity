@@ -1,4 +1,6 @@
+"""Tests for the enhance module"""
 import numpy as np
+import pytest
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
@@ -16,57 +18,53 @@ from recipes.cad1.task1.baseline.enhance import (
 )
 
 
-def test_normalize_signal():
-    # Test case 1: Test the function with a simple input
-    signal = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    expected_result = (
-        np.array(
-            [
-                [-4.89897949, -3.67423461, -2.44948974],
-                [-1.22474487, 0.0, 1.22474487],
-                [2.44948974, 3.67423461, 4.89897949],
-            ]
-        ),
-        np.array([4.0, 5.0, 6.0]),
-    )
+@pytest.mark.parametrize(
+    "signal,normalised_result,row_means",
+    (  # Simple input
+        [
+            np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+            np.array(
+                [
+                    [-4.89897949, -3.67423461, -2.44948974],
+                    [-1.22474487, 0.0, 1.22474487],
+                    [2.44948974, 3.67423461, 4.89897949],
+                ]
+            ),
+            np.array([4.0, 5.0, 6.0]),
+        ],
+        # Zero mean input
+        [
+            np.array([[-1, 0, 1], [-2, 0, 2], [-3, 0, 3]]),
+            np.array(
+                [
+                    [-0.61237244, 0.0, 0.61237244],
+                    [-1.22474487, 0.0, 1.22474487],
+                    [-1.83711731, 0.0, 1.83711731],
+                ]
+            ),
+            np.array([-2.0, 0.0, 2.0]),
+        ],
+        # Unit variance input
+        [
+            np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+            np.array(
+                [
+                    [-4.89897949, -3.67423461, -2.44948974],
+                    [-1.22474487, 0.0, 1.22474487],
+                    [2.44948974, 3.67423461, 4.89897949],
+                ]
+            ),
+            np.array([3.0, 4.0, 5.0]),
+        ],
+    ),
+)
+def test_normalize_signal(
+    signal: np.ndarray, normalised_result: np.ndarray, row_means: np.ndarray
+) -> None:
+    """Test normalize_signal function"""
     result = normalize_signal(signal)
-    assert len(result) == len(expected_result)
-    assert np.allclose(result[0], expected_result[0])
-    assert np.allclose(result[1], expected_result[1])
-
-    # Test case 2: Test the function with a zero mean input
-    signal = np.array([[-1, 0, 1], [-2, 0, 2], [-3, 0, 3]])
-    expected_result = (
-        np.array(
-            [
-                [-0.61237244, 0.0, 0.61237244],
-                [-1.22474487, 0.0, 1.22474487],
-                [-1.83711731, 0.0, 1.83711731],
-            ]
-        ),
-        np.array([-2.0, 0.0, 2.0]),
-    )
-    result = normalize_signal(signal)
-    assert len(result) == len(expected_result)
-    assert np.allclose(result[0], expected_result[0])
-    assert np.allclose(result[1], expected_result[1])
-
-    # Test case 3: Test the function with a unit variance input
-    signal = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-    expected_result = (
-        np.array(
-            [
-                [-4.89897949, -3.67423461, -2.44948974],
-                [-1.22474487, 0.0, 1.22474487],
-                [2.44948974, 3.67423461, 4.89897949],
-            ]
-        ),
-        np.array([3.0, 4.0, 5.0]),
-    )
-    result = normalize_signal(signal)
-    assert len(result) == len(expected_result)
-    assert np.allclose(result[0], expected_result[0])
-    assert np.allclose(result[1], expected_result[1])
+    np.testing.assert_array_almost_equal(result[0], normalised_result)
+    np.testing.assert_array_almost_equal(result[1], row_means)
 
 
 def test_denormalize_signals():
