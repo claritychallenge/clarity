@@ -13,6 +13,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyclarity)](https://pypi.org/project/pyclarity/)
 [![codecov.io](https://codecov.io/github/claritychallenge/clarity/coverage.svg?branch=main)](https://app.codecov.io/gh/claritychallenge/clarity)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
