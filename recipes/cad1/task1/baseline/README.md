@@ -99,8 +99,9 @@ The remixing is performed by summing the amplified VDBO stems.
 
 The baseline will generate a left and right signal for each VDBO stem and a remixed signal, totalling 9 signals per song-listener.
 
-To run the baseline enhancement system, firstly specify `paths.root` in `config.yaml` to point to
-where you have installed the Cadenza data. You can also define your own `path.exp_folder` to store enhanced
+To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
+where you have installed the Cadenza data. This parameter defaults to the working directory.
+You can also define your own `path.exp_folder` to store enhanced
 signals and evaluated results.
 Then run:
 ```bash
@@ -140,13 +141,9 @@ We ran evaluation for the baseline for five times, and the average overall score
 ## References
 
 * [1] Défossez, A. "Hybrid Spectrogram and Waveform Source Separation". Proceedings of the ISMIR 2021 Workshop on Music Source Separation. [doi:10.48550/arXiv.2111.03600](https://arxiv.org/abs/2111.03600)
---
-
-
-]
-* [2] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265.
-* [3] Kates J M, Arehart K H. "The Hearing-Aid Audio Quality Index (HAAQI)". IEEE/ACM transactions on audio, speech, and language processing, 24(2), 354–365.
-* [4] R. Bittner, J. Salamon, M. Tierney, M. Mauch, C. Cannam and J. P. Bello, "MedleyDB: A Multitrack Dataset for Annotation-Intensive MIR Research", in 15th International Society for Music Information Retrieval Conference, Taipei, Taiwan, Oct. 2014.
-* [5] Rachel M. Bittner, Julia Wilkins, Hanna Yip and Juan P. Bello, "MedleyDB 2.0: New Data and a System for Sustainable Data Collection" Late breaking/demo extended abstract, 17th International Society for Music Information Retrieval (ISMIR) conference, August 2016.
-* [6] Zhiyao Duan, Bryan Pardo and Changshui Zhang, "Multiple fundamental frequency estimation by modeling spectral peaks and non-peak regions," IEEE Trans. Audio Speech  Language Process., vol. 18, no. 8, pp. 2121-2133, 2010.
-* [7] Defferrard, M., Benzi, K., Vandergheynst, P., & Bresson, X. (2016). "FMA: A dataset for music analysis". arXiv preprint arXiv:1612.01840.
+* [2] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265. [doi:10.1097/00003446-198608000-00007](https://doi.org/10.1097/00003446-198608000-00007)
+* [3] Kates J M, Arehart K H. "The Hearing-Aid Audio Quality Index (HAAQI)". IEEE/ACM transactions on audio, speech, and language processing, 24(2), 354–365. [doi:10.1109/TASLP.2015.2507858](https://doi.org/10.1109%2FTASLP.2015.2507858)
+* [4] R. Bittner, J. Salamon, M. Tierney, M. Mauch, C. Cannam and J. P. Bello, "MedleyDB: A Multitrack Dataset for Annotation-Intensive MIR Research", in 15th International Society for Music Information Retrieval Conference, Taipei, Taiwan, Oct. 2014. [pdf](https://archives.ismir.net/ismir2014/paper/000322.pdf)
+* [5] Rachel M. Bittner, Julia Wilkins, Hanna Yip and Juan P. Bello, "MedleyDB 2.0: New Data and a System for Sustainable Data Collection" Late breaking/demo extended abstract, 17th International Society for Music Information Retrieval (ISMIR) conference, August 2016. [pdf](https://wp.nyu.edu/ismir2016/wp-content/uploads/sites/2294/2016/08/bittner-medleydb.pdf)
+* [6] Zhiyao Duan, Bryan Pardo and Changshui Zhang, "Multiple fundamental frequency estimation by modeling spectral peaks and non-peak regions," IEEE Trans. Audio Speech  Language Process., vol. 18, no. 8, pp. 2121-2133, 2010. [doi:10.1109/TASL.2010.2042119](https://doi.org/10.1109/TASL.2010.2042119)
+* [7] Defferrard, M., Benzi, K., Vandergheynst, P., & Bresson, X. (2016). "FMA: A dataset for music analysis". arXiv preprint arXiv:1612.01840. [doi:10.48550/arXiv.1612.01840](https://doi.org/10.48550/arXiv.1612.01840)
