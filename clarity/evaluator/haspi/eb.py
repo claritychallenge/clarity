@@ -1,4 +1,4 @@
-"""Module for ???"""
+"""Module for HASPI, HASQI, HAAQI EBs"""
 import logging
 
 import numpy as np
