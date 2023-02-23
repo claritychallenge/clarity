@@ -176,8 +176,8 @@ def apply_baseline_ha(
 
 def process_stems_for_listener(
     stems: dict,
-    enhancer,
-    compressor,
+    enhancer: NALR,
+    compressor: Compressor,
     audiogram_left: np.ndarray,
     audiogram_right: np.ndarray,
     cfs: np.ndarray,
