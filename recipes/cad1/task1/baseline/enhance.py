@@ -30,7 +30,8 @@ def separate_sources(
     device: Union[torch.device, str] = None,
 ):
     """
-    Apply model to a given mixture. Use fade, and add segments together in order to add model segment by segment.
+    Apply model to a given mixture.
+    Use fade, and add segments together in order to add model segment by segment.
 
     Args:
         model (torch.nn.Module): model to use for separation
@@ -109,7 +110,9 @@ def get_device(device: str) -> tuple:
 
     elif device == "cpu":
         return torch.device("cpu"), "cpu"
-    raise ValueError(f"Unsupported device type: {device}")
+
+    else:
+        raise ValueError(f"Unsupported device type: {device}")
 
 
 def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
@@ -126,11 +129,11 @@ def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
 
 
 def decompose_signal(
-    model: torch.nn.Module, signal: np.ndarray, fs: int, device: torch.device
+    model: torch.nn.Module, signal: np.ndarray, sample_rate: int, device: torch.device
 ) -> Dict[str, np.ndarray]:
     """Decompose signal into 8 stems."""
     signal, ref = normalize_signal(signal)
-    sources = separate_sources(model, signal, fs, device=device)
+    sources = separate_sources(model, signal, sample_rate, device=device)
     # only one element in the batch
     sources = sources[0]
     sources = denormalize_signals(sources, ref)
@@ -245,7 +248,8 @@ def enhance(config: DictConfig) -> None:
             Path(config.path.music_dir) / split_directory / song_name / "mixture.wav"
         )
 
-        # Convert to 32-bit floating point and transpose from [samples, channels] to [channels, samples]
+        # Convert to 32-bit floating point and transpose
+        # from [samples, channels] to [channels, samples]
         mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
         assert sampling_frequency == config.nalr.fs
 
@@ -270,7 +274,7 @@ def enhance(config: DictConfig) -> None:
             # save processed stems
             n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
             out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
-            for stem_str in processed_stems.keys():
+            for stem_str in processed_stems:
                 if stem_str.startswith("l"):
                     out_left += processed_stems[stem_str]
                 else:

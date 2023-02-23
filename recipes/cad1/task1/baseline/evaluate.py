@@ -1,3 +1,4 @@
+"""Evaluate the enhanced signals using the HAAQI metric."""
 import csv
 import hashlib
 import itertools
@@ -67,7 +68,8 @@ class ResultsFile:
             listener (str): The name of the listener who submitted the result.
             song (str): The name of the song that the result is for.
             score (float): The combined score for the result.
-            instruments_scores (dict): A dictionary of scores for each instrument channel in the result.
+            instruments_scores (dict): A dictionary of scores for each instrument
+                channel in the result.
         """
         logger.info(f"The combined score is {score}")
 
@@ -112,15 +114,15 @@ def make_song_listener_list(
 
 
 @hydra.main(config_path="", config_name="config")
-def run_calculate_aq(cfg: DictConfig) -> None:
+def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
     # Load test songs
-    with open(cfg.path.valid_file, "r", encoding="utf-8") as fp:
+    with open(config.path.valid_file, "r", encoding="utf-8") as fp:
         songs = json.load(fp)
     songs = pd.DataFrame.from_dict(songs)
 
     # Load listener data
-    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+    with open(config.path.listeners_file, "r", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
 
     enhanced_folder = Path("enhanced_signals")
@@ -130,13 +132,13 @@ def run_calculate_aq(cfg: DictConfig) -> None:
     results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
-        songs["Track Name"].tolist(), listener_audiograms, cfg.evaluate.small_test
+        songs["Track Name"].tolist(), listener_audiograms, config.evaluate.small_test
     )
 
     for song, listener in song_listener_pair:
         logger.info(f"Evaluating {song} for {listener}")
 
-        if cfg.evaluate.set_random_seed:
+        if config.evaluate.set_random_seed:
             set_song_seed(song)
 
         scores = {}
@@ -152,7 +154,7 @@ def run_calculate_aq(cfg: DictConfig) -> None:
                 split_dir = "test"
 
             sample_rate_reference_signal, reference_signal = wavfile.read(
-                Path(cfg.path.music_dir) / split_dir / song / f"{instrument}.wav"
+                Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
             )
 
             reference_signal = (reference_signal / 32768.0).astype(np.float32)
@@ -170,7 +172,7 @@ def run_calculate_aq(cfg: DictConfig) -> None:
                 sample_rate_reference_signal
                 == sample_rate_left_enhanced_signal
                 == sample_rate_right_enhanced_signal
-                == cfg.nalr.fs
+                == config.nalr.fs
             )
 
             #  audiogram, audiogram_frequencies, fs_signal
@@ -179,14 +181,14 @@ def run_calculate_aq(cfg: DictConfig) -> None:
                 left_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_l"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                cfg.nalr.fs,
+                config.nalr.fs,
             )
             scores[f"right_{instrument}"] = compute_haaqi(
                 right_enhanced_signal,
                 right_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_r"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                cfg.nalr.fs,
+                config.nalr.fs,
             )
 
         # Compute the combined score
