@@ -147,3 +147,31 @@ def haaqi_v1(
     raw = [mel_cepstral_high, basilar_membrane_sync5, d_loud, d_norm]
 
     return combined_model, nonlinear_model, linear_model, raw
+
+
+def compute_haaqi(
+    enh_signal: np.ndarray,
+    ref_signal: np.ndarray,
+    audiogram: np.ndarray,
+    audiogram_frequencies: np.ndarray,
+    fs_signal: int,
+) -> float:
+    """Compute HAAQI metric"""
+
+    haaqi_audiogram_freq = [250, 500, 1000, 2000, 4000, 6000]
+    audiogram_adjusted = np.array(
+        [
+            audiogram[i]
+            for i in range(len(audiogram_frequencies))
+            if audiogram_frequencies[i] in haaqi_audiogram_freq
+        ]
+    )
+    score, _, _, _ = haaqi_v1(
+        reference=ref_signal,
+        reference_freq=fs_signal,
+        processed=enh_signal,
+        processed_freq=fs_signal,
+        hearing_loss=audiogram_adjusted,
+        equalisation=1,
+    )
+    return score
