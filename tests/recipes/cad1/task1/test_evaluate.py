@@ -24,14 +24,14 @@ def test_ResultsFile():
         song="My favorite song",
         score=0.9,
         instruments_scores={
-            "l_bass": 0.8,
-            "r_bass": 0.8,
-            "l_drums": 0.9,
-            "r_drums": 0.9,
-            "l_other": 0.8,
-            "r_other": 0.8,
-            "l_vocals": 0.95,
-            "r_vocals": 0.95,
+            "left_bass": 0.8,
+            "right_bass": 0.8,
+            "lelf_drums": 0.9,
+            "right_drums": 0.9,
+            "left_other": 0.8,
+            "right_other": 0.8,
+            "left_vocals": 0.95,
+            "right_vocals": 0.95,
         },
     )
     with open(results_file, "r") as f:

@@ -43,14 +43,14 @@ class ResultsFile:
                     "song",
                     "listener",
                     "score",
-                    "l_bass",
-                    "r_bass",
-                    "l_drums",
-                    "r_drums",
-                    "l_other",
-                    "r_other",
-                    "l_vocals",
-                    "r_vocals",
+                    "left_bass",
+                    "right_bass",
+                    "left_drums",
+                    "right_drums",
+                    "left_other",
+                    "right_other",
+                    "left_vocals",
+                    "right_vocals",
                 ]
             )
 
@@ -80,14 +80,14 @@ class ResultsFile:
                     song,
                     listener,
                     str(score),
-                    str(instruments_scores["l_bass"]),
-                    str(instruments_scores["r_bass"]),
-                    str(instruments_scores["l_drums"]),
-                    str(instruments_scores["r_drums"]),
-                    str(instruments_scores["l_other"]),
-                    str(instruments_scores["r_other"]),
-                    str(instruments_scores["l_vocals"]),
-                    str(instruments_scores["r_vocals"]),
+                    str(instruments_scores["left_bass"]),
+                    str(instruments_scores["right_bass"]),
+                    str(instruments_scores["left_drums"]),
+                    str(instruments_scores["right_drums"]),
+                    str(instruments_scores["left_other"]),
+                    str(instruments_scores["right_other"]),
+                    str(instruments_scores["left_vocals"]),
+                    str(instruments_scores["right_vocals"]),
                 ]
             )
 
@@ -179,38 +179,42 @@ def run_calculate_aq(cfg: DictConfig) -> None:
             if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
                 split_dir = "test"
 
-            fs_ref_signal, ref_signal = wavfile.read(
+            sample_rate_reference_signal, reference_signal = wavfile.read(
                 Path(cfg.path.music_dir) / split_dir / song / f"{instrument}.wav"
             )
-            ref_signal = ref_signal[30 * fs_ref_signal : 60 * fs_ref_signal, :]
 
-            ref_signal = (ref_signal / 32768.0).astype(np.float32)
-            l_ref_signal = ref_signal[:, 0]
-            r_ref_signal = ref_signal[:, 1]
+            reference_signal = (reference_signal / 32768.0).astype(np.float32)
+            left_reference_signal = reference_signal[:, 0]
+            right_reference_signal = reference_signal[:, 1]
 
-            fs_l_enh_signal, l_enh_signal = wavfile.read(
-                enhanced_folder / f"{listener}_{song}_l_{instrument}.wav"
+            sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
+                enhanced_folder / f"{listener}_{song}_left_{instrument}.wav"
             )
-            fs_r_enh_signal, r_enh_signal = wavfile.read(
-                enhanced_folder / f"{listener}_{song}_r_{instrument}.wav"
+            sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
+                enhanced_folder / f"{listener}_{song}_right_{instrument}.wav"
             )
 
-            assert fs_ref_signal == fs_l_enh_signal == fs_r_enh_signal == cfg.nalr.fs
+            assert (
+                sample_rate_reference_signal
+                == sample_rate_left_enhanced_signal
+                == sample_rate_right_enhanced_signal
+                == cfg.nalr.sample_rate
+            )
 
             #  audiogram, audiogram_frequencies, fs_signal
             scores[f"l_{instrument}"] = compute_haaqi(
-                l_enh_signal,
-                l_ref_signal,
+                left_enhanced_signal,
+                left_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_l"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                cfg.nalr.fs,
+                cfg.nalr.sample_rate,
             )
             scores[f"r_{instrument}"] = compute_haaqi(
-                r_enh_signal,
-                r_ref_signal,
+                right_enhanced_signal,
+                right_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_r"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                cfg.nalr.fs,
+                cfg.nalr.sample_rate,
             )
 
         # Compute the combined score
