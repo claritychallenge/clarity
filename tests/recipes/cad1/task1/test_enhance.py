@@ -19,7 +19,14 @@ def test_map_to_dict():
     sources = np.array([[1, 2], [3, 4], [5, 6]])
     sources_list = ["a", "b", "c"]
     output = map_to_dict(sources, sources_list)
-    expected_output = {"l_a": 1, "r_a": 2, "l_b": 3, "r_b": 4, "l_c": 5, "r_c": 6}
+    expected_output = {
+        "left_a": 1,
+        "right_a": 2,
+        "left_b": 3,
+        "right_b": 4,
+        "left_c": 5,
+        "right_c": 6,
+    }
     assert output == expected_output
 
 
@@ -36,6 +43,7 @@ def test_decompose_signal():
     signal = np.random.uniform(size=(1, 2, fs * duration))
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(model, signal, fs, device)
+
     expected_results = np.load(
         "../../../resources/test_enhance.test_decompose_signal.npy", allow_pickle=True
     )[()]
@@ -58,6 +66,7 @@ def test_apply_baseline_ha():
 
     # Call the apply_nalr function and check that the output is as expected
     output = apply_baseline_ha(enhancer, compressor, signal, listener_audiogram, cfs)
+
     expected_results = np.load(
         "../../../resources/test_enhance.test_apply_baseline_ha.npy", allow_pickle=True
     )
