@@ -15,9 +15,9 @@ audiogram = np.array([10, 20, 30, 40, 50, 60])
 audiogram_frequencies = np.array([125, 250, 500, 1000, 2000, 4000, 8000])
 
 
-def test_ResultsFile():
-    results_file = pytest.tmp_path / "results.csv"
-    rf = ResultsFile(results_file)
+def test_ResultsFile(tmp_path):
+    results_file = tmp_path / "results.csv"
+    rf = ResultsFile(results_file.as_posix())
     rf.write_header()
     rf.add_result(
         listener="My listener",
@@ -26,7 +26,7 @@ def test_ResultsFile():
         instruments_scores={
             "left_bass": 0.8,
             "right_bass": 0.8,
-            "lelf_drums": 0.9,
+            "left_drums": 0.9,
             "right_drums": 0.9,
             "left_other": 0.8,
             "right_other": 0.8,
