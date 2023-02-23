@@ -1,6 +1,4 @@
-import os
-import tempfile
-
+"""Tests for the evaluation module"""
 import numpy as np
 import pytest
 
@@ -18,31 +16,30 @@ audiogram_frequencies = np.array([125, 250, 500, 1000, 2000, 4000, 8000])
 
 
 def test_ResultsFile():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        results_file = os.path.join(tmpdir, "results.csv")
-        rf = ResultsFile(results_file)
-        rf.write_header()
-        rf.add_result(
-            listener="My listener",
-            song="My favorite song",
-            score=0.9,
-            instruments_scores={
-                "l_bass": 0.8,
-                "r_bass": 0.8,
-                "l_drums": 0.9,
-                "r_drums": 0.9,
-                "l_other": 0.8,
-                "r_other": 0.8,
-                "l_vocals": 0.95,
-                "r_vocals": 0.95,
-            },
+    results_file = pytest.tmp_path / "results.csv"
+    rf = ResultsFile(results_file)
+    rf.write_header()
+    rf.add_result(
+        listener="My listener",
+        song="My favorite song",
+        score=0.9,
+        instruments_scores={
+            "l_bass": 0.8,
+            "r_bass": 0.8,
+            "l_drums": 0.9,
+            "r_drums": 0.9,
+            "l_other": 0.8,
+            "r_other": 0.8,
+            "l_vocals": 0.95,
+            "r_vocals": 0.95,
+        },
+    )
+    with open(results_file, "r") as f:
+        contents = f.read()
+        assert (
+            "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"
+            in contents
         )
-        with open(results_file, "r") as f:
-            contents = f.read()
-            assert (
-                "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"
-                in contents
-            )
 
 
 def test_compute_haaqi():
@@ -65,21 +62,17 @@ def test_compute_haaqi():
     )
 
     # Check that the score is a float between 0 and 1
-    assert score == pytest.approx(0.11706341829445092, rel=1e-7)
+    assert score == pytest.approx(0.117063418, rel=1e-7)
 
 
-def test_set_song_seed():
+@pytest.mark.parametrize(
+    "song,expected_result",
+    (["my favorite song", 83], ["another song", 3]),
+)
+def test_set_song_seed(song, expected_result):
     # Set seed for the same song
-    song = "my favorite song"
     set_song_seed(song)
-    np.random.seed(71977857)
-    assert np.random.randint(100) == 11
-
-    # Set seed for a different song
-    song = "another song"
-    set_song_seed(song)
-    np.random.seed(39223026)
-    assert np.random.randint(100) == 0
+    assert np.random.randint(100) == expected_result
 
 
 def test_make_song_listener_list():
