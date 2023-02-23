@@ -22,22 +22,16 @@ logger = logging.getLogger(__name__)
 
 def separate_sources(
     model: torch.nn.Module,
-    mix: torch.Tensor,
+    mix: Union[torch.Tensor, np.ndarray],
     sample_rate: int,
-    segment: float,
-    overlap: float,
-    device: Union[torch.device, str]
-    mix,
-    sample_rate,
-    segment=10.0,
-    overlap=0.1,
-    device=None,
+    segment: float = 10.0,
+    overlap: float = 0.1,
+    device: Union[torch.device, str] = None,
 ):
     """
     Apply model to a given mixture. Use fade, and add segments together in order to add model segment by segment.
 
-    Arguments
-    ----------
+    Args:
         model (torch.nn.Module): model to use for separation
         mix (torch.Tensor): mixture to separate, shape (batch, channels, time)
         sample_rate (int): sampling rate of the mixture
@@ -48,16 +42,12 @@ def separate_sources(
             When `device` is different from `mix.device`, only local computations will
             be on `device`, while the entire tracks will be stored on `mix.device`.
 
-    Returns
+    Returns:
         torch.Tensor: estimated sources
 
     Based on https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html
     """
     device = mix.device if device is None else torch.device(device)
-        device = mix.device
-    else:
-        device = torch.device(device)
-
     mix = torch.as_tensor(mix, device=device)
 
     if mix.ndim == 1:
@@ -96,23 +86,29 @@ def separate_sources(
 
 
 def get_device(device: str) -> tuple:
-    """Get device."""
+    """Get the Torch device.
+
+    Args:
+        device (str): device type, e.g. "cpu", "gpu0", "gpu1", etc.
+
+    Returns:
+        torch.device: torch.device() appropiate to the hardware available.
+        str: device type selected, e.g. "cpu", "cuda".
+    """
     if device is None:
         if torch.cuda.is_available():
-            return torch.device("cude"), "cuda"
-        return torch.device("cpu"), "cpu"
             return torch.device("cuda"), "cuda"
-        else:
-            return torch.device("cpu"), "cpu"
+        return torch.device("cpu"), "cpu"
+
     elif device.startswith("gpu"):
         device_index = int(device.replace("gpu", ""))
-        if device_index >= torch.cuda.device_count():
+        if device_index > torch.cuda.device_count():
             raise ValueError(f"GPU device index {device_index} is not available.")
         return torch.device(f"cuda:{device_index}"), "cuda"
+
     elif device == "cpu":
         return torch.device("cpu"), "cpu"
-    else:
-        raise ValueError(f"Unsupported device type: {device}")
+    raise ValueError(f"Unsupported device type: {device}")
 
 
 def normalize_signal(signal: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -153,8 +149,8 @@ def decompose_signal(
 
 
 def apply_baseline_ha(
-    enhancer,
-    compressor,
+    enhancer: NALR,
+    compressor: Compressor,
     signal: np.ndarray,
     listener_audiogram: np.ndarray,
     cfs: np.ndarray,
@@ -163,8 +159,8 @@ def apply_baseline_ha(
     Apply NAL-R prescription hearing aid to a signal.
 
     Args:
-        enhancer: An object that enhances the signal.
-        compressor: An object that compresses the signal.
+        enhancer: A NALR object that enhances the signal.
+        compressor: A Compressor object that compresses the signal.
         signal: An ndarray representing the audio signal.
         listener_audiogram: An ndarray representing the listener's audiogram.
         cfs: An ndarray of center frequencies.
