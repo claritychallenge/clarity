@@ -67,85 +67,83 @@ def test_normalize_signal(
     np.testing.assert_array_almost_equal(result[1], row_means)
 
 
-def test_denormalize_signals():
-    # Test case 1: Test the function with a simple input
-    sources = np.array(
+@pytest.mark.parametrize(
+    "sources,ref,expected_result",
+    (  # Test case 1: Test the function with a simple input
         [
             np.array(
                 [
-                    [-1.22474487, 0.0, 1.22474487],
-                    [-1.22474487, 0.0, 1.22474487],
-                    [-1.22474487, 0.0, 1.22474487],
+                    [
+                        [-1.22474487, 0.0, 1.22474487],
+                        [-1.22474487, 0.0, 1.22474487],
+                        [-1.22474487, 0.0, 1.22474487],
+                    ],
+                    [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
                 ]
             ),
-            np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]),
-        ]
-    )
-    ref = np.array([4.0, 5.0, 6.0])
-    expected_result = [
-        np.array([[4.0, 5.0, 6.0], [4.0, 5.0, 6.0], [4.0, 5.0, 6.0]]),
-        np.array([[5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, 5.0]]),
-    ]
-    result = denormalize_signals(sources, ref)
-    assert len(result) == len(expected_result)
-    assert np.allclose(result[0], expected_result[0])
-    assert np.allclose(result[1], expected_result[1])
-
-    # Test case 2: Test the function with an input that has a non-zero mean
-    sources = np.array(
+            np.array([4.0, 5.0, 6.0]),
+            [
+                np.array([[4.0, 5.0, 6.0], [4.0, 5.0, 6.0], [4.0, 5.0, 6.0]]),
+                np.array([[5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, 5.0]]),
+            ],
+        ],
+        # Test case 2: Test the function with an input that has a non-zero mean
         [
             np.array(
                 [
-                    [-1.22474487, 0.0, 1.22474487],
-                    [-1.22474487, 0.0, 1.22474487],
-                    [-1.22474487, 0.0, 1.22474487],
+                    [
+                        [-1.22474487, 0.0, 1.22474487],
+                        [-1.22474487, 0.0, 1.22474487],
+                        [-1.22474487, 0.0, 1.22474487],
+                    ],
+                    [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
                 ]
             ),
-            np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]),
-        ]
-    )
-    ref = np.array([1.0, 2.0, 3.0])
-    expected_result = [
-        np.array([[1.0, 2.0, 3.0], [1.0, 2.0, 3.0], [1.0, 2.0, 3.0]]),
-        np.array([[2.0, 2.0, 2.0], [2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]),
-    ]
-    result = denormalize_signals(sources, ref)
-    assert len(result) == len(expected_result)
-    assert np.allclose(result[0], expected_result[0])
-    assert np.allclose(result[1], expected_result[1])
-
-    # Test case 3: Test the function with an input that has a non-unit variance
-    sources = np.array(
+            np.array([1.0, 2.0, 3.0]),
+            [
+                np.array([[1.0, 2.0, 3.0], [1.0, 2.0, 3.0], [1.0, 2.0, 3.0]]),
+                np.array([[2.0, 2.0, 2.0], [2.0, 2.0, 2.0], [2.0, 2.0, 2.0]]),
+            ],
+        ],
+        # Test case 3: Test the function with an input that has a non-unit variance
         [
             np.array(
                 [
-                    [-2.44948974, 0.0, 2.44948974],
-                    [-2.44948974, 0.0, 2.44948974],
-                    [-2.44948974, 0.0, 2.44948974],
+                    [
+                        [-2.44948974, 0.0, 2.44948974],
+                        [-2.44948974, 0.0, 2.44948974],
+                        [-2.44948974, 0.0, 2.44948974],
+                    ],
+                    [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
                 ]
             ),
-            np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]),
-        ]
-    )
-    ref = np.array([4.0, 5.0, 6.0])
-    expected_result = [
-        np.array([[3.0, 5.0, 7.0], [3.0, 5.0, 7.0], [3.0, 5.0, 7.0]]),
-        np.array([[5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, 5.0]]),
-    ]
+            np.array([4.0, 5.0, 6.0]),
+            [
+                np.array([[3.0, 5.0, 7.0], [3.0, 5.0, 7.0], [3.0, 5.0, 7.0]]),
+                np.array([[5.0, 5.0, 5.0], [5.0, 5.0, 5.0], [5.0, 5.0, 5.0]]),
+            ],
+        ],
+    ),
+)
+def test_denormalize_signals(
+    sources: np.ndarray, ref: np.ndarray, expected_result: np.ndarray
+) -> None:
+    """Test denormalize_signal function"""
     result = denormalize_signals(sources, ref)
     assert len(result) == len(expected_result)
-    assert np.allclose(result[0], expected_result[0])
-    assert np.allclose(result[1], expected_result[1])
+    np.testing.assert_array_almost_equal(result[0], expected_result[0])
+    np.testing.assert_array_almost_equal(result[1], expected_result[1])
 
 
-def test_map_to_dict(regtest):
+def test_map_to_dict():
     sources = np.array([[1, 2], [3, 4], [5, 6]])
     sources_list = ["a", "b", "c"]
     output = map_to_dict(sources, sources_list)
-    regtest.write(f"output: \n{output}\n")
+    expected_output = {"l_a": 1, "r_a": 2, "l_b": 3, "r_b": 4, "l_c": 5, "r_c": 6}
+    assert output == expected_output
 
 
-def test_decompose_signal(regtest):
+def test_decompose_signal():
     np.random.seed(123456789)
     # Load Separation Model
     model = HDEMUCS_HIGH_MUSDB.get_model().double()
@@ -153,15 +151,19 @@ def test_decompose_signal(regtest):
     model.to(device)
 
     # Create a mock signal to decompose
-    fs = 44100
-    duration = 5
+    fs = 8000
+    duration = 1
     signal = np.random.uniform(size=(1, 2, fs * duration))
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(model, signal, fs, device)
-    regtest.write(f"output: \n{output}\n")
+    expected_results = np.load(
+        "../../../resources/test_enhance.test_decompose_signal.npy", allow_pickle=True
+    )[()]
+    for key in output.keys():
+        np.testing.assert_array_almost_equal(output[key], expected_results[key])
 
 
-def test_apply_baseline_ha(regtest):
+def test_apply_baseline_ha():
     np.random.seed(987654321)
     # Create mock inputs
     signal = np.random.normal(size=44100)
@@ -176,22 +178,25 @@ def test_apply_baseline_ha(regtest):
 
     # Call the apply_nalr function and check that the output is as expected
     output = apply_baseline_ha(enhancer, compressor, signal, listener_audiogram, cfs)
-    regtest.write(f"output: \n{output}\n")
+    expected_results = np.load(
+        "../../../resources/test_enhance.test_apply_baseline_ha.npy", allow_pickle=True
+    )
+    np.testing.assert_array_almost_equal(output, expected_results)
 
 
-def test_process_stems_for_listener(regtest):
+def test_process_stems_for_listener():
     np.random.seed(12357)
     # Create mock inputs
     stems = {
-        "l_source1": np.random.normal(size=44100),
-        "r_source1": np.random.normal(size=44100),
+        "l_source1": np.random.normal(size=16000),
+        "r_source1": np.random.normal(size=16000),
     }
     audiogram_left = np.ones(9)
     audiogram_right = np.ones(9)
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
 
     # Create mock objects for enhancer and compressor
-    enhancer = NALR(nfir=220, fs=44100)
+    enhancer = NALR(nfir=220, fs=16000)
     compressor = Compressor(
         threshold=0.35, attenuation=0.1, attack=50, release=1000, rms_buffer_size=0.064
     )
@@ -200,13 +205,15 @@ def test_process_stems_for_listener(regtest):
     output = process_stems_for_listener(
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
+    expected_results = np.load(
+        "../../../resources/test_enhance.test_process_stems_for_listener.npy",
+        allow_pickle=True,
+    )[()]
+    for key in output.keys():
+        np.testing.assert_array_almost_equal(output[key], expected_results[key])
 
-    # Check that the processed stems are different from the input stems
-    for stem_str in stems:
-        regtest.write(f"{stem_str}: \n{output[stem_str]}\n")
 
-
-def test_separate_sources(regtest):
+def test_separate_sources():
     np.random.seed(123456789)
 
     # Create a dummy model
@@ -221,9 +228,9 @@ def test_separate_sources(regtest):
             )
 
     # Set up some dummy input data
-    batch_size = 2
-    num_channels = 2
-    length = 5
+    batch_size = 1
+    num_channels = 1
+    length = 1
     sample_rate = 16000
     sources = ["vocals", "drums", "bass", "other"]
     mix = np.random.randn(batch_size, num_channels, length * sample_rate)
@@ -233,11 +240,14 @@ def test_separate_sources(regtest):
     model = DummyModel(sources)
 
     # Call separate_sources
-    sources = separate_sources(model, mix, sample_rate, device=device)
+    output = separate_sources(model, mix, sample_rate, device=device)
 
+    expected_results = np.load(
+        "../../../resources/test_enhance.test_separate_sources.npy", allow_pickle=True
+    )
     # Check that the output has the correct shape
-    regtest.write(f"sources.shape: \n{sources.shape}\n")
-    regtest.write(f"sources: \n{sources}\n")
+    assert output.shape == expected_results.shape
+    np.testing.assert_array_almost_equal(output, expected_results)
 
 
 def test_get_device():

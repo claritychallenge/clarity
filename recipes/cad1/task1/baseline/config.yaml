@@ -1,7 +1,7 @@
 path:
   root: ./
-  metadata_dir: ${path.root}/metadata
-  music_dir: ${path.root}/audio/musdb18hq
+  metadata_dir: ${path.root}/task1/metadata
+  music_dir: ${path.root}/task1/audio/musdb18hq
   train_file: ${path.metadata_dir}/musdb18_train.json
   valid_file: ${path.metadata_dir}/musdb18_valid.demo.json
   listeners_file: ${path.metadata_dir}/listeners.demo.json
