@@ -202,14 +202,14 @@ def run_calculate_aq(cfg: DictConfig) -> None:
             )
 
             #  audiogram, audiogram_frequencies, fs_signal
-            scores[f"l_{instrument}"] = compute_haaqi(
+            scores[f"left_{instrument}"] = compute_haaqi(
                 left_enhanced_signal,
                 left_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_l"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
                 cfg.nalr.fs,
             )
-            scores[f"r_{instrument}"] = compute_haaqi(
+            scores[f"right_{instrument}"] = compute_haaqi(
                 right_enhanced_signal,
                 right_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_r"]),
