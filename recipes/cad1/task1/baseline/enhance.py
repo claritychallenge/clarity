@@ -2,7 +2,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 
 import hydra
 import numpy as np
@@ -16,6 +16,7 @@ from tqdm import tqdm
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 
 logger = logging.getLogger(__name__)
 
@@ -111,17 +112,6 @@ def get_device(device: str) -> tuple:
     raise ValueError(f"Unsupported device type: {device}")
 
 
-def normalize_signal(signal: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """Standardize the signal to have zero mean and unit variance."""
-    ref = signal.mean(0)
-    return (signal - ref.mean()) / ref.std(), ref
-
-
-def denormalize_signals(sources: np.ndarray, ref: np.ndarray) -> np.ndarray:
-    """Scale signals back to the original scale."""
-    return sources * ref.std() + ref.mean()
-
-
 def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
     """Map sources to a dictionary."""
     audios = dict(zip(sources_list, sources))
@@ -129,8 +119,8 @@ def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
     signal_stems = {}
     for source in sources_list:
         audio = audios[source]
-        signal_stems[f"l_{source}"] = audio[0]
-        signal_stems[f"r_{source}"] = audio[1]
+        signal_stems[f"left_{source}"] = audio[0]
+        signal_stems[f"right_{source}"] = audio[1]
 
     return signal_stems
 
@@ -224,8 +214,8 @@ def enhance(config: DictConfig) -> None:
         - right channel vocal, drums, bass, and other stems
     """
 
-    enhanced_folder_path = Path("enhanced_signals")
-    enhanced_folder_path.mkdir(parents=True, exist_ok=True)
+    enhanced_folder = Path("enhanced_signals")
+    enhanced_folder.mkdir(parents=True, exist_ok=True)
 
     # Load Separation Model
     separation_model = HDEMUCS_HIGH_MUSDB.get_model()
@@ -289,7 +279,7 @@ def enhance(config: DictConfig) -> None:
                 filename = f"{listener_info['name']}_{song_name}_{stem_str}.wav"
                 proc_signal = processed_stems[stem_str]
                 wavfile.write(
-                    enhanced_folder_path / filename, sampling_frequency, proc_signal
+                    enhanced_folder / filename, sampling_frequency, proc_signal
                 )
 
             enhanced = np.stack([out_left, out_right], axis=1)
@@ -303,9 +293,7 @@ def enhance(config: DictConfig) -> None:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
             np.clip(enhanced, -1.0, 1.0, out=enhanced)
             signal_16 = (32768.0 * enhanced).astype(np.int16)
-            wavfile.write(
-                enhanced_folder_path / filename, sampling_frequency, signal_16
-            )
+            wavfile.write(enhanced_folder / filename, sampling_frequency, signal_16)
 
 
 if __name__ == "__main__":

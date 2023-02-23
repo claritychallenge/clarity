@@ -151,8 +151,8 @@ def run_calculate_aq(cfg: DictConfig) -> None:
     with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
 
-    logger.info(f"Evaluating from {cfg.path.enhanced_folder} directory")
-    enhanced_folder = Path(cfg.path.enhanced_folder)
+    enhanced_folder = Path("enhanced_signals")
+    logger.info(f"Evaluating from {enhanced_folder} directory")
 
     results_file = ResultsFile("scores.csv")
     results_file.write_header()
@@ -198,7 +198,7 @@ def run_calculate_aq(cfg: DictConfig) -> None:
                 sample_rate_reference_signal
                 == sample_rate_left_enhanced_signal
                 == sample_rate_right_enhanced_signal
-                == cfg.nalr.sample_rate
+                == cfg.nalr.fs
             )
 
             #  audiogram, audiogram_frequencies, fs_signal
@@ -207,14 +207,14 @@ def run_calculate_aq(cfg: DictConfig) -> None:
                 left_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_l"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                cfg.nalr.sample_rate,
+                cfg.nalr.fs,
             )
             scores[f"r_{instrument}"] = compute_haaqi(
                 right_enhanced_signal,
                 right_reference_signal,
                 np.array(listener_audiograms[listener]["audiogram_levels_r"]),
                 np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                cfg.nalr.sample_rate,
+                cfg.nalr.fs,
             )
 
         # Compute the combined score
