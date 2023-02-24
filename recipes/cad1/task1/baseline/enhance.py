@@ -231,6 +231,7 @@ def enhance(config: DictConfig) -> None:
     Then, the NAL-R prescription procedure is applied to each stem.
     Args:
         config (dict): Dictionary of configuration options for enhancing music.
+
     Returns 8 stems for each song:
         - left channel vocal, drums, bass, and other stems
         - right channel vocal, drums, bass, and other stems

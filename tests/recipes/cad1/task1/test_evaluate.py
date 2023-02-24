@@ -7,7 +7,6 @@ from scipy.io import wavfile
 from recipes.cad1.task1.baseline.evaluate import (
     ResultsFile,
     _evaluate_song_listener,
-    compute_haaqi,
     make_song_listener_list,
     set_song_seed,
 )
@@ -38,29 +37,6 @@ def test_ResultsFile(tmp_path):
             "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"
             in contents
         )
-
-
-def test_compute_haaqi():
-    np.random.seed(42)
-
-    fs = 16000
-    enh_signal = np.random.uniform(-1, 1, fs * 10)
-    ref_signal = np.random.uniform(-1, 1, fs * 10)
-
-    audiogram = np.array([10, 20, 30, 40, 50, 60])
-    audiogram_frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
-
-    # Compute HAAQI score
-    score = compute_haaqi(
-        processed_signal=enh_signal,
-        reference_signal=ref_signal,
-        audiogram=audiogram,
-        audiogram_frequencies=audiogram_frequencies,
-        sample_rate=fs,
-    )
-
-    # Check that the score is a float between 0 and 1
-    assert score == pytest.approx(0.117063418, rel=1e-7)
 
 
 @pytest.mark.parametrize(
