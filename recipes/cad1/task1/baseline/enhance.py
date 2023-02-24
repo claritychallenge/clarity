@@ -132,16 +132,16 @@ def decompose_signal(
     model: torch.nn.Module, signal: np.ndarray, sample_rate: int, device: torch.device
 ) -> Dict[str, np.ndarray]:
     """Decompose signal into 8 stems.
-    
+
     Args:
         model (torch.nn.Module): Torch model.
         signal (np.ndarray): Signal to be decomposed.
         sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
-        
+
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
-     """
+    """
     signal, ref = normalize_signal(signal)
     sources = separate_sources(model, signal, sample_rate, device=device)
     # only one element in the batch
