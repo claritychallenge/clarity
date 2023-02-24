@@ -1,4 +1,6 @@
 """ Run the dummy enhancement. """
+# pylint: disable=too-many-locals
+
 import json
 import logging
 from pathlib import Path
@@ -19,8 +21,6 @@ from clarity.enhancer.nalr import NALR
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 
 logger = logging.getLogger(__name__)
-
-# pylint: disable=too-many-locals
 
 
 def separate_sources(

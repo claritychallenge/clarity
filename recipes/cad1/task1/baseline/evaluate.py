@@ -1,4 +1,6 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
+# pylint: disable=too-many-locals
+
 import csv
 import hashlib
 import itertools
@@ -16,8 +18,6 @@ from scipy.io import wavfile
 from clarity.evaluator.haaqi import compute_haaqi
 
 logger = logging.getLogger(__name__)
-
-# pylint: disable=too-many-locals
 
 
 class ResultsFile:
