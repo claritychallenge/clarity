@@ -116,7 +116,15 @@ def get_device(device: str) -> tuple:
 
 
 def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
-    """Map sources to a dictionary."""
+    """Map sources to a dictionary separating audio into left and right channels.
+
+    Args:
+       sources (np.ndarray): Signal to be mapped to dictionary.
+       sources_list (list): List of strings used to index dictionary.
+
+    Returns:
+        Dictionary: A dictionary of separated source audio split into channels.
+    """
     audios = dict(zip(sources_list, sources))
 
     signal_stems = {}
