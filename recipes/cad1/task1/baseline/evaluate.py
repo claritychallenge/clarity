@@ -1,5 +1,6 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 # pylint: disable=too-many-locals
+# pylint: disable=import-error
 
 import csv
 import hashlib
@@ -243,5 +244,6 @@ def run_calculate_aq(config: DictConfig) -> None:
         )
 
 
+# pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     run_calculate_aq()

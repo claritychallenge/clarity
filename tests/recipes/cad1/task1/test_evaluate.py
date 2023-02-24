@@ -1,4 +1,6 @@
 """Tests for the evaluation module"""
+# pylint: disable=import-error
+
 import numpy as np
 import pytest
 from omegaconf import DictConfig

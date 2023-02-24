@@ -1,5 +1,6 @@
 """ Run the dummy enhancement. """
 # pylint: disable=too-many-locals
+# pylint: disable=import-error
 
 import json
 import logging
@@ -318,5 +319,6 @@ def enhance(config: DictConfig) -> None:
             wavfile.write(enhanced_folder / filename, sampling_frequency, signal_16)
 
 
+# pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     enhance()

@@ -1,4 +1,6 @@
 """Tests for the enhance module"""
+# pylint: disable=import-error
+
 import numpy as np
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
@@ -111,7 +113,7 @@ def test_separate_sources():
     np.random.seed(123456789)
 
     # Create a dummy model
-    class DummyModel(torch.nn.Module):
+    class DummyModel(torch.nn.Module):  # pylint: disable=too-few-public-methods
         """Dummy source separation model"""
 
         def __init__(self, sources):
