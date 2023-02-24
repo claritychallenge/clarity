@@ -167,6 +167,7 @@ def apply_baseline_ha(
     signal: np.ndarray,
     listener_audiogram: np.ndarray,
     cfs: np.ndarray,
+    add_compressor: bool = False,
 ) -> np.ndarray:
     """
     Apply NAL-R prescription hearing aid to a signal.
@@ -177,13 +178,15 @@ def apply_baseline_ha(
         signal: An ndarray representing the audio signal.
         listener_audiogram: An ndarray representing the listener's audiogram.
         cfs: An ndarray of center frequencies.
+        add_compressor: A boolean indicating whether to include the compressor.
 
     Returns:
         An ndarray representing the processed signal.
     """
     nalr_fir, _ = enhancer.build(listener_audiogram, cfs)
     proc_signal = enhancer.apply(nalr_fir, signal)
-    proc_signal, _, _ = compressor.process(proc_signal)
+    if add_compressor:
+        proc_signal, _, _ = compressor.process(proc_signal)
     return proc_signal
 
 
