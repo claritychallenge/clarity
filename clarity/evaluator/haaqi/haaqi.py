@@ -154,7 +154,7 @@ def compute_haaqi(
     ref_signal: np.ndarray,
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
-    fs_signal: int,
+    sample_rate: int,
 ) -> float:
     """Compute HAAQI metric"""
 
@@ -168,9 +168,9 @@ def compute_haaqi(
     )
     score, _, _, _ = haaqi_v1(
         reference=ref_signal,
-        reference_freq=fs_signal,
+        reference_freq=sample_rate,
         processed=enh_signal,
-        processed_freq=fs_signal,
+        processed_freq=sample_rate,
         hearing_loss=audiogram_adjusted,
         equalisation=1,
     )
