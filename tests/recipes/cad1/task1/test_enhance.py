@@ -16,6 +16,7 @@ from recipes.cad1.task1.baseline.enhance import (
 
 
 def test_map_to_dict():
+    """Test that the map_to_dict returns the expected mapping"""
     sources = np.array([[1, 2], [3, 4], [5, 6]])
     sources_list = ["a", "b", "c"]
     output = map_to_dict(sources, sources_list)
@@ -31,6 +32,7 @@ def test_map_to_dict():
 
 
 def test_decompose_signal():
+    """Takes a signal and decomposes it into VDBO sources using the HDEMUCS model"""
     np.random.seed(123456789)
     # Load Separation Model
     model = HDEMUCS_HIGH_MUSDB.get_model().double()
@@ -52,6 +54,7 @@ def test_decompose_signal():
 
 
 def test_apply_baseline_ha():
+    """Test the behaviour of the CAD1 - Task1 - baseline hearing aid"""
     np.random.seed(987654321)
     # Create mock inputs
     signal = np.random.normal(size=44100)
@@ -74,6 +77,7 @@ def test_apply_baseline_ha():
 
 
 def test_process_stems_for_listener():
+    """Takes 2 stems and applies the baseline processing using a listeners audiograms"""
     np.random.seed(12357)
     # Create mock inputs
     stems = {
@@ -103,6 +107,7 @@ def test_process_stems_for_listener():
 
 
 def test_separate_sources():
+    """Test that the separate_sources function returns the expected output"""
     np.random.seed(123456789)
 
     # Create a dummy model
@@ -140,6 +145,7 @@ def test_separate_sources():
 
 
 def test_get_device():
+    """Test the correct device selection given the inputs"""
     # Test default case (no argument passed)
     device, device_type = get_device(None)
     assert (

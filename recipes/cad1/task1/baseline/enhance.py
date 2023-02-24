@@ -111,8 +111,7 @@ def get_device(device: str) -> tuple:
     elif device == "cpu":
         return torch.device("cpu"), "cpu"
 
-    else:
-        raise ValueError(f"Unsupported device type: {device}")
+    raise ValueError(f"Unsupported device type: {device}")
 
 
 def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
@@ -242,7 +241,7 @@ def enhance(config: DictConfig) -> None:
 
     # Load Separation Model
     separation_model = HDEMUCS_HIGH_MUSDB.get_model()
-    device, device_type = get_device(config.separator.device)
+    device, _ = get_device(config.separator.device)
     separation_model.to(device)
 
     # Load listener audiograms and songs
@@ -277,7 +276,7 @@ def enhance(config: DictConfig) -> None:
             separation_model, mixture_signal, sampling_frequency, device
         )
 
-        for listener_id, listener_info in listener_audiograms.items():
+        for _, listener_info in listener_audiograms.items():
             critical_frequencies = np.array(listener_info["audiogram_cfs"])
             audiogram_left = np.array(listener_info["audiogram_levels_l"])
             audiogram_right = np.array(listener_info["audiogram_levels_r"])
@@ -294,11 +293,11 @@ def enhance(config: DictConfig) -> None:
             # save processed stems
             n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
             out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
-            for stem_str in processed_stems:
+            for stem_str, item in processed_stems.items():
                 if stem_str.startswith("l"):
-                    out_left += processed_stems[stem_str]
+                    out_left += item
                 else:
-                    out_right += processed_stems[stem_str]
+                    out_right += item
 
                 filename = f"{listener_info['name']}_{song_name}_{stem_str}.wav"
                 proc_signal = processed_stems[stem_str]
