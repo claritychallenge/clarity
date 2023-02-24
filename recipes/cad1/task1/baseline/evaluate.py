@@ -17,6 +17,8 @@ from clarity.evaluator.haaqi import compute_haaqi
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=too-many-locals
+
 
 class ResultsFile:
     """A utility class for writing results to a CSV file.
@@ -133,7 +135,8 @@ def _evaluate_song_listener(
 
     Returns:
         combined_score (float): The combined score for the result.
-        per_instrument_score (dict): A dictionary of scores for each instrument channel in the result.
+        per_instrument_score (dict): A dictionary of scores for each
+            instrument channel in the result.
 
     """
 

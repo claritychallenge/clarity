@@ -20,6 +20,8 @@ from clarity.utils.signal_processing import denormalize_signals, normalize_signa
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=too-many-locals
+
 
 def separate_sources(
     model: torch.nn.Module,
@@ -102,13 +104,13 @@ def get_device(device: str) -> tuple:
             return torch.device("cuda"), "cuda"
         return torch.device("cpu"), "cpu"
 
-    elif device.startswith("gpu"):
+    if device.startswith("gpu"):
         device_index = int(device.replace("gpu", ""))
         if device_index > torch.cuda.device_count():
             raise ValueError(f"GPU device index {device_index} is not available.")
         return torch.device(f"cuda:{device_index}"), "cuda"
 
-    elif device == "cpu":
+    if device == "cpu":
         return torch.device("cpu"), "cpu"
 
     raise ValueError(f"Unsupported device type: {device}")
@@ -300,10 +302,7 @@ def enhance(config: DictConfig) -> None:
                     out_right += item
 
                 filename = f"{listener_info['name']}_{song_name}_{stem_str}.wav"
-                proc_signal = processed_stems[stem_str]
-                wavfile.write(
-                    enhanced_folder / filename, sampling_frequency, proc_signal
-                )
+                wavfile.write(enhanced_folder / filename, sampling_frequency, item)
 
             enhanced = np.stack([out_left, out_right], axis=1)
             filename = f"{listener_info['name']}_{song_name}.wav"

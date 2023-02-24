@@ -112,11 +112,15 @@ def test_separate_sources():
 
     # Create a dummy model
     class DummyModel(torch.nn.Module):
+        """Dummy source separation model"""
+
         def __init__(self, sources):
+            """dummy init"""
             super().__init__()
             self.sources = sources
 
         def forward(self, x):
+            """dummy forward"""
             return torch.Tensor(
                 np.random.uniform(size=(x.shape[0], len(self.sources), *x.shape[1:]))
             )

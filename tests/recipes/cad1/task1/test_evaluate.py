@@ -117,31 +117,32 @@ def test_evaluate_song_listener(
 
     # Generate reference and enhanced wav files
     enhanced_folder = tmp_path / "enhanced"
-    reference_folder = tmp_path / "reference"
     enhanced_folder.mkdir()
-    reference_folder.mkdir()
 
     config = DictConfig(config)
-    config.path.music_dir = reference_folder.as_posix()
+    config.path.music_dir = tmp_path / "reference"
 
-    left_right_instruments = list(expected_results.keys())
     instruments = ["drums", "bass", "other", "vocals"]
 
     # Create reference and enhanced wav samples
-    for lr_instrument in left_right_instruments:
+    for lr_instrument in list(expected_results.keys()):
         # enhanced signals are mono
         enh_file = enhanced_folder / f"{listener}_{song}_{lr_instrument}.wav"
-        temp_signal = np.random.uniform(-1, 1, 44100 * 5).astype(np.float32) * 32768
-        wavfile.write(enh_file, 44100, temp_signal)
+        wavfile.write(
+            enh_file,
+            44100,
+            np.random.uniform(-1, 1, 44100 * 5).astype(np.float32) * 32768,
+        )
 
     for instrument in instruments:
         # reference signals are stereo
-        ref_file = reference_folder / split_dir / song / f"{instrument}.wav"
+        ref_file = config.path.music_dir / split_dir / song / f"{instrument}.wav"
         ref_file.parent.mkdir(parents=True, exist_ok=True)
-        temp_signal = (
-            np.random.uniform(-1, 1, (44100 * 5, 2)).astype(np.float32) * 32768
+        wavfile.write(
+            ref_file,
+            44100,
+            np.random.uniform(-1, 1, (44100 * 5, 2)).astype(np.float32) * 32768,
         )
-        wavfile.write(ref_file, 44100, temp_signal)
 
     # Call the function
     combined_score, per_instrument_score = _evaluate_song_listener(
@@ -160,7 +161,7 @@ def test_evaluate_song_listener(
 
     # Per instrument score
     assert isinstance(per_instrument_score, dict)
-    for instrument in left_right_instruments:
+    for instrument in list(expected_results.keys()):
         assert instrument in per_instrument_score.keys()
         assert isinstance(per_instrument_score[instrument], float)
         assert per_instrument_score[instrument] == pytest.approx(
