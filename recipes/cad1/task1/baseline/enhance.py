@@ -229,7 +229,8 @@ def enhance(config: DictConfig) -> None:
     Run the music enhancement.
     The system decomposes the music into vocal, drums, bass, and other stems.
     Then, the NAL-R prescription procedure is applied to each stem.
-
+    Args:
+        config (dict): Dictionary of configuration options for enhancing music.
     Returns 8 stems for each song:
         - left channel vocal, drums, bass, and other stems
         - right channel vocal, drums, bass, and other stems
