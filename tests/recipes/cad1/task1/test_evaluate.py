@@ -15,9 +15,9 @@ from recipes.cad1.task1.baseline.evaluate import (
 def test_results_file(tmp_path):
     """Test the class ResultsFile"""
     results_file = tmp_path / "results.csv"
-    rf = ResultsFile(results_file.as_posix())
-    rf.write_header()
-    rf.add_result(
+    result_file = ResultsFile(results_file.as_posix())
+    result_file.write_header()
+    result_file.add_result(
         listener="My listener",
         song="My favorite song",
         score=0.9,
@@ -32,8 +32,8 @@ def test_results_file(tmp_path):
             "right_vocals": 0.95,
         },
     )
-    with open(results_file, "r") as f:
-        contents = f.read()
+    with open(results_file, "r", encoding="utf-8") as file:
+        contents = file.read()
         assert (
             "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"
             in contents
@@ -42,7 +42,7 @@ def test_results_file(tmp_path):
 
 @pytest.mark.parametrize(
     "song,expected_result",
-    (["my favorite song", 83], ["another song", 3]),
+    [("my favorite song", 83), ("another song", 3)],
 )
 def test_set_song_seed(song, expected_result):
     """Thest the function set_song_seed using 2 different inputs"""
@@ -77,20 +77,43 @@ def test_make_song_listener_list():
     )
 
 
-def test_evaluate_song_listener(tmp_path):
+@pytest.mark.parametrize(
+    "song,listener,config,split_dir,listener_audiograms,expected_results",
+    [
+        (
+            "punk_is_not_dead",
+            "my_music_listener",
+            {
+                "evaluate": {"set_random_seed": True},
+                "path": {"music_dir": None},
+                "nalr": {"fs": 44100},
+            },
+            "test",
+            {
+                "my_music_listener": {
+                    "audiogram_levels_l": [20, 30, 35, 45, 50, 60, 65, 60],
+                    "audiogram_levels_r": [20, 30, 35, 45, 50, 60, 65, 60],
+                    "audiogram_cfs": [250, 500, 1000, 2000, 3000, 4000, 6000, 8000],
+                }
+            },
+            {
+                "left_drums": 0.107854176,
+                "right_drums": 0.104024261,
+                "left_bass": 0.111090873,
+                "right_bass": 0.108046217,
+                "left_other": 0.111885722,
+                "right_other": 0.110098967,
+                "left_vocals": 0.103490312,
+                "right_vocals": 0.108655100,
+            },
+        )
+    ],
+)
+def test_evaluate_song_listener(
+    song, listener, config, split_dir, listener_audiograms, expected_results, tmp_path
+):
     """Test the function _evaluate_song_listener returns the correct results given the input"""
     np.random.seed(2023)
-
-    expected_results = {
-        "left_drums": 0.107854176,
-        "right_drums": 0.104024261,
-        "left_bass": 0.111090873,
-        "right_bass": 0.108046217,
-        "left_other": 0.111885722,
-        "right_other": 0.110098967,
-        "left_vocals": 0.103490312,
-        "right_vocals": 0.108655100,
-    }
 
     # Generate reference and enhanced wav files
     enhanced_folder = tmp_path / "enhanced"
@@ -98,27 +121,11 @@ def test_evaluate_song_listener(tmp_path):
     enhanced_folder.mkdir()
     reference_folder.mkdir()
 
+    config = DictConfig(config)
+    config.path.music_dir = reference_folder.as_posix()
+
     left_right_instruments = list(expected_results.keys())
     instruments = ["drums", "bass", "other", "vocals"]
-
-    # Define test inputs
-    song = "punk_is_not_dead"
-    listener = "my_music_listener"
-    config = DictConfig(
-        {
-            "evaluate": {"set_random_seed": True},
-            "path": {"music_dir": reference_folder.as_posix()},
-            "nalr": {"fs": 44100},
-        }
-    )
-    split_dir = "test"
-    listener_audiograms = {
-        "my_music_listener": {
-            "audiogram_levels_l": [20, 30, 35, 45, 50, 60, 65, 60],
-            "audiogram_levels_r": [20, 30, 35, 45, 50, 60, 65, 60],
-            "audiogram_cfs": [250, 500, 1000, 2000, 3000, 4000, 6000, 8000],
-        }
-    }
 
     # Create reference and enhanced wav samples
     for lr_instrument in left_right_instruments:
@@ -146,7 +153,6 @@ def test_evaluate_song_listener(tmp_path):
         enhanced_folder,
     )
 
-    print(combined_score, per_instrument_score)
     # Check the outputs
     # Combined score
     assert isinstance(combined_score, float)

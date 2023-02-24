@@ -40,11 +40,11 @@ def test_decompose_signal():
     model.to(device)
 
     # Create a mock signal to decompose
-    fs = 8000
+    sample_rate = 8000
     duration = 1
-    signal = np.random.uniform(size=(1, 2, fs * duration))
+    signal = np.random.uniform(size=(1, 2, sample_rate * duration))
     # Call the decompose_signal function and check that the output has the expected keys
-    output = decompose_signal(model, signal, fs, device)
+    output = decompose_signal(model, signal, sample_rate, device)
 
     expected_results = np.load(
         "../../../resources/test_enhance.test_decompose_signal.npy", allow_pickle=True
