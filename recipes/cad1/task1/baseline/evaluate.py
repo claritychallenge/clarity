@@ -113,6 +113,90 @@ def make_song_listener_list(
     return song_listener_pairs
 
 
+def _evaluate_song_listener(
+    song: str,
+    listener: str,
+    config: DictConfig,
+    split_dir: str,
+    listener_audiograms: dict,
+    enhanced_folder: Path,
+) -> Tuple[float, dict]:
+    """Evaluate a single song-listener pair
+
+    Args:
+        song (str): The name of the song to evaluate.
+        listener (str): The name of the listener to evaluate.
+        config (DictConfig): The configuration object.
+        split_dir (str): The name of the split directory.
+        listener_audiograms (dict): A dictionary of audiograms for each listener.
+        enhanced_folder (Path): The path to the folder containing the enhanced signals.
+
+    Returns:
+        combined_score (float): The combined score for the result.
+        per_instrument_score (dict): A dictionary of scores for each instrument channel in the result.
+
+    """
+
+    logger.info(f"Evaluating {song} for {listener}")
+
+    if config.evaluate.set_random_seed:
+        set_song_seed(song)
+
+    per_instrument_score = {}
+    for instrument in [
+        "drums",
+        "bass",
+        "other",
+        "vocals",
+    ]:
+        logger.info(f"...evaluating {instrument}")
+
+        sample_rate_reference_signal, reference_signal = wavfile.read(
+            Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
+        )
+
+        # Read instrument reference signal
+        reference_signal = (reference_signal / 32768.0).astype(np.float32)
+        left_reference_signal = reference_signal[:, 0]
+        right_reference_signal = reference_signal[:, 1]
+
+        # Read instrument enhanced
+        sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
+            enhanced_folder / f"{listener}_{song}_left_{instrument}.wav"
+        )
+        sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
+            enhanced_folder / f"{listener}_{song}_right_{instrument}.wav"
+        )
+
+        assert (
+            sample_rate_reference_signal
+            == sample_rate_left_enhanced_signal
+            == sample_rate_right_enhanced_signal
+            == config.nalr.fs
+        )
+
+        #  audiogram, audiogram_frequencies, fs_signal
+        per_instrument_score[f"left_{instrument}"] = compute_haaqi(
+            left_enhanced_signal,
+            left_reference_signal,
+            np.array(listener_audiograms["audiogram_levels_l"]),
+            np.array(listener_audiograms["audiogram_cfs"]),
+            config.nalr.fs,
+        )
+        per_instrument_score[f"right_{instrument}"] = compute_haaqi(
+            right_enhanced_signal,
+            right_reference_signal,
+            np.array(listener_audiograms["audiogram_levels_r"]),
+            np.array(listener_audiograms["audiogram_cfs"]),
+            config.nalr.fs,
+        )
+
+    # Compute the combined score
+    combined_score = np.mean(list(per_instrument_score.values()))
+
+    return float(combined_score), per_instrument_score
+
+
 @hydra.main(config_path="", config_name="config")
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
@@ -136,68 +220,23 @@ def run_calculate_aq(config: DictConfig) -> None:
     )
 
     for song, listener in song_listener_pair:
-        logger.info(f"Evaluating {song} for {listener}")
+        split_dir = "train"
+        if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
+            split_dir = "test"
 
-        if config.evaluate.set_random_seed:
-            set_song_seed(song)
-
-        scores = {}
-        for instrument in [
-            "drums",
-            "bass",
-            "other",
-            "vocals",
-        ]:
-            logger.info(f"...evaluating {instrument}")
-            split_dir = "train"
-            if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
-                split_dir = "test"
-
-            sample_rate_reference_signal, reference_signal = wavfile.read(
-                Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
-            )
-
-            reference_signal = (reference_signal / 32768.0).astype(np.float32)
-            left_reference_signal = reference_signal[:, 0]
-            right_reference_signal = reference_signal[:, 1]
-
-            sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
-                enhanced_folder / f"{listener}_{song}_left_{instrument}.wav"
-            )
-            sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
-                enhanced_folder / f"{listener}_{song}_right_{instrument}.wav"
-            )
-
-            assert (
-                sample_rate_reference_signal
-                == sample_rate_left_enhanced_signal
-                == sample_rate_right_enhanced_signal
-                == config.nalr.fs
-            )
-
-            #  audiogram, audiogram_frequencies, fs_signal
-            scores[f"left_{instrument}"] = compute_haaqi(
-                left_enhanced_signal,
-                left_reference_signal,
-                np.array(listener_audiograms[listener]["audiogram_levels_l"]),
-                np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                config.nalr.fs,
-            )
-            scores[f"right_{instrument}"] = compute_haaqi(
-                right_enhanced_signal,
-                right_reference_signal,
-                np.array(listener_audiograms[listener]["audiogram_levels_r"]),
-                np.array(listener_audiograms[listener]["audiogram_cfs"]),
-                config.nalr.fs,
-            )
-
-        # Compute the combined score
-        combined_score = np.mean(list(scores.values()))
+        combined_score, per_instrument_score = _evaluate_song_listener(
+            song,
+            listener,
+            config,
+            split_dir,
+            listener_audiograms[listener],
+            enhanced_folder,
+        )
         results_file.add_result(
             listener,
             song,
-            score=float(combined_score),
-            instruments_scores=scores,
+            score=combined_score,
+            instruments_scores=per_instrument_score,
         )
 
 
