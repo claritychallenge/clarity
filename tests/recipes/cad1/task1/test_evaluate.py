@@ -12,7 +12,8 @@ from recipes.cad1.task1.baseline.evaluate import (
 )
 
 
-def test_ResultsFile(tmp_path):
+def test_results_file(tmp_path):
+    """Test the class ResultsFile"""
     results_file = tmp_path / "results.csv"
     rf = ResultsFile(results_file.as_posix())
     rf.write_header()
@@ -44,12 +45,14 @@ def test_ResultsFile(tmp_path):
     (["my favorite song", 83], ["another song", 3]),
 )
 def test_set_song_seed(song, expected_result):
+    """Thest the function set_song_seed using 2 different inputs"""
     # Set seed for the same song
     set_song_seed(song)
     assert np.random.randint(100) == expected_result
 
 
 def test_make_song_listener_list():
+    """Test the function generates the correct list of songs and listeners pairs"""
     songs = ["song1", "song2", "song3"]
     listeners = {"listener1": 1, "listener2": 2, "listener3": 3}
     expected_output = [
@@ -75,6 +78,7 @@ def test_make_song_listener_list():
 
 
 def test_evaluate_song_listener(tmp_path):
+    """Test the function _evaluate_song_listener returns the correct results given the input"""
     np.random.seed(2023)
 
     expected_results = {
