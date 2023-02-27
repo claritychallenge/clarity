@@ -136,7 +136,7 @@ Please note: you will not get identical HAAQI scores for the same signals if the
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
 
-We ran evaluation for the baseline for five times, and the average overall score is XXX +/- XXXX.
+**Baseline performance on the validation set will be updated soon.**
 
 ## References
 
