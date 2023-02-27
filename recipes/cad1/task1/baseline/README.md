@@ -10,7 +10,7 @@ The First Cadenza Challenge - task 1 is using the MUSDB18-HQ dataset.
 The data is split into train, validation and test following the same split from museval.
 I.e., 86 songs are for training, [16 for validation](validation_tracks:) and 50 for evaluation.
 
-To download the data, please visit [here](). The data is split into `cadenza_cad1_task1_music.tar.gz` (containing the MUSDB18-HQ dataset) and
+To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). The data is split into `cadenza_cad1_task1_music.tar.gz` (containing the MUSDB18-HQ dataset) and
 `cadenza_cad1_task1_metadata.tar.gz` (containing the necessary metadata). Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
 
