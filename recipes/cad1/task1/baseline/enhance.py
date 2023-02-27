@@ -167,7 +167,7 @@ def apply_baseline_ha(
     signal: np.ndarray,
     listener_audiogram: np.ndarray,
     cfs: np.ndarray,
-    add_compressor: bool = False,
+    apply_compressor: bool = False,
 ) -> np.ndarray:
     """
     Apply NAL-R prescription hearing aid to a signal.
@@ -178,14 +178,14 @@ def apply_baseline_ha(
         signal: An ndarray representing the audio signal.
         listener_audiogram: An ndarray representing the listener's audiogram.
         cfs: An ndarray of center frequencies.
-        add_compressor: A boolean indicating whether to include the compressor.
+        apply_compressor: A boolean indicating whether to include the compressor.
 
     Returns:
         An ndarray representing the processed signal.
     """
     nalr_fir, _ = enhancer.build(listener_audiogram, cfs)
     proc_signal = enhancer.apply(nalr_fir, signal)
-    if add_compressor:
+    if apply_compressor:
         proc_signal, _, _ = compressor.process(proc_signal)
     return proc_signal
 
@@ -197,6 +197,7 @@ def process_stems_for_listener(
     audiogram_left: np.ndarray,
     audiogram_right: np.ndarray,
     cfs: np.ndarray,
+    apply_compressor: bool = False,
 ) -> dict:
     """Process the stems from sources.
 
@@ -207,6 +208,7 @@ def process_stems_for_listener(
         audiogram_left (np.ndarray) : Left channel audiogram
         audiogram_right (np.ndarray) : Right channel audiogram
         cfs (np.ndarray) : Center frequencies
+        apply_compressor (bool) : Whether to apply the compressor
 
     Returns:
         processed_sources (dict) : Dictionary of processed stems
@@ -222,7 +224,7 @@ def process_stems_for_listener(
 
         # Apply NALR prescription to stem_signal
         proc_signal = apply_baseline_ha(
-            enhancer, compressor, stem_signal, audiogram, cfs
+            enhancer, compressor, stem_signal, audiogram, cfs, apply_compressor
         )
         processed_stems[stem_str] = proc_signal
     return processed_stems
@@ -245,27 +247,42 @@ def enhance(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals")
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
-    # Load Separation Model
+    # Training stage
+    #
+    # The baseline is using an off-the-shelf model trained on the MUSDB18 dataset
+    # Training listeners and song are not necessary in this case.
+    #
+    # Training songs and audiograms can be read like this:
+    #
+    #  with open(config.path.listeners_train_file, "r", encoding="utf-8") as file:
+    #        listener_train_audiograms = json.load(file)
+    #
+    #  with open(config.path.music_train_file, "r", encoding="utf-8") as file:
+    #        song_data = json.load(file)
+    #  songs_train = pd.DataFrame.from_dict(song_data)
+
     separation_model = HDEMUCS_HIGH_MUSDB.get_model()
     device, _ = get_device(config.separator.device)
     separation_model.to(device)
 
+    # Processing Validation Set
     # Load listener audiograms and songs
-    with open(config.path.listeners_file, "r", encoding="utf-8") as file:
-        listener_audiograms = json.load(file)
+    with open(config.path.listeners_valid_file, "r", encoding="utf-8") as file:
+        listener_valid_audiograms = json.load(file)
 
-    with open(config.path.valid_file, "r", encoding="utf-8") as file:
+    with open(config.path.music_valid_file, "r", encoding="utf-8") as file:
         song_data = json.load(file)
-    songs = pd.DataFrame.from_dict(song_data)
+    songs_valid = pd.DataFrame.from_dict(song_data)
 
     enhancer = NALR(**config.nalr)
     compressor = Compressor(**config.compressor)
 
     # Decompose each song into left and right vocal, drums, bass, and other stems
-    for song_name in tqdm(songs["Track Name"].tolist()):
+    for song_name in tqdm(songs_valid["Track Name"].tolist()):
         split_directory = (
             "test"
-            if songs.loc[songs["Track Name"] == song_name, "Split"].iloc[0] == "test"
+            if songs_valid.loc[songs_valid["Track Name"] == song_name, "Split"].iloc[0]
+            == "test"
             else "train"
         )
 
@@ -282,7 +299,7 @@ def enhance(config: DictConfig) -> None:
             separation_model, mixture_signal, sampling_frequency, device
         )
 
-        for _, listener_info in listener_audiograms.items():
+        for _, listener_info in listener_valid_audiograms.items():
             critical_frequencies = np.array(listener_info["audiogram_cfs"])
             audiogram_left = np.array(listener_info["audiogram_levels_l"])
             audiogram_right = np.array(listener_info["audiogram_levels_r"])
@@ -294,6 +311,7 @@ def enhance(config: DictConfig) -> None:
                 audiogram_left,
                 audiogram_right,
                 critical_frequencies,
+                config.apply_compressor,
             )
 
             # save processed stems

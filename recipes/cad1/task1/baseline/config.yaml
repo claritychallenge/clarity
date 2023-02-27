@@ -11,6 +11,7 @@ nalr:
   nfir: 220
   fs: 44100
 
+apply_compressor: False
 compressor:
   threshold: 0.35
   attenuation: 0.1
