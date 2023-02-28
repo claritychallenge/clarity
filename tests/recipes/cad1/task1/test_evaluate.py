@@ -1,6 +1,8 @@
 """Tests for the evaluation module"""
 # pylint: disable=import-error
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 from omegaconf import DictConfig
@@ -122,7 +124,7 @@ def test_evaluate_song_listener(
     enhanced_folder.mkdir()
 
     config = DictConfig(config)
-    config.path.music_dir = tmp_path / "reference"
+    config.path.music_dir = (tmp_path / "reference").as_posix()
 
     instruments = ["drums", "bass", "other", "vocals"]
 
@@ -138,7 +140,7 @@ def test_evaluate_song_listener(
 
     for instrument in instruments:
         # reference signals are stereo
-        ref_file = config.path.music_dir / split_dir / song / f"{instrument}.wav"
+        ref_file = Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
         ref_file.parent.mkdir(parents=True, exist_ok=True)
         wavfile.write(
             ref_file,

@@ -46,7 +46,14 @@ def test_decompose_signal():
     duration = 1
     signal = np.random.uniform(size=(1, 2, sample_rate * duration))
     # Call the decompose_signal function and check that the output has the expected keys
-    output = decompose_signal(model, signal, sample_rate, device)
+    output = decompose_signal(
+        model,
+        signal,
+        sample_rate,
+        device,
+        left_audiogram=np.ones(9),
+        right_audiogram=np.ones(9),
+    )
 
     expected_results = np.load(
         "resources/test_enhance.test_decompose_signal.npy", allow_pickle=True
