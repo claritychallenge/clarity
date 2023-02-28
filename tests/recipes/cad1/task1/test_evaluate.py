@@ -131,7 +131,14 @@ def test_evaluate_song_listener(
     # Create reference and enhanced wav samples
     for lr_instrument in list(expected_results.keys()):
         # enhanced signals are mono
-        enh_file = enhanced_folder / f"{listener}_{song}_{lr_instrument}.wav"
+        enh_file = (
+            enhanced_folder
+            / f"{listener}"
+            / f"{song}"
+            / f"{listener}_{song}_{lr_instrument}.wav"
+        )
+        enh_file.parent.mkdir(exist_ok=True, parents=True)
+
         wavfile.write(
             enh_file,
             44100,
