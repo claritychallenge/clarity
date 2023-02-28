@@ -56,7 +56,7 @@ def test_decompose_signal():
     )
 
     expected_results = np.load(
-        "./resources/test_enhance.test_decompose_signal.npy",
+        "tests/recipes/cad1/task1/resources/test_enhance.test_decompose_signal.npy",
         allow_pickle=True,
     )[()]
     for key in output.keys():
@@ -81,7 +81,7 @@ def test_apply_baseline_ha():
     output = apply_baseline_ha(enhancer, compressor, signal, listener_audiogram, cfs)
 
     expected_results = np.load(
-        "./resources/test_enhance.test_apply_baseline_ha.npy",
+        "tests/recipes/cad1/task1/resources/test_enhance.test_apply_baseline_ha.npy",
         allow_pickle=True,
     )
     np.testing.assert_array_almost_equal(output, expected_results)
@@ -110,7 +110,7 @@ def test_process_stems_for_listener():
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
     expected_results = np.load(
-        "./resources/test_enhance.test_process_stems_for_listener.npy",
+        "tests/recipes/cad1/task1/resources/test_enhance.test_process_stems_for_listener.npy",
         allow_pickle=True,
     )[()]
     for key in output.keys():
@@ -152,7 +152,7 @@ def test_separate_sources():
     output = separate_sources(model, mix, sample_rate, device=device)
 
     expected_results = np.load(
-        "./resources/test_enhance.test_separate_sources.npy",
+        "tests/recipes/cad1/task1/resources/test_enhance.test_separate_sources.npy",
         allow_pickle=True,
     )
     # Check that the output has the correct shape
