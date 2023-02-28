@@ -15,11 +15,11 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 from torchaudio.transforms import Fade
-from tqdm import tqdm
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
+from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
 logger = logging.getLogger(__name__)
 
@@ -139,15 +139,26 @@ def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
 
 
 def decompose_signal(
-    model: torch.nn.Module, signal: np.ndarray, sample_rate: int, device: torch.device
+    model: torch.nn.Module,
+    signal: np.ndarray,
+    sample_rate: int,
+    device: torch.device,
+    left_audiogram: np.ndarray,
+    right_audiogram: np.ndarray,
 ) -> Dict[str, np.ndarray]:
-    """Decompose signal into 8 stems.
+    """
+    Decompose signal into 8 stems.
+
+    The left and right audiograms are ignored by the baseline system as it is performing personalised decomposition.
+    Instead, it performs a standard music decomposition using the HDEMUCS model trained on the MUSDB18 dataset.
 
     Args:
         model (torch.nn.Module): Torch model.
         signal (np.ndarray): Signal to be decomposed.
         sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
+        left_audiogram (np.ndarray): Left ear audiogram.
+        right_audiogram (np.ndarray): Right ear audiogram.
 
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
@@ -260,6 +271,10 @@ def enhance(config: DictConfig) -> None:
     #  with open(config.path.music_train_file, "r", encoding="utf-8") as file:
     #        song_data = json.load(file)
     #  songs_train = pd.DataFrame.from_dict(song_data)
+    #
+    # train_song_listener_pairs = make_song_listener_list(
+    #     songs_train['Track Name'], listener_train_audiograms
+    # )
 
     separation_model = HDEMUCS_HIGH_MUSDB.get_model()
     device, _ = get_device(config.separator.device)
@@ -274,11 +289,29 @@ def enhance(config: DictConfig) -> None:
         song_data = json.load(file)
     songs_valid = pd.DataFrame.from_dict(song_data)
 
+    valid_song_listener_pairs = make_song_listener_list(
+        songs_valid["Track Name"], listener_valid_audiograms
+    )
+    # Select a batch to process
+    valid_song_listener_pairs = valid_song_listener_pairs[
+        config.evaluate.batch :: config.evaluate.batch_size
+    ]
+
     enhancer = NALR(**config.nalr)
     compressor = Compressor(**config.compressor)
 
     # Decompose each song into left and right vocal, drums, bass, and other stems
-    for song_name in tqdm(songs_valid["Track Name"].tolist()):
+    # and process each stem for the listener
+    prev_song_name = None
+    for idx, song_listener in enumerate(valid_song_listener_pairs, 1):
+        song_name, listener_name = song_listener
+        logger.info(
+            f"[{idx:03d}/{len(valid_song_listener_pairs):03d})] Processing {song_name} for {listener_name}..."
+        )
+        # Get the listener's audiogram
+        listener_info = listener_valid_audiograms[listener_name]
+
+        # Find the music split directory
         split_directory = (
             "test"
             if songs_valid.loc[songs_valid["Track Name"] == song_name, "Split"].iloc[0]
@@ -286,58 +319,72 @@ def enhance(config: DictConfig) -> None:
             else "train"
         )
 
-        sampling_frequency, mixture_signal = wavfile.read(
-            Path(config.path.music_dir) / split_directory / song_name / "mixture.wav"
-        )
+        critical_frequencies = np.array(listener_info["audiogram_cfs"])
+        audiogram_left = np.array(listener_info["audiogram_levels_l"])
+        audiogram_right = np.array(listener_info["audiogram_levels_r"])
 
+        # Read the mixture signal
         # Convert to 32-bit floating point and transpose
         # from [samples, channels] to [channels, samples]
-        mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
-        assert sampling_frequency == config.nalr.fs
+        if prev_song_name != song_name:
+            # Decompose song only once
+            prev_song_name = song_name
 
-        stems = decompose_signal(
-            separation_model, mixture_signal, sampling_frequency, device
-        )
+            sampling_frequency, mixture_signal = wavfile.read(
+                Path(config.path.music_dir)
+                / split_directory
+                / song_name
+                / "mixture.wav"
+            )
+            mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
+            assert sampling_frequency == config.nalr.fs
 
-        for _, listener_info in listener_valid_audiograms.items():
-            critical_frequencies = np.array(listener_info["audiogram_cfs"])
-            audiogram_left = np.array(listener_info["audiogram_levels_l"])
-            audiogram_right = np.array(listener_info["audiogram_levels_r"])
-
-            processed_stems = process_stems_for_listener(
-                stems,
-                enhancer,
-                compressor,
+            stems = decompose_signal(
+                separation_model,
+                mixture_signal,
+                sampling_frequency,
+                device,
                 audiogram_left,
                 audiogram_right,
-                critical_frequencies,
-                config.apply_compressor,
             )
 
-            # save processed stems
-            n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
-            out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
-            for stem_str, item in processed_stems.items():
-                if stem_str.startswith("l"):
-                    out_left += item
-                else:
-                    out_right += item
+        # Baseline applies NALR prescription to each stem
+        # instead of using the listener's audiograms in the decomposition
+        # This stemp can be skipped if the listener's audiograms are used in the decomposition
+        processed_stems = process_stems_for_listener(
+            stems,
+            enhancer,
+            compressor,
+            audiogram_left,
+            audiogram_right,
+            critical_frequencies,
+            config.apply_compressor,
+        )
 
-                filename = f"{listener_info['name']}_{song_name}_{stem_str}.wav"
-                wavfile.write(enhanced_folder / filename, sampling_frequency, item)
+        # save processed stems
+        n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
+        out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
+        for stem_str, item in processed_stems.items():
+            if stem_str.startswith("l"):
+                out_left += item
+            else:
+                out_right += item
 
-            enhanced = np.stack([out_left, out_right], axis=1)
-            filename = f"{listener_info['name']}_{song_name}.wav"
+            filename = f"{listener_info['name']}_{song_name}_{stem_str}.wav"
+            wavfile.write(enhanced_folder / filename, sampling_frequency, item)
 
-            # Clip and save
-            if config.soft_clip:
-                enhanced = np.tanh(enhanced)
-            n_clipped = np.sum(np.abs(enhanced) > 1.0)
-            if n_clipped > 0:
-                logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            np.clip(enhanced, -1.0, 1.0, out=enhanced)
-            signal_16 = (32768.0 * enhanced).astype(np.int16)
-            wavfile.write(enhanced_folder / filename, sampling_frequency, signal_16)
+        enhanced = np.stack([out_left, out_right], axis=1)
+        filename = f"{listener_info['name']}_{song_name}.wav"
+
+        # Clip and save
+        if config.soft_clip:
+            enhanced = np.tanh(enhanced)
+        n_clipped = np.sum(np.abs(enhanced) > 1.0)
+        if n_clipped > 0:
+            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+        np.clip(enhanced, -1.0, 1.0, out=enhanced)
+        signal_16 = (32768.0 * enhanced).astype(np.int16)
+        wavfile.write(enhanced_folder / filename, sampling_frequency, signal_16)
 
 
 # pylint: disable = no-value-for-parameter
