@@ -8,16 +8,17 @@ For more information please visit the [challenge website](https://cadenzachallen
 
 The First Cadenza Challenge - task 1 is using the MUSDB18-HQ dataset.
 The data is split into train, validation and test following the same split from museval.
-I.e., 86 songs are for training, [16 for validation](validation_tracks:) and 50 for evaluation.
+I.e., 86 songs are for training, 16 for validation and 50 for evaluation.
 
-To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). The data is split into `cadenza_cad1_task1_music.tar.gz` (containing the MUSDB18-HQ dataset) and
-`cadenza_cad1_task1_metadata.tar.gz` (containing the list of songs and listeners' characteristics per split).
+To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). The data is split into `cadenza_cad1_task1_core_musdb18hq.tar.gz` (containing the MUSDB18-HQ dataset) and
+`cadenza_cad1_task1_core_metadata.tar.gz` (containing the list of songs and listeners' characteristics per split).
 Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
 
 If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4][5],
 [BACH10](https://labsites.rochester.edu/air/resource.html) [6] and [FMA-small](https://github.com/mdeff/fma) [7].
-Theses are shared as `cadenza_cad1_task1_medleydb.tar.gz`, `cadenza_cad1_task1_bach10.tar.gz` and `cadenza_cad1_task1_fma_small.tar.gz`.
+Theses are shared as `cadenza_cad1_task1_augmentation_medleydb.tar.gz`, `cadenza_cad1_task1_augmentation_bach10.tar.gz`
+and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.
 **Keeping the augmentation data restricted to these datasets will ensure that the evaluation is fair for all participants**.
 
 Unpack packages under the same root directory using
