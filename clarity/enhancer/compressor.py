@@ -12,7 +12,7 @@ class Compressor:
         fs: int = 44100,
         attack: int = 5,
         release: int = 20,
-        threshold: int = 1,
+        threshold: float = 1,
         attenuation: float = 0.0001,
         rms_buffer_size: float = 0.2,
         makeup_gain: int = 1,
@@ -23,7 +23,7 @@ class Compressor:
             fs (int): (default = 44100)
             attack (int): (default = 5)
             release int: (default = 20)
-            threshold (int): (default = 1)
+            threshold (float): (default = 1.0)
             attenuation (float): (default = 0.0001)
             rms_buffer_size (float): (default = 0.2)
             makeup_gain (int): (default = 1)
