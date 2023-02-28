@@ -1,11 +1,11 @@
 # The First Cadenza Challenge (CAD1) - Task 1: Listening music via headphones
 
-
 Cadenza challenge code for the First Cadenza Challenge (CAD1) Task1.
 
 For more information please visit the [challenge website](https://cadenzachallenge.org/docs/cadenza1/cc1_intro).
 
 ## 1. Data structure
+
 The First Cadenza Challenge - task 1 is using the MUSDB18-HQ dataset.
 The data is split into train, validation and test following the same split from museval.
 I.e., 86 songs are for training, [16 for validation](validation_tracks:) and 50 for evaluation.
@@ -20,12 +20,15 @@ Theses are shared as `cadenza_cad1_task1_medleydb.tar.gz`, `cadenza_cad1_task1_b
 **Keeping the augmentation data restricted to these datasets will ensure that the evaluation is fair for all participants**.
 
 Unpack packages under the same root directory using
+
 ```bash
 tar -xvzf <PACKAGE_NAME>
 ```
 
 ### 1.1 Necessary data
+
 * **Music** contains the MUSDB18-HQ music dataset for training, validation and evaluation.
+
 ```text
 cadenza_data
 └───task1
@@ -34,7 +37,9 @@ cadenza_data
             ├───train
             └───test
 ```
+
 * **Metadata** contains the metadata for the systems.
+
 ```text
 cadenza_data
 └───task1
@@ -47,8 +52,10 @@ cadenza_data
 ```
 
 ### 1.2 Additional optional data
+
 * **MedleyDB** contains both MedleyDB versions 1 [4] and 2 [5] datasets.
 MedleyDB dataset is not used in the evaluation and is your responsibility to exclude any song that is already in the training set.
+
 ```text
 cadenza_data
 └───task1
@@ -60,6 +67,7 @@ cadenza_data
 
 * **BACH10** contains the BACH10 dataset [6].
 BACH10 dataset is not used in the evaluation.
+
 ```text
 cadenza_data
 └───task1
@@ -71,8 +79,10 @@ cadenza_data
 ```
 
 * **FMA Small** contains the FMA small subset of the FMA dataset [7].
-FMA small dataset is not used in the evaluation. This dataset does not provide the independent stems, but only the full mix.
+
+* FMA small dataset is not used in the evaluation. This dataset does not provide the independent stems, but only the full mix.
 However, it can be used for any unsupervised learning task.
+
 ```text
 cadenza_data
 └───task1
@@ -104,14 +114,19 @@ where you have installed the Cadenza data. This parameter defaults to the workin
 You can also define your own `path.exp_folder` to store enhanced
 signals and evaluated results.
 Then run:
+
 ```bash
 python enhance.py
 ```
+
 Alternatively, you can provide the root variable on the command line, e.g.,
+
 ```bash
 python enhance.py path.root=/full/path/to/my/cadenza_data
 ```
+
 To get a full list of the parameters, run:
+
 ```bash
 python enhance.py --help
 ```
@@ -125,9 +140,11 @@ for each of the eight left and right VDBO stems.
 The average of these eight scores is computed and returned for each signal.
 
 To run the evaluation stage, make sure that `path.root` is set in the config.yaml file and then run
+
 ```bash
 python evaluate.py
 ```
+
 A csv file containing the eight HAAQI scores and the combined score will be generated in the `path.exp_folder`.
 
 To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
