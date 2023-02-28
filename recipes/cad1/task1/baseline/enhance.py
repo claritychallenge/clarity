@@ -330,19 +330,19 @@ def enhance(config: DictConfig) -> None:
             # Decompose song only once
             prev_song_name = song_name
 
-            sampling_frequency, mixture_signal = wavfile.read(
+            smaple_rate, mixture_signal = wavfile.read(
                 Path(config.path.music_dir)
                 / split_directory
                 / song_name
                 / "mixture.wav"
             )
             mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
-            assert sampling_frequency == config.nalr.fs
+            assert smaple_rate == config.nalr.fs
 
             stems = decompose_signal(
                 separation_model,
                 mixture_signal,
-                sampling_frequency,
+                smaple_rate,
                 device,
                 audiogram_left,
                 audiogram_right,
@@ -370,11 +370,22 @@ def enhance(config: DictConfig) -> None:
             else:
                 out_right += item
 
-            filename = f"{listener_info['name']}_{song_name}_{stem_str}.wav"
-            wavfile.write(enhanced_folder / filename, sampling_frequency, item)
+            filename = (
+                enhanced_folder
+                / f"{listener_info['name']}"
+                / f"{song_name}"
+                / f"{listener_info['name']}_{song_name}_{stem_str}.wav"
+            )
+            filename.parent.mkdir(parents=True, exist_ok=True)
+            wavfile.write(filename, config.nalr.fs, item)
 
         enhanced = np.stack([out_left, out_right], axis=1)
-        filename = f"{listener_info['name']}_{song_name}.wav"
+        filename = (
+            enhanced_folder
+            / f"{listener_info['name']}"
+            / f"{song_name}"
+            / f"{listener_info['name']}_{song_name}_remix.wav"
+        )
 
         # Clip and save
         if config.soft_clip:
@@ -384,7 +395,7 @@ def enhance(config: DictConfig) -> None:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
         np.clip(enhanced, -1.0, 1.0, out=enhanced)
         signal_16 = (32768.0 * enhanced).astype(np.int16)
-        wavfile.write(enhanced_folder / filename, sampling_frequency, signal_16)
+        wavfile.write(filename, config.nalr.fs, signal_16)
 
 
 # pylint: disable = no-value-for-parameter
