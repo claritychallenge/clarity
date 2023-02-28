@@ -11,7 +11,8 @@ The data is split into train, validation and test following the same split from 
 I.e., 86 songs are for training, [16 for validation](validation_tracks:) and 50 for evaluation.
 
 To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). The data is split into `cadenza_cad1_task1_music.tar.gz` (containing the MUSDB18-HQ dataset) and
-`cadenza_cad1_task1_metadata.tar.gz` (containing the necessary metadata). Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
+`cadenza_cad1_task1_metadata.tar.gz` (containing the list of songs and listeners' characteristics per split).
+Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
 
 If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4][5],
@@ -45,16 +46,19 @@ cadenza_data
 └───task1
     └───metadata
         └───musdb18hq
-            ├───listeners.json
-            ├───musdb18_train.json
-            ├───musdb18_valid.json
-            └───musdb18_test.json
+            ├───listeners.train.json
+            ├───listeners.valid.json
+            ├───musdb18.train.json
+            ├───musdb18.valid.json
+            └───musdb18.test.json
 ```
 
 ### 1.2 Additional optional data
 
 * **MedleyDB** contains both MedleyDB versions 1 [4] and 2 [5] datasets.
-MedleyDB dataset is not used in the evaluation and is your responsibility to exclude any song that is already in the training set.
+
+Tracks from the MedleyDB dataset are not included in the evaluation set.
+However, is your responsibility to exclude any song that may be already contained in the training set.
 
 ```text
 cadenza_data
@@ -66,7 +70,8 @@ cadenza_data
 ```
 
 * **BACH10** contains the BACH10 dataset [6].
-BACH10 dataset is not used in the evaluation.
+
+Tracks from the BACH10 dataset are not included in MUSDB18-HQ and can all be used as training augmentation data.
 
 ```text
 cadenza_data
@@ -80,8 +85,9 @@ cadenza_data
 
 * **FMA Small** contains the FMA small subset of the FMA dataset [7].
 
-* FMA small dataset is not used in the evaluation. This dataset does not provide the independent stems, but only the full mix.
-However, it can be used for any unsupervised learning task.
+Tracks from the FMA small dataset are not included in the MUSDB18-HQ.
+This dataset does not provide independent stems but only the full mix.
+However, it can be used to train an unsupervised model to better initialise a supervised model.
 
 ```text
 cadenza_data
@@ -102,17 +108,17 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 The baseline enhance simply takes the out-of-the-box [Hybrid Demucs](https://github.com/facebookresearch/demucs)[1]
 source separation model distributed on [TorchAudio](https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html)
-and applies a simple NAL-R [2] fitting amplification and a simple automatic gain compressor to each
-VDBO (`vocals`, `drums`, `bass` and `others`) stem.
+and applies a simple NAL-R [2] fitting amplification to each VDBO (`vocals`, `drums`, `bass` and `others`) stem.
 
 The remixing is performed by summing the amplified VDBO stems.
 
-The baseline will generate a left and right signal for each VDBO stem and a remixed signal, totalling 9 signals per song-listener.
+The baseline generates a left and right signal for each VDBO stem and a remixed signal, totalling 9 signals per song-listener.
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
 where you have installed the Cadenza data. This parameter defaults to the working directory.
 You can also define your own `path.exp_folder` to store enhanced
 signals and evaluated results.
+
 Then run:
 
 ```bash
@@ -139,7 +145,7 @@ The `evaluate.py` simply takes the signals stored in `enhanced_signals` and comp
 for each of the eight left and right VDBO stems.
 The average of these eight scores is computed and returned for each signal.
 
-To run the evaluation stage, make sure that `path.root` is set in the config.yaml file and then run
+To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
 ```bash
 python evaluate.py
