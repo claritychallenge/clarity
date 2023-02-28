@@ -36,7 +36,7 @@ Cadenza challenges join the [Cadenza Challenge Group](https://groups.google.com/
 In this repository, you will find code to support all Clarity and Cadenza Challenges, including baselines, toolkits, and
 systems from participants. **We encourage you to make your system/model open source and contribute to this repository.**
 
-## Current Events
+## Current Events.
 
 - The 2nd Clarity Enhancement Challenge (CEC2) Online Workshop - December 12th - [Register Now!](https://claritychallenge.org/clarity2022-CEC2-workshop/):fire::fire::fire:
 - The ICASSP 2023 Clarity Challenge - Open Now [visit the website](https://claritychallenge.org/ICASSP2023_announcement_page/) for details on how to take part. Closing Feb 8th.
