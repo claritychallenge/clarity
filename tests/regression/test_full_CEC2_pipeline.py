@@ -13,8 +13,6 @@ from clarity.evaluator.haspi import haspi_v2_be
 
 CPUINFO = get_cpu_info()
 
-print(f"CPU Info : {CPUINFO}")
-
 np.random.seed(0)
 
 # Set up some scene to simulate
