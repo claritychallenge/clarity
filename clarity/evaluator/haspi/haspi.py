@@ -125,7 +125,7 @@ def haspi_v2_be(
     audiogram_right,
     audiogram_cfs,
     level=100,
-) -> float:
+) -> np.ndarray:
     """Better ear HASPI.
 
     Calculates HASPI for left and right ear and selects the better result.
