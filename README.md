@@ -38,6 +38,7 @@ systems from participants. **We encourage you to make your system/model open sou
 
 ## Current Events.
 
+- The 1st Cadenza Challenge (CAD1) - Open Now [visit the website](http://cadenzachallenge.org/docs/cadenza1/cc1_intro) for details on how to take part :fire::fire::fire:
 - The 2nd Clarity Enhancement Challenge (CEC2) Online Workshop - December 12th - [Register Now!](https://claritychallenge.org/clarity2022-CEC2-workshop/):fire::fire::fire:
 - The ICASSP 2023 Clarity Challenge - Open Now [visit the website](https://claritychallenge.org/ICASSP2023_announcement_page/) for details on how to take part. Closing Feb 8th.
 
@@ -83,12 +84,11 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge(s)
 
+- [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
 - [The ICASSP 2023 Enhancement Challenge](./recipes/icassp_2023)
 
 Upcoming challenges
 
-- The first Cadenza Challenge will launch Spring 2023. Join the [Cadenza Challenge
-  Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
 - The 2nd Clarity Prediction Challenge is due to launch in February 2023.
 
 Previous challenges
