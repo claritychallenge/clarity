@@ -23,6 +23,7 @@ and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.
 
 Unpack packages under the same root directory using
 
+
 ```bash
 tar -xvzf <PACKAGE_NAME>
 ```
@@ -99,6 +100,27 @@ cadenza_data
             ├───001
             ├───...
 ```
+
+### 1.3 Demo data
+
+To help you to start with the challenge, we provide a small subset of the data.
+the `demo_data` folder contains a single song and two listeners from the validation set.
+
+To use the demo data, simply download the package `cadenza_data_demo.tar.xz`
+from [here](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek5qKW?usp=share_link)
+and unpack it under `recipes/cad1/task1/`, i.e., one level above the baseline directory.
+Note that the `root.path` variable in `config.yaml` is already set to the demo data by default.
+
+To unpacked the demo data, run:
+
+```bash
+tar -xvf cadenza_data_demo.tar.xz
+```
+
+
+```text
+
+
 
 ## 2. Baseline
 
