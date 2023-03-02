@@ -1,12 +1,11 @@
 <div align="center">
 
-# Machine learning challenges for hearing aid processing.
+# Machine learning challenges for hearing aid processing
 
 <p align="center">
   <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="200" hspace="40"/>
 
   <img src="docs/images/cadenza_logo.png" alt="Cadenza Challenge" width="250" hspace="40"/>
-
 <p>
 
 [![PyPI version](https://badge.fury.io/py/pyclarity.svg)](https://badge.fury.io/py/pyclarity)
@@ -19,27 +18,28 @@
 
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202023%20Challenge%20-%20pypi&message=v0.2.1&color=orange)](https://pypi.org/project/pyclarity/0.2.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC2%20Challenge%20-%20pypi&message=v0.1.1&color=orange)](https://pypi.org/project/pyclarity/0.1.1/)
+
 </p>
 
 </div>
 
---------------------------------------------------------------------------------
+---
 
-We are organising a series of machine learning challenges to enhance hearing-aid signal processing and to better predict
-how people perceive speech-in-noise (Clarity) and speech-in-music (Cadenza). For further details of the Clarity Project
-visit [the Clarity project website](http://claritychallenge.org/), and for details of our latest Clarity challenges
-visit our [challenge documentation site](https://claritychallenge.github.io/clarity_CC_doc/). You can contact the
-Clarity Team by email at [claritychallengecontact@gmail.com](claritychallengecontact@gmail.com). For further details of
-the Cadenza Project visit [the Cadenza project website](http://cadenzachallenge.org/), and to find out about the latest
-Cadenza challenges join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge).
+We are organising a series of machine learning challenges to enhance hearing-aid signal processing and to better predict how people perceive speech-in-noise (Clarity) and speech-in-music (Cadenza). For further details of the Clarity Project visit [the Clarity project website](http://claritychallenge.org/), and for details of our latest Clarity challenges visit our [challenge documentation site](https://claritychallenge.github.io/clarity_CC_doc/). You can contact the Clarity Team by email at [claritychallengecontact@gmail.com](claritychallengecontact@gmail.com). For further details of the Cadenza Project visit [the Cadenza project website](http://cadenzachallenge.org/), and to find out about the latest Cadenza challenges join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge).
 
-In this repository, you will find code to support all Clarity and Cadenza Challenges, including baselines, toolkits, and
-systems from participants. **We encourage you to make your system/model open source and contribute to this repository.**
+In this repository, you will find code to support all Clarity and Cadenza Challenges, including baselines, toolkits, and systems from participants. **We encourage you to make your system/model open source and contribute to this repository.**
 
-## Current Events.
+## Current Events
 
-- The 2nd Clarity Enhancement Challenge (CEC2) Online Workshop - December 12th - [Register Now!](https://claritychallenge.org/clarity2022-CEC2-workshop/):fire::fire::fire:
-- The ICASSP 2023 Clarity Challenge - Open Now [visit the website](https://claritychallenge.org/ICASSP2023_announcement_page/) for details on how to take part. Closing Feb 8th.
+- The first Cadenza Challenge (CAD1) is now open. :fire::fire:
+  - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
+  - Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.
+  - Evaluation tools and a baseline system are available in the [CAD1 recipes](./recipes/cad1) folder. :new:
+- The 2nd Clarity Prediction Challenge (CPC2) is now open.   :fire::fire:
+  - Join the [Cadenza Challenge Group](https://groups.google.com/g/clarirty-challenge) to keep up-to-date on developments.
+  - Visit the Clarity Challenge [website](https://claritychallenge.org/) for more details.
+  - Evaluation tools and a baseline system will be available shortly.
+- The 4th Clarity Workshop will be held as a satellite event of Interspeech 2023. For details visit the [workshop website](https://claritychallenge.org/clarity2023-workshop/).
 
 ## Installation
 
@@ -48,7 +48,7 @@ systems from participants. **We encourage you to make your system/model open sou
 Clarity is available on the [Python Package Index (PyPI)](https://pypi.org/project/pyclarity) to install create and/or
 activate a virtual environment and then use `pip` to install.
 
-``` bash
+```bash
 conda create --name clarity python=3.8
 conda activate clarity
 
@@ -75,24 +75,21 @@ pip install -e .
 Alternatively `pip` allows you to install packages from GitHub sources directly. The following will install the current
 `main` branch.
 
-``` bash
+```bash
 pip install -e git+https://github.com/claritychallenge/clarity.git@main
 ```
 
 ## Challenges
 
-Current challenge(s)
+Current challenge
 
-- [The ICASSP 2023 Enhancement Challenge](./recipes/icassp_2023)
-
-Upcoming challenges
-
-- The first Cadenza Challenge will launch Spring 2023. Join the [Cadenza Challenge
-  Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
-- The 2nd Clarity Prediction Challenge is due to launch in February 2023.
+- [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
+- The 1st Clarity Prediction Challenge (CPC2) - Recipes coming soon.
 
 Previous challenges
 
+- [The ICASSP 2023 Enhancement Challenge](./recipes/icassp_2023)
+- [The 2nd Clarity Enhancement Challenge (CEC2)](./recipes/cec2)
 - [The 1st Clarity Prediction Challenge (CPC1)](./recipes/cpc1)
 - [The 1st Clarity Enhancement Challenge (CEC1)](./recipes/cec1)
 
@@ -102,18 +99,18 @@ We provide also a number of tools in this repository:
 
 - **Hearing loss simulation**
   - [Cambridge MSBG hearing loss simulator](./clarity/evaluator/msbg): descriptions can be found in the [CEC1
-      description](./recipes/cec1); an usage example can be found in the [CEC1 baseline](./recipes/cec1/baseline)
-      evaluation script `evaluate.py`.
+    description](./recipes/cec1); an usage example can be found in the [CEC1 baseline](./recipes/cec1/baseline)
+    evaluation script `evaluate.py`.
 - **Objective intelligibility measurement**
   - [Modified binaural STOI (MBSTOI)](./clarity/evaluator/mbstoi/mbstoi.py): a Python implementation of MBSTOI. It is
-      jointly used with the MSBG hearing loss model in the [CEC1 baseline](./recipes/cec1/baseline). The official matlab
-      implementation can be found here: <http://ah-andersen.net/code/>
+    jointly used with the MSBG hearing loss model in the [CEC1 baseline](./recipes/cec1/baseline). The official matlab
+    implementation can be found here: <http://ah-andersen.net/code/>
   - [Hearing-aid speech perception index (HASPI)](./clarity/evaluator/haspi/haspi.py): a Python implementation of
-      HASPI Version 2, and the better-ear HASPI for binaural speech signals. For official matlab implementation, request here: <https://www.colorado.edu/lab/hearlab/resources>
+    HASPI Version 2, and the better-ear HASPI for binaural speech signals. For official matlab implementation, request here: <https://www.colorado.edu/lab/hearlab/resources>
   - [Hearing-aid speech quality index (HASQI)](./clarity/evaluator/hasqi/hasqi.py): a Python implementation of
-      HASQI Version 2, and the better-ear HASQI for binaural speech signals.
+    HASQI Version 2, and the better-ear HASQI for binaural speech signals.
   - [Hearing-aid audio quality index (HAAQI)](./clarity/evaluator/haaqi/haaqi.py): a Python implementation of
-      HAAQI.
+    HAAQI.
 - **Hearing aid enhancement**
   - [Cambridge hearing aid fitting (CAMFIT)](./clarity/enhancer/gha/gainrule_camfit.py): a Python implementation of CAMFIT, translated from the [HörTech Open Master Hearing Aid (OpenMHA)](http://www.openmha.org/about/); the CAMFIT is used together with OpenMHA enhancement as the [CEC1 baseline](./recipes/cec1/baseline), see `enhance.py`.
   - [NAL-R hearing aid fitting](./clarity/enhancer/nalr.py): a Python implementation of NAL-R prescription fitting. It is used as the [CEC2 baseline](./recipes/cec2/baseline), see `enhance.py`.
