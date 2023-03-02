@@ -1,12 +1,11 @@
 <div align="center">
 
-# Machine learning challenges for hearing aid processing.
+# Machine learning challenges for hearing aid processing
 
 <p align="center">
   <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="200" hspace="40"/>
 
   <img src="docs/images/cadenza_logo.png" alt="Cadenza Challenge" width="250" hspace="40"/>
-
 <p>
 
 [![PyPI version](https://badge.fury.io/py/pyclarity.svg)](https://badge.fury.io/py/pyclarity)
@@ -30,11 +29,16 @@ We are organising a series of machine learning challenges to enhance hearing-aid
 
 In this repository, you will find code to support all Clarity and Cadenza Challenges, including baselines, toolkits, and systems from participants. **We encourage you to make your system/model open source and contribute to this repository.**
 
-## Current Events.
+## Current Events
 
-- The first Cadenza Challenge (CAD1) is now open. Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments. Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.:fire::fire::fire:
-- The 2nd Clarity Prediction Challenge (CPC2) is now open. Join the [Cadenza Challenge
-  Group](https://groups.google.com/g/clarirty-challenge) to keep up-to-date on developments. Visit the Clarity Challenge [website](https://claritychallenge.org/) for more details.:fire::fire::fire:
+- The first Cadenza Challenge (CAD1) is now open. :fire::fire:
+  - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
+  - Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.
+  - Evaluation tools and a baseline system are available in the [CAD1 recipes](./recipes/cad1) folder. :new:
+- The 2nd Clarity Prediction Challenge (CPC2) is now open.   :fire::fire:
+  - Join the [Cadenza Challenge Group](https://groups.google.com/g/clarirty-challenge) to keep up-to-date on developments.
+  - Visit the Clarity Challenge [website](https://claritychallenge.org/) for more details.
+  - Evaluation tools and a baseline system will be available shortly.
 - The 4th Clarity Workshop will be held as a satellite event of Interspeech 2023. For details visit the [workshop website](https://claritychallenge.org/clarity2023-workshop/).
 
 ## Installation
@@ -79,13 +83,13 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
-- The first Cadenza Challenge (CAD1) is now open. Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments. Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.
-- The 2nd Clarity Prediction Challenge (CPC2) is now open. Join the [Cadenza Challenge
-  Group](https://groups.google.com/g/clarirty-challenge) to keep up-to-date on developments. Visit the Clarity Challenge [website](https://claritychallenge.org/) for more details.
+- [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
+- The 1st Clarity Prediction Challenge (CPC2) - Recipes coming soon.
 
 Previous challenges
 
 - [The ICASSP 2023 Enhancement Challenge](./recipes/icassp_2023)
+- [The 2nd Clarity Enhancement Challenge (CEC2)](./recipes/cec2)
 - [The 1st Clarity Prediction Challenge (CPC1)](./recipes/cpc1)
 - [The 1st Clarity Enhancement Challenge (CEC1)](./recipes/cec1)
 
