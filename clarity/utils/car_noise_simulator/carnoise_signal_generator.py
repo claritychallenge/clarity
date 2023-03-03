@@ -1,7 +1,7 @@
 """
 Class to generate the car noise signal.
 """
-from typing import Any, Dict
+from typing import Dict, Union
 
 import numpy as np
 from scipy.signal import butter, lfilter
@@ -30,7 +30,7 @@ def apply_commonness(
 
 
 def _butter_filter(
-    order: int, cutoff_hz: Any[list, np.ndarray], btype: str, sample_rate: int
+    order: int, cutoff_hz: Union[list, np.ndarray], btype: str, sample_rate: int
 ):
     """
     Function that creates a butter filter
@@ -127,6 +127,7 @@ class CarNoiseGenerator:
             "dip_high",
         ]:
             if filter_type in noise_parameters:
+                filter_numer_denom[filter_type] = {}
                 numer, denom = _butter_filter(
                     **noise_parameters[filter_type], sample_rate=self.sample_rate
                 )

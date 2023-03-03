@@ -3,7 +3,7 @@ Class to generate random parameters for the Car noise signal generation
 
 These are 2 separated class to keep the logic separated
 """
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 
@@ -128,15 +128,15 @@ class CarNoiseParameters:
 
         return parameters
 
-    def _get_gear(self, speed_kph: float) -> Any[int, None]:
+    def _get_gear(self, speed_kph: float) -> int:
         for speed, possible_gears in self.GEAR_LOOKUP.items():
             if speed_kph >= speed:
-                return (
+                return int(
                     possible_gears[-1]
                     if not self.random_flag
                     else np.random.choice(possible_gears)
                 )
-        return None
+        return 0
 
     def _get_rpm(self, gear: int, speed_kph: float) -> float:
         rpm = self.RPM_LOOKUP[gear] * speed_kph * 60
