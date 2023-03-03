@@ -104,7 +104,7 @@ cadenza_data
 ### 1.3 Demo data
 
 To help you to start with the challenge, we provide a small subset of the data.
-the `demo_data` folder contains a single song and two listeners from the validation set.
+The `demo_data` folder contains a single song and two listeners from the validation set.
 
 To use the demo data, simply download the package `cadenza_data_demo.tar.xz`
 from [here](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek5qKW?usp=share_link)
