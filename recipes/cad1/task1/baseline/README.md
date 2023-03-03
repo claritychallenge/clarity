@@ -118,10 +118,6 @@ tar -xvf cadenza_data_demo.tar.xz
 ```
 
 
-```text
-
-
-
 ## 2. Baseline
 
 In the `baseline/` folder, we provide code for running the baseline enhancement system and performing the objective evaluation.
