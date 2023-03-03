@@ -1,7 +1,7 @@
 path:
-  root: ./
-  metadata_dir: ${path.root}/task1/metadata
-  music_dir: ${path.root}/task1/audio/musdb18hq
+  root: ../../cadenza_data_demo/cad1/task1
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio/musdb18hq
   music_train_file: ${path.metadata_dir}/musdb18.train.json
   music_valid_file: ${path.metadata_dir}/musdb18.valid.json
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
@@ -28,7 +28,7 @@ separator:
 evaluate:
   set_random_seed: True
   small_test: False
-  batch_size: 5  # Number of batches
+  batch_size: 1  # Number of batches
   batch: 0       # Batch number to evaluate
 
 # hydra config
