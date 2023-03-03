@@ -111,7 +111,7 @@ from [here](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek
 and unpack it under `recipes/cad1/task1/`, i.e., one level above the baseline directory.
 Note that the `root.path` variable in `config.yaml` is already set to the demo data by default.
 
-To unpacked the demo data, run:
+To unpack the demo data, run:
 
 ```bash
 tar -xvf cadenza_data_demo.tar.xz
