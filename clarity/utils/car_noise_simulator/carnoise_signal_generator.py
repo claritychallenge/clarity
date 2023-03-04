@@ -45,7 +45,9 @@ def _butter_filter(
     """
     if isinstance(cutoff_hz, list):
         cutoff_hz = np.array(cutoff_hz)
-    numer, denom = butter(order, cutoff_hz / (sample_rate / 2.0), btype=btype)
+    numer, denom = butter(
+        order, cutoff_hz / (sample_rate / 2.0), btype=btype, output="ba"
+    )
     return numer, denom
 
 
@@ -65,11 +67,12 @@ class CarNoiseGenerator:
         >>> car_noise_parameters = CarNoiseParameters(random_flag=True)
         >>> parameters = car_noise_parameters.gen_parameters(speed_kph=100)
 
-        >>> car_noise = CarNoiseGenerator(random_flag=True)
+        >>> car_noise = CarNoiseGenerator(sample_rate=44100, duration_secs=5, random_flag=True)
         >>> car_noise_signal = car_noise.generate_car_noise(parameters, 3, 0.5)
     """
 
     REFERENCE_CONSTANT_DB = 30
+    FINAl_MULTIPLIER = 1 / 2000
 
     def __init__(
         self,
@@ -175,7 +178,7 @@ class CarNoiseGenerator:
                 car_noise[n, :], extra_noise_for_coherence[0, :], commonness_factor
             )
 
-        return car_noise
+        return car_noise * self.FINAl_MULTIPLIER
 
     def generate_source_noise(
         self,
@@ -271,7 +274,7 @@ class CarNoiseGenerator:
             harmonic_complex_power_db,
         ) = self.get_engine_params(speed, rpm, reference_level_db)
 
-        engine_noise = np.zeros((self.duration_samples))
+        engine_noise = np.zeros(self.duration_samples)
 
         for c in range(harmonic_complex_ntones):
             component = {}
@@ -317,12 +320,9 @@ class CarNoiseGenerator:
             reference_level_db + 35
         )  # puts it slightly quieter than the tones
         lowpass_noise_gaussian_std = 10 ** (lowpasslevel_db / 20)
-        lowerlimitforrandomization_db = 6 if not self.random_flag else 0
-        upperlimitforrandomization_db = 6
+
         bump_level_db = lowpasslevel_db + np.random.choice(
-            np.arange(
-                lowerlimitforrandomization_db, upperlimitforrandomization_db + 1, 1
-            )
+            np.arange(6 if not self.random_flag else 0, 6 + 1, 1)
         )
         bump_gaussian_std = 10 ** (bump_level_db / 20)
 
@@ -344,15 +344,15 @@ class CarNoiseGenerator:
         """
 
         harmoniccomplex_f0 = rpm / 60
-        harmoniccomplex_ncomponents = np.random.choice(np.arange(10, 41))
+        harmoniccomplex_ncomponents = (
+            25 if not self.random_flag else np.random.choice(np.arange(10, 41))
+        )
 
         harmoniccomplex_freqs_hz = harmoniccomplex_f0 * np.arange(
             1, harmoniccomplex_ncomponents + 1
         )
 
-        harmoniccomplex_ntones = (
-            25 if not self.random_flag else len(harmoniccomplex_freqs_hz)
-        )
+        harmoniccomplex_ntones = len(harmoniccomplex_freqs_hz)
 
         tone_speeddependence_level_dbperkph = 2 * 0.067
         toneconstant_db = -3
@@ -368,7 +368,7 @@ class CarNoiseGenerator:
                 + np.random.choice(
                     np.arange(
                         0 if not self.random_flag else -2,
-                        0 if not self.random_flag else +2 + 0.1,
+                        0 if not self.random_flag else 2.1,
                         0.1,
                     )
                 )
