@@ -1,0 +1,18 @@
+path:
+  clarity_data_dir: ???
+  exp_dir: ./exp
+  results_dir: ../results
+  metadata_dir: ${path.clarity_data_dir}/clarity_data/metadata
+
+dataset: ???
+results_file: results
+
+
+compute_haspi:
+  batch: 1
+  n_batches: 1
+  set_random_seed: True
+
+hydra:
+  run:
+    dir: ${path.exp_dir}
