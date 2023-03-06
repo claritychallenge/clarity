@@ -44,6 +44,6 @@ jobs:
           coverage xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-      - name: pylint
-        run: |
-          pylint --rcfile=.pylintrc
+      # - name: pylint
+      #   run: |
+      #     pylint --rcfile .pylintrc

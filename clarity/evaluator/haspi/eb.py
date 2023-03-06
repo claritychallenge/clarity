@@ -1,4 +1,6 @@
-"""Module for ???"""
+"""Module for HASPI, HASQI, HAAQI EBs"""
+import logging
+
 import numpy as np
 from numba import jit
 from scipy.signal import (
@@ -13,6 +15,8 @@ from scipy.signal import (
 )
 
 from clarity.enhancer.nalr import NALR
+
+logger = logging.getLogger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-arguments
@@ -1359,7 +1363,9 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     average_cepstral_correlation = 0
     individual_cepstral_correlations = 0
     if nsamp <= 1:
-        print("Function eb.melcor: Signal below threshold, outputs set to 0.")
+        logger.warning(
+            "Function MelCepstrumCorrelation: Signal below threshold, outputs set to 0."
+        )
         return average_cepstral_correlation, individual_cepstral_correlations
 
     # Remove the silent intervals
@@ -1400,8 +1406,8 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
             )
 
     #
-    # % Figure of merit is the average of the cepstral correlations, ignoring
-    # % the first (average spectrum level).
+    # Figure of merit is the average of the cepstral correlations, ignoring
+    # the first (average spectrum level).
     average_cepstral_correlation = np.sum(
         individual_cepstral_correlations[1:nbasis]
     ) / (nbasis - 1)
@@ -1489,7 +1495,7 @@ def melcor9(
     mel_cepstral_high = 0
     mel_cepstral_modulation = np.zeros(n_modulation_filter_bands)
     if segments_above_threshold <= 1:
-        print("Function eb.melcor9: Signal below threshold, outputs set to 0.")
+        logger.warning("Function melcor9: Signal below threshold, outputs set to 0.")
         return (
             mel_cepstral_average,
             mel_cepstral_low,
@@ -2012,7 +2018,9 @@ def ave_covary2(
 
     # Exit if not enough segments above zero
     if nseg <= 1:
-        print("Function eb.AveCovary: Ave signal below threshold, outputs set to 0.")
+        logger.warning(
+            "Function AveCovary2: Ave signal below threshold, outputs set to 0."
+        )
         average_covariance = 0
         # syncov = 0
         ihc_sync_covariance = [0] * 6
@@ -2071,7 +2079,9 @@ def ave_covary2(
     # Exit if not enough segments above zero
     if wsum < 1:
         average_covariance = 0
-        print("Function eb.AveCovary: Signal tiles below threshold, outputs set to 0.")
+        logger.warning(
+            "Function AveCovary2: Signal tiles below threshold, outputs set to 0."
+        )
     else:
         average_covariance = csum / wsum
     ihc_sync_covariance = sum_weighted_time_freq / tiles_above_threshold
