@@ -8,7 +8,7 @@ from typing import Dict, Tuple
 import numpy as np
 
 
-class CarNoiseParameters:
+class CarNoiseParametersGenerator:
     """
     A class to generate noise parameters for a car.
     The constructor takes a boolean flag to indicate whether some
@@ -203,9 +203,3 @@ class CarNoiseParameters:
         }
 
         return filter_dict_low, filter_dict_high
-
-
-if __name__ == "__main__":
-    np.random.seed(42)  # for reproducibility
-    car_noise_parameters = CarNoiseParameters(random_flag=True)
-    print(car_noise_parameters.gen_parameters(90))

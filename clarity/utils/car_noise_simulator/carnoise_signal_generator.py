@@ -51,7 +51,7 @@ def _butter_filter(
     return numer, denom
 
 
-class CarNoiseGenerator:
+class CarNoiseSignalGenerator:
     """
     A class to generate car noise signal.
 
