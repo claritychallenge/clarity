@@ -11,7 +11,7 @@ from clarity.evaluator.haspi.ebm import (
 from clarity.evaluator.haspi.ip import get_neural_net, nn_feed_forward_ensemble
 
 
-def haspi_v2(
+def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     reference: np.ndarray,
     reference_freq: int,
     processed: np.ndarray,
@@ -112,10 +112,10 @@ def haspi_v2(
     model = model / normalization_factor
 
     # Return the intelligibility estimate and raw modulation filter outputs
-    return model, average_correlation_matrix
+    return model[0], average_correlation_matrix
 
 
-def haspi_v2_be(
+def haspi_v2_be(  # pylint: disable=too-many-arguments
     reference_left,
     reference_right,
     processed_left,
