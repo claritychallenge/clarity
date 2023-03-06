@@ -210,7 +210,7 @@ def get_neural_net():
 
 def nn_feed_forward_ensemble(
     data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
-) -> float:
+) -> np.ndarray:
     """
     Function to compute the neural network ensemble response to a set of
     inputs. The neural network is defined in NNfeedforwardZ.
