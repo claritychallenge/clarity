@@ -11,5 +11,9 @@ python compute_haspi.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC
 ```
 
 ```bash
-python predict.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC2_data dataset=CEC2.train.1 +haspi_file=../results/results_1
+python predict.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC2_data dataset=CEC2.train.1 +haspi_score_file=../results/results_1
+```
+
+```bash
+python evaluate.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC2_data dataset=CEC2.train.1
 ```
