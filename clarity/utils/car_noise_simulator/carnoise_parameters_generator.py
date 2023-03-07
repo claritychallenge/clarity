@@ -46,6 +46,7 @@ class CarNoiseParametersGenerator:
 
     GEAR_LOOKUP = {110: [6], 100: [5, 6], 85: [5], 75: [4, 5], 60: [4], 50: [3]}
     RPM_LOOKUP = {6: 0.28, 5: 0.34, 4: 0.45, 3: 0.60}
+    REFERENCE_CONSTANT_DB = 30
 
     def __init__(self, random_flag=True):
         """
@@ -110,6 +111,14 @@ class CarNoiseParametersGenerator:
         gear = self._get_gear(speed_kph)
         rpm = self._get_rpm(gear, speed_kph)
 
+        referencelevel_db = self.REFERENCE_CONSTANT_DB
+        if self.random_flag:
+            referencelevel_db += np.random.choice(np.arange(0, 3.1, 0.1))
+
+        engine_num_harmonics = (
+            25 if not self.random_flag else np.random.choice(np.arange(10, 41))
+        )
+
         primary_filter = self._generate_primary_filter(speed_kph)
         secondary_filter = self._generate_secondary_filter(speed_kph)
         bump_filter = self._generate_bump_filter()
@@ -118,6 +127,8 @@ class CarNoiseParametersGenerator:
         parameters = {
             "speed": float(speed_kph),
             "gear": int(gear),
+            "reference_level_db": referencelevel_db,
+            "engine_num_harmonics": engine_num_harmonics,
             "rpm": float(rpm),
             "primary_filter": primary_filter,
             "secondary_filter": secondary_filter,

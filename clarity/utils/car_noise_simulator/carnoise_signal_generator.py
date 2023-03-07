@@ -117,9 +117,7 @@ class CarNoiseSignalGenerator:
         """
 
         # .. reference level = no speed dependence  plus a small randomization
-        referencelevel_db = self.REFERENCE_CONSTANT_DB
-        if self.random_flag:
-            referencelevel_db += np.random.choice(np.arange(0, 3.1, 0.1))
+        referencelevel_db = noise_parameters["reference_level_db"]
 
         filter_numer_denom: Dict = {}
         for filter_type in [
@@ -148,23 +146,24 @@ class CarNoiseSignalGenerator:
         # Generate Engine Noise
         # stored in index 0 in source_noise
         engine_noise = self.generate_engine_noise(
-            noise_parameters["speed"],
-            noise_parameters["rpm"],
-            referencelevel_db,
-            filter_numer_denom["primary_filter"],
-            filter_numer_denom["secondary_filter"],
+            speed=noise_parameters["speed"],
+            rpm=noise_parameters["rpm"],
+            engine_num_harmonics=noise_parameters["engine_num_harmonics"],
+            reference_level_db=referencelevel_db,
+            primary_filter=filter_numer_denom["primary_filter"],
+            secondary_filter=filter_numer_denom["secondary_filter"],
         )
         car_noise[0, :] = engine_noise
 
         # Generate Noise for N sources
         for n in range(1, number_noise_sources + 2):
             source_n_noise = self.generate_source_noise(
-                referencelevel_db,
-                filter_numer_denom["primary_filter"],
-                filter_numer_denom["secondary_filter"],
-                filter_numer_denom["bump"],
-                filter_numer_denom["dip_low"],
-                filter_numer_denom["dip_high"],
+                reference_level_db=referencelevel_db,
+                primary_filter=filter_numer_denom["primary_filter"],
+                secondary_filter=filter_numer_denom["secondary_filter"],
+                bump_filter=filter_numer_denom["bump"],
+                dip_low_filter=filter_numer_denom["dip_low"],
+                dip_high_filter=filter_numer_denom["dip_high"],
             )
 
             if n <= number_noise_sources:
@@ -250,6 +249,7 @@ class CarNoiseSignalGenerator:
         speed: float,
         rpm: float,
         reference_level_db: float,
+        engine_num_harmonics: int,
         primary_filter: Dict[str, np.ndarray],
         secondary_filter: Dict[str, np.ndarray],
     ):
@@ -259,6 +259,7 @@ class CarNoiseSignalGenerator:
             speed (float): Speed of the car in km/h
             rpm (float): RPM of the engine
             reference_level_db (float): Reference level in dB
+            engine_num_harmonics (int): Number of harmonics of the engine
             primary_filter (Dict[str, np.ndarray]): Primary filter
             secondary_filter (Dict[str, np.ndarray]): Secondary filter
 
@@ -270,13 +271,12 @@ class CarNoiseSignalGenerator:
 
         (
             harmonic_complex_freqs_hz,
-            harmonic_complex_ntones,
             harmonic_complex_power_db,
-        ) = self.get_engine_params(speed, rpm, reference_level_db)
+        ) = self.get_engine_params(speed, rpm, reference_level_db, engine_num_harmonics)
 
         engine_noise = np.zeros(self.duration_samples)
 
-        for c in range(harmonic_complex_ntones):
+        for c in range(engine_num_harmonics):
             component = {}
             # set amplitude of tone
             component["amplitude"] = 10 ** (harmonic_complex_power_db[c] / 20)
@@ -328,7 +328,13 @@ class CarNoiseSignalGenerator:
 
         return lowpass_noise_gaussian_std, bump_gaussian_std
 
-    def get_engine_params(self, speed: float, rpm: float, reference_level_db: float):
+    def get_engine_params(
+        self,
+        speed: float,
+        rpm: float,
+        reference_level_db: float,
+        engine_num_harmonics: int,
+    ):
         """
         Method that gets the parameters of the engine noise
 
@@ -336,6 +342,7 @@ class CarNoiseSignalGenerator:
             speed (float): Speed of the car in km/h
             rpm (float): RPM of the engine
             reference_level_db (float): Reference level in dB
+            engine_num_harmonics (int): Number of harmonics of the engine
 
         Returns:
             harmoniccomplex_freqs_hz (np.ndarray): Frequency of the harmonic complex
@@ -344,23 +351,18 @@ class CarNoiseSignalGenerator:
         """
 
         harmoniccomplex_f0 = rpm / 60
-        harmoniccomplex_ncomponents = (
-            25 if not self.random_flag else np.random.choice(np.arange(10, 41))
-        )
 
         harmoniccomplex_freqs_hz = harmoniccomplex_f0 * np.arange(
-            1, harmoniccomplex_ncomponents + 1
+            1, engine_num_harmonics + 1
         )
-
-        harmoniccomplex_ntones = len(harmoniccomplex_freqs_hz)
 
         tone_speeddependence_level_dbperkph = 2 * 0.067
         toneconstant_db = -3
 
-        harmoniccomplex_power_db = np.zeros(harmoniccomplex_ntones)
+        harmoniccomplex_power_db = np.zeros(engine_num_harmonics)
 
         # Generating power levels for each component
-        for n in range(harmoniccomplex_ntones):
+        for n in range(engine_num_harmonics):
             harmoniccomplex_power_db[n] = (
                 reference_level_db
                 + toneconstant_db
@@ -382,6 +384,5 @@ class CarNoiseSignalGenerator:
 
         return (
             harmoniccomplex_freqs_hz,
-            harmoniccomplex_ntones,
             harmoniccomplex_power_db,
         )

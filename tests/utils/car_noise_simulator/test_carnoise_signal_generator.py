@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 from clarity.utils.car_noise_simulator.carnoise_signal_generator import (
-    CarNoiseGenerator,
+    CarNoiseSignalGenerator,
 )
 
 BASE_DIR = Path.cwd()
@@ -17,21 +17,29 @@ def test_car_noise_generation():
     """Test that the car noise generator returns the expected signal"""
     np.random.seed(42)
     carnoise_params = {
-        "speed": 86.0,
-        "gear": 5,
-        "rpm": 1754.4,
-        "primary_filter": {"order": 1, "btype": "lowpass", "cutoff_hz": 14.9596},
-        "secondary_filter": {
-            "order": 2,
+        "bump": {"btype": "bandpass", "cutoff_hz": [30, 60], "order": 1},
+        "dip_high": {"btype": "highpass", "cutoff_hz": 300, "order": 2},
+        "dip_low": {"btype": "lowpass", "cutoff_hz": 200, "order": 2},
+        "engine_num_harmonics": 25,
+        "gear": 6,
+        "primary_filter": {
             "btype": "lowpass",
-            "cutoff_hz": 271.75680000000006,
+            "cutoff_hz": 16.860000000000003,
+            "order": 1,
         },
-        "bump": {"order": 2, "btype": "bandpass", "cutoff_hz": [66, 114]},
-        "dip_low": {"order": 2, "btype": "lowpass", "cutoff_hz": 170},
-        "dip_high": {"order": 2, "btype": "highpass", "cutoff_hz": 475},
+        "reference_level_db": 30,
+        "rpm": 1680.0000000000002,
+        "secondary_filter": {
+            "btype": "lowpass",
+            "cutoff_hz": 280.0,
+            "order": 2,
+        },
+        "speed": 100.0,
     }
 
-    car_noise = CarNoiseGenerator(sample_rate=16000, duration_secs=1, random_flag=True)
+    car_noise = CarNoiseSignalGenerator(
+        sample_rate=16000, duration_secs=1, random_flag=True
+    )
     car_noise_signal = car_noise.generate_car_noise(carnoise_params, 3, 0.5)
 
     assert car_noise_signal.shape == (4, 16000)
