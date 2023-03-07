@@ -59,7 +59,25 @@ tar -xvzf clarity_CPC2_data_demo.v1_1.tar.gz
 
 Note, the `root.path` variable in `config.yaml` is already set to point to the demo data by default.
 
+The demo data only contains one training set split, `train.1` and `CEC2` data. It has the following structure,
+
+```bash
+clarity_CPC2_data_demo
+├── clarity_data
+│   ├── HA_outputs
+│   │   ├── signals
+│   │   │   └── CEC2
+│   │   └── train.1
+│   │       └── CEC2
+│   ├── metadata
+│   └── scenes
+│       └── CEC2
+└── manifest
+```
+
 ## 2. Baseline
+
+The baseline prediction model is a simple logistic regression model that maps HASPI scores [[1](#references)] onto the sentence correctness values.
 
 ### 2.1 Computing the HASPI scores
 
@@ -69,7 +87,7 @@ Compute the HASPI scores over the training data set and store results
 python compute_haspi.py dataset=CEC2.train.1
 ```
 
-This will generate the output file containing HASPI scores. This file will be called `exp/<DATASET>.haspi.jsonl` where `DATASET>` is the name specified on the commandline.
+This will generate the output file containing HASPI scores. This file will be called `exp/<DATASET>.haspi.jsonl` where `<DATASET>` is the name specified on the commandline.
 
 Note, if the results file is already present, the script will only compute the scores for the signals that are not already present in the file. These missing results will be appended to the output file. This allows the script to be halted and restarted.
 
@@ -92,3 +110,5 @@ python evaluate.py dataset=CEC2.train.1
 Results will be displayed on the terminal and saved to the file `exp/<DATASET>.evaluate.jsonl`.
 
 ## References
+
+[1] Kates, J.M. and Arehart, K.H., 2021. The hearing-aid speech perception index (HASPI) version 2. Speech Communication, 131, pp.35-46.

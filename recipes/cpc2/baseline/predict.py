@@ -47,6 +47,19 @@ def read_jsonl(filename: str) -> list[dict]:
     return records
 
 
+def make_disjoint_train_set(
+    full_df: pd.DataFrame, test_df: pd.DataFrame
+) -> pd.DataFrame:
+    """Make a disjoint train set for given test samples."""
+    # make sure that the train and test sets are disjoint
+    # i.e. no signals, systems or listeners are shared
+    train_df = full_df[~full_df.signal.isin(test_df.signal)]
+    train_df = train_df[~train_df.system.isin(test_df.system)]
+    train_df = train_df[~train_df.listener.isin(test_df.listener)]
+    assert not set(train_df.signal).intersection(set(test_df.signal))
+    return train_df
+
+
 # pylint: disable = no-value-for-parameter
 @hydra.main(config_path=".", config_name="config")
 def predict(cfg: DictConfig):
@@ -63,23 +76,35 @@ def predict(cfg: DictConfig):
     haspi_score_index = {record["signal"]: record["haspi"] for record in haspi_score}
     for record in records:
         record["haspi_score"] = haspi_score_index[record["signal"]]
-
-    # add split into train/test set...
-
-    # fit logistic mapping from haspi score to correctness
     records_df = pd.DataFrame(records)
-    model = LogisticModel()
-    model.fit(records_df.haspi_score, records_df.correctness)
 
-    # predict correctness from haspi scores using the model
-    records_df["predicted_correctness"] = model.predict(records_df.haspi_score)
+    # make predictions for each item in the data
+    for i, record in records_df.iterrows():
+        test_df = records_df.iloc[[i]].copy()
 
-    # save results to csv file
-    records_df[["signal", "predicted_correctness"]].to_csv(
-        f"{cfg.dataset}.predict.csv",
-        index=False,
-        header=["signal_ID", "intelligibility_score"],
-    )
+        # The prediction is made using a logistic mapping from HASPI scores to intelligibility
+        # It is important that this mapping is trained using a disjoint set of data
+        # i.e. we define a training data set that does not contain systems, listeners or signals
+        # that appear in the test data sample.
+
+        train_df = make_disjoint_train_set(records_df, test_df)
+
+        model = LogisticModel()
+        model.fit(train_df.haspi_score, train_df.correctness)
+
+        # predict correctness from haspi scores using the model
+        test_df["predicted_correctness"] = model.predict(test_df.haspi_score)
+
+        # save results to csv file
+        header, mode = (
+            (["signal_ID", "intelligibility_score"], "w") if i == 0 else (False, "a")
+        )
+        test_df[["signal", "predicted_correctness"]].to_csv(
+            f"{cfg.dataset}.predict.csv",
+            index=False,
+            header=header,
+            mode=mode,
+        )
 
 
 if __name__ == "__main__":
