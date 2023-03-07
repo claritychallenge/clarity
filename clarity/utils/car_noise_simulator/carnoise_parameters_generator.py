@@ -127,8 +127,8 @@ class CarNoiseParametersGenerator:
         parameters = {
             "speed": float(speed_kph),
             "gear": int(gear),
-            "reference_level_db": referencelevel_db,
-            "engine_num_harmonics": engine_num_harmonics,
+            "reference_level_db": float(referencelevel_db),
+            "engine_num_harmonics": int(engine_num_harmonics),
             "rpm": float(rpm),
             "primary_filter": primary_filter,
             "secondary_filter": secondary_filter,
