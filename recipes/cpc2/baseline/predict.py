@@ -32,7 +32,6 @@ class LogisticModel:
         """Fit a mapping from x values to y values."""
         initial_guess = [0.5, 1.0]  # Initial guess for parameter values
         self.params, *_pcov = curve_fit(self._logistic_mapping, x, y, initial_guess)
-        print(self.params, _pcov)
 
     def predict(self, x):
         """Predict y values given x."""
@@ -64,6 +63,8 @@ def predict(cfg: DictConfig):
     for record in records:
         record["haspi_score"] = haspi_score_index[record["signal"]]
 
+    # add split into train/test set...
+
     # fit logistic mapping from haspi score to correctness
     records_df = pd.DataFrame(records)
     model = LogisticModel()
@@ -72,9 +73,11 @@ def predict(cfg: DictConfig):
     # predict correctness from haspi scores using the model
     records_df["predicted_correctness"] = model.predict(records_df.haspi_score)
 
-    # save results to a jsonl file
-    records_df[["signal", "correctness", "predicted_correctness"]].to_json(
-        f"{cfg.dataset}.predict.jsonl", orient="records", lines=True
+    # save results to csv file
+    records_df[["signal", "predicted_correctness"]].to_csv(
+        f"{cfg.dataset}.predict.csv",
+        index=False,
+        header=["signal_ID", "intelligibility_score"],
     )
 
 
