@@ -1,21 +1,94 @@
-# Baseline CPC2 code
+# The 2nd Clarity Prediction Challenge (CPC2) baseline code
 
-## Computing the HASPI scores
+Code to support the 2nd Clarity Prediction Challenge (CPC2).
+
+For more information about the CPC2 please [visit](https://claritychallenge.org/)
+
+## 1. Data structure
+
+### 1.1 Obtaining the CPC2 data
+
+To download the CPC2 data, please follow the instructions on the [download page](https://claritychallenge.org/docs/cpc2/taking_part/cpc2_download) of the challenge website.
+
+The data will download into a package file called `clarity_CPC2_data.v1_1.tar.gz`.
+
+Unpack this package using
 
 ```bash
-python compute_haspi.py clarity_data_dir=<CPC2_data_path> exp_dir=.exp
+tar -xvzf clarity_CPC2_data.v1_1.tar.gz
 ```
+
+Once unpacked the directory structure will be as follows
+
+**clarity_CPC2_data.v1_1** contains the training data:
 
 ```bash
-python compute_haspi.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC2_data path.exp_dir=./exp dataset=CEC2.train.1 compute_haspi.n_batches=1 compute_haspi.batch=1 results_file=results_1
+clarity_CPC2_data
+├── clarity_data
+│   ├── HA_outputs  # The hearing aid output signals
+│   │   ├── signals
+│   │   │   ├── CEC1
+│   │   │   └── CEC2
+│   │   ├── train.1
+│   │   │   ├── CEC1
+│   │   │   └── CEC2
+│   │   ├── train.2
+│   │   │   ├── CEC1
+│   │   │   └── CEC2
+│   │   └── train.3
+│   │       ├── CEC1
+│   │       └── CEC2
+│   ├── metadata    # Metadata including the intelligibility scores
+│   └── scenes      # Contains reference signals
+│       ├── CEC1
+│       └── CEC2
+└── manifest        # Lists the package contents
 ```
+
+### 1.2 Demo data
+
+Running the baseline code over the full dataset can be quite time consuming. To allow you to easily try out the code with a small amount of data, we have provided a small subset of demo data containing 30 signals.
+
+To use the demo data download the file `clarity_CPC2_data_demo.v1_1.tar.gz` using the following [Google Drive link](https://drive.google.com/file/d/1oLlo9w9Z7A2NP35IntJsRySIPl-oUajU/view?usp=sharing).
+
+Unpack this package under this directory, i.e., under `recipes/cpc2/baseline` using
 
 ```bash
-python predict.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC2_data dataset=CEC2.train.1 +haspi_score_file=../results/results_1
+tar -xvzf clarity_CPC2_data_demo.v1_1.tar.gz
 ```
+
+Note, the `root.path` variable in `config.yaml` is already set to point to the demo data by default.
+
+## 2. Baseline
+
+### 2.1 Computing the HASPI scores
+
+Compute the HASPI scores over the training data set and store results
 
 ```bash
-python evaluate.py path.clarity_data_dir=/Users/jon/shared/data/clarity_CPC2_data dataset=CEC2.train.1
+python compute_haspi.py dataset=CEC2.train.1
 ```
 
-Demo data [download](https://drive.google.com/file/d/1sXcir2K6Y5LkBPdbYIL8UsBTfVU2z5li/view?usp=share_link)
+This will generate the output file containing HASPI scores. This file will be called `exp/<DATASET>.haspi.jsonl` where `DATASET>` is the name specified on the commandline.
+
+Note, if the results file is already present, the script will only compute the scores for the signals that are not already present in the file. These missing results will be appended to the output file. This allows the script to be halted and restarted.
+
+### 2.2 Making intelligibility predictions
+
+The baseline intelligibility predictions are made by using a logistic fitting to map the HASPI scores onto the sentence correctness values. This is done using `predict.py` which will produce a `csv` file named `exp/<DATASET>.predict.jsonl` containing the predictions in the format that is required for submission to the challenge.
+
+```bash
+python predict.py dataset=CEC2.train.1
+```
+
+### 2.3 Evaluating the predictions
+
+Finally, the `evaluate.py` script will compare the provided predictions with the ground truth and compute the error metrics.
+
+```bash
+python evaluate.py dataset=CEC2.train.1
+```
+
+Results will be displayed on the terminal and saved to the file `exp/<DATASET>.evaluate.jsonl`.
+
+## References

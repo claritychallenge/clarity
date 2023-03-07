@@ -26,7 +26,7 @@ def read_jsonl(filename: str) -> list[dict]:
 
 def write_jsonl(filename: str, records: list[dict]) -> None:
     """Write a list of dictionaries to a jsonl file."""
-    with open(filename, "w", encoding="utf-8") as fp:
+    with open(filename, "a", encoding="utf-8") as fp:
         for record in records:
             fp.write(json.dumps(record) + "\n")
 
@@ -95,8 +95,13 @@ def run_calculate_haspi(cfg: DictConfig) -> None:
         records = json.load(fp)
 
     # Load existing results file if present
-    results_file = Path(cfg.path.results_dir) / f"{cfg.results_file}.jsonl"
-    results = read_jsonl(str(results_file)) if Path(results_file).exists() else []
+    batch_str = (
+        f".{cfg.compute_haspi.batch}_{cfg.compute_haspi.n_batches}"
+        if cfg.compute_haspi.n_batches > 1
+        else ""
+    )
+    results_file = Path(f"{cfg.dataset}.haspi{batch_str}.jsonl")
+    results = read_jsonl(str(results_file)) if results_file.exists() else []
     results_index = {result["signal"]: result for result in results}
 
     # Find signals for which we don't have scores
@@ -112,18 +117,10 @@ def run_calculate_haspi(cfg: DictConfig) -> None:
         if cfg.compute_haspi.set_random_seed:
             set_seed_with_string(signal_name)
         haspi = compute_haspi_for_signal(signal_name, cfg.path.clarity_data_dir)
-        results.append({"signal": signal_name, "haspi": haspi})
 
-    # Write out modified results
-    exp_dir = Path(cfg.path.exp_dir)
-    exp_dir.mkdir(parents=True, exist_ok=True)
-    batch_str = (
-        f".{cfg.compute_haspi.batch}_{cfg.compute_haspi.n_batches}"
-        if cfg.compute_haspi.n_batches > 1
-        else ""
-    )
-    results_outfile = exp_dir / f"{cfg.results_file}{batch_str}.jsonl"
-    write_jsonl(str(results_outfile), results)
+        # Results are appended to the results file to allow interruption
+        result = {"signal": signal_name, "haspi": haspi}
+        write_jsonl(str(results_file), [result])
 
 
 if __name__ == "__main__":

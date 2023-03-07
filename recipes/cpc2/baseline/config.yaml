@@ -1,7 +1,5 @@
 path:
-  clarity_data_dir: ???
-  exp_dir: ./exp
-  results_dir: ../results
+  clarity_data_dir: ../clarity_CPC2_data_demo
   metadata_dir: ${path.clarity_data_dir}/clarity_data/metadata
 
 dataset: ???
@@ -15,4 +13,4 @@ compute_haspi:
 
 hydra:
   run:
-    dir: ${path.exp_dir}
+    dir: exp

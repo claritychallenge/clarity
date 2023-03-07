@@ -58,7 +58,8 @@ def predict(cfg: DictConfig):
         records = json.load(fp)
 
     # load haspi scores and add them to the records
-    haspi_score = read_jsonl(cfg.haspi_score_file)
+    haspi_score = read_jsonl(f"{cfg.dataset}.haspi.jsonl")
+
     haspi_score_index = {record["signal"]: record["haspi"] for record in haspi_score}
     for record in records:
         record["haspi_score"] = haspi_score_index[record["signal"]]
