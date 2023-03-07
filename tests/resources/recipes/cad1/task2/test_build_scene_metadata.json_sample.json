@@ -1,0 +1,18 @@
+{
+  "key1": {
+    "name": "Name 1",
+    "fake_list": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "key2": {
+    "name": "Name 2",
+    "fake_list": [
+      "d",
+      "e",
+      "f"
+    ]
+  }
+}

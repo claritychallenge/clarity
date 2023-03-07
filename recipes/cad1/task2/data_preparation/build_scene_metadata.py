@@ -1,6 +1,6 @@
 """Module to Generate the metadata for the scenes in the CAD-1 Task-2 challenge."""
-
 # pylint: disable=import-error
+
 import json
 import logging
 from typing import Any, Dict
@@ -101,7 +101,7 @@ def run(cfg: DictConfig) -> None:
     train_songs = read_json(cfg.path.train_music_file, return_keys=True)
     valid_songs = read_json(cfg.path.valid_music_file, return_keys=True)
     listeners = read_json(cfg.path.listeners_file, return_keys=True)
-    brir = read_json(cfg.path.brir_file)
+    brir = read_json(cfg.path.brir_file, return_keys=False)
 
     # Start generating scenes for training
     all_scenes = {}
