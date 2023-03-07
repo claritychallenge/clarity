@@ -10,7 +10,7 @@ from clarity.utils.car_noise_simulator.carnoise_signal_generator import (
 )
 
 BASE_DIR = Path.cwd()
-RESOURCES = BASE_DIR / "tests" / "resources"
+RESOURCES = BASE_DIR / "tests" / "resources" / "utils"
 
 
 def test_car_noise_generation():
