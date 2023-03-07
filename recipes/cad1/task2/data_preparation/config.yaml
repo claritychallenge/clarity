@@ -4,7 +4,8 @@ path:
   audio_dir: ${path.root}/cadenza_data/audio
   train_music_file: ${path.metadata_dir}/fma-mtgjamendol_train.json
   valid_music_file: ${path.metadata_dir}/fma-mtgjamendol_valid.json
-  listeners_file: ${path.metadata_dir}/listeners.json
+  listeners_train_file: ${path.metadata_dir}/listeners.train.json
+  listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
   brir_file: ${path.metadata_dir}/eBrird_BRIR.json
   out_scene_file: ${path.metadata_dir}/scenes.json
 

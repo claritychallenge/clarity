@@ -100,7 +100,8 @@ def run(cfg: DictConfig) -> None:
     # read metadata in json format
     train_songs = read_json(cfg.path.train_music_file, return_keys=True)
     valid_songs = read_json(cfg.path.valid_music_file, return_keys=True)
-    listeners = read_json(cfg.path.listeners_file, return_keys=True)
+    train_listeners = read_json(cfg.path.listeners_train_file, return_keys=True)
+    valid_listeners = read_json(cfg.path.listeners_valid_file, return_keys=True)
     brir = read_json(cfg.path.brir_file, return_keys=False)
 
     # Start generating scenes for training
@@ -111,7 +112,7 @@ def run(cfg: DictConfig) -> None:
         set_seed(seed)
         train_songs_shuffled = np.random.permutation(train_songs)
         for song in train_songs_shuffled:
-            listener = np.random.choice(listeners, 1, replace=False)[0]
+            listener = np.random.choice(train_listeners, 1, replace=False)[0]
             all_scenes[f"T{song}_{listener}_S{seed}"] = {
                 "song": song,
                 "listener": listener,
@@ -127,7 +128,7 @@ def run(cfg: DictConfig) -> None:
     set_seed(seed)
     valid_songs_shuffled = np.random.permutation(valid_songs)
     for song in valid_songs_shuffled:
-        listener = np.random.choice(listeners, 1, replace=False)[0]
+        listener = np.random.choice(valid_listeners, 1, replace=False)[0]
         all_scenes[f"T{song}_{listener}_S{seed}"] = {
             "song": song,
             "listener": listener,
