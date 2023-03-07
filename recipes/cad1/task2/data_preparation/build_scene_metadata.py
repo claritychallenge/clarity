@@ -117,7 +117,9 @@ def run(cfg: DictConfig) -> None:
                 "song": song,
                 "listener": listener,
                 "hr": get_random_dict_item(brir["training"]),
-                "car_speed": get_random_car_params(min_speed=50, max_speed=120),
+                "car_noise_parameters": get_random_car_params(
+                    min_speed=50, max_speed=120
+                ),
                 "split": "train",
             }
 
@@ -133,7 +135,7 @@ def run(cfg: DictConfig) -> None:
             "song": song,
             "listener": listener,
             "hr": get_random_dict_item(brir["development"]),
-            "car_speed": get_random_car_params(min_speed=50, max_speed=120),
+            "car_noise_parameters": get_random_car_params(min_speed=50, max_speed=120),
             "split": "valid",
         }
 
