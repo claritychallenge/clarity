@@ -1,0 +1,20 @@
+path:
+  root: /media/gerardo/Extended #???
+  metadata_dir: ${path.root}/cadenza_data/task2/metadata
+  audio_dir: ${path.root}/cadenza_data/audio
+  train_music_file: ${path.metadata_dir}/fma-mtgjamendol_train.json
+  valid_music_file: ${path.metadata_dir}/fma-mtgjamendol_valid.json
+  listeners_file: ${path.metadata_dir}/listeners.json
+  brir_file: ${path.metadata_dir}/eBrird_BRIR.json
+  out_scene_file: ${path.metadata_dir}/scenes.json
+
+# Every seed value generates 8000 new samples.
+# Seed 2023 must never be removed.
+# If you want to add more seeds, add them to the list.
+# eg., seed: [2023, 2024, 2025]
+seed: [2023]
+valid_seed: 2023
+
+hydra:
+  run:
+    dir: .
