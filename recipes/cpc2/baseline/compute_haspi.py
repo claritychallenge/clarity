@@ -16,7 +16,7 @@ from clarity.evaluator.haspi import haspi_v2_be
 logger = logging.getLogger(__name__)
 
 
-def read_jsonl(filename: str) -> list[dict]:
+def read_jsonl(filename: str) -> list:
     """Read a jsonl file into a list of dictionaries."""
     with open(filename, "r", encoding="utf-8") as fp:
         records = [json.loads(line) for line in fp]
