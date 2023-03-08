@@ -1,10 +1,10 @@
+dataset: ???
+
 path:
   clarity_data_dir: ../clarity_CPC2_data_demo
   metadata_dir: ${path.clarity_data_dir}/clarity_data/metadata
-
-dataset: ???
-results_file: results
-
+  signal_dir: ${path.clarity_data_dir}/clarity_data/HA_outputs/signals/CEC2
+  scene_dir: ${path.clarity_data_dir}/clarity_data/scenes/CEC2
 
 compute_haspi:
   batch: 1

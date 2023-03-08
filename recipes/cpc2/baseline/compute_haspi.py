@@ -1,5 +1,4 @@
 """ Compute the HASPI scores. """
-# pylint: disable=too-many-locals
 
 import hashlib
 import json
@@ -37,49 +36,53 @@ def set_seed_with_string(seed_string: str) -> None:
     np.random.seed(md5_int)
 
 
-def compute_haspi_for_signal(signal_name: str, clarity_data_dir: str) -> float:
+def parse_cec2_signal_name(signal_name: str) -> tuple[str, str, str]:
+    """Parse the CEC2 signal name."""
+    # e.g. S0001_L0001_E001_hr -> S0001, L0001, E001_hr
+    scene, listener, *system = signal_name.split("_")
+    if scene == "" or listener == "" or system == []:
+        raise ValueError(f"Invalid CEC2 signal name: {signal_name}")
+    return scene, listener, "_".join(system)
+
+
+def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
     """Compute the HASPI score for a given signal.
 
     Args:
         signal (str): name of the signal to process
+        path (dict): paths to the signals and metadata, as defined in the config
 
     Returns:
         float: HASPI score
     """
 
-    # Parse signal name
-    scene, listener, *_ = signal_name.split("_")
-
-    # Define paths
-    data_dir = Path(clarity_data_dir) / "clarity_data"
-    metadata_dir = data_dir / "metadata"
-    signal_dir = data_dir / "HA_outputs" / "signals" / "CEC2"
-    scene_dir = data_dir / "scenes" / "CEC2"
+    scene, listener, _ = parse_cec2_signal_name(signal_name)
 
     # Retrieve audiograms
-    with open(metadata_dir / "listeners.json", "r", encoding="utf-8") as fp:
+    with open(
+        Path(path["metadata_dir"]) / "listeners.json", "r", encoding="utf-8"
+    ) as fp:
         listener_audiograms = json.load(fp)
-    cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-    audiogram_left = np.array(listener_audiograms[listener]["audiogram_levels_l"])
-    audiogram_right = np.array(listener_audiograms[listener]["audiogram_levels_r"])
+        audiogram = listener_audiograms[listener]
 
     # Retrieve signals and convert to float32 between -1 and 1
-    fs_proc, proc = wavfile.read(Path(signal_dir) / f"{signal_name}.wav")
-    fs_ref, ref = wavfile.read(scene_dir / f"{scene}_target_ref.wav")
+    fs_proc, proc = wavfile.read(Path(path["signal_dir"]) / f"{signal_name}.wav")
+    fs_ref, ref = wavfile.read(Path(path["scene_dir"]) / f"{scene}_target_ref.wav")
     assert fs_ref == fs_proc
 
     proc = proc / 32768.0
     ref = ref / 32768.0
 
+    # Compute haspi score using library code
     haspi_score = haspi_v2_be(
         reference_left=ref[:, 0],
         reference_right=ref[:, 1],
         processed_left=proc[:, 0],
         processed_right=proc[:, 1],
         fs_signal=fs_proc,
-        audiogram_left=audiogram_left,
-        audiogram_right=audiogram_right,
-        audiogram_cfs=cfs,
+        audiogram_left=audiogram["audiogram_levels_l"],
+        audiogram_right=audiogram["audiogram_levels_r"],
+        audiogram_cfs=audiogram["audiogram_cfs"],
     )
 
     return haspi_score
@@ -116,7 +119,7 @@ def run_calculate_haspi(cfg: DictConfig) -> None:
         signal_name = record["signal"]
         if cfg.compute_haspi.set_random_seed:
             set_seed_with_string(signal_name)
-        haspi = compute_haspi_for_signal(signal_name, cfg.path.clarity_data_dir)
+        haspi = compute_haspi_for_signal(signal_name, cfg.path)
 
         # Results are appended to the results file to allow interruption
         result = {"signal": signal_name, "haspi": haspi}

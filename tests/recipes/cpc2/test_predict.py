@@ -54,7 +54,7 @@ def test_read_jsonl():
         {"id": 2, "name": "yyy"},
         {"id": 3, "name": "zzz"},
     ]
-    data = read_jsonl("tests/recipes/cpc2/data/valid.jsonl")
+    data = read_jsonl("tests/test_data/filetypes/valid.jsonl")
     assert data == expected
 
 
