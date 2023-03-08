@@ -23,7 +23,7 @@ def read_jsonl(filename: str) -> list:
     return records
 
 
-def write_jsonl(filename: str, records: list[dict]) -> None:
+def write_jsonl(filename: str, records: list) -> None:
     """Write a list of dictionaries to a jsonl file."""
     with open(filename, "a", encoding="utf-8") as fp:
         for record in records:
