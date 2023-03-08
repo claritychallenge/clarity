@@ -10,6 +10,8 @@ import pandas as pd
 from omegaconf import DictConfig
 from scipy.optimize import curve_fit
 
+from clarity.utils.file_io import read_jsonl
+
 log = logging.getLogger(__name__)
 
 
@@ -39,13 +41,6 @@ class LogisticModel:
         # Note, fit() must be called before predictions can be made
         assert self.params is not None
         return self._logistic_mapping(x, self.params[0], self.params[1])
-
-
-def read_jsonl(filename: str) -> list:
-    """Read a jsonl file into a list of objects."""
-    with open(filename, "r", encoding="utf-8") as fp:
-        records = [json.loads(line) for line in fp]
-    return records
 
 
 def make_disjoint_train_set(

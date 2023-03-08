@@ -4,11 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from recipes.cpc2.baseline.predict import (
-    LogisticModel,
-    make_disjoint_train_set,
-    read_jsonl,
-)
+from recipes.cpc2.baseline.predict import LogisticModel, make_disjoint_train_set
 
 
 # pylint: disable=redefined-outer-name
@@ -45,17 +41,6 @@ def test_logistic_model_extremes(model, value):
         assert model.predict(value) == pytest.approx(100)
     elif value < -10:
         assert model.predict(value) == pytest.approx(0)
-
-
-def test_read_jsonl():
-    """Test the read_jsonl function."""
-    expected = [
-        {"id": 1, "name": "xxx"},
-        {"id": 2, "name": "yyy"},
-        {"id": 3, "name": "zzz"},
-    ]
-    data = read_jsonl("tests/test_data/filetypes/valid.jsonl")
-    assert data == expected
 
 
 @pytest.mark.parametrize(
