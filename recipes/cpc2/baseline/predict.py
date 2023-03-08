@@ -41,8 +41,8 @@ class LogisticModel:
         return self._logistic_mapping(x, self.params[0], self.params[1])
 
 
-def read_jsonl(filename: str) -> list[dict]:
-    """Read a jsonl file into a list of dictionaries."""
+def read_jsonl(filename: str) -> list:
+    """Read a jsonl file into a list of objects."""
     with open(filename, "r", encoding="utf-8") as fp:
         records = [json.loads(line) for line in fp]
     return records
