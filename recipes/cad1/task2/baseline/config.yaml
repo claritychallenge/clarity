@@ -3,29 +3,32 @@ path:
   audio_dir: ${path.root}/task2/audio
   metadata_dir: ${path.root}/task2/metadata
   music_dir: ${path.audio_dir}/fma-mtgjamendo
-  brird_dir: ${path.audio_dir}/eBrird
+  hrtf_dir: ${path.audio_dir}/eBrird
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
-  scenes_file: ${path.metadata_dir}/scenes.json
+  scenes_file: ${path.metadata_dir}/scenes.demo.json
   exp_folder: ./exp # folder to store enhanced signals and final results
+
+sample_rate: 44100
 
 nalr:
   nfir: 220
-  fs: 44100
+  fs: ${sample_rate}
 
 compressor:
-  threshold: 0.2
+  threshold: 0.7
   attenuation: 0.1
   attack: 5
   release: 20
   rms_buffer_size: 0.064
 
-soft_clip: True
+soft_clip: False
 
 evaluate:
   set_random_seed: True
   small_test: False
-  save_temp_wavs: True
+  save_intermediate_wavs: True
+  split: valid # train, valid
 
 # hydra config
 hydra:

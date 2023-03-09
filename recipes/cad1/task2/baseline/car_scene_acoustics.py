@@ -5,6 +5,7 @@
 import logging
 import warnings
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pyloudnorm as pyln
@@ -215,7 +216,7 @@ class CarSceneAcoustics:
         self,
         signal: np.ndarray,
         reference_signal: np.ndarray = None,
-        snr: float = 0.0,
+        snr: Optional[float] = None,
     ) -> np.ndarray:
         """
         Scales the target signal to the desired SNR.
@@ -239,17 +240,18 @@ class CarSceneAcoustics:
             signal = signal.T
 
         if reference_signal is None:
-            ref_signal_lufs = -12
+            ref_signal_lufs = -12.0
         else:
-            ref_signal_lufs = self.loudness_meter.integrated_loudness(reference_signal)
+            ref_signal_lufs = float(
+                self.loudness_meter.integrated_loudness(reference_signal)
+            )
 
-        signal_lufs = self.loudness_meter.integrated_loudness(signal)
+        signal_lufs = float(self.loudness_meter.integrated_loudness(signal))
 
         if snr is None:
             target_lufs = ref_signal_lufs
         else:
-            snr_lufs = snr  # 10 * np.log10(1 + 10 ** (snr / 10))
-            target_lufs = ref_signal_lufs - snr_lufs
+            target_lufs = ref_signal_lufs - snr
 
         with warnings.catch_warnings(record=True):
             normalised_signal = pyln.normalize.loudness(

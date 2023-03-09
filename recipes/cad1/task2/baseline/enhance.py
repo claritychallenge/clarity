@@ -9,11 +9,12 @@ from typing import Tuple
 import hydra
 import numpy as np
 import pyloudnorm as pyln
-from baseline_utils import read_mp3
-from evaluate import load_listeners_and_scenes
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
+
+from recipes.cad1.task2.baseline.baseline_utils import read_mp3
+from recipes.cad1.task2.baseline.evaluate import load_listeners_and_scenes
 
 logger = logging.getLogger(__name__)
 
