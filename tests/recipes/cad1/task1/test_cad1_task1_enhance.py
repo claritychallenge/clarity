@@ -19,7 +19,7 @@ from recipes.cad1.task1.baseline.enhance import (
 )
 
 BASE_DIR = Path.cwd()
-RESOURCES = BASE_DIR / "tests" / "resources"
+RESOURCES = BASE_DIR / "tests" / "resources" / "recipes" / "cad1" / "task1"
 
 
 def test_map_to_dict():
