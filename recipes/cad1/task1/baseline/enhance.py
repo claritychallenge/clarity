@@ -138,6 +138,7 @@ def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
     return signal_stems
 
 
+# pylint: disable=unused-argument
 def decompose_signal(
     model: torch.nn.Module,
     signal: np.ndarray,
@@ -149,8 +150,10 @@ def decompose_signal(
     """
     Decompose signal into 8 stems.
 
-    The left and right audiograms are ignored by the baseline system as it is performing personalised decomposition.
-    Instead, it performs a standard music decomposition using the HDEMUCS model trained on the MUSDB18 dataset.
+    The left and right audiograms are ignored by the baseline system as it
+    is performing personalised decomposition.
+    Instead, it performs a standard music decomposition using the
+    HDEMUCS model trained on the MUSDB18 dataset.
 
     Args:
         model (torch.nn.Module): Torch model.
@@ -163,6 +166,7 @@ def decompose_signal(
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
     """
+
     signal, ref = normalize_signal(signal)
     sources = separate_sources(model, signal, sample_rate, device=device)
     # only one element in the batch
@@ -303,10 +307,11 @@ def enhance(config: DictConfig) -> None:
     # Decompose each song into left and right vocal, drums, bass, and other stems
     # and process each stem for the listener
     prev_song_name = None
+    num_song_list_pair = len(valid_song_listener_pairs)
     for idx, song_listener in enumerate(valid_song_listener_pairs, 1):
         song_name, listener_name = song_listener
         logger.info(
-            f"[{idx:03d}/{len(valid_song_listener_pairs):03d})] Processing {song_name} for {listener_name}..."
+            f"[{idx:03d}/{num_song_list_pair:03d}] Processing {song_name} for {listener_name}..."
         )
         # Get the listener's audiogram
         listener_info = listener_valid_audiograms[listener_name]
