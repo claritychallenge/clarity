@@ -73,6 +73,21 @@ def read_json(path_file, return_keys=False):
     return json_data
 
 
+def get_random_snr(min_snr, max_snr, round_to=4):
+    """Function to get a random SNR value.
+
+    Args:
+        min_snr (float): The minimum SNR value.
+        max_snr (float): The maximum SNR value.
+        round_to (int): The number of decimals to round the SNR value to.
+
+    Returns:
+        float: A random SNR value.
+    """
+
+    return float(np.round(np.random.uniform(min_snr, max_snr, 1), round_to))
+
+
 @hydra.main(config_path=".", config_name="config")
 def run(cfg: DictConfig) -> None:
     """Main function to generate the metadata for the scenes in the CAD-1 Task-2 challenge.
@@ -120,6 +135,7 @@ def run(cfg: DictConfig) -> None:
                 "car_noise_parameters": get_random_car_params(
                     min_speed=50, max_speed=120
                 ),
+                "snr": get_random_snr(0, 15.0),
                 "split": "train",
             }
 
@@ -136,12 +152,15 @@ def run(cfg: DictConfig) -> None:
             "listener": listener,
             "hr": get_random_dict_item(brir["development"]),
             "car_noise_parameters": get_random_car_params(min_speed=50, max_speed=120),
+            "snr": get_random_snr(0, 15.0),
             "split": "valid",
         }
 
     logger.info(f"Saving scenes metadata in {cfg.path.out_scene_file}")
     with open(cfg.path.out_scene_file, "w", encoding="utf-8") as file:
         json.dump(all_scenes, file, indent=4)
+
+    logger.info("Done")
 
 
 # pylint: disable=no-value-for-parameter
