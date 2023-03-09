@@ -137,7 +137,7 @@ def evaluate_scene(
     audio_manager = AudioManager(
         output_audio_path=(Path("evaluation_signals") / scene_id).as_posix(),
         sample_rate=sample_rate,
-        soft_clip=config.evaluate.soft_clip,
+        soft_clip=config.soft_clip,
     )
 
     if config.evaluate.set_random_seed:
