@@ -242,11 +242,9 @@ class CarSceneAcoustics:
         if reference_signal is None:
             ref_signal_lufs = -12.0
         else:
-            ref_signal_lufs = float(
-                self.loudness_meter.integrated_loudness(reference_signal)
-            )
+            ref_signal_lufs = self.loudness_meter.integrated_loudness(reference_signal)
 
-        signal_lufs = float(self.loudness_meter.integrated_loudness(signal))
+        signal_lufs = self.loudness_meter.integrated_loudness(signal)
 
         if snr is None:
             target_lufs = ref_signal_lufs
