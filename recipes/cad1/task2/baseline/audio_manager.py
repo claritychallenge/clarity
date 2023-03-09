@@ -55,7 +55,6 @@ class AudioManager:
             output_audio_path (str): The path to save the audio to.
             sample_rate (int): The sample rate of the audio.
         """
-        logger.info(f"Saving {file_name}.wav to {self.output_audio_path}")
         waveform = waveform.T if waveform.shape[0] == 2 else waveform
 
         n_clipped, waveform = self.clip_audio(-1.0, 1.0, waveform)
