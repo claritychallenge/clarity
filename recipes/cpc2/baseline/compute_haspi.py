@@ -82,7 +82,7 @@ def run_calculate_haspi(cfg: DictConfig) -> None:
     """Run the HASPI score computation."""
     # Load the set of signal for which we need to compute scores
     dataset_filename = Path(cfg.path.metadata_dir) / f"{cfg.dataset}.json"
-    with open(dataset_filename, "r", encoding="utf-8") as fp:
+    with dataset_filename.open("r", encoding="utf-8") as fp:
         records = json.load(fp)
 
     # Load existing results file if present

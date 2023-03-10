@@ -37,6 +37,6 @@ def test_parse_cec2_signal_name_error(signal_name, expected):
 def test_set_seed_with_string_ok(string_value):
     """Test the set_seed_with_string function."""
     set_seed_with_string(string_value)
-    x = np.random.randint(0, 100)
+    x = np.random.randint(0, 1000)
     set_seed_with_string(string_value)
-    assert np.random.randint(0, 100) == x
+    assert np.random.randint(0, 1000) == x

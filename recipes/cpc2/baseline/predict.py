@@ -24,10 +24,15 @@ class LogisticModel:
     params: Optional[np.ndarray] = None  # The model params
 
     def _logistic_mapping(self, x, x_0, k):
-        """
-        Logistic function
-            x_0 - x value of the logistic's midpoint
-            k - the logistic growth rate or steepness of the curve
+        """Logistic function
+
+        Args:
+            x - the input value
+            x_0 - logistic parameter: the x value of the logistic's midpoint
+            k - logistic parameter: the growth rate of the curve
+
+        Returns:
+            The output of the logistic function.
         """
         return 100.0 / (1 + np.exp(-k * (x - x_0)))
 
@@ -37,9 +42,16 @@ class LogisticModel:
         self.params, *_pcov = curve_fit(self._logistic_mapping, x, y, initial_guess)
 
     def predict(self, x):
-        """Predict y values given x."""
-        # Note, fit() must be called before predictions can be made
-        assert self.params is not None
+        """Predict y values given x.
+
+        Raises:
+            TypeError: If the predict() method is called before fit().
+        """
+        if self.params is None:
+            raise TypeError(
+                "params is None. Logistic fit() must be called before predict()."
+            )
+
         return self._logistic_mapping(x, self.params[0], self.params[1])
 
 
@@ -63,7 +75,7 @@ def predict(cfg: DictConfig):
 
     # Load the intelligibility dataset records
     dataset_filename = Path(cfg.path.metadata_dir) / f"{cfg.dataset}.json"
-    with open(dataset_filename, "r", encoding="utf-8") as fp:
+    with dataset_filename.open("r", encoding="utf-8") as fp:
         records = json.load(fp)
 
     # load haspi scores and add them to the records

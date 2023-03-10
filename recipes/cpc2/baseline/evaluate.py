@@ -66,6 +66,7 @@ def evaluate(cfg: DictConfig) -> None:
     with open(f"{cfg.dataset}.evaluate.csv", "a", encoding="utf-8") as fp:
         fp.write(json.dumps(scores) + "\n")
 
+    # Output the scores to the console
     print(scores)
 
 
