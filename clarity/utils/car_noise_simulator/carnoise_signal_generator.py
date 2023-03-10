@@ -1,37 +1,15 @@
 """
 Class to generate the car noise signal.
 """
-from typing import Dict, Union
+from typing import Dict, Tuple, Union
 
 import numpy as np
 from scipy.signal import butter, lfilter
 
 
-def apply_commonness(
-    target_signal: np.ndarray, coherence_signal: np.ndarray, commonness_factor: float
-):
-    """Function to apply correlation between the target signal
-    using the coherence signal.
-
-    Args:
-        target_signal (np.ndarray): Target signal
-        coherence_signal (np.ndarray): Coherence signal
-        commonness_factor (float): Commonness factor
-    """
-    target_signal = (
-        1 - commonness_factor
-    ) * target_signal + commonness_factor * coherence_signal
-
-    # correct amplitude for the sum of two gaussians
-    correctionfactor = 1 / np.sqrt(
-        (1 - commonness_factor) ** 2 + commonness_factor**2
-    )
-    return target_signal * correctionfactor
-
-
 def _butter_filter(
     order: int, cutoff_hz: Union[list, np.ndarray], btype: str, sample_rate: int
-):
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Function that creates a butter filter
     Args:
@@ -101,7 +79,7 @@ class CarNoiseSignalGenerator:
         noise_parameters: dict,
         number_noise_sources: int,
         commonness_factor: float,
-    ):
+    ) -> np.ndarray:
         """
         Method that generates the car noise signal.
         It organizes the parameters and calls the methods to generate the independent parts.
@@ -173,7 +151,7 @@ class CarNoiseSignalGenerator:
 
         # Add some correlation between sources
         for n in range(1, number_noise_sources + 1):
-            car_noise[n, :] = apply_commonness(
+            car_noise[n, :] = self.apply_commonness(
                 car_noise[n, :], extra_noise_for_coherence[0, :], commonness_factor
             )
 
@@ -187,7 +165,7 @@ class CarNoiseSignalGenerator:
         bump_filter: Dict[str, np.ndarray],
         dip_low_filter: Dict[str, np.ndarray],
         dip_high_filter: Dict[str, np.ndarray],
-    ):
+    ) -> np.ndarray:
         """
         Method that generates the noise of a single source.
 
@@ -252,7 +230,7 @@ class CarNoiseSignalGenerator:
         engine_num_harmonics: int,
         primary_filter: Dict[str, np.ndarray],
         secondary_filter: Dict[str, np.ndarray],
-    ):
+    ) -> np.ndarray:
         """
         Method that generates the noise of the engine.
         Args:
@@ -306,7 +284,7 @@ class CarNoiseSignalGenerator:
 
         return engine_noise
 
-    def get_bump_params(self, reference_level_db: float):
+    def get_bump_params(self, reference_level_db: float) -> Tuple[float, float]:
         """
         Method that gets the parameters of the bump noise
         Args:
@@ -334,7 +312,7 @@ class CarNoiseSignalGenerator:
         rpm: float,
         reference_level_db: float,
         engine_num_harmonics: int,
-    ):
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Method that gets the parameters of the engine noise
 
@@ -386,3 +364,30 @@ class CarNoiseSignalGenerator:
             harmoniccomplex_freqs_hz,
             harmoniccomplex_power_db,
         )
+
+    @staticmethod
+    def apply_commonness(
+        target_signal: np.ndarray,
+        coherence_signal: np.ndarray,
+        commonness_factor: float,
+    ) -> np.ndarray:
+        """Function to apply correlation between the target signal
+        using the coherence signal.
+
+        Args:
+            target_signal (np.ndarray): Target signal
+            coherence_signal (np.ndarray): Coherence signal
+            commonness_factor (float): Commonness factor
+
+        Returns:
+            target_signal (np.ndarray): Target signal with the coherence signal
+        """
+        target_signal = (
+            1 - commonness_factor
+        ) * target_signal + commonness_factor * coherence_signal
+
+        # correct amplitude for the sum of two gaussians
+        correctionfactor = 1 / np.sqrt(
+            (1 - commonness_factor) ** 2 + commonness_factor**2
+        )
+        return target_signal * correctionfactor
