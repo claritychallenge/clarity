@@ -210,7 +210,9 @@ def evaluate_scene(
     n_clipped, processed_signal = audio_manager.clip_audio(-1.0, 1.0, processed_signal)
 
     if n_clipped > 0:
-        logger.warning(f"Evaluation Signal: {n_clipped} samples clipped")
+        logger.warning(
+            f"Scene {scene_id}: {n_clipped} samples clipped in evaluation signal."
+        )
 
     audio_manager.add_audios_to_save("ha_processed_signal", processed_signal)
 

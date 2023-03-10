@@ -59,7 +59,9 @@ class AudioManager:
 
         n_clipped, waveform = self.clip_audio(-1.0, 1.0, waveform)
         if n_clipped > 0:
-            logger.warning(f"Writing {file_name}: {n_clipped} samples clipped")
+            logger.warning(
+                f"Writing {self.output_audio_path / file_name}: {n_clipped} samples clipped"
+            )
 
         waveform = (32768.0 * waveform).astype(np.int16)
 
