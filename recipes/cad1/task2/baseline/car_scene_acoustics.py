@@ -26,6 +26,15 @@ class CarSceneAcoustics:
     A class for the car acoustic environment.
     """
 
+    ANECHOIC_HRTF = {
+        "000_left": "HR36_LSP01_CH1_Left.wav",
+        "000_right": "HR36_LSP01_CH1_Right.wav",
+        "m90_left": "HR0_LSP01_CH1_Left.wav",
+        "m90_right": "HR0_LSP01_CH1_Right.wav",
+        "p90_left": "HR72_LSP01_CH1_Left.wav",
+        "p90_right": "HR72_LSP01_CH1_Right.wav",
+    }
+
     def __init__(
         self,
         track_duration: int,
@@ -63,7 +72,7 @@ class CarSceneAcoustics:
         )
         self.loudness_meter = pyln.Meter(self.sample_rate)
 
-    def preload_anechoic_hrtf(self, hrtf_dir: str):
+    def preload_anechoic_hrtf(self, hrtf_dir: str) -> None:
         """
         Loads the Anechoic BRIRs from the eBrird database for the given directions.
         Using the following directions:
@@ -76,27 +85,9 @@ class CarSceneAcoustics:
         """
         self.hrir_values = {}
         anechoic_hrtf_dir = Path(hrtf_dir) / "Anechoic" / "audio"
-        # 0 degrees head direction, source in front of the listener
-        self.hrir_values["000_left"] = wavfile.read(
-            anechoic_hrtf_dir / "HR36_LSP01_CH1_Left.wav"
-        )[1]
-        self.hrir_values["000_right"] = wavfile.read(
-            anechoic_hrtf_dir / "HR36_LSP01_CH1_Right.wav"
-        )[1]
-        # -90 degrees head direction, source in front of the listener
-        self.hrir_values["m90_left"] = wavfile.read(
-            anechoic_hrtf_dir / "HR0_LSP01_CH1_Left.wav"
-        )[1]
-        self.hrir_values["m90_right"] = wavfile.read(
-            anechoic_hrtf_dir / "HR0_LSP01_CH1_Right.wav"
-        )[1]
-        # +90 degrees head direction, source in front of the listener
-        self.hrir_values["p90_left"] = wavfile.read(
-            anechoic_hrtf_dir / "HR72_LSP01_CH1_Left.wav"
-        )[1]
-        self.hrir_values["p90_right"] = wavfile.read(
-            anechoic_hrtf_dir / "HR72_LSP01_CH1_Right.wav"
-        )[1]
+
+        for key, item in self.ANECHOIC_HRTF.items():
+            self.hrir_values[key] = wavfile.read(anechoic_hrtf_dir / item)[1]
 
     def apply_hearing_aid(
         self, signal: np.ndarray, audiogram: np.ndarray, center_frequencies: np.ndarray
@@ -143,9 +134,7 @@ class CarSceneAcoustics:
         out_left += lfilter(self.hrir_values["p90_left"], 1, noise_signal[2, :])
         our_right += lfilter(self.hrir_values["p90_right"], 1, noise_signal[2, :])
 
-        noise_anechoic = np.stack([out_left, our_right], axis=0)
-
-        return noise_anechoic
+        return np.stack([out_left, our_right], axis=0)
 
     def get_car_noise(
         self,
@@ -163,12 +152,11 @@ class CarSceneAcoustics:
                 of the car noise signal
 
         """
-        noise_signal = self.carnoise.generate_car_noise(
+        return self.carnoise.generate_car_noise(
             noise_parameters=car_noise_params,
             number_noise_sources=2,
             commonness_factor=0,
         )
-        return noise_signal
 
     def add_car_hrtf(self, signal: np.ndarray, hrir: dict) -> np.ndarray:
         """Add a head rotation transfer function using binaural room impulse
@@ -239,10 +227,11 @@ class CarSceneAcoustics:
         if signal.shape[0] < signal.shape[1]:
             signal = signal.T
 
-        if reference_signal is None:
-            ref_signal_lufs = -12.0
-        else:
-            ref_signal_lufs = self.loudness_meter.integrated_loudness(reference_signal)
+        ref_signal_lufs = (
+            -12.0
+            if reference_signal is None
+            else self.loudness_meter.integrated_loudness(reference_signal)
+        )
 
         signal_lufs = self.loudness_meter.integrated_loudness(signal)
 
