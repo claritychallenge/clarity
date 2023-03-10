@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 
 import numpy as np
 from scipy.io import wavfile
@@ -16,7 +16,7 @@ class AudioManager:
     def __init__(
         self,
         sample_rate: int = 44100,
-        output_audio_path: str = "",
+        output_audio_path: Union[str, Path] = "",
         soft_clip: bool = False,
     ):
         """Initialize the AudioManager instance."""
