@@ -1,5 +1,4 @@
 """A utility class for managing audio files."""
-# pylint: disable=import-error
 
 import logging
 from pathlib import Path
