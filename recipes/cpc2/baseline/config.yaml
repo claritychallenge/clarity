@@ -1,0 +1,16 @@
+dataset: ???
+
+path:
+  clarity_data_dir: ../clarity_CPC2_data_demo
+  metadata_dir: ${path.clarity_data_dir}/clarity_data/metadata
+  signal_dir: ${path.clarity_data_dir}/clarity_data/HA_outputs/signals/CEC2
+  scene_dir: ${path.clarity_data_dir}/clarity_data/scenes/CEC2
+
+compute_haspi:
+  batch: 1
+  n_batches: 1
+  set_random_seed: True
+
+hydra:
+  run:
+    dir: exp
