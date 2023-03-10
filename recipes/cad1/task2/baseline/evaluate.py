@@ -92,7 +92,10 @@ class ResultsFile:
 
 
 def set_scene_seed(scene: str):
-    """Set a seed that is unique for the given song"""
+    """Set a seed that is unique for the given song
+    based on the last 8 characters of the 'md5'
+    `.hexdigest` of the scene itself.
+    """
     scene_encoded = hashlib.md5(scene.encode("utf-8")).hexdigest()
     scene_md5 = int(scene_encoded, 16) % (10**8)
     np.random.seed(scene_md5)
@@ -135,7 +138,7 @@ def evaluate_scene(
 
     """
     audio_manager = AudioManager(
-        output_audio_path=(Path("evaluation_signals") / scene_id).as_posix(),
+        output_audio_path=Path("evaluation_signals") / scene_id,
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
@@ -246,7 +249,7 @@ def evaluate_scene(
 
 
 @hydra.main(config_path="", config_name="config")
-def run_calculate_aq(config: DictConfig) -> None:
+def run_calculate_audio_quality(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
 
     # Load scenes and listeners depending on config.evaluate.split
@@ -324,4 +327,4 @@ def run_calculate_aq(config: DictConfig) -> None:
 
 # pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
-    run_calculate_aq()
+    run_calculate_audio_quality()
