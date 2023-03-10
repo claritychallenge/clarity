@@ -1,6 +1,10 @@
 """Regression Tests for CEC2"""
+# pylint: disable=too-many-locals invalid-name
+
 # Pass some random data through code and compare with reference output
 # scene_renderer, enhancer, compressor, haspi
+from typing import Optional
+
 import numpy as np
 from cpuinfo import get_cpu_info
 from omegaconf import OmegaConf
@@ -90,14 +94,18 @@ SCENE_RENDERER = SceneRenderer(
 )
 
 
-def test_full_CEC2_pipeline(
+def test_full_cec2_pipeline(
     regtest,
     tmp_path,
-    scene: dict = SCENE,
-    demo_paths: OmegaConf = DEMO_PATHS,
-    demo_metadata: OmegaConf = DEMO_METADATA,
+    scene: Optional[dict] = None,
+    _demo_paths: OmegaConf = DEMO_PATHS,
+    _demo_metadata: OmegaConf = DEMO_METADATA,
     scene_renderer: SceneRenderer = SCENE_RENDERER,
 ) -> None:
+    """Test full CEC2 pipeline"""
+
+    if scene is None:
+        scene = SCENE
     target, interferers, anechoic, _head_turn = scene_renderer.generate_hoa_signals(
         scene
     )
@@ -111,7 +119,8 @@ def test_full_CEC2_pipeline(
     reference = reference.astype(float) / 32768.0
     signal = signal.astype(float) / 32768.0
 
-    # Truncate to just over 2 seconds - i.e. just use part of the signals to speed up the HASPI calculation a little
+    # Truncate to just over 2 seconds - i.e. just use part of the signals
+    # to speed up the HASPI calculation a little
     signal = signal[:100000, :]
     reference = reference[:100000, :]
 
@@ -161,6 +170,6 @@ def test_full_CEC2_pipeline(
         audiogram_cfs=audiogram_cfs,
     )
 
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced[0]:0.7f}\n")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")
 
     # Enhanced audio HASPI score is 0.2994066
