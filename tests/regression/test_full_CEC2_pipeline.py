@@ -114,7 +114,7 @@ def test_full_cec2_pipeline(
         scene, target, interferers, anechoic, str(tmp_path)
     )
     _, reference = wavfile.read(f"{tmp_path}/S06001_target_anechoic_CH1.wav")
-    _, signal = wavfile.read(f"{tmp_path}/S06001_mix_CH1.wav")
+    _, signal = wavfile.read(f"{tmp_path}/S06001_mixed_CH1.wav")
 
     reference = reference.astype(float) / 32768.0
     signal = signal.astype(float) / 32768.0
