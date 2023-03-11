@@ -15,7 +15,7 @@ To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). 
 Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
 
-If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4][5],
+If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4] [5],
 [BACH10](https://labsites.rochester.edu/air/resource.html) [6] and [FMA-small](https://github.com/mdeff/fma) [7].
 Theses are shared as `cadenza_cad1_task1_augmentation_medleydb.tar.gz`, `cadenza_cad1_task1_augmentation_bach10.tar.gz`
 and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.
@@ -123,7 +123,7 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 ### 2.1 Enhancement
 
-The baseline enhance simply takes the out-of-the-box [Hybrid Demucs][https://github.com/facebookresearch/demucs](1)
+The baseline enhance simply takes the out-of-the-box [Hybrid Demucs](https://github.com/facebookresearch/demucs) [1]
 source separation model distributed on [TorchAudio](https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html)
 and applies a simple NAL-R [2] fitting amplification to each VDBO (`vocals`, `drums`, `bass` and `others`) stem.
 

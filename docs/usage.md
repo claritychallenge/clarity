@@ -403,7 +403,7 @@ configuration file in YAML format and return a DictConfig object storing the con
 The configuration is included under the `clarity/recipes/cec2/baseline/config.yaml` from when you installed the
 `pyclarity** package.
 
-**IMPORTANT**
+### IMPORTANT
 
 The location of the `recipes` needs a little figuring out and will depend on how you have installed `pyclarity`.
 

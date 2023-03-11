@@ -2,9 +2,7 @@
 
 Clarity challenge code for the first enhancement challenge (CEC1).
 
-Please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_intro for CEC1 information,
-
-and https://claritychallenge.github.io/clarity2021-workshop/results.html for CEC1 results.
+Please visit the [Clarity Challenge website](https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_intro) for CEC1 information, and the [Clarity Workshop website](https://claritychallenge.github.io/clarity2021-workshop/results.html) for CEC1 results.
 
 ## Data structure
 

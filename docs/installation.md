@@ -35,7 +35,7 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 ### Manual Cloning and Installation
 
-You will have to have [git])(https://git-scm.com) installed on your system to install in this manner.
+You will have to have [git](https://git-scm.com) installed on your system to install in this manner.
 
 ``` bash
 git clone git@github.com:claritychallenge/clarity.git

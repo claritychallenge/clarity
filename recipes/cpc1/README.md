@@ -7,7 +7,7 @@ There are two traks in CPC1:
 - **closed-set**: the evaluation systems and listeners are covered in the training set, the signals and listener repsonses are provieded in `CPC1.train.json`
 - **open-set**: the evaluation systems and listeners are not seen in the training set, the signals and listener responses are provieded in `CPC1_indep.train.json`
 
-For more information about the CPC1 please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cpc1/cpc1_intro.
+For more information about the CPC1 please visit [claritychallenge.org/docs/cpc1/cpc1_intro](https://claritychallenge.org/docs/cpc1/cpc1_intro).
 
 ## Data structure
 

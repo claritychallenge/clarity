@@ -4,30 +4,8 @@
 
 # Disable some built-in rules
 config:
-  line-length: false
-
-  # Rules that have been dealt with
-  blanks-around-fences: true
-  blanks-around-headings: true
-  blanks-around-lists: true
-  fenced-code-language: true
-  first-line-heading: true
-  no-empty-links: true
-  no-multiple-blanks: true
-  no-reversed-links: true
-  no-trailing-punctuation: true
-  single-title: true
-  single-trailing-newline: true
-  ul-indent: true
-  ul-style: true
-
-  # Rules that are temporarily disabled
-  no-bare-urls: false
-  no-inline-html: false
-  no-emphasis-as-heading: false
-  commands-show-output: false
-  emphasis-style: false
-  reference-links-images: false
+  line-length: false  # Disable line length rule
+  no-inline-html: false  # Allow HTML in Markdown
 
 # # Include a custom rule package
 # customRules:
