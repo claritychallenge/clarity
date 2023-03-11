@@ -5,24 +5,28 @@
 # Disable some built-in rules
 config:
   line-length: false
-  no-inline-html: false
+
+  # Rules that have been dealt with
+  blanks-around-fences: true
+  blanks-around-headings: true
+  blanks-around-lists: true
+  no-multiple-blanks: true
+  no-trailing-punctuation: true
+  single-trailing-newline: true
+
+  # Rules that are temporarily disabled
+  fenced-code-language: false
   first-line-heading: false
-  no-multiple-blanks: false
-  no-bare-urls: false
-  blanks-around-lists: false
   ul-indent: false
   ul-style: false
   single-title: false
+  no-bare-urls: false
+  no-inline-html: false
   no-empty-links: false
-  no-trailing-punctuation: false
   no-emphasis-as-heading: false
-  fenced-code-language: false
   commands-show-output: false
-  blanks-around-fences: false
-  blanks-around-headings: false
   no-reversed-links: false
   emphasis-style: false
-  single-trailing-newline: false
   reference-links-images: false
 
 # # Include a custom rule package
@@ -30,7 +34,7 @@ config:
 #  - markdownlint-rule-titlecase
 
 # Fix any fixable errors
-fix: false
+fix: true
 
 # Define a custom front matter pattern
 frontMatter: "<head>[^]*<\/head>"

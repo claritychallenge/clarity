@@ -5,8 +5,6 @@ already done so please refer to the [installation instructions](installation.md)
 
 To check run `pip show pyclarity` and you should get some information about the installed version.
 
-
-
 ``` bash
 Version: 0.1.0
 Summary: Tools for the Clarity Challenge
@@ -23,7 +21,6 @@ If you don't see similar to the above then check that you have activated the Vir
 under, if the package still isn't found then you should go through the installation process again within your Virtual
 Environment.
 
-
 ## Jupyter Notebooks
 
 These tutorials are available as Jupyter Notebooks [pyClarity Tutorials](https://claritychallenge.org/tutorials) that
@@ -31,7 +28,6 @@ run in Google CoLab.
 
 The examples and code below take you through the using the pyClarity tools using smaller demo datasets which are
 provided under `clarity.data.demo_data` and have specific functions for loading.
-
 
 ## 01 Installing pyClarity and Using Metadata
 
@@ -56,7 +52,6 @@ There are four metadata files
 
 Information about *individual* rooms, scenes, listeners etc is stored as a [dictionary](https://www.tutorialspoint.com/python/python_dictionary.htm). The complete collections are then stored as either a [list](https://www.tutorialspoint.com/python/python_lists.htm) or dict depending on how the collection is mostly conveniently indexed. The datastructure of the four datatypes is summarized below.
 
-
 | Dataset            | Structure     | Index         |
 |--------------------|---------------|---------------|
 | `rooms`            | list of dicts | `int`         |
@@ -64,10 +59,8 @@ Information about *individual* rooms, scenes, listeners etc is stored as a [dict
 | `listener`         | dict of dicts | `LISTENER_ID` |
 | `scenes_listeners` | dict of lists | `LISTENED_ID` |
 
-
 Data is stored in [JavaScript Object Notation (JSON) format](https://en.wikipedia.org/wiki/JSON) and the components
 `scenes`, `rooms`, `listeners` and `scene_listeners` can be loaded with the following.
-
 
 ``` python
 import json
@@ -155,7 +148,6 @@ print(room["dimensions"])
 
 This approach uses a linear search and is therefore not very efficient. If you are going to be doing this often you
 might want to convert the list of rooms into a dictionary indexed by room ID, e.g.
-
 
 ``` python
 room_dict = {room["name"]: room for room in rooms}
@@ -267,8 +259,6 @@ We can inspect the contents of the config file using <code>!cat</code>:
 cat config.yaml
 ```
 
-
-
 The general organisation of the config files is hierarchical, with property labels depending on the script in
 question. The config file for the enhance and evaluate recipes contains configurable paramaters for both scripts. These
 include:
@@ -285,7 +275,6 @@ Python script is called in the command line, e.g.
 ``` bash
 user:~$ python mypythonscript.py path.root='/path/to/project'
 ```
-
 
 Note the lack of slash at the end of the <code>path.root</code> argument string. If you inspect a variable such as <code>path.metadata_dir</code> you will see that this slash is already included in the line.
 
@@ -304,6 +293,7 @@ A:
     parameter_0: some_value
     parameter_1: some_other_value
 ```
+
 The CLI syntax to override those values would be:
 
 ``` bash
@@ -350,8 +340,6 @@ path.scenes_folder="$\{path.root\}/clarity_data/demo/scenes"
 Now the HASPI scores have been generated, it is possible to plot the results to assess the improvement imparted by the
 signal processing. Start a Python shell (`python` or `ipython`) and paste the following code.
 
-
-
 ``` python
 import numpy as np
 import pandas as pd
@@ -386,14 +374,12 @@ By default, the demo data will have been downloaded into a directory called `cla
 
 ## Running the baseline
 
-
 ### Importing the baseline NALR and Compressor components
 
 The baseline enhancer is based on [NAL-R prescription fitting](https://pubmed.ncbi.nlm.nih.gov/3743918/). Since output
 signals are required to be in 16-bit integer format, a slow acting automatic gain control is implemented to reduce
 clipping of the signal introduced by the NAL-R fitting for audiograms which represent more severe hearing loss. The AGC
 is followed by a soft-clip function.
-
 
 The NAL-R and AGC (compressor) classes can be accessed by importing them from the `clarity.enhancer` module.
 
@@ -410,7 +396,6 @@ configuration of Python code, for the setting of environment variables such as d
 parallelisation of Python on both HPC and local machines. (A full description of how
 [hydra](https://hydra.cc/docs/intro/) and [submitit](https://github.com/facebookincubator/submitit) is used in the
 Clarity challenges is out of the scope of this tutorial).
-
 
 In this tutorial, we will be importing the baseline configuration file directly using `omegaconf`. The module can read a
 configuration file in YAML format and return a DictConfig object storing the configuration data.
@@ -439,7 +424,6 @@ following...
 find ~/ -type f -iname "config.yaml" | grep recipes
 ```
 
-
 ``` python
 from omegaconf import DictConfig, OmegaConf
 
@@ -449,17 +433,14 @@ assert isinstance(cfg, DictConfig)
 
 ```
 
-
 We will need to override some of the standard paths provided in the baseline `config.yaml` to enable us to run the
 baseline on the demo data in this tutorial environment.
-
 
 We need to supply:
 
 - The root directory of the project data and metadata
 - The directory of the metadata
 - The directory of the audio data
-
 
 The default configuration can be overridden by changing the values in the `cfg` object.
 
@@ -468,7 +449,6 @@ cfg.path["root"] = "clarity_data/demo"
 cfg.path["metadata_dir"] = "${path.root}/metadata"
 cfg.path["scenes_folder"] = "${path.root}/scenes"
 ```
-
 
 (Side note: the Clarity tools come with higher level `recipe` scripts that are designed to be used from the command line. When working with these, default configurations can be overriden by passing command line arguments.)
 
@@ -479,8 +459,6 @@ enhancer = NALR(**cfg.nalr)
 compressor = Compressor(**cfg.compressor)
 
 ```
-
-
 
 ### Selecting a scene and a listener
 
@@ -505,14 +483,10 @@ with open("clarity_data/demo/metadata/scenes_listeners.dev.json") as f:
     scene_listeners_metadata = json.load(f)
 ```
 
-
-
 Next, we will select an individual scene from `scenes_metadata`, find its associated listener's and then find the
 listener's audiogram data.
 
-
 So we first choose a scene the the `scene_metadata` list using a `scene_index`, i.e.,
-
 
 ``` python
 scene_index = 2
@@ -520,8 +494,6 @@ scene = scene_metadata[scene_index]
 
 print(scene)
 ```
-
-
 
 We find the scene's listeners by looking them up in the `scene_listeners_metadata` dict using the scene's `scene_id` as the key.
 
@@ -543,7 +515,6 @@ listener_id = scene_listeners[listener_choice]
 listener = listeners_metadata[listener_id]
 ```
 
-
 Each listener metadata entry is a dict containing:
 
 - Listener ID
@@ -554,8 +525,6 @@ Each listener metadata entry is a dict containing:
 ``` python
 print(listener)
 ```
-
-
 
 ### Loading the signals to process
 
@@ -586,7 +555,6 @@ fs, signal = wavfile.read(Path(cfg.path.scenes_folder) / f"{scene_id}_mix_CH1.wa
 signal = signal / 32768.0
 ```
 
-
 We can plot the signal to check it looks OK,
 
 ``` python
@@ -596,11 +564,9 @@ plt.plot(signal)
 plt.show()
 ```
 
-
 ### Applying the NALR and Compressor components
 
 We will now build the NALR filterbank according to the audiograms of the listener we have selected and apply the filter to the scene signal. This is done separately for the left and right ear (i.e., for each channel of the stereo scene signal).
-
 
 ``` python
 import numpy as np
@@ -615,7 +581,6 @@ plt.plot(out_l)
 plt.show()
 ```
 
-
 Following this, slow AGC is applied and a clip detection pass is performed. A tanh function is applied to remove high frequency distortion components from cliipped samples and the files are converted back to 16-bit integer format for saving.
 
 ``` python
@@ -627,7 +592,6 @@ enhanced_audio = np.stack([out_l, out_r], axis=1)
 plt.plot(enhanced_audio)
 plt.show()
 ```
-
 
 Finally, the signals are placed through a tanh function which provides a soft-clipping to handle any transient segments that have not been dealt with by the ACG.
 
@@ -644,7 +608,6 @@ plt.plot(enhanced_audio)
 plt.show()
 ```
 
-
 Note, processed signals will be submitted as 16-bit wav-file format, i.e. by first converting back to 16-bit integer format and then saving to file.
 
 ```python
@@ -657,16 +620,13 @@ The standard filename for the processed audio is constructed as
 filename = f"{scene['scene']}_{listener['name']}_HA-output.wav"
 ```
 
-
 ## Evaluating outputs using HASPI
-
 
 Enhanced scores can now be evaluated using the HASPI speech intelligibility prediction metric and compared to the
 unenhanced audio.
 
 HASPI scores are calculated using a 'better ear' approach where left and right signals are acalculated and the higher
 score used as the output. The 'better ear' haspi function (`haspi_v2_be`) is imported from `clarity.evaluator.haspi`.
-
 
 HASPI is an intrusive metric and requires an uncorrupted reference signal. These are provided in the scenes audio data as files with the naming convention `SXXXX_target_CHX.wav`. CH1 is used as the reference transducer for this challenge. We load the file and convert to floating point as before.
 
@@ -677,7 +637,6 @@ fs, reference = wavfile.read(Path(cfg.path.scenes_folder) / f"{scene_id}_target_
 
 reference = reference / 32768.0
 ```
-
 
 We provide the function `haspi_v2_be` with the left and right references, the left and right signals, the sample rate and the audiogram information for the given listener.
 
@@ -713,7 +672,6 @@ print(f"Enhanced audio HASPI score is {sii_enhanced}")
 print(f"Improvement from processing is {sii_enhanced-sii_unprocessed}")
 ```
 
-
 For the scene and listener we have selected the original HASPI score should be about `0.081` and the score after
 enhancement should be about `0.231`. Note, HASPI uses internal masking noise and because we have not set the random
 seed, scores may vary a little from run to run - the variation should not be more than `+-0.0005` and often much less.
@@ -721,6 +679,5 @@ seed, scores may vary a little from run to run - the variation should not be mor
 Note also that the 'enhanced' score is still very low - this is not surprising given that the processing is only
 amplying amplification and compression. There is no noise cancellation, no multichannel processing, etc, etc. The
 purpose of the enhancement challenge is to add these components in order to try and improve on this baseline.
-
 
 Good luck!

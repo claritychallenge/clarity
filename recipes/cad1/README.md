@@ -15,14 +15,14 @@ and the instruction on how to obtain the data.
 * [Baseline system CAD1 - Task1](https://colab.research.google.com/drive/1j8L2dBo8rTQsbKzPTxAymVvDMgHtgtnK?usp=sharing)
 * [Baseline system CAD1 - Task2](https://colab.research.google.com/drive/1fgvnrgCUiylUHL26ElShp6egIZiU_vNz?usp=sharing)
 
-
 ## Baseline Results
+
 The performance of each system on the validation set is reported below.
 
 ### Task 1 - Listening music via headphones
+
 TODO - add Table with results
 
-
-
 ### Task 2 - Listening music in a car wearing hearing aids
+
 TODO - add Table with results

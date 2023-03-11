@@ -1,4 +1,4 @@
-# Welcome to pyClarity's documentation!
+# Welcome to pyClarity's documentation
 
 ```{toctree}
 :caption: Getting Started
@@ -11,7 +11,6 @@ recipes_doc
 CONTRIBUTING
 CODE_OF_CONDUCT
 ```
-
 
 ```{toctree}
 :caption: Recipes

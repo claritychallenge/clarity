@@ -23,7 +23,6 @@ and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.
 
 Unpack packages under the same root directory using
 
-
 ```bash
 tar -xvzf <PACKAGE_NAME>
 ```
@@ -116,7 +115,6 @@ To unpack the demo data, run:
 ```bash
 tar -xvf cadenza_data_demo.tar.xz
 ```
-
 
 ## 2. Baseline
 

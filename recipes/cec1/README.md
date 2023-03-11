@@ -7,6 +7,7 @@ Please visit https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_in
 and https://claritychallenge.github.io/clarity2021-workshop/results.html for CEC1 results.
 
 ## Data structure
+
 To download data, please visit [here](https://mab.to/bavGDV87BZISg). The data is split into two packages: `clarity_CEC1_data.train.tgz` [192 GB], `clarity_CEC1_data.dev_eval_metadata.tgz` [163 GB]. Please also download and unpack `clarity_CEC1_data.anechoic.v1_3.tgz` [11.4 GB], which contains the correct version of anechoic signals for reference, and replace the old anechoic signals within the train.tgz and dev_eval_metadata.tgz.
 
 Unpack packages under the same root directory using
@@ -16,6 +17,7 @@ tar -xvzf <PACKAGE_NAME>
 ```
 
 **Train** contains the training data:
+
 ```text
 clarity_data
 |
@@ -35,6 +37,7 @@ clarity_data
 ```
 
 **Dev_Eval_Metadata** contains development set, evaluation set (eval2 is the processed evaluation data by the baseline), and metadata,
+
 ```text
 clarity_data
 |
@@ -69,12 +72,15 @@ clarity_data
 ```
 
 ## Data preparation
+
 In this folder, we provide the code for generating train & scenes. If you simply tends to use the CEC1 data, please download with the link above.
 
 ## Baseline
+
 In the baseline, the baseline enhancement code using OpenMHA is provided. The evaluation code using the Cambridge Auditory Group MSBG hearing loss model and MBSTOI is also provided.
 
 ## Refernces
+
 * [1] Kayser, Hendrik, et al. "Open community platform for hearing aid algorithm research: open Master Hearing Aid (openMHA)." SoftwareX 17 (2022): 100953.
 * [2] Baer, Thomas, and Brian CJ Moore. "Effects of spectral smearing on the intelligibility of sentences in noise." The Journal of the Acoustical Society of America 94.3 (1993): 1229-1241.
 * [3] Baer, Thomas, and Brian CJ Moore. "Effects of spectral smearing on the intelligibility of sentences in the presence of interfering speech." The Journal of the Acoustical Society of America 95.4 (1994): 2277-2280.
@@ -83,6 +89,7 @@ In the baseline, the baseline enhancement code using OpenMHA is provided. The ev
 * [6] Andersen, Asger Heidemann, et al. "Refinement and validation of the binaural short time objective intelligibility measure for spatially diverse conditions." Speech Communication 102 (2018): 1-13.
 
 ## Citing CEC1
+
 ```text
 @inproceedings{graetzer2021clarity,
   title={Clarity-2021 challenges: Machine learning challenges for advancing hearing aid processing},

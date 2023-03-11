@@ -19,7 +19,6 @@ If you have algorithms or code that you would like to contribute then please get
 [claritychallengecontact@gmail.com](mailto:claritychallengecontact@gmail.com). We will be happy to help you integrate
 your contribution into the pyClarity framework; we can even help translate contributions from other languages, e.g. MATLAB.
 
-
 You are also very welcome to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the repository and address bugs
 and features yourself and then create a [pull request from the
 fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
@@ -55,13 +54,11 @@ Requests](https://github.com/claritychallenge/clarity/issues/new?assignees=&labe
 allows maintainers to keep an overview of what work is being undertaken and gives you the opportunity to discuss with
 them your intended solutions.
 
-
 ### Create a Fork
 
 Once you have created an issue you can
 [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) the
 pyClarity repository to your own account and create a branch on which to undertake development.
-
 
 ### Coding Style
 
@@ -74,7 +71,6 @@ For information on how to configure some popular IDEs see the following links.
 * [Linting Python in Visual Studio Code](https://code.visualstudio.com/docs/python/linting)
 * [Flake8 support - PyCharm Plugin](https://plugins.jetbrains.com/plugin/11563-flake8-support)
 * [Emacs flymake-python-pyflakes](https://github.com/purcell/flymake-python-pyflakes/)
-
 
 Further we have implemented a [`pre-commit`](https://pre-commit.com/) hook to ensure flake8 and isort are applied each
 time you make a commit. Whilst the `pre-commit` package will have been installed in your environment when you need to
@@ -91,7 +87,6 @@ automatically lint your code with flake8 and isort so please check the changes c
 
 If your commit fails to pass the checks please read the error messages carefully to find out what has changed and what
 you need to manually fix.
-
 
 ### Testing
 

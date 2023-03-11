@@ -20,7 +20,6 @@ package. To access these please refer to the [Clarity Tutorials](https://clarity
 * [Clarity 2021](https://claritychallenge.org/clarity2021-workshop/)
 * [Clarity 2022](https://claritychallenge.org/clarity2022-workshop/)
 
-
 ## Tools
 
 A number of tools are included in this repository
@@ -35,12 +34,12 @@ A number of tools are included in this repository
     - [NAL-R hearing aid fitting](https://github.com/claritychallenge/clarity/tree/main/clarity/enhancer/nalr.py): a python implementation of NAL-R prescription fitting. It is used as the [CEC2 baseline](https://github.com/claritychallenge/clarity/tree/main/recipes/cec2/baseline), see `enhance.py`.
 
 In addition, differentiable approximation to some tools are provided:
+
 * [x] [Differentiable MSBG hearing loss model](https://github.com/claritychallenge/clarity/tree/main/clarity/predictor/torch_msbg.py). See also the BUT implementation: https://github.com/BUTSpeechFIT/torch_msbg_mbstoi
 * [ ] Differentiable HASPI (coming)
 
-
-
 ## Open-source systems
+
 - CPC1:
   - [Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners](https://github.com/claritychallenge/clarity/tree/main/recipes/cpc1/e032_sheffield)
   - [Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction](https://github.com/claritychallenge/clarity/tree/main/recipes/cpc1/e029_sheffield)

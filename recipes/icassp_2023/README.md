@@ -93,7 +93,6 @@ The baseline enhancement simply takes the 6 channel hearing aid inputs and reduc
 
 To run the baseline enhancement system, firstly specify `root` in `config.yaml` to point to where you have installed the clarity data. You can also define your own `path.exp_folder` to store enhanced signals and evaluated results.
 
-
 Then run:
 
 ```bash

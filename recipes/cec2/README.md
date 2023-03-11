@@ -1,4 +1,5 @@
 # The 2nd Clarity Enhancement Challenge (CEC2)
+
 Clarity challenge code for the 2nd enhancement challenge (CEC2).
 
 For more information about the Clarity Challenge please visit https://claritychallenge.github.io/clarity_CC_doc/
@@ -128,18 +129,23 @@ UPDATE: the soft clipping to prevent before saving to 16bit signal has been modi
 The method of using this is the same as for `Data preparation`. A `scenes.train_additional.json` will be generated in the `clarity_data/metadata/`, and additional training data will be generated in `clarity_data/train/additional_scenes/`.
 
 ### Baseline enhancement
+
 To run the baseline enhancement system, firstly specify `root` in config.yaml. You can also define your own `path.exp_folder` to store enhanced signals and evaluated results. Then run:
+
 ```bash
 python enhance.py
 ```
+
 The folder `enhanced_signals` will appear in the `exp` folder.
 
 ### Evaluation
 
 The `evaluate.py` calculates the better-ear HASPI score given the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. Specify `path.exp_folder` to store the results, and specify `evaluate.cal_unprocessed_si` to decide whether compute HASPI scores for unprocessed scenes. Then run:
+
 ```bash
 python evaluate.py
 ```
+
 A csv file containing the HASPI scores will be generated in the `exp_folder`.
 
 To check the HASPI code, see [here](../../clarity/evaluator/haspi). The `_target_anechoic_CH1.wav` is used as the reference, with its level is normalised to match that of the corresponding `_target_CH1.wav`.
