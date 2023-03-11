@@ -25,7 +25,7 @@ config:
   no-empty-links: false
   no-emphasis-as-heading: false
   commands-show-output: false
-  no-reversed-links: false
+  no-reversed-links: true
   emphasis-style: false
   reference-links-images: false
 
@@ -34,7 +34,7 @@ config:
 #  - markdownlint-rule-titlecase
 
 # Fix any fixable errors
-fix: true
+fix: false
 
 # Define a custom front matter pattern
 frontMatter: "<head>[^]*<\/head>"
