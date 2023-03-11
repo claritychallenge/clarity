@@ -8,7 +8,7 @@ Please note: This code provides the implementation of the LS(LibriSpeech) + CPC1
 
 ### Requirements
 
-```
+```text
 torch==1.10.0
 torchaudio==0.10.0
 speechbrain==0.5.9
@@ -33,10 +33,10 @@ To train the ASR model and generate the hidden representations from it, the CPC1
 `data_folder: !ref your_path/e029/cpc1_asr_data  # for closed-set`
 OR
 `data_folder: !ref your_path/e029/cpc1_asr_data_indep  # for open-set`
-- Download the `save` folder (i.e. ASR transformer checkpoint) from: https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7, and place it under your `transformer_cpc1/asr0/`, `transformer_cpc1/asr1/`, ..., `transformer_cpc1/asrN/` folder
+- Download the `save` folder (i.e. ASR transformer checkpoint) from: <https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7>, and place it under your `transformer_cpc1/asr0/`, `transformer_cpc1/asr1/`, ..., `transformer_cpc1/asrN/` folder
 - Train the ASR models, run:
 
-```
+```bash
 python train_asr.py transformer_cpc1.yaml --seed 0000 --output_folder your_path/transformer_cpc1/asr0
 python train_asr.py transformer_cpc1.yaml --seed 0001 --output_folder your_path/transformer_cpc1/asr1
 python train_asr.py transformer_cpc1.yaml --seed 0002 --output_folder your_path/transformer_cpc1/asr2

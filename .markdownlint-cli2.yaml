@@ -10,6 +10,7 @@ config:
   blanks-around-fences: true
   blanks-around-headings: true
   blanks-around-lists: true
+  fenced-code-language: true
   no-empty-links: true
   no-multiple-blanks: true
   no-reversed-links: true
@@ -19,7 +20,6 @@ config:
   ul-style: true
 
   # Rules that are temporarily disabled
-  fenced-code-language: false
   first-line-heading: false
   single-title: false
   no-bare-urls: false

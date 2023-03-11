@@ -10,7 +10,7 @@ As only the training data is provided in CPC1, we split the training data into a
 
 ### Requirements
 
-```
+```text
 torch==1.10.0
 torchaudio==0.10.0
 speechbrain==0.5.9
@@ -37,7 +37,7 @@ To train the ASR model and generate the hidden representations from it, the CPC1
 `data_folder: !ref your_path/e032/cpc1_asr_data  # for closed-set`
 OR
 `data_folder: !ref your_path/e032/cpc1_asr_data_indep  # for open-set`
-3. Download the `save` folder (i.e. ASR transformer checkpoint) from: https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7, and place it under your `transformer_cpc1` folder
+3. Download the `save` folder (i.e. ASR transformer checkpoint) from: <https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7>, and place it under your `transformer_cpc1` folder
 4. Run `python train_asr.py transformer_cpc1.yaml`
 5. The trained ASR model checkpoint will appear in `your_path/transformer_cpc1/save`
 

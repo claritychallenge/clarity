@@ -17,7 +17,7 @@ To build the overall system, the multi-channel Conv-TasNet based denoising modul
 
 If you use this work, please cite:
 
-```
+```bibtex
 @article{tutwo,
   title={A Two-Stage End-to-End System for Speech-in-Noise Hearing Aid Processing},
   author={Tu, Zehai and Zhang, Jisi and Ma, Ning and Barker, Jon},

@@ -211,7 +211,7 @@ plt.show()
 
 ## 02 Running the CEC2 Baseline from the command line
 
-Python comes with a _Read, Eval, Print, Loop_ (REPL) interactive shell that can be started from within your Virtual
+Python comes with a *Read, Eval, Print, Loop* (REPL) interactive shell that can be started from within your Virtual
 Environment by typing `python`. Many users prefer the improved [iPython](https://ipython.org/index.html) shell which can
 be installed with `pip install ipython` and invoked with `ipython`. Either shell works with the following.
 
@@ -297,7 +297,7 @@ A:
 The CLI syntax to override those values would be:
 
 ``` bash
-$ python myscript.py A.B.parameter_0="new_value" A.B.parameter_1="another_new_value"
+python myscript.py A.B.parameter_0="new_value" A.B.parameter_1="another_new_value"
 ```
 
 We are now ready to run the prepared Python script `recipes/cec2/baseline/enhance.py` to enhance the audio. However, the
@@ -532,7 +532,7 @@ Next we will load in the scene audio for the scene that we want to process.
 
 The path to the scenes audio data is stored in the `cfg.path.scenes_folder` variable and the audio files are named with the scene_id as the prefix and using the format.
 
-```
+```text
 <SCENE_ID>_<TYPE>_<CHANNEL>.wav
 ```
 
