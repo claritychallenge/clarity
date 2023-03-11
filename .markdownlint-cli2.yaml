@@ -15,12 +15,12 @@ config:
   no-reversed-links: true
   no-trailing-punctuation: true
   single-trailing-newline: true
+  ul-indent: true
+  ul-style: true
 
   # Rules that are temporarily disabled
   fenced-code-language: false
   first-line-heading: false
-  ul-indent: false
-  ul-style: false
   single-title: false
   no-bare-urls: false
   no-inline-html: false

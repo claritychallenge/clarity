@@ -1,4 +1,4 @@
-l# Pylint
+# Pylint
 
 Initial run of pylint over complete code base. Created to help prioritise the fixes.
 
@@ -50,7 +50,7 @@ functions fir2 and firwin2 - identical
 ==clarity.evaluator.msbg.msbg_utils:[116:166]
 ==clarity.predictor.torch_msbg:[271:315]
 large constant np.arrays
-FF_ED - free field to ear drum array definintion
+FF_ED - free field to ear drum array definition
 midear - constant np.array
 hz - centre frequencies
 df_ed
@@ -76,8 +76,9 @@ function write_signal - identical accept for minor refactor to handle sample rat
 ==clarity.evaluator.msbg.audiogram:[92:100]
 class Audiogram
 
- - binaural audiogram in enhancer/gha
- - monaural audiogram in evaluator/msbg
+- binaural audiogram in enhancer/gha
+- monaural audiogram in evaluator/msbg
+
  Very similar - e.g. shared code in severity() function
 
  Elsewhere audiograms are passed around just as separate left ear loss, right ear loss and cfs parameters
@@ -93,7 +94,7 @@ class Audiogram
 ==clarity.predictor.torch_msbg:[271:315]
 
 large constant np.arrays
-FF_ED - free field to ear drum array definintion
+FF_ED - free field to ear drum array definition
 midear - constant np.array
 hz - centre frequencies
 df_ed
@@ -122,8 +123,8 @@ function write_signal - identical accept for minor refactor to handle sample rat
 
 dataclasses for Audiogram
 
- - binaural audiogram in enhancer/gha
- - monaural audiogram in evaluator/msbg
+- binaural audiogram in enhancer/gha
+- monaural audiogram in evaluator/msbg
  Very similar - e.g. shared code in severity() function
 
 Elsewhere audiograms are passed around just as separate left ear loss, right ear loss and cfs parameters
