@@ -15,7 +15,7 @@ config:
 fix: false
 
 # Define a custom front matter pattern
-frontMatter: "<head>[^]*<\/head>"
+frontMatter: "---[^]*---"
 
 # # Define glob expressions to use (only valid at root)
 # globs:
@@ -23,7 +23,7 @@ frontMatter: "<head>[^]*<\/head>"
 
 # # Define glob expressions to ignore
 # ignores:
-#  - "ignore*.md"
+# - ".github/ISSUE_TEMPLATE/*.md"
 
 # # Use a plugin to recognize math
 # markdownItPlugins:
