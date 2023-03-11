@@ -10,7 +10,9 @@ config:
   blanks-around-fences: true
   blanks-around-headings: true
   blanks-around-lists: true
+  no-empty-links: true
   no-multiple-blanks: true
+  no-reversed-links: true
   no-trailing-punctuation: true
   single-trailing-newline: true
 
@@ -22,10 +24,8 @@ config:
   single-title: false
   no-bare-urls: false
   no-inline-html: false
-  no-empty-links: false
   no-emphasis-as-heading: false
   commands-show-output: false
-  no-reversed-links: true
   emphasis-style: false
   reference-links-images: false
 

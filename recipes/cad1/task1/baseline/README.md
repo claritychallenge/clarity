@@ -56,7 +56,7 @@ cadenza_data
 
 ### 1.2 Additional optional data
 
-* **MedleyDB** contains both MedleyDB versions 1 [4] and 2 [5] datasets.
+* **MedleyDB** contains both MedleyDB versions 1 [[4](#references)] and 2 [[5](#references)] datasets.
 
 Tracks from the MedleyDB dataset are not included in the evaluation set.
 However, is your responsibility to exclude any song that may be already contained in the training set.
@@ -70,7 +70,7 @@ cadenza_data
             └───Metadata
 ```
 
-* **BACH10** contains the BACH10 dataset [6].
+* **BACH10** contains the BACH10 dataset [[6](#references)].
 
 Tracks from the BACH10 dataset are not included in MUSDB18-HQ and can all be used as training augmentation data.
 
@@ -84,7 +84,7 @@ cadenza_data
             ├───...
 ```
 
-* **FMA Small** contains the FMA small subset of the FMA dataset [7].
+* **FMA Small** contains the FMA small subset of the FMA dataset [[7](references)].
 
 Tracks from the FMA small dataset are not included in the MUSDB18-HQ.
 This dataset does not provide independent stems but only the full mix.
@@ -123,7 +123,7 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 ### 2.1 Enhancement
 
-The baseline enhance simply takes the out-of-the-box [Hybrid Demucs](https://github.com/facebookresearch/demucs)[1]
+The baseline enhance simply takes the out-of-the-box [Hybrid Demucs][https://github.com/facebookresearch/demucs](1)
 source separation model distributed on [TorchAudio](https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html)
 and applies a simple NAL-R [2] fitting amplification to each VDBO (`vocals`, `drums`, `bass` and `others`) stem.
 
@@ -158,7 +158,7 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 ### 2.2 Evaluation
 
-The `evaluate.py` simply takes the signals stored in `enhanced_signals` and computes the HAAQI [3] score
+The `evaluate.py` simply takes the signals stored in `enhanced_signals` and computes the HAAQI [[3](#references)] score
 for each of the eight left and right VDBO stems.
 The average of these eight scores is computed and returned for each signal.
 

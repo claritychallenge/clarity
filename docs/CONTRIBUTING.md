@@ -6,9 +6,9 @@ can do so.
 ## Using pyClarity
 
 You can contribute to the development of pyClarity simply by using it. If something isn't clear then please do ask
-questions in the [Discussion](). If you find errors when running the code then please report them using the [Issues Bug
-Template](), or if there is a feature or improvement you think pyClarity would benefit from then suggest it using the
-[Issues Feature Template]().
+questions in the [Discussion](https://github.com/claritychallenge/clarity/discussions). If you find errors when running the code then please report them using the [Issues Bug
+Template](https://github.com/claritychallenge/clarity/issues/new?assignees=&labels=bug%2C+question&template=bug_report.md&title=%5BBUG%5D), or if there is a feature or improvement you think pyClarity would benefit from then suggest it using the
+[Issues Feature Template](https://github.com/claritychallenge/clarity/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D).
 
 If you are new to GitHub and working collaboratively you may find the [GitHub Issues](https://docs.github.com/en/issues)
 documentation useful.

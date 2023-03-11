@@ -2,9 +2,9 @@
 
 Clarity challenge code for the 2nd enhancement challenge (CEC2).
 
-For more information about the Clarity Challenge please visit https://claritychallenge.github.io/clarity_CC_doc/
+For more information about the Clarity Challenge please visit <https://claritychallenge.github.io/clarity_CC_doc/>
 
-Clarity tutorials are now available in https://claritychallenge.github.io/clarity_CC_doc/tutorials. The tutorials introduce the Clarity installation, how to interact with Clarity metadata, and also provide examples of baseline systems and evaluation tools.
+Clarity tutorials are now available in <https://claritychallenge.github.io/clarity_CC_doc/tutorials>. The tutorials introduce the Clarity installation, how to interact with Clarity metadata, and also provide examples of baseline systems and evaluation tools.
 
 ## Data structure
 
@@ -103,7 +103,7 @@ If single-run locally:
 python render_scenes.py
 ```
 
-The Hydra submitit feature is used for parallel multi-run, see https://hydra.cc/docs/plugins/submitit_launcher/
+The Hydra submitit feature is used for parallel multi-run, see <https://hydra.cc/docs/plugins/submitit_launcher/>
 
 If multi-run locally, make sure the `override hydra/launcher` is set `cec2_submitit_local`, and specify the parameters in `hydra/launcher/cec2_submitit_local.yaml`, then:
 
@@ -154,5 +154,5 @@ The scores of both unprocessed signals and baseline enhanced signals are provide
 
 ## References
 
-* [1] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI)[J]. Speech Communication, 2014, 65: 75-93.
+* [1] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI) J. Speech Communication, 2014, 65: 75-93.
 * [2] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265.

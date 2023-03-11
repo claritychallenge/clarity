@@ -148,5 +148,5 @@ Please note: HASPI and HASQI employ random thresholding noise so you will not ge
 ## References
 
 * [1] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265.
-* [2] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI)[J]. Speech Communication, 2014, 65: 75-93.
+* [2] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI) J. Speech Communication, 2014, 65: 75-93.
 * [3] Kates, J.M. and Arehart, K.H., 2014. "The hearing-aid speech quality index (HASQI) version 2". Journal of the Audio Engineering Society. 62 (3): 99–117.
