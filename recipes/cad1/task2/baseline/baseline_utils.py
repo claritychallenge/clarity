@@ -45,7 +45,7 @@ def read_mp3(
     return signal, sample_rate
 
 
-def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict]:
+def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict, dict]:
     """Load listener and scene data
 
     Args:
@@ -54,7 +54,8 @@ def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict]:
             the path to the listeners train file, and the path to the listeners valid file.
 
     Returns:
-        Tuple[dict, dict]: A tuple containing the scene data and the listener data.
+        Tuple[dict, dict, dict]: A tuple containing the scene data, the listener data and
+            the pair scenes-listeners.
 
     """
     # Load listener data
@@ -72,4 +73,25 @@ def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict]:
             listener_audiograms = json.load(fp)
         scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
 
-    return scenes, listener_audiograms
+    with open(config.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+        scenes_listeners = {
+            k: v for k, v in scenes_listeners.items() if k in scenes.keys()
+        }
+
+    return scenes, listener_audiograms, scenes_listeners
+
+
+def make_scene_listener_list(scenes_listeners, small_test=False):
+    """Make the list of scene-listener pairing to process"""
+    scene_listener_pairs = [
+        (scene, listener)
+        for scene in scenes_listeners
+        for listener in scenes_listeners[scene]
+    ]
+
+    # Can define a standard 'small_test' with just 1/15 of the data
+    if small_test:
+        scene_listener_pairs = scene_listener_pairs[::15]
+
+    return scene_listener_pairs
