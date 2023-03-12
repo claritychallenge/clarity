@@ -92,17 +92,13 @@ def enhance(config: DictConfig) -> None:
 
     for _, current_scene in tqdm(scenes.items()):
         song_id = current_scene["song"]
-        song_path = (
-            Path(config.path.music_dir)
-            / f"{current_scene['split']}"
-            / f"{song_id:06d}.mp3"
-        )
+        song_path = Path(config.path.music_dir) / f"{current_scene['song_path']}"
         listener_id = current_scene["listener"]
         listener = listener_audiograms[listener_id]
 
         # Read song
-        song_waveform, sample_rate = read_mp3(song_path.as_posix(), config.sample_rate)
-        out_l, out_r = enhance_song(song_waveform, sample_rate, gain_db=-5)
+        song_waveform, _ = read_mp3(song_path, config.sample_rate)
+        out_l, out_r = enhance_song(song_waveform, config.sample_rate, gain_db=-5)
 
         enhanced = np.stack([out_l, out_r], axis=1)
         filename = f"{listener['name']}_{song_id}.wav"
@@ -115,7 +111,7 @@ def enhance(config: DictConfig) -> None:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
         np.clip(enhanced, -1.0, 1.0, out=enhanced)
         signal_16 = (32768.0 * enhanced).astype(np.int16)
-        wavfile.write(enhanced_folder / filename, sample_rate, signal_16)
+        wavfile.write(enhanced_folder / filename, config.sample_rate, signal_16)
 
 
 # pylint: disable = no-value-for-parameter
