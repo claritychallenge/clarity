@@ -1,9 +1,9 @@
 path:
-  root: /media/gerardo/Extended #???
-  metadata_dir: ${path.root}/cadenza_data/task2/metadata
+  root: ./
+  metadata_dir: ${path.root}/cadenza_data/cad1/task2/metadata
   audio_dir: ${path.root}/cadenza_data/audio
-  train_music_file: ${path.metadata_dir}/fma-mtgjamendol_train.json
-  valid_music_file: ${path.metadata_dir}/fma-mtgjamendol_valid.json
+  train_music_file: ${path.metadata_dir}/music.train.json
+  valid_music_file: ${path.metadata_dir}/music.valid.json
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
   brir_file: ${path.metadata_dir}/eBrird_BRIR.json
