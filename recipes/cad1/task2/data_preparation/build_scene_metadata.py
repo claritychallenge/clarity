@@ -125,6 +125,7 @@ def run(cfg: DictConfig) -> None:
             ]
             all_scenes[f"T-{song}_{listener}_S{seed}"] = {
                 "song": song,
+                "song_path": train_songs[song]["path"],
                 "listener": listener,
                 "hr": get_random_dict_item(brir["training"]),
                 "car_noise_parameters": get_random_car_params(
@@ -144,6 +145,7 @@ def run(cfg: DictConfig) -> None:
         listener = np.random.choice(list(valid_listeners.keys()), 1, replace=False)[0]
         all_scenes[f"T-{song}_{listener}_S{seed}"] = {
             "song": song,
+            "song_path": valid_songs[song]["path"],
             "listener": listener,
             "hr": get_random_dict_item(brir["development"]),
             "car_noise_parameters": get_random_car_params(min_speed=50, max_speed=120),
