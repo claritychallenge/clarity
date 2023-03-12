@@ -1,3 +1,6 @@
+"""Tests the full CEC1 baseline pipeline"""
+# pylint: disable=too-many-locals invalid-name
+
 # Regression test
 # Pass some random data through code and compare with reference output
 # CEC1 scene_renderer, enhancer, compressor, MSBG and MBSTOI
@@ -39,7 +42,8 @@ def listen(ear, signal, audiogram_l, audiogram_r):
     return np.concatenate([out_l, out_r]).T
 
 
-def test_full_CEC1_pipeline(regtest):
+def test_full_cec1_pipeline(regtest):
+    """Tests the full CEC1 baseline pipeline"""
     np.random.seed(0)
 
     scene = {
@@ -65,7 +69,7 @@ def test_full_CEC1_pipeline(regtest):
         "scene": "S06001",
         "dataset": ".",
         "pre_samples": 88200,
-        "post_samples": 44100,
+        "post_samples": 0,
         "SNR": 0.586,
     }
 
@@ -95,9 +99,10 @@ def test_full_CEC1_pipeline(regtest):
     reference = reference.astype(float)  # / 32768.0
     signal = signal.astype(float)  # / 32768.0
 
-    # Truncate to just over 2 seconds - i.e. just use part of the signals to speed up the HASPI calculation a little
-    signal = signal[100000:200000, :]
-    reference = reference[100000:200000, :]
+    # Truncate to just over 1/2 second - i.e. just use part of the signals to
+    # speed up the HASPI calculation a little
+    signal = signal[100000:125000, :]
+    reference = reference[100000:125000, :]
 
     # The data below doesn't really need to be meaningful.
     # The purpose of the test is not to see if the haspi score is reasonable
@@ -112,11 +117,9 @@ def test_full_CEC1_pipeline(regtest):
         "rms_buffer_size": 0.064,
     }
 
-    sample_frequency = 44100
-
     msbg_ear_cfg = {
         "src_pos": "ff",
-        "sample_frequency": sample_frequency,
+        "sample_frequency": 44100,
         "equiv_0db_spl": 100,
         "ahr": 20,
     }
@@ -147,6 +150,8 @@ def test_full_CEC1_pipeline(regtest):
 
     # Create discrete delta function (DDF) signal for time alignment
     ddf_signal = np.zeros((np.shape(signal)))
+
+    print(ddf_signal.shape)
     ddf_signal[:, 0] = unit_impulse(len(signal), int(MSBG_FS / 2))
     ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
 
