@@ -4,7 +4,8 @@
 import json
 import logging
 import warnings
-from typing import Tuple
+from pathlib import Path
+from typing import Optional, Tuple, Union
 
 import librosa
 import numpy as np
@@ -14,25 +15,25 @@ from omegaconf import DictConfig
 logger = logging.getLogger(__name__)
 
 
-def read_mp3(file_path: str, sample_rate=None) -> Tuple[np.ndarray, int]:
+def read_mp3(
+    file_path: Union[str, Path], sample_rate: Optional[int] = None
+) -> Tuple[np.ndarray, Optional[int]]:
     """Read a MP3 file and return its signal.
 
     Args:
-        file_path (str): The path to the mp3 file.
+        file_path (str, Path): The path to the mp3 file.
         sample_rate (int): The sampling frequency of the mp3 file.
 
     Returns:
         signal (np.ndarray): The signal of the mp3 file.
         sample_rate (int): The sampling frequency of the mp3 file.
     """
-    if not isinstance(file_path, str):
-        raise TypeError("Parameter song_path must be a string")
 
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             signal, sample_rate = librosa.load(
-                file_path,
+                str(file_path),
                 sr=sample_rate,
                 mono=False,
                 res_type="kaiser_fast",
