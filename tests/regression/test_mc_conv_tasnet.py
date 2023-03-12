@@ -1,3 +1,4 @@
+"""Test the ConvTasNet model."""
 import numpy as np
 import torch
 import torchaudio
@@ -9,6 +10,7 @@ from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet, overlap_and_add
 
 
 def test_overlap_add(regtest):
+    """Test the overlap and add function."""
     signal = torch.Tensor(np.sin(np.arange(0, 2 * np.pi, 0.001) * 10))
     signal = torch.reshape(signal, (2, -1))
 
@@ -18,6 +20,7 @@ def test_overlap_add(regtest):
 
 
 def test_convtasnet(regtest):
+    """Test the ConvTasNet model."""
     torch.manual_seed(0)
     cfg = {}
     cfg["path"] = {"exp_folder": "./"}
@@ -53,30 +56,30 @@ def test_convtasnet(regtest):
     cfg["test_loader"] = {
         "batch_size": 1,
         "shuffle": False,
-        "num_workers": 10,
+        "num_workers": 0,  # Overhead of multiprocessing not worth it for tiny test dataset
     }
     cfg = OmegaConf.create(cfg)
     device = "cuda" if torch.cuda.is_available() else None
-    test_set = CEC1Dataset(**cfg["test_dataset"])
-    test_loader = torch.utils.data.DataLoader(dataset=test_set, **cfg["test_loader"])
+    test_set = CEC1Dataset(**cfg.test_dataset)
+    test_loader = torch.utils.data.DataLoader(dataset=test_set, **cfg.test_loader)
 
-    if cfg["test_dataset"]["downsample_factor"] != 1:
+    if cfg.test_dataset.downsample_factor != 1:
         down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.test_dataset["sr"],
-            new_freq=cfg.test_dataset["sr"] // cfg.test_dataset["downsample_factor"],
+            new_freq=cfg.test_dataset["sr"] // cfg.test_dataset.downsample_factor,
             resampling_method="sinc_interpolation",
         )
         up_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.test_dataset["sr"] // cfg.test_dataset["downsample_factor"],
+            orig_freq=cfg.test_dataset["sr"] // cfg.test_dataset.downsample_factor,
             new_freq=cfg.test_dataset["sr"],
             resampling_method="sinc_interpolation",
         )
 
     with torch.no_grad():
         for batch in tqdm(test_loader, desc="testing"):
-            noisy, scene = batch
+            noisy, _scene = batch
             out = []
-            for ear in ["left", "right"]:
+            for _ear in ["left", "right"]:
                 torch.cuda.empty_cache()
                 # load denoising module
                 den_model = ConvTasNet(**cfg.mc_convtasnet)
