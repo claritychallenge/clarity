@@ -55,22 +55,16 @@ def test_get_random_car_params():
 
 
 @pytest.mark.parametrize(
-    "json_file, return_keys, expected",
+    "json_file, expected",
     [
         (
             RESOURCES / "test_build_scene_metadata.json_sample.json",
-            False,
             {"key1": "value1", "key2": "value2"},
-        ),
-        (
-            RESOURCES / "test_build_scene_metadata.json_sample.json",
-            True,
-            ["key1", "key2"],
         ),
     ],
 )
-def test_read_json(json_file, return_keys, expected):
+def test_read_json(json_file, expected):
     """Test that the function reads the json file correctly"""
-    output = read_json(json_file.as_posix(), return_keys)
+    output = read_json(json_file.as_posix())
 
     assert output == expected

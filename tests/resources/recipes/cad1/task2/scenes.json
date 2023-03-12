@@ -1,10 +1,8 @@
 {
-    "T098556_L5071_S2023": {
-        "listener": "L5071",
+    "SCENE01": {
         "split": "valid"
     },
-    "T140583_L5042_S2023": {
-        "listener": "L5042",
+    "SCENE02": {
         "split": "valid"
     }
 }

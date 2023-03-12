@@ -30,10 +30,14 @@ def test_load_listeners_and_scenes():
             "path": {
                 "scenes_file": (RESOURCES / "scenes.json").as_posix(),
                 "listeners_train_file": (RESOURCES / "listeners.json").as_posix(),
+                "scenes_listeners_file": (
+                    RESOURCES / "scenes_listeners.json"
+                ).as_posix(),
             },
             "evaluate": {"split": "train"},
         }
     )
-    scenes, listener_audiograms = load_listeners_and_scenes(config)
+    scenes, listener_audiograms, scene_listeners = load_listeners_and_scenes(config)
     assert isinstance(scenes, dict)
     assert isinstance(listener_audiograms, dict)
+    assert isinstance(scene_listeners, dict)

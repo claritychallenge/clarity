@@ -6,63 +6,38 @@ For more information please visit the [challenge website](https://cadenzachallen
 
 ## 1. Data structure
 
-The dataset for the First Cadenza Challenge - task 2 is based on the small subset of FMA (FMA-small) and
-the MTG-Jamendo dataset.
+### 1.1 Obtaining the CAD1 - Task2 data
 
-The dataset is split into 3 subsets: `train`, `valid` and `test`, totalling 10,000 songs with a distribution of 80% / 10% / 10%.
+The music dataset for the First Cadenza Challenge - Task 2 is based on the small subset of FMA (FMA-small) and
+the MTG-Jamendo dataset. The dataset is split into 3 subsets: `train`, `valid` and `test`, totalling 7000 songs with a distribution of 80% / 10% / 10%.
+The HRTFs data is based on the eBrIRD - ELOSPHERES binaural room impulse response database.
 
 To download the data, please visit [here](https://forms.gle/9L5ncYKe2YhD5c828).
 
-[//]: # (The data is split into `cadenza_cad1_task1_core_musdb18hq.tar.gz` &#40;containing the MUSDB18-HQ dataset&#41; and)
+The data will download into a package file called `cadenza_cad1_task2_core.v1.0.tar.gz`.
 
-[//]: # (`cadenza_cad1_task1_core_metadata.tar.gz` &#40;containing the list of songs and listeners' characteristics per split&#41;.)
-
-[//]: # (Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website]&#40;https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav&#41;.)
-
-[//]: # (If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.)
-
-[//]: # (If you need additional music data for training your model, please restrict to the use of [MedleyDB]&#40;https://medleydb.weebly.com/&#41; [4][5],)
-
-[//]: # ([BACH10]&#40;https://labsites.rochester.edu/air/resource.html&#41; [6] and [FMA-small]&#40;https://github.com/mdeff/fma&#41; [7].)
-
-[//]: # (Theses are shared as `cadenza_cad1_task1_augmentation_medleydb.tar.gz`, `cadenza_cad1_task1_augmentation_bach10.tar.gz`)
-
-[//]: # (and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.)
-
-[//]: # (**Keeping the augmentation data restricted to these datasets will ensure that the evaluation is fair for all participants**.)
-
-Unpack packages under the same root directory using
-
+Unpack this package using
 
 ```bash
-tar -xvzf <PACKAGE_NAME>
+tar -xvzf cadenza_cad1_task2_core.v1.0.tar.gz
 ```
 
-### 1.1 Mandatory data
+Once unpacked the directory structure will be as follows
 
-* **Music** contains the MUSDB18-HQ music dataset for training, validation and evaluation.
+**cadenza_cad1_task2_core.v1.0** contains the training and validation data:
 
-```text
-cadenza_data
-└───task1
-    └───audio
-        └───musdb18hq
-            ├───train
-            └───test
-```
-
-* **Metadata** contains the metadata for the systems.
-
-```text
-cadenza_data
-└───task1
-    └───metadata
-        └───musdb18hq
-            ├───listeners.train.json
-            ├───listeners.valid.json
-            ├───musdb18.train.json
-            ├───musdb18.valid.json
-            └───musdb18.test.json
+```bash
+clarity_CPC2_data
+└── cadenza_data
+   └── cad1  # The hearing aid output signals
+        └── taks2
+            ├── audio
+            |   ├── eBrird  # HRTFs directory
+            |   └── music
+            |       ├── training
+            |       └── validation
+            ├── metadata  # Metadata
+            └── manifest  # Lists the package contents
 ```
 
 ### 1.2 Demo data
