@@ -113,20 +113,21 @@ def run(cfg: DictConfig) -> None:
     brir = read_json(cfg.path.brir_file)
 
     # Start generating scenes for training
-    all_scenes = {}
+    train_scenes: Dict = {}
+    valid_scenes: Dict = {}
+    scene_listener: Dict[str, list] = {}
+
     logger.info("... training metadata")
+    scene_id = 100000
     for seed in cfg.seed:
         logger.info(f"...... seed {seed}")
         set_seed(seed)
-        train_songs_shuffled = np.random.permutation(list(train_songs.keys()))
-        for song in train_songs_shuffled:
-            listener = np.random.choice(list(train_listeners.keys()), 1, replace=False)[
-                0
-            ]
-            all_scenes[f"T-{song}_{listener}_S{seed}"] = {
+        songs_shuffled = np.random.permutation(list(train_songs.keys()))
+        for song in songs_shuffled:
+            train_scenes[f"S{scene_id:06d}"] = {
+                "scene": f"S{scene_id:06d}",
                 "song": song,
                 "song_path": train_songs[song]["path"],
-                "listener": listener,
                 "hr": get_random_dict_item(brir["training"]),
                 "car_noise_parameters": get_random_car_params(
                     min_speed=50, max_speed=120
@@ -134,28 +135,46 @@ def run(cfg: DictConfig) -> None:
                 "snr": get_random_snr(0, 15.0),
                 "split": "train",
             }
+            scene_id += 1
 
     # Start generating scenes for validation
     logger.info("... validation metadata with seed 2023")
 
     seed = cfg.valid_seed
     set_seed(seed)
-    valid_songs_shuffled = np.random.permutation(list(valid_songs.keys()))
-    for song in valid_songs_shuffled:
-        listener = np.random.choice(list(valid_listeners.keys()), 1, replace=False)[0]
-        all_scenes[f"T-{song}_{listener}_S{seed}"] = {
+    songs_shuffled = np.random.permutation(list(valid_songs.keys()))
+    scene_id = 500000
+
+    for song in songs_shuffled:
+        valid_scenes[f"S{scene_id:06d}"] = {
+            "scene": f"S{scene_id:06d}",
             "song": song,
             "song_path": valid_songs[song]["path"],
-            "listener": listener,
-            "hr": get_random_dict_item(brir["development"]),
+            "hr": get_random_dict_item(brir["training"]),
             "car_noise_parameters": get_random_car_params(min_speed=50, max_speed=120),
             "snr": get_random_snr(0, 15.0),
             "split": "valid",
         }
+        scene_id += 1
 
-    logger.info(f"Saving scenes metadata in {cfg.path.out_scene_file}")
-    with open(cfg.path.out_scene_file, "w", encoding="utf-8") as file:
-        json.dump(all_scenes, file, indent=4)
+    for scene_id in train_scenes:
+        listener = np.random.choice(list(train_listeners.keys()), 1, replace=False)[0]
+        if f"{scene_id}" not in scene_listener:
+            scene_listener[f"{scene_id}"] = []
+        scene_listener[f"{scene_id}"].append(listener)
+
+    for scene_id in valid_scenes:
+        listener = np.random.choice(list(valid_listeners.keys()), 1, replace=False)[0]
+        if f"{scene_id}" not in scene_listener:
+            scene_listener[f"{scene_id}"] = []
+        scene_listener[f"{scene_id}"].append(listener)
+
+    logger.info(f"Saving scenes metadata in {cfg.path.metadata_dir}")
+    with open(cfg.path.scenes_file, "w", encoding="utf-8") as file:
+        json.dump({**train_scenes, **valid_scenes}, file, indent=4)
+
+    with open(cfg.path.scenes_listeners_file, "w", encoding="utf-8") as file:
+        json.dump(scene_listener, file, indent=4)
 
     logger.info("Done")
 
