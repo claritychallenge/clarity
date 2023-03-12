@@ -229,6 +229,10 @@ def run_calculate_aq(config: DictConfig) -> None:
         songs["Track Name"].tolist(), listener_audiograms, config.evaluate.small_test
     )
 
+    song_listener_pair = song_listener_pair[
+        config.evaluate.batch :: config.evaluate.batch_size
+    ]
+
     for song, listener in song_listener_pair:
         split_dir = "train"
         if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
