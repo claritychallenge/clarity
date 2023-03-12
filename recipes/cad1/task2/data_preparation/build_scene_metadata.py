@@ -142,7 +142,7 @@ def run(cfg: DictConfig) -> None:
     valid_songs_shuffled = np.random.permutation(list(valid_songs.keys()))
     for song in valid_songs_shuffled:
         listener = np.random.choice(list(valid_listeners.keys()), 1, replace=False)[0]
-        all_scenes[f"T{song}_{listener}_S{seed}"] = {
+        all_scenes[f"T-{song}_{listener}_S{seed}"] = {
             "song": song,
             "listener": listener,
             "hr": get_random_dict_item(brir["development"]),
