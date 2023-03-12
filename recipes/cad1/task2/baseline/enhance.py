@@ -13,7 +13,10 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
 
-from recipes.cad1.task2.baseline.baseline_utils import read_mp3
+from recipes.cad1.task2.baseline.baseline_utils import (
+    make_scene_listener_list,
+    read_mp3,
+)
 from recipes.cad1.task2.baseline.evaluate import load_listeners_and_scenes
 
 logger = logging.getLogger(__name__)
@@ -88,13 +91,20 @@ def enhance(config: DictConfig) -> None:
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
     # Load scenes and listeners depending on config.evaluate.split
-    scenes, listener_audiograms = load_listeners_and_scenes(config)
+    scenes, listener_audiograms, scenes_listeners = load_listeners_and_scenes(config)
+    scene_listener_pairs = make_scene_listener_list(
+        scenes_listeners, config.evaluate.small_test
+    )
+    scene_listener_pairs = scene_listener_pairs[
+        config.evaluate.batch :: config.evaluate.batch_size
+    ]
 
-    for _, current_scene in tqdm(scenes.items()):
+    for scene_id, listener_id in tqdm(scene_listener_pairs):
+        current_scene = scenes[scene_id]
+        listener = listener_audiograms[listener_id]
+
         song_id = current_scene["song"]
         song_path = Path(config.path.music_dir) / f"{current_scene['song_path']}"
-        listener_id = current_scene["listener"]
-        listener = listener_audiograms[listener_id]
 
         # Read song
         song_waveform, _ = read_mp3(song_path, config.sample_rate)
