@@ -18,6 +18,7 @@ from clarity.evaluator.haaqi import compute_haaqi
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_listeners_and_scenes,
+    make_scene_listener_list,
     read_mp3,
 )
 from recipes.cad1.task2.baseline.car_scene_acoustics import CarSceneAcoustics
@@ -59,6 +60,7 @@ class ResultsFile:
     def add_result(
         self,
         scene: str,
+        song: str,
         listener: str,
         score: float,
         haaqi_left: float,
@@ -68,6 +70,7 @@ class ResultsFile:
 
         Args:
             scene (str): The name of the scene that the result is for.
+            song (str): The name of the song that the result is for.
             listener (str): The name of the listener who submitted the result.
             score (float): The combined score for the result.
             haaqi_left (float): The HAAQI score for the left channel.
@@ -83,6 +86,7 @@ class ResultsFile:
             csv_writer.writerow(
                 [
                     scene,
+                    song,
                     listener,
                     str(score),
                     str(haaqi_left),
@@ -138,7 +142,8 @@ def evaluate_scene(
 
     """
     audio_manager = AudioManager(
-        output_audio_path=Path("evaluation_signals") / scene_id,
+        output_audio_path=Path("evaluation_signals")
+        / f"{listener_audiogram['name']} / {current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
@@ -223,7 +228,7 @@ def evaluate_scene(
     # ref_signal = ref_signal * scale_factor
 
     ref_signal = car_scene_acoustic.scale_signal_to_snr(
-        signal=ref_signal, reference_signal=processed_signal, snr=None
+        signal=ref_signal, reference_signal=processed_signal
     )
 
     audio_manager.add_audios_to_save("ref_signal_normalised", ref_signal)
@@ -253,12 +258,20 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
 
     # Load scenes and listeners depending on config.evaluate.split
-    scenes, listener_audiograms = load_listeners_and_scenes(config)
+    scenes, listener_audiograms, scenes_listeners = load_listeners_and_scenes(config)
+    scene_listener_pairs = make_scene_listener_list(
+        scenes_listeners, config.evaluate.small_test
+    )
+    scene_listener_pairs = scene_listener_pairs[
+        config.evaluate.batch :: config.evaluate.batch_size
+    ]
 
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
 
-    results_file = ResultsFile("scores.csv")
+    results_file = ResultsFile(
+        f"scores_{config.evaluate.batch}-{config.evaluate.batch_size}.csv"
+    )
     results_file.write_header()
 
     # Initialize acoustic scene model
@@ -272,16 +285,15 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     )
 
     # Iterate over scenes
-    for scene_id, current_scene in tqdm(scenes.items()):
+    for scene_id, listener_id in tqdm(scene_listener_pairs):
+        current_scene = scenes[scene_id]
+
         # Retrieve audiograms
-        listener = current_scene["listener"]
-        listener_audiogram = listener_audiograms[listener]
+        listener = listener_audiograms[listener_id]
 
         # Load reference signal
         reference_song_path = (
-            Path(config.path.music_dir)
-            / f"{current_scene['split']}"
-            / f"{current_scene['song']:06d}.mp3"
+            Path(config.path.music_dir) / f"{current_scene['song_path']}"
         )
         # Read MP3 reference signal using librosa
         reference_signal, _ = read_mp3(
@@ -294,7 +306,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
 
         # Load enhanced signal
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
-        enhanced_song_id = f"{current_scene['listener']}_{current_scene['song']}"
+        enhanced_song_id = f"{listener['name']}_{current_scene['song']}"
         enhanced_song_path = enhanced_folder / f"{enhanced_song_id}.wav"
 
         # Read WAV enhanced signal using scipy.io.wavfile
@@ -309,7 +321,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
             config.sample_rate,
             scene_id,
             current_scene,
-            listener_audiogram,
+            listener,
             car_scene_acoustic,
             config,
         )
@@ -318,7 +330,8 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         score = np.mean([aq_score_r, aq_score_l])
         results_file.add_result(
             scene_id,
-            listener,
+            current_scene["song"],
+            listener_id,
             score=float(score),
             haaqi_left=aq_score_l,
             haaqi_right=aq_score_r,

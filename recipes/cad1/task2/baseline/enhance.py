@@ -103,7 +103,6 @@ def enhance(config: DictConfig) -> None:
         current_scene = scenes[scene_id]
         listener = listener_audiograms[listener_id]
 
-        song_id = current_scene["song"]
         song_path = Path(config.path.music_dir) / f"{current_scene['song_path']}"
 
         # Read song
@@ -111,7 +110,7 @@ def enhance(config: DictConfig) -> None:
         out_l, out_r = enhance_song(song_waveform, config.sample_rate, gain_db=-5)
 
         enhanced = np.stack([out_l, out_r], axis=1)
-        filename = f"{listener['name']}_{song_id}.wav"
+        filename = f"{listener['name']}_{current_scene['song']}.wav"
 
         # Clip and save
         if config.soft_clip:
