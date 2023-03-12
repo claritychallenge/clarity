@@ -18,7 +18,7 @@ def test_enhance_song():
 
     # Set the sample rate and gain
     sample_rate = 16000
-    duration = 5
+    duration = 1.0
     gain_db = 3.0
 
     # Create a sample waveform
