@@ -24,6 +24,19 @@ logger = logging.getLogger(__name__)
 class CarSceneAcoustics:
     """
     A class for the car acoustic environment.
+
+    Constants:
+        ANECHOIC_HRTF (dict): A dictionary containing the names of the anechoic BRIRs
+            for the following directions:
+                0 degrees: front
+                    - 000_left: The left channel of the BRIR for 0 degrees.
+                    - 000_right: The right channel of the BRIR for 0 degrees.
+                -90 degrees: left
+                    - m90_left: The left channel of the BRIR for -90 degrees.
+                    - m90_right: The right channel of the BRIR for -90 degrees.
+                90 degrees: right
+                    - p90_left: The left channel of the BRIR for 90 degrees.
+                    - p90_right: The right channel of the BRIR for 90 degrees.
     """
 
     ANECHOIC_HRTF = {
@@ -193,12 +206,12 @@ class CarSceneAcoustics:
         # add the BRIRs to the signal
         # Left Speaker (LS03)
         out_left = lfilter(hr_ls03_ch1_left, 1, signal[0, :])
-        our_right = lfilter(hr_ls03_ch1_right, 1, signal[0, :])
+        out_right = lfilter(hr_ls03_ch1_right, 1, signal[0, :])
         # Right Speaker (LS04)
         out_left += lfilter(hr_ls04_ch1_left, 1, signal[1, :])
-        our_right += lfilter(hr_ls04_ch1_right, 1, signal[1, :])
+        out_right += lfilter(hr_ls04_ch1_right, 1, signal[1, :])
 
-        return np.stack([out_left, our_right], axis=0)
+        return np.stack([out_left, out_right], axis=0)
 
     def scale_signal_to_snr(
         self,
