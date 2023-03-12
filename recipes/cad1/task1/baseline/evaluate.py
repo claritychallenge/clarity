@@ -222,7 +222,9 @@ def run_calculate_aq(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
 
-    results_file = ResultsFile("scores.csv")
+    results_file = ResultsFile(
+        f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv"
+    )
     results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
