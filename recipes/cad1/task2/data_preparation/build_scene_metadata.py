@@ -123,7 +123,7 @@ def run(cfg: DictConfig) -> None:
             listener = np.random.choice(list(train_listeners.keys()), 1, replace=False)[
                 0
             ]
-            all_scenes[f"T{song}_{listener}_S{seed}"] = {
+            all_scenes[f"T-{song}_{listener}_S{seed}"] = {
                 "song": song,
                 "listener": listener,
                 "hr": get_random_dict_item(brir["training"]),
