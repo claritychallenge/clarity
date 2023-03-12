@@ -53,27 +53,20 @@ def get_random_car_params(min_speed: int = 50, max_speed: int = 120) -> Dict:
     return car_params
 
 
-def read_json(path_file, return_keys=False):
+def read_json(path_file) -> Dict:
     """Function the read a json file and return the data as a dictionary
     or only the keys if ```return_keys``` is True.
 
     Args:
         path_file (str): Path to the json file.
-
-    Returns:
-        return_keys=False: A dictionary with the data from the json file.
-        return_keys=True: A sorted list with the keys of the dictionary.
     """
 
     with open(path_file, "r", encoding="utf-8") as file:
         json_data = json.load(file)
-    if return_keys:
-        return sorted(list(json_data.keys()))
-
     return json_data
 
 
-def get_random_snr(min_snr, max_snr, round_to=4):
+def get_random_snr(min_snr, max_snr, round_to=4) -> float:
     """Function to get a random SNR value.
 
     Args:
@@ -93,8 +86,8 @@ def run(cfg: DictConfig) -> None:
     """Main function to generate the metadata for the scenes in the CAD-1 Task-2 challenge.
 
     This function relies on a random seed to generate the metadata.
-    The seed is set to 2023 by default and it should be always present,
-    this to ensure all participant will have access to the same initial scenes.
+    The seed is set to 2023 by default and it should always be present.
+    This ensures all participant have access to the same initial scenes.
     However, participants can augment the number of scenes by adding more seeds
     in the config file. Note the first seed must always be 2023 and cannot be change.
 
@@ -113,11 +106,11 @@ def run(cfg: DictConfig) -> None:
     ), f"Validation seed should be 2023, {cfg.valid_seed} was provided"
 
     # read metadata in json format
-    train_songs = read_json(cfg.path.train_music_file, return_keys=True)
-    valid_songs = read_json(cfg.path.valid_music_file, return_keys=True)
-    train_listeners = read_json(cfg.path.listeners_train_file, return_keys=True)
-    valid_listeners = read_json(cfg.path.listeners_valid_file, return_keys=True)
-    brir = read_json(cfg.path.brir_file, return_keys=False)
+    train_songs = read_json(cfg.path.train_music_file)
+    valid_songs = read_json(cfg.path.valid_music_file)
+    train_listeners = read_json(cfg.path.listeners_train_file)
+    valid_listeners = read_json(cfg.path.listeners_valid_file)
+    brir = read_json(cfg.path.brir_file)
 
     # Start generating scenes for training
     all_scenes = {}
@@ -125,9 +118,11 @@ def run(cfg: DictConfig) -> None:
     for seed in cfg.seed:
         logger.info(f"...... seed {seed}")
         set_seed(seed)
-        train_songs_shuffled = np.random.permutation(train_songs)
+        train_songs_shuffled = np.random.permutation(list(train_songs.keys()))
         for song in train_songs_shuffled:
-            listener = np.random.choice(train_listeners, 1, replace=False)[0]
+            listener = np.random.choice(list(train_listeners.keys()), 1, replace=False)[
+                0
+            ]
             all_scenes[f"T{song}_{listener}_S{seed}"] = {
                 "song": song,
                 "listener": listener,
@@ -144,9 +139,9 @@ def run(cfg: DictConfig) -> None:
 
     seed = cfg.valid_seed
     set_seed(seed)
-    valid_songs_shuffled = np.random.permutation(valid_songs)
+    valid_songs_shuffled = np.random.permutation(list(valid_songs.keys()))
     for song in valid_songs_shuffled:
-        listener = np.random.choice(valid_listeners, 1, replace=False)[0]
+        listener = np.random.choice(list(valid_listeners.keys()), 1, replace=False)[0]
         all_scenes[f"T{song}_{listener}_S{seed}"] = {
             "song": song,
             "listener": listener,
