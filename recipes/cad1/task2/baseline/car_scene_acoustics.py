@@ -217,7 +217,7 @@ class CarSceneAcoustics:
         self,
         signal: np.ndarray,
         reference_signal: np.ndarray = None,
-        snr: Optional[float] = None,
+        snr: Optional[float] = 0,
     ) -> np.ndarray:
         """
         Scales the target signal to the desired SNR.
@@ -227,8 +227,8 @@ class CarSceneAcoustics:
         Args:
             target_signal (np.ndarray): The target signal to scale.
             reference_signal (np.ndarray): The reference signal.
-                If None, the reference signal is set to -12 LUFS.
-            snr (float or None): The desired SNR in dB.
+                If None, the reference signal is set to 0 LUFS.
+            snr (float): The desired SNR gain in dB.
                 If None, the target signal is scaled to the reference signal.
 
         Returns:
@@ -241,17 +241,14 @@ class CarSceneAcoustics:
             signal = signal.T
 
         ref_signal_lufs = (
-            -12.0
+            0.0
             if reference_signal is None
             else self.loudness_meter.integrated_loudness(reference_signal)
         )
 
         signal_lufs = self.loudness_meter.integrated_loudness(signal)
 
-        if snr is None:
-            target_lufs = ref_signal_lufs
-        else:
-            target_lufs = ref_signal_lufs - snr
+        target_lufs = ref_signal_lufs - snr
 
         with warnings.catch_warnings(record=True):
             normalised_signal = pyln.normalize.loudness(
