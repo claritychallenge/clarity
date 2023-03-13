@@ -10,6 +10,11 @@ def join_batches(config: DictConfig) -> None:
     """
     Join batches scores into a single file.
 
+    Args:
+        config (DictConfig): Dictionary of configuration options.
+            The `.evaluate.batch_size` is extracted to determine how many
+            batches there are to combine.
+
     """
     batches_results = []
     for batch in range(config.evaluate.batch_size):
