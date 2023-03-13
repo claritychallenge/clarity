@@ -28,13 +28,13 @@ SCENE = {
     "dataset": "train",
     "room": "R06001",
     "scene": "S06001",
-    "target": {"name": "T010_G0N_02468", "time_start": 37837, "time_end": 115894},
-    "duration": 150000,
+    "target": {"name": "T010_G0N_02468", "time_start": 0, "time_end": 115894},
+    "duration": 8820,
     "interferers": [
         {
             "position": 1,
             "time_start": 0,
-            "time_end": 150000,
+            "time_end": 8820,
             "type": "noise",
             "name": "CIN_fan_014.wav",
             "offset": 5376,
@@ -42,7 +42,7 @@ SCENE = {
         {
             "position": 2,
             "time_start": 0,
-            "time_end": 150000,
+            "time_end": 8820,
             "type": "speech",
             "name": "som_04766_05.wav",
             "offset": 40000,
@@ -50,7 +50,7 @@ SCENE = {
         {
             "position": 3,
             "time_start": 0,
-            "time_end": 150000,
+            "time_end": 8820,
             "type": "music",
             "name": "1111967.low.mp3",
             "offset": 842553,
@@ -59,8 +59,8 @@ SCENE = {
     "SNR": 0.0,
     "listener": {
         "rotation": [
-            {"sample": 116192.9795, "angle": 52.3628},
-            {"sample": 124829.9795, "angle": 38.5256},
+            {"sample": 100, "angle": 52.3628},
+            {"sample": 400, "angle": 38.5256},
         ],
         "hrir_filename": ["VP_N6-ED", "VP_N6-BTE_fr"],
     },
@@ -119,10 +119,10 @@ def test_full_cec2_pipeline(
     reference = reference.astype(float) / 32768.0
     signal = signal.astype(float) / 32768.0
 
-    # Truncate to just over 2 seconds - i.e. just use part of the signals
+    # Truncate to 200 ms - i.e. just use part of the signals
     # to speed up the HASPI calculation a little
-    signal = signal[:100000, :]
-    reference = reference[:100000, :]
+    signal = signal[:8820, :]
+    reference = reference[:8820, :]
 
     # The data below doesn't really need to be meaningful.
     # The purpose of the test is not to see if the haspi score is reasonable

@@ -101,14 +101,14 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.107854176,
-                "right_drums": 0.104024261,
-                "left_bass": 0.111090873,
-                "right_bass": 0.108046217,
-                "left_other": 0.111885722,
-                "right_other": 0.110098967,
-                "left_vocals": 0.103490312,
-                "right_vocals": 0.108655100,
+                "left_drums": 0.149880148,
+                "right_drums": 0.143182857,
+                "left_bass": 0.140449345,
+                "right_bass": 0.181374074,
+                "left_other": 0.132401105,
+                "right_other": 0.164211137,
+                "left_vocals": 0.121260627,
+                "right_vocals": 0.126605279,
             },
         )
     ],
@@ -139,10 +139,11 @@ def test_evaluate_song_listener(
         )
         enh_file.parent.mkdir(exist_ok=True, parents=True)
 
+        # Using very short 100 ms signals to speed up the test
         wavfile.write(
             enh_file,
             44100,
-            np.random.uniform(-1, 1, 44100 * 5).astype(np.float32) * 32768,
+            np.random.uniform(-1, 1, 4410).astype(np.float32) * 32768,
         )
 
     for instrument in instruments:
@@ -152,7 +153,7 @@ def test_evaluate_song_listener(
         wavfile.write(
             ref_file,
             44100,
-            np.random.uniform(-1, 1, (44100 * 5, 2)).astype(np.float32) * 32768,
+            np.random.uniform(-1, 1, (4410, 2)).astype(np.float32) * 32768,
         )
 
     # Call the function
@@ -168,12 +169,12 @@ def test_evaluate_song_listener(
     # Check the outputs
     # Combined score
     assert isinstance(combined_score, float)
-    assert combined_score == pytest.approx(0.1081432040, rel=1e-7)
+    assert combined_score == pytest.approx(0.144920571533222, rel=1e-7)
 
     # Per instrument score
     assert isinstance(per_instrument_score, dict)
-    for instrument in list(expected_results.keys()):
-        assert instrument in per_instrument_score.keys()
+    for instrument in expected_results:
+        assert instrument in per_instrument_score
         assert isinstance(per_instrument_score[instrument], float)
         assert per_instrument_score[instrument] == pytest.approx(
             expected_results[instrument], rel=1e-7
