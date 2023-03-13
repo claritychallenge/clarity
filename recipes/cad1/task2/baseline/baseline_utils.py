@@ -36,12 +36,13 @@ def read_mp3(
                 str(file_path),
                 sr=sample_rate,
                 mono=False,
-                res_type="kaiser_fast",
+                res_type="kaiser_best",
                 dtype=np.float32,
             )
     except Exception as error:
         raise ValueError from error
 
+    signal = signal / np.max(np.abs(signal))
     return signal, sample_rate
 
 
