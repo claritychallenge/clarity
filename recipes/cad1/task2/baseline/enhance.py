@@ -23,7 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 def enhance_song(
-    waveform: np.ndarray, sample_rate: int, gain_db: float = 0.0
+    waveform: np.ndarray,
+    sample_rate: int,
+    gain_db: float = 0.0,
+    spotify_level: bool = True,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Enhance a single song for a listener.
@@ -34,6 +37,7 @@ def enhance_song(
         waveform (np.ndarray): The waveform of the song.
         sample_rate (int): The sample rate of the song.
         gain_db (float): The gain to apply to the song in dB LUFS. Defaults to 0.0.
+        spotify_level (bool): Whether to normalize the song to Spotify level. Defaults to True.
 
     Returns:
         out_left (np.ndarray): The enhanced left channel.
@@ -68,9 +72,9 @@ def enhance_song(
 
     meter = pyln.Meter(sample_rate)
     original_loudness = meter.integrated_loudness(waveform.T)
-    waveform = pyln.normalize.loudness(
-        waveform.T, original_loudness, original_loudness + gain_db
-    ).T
+
+    target_level = -14 if spotify_level else original_loudness + gain_db
+    waveform = pyln.normalize.loudness(waveform.T, original_loudness, target_level).T
 
     out_left = waveform[0, :]
     out_right = waveform[1, :]

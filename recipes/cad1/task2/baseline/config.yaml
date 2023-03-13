@@ -1,12 +1,12 @@
 path:
   root: ./
-  audio_dir: ${path.root}/cad1/task2/audio
-  metadata_dir: ${path.root}/cad1/task2/metadata
+  audio_dir: ${path.root}/audio
+  metadata_dir: ${path.root}/metadata
   music_dir: ${path.audio_dir}/music
   hrtf_dir: ${path.audio_dir}/eBrird
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
-  scenes_file: ${path.metadata_dir}/scenes.demo.json
+  scenes_file: ${path.metadata_dir}/scenes.json
   scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
   exp_folder: ./exp # folder to store enhanced signals and final results
 
@@ -30,8 +30,8 @@ evaluate:
   small_test: False
   save_intermediate_wavs: True
   split: valid # train, valid
-  batch_size: 3   # Number of batches
-  batch: 2      # Batch number to evaluate
+  batch_size: 1   # Number of batches
+  batch: 0      # Batch number to evaluate
 
 # hydra config
 hydra:
