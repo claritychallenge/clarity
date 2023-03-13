@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, Tuple, Union
 
 import numpy as np
+import pyloudnorm as pyln
 from scipy.io import wavfile
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,7 @@ class AudioManager:
         self.soft_clip = soft_clip
         self.output_audio_path = Path(output_audio_path)
         self.output_audio_path.mkdir(exist_ok=True, parents=True)
+        self.level_meter = pyln.Meter(self.sample_rate)
 
     def add_audios_to_save(self, file_name: str, waveform: np.ndarray) -> None:
         """Add a waveform to the list of audios to save.
@@ -55,6 +57,8 @@ class AudioManager:
             sample_rate (int): The sample rate of the audio.
         """
         waveform = waveform.T if waveform.shape[0] == 2 else waveform
+
+        waveform = self.scale_to_lufs(waveform, -14).T
 
         n_clipped, waveform = self.clip_audio(-1.0, 1.0, waveform)
         if n_clipped > 0:
@@ -87,3 +91,27 @@ class AudioManager:
             signal = np.tanh(signal)
         n_clipped = np.sum(np.abs(signal) > 1.0)
         return int(n_clipped), np.clip(signal, min_val, max_val)
+
+    def get_lufs_level(self, signal: np.ndarray) -> float:
+        """Get the LUFS level of the signal.
+
+        Args:
+            signal (np.ndarray): The signal to get the LUFS level of.
+
+        Returns:
+            float: The LUFS level of the signal.
+        """
+        return self.level_meter.integrated_loudness(signal)
+
+    def scale_to_lufs(self, signal: np.ndarray, target_lufs: float) -> np.ndarray:
+        """Scale the signal to the given LUFS level.
+
+        Args:
+            signal (np.ndarray): The signal to scale.
+            target_lufs (float): The target LUFS level.
+
+        Returns:
+            np.ndarray: The scaled signal.
+        """
+        current_lufs = self.get_lufs_level(signal)
+        return pyln.normalize.loudness(signal, current_lufs, target_lufs).T

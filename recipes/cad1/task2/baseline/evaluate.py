@@ -215,6 +215,8 @@ def evaluate_scene(
 
     # 6. Clip enhanced signal to [-1, 1]
     # processed_signal = np.clip(processed_signal, -1.0, 1.0)
+
+    processed_signal = audio_manager.scale_to_lufs(processed_signal.T, -14)
     n_clipped, processed_signal = audio_manager.clip_audio(-1.0, 1.0, processed_signal)
 
     if n_clipped > 0:

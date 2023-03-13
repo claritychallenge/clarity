@@ -248,7 +248,7 @@ class CarSceneAcoustics:
 
         signal_lufs = self.loudness_meter.integrated_loudness(signal)
 
-        target_lufs = ref_signal_lufs - snr
+        target_lufs = ref_signal_lufs + snr
 
         with warnings.catch_warnings(record=True):
             normalised_signal = pyln.normalize.loudness(
