@@ -19,16 +19,16 @@ jobs:
         python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -yq
-          sudo apt-get install -yq libsndfile1-dev ffmpeg
       - name: Set up Python
         uses: actions/setup-python@v4.3.0
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-          cache-dependency-path: setup.cfg
+          # cache: 'pip'
+          # cache-dependency-path: setup.cfg
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -yq
+          sudo apt-get install -yq libsndfile1-dev ffmpeg
       - name: Install package, including extras
         run: |
           pip install -e .
