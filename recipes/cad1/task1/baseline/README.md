@@ -15,14 +15,13 @@ To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). 
 Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
 
-If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4][5],
+If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4] [5],
 [BACH10](https://labsites.rochester.edu/air/resource.html) [6] and [FMA-small](https://github.com/mdeff/fma) [7].
 Theses are shared as `cadenza_cad1_task1_augmentation_medleydb.tar.gz`, `cadenza_cad1_task1_augmentation_bach10.tar.gz`
 and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.
 **Keeping the augmentation data restricted to these datasets will ensure that the evaluation is fair for all participants**.
 
 Unpack packages under the same root directory using
-
 
 ```bash
 tar -xvzf <PACKAGE_NAME>
@@ -57,7 +56,7 @@ cadenza_data
 
 ### 1.2 Additional optional data
 
-* **MedleyDB** contains both MedleyDB versions 1 [4] and 2 [5] datasets.
+* **MedleyDB** contains both MedleyDB versions 1 [[4](#references)] and 2 [[5](#references)] datasets.
 
 Tracks from the MedleyDB dataset are not included in the evaluation set.
 However, is your responsibility to exclude any song that may be already contained in the training set.
@@ -71,7 +70,7 @@ cadenza_data
             └───Metadata
 ```
 
-* **BACH10** contains the BACH10 dataset [6].
+* **BACH10** contains the BACH10 dataset [[6](#references)].
 
 Tracks from the BACH10 dataset are not included in MUSDB18-HQ and can all be used as training augmentation data.
 
@@ -85,7 +84,7 @@ cadenza_data
             ├───...
 ```
 
-* **FMA Small** contains the FMA small subset of the FMA dataset [7].
+* **FMA Small** contains the FMA small subset of the FMA dataset [[7](references)].
 
 Tracks from the FMA small dataset are not included in the MUSDB18-HQ.
 This dataset does not provide independent stems but only the full mix.
@@ -117,7 +116,6 @@ To unpack the demo data, run:
 tar -xvf cadenza_data_demo.tar.xz
 ```
 
-
 ## 2. Baseline
 
 In the `baseline/` folder, we provide code for running the baseline enhancement system and performing the objective evaluation.
@@ -125,7 +123,7 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 ### 2.1 Enhancement
 
-The baseline enhance simply takes the out-of-the-box [Hybrid Demucs](https://github.com/facebookresearch/demucs)[1]
+The baseline enhance simply takes the out-of-the-box [Hybrid Demucs](https://github.com/facebookresearch/demucs) [1]
 source separation model distributed on [TorchAudio](https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html)
 and applies a simple NAL-R [2] fitting amplification to each VDBO (`vocals`, `drums`, `bass` and `others`) stem.
 
@@ -160,7 +158,7 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 ### 2.2 Evaluation
 
-The `evaluate.py` simply takes the signals stored in `enhanced_signals` and computes the HAAQI [3] score
+The `evaluate.py` simply takes the signals stored in `enhanced_signals` and computes the HAAQI [[3](#references)] score
 for each of the eight left and right VDBO stems.
 The average of these eight scores is computed and returned for each signal.
 

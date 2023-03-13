@@ -1,6 +1,8 @@
+
+<!-- markdownlint-disable MD041 -->
 <div align="center">
 
-# Machine learning challenges for hearing aid processing
+<h1>Machine learning challenges for hearing aid processing</h1>
 
 <p align="center">
   <img src="docs/images/earfinal_clarity_customColour.png" alt="drawing" width="200" hspace="40"/>
