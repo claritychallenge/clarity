@@ -1,3 +1,5 @@
+# Submitit configuration for running data preparation stage locally
+
 defaults:
   - submitit_local
 

@@ -25,7 +25,7 @@ np.random.seed(0)
 # - Using a short target with reduce pre and post silence
 # - Only generating 2 hearing aid channels
 SCENE = {
-    "dataset": "demo",
+    "dataset": "train",
     "room": "R06001",
     "scene": "S06001",
     "target": {"name": "T010_G0N_02468", "time_start": 37837, "time_end": 115894},
@@ -66,27 +66,27 @@ SCENE = {
     },
 }
 
-DEMO_PATHS = OmegaConf.create(
+TEST_PATHS = OmegaConf.create(
     {
         "hoairs": "tests/test_data/rooms/HOA_IRs",
         "hrirs": "tests/test_data/hrir/HRIRs_MAT",
-        "scenes": "tests/test_data/clarity_data/demo/scenes",
+        "scenes": "tests/test_data/clarity_data/train/scenes",
         "targets": "tests/test_data/targets",
         "interferers": "tests/test_data/interferers/{type}",
     }
 )
 
-DEMO_METADATA = OmegaConf.create(
+TEST_METADATA = OmegaConf.create(
     {
-        "room_definitions": "tests/test_data/metadata/rooms.demo.json",
+        "room_definitions": "tests/test_data/metadata/rooms.train.json",
         "scene_definitions": "",  # Scene definition file not needed for test
         "hrir_metadata": "tests/test_data/metadata/hrir_data.json",
     }
 )
 
 SCENE_RENDERER = SceneRenderer(
-    DEMO_PATHS,
-    DEMO_METADATA,
+    TEST_PATHS,
+    TEST_METADATA,
     ambisonic_order=6,
     equalise_loudness=True,
     reference_channel=1,
@@ -98,8 +98,8 @@ def test_full_cec2_pipeline(
     regtest,
     tmp_path,
     scene: Optional[dict] = None,
-    _demo_paths: OmegaConf = DEMO_PATHS,
-    _demo_metadata: OmegaConf = DEMO_METADATA,
+    _test_paths: OmegaConf = TEST_PATHS,
+    _test_metadata: OmegaConf = TEST_METADATA,
     scene_renderer: SceneRenderer = SCENE_RENDERER,
 ) -> None:
     """Test full CEC2 pipeline"""

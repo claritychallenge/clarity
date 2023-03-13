@@ -53,7 +53,7 @@ def test_GHA_inputs(regtest):
     enhancer = gha(**gha_params)
 
     infile_names = [
-        f"tests/test_data/scenes/S06001_mix_CH{ch}.wav" for ch in range(1, 4)
+        f"tests/test_data/scenes/S06001_mixed_CH{ch}.wav" for ch in range(1, 4)
     ]
     fd_merged, merged_filename = tempfile.mkstemp(
         prefix="clarity-merged-", suffix=".wav"

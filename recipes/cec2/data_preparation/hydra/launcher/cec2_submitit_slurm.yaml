@@ -1,3 +1,5 @@
+# Submitit configuration for running data preparation stage on slurm cluster
+
 defaults:
   - submitit_slurm
 

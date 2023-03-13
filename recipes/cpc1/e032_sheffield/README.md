@@ -26,7 +26,7 @@ To train the ASR model and generate the hidden representations from it, the CPC1
 1. Download `clarity_CPC1_data.v1_1.tgz` and `clarity_CPC1_data.test.v1.tgz`, untar them into `clarity_CPC1_data_train` and `clarity_CPC1_data_test`, respectively. See recipes/cpc1/baseline/README.
 2. Specify `root` in config.yaml. Both `clarity_CPC1_data_train` and `clarity_CPC1_data_test` should be in your root folder. You could also specify your own `exp_folder (e032 by default)`.
 3. Specify `cpc1_track` as 'open' or 'closed'.
-4. Run `python prepare_data.py`
+4. Run `python prepare_data.py` (Note, same as data preparation for the `e029_sheffield recipe`).
 5. `cpc1_asr_data` which contains the processed train & test CPC1 data and their csv files, and `data_split` which contains the train set and dev set scenes, will appear in your `exp_folder (e032 by default)`.
 
 ### Train ASR
