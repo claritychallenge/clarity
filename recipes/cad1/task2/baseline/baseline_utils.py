@@ -42,7 +42,11 @@ def read_mp3(
     except Exception as error:
         raise ValueError from error
 
-    signal = signal / np.max(np.abs(signal))
+    # Peak Normalization for cases when signal has
+    # absolute values greater than 1
+    if np.max(np.abs(signal)) > 1:
+        signal = signal / np.max(np.abs(signal))
+
     return signal, sample_rate
 
 
