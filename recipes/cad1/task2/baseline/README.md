@@ -8,8 +8,23 @@ For more information please visit the [challenge website](https://cadenzachallen
 
 ### 1.1 Obtaining the CAD1 - Task2 data
 
-The music dataset for the First Cadenza Challenge - Task 2 is based on the small subset of FMA (FMA-small) and
-the MTG-Jamendo dataset. The dataset is split into 3 subsets: `train`, `valid` and `test`, totalling 7000 songs with a distribution of 80% / 10% / 10%.
+The music dataset for the First Cadenza Challenge - Task 2 is based on the small subset of the FMA [2] dataset
+(FMA-small) and the MTG-Jamendo dataset [4]. The dataset contains 1000 samples from seven musical genres,
+totalling 7000 songs with a distribution of 80% / 10% / 10% for `train`, `valid` and `test`.
+
+From FMA small:
+
+* Hip-Hop
+* Instrumental
+* International
+* Pop
+* Rock
+
+From MTG-Jamendo:
+
+* Classical
+* Orchestral
+
 The HRTFs data is based on the eBrIRD - ELOSPHERES binaural room impulse response database.
 
 To download the data, please visit [here](https://forms.gle/9L5ncYKe2YhD5c828).
@@ -47,7 +62,7 @@ The `demo_data` folder contains a single song and two listeners from the validat
 
 To use the demo data, simply download the package `cadenza_data_demo.tar.xz`
 from [here](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek5qKW?usp=share_link)
-and unpack it under `recipes/cad1/task1/`, i.e., one level above the baseline directory.
+and unpack it under `recipes/cad1/task2/`, i.e., one level above the baseline directory.
 Note that the `root.path` variable in `config.yaml` is already set to the demo data by default.
 
 To unpack the demo data, run:
@@ -55,7 +70,6 @@ To unpack the demo data, run:
 ```bash
 tar -xvf cadenza_data_demo.tar.xz
 ```
-
 
 ## 2. Baseline
 
@@ -65,7 +79,7 @@ the objective evaluation. Note that we use [hydra](https://hydra.cc/docs/intro/)
 ### 2.1 Enhancement
 
 The objective of the enhancement stage is takes a song and optimise it to a listener hearing characteristics
-knowing metadata information about the car noise scenario (tou won't have access to noise signal), head
+knowing metadata information about the car noise scenario (you won't have access to noise signal), head
 rotation of the listener and the SNR of the enhanced music and the noise at the hearing aid microphones.
 
 In the baseline, we simply attenuate the songs in 5 dB LUFS and save it in 16-bit PCM WAV format. The
@@ -100,7 +114,7 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 The `evaluate.py` module takes the enhanced signals and adds the room impulses and the car noise using
 the expected SNR. It then pass that signal through a fixed hearing aid. The hearing aid output and
-the reference song (scaled to the hearing aid output LUFS) are used to compute the HAAQI score.
+the reference song (scaled to the hearing aid output LUFS) are used to compute the HAAQI [2] score.
 
 To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
@@ -121,6 +135,7 @@ As there are random noises generated within HAAQI, but the differences should be
 
 ## References
 
-* [2] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265. [doi:10.1097/00003446-198608000-00007](https://doi.org/10.1097/00003446-198608000-00007)
-* [3] Kates J M, Arehart K H. "The Hearing-Aid Audio Quality Index (HAAQI)". IEEE/ACM transactions on audio, speech, and language processing, 24(2), 354–365. [doi:10.1109/TASLP.2015.2507858](https://doi.org/10.1109%2FTASLP.2015.2507858)
-* [7] Defferrard, M., Benzi, K., Vandergheynst, P., & Bresson, X. (2016). "FMA: A dataset for music analysis". arXiv preprint arXiv:1612.01840. [doi:10.48550/arXiv.1612.01840](https://doi.org/10.48550/arXiv.1612.01840)
+* [1] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265. [doi:10.1097/00003446-198608000-00007](https://doi.org/10.1097/00003446-198608000-00007)
+* [2] Kates J M, Arehart K H. "The Hearing-Aid Audio Quality Index (HAAQI)". IEEE/ACM transactions on audio, speech, and language processing, 24(2), 354–365. [doi:10.1109/TASLP.2015.2507858](https://doi.org/10.1109%2FTASLP.2015.2507858)
+* [3] Defferrard, M., Benzi, K., Vandergheynst, P., & Bresson, X. (2016). "FMA: A dataset for music analysis". arXiv preprint arXiv:1612.01840. [doi:10.48550/arXiv.1612.01840](https://doi.org/10.48550/arXiv.1612.01840)
+* [4] Bogdanov, D., Won, M., Tovstogan, P., Porter, A., & Serra, X. (2019). The MTG-Jamendo dataset for automatic music tagging. ICML.
