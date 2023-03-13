@@ -1,0 +1,34 @@
+#
+# An example .markdownlint-cli2.yaml file
+#
+
+# Disable some built-in rules
+config:
+  line-length: false  # Disable line length rule
+  no-inline-html: false  # Allow HTML in Markdown
+
+# # Include a custom rule package
+# customRules:
+#  - markdownlint-rule-titlecase
+
+# Fix any fixable errors
+fix: false
+
+# Define a custom front matter pattern
+frontMatter: "---[^]*---"
+
+# # Define glob expressions to use (only valid at root)
+# globs:
+#  - "!*bout.md"
+
+# # Define glob expressions to ignore
+# ignores:
+# - ".github/ISSUE_TEMPLATE/*.md"
+
+# # Use a plugin to recognize math
+# markdownItPlugins:
+#  -
+#    - "@iktakahiro/markdown-it-katex"
+
+# # Disable inline config comments
+# noInlineConfig: true

@@ -12,12 +12,10 @@ conda activate clarity
 
 The following steps assume that you have activated the `clarity` virtual environment.
 
-
 ## PyPi
 
 The latest stable release of Clarity is available on [PyPI](https://pypi.org/project/pyclarity/) and can be installed
 using `pip`. To install simply...
-
 
 ``` bash
 pip install pyclarity
@@ -37,7 +35,7 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 ### Manual Cloning and Installation
 
-You will have to have [git])(https://git-scm.com) installed on your system to install in this manner.
+You will have to have [git](https://git-scm.com) installed on your system to install in this manner.
 
 ``` bash
 git clone git@github.com:claritychallenge/clarity.git

@@ -1,4 +1,4 @@
-l# Pylint
+# Pylint
 
 Initial run of pylint over complete code base. Created to help prioritise the fixes.
 
@@ -37,8 +37,6 @@ Code currently rate 6.55
 1  R0912 - too many branches
 1  R1721 - consider swap variables
 
-
-
 ## Duplicated code
 
 ### fir2 and firwin2
@@ -47,19 +45,17 @@ Code currently rate 6.55
 ==clarity.enhancer.nalr:[20:100]
 functions fir2 and firwin2 - identical
 
-
 ### numpy array constnatns in msbg
 
 ==clarity.evaluator.msbg.msbg_utils:[116:166]
 ==clarity.predictor.torch_msbg:[271:315]
 large constant np.arrays
-FF_ED - free field to ear drum array definintion
+FF_ED - free field to ear drum array definition
 midear - constant np.array
 hz - centre frequencies
 df_ed
 ITU_Hz
 ITU_erp_drp
-
 
 ### functions for reading and writing signals
 
@@ -79,8 +75,10 @@ function write_signal - identical accept for minor refactor to handle sample rat
 ==clarity.enhancer.gha.audiogram:[35:43]
 ==clarity.evaluator.msbg.audiogram:[92:100]
 class Audiogram
- - binaural audiogram in enhancer/gha
- - monaural audiogram in evaluator/msbg
+
+- binaural audiogram in enhancer/gha
+- monaural audiogram in evaluator/msbg
+
  Very similar - e.g. shared code in severity() function
 
  Elsewhere audiograms are passed around just as separate left ear loss, right ear loss and cfs parameters
@@ -96,7 +94,7 @@ class Audiogram
 ==clarity.predictor.torch_msbg:[271:315]
 
 large constant np.arrays
-FF_ED - free field to ear drum array definintion
+FF_ED - free field to ear drum array definition
 midear - constant np.array
 hz - centre frequencies
 df_ed
@@ -124,13 +122,12 @@ function write_signal - identical accept for minor refactor to handle sample rat
 ==clarity.evaluator.msbg.audiogram:[92:100]
 
 dataclasses for Audiogram
- - binaural audiogram in enhancer/gha
- - monaural audiogram in evaluator/msbg
+
+- binaural audiogram in enhancer/gha
+- monaural audiogram in evaluator/msbg
  Very similar - e.g. shared code in severity() function
 
 Elsewhere audiograms are passed around just as separate left ear loss, right ear loss and cfs parameters
-
-
 
 ## Specific warnings
 
