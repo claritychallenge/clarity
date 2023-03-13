@@ -1,13 +1,17 @@
 # CLARITY CEC1 Baseline
+
 In `data_config.yaml`, specify `path.root` folder in which you unpack the data; speciy `path.exp_folder` which will store intermediate signals and final results. Please be carefull if you want to change the parameters in the config file.
 
 ## 1. Hearing aid baseline system
+
 THe openMHA software is used as the baseline hearing aid system. You need to [download](http://www.openmha.org/download/) and install openMHA to run `enhance.py`, which generates enhanced scenes.
 
 ## 2. Evaluation
+
 The combination of MSBG hearing loss model and MBSTOI.  In `evaluate.py`, `run_HL_processing` runs MSBG hearing loss simulation, and `run_calculate_SI` computes MBSTOI scores. The intermediate signals and final scores will be saved. Note: if there are not `enhanced_signals`, the evaluation will be done with the original scene `mixed_CH0`.
 
 ## 3.Information on default parameter values
+
 The default sampling rate is 44.1 kHz. The default output gain constant is 1. The default pre-duration and post-duration interferer periods are 2.0 and 1.0 (s), repectively. This means that the interferer starts 2 seconds before the target speech, and ends 1 second afterwards. The reverberation tail duration is 0.2 (s). The default duration of the ramp into and out of the interferer signal sampled for each scene is 0.5 (s).
 
 The GHA and MSBG modules have parameter settings as follows: the default centre frequencies for the audiograms are [250, 500, 1000, 2000, 3000, 4000, 6000, 8000], as these are used in the listener data provided.
