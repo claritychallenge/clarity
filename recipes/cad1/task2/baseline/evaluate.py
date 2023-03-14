@@ -187,9 +187,10 @@ def evaluate_scene(
 
     # 4. Add the scaled anechoic car noise to the enhanced signal
     # processed_signal = (enh_signal * car HRTF) + (car_noise * Anechoic HRTF) * scale_factor
-    processed_signal = (
-        processed_signal + car_noise_anechoic[:, : processed_signal.shape[1]]
+    processed_signal = car_scene_acoustic.add_two_signals(
+        processed_signal, car_noise_anechoic
     )
+
     if config.evaluate.save_intermediate_wavs:
         audio_manager.add_audios_to_save(
             "enh_signal_hrtf_plus_car_noise_anechoic", processed_signal

@@ -257,3 +257,18 @@ class CarSceneAcoustics:
 
         # return to original shape
         return normalised_signal.T
+
+    @staticmethod
+    def add_two_signals(signal1: np.ndarray, signal2: np.ndarray) -> np.ndarray:
+        """
+        Adds two signals together.
+
+        Args:
+            signal1 (np.ndarray): The first signal.
+            signal2 (np.ndarray): The second signal.
+
+        Returns:
+            np.ndarray: The sum of the two signals.
+        """
+        min_length = min(signal1.shape[1], signal2.shape[1])
+        return signal1[:, :min_length] + signal2[:, :min_length]
