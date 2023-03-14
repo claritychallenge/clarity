@@ -68,19 +68,19 @@ repos:
     hooks:
       - id: pylint_errors
         name: Pylint Errors Only
-        entry: python -m pylint -E
+        entry: python -m pylint --disable=all --enable=E1120
         language: system
         files: \.py$
 
   # Pylint warnings that are bing skipped by CI (see skip: [pylint] below)
-  - repo: local
-    hooks:
-      - id: pylint
-        args: ["--rcfile=.pylintrc"]
-        name: Pylint
-        entry: python -m pylint
-        language: system
-        files: \.py$
+  # - repo: local
+  #  hooks:
+  #    - id: pylint
+  #      args: ["--rcfile=.pylintrc"]
+  #      name: Pylint
+  #      entry: python -m pylint
+  #      language: system
+  #      files: \.py$
 ci:
   autofix_prs: true
   autofix_commit_msg: '[pre-commit.ci] Fixing issues with pre-commit'

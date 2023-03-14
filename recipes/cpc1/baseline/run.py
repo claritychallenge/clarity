@@ -180,5 +180,6 @@ def run(cfg: DictConfig) -> None:
     run_calculate_SI(cfg, cfg.test_indep_path)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

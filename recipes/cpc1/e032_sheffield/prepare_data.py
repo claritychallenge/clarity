@@ -342,5 +342,6 @@ def run(cfg: DictConfig) -> None:
     run_signal_generation_test(cfg, track)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

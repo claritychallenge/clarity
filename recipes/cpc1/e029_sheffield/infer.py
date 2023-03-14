@@ -178,5 +178,6 @@ def run(cfg: DictConfig) -> None:
             json.dump(test_negent, f)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

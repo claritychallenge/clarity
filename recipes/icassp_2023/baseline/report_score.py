@@ -40,5 +40,6 @@ def report_score(cfg: DictConfig) -> None:
         print(selected_results_df[["haspi", "hasqi", "combined"]].mean(axis=0))
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     report_score()

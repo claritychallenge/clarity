@@ -172,6 +172,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             csv_writer.writerow(line)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run_HL_processing()
     run_calculate_SI()
