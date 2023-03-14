@@ -41,7 +41,7 @@ def compute_average_hearing_loss(listener: dict) -> float:
         if listener["audiogram_cfs"][i] in cfs
     ]
     right_loss = [
-        listener["audiogram_levels_l"][i]
+        listener["audiogram_levels_r"][i]
         for i in range(len(listener["audiogram_cfs"]))
         if listener["audiogram_cfs"][i] in cfs
     ]
