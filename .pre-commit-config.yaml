@@ -71,7 +71,6 @@ repos:
         args:
         - --disable=all
         - --enable=E1120
-        - --enable=E0401
 
 
   # Pylint warnings that are bing skipped by CI (see skip: [pylint_warnings] below)
