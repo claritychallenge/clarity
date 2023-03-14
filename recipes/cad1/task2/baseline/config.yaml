@@ -8,6 +8,7 @@ path:
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
   scenes_file: ${path.metadata_dir}/scenes.json
   scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
+  hrtf_file: ${path.metadata_dir}/eBrird_BRIR.json
   exp_folder: ./exp # folder to store enhanced signals and final results
 
 sample_rate: 44100

@@ -50,6 +50,22 @@ def read_mp3(
     return signal, sample_rate
 
 
+def load_hrtf(config: DictConfig) -> dict:
+    """Load the HRTF file.
+
+    Args:
+        config (DictConfig): A dictionary-like object containing various configuration
+            parameters for the evaluation. This includes the path to the HRTF files.
+
+    Returns:
+        hrtf_data (dict): A dictionary containing the HRTF data for the dataset.
+
+    """
+    with open(config.path.hrtf_file, "r", encoding="utf-8") as fp:
+        hrtf_data = json.load(fp)
+    return hrtf_data[config.evaluate.split]
+
+
 def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict, dict]:
     """Load listener and scene data
 
