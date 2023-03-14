@@ -38,8 +38,6 @@ def test_enhance_song():
     # Call the function
     out_left, out_right = enhance_song(waveform, listener, config)
 
-    np.save(RESOURCES / "test_enhance.enhance_song_left.npy", out_left)
-    np.save(RESOURCES / "test_enhance.enhance_song_right.npy", out_right)
     expected_left = np.load(
         RESOURCES / "test_enhance.enhance_song_left.npy", allow_pickle=True
     )
