@@ -5,10 +5,11 @@
 import logging
 import warnings
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 import pyloudnorm as pyln
+from omegaconf import DictConfig
 from scipy.io import wavfile
 from scipy.signal import lfilter
 
@@ -17,6 +18,7 @@ from clarity.enhancer.nalr import NALR
 from clarity.utils.car_noise_simulator.carnoise_signal_generator import (
     CarNoiseSignalGenerator,
 )
+from recipes.cad1.task2.baseline.audio_manager import AudioManager
 
 logger = logging.getLogger(__name__)
 
@@ -247,7 +249,6 @@ class CarSceneAcoustics:
         )
 
         signal_lufs = self.loudness_meter.integrated_loudness(signal)
-
         target_lufs = ref_signal_lufs + snr
 
         with warnings.catch_warnings(record=True):
@@ -257,6 +258,28 @@ class CarSceneAcoustics:
 
         # return to original shape
         return normalised_signal.T
+
+    def equalise_level(
+        self, signal: np.ndarray, reference_signal: np.ndarray, max_level: float = 20
+    ) -> np.ndarray:
+        """
+        Equalises the level of the target signal to the reference signal.
+
+        Args:
+            signal (np.ndarray): The target signal to equalise.
+            reference_signal (np.ndarray): The reference signal.
+            max_level (float): The maximum level of the target signal.
+                This to prevent clipping.
+
+        Returns:
+            np.ndarray: The equalised target signal.
+        """
+        signal_lufs = self.loudness_meter.integrated_loudness(signal.T)
+        target_lufs = self.loudness_meter.integrated_loudness(reference_signal.T)
+        with warnings.catch_warnings(record=True):
+            return pyln.normalize.loudness(
+                signal, signal_lufs, min(target_lufs, max_level)
+            )
 
     @staticmethod
     def add_two_signals(signal1: np.ndarray, signal2: np.ndarray) -> np.ndarray:
@@ -272,3 +295,121 @@ class CarSceneAcoustics:
         """
         min_length = min(signal1.shape[1], signal2.shape[1])
         return signal1[:, :min_length] + signal2[:, :min_length]
+
+    # pylint: disable=too-many-arguments
+    def apply_car_acoustics_to_signal(
+        self,
+        enh_signal: np.ndarray,
+        ref_signal: np.ndarray,
+        scene: dict,
+        listener: dict,
+        audio_manager: AudioManager,
+        config: DictConfig,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Applies the car acoustics to the enhanced signal.
+
+        Args:
+            enh_signal (np.ndarray): The enhanced signal to apply the car acoustics to.
+            ref_signal (np.ndarray): The reference signal.
+            scene (dict): The scene dictionary with the acoustics parameters.
+            listener (dict): The listener dictionary with the audiograms.
+            audio_manager (AudioManager): The audio manager object.
+            config (DictConfig): The config object.
+
+        Returns:
+            np.ndarray: The enhanced signal with the car acoustics applied.
+            np.ndarray: The reference signal normalised to enhanced level.
+        """
+
+        # 1. Generates car noise and adds anechoic HRTFs to the car noise
+        # car_noise_anechoic = car_noise + anechoic HRTF
+
+        car_noise = self.get_car_noise(scene["car_noise_parameters"])
+        car_noise_anechoic = self.add_anechoic_hrtf(car_noise)
+
+        if config.evaluate.save_intermediate_wavs:
+            audio_manager.add_audios_to_save("car_noise_anechoic", car_noise_anechoic)
+
+        # 2. Add HRTFs to enhanced signal
+        # processed_signal = enh_signal + car HRTF
+
+        processed_signal = self.add_car_hrtf(enh_signal, scene["hr"])
+
+        if config.evaluate.save_intermediate_wavs:
+            audio_manager.add_audios_to_save("enh_signal", enh_signal)
+            audio_manager.add_audios_to_save("enh_signal_hrtf", processed_signal)
+
+        # 3. Scale noise to target SNR
+        # car_noise_anechoic = car_noise_anechoic * scale_factor
+
+        car_noise_anechoic = self.scale_signal_to_snr(
+            signal=car_noise_anechoic,
+            reference_signal=processed_signal,
+            snr=float(scene["snr"]),
+        )
+
+        if config.evaluate.save_intermediate_wavs:
+            audio_manager.add_audios_to_save(
+                "car_noise_anechoic_scaled", car_noise_anechoic
+            )
+
+        # 4. Add the scaled anechoic car noise to the enhanced signal
+        # processed_signal = (enh_signal * car HRTF) + (car_noise * Anechoic HRTF) * scale_factor
+        processed_signal = self.add_two_signals(processed_signal, car_noise_anechoic)
+
+        if config.evaluate.save_intermediate_wavs:
+            audio_manager.add_audios_to_save(
+                "enh_signal_hrtf_plus_car_noise_anechoic", processed_signal
+            )
+
+        # 5. Apply Hearing Aid to Left and Right channels and join them
+        processed_signal_left = self.apply_hearing_aid(
+            processed_signal[0, :],
+            np.array(listener["audiogram_levels_l"]),
+            np.array(listener["audiogram_cfs"]),
+        )
+
+        processed_signal_right = self.apply_hearing_aid(
+            processed_signal[1, :],
+            np.array(listener["audiogram_levels_r"]),
+            np.array(listener["audiogram_cfs"]),
+        )
+
+        processed_signal = np.stack(
+            [processed_signal_left, processed_signal_right], axis=0
+        )
+        if config.evaluate.save_intermediate_wavs:
+            audio_manager.add_audios_to_save(
+                "ha_processed_signal_left", processed_signal_left
+            )
+            audio_manager.add_audios_to_save(
+                "ha_processed_signal_right", processed_signal_right
+            )
+
+        # processed_signal = np.clip(processed_signal, -1.0, 1.0)
+        n_clipped, processed_signal = audio_manager.clip_audio(
+            -1.0, 1.0, processed_signal
+        )
+
+        if n_clipped > 0:
+            logger.warning(
+                f"Scene {scene['scene']}: {n_clipped} samples clipped in evaluation signal."
+            )
+
+        audio_manager.add_audios_to_save("ha_processed_signal", processed_signal)
+
+        # 6. Normalise reference signal level to ha_processed_signal level
+        # ref_signal = ref_signal * scale_factor
+        # Following Spotify standard, Max level is -11 LUFS to avoid clipping
+        # https://artists.spotify.com/en/help/article/loudness-normalization
+
+        ref_signal = self.equalise_level(
+            signal=ref_signal, reference_signal=processed_signal, max_level=-11
+        )
+
+        audio_manager.add_audios_to_save("ref_signal_normalised", ref_signal)
+
+        audio_manager.save_audios()
+
+        return processed_signal, ref_signal
