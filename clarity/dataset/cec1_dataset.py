@@ -66,7 +66,8 @@ class CEC1Dataset(data.Dataset):
     def wav_sample(self, x, y):
         """
         A 2 second silence is in the beginning of clarity data
-        Get rid of the silence segment in the beginning & sample a constant wav length for training.
+        Get rid of the silence segment in the beginning & sample a
+        constant wav length for training.
         """
         silence_len = int(self.wav_silence_len * self.sr)
         x = x[:, silence_len:]
@@ -122,11 +123,15 @@ class CEC1Dataset(data.Dataset):
         if self.sr != 44100:
             mixed_resampled, target_resampled = [], []
             for i in range(mixed.shape[0]):
-                mixed_resampled.append(librosa.resample(mixed[i], 44100, self.sr))
+                mixed_resampled.append(
+                    librosa.resample(mixed[i], target_sr=44100, orig_sr=self.sr)
+                )
             mixed = np.array(mixed_resampled)
             if not self.testing:
                 for i in range(target.shape[0]):
-                    target_resampled.append(librosa.resample(target[i], 44100, self.sr))
+                    target_resampled.append(
+                        librosa.resample(target[i], target_sr=44100, orig_sr=self.sr)
+                    )
                 target = np.array(target_resampled)
 
         if self.wav_sample_len is not None:

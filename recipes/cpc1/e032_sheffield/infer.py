@@ -11,14 +11,14 @@ from omegaconf import DictConfig
 from scipy.spatial.distance import cosine
 from speechbrain.utils.distributed import run_on_main
 from tqdm import tqdm
-from transfromer_cpc1_decoder import S2STransformerBeamSearch
+from transformer_cpc1_decoder import S2STransformerBeamSearch  # pylint: disable=E0401
 
 logger = logging.getLogger(__name__)
 
 
 class ASR(sb.core.Brain):
     def generate_feats(self, wavs, wav_lens, tokens_bos):
-        """Forward computations from the waveform batches to the output probabilities."""
+        """Forward computations from the waveform batches to the output probs."""
         # batch = batch.to(self.device)
         wavs, wav_lens, tokens_bos = (
             wavs.to(self.device),

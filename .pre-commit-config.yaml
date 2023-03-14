@@ -63,6 +63,12 @@ repos:
     hooks:
       - id: mypy
 
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+  # Ruff version.
+    rev: 'v0.0.245'
+    hooks:
+    - id: ruff
+
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
     rev: v2.17.0
@@ -76,7 +82,7 @@ repos:
   - repo: local
     hooks:
       - id: pylint_warnings
-        args: ["--rcfile=.pylintrc"]
+        args: ["--rcfile=.pylintrc", "--errors-only"]
         name: pylint-warnings
         entry: python -m pylint
         language: system
