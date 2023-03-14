@@ -52,7 +52,7 @@ def enhance_song(
     waveform: np.ndarray,
     listener_audiograms: dict,
     config: DictConfig,
-) -> Tuple[np.ndarray, np.ndarray, float]:
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Enhance a single song for a listener.
 
@@ -68,7 +68,7 @@ def enhance_song(
     Returns:
         out_left (np.ndarray): The enhanced left channel.
         out_right (np.ndarray): The enhanced right channel.
-        output_level (float): The output loudness level.
+
     """
 
     if waveform.ndim == 1:
@@ -85,21 +85,17 @@ def enhance_song(
     )
 
     target_level = min(target_level, config.enhance.max_level)
+    target_level = max(target_level, config.enhance.min_level)
 
     with warnings.catch_warnings(record=True):
-        if target_level < original_loudness:
-            waveform = pyln.normalize.loudness(
-                waveform.T, original_loudness, target_level
-            ).T
+        waveform = pyln.normalize.loudness(
+            waveform.T, original_loudness, target_level
+        ).T
 
     out_left = waveform[0, :]
     out_right = waveform[1, :]
 
-    return (
-        out_left,
-        out_right,
-        target_level if target_level < original_loudness else original_loudness,
-    )
+    return out_left, out_right
 
 
 @hydra.main(config_path="", config_name="config")
@@ -131,12 +127,8 @@ def enhance(config: DictConfig) -> None:
 
         # Read song
         song_waveform, _ = read_mp3(song_path, config.sample_rate)
-        out_l, out_r, out_level = enhance_song(
+        out_l, out_r = enhance_song(
             waveform=song_waveform, listener_audiograms=listener, config=config
-        )
-        logger.info(
-            f"Enhanced {current_scene['song']} for {listener['name']}: "
-            f"output loudness {out_level:.2f} LUFS"
         )
 
         enhanced = np.stack([out_l, out_r], axis=1)
