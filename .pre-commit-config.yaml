@@ -69,8 +69,8 @@ repos:
     hooks:
       - id: pylint
         args:
-        - --disable=all
-        - --enable=E1120
+        - --errors-only
+        - --disable=E0401
 
 
   # Pylint warnings that are bing skipped by CI (see skip: [pylint_warnings] below)

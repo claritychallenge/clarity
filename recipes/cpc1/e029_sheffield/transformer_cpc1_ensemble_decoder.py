@@ -59,7 +59,7 @@ class S2SBaseSearcher(torch.nn.Module):
         """
         raise NotImplementedError
 
-    def forward_step(self, inp_tokens, memory, enc_states, enc_lens):
+    def forward_step(self, inp_tokens, memory, enc_states, enc_lens, index=0):
         """This method should implement one step of
         forwarding operation in the autoregressive model.
 
@@ -74,6 +74,8 @@ class S2SBaseSearcher(torch.nn.Module):
             The encoder states to be attended.
         enc_lens : torch.Tensor
             The actual length of each enc_states sequence.
+        index : int
+            The current timestep index.
 
         Returns
         -------
