@@ -3,6 +3,7 @@
 # pylint: disable=import-error
 
 import logging
+import warnings
 from pathlib import Path
 from typing import Tuple
 
@@ -22,59 +23,72 @@ from recipes.cad1.task2.baseline.evaluate import load_listeners_and_scenes
 logger = logging.getLogger(__name__)
 
 
+def compute_average_hearing_loss(listener: dict) -> float:
+    """
+    Compute the average hearing loss of a listener.
+
+    Args:
+        listener (dict): The audiogram of the listener.
+
+    Returns:
+        average_hearing_loss (float): The average hearing loss of the listener.
+
+    """
+    cfs = [500, 1000, 2000, 4000]
+    left_loss = [
+        listener["audiogram_levels_l"][i]
+        for i in range(len(listener["audiogram_cfs"]))
+        if listener["audiogram_cfs"][i] in cfs
+    ]
+    right_loss = [
+        listener["audiogram_levels_l"][i]
+        for i in range(len(listener["audiogram_cfs"]))
+        if listener["audiogram_cfs"][i] in cfs
+    ]
+    return (np.mean(left_loss) + np.mean(right_loss)) / 2
+
+
 def enhance_song(
     waveform: np.ndarray,
-    sample_rate: int,
-    gain_db: float = 0.0,
-    spotify_level: bool = True,
+    listener_audiograms: dict,
+    config: DictConfig,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Enhance a single song for a listener.
 
-    Baseline enhancement returns the original signal with a gain in dB LUFS.
+    Baseline enhancement returns the signal with a loudness
+    of -14 LUFS if the average hearing loss is below 50 dB HL,
+    and -11 LUFS otherwise.
 
     Args:
         waveform (np.ndarray): The waveform of the song.
-        sample_rate (int): The sample rate of the song.
-        gain_db (float): The gain to apply to the song in dB LUFS. Defaults to 0.0.
-        spotify_level (bool): Whether to normalize the song to Spotify level. Defaults to True.
+        listener_audiograms (dict): The audiograms of the listener.
+        config (dict): Dictionary of configuration options for enhancing music.
 
     Returns:
         out_left (np.ndarray): The enhanced left channel.
         out_right (np.ndarray): The enhanced right channel.
-
-
-    Note:
-
-    In your enhancement you may need access to listener_audiograms and config file.
-    If that's the case, you can modify the function signature to include them.
-    E.g.
-
-    >> def enhance_song(
-          waveform: np.ndarray,
-          listener_audiograms,
-          dict, cfg: DictConfig
-       ) -> Tuple[np.ndarray, np.ndarray]:
-
-    Then, left and right audiograms can be accessed as follows:
-
-    >> left_audiogram = listener_audiograms["audiogram_levels_l"]
-    >> right_audiogram = listener_audiograms["audiogram_levels_r"]
-
-    Remember to add them to the function call in the main function.
-
-    >> out_l, out_r = enhance_song(song_waveform, listener_audiograms, config)
 
     """
 
     if waveform.ndim == 1:
         waveform = np.array([waveform, waveform])
 
-    meter = pyln.Meter(sample_rate)
+    meter = pyln.Meter(config.sample_rate)
     original_loudness = meter.integrated_loudness(waveform.T)
 
-    target_level = -14 if spotify_level else original_loudness + gain_db
-    waveform = pyln.normalize.loudness(waveform.T, original_loudness, target_level).T
+    average_hearing_loss = compute_average_hearing_loss(listener_audiograms)
+    target_level = (
+        config.enhance.min_level
+        if average_hearing_loss > 50
+        else config.enhance.average_level
+    )
+
+    with warnings.catch_warnings(record=True):
+        if target_level < original_loudness:
+            waveform = pyln.normalize.loudness(
+                waveform.T, original_loudness, target_level
+            ).T
 
     out_left = waveform[0, :]
     out_right = waveform[1, :]
@@ -111,7 +125,9 @@ def enhance(config: DictConfig) -> None:
 
         # Read song
         song_waveform, _ = read_mp3(song_path, config.sample_rate)
-        out_l, out_r = enhance_song(song_waveform, config.sample_rate, gain_db=-5)
+        out_l, out_r = enhance_song(
+            waveform=song_waveform, listener_audiograms=listener, config=config
+        )
 
         enhanced = np.stack([out_l, out_r], axis=1)
         filename = f"{listener['name']}_{current_scene['song']}.wav"

@@ -25,6 +25,10 @@ compressor:
 
 soft_clip: False
 
+enhance:
+  average_level: -14   # Average level according Spotify's levels
+  min_level: -20
+
 evaluate:
   set_random_seed: True
   small_test: False
