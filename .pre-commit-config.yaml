@@ -64,18 +64,20 @@ repos:
       - id: mypy
 
   # Serious pylint errors that will be enforced by CI
-  - repo: local
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.0
     hooks:
-      - id: pylint_errors
-        name: Pylint Errors Only
-        entry: python -m pylint --disable=all --enable=E1120
-        language: system
-        files: \.py$
+      - id: pylint
+        args:
+        - --disable=all
+        - --enable=E1120
+        - --enable=E0401
 
-  # Pylint warnings that are bing skipped by CI (see skip: [pylint] below)
+
+  # Pylint warnings that are bing skipped by CI (see skip: [pylint_warnings] below)
   # - repo: local
   #  hooks:
-  #    - id: pylint
+  #    - id: pylint_warnings
   #      args: ["--rcfile=.pylintrc"]
   #      name: Pylint
   #      entry: python -m pylint
