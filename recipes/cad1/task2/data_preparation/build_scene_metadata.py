@@ -21,9 +21,9 @@ def set_seed(seed: int) -> None:
     np.random.seed(seed)
 
 
-def get_random_dict_item(input_dict: dict) -> Any:
+def get_random_head_rotation(input_dict: dict) -> Any:
     """
-    Selects a random item from a dictionary.
+    Selects a random head rotation degree.
 
     Args:
         input_dict (dict): A dictionary where keys are bird IDs and values are bird data.
@@ -31,8 +31,7 @@ def get_random_dict_item(input_dict: dict) -> Any:
     Returns:
         A random item from the input dictionary.
     """
-    random_key = np.random.choice(list(input_dict.keys()), size=1, replace=False)[0]
-    return input_dict[random_key]
+    return float(np.random.choice(list(input_dict.keys()), size=1, replace=False)[0])
 
 
 def get_random_car_params(min_speed: int = 50, max_speed: int = 120) -> Dict:
@@ -128,7 +127,7 @@ def run(cfg: DictConfig) -> None:
                 "scene": f"S{scene_id:06d}",
                 "song": song,
                 "song_path": train_songs[song]["path"],
-                "hr": get_random_dict_item(brir["training"]),
+                "hr": get_random_head_rotation(brir["train"]),
                 "car_noise_parameters": get_random_car_params(
                     min_speed=50, max_speed=120
                 ),
@@ -150,7 +149,7 @@ def run(cfg: DictConfig) -> None:
             "scene": f"S{scene_id:06d}",
             "song": song,
             "song_path": valid_songs[song]["path"],
-            "hr": get_random_dict_item(brir["training"]),
+            "hr": get_random_head_rotation(brir["valid"]),
             "car_noise_parameters": get_random_car_params(min_speed=50, max_speed=120),
             "snr": get_random_snr(0, 15.0),
             "split": "valid",
