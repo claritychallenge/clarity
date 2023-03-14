@@ -77,7 +77,7 @@ repos:
     hooks:
       - id: pylint_warnings
         args: ["--rcfile=.pylintrc"]
-        name: Pylint
+        name: pylint-warnings
         entry: python -m pylint
         language: system
         files: \.py$
