@@ -28,7 +28,7 @@ class CarSceneAcoustics:
     A class for the car acoustic environment.
 
     Constants:
-        ANECHOIC_HRTF (dict): A dictionary containing the names of the anechoic BRIRs
+        ANECHOIC_HRTF_FOR_NOISE (dict): A dictionary containing the names of the anechoic BRIRs
             for the following directions:
                 0 degrees: front
                     - 000_left: The left channel of the BRIR for 0 degrees.
@@ -41,13 +41,13 @@ class CarSceneAcoustics:
                     - p90_right: The right channel of the BRIR for 90 degrees.
     """
 
-    ANECHOIC_HRTF = {
-        "000_left": "HR36_LSP01_CH1_Left.wav",
-        "000_right": "HR36_LSP01_CH1_Right.wav",
-        "m90_left": "HR0_LSP01_CH1_Left.wav",
-        "m90_right": "HR0_LSP01_CH1_Right.wav",
-        "p90_left": "HR72_LSP01_CH1_Left.wav",
-        "p90_right": "HR72_LSP01_CH1_Right.wav",
+    ANECHOIC_HRTF_FOR_NOISE = {
+        "000_left": "HR36_E02_CH1_Left.wav",
+        "000_right": "HR36_E02_CH1_Right.wav",
+        "m90_left": "HR0_E02_CH1_Left.wav",
+        "m90_right": "HR0_E02_CH1_Right.wav",
+        "p90_left": "HR72_E02_CH1_Left.wav",
+        "p90_right": "HR72_E02_CH1_Right.wav",
     }
 
     def __init__(
@@ -98,11 +98,11 @@ class CarSceneAcoustics:
         Args:
             brird_dir (str): The path to the directory containing the BRIR files.
         """
-        self.hrir_values = {}
+        self.hrir_for_noise = {}
         anechoic_hrtf_dir = Path(hrtf_dir) / "Anechoic" / "audio"
 
-        for key, item in self.ANECHOIC_HRTF.items():
-            self.hrir_values[key] = wavfile.read(anechoic_hrtf_dir / item)[1]
+        for key, item in self.ANECHOIC_HRTF_FOR_NOISE.items():
+            self.hrir_for_noise[key] = wavfile.read(anechoic_hrtf_dir / item)[1]
 
     def apply_hearing_aid(
         self, signal: np.ndarray, audiogram: np.ndarray, center_frequencies: np.ndarray
@@ -125,7 +125,7 @@ class CarSceneAcoustics:
         signal, _, _ = self.compressor.process(signal)
         return signal
 
-    def add_anechoic_hrtf(self, noise_signal: np.ndarray) -> np.ndarray:
+    def add_anechoic_hrtf_to_noise(self, noise_signal: np.ndarray) -> np.ndarray:
         """
         Adds the Anechoic HRTF to the noise signal.
         Args:
@@ -138,16 +138,16 @@ class CarSceneAcoustics:
         """
         # Apply Anechoic HRTF to the noise signal
         # Engine first
-        out_left = lfilter(self.hrir_values["000_left"], 1, noise_signal[0, :])
-        our_right = lfilter(self.hrir_values["000_right"], 1, noise_signal[0, :])
+        out_left = lfilter(self.hrir_for_noise["000_left"], 1, noise_signal[0, :])
+        our_right = lfilter(self.hrir_for_noise["000_right"], 1, noise_signal[0, :])
 
         # noise processing hardwired for 2 noises
-        out_left += lfilter(self.hrir_values["m90_left"], 1, noise_signal[1, :])
-        our_right += lfilter(self.hrir_values["m90_right"], 1, noise_signal[1, :])
+        out_left += lfilter(self.hrir_for_noise["m90_left"], 1, noise_signal[1, :])
+        our_right += lfilter(self.hrir_for_noise["m90_right"], 1, noise_signal[1, :])
 
         # swap HRIR so this noise is on the other side
-        out_left += lfilter(self.hrir_values["p90_left"], 1, noise_signal[2, :])
-        our_right += lfilter(self.hrir_values["p90_right"], 1, noise_signal[2, :])
+        out_left += lfilter(self.hrir_for_noise["p90_left"], 1, noise_signal[2, :])
+        our_right += lfilter(self.hrir_for_noise["p90_right"], 1, noise_signal[2, :])
 
         return np.stack([out_left, our_right], axis=0)
 
@@ -173,7 +173,9 @@ class CarSceneAcoustics:
             commonness_factor=0,
         )
 
-    def add_car_hrtf(self, signal: np.ndarray, hrir: dict) -> np.ndarray:
+    def add_hrtf_to_stereo_signal(
+        self, signal: np.ndarray, hrir: dict, hrtf_type: str
+    ) -> np.ndarray:
         """Add a head rotation transfer function using binaural room impulse
             response (BRIR) from eBrird.
 
@@ -181,36 +183,37 @@ class CarSceneAcoustics:
             signal (np.ndarray): a numpy array of shape (2, n_samples) containing the
                 stereo audio signal.
             hrir: a dictionary containing the HRIR (head-related impulse response) filenames.
+            hrtf_type: the type of HRTF to use. Can be either "Anechoic" or "Car".
 
         Returns:
             A numpy array of shape (2, n_samples) containing the stereo audio signal with the
                 BRIR added.
 
         """
-        car_hrtf_path = Path(self.hrtf_dir) / "Car" / "audio"
+        car_hrtf_path = Path(self.hrtf_dir) / hrtf_type / "audio"
 
-        # HRTF from left speaker (LS03) and front mic in HA (CH1)
+        # HRTF from left speaker
         hr_ls03_ch1_left = wavfile.read(
-            car_hrtf_path / f"{hrir['LSP03_CH1_Left']}.wav"
+            car_hrtf_path / f"{hrir['left_speaker']['left_side']}.wav"
         )[1]
         hr_ls03_ch1_right = wavfile.read(
-            car_hrtf_path / f"{hrir['LSP03_CH1_Right']}.wav"
+            car_hrtf_path / f"{hrir['left_speaker']['right_side']}.wav"
         )[1]
 
-        # HRTF from right speaker (LS04) and front mic in HA (CH1)
+        # HRTF from right speaker
         hr_ls04_ch1_left = wavfile.read(
-            car_hrtf_path / f"{hrir['LSP04_CH1_Left']}.wav"
+            car_hrtf_path / f"{hrir['right_speaker']['left_side']}.wav"
         )[1]
         hr_ls04_ch1_right = wavfile.read(
-            car_hrtf_path / f"{hrir['LSP04_CH1_Right']}.wav"
+            car_hrtf_path / f"{hrir['right_speaker']['right_side']}.wav"
         )[1]
 
         # add the BRIRs to the signal
         # Left Speaker (LS03)
         out_left = lfilter(hr_ls03_ch1_left, 1, signal[0, :])
-        out_right = lfilter(hr_ls03_ch1_right, 1, signal[0, :])
+        out_right = lfilter(hr_ls03_ch1_right, 1, signal[1, :])
         # Right Speaker (LS04)
-        out_left += lfilter(hr_ls04_ch1_left, 1, signal[1, :])
+        out_left += lfilter(hr_ls04_ch1_left, 1, signal[0, :])
         out_right += lfilter(hr_ls04_ch1_right, 1, signal[1, :])
 
         return np.stack([out_left, out_right], axis=0)
@@ -249,7 +252,7 @@ class CarSceneAcoustics:
         )
 
         signal_lufs = self.loudness_meter.integrated_loudness(signal)
-        target_lufs = ref_signal_lufs + snr
+        target_lufs = ref_signal_lufs - snr
 
         with warnings.catch_warnings(record=True):
             normalised_signal = pyln.normalize.loudness(
@@ -301,6 +304,7 @@ class CarSceneAcoustics:
         enh_signal: np.ndarray,
         scene: dict,
         listener: dict,
+        hrtf: dict,
         audio_manager: AudioManager,
         config: DictConfig,
     ) -> np.ndarray:
@@ -311,6 +315,9 @@ class CarSceneAcoustics:
             enh_signal (np.ndarray): The enhanced signal to apply the car acoustics to.
             scene (dict): The scene dictionary with the acoustics parameters.
             listener (dict): The listener dictionary with the audiograms.
+            hrtf (dict): A dictionary containing the head-related transfer functions (HRTFs)
+                for the listener being evaluated. This includes the left and right HRTFs for
+                the car and the anechoic room.
             audio_manager (AudioManager): The audio manager object.
             config (DictConfig): The config object.
 
@@ -323,7 +330,7 @@ class CarSceneAcoustics:
         # car_noise_anechoic = car_noise + anechoic HRTF
 
         car_noise = self.get_car_noise(scene["car_noise_parameters"])
-        car_noise_anechoic = self.add_anechoic_hrtf(car_noise)
+        car_noise_anechoic = self.add_anechoic_hrtf_to_noise(car_noise)
 
         if config.evaluate.save_intermediate_wavs:
             audio_manager.add_audios_to_save("car_noise_anechoic", car_noise_anechoic)
@@ -331,7 +338,9 @@ class CarSceneAcoustics:
         # 2. Add HRTFs to enhanced signal
         # processed_signal = enh_signal + car HRTF
 
-        processed_signal = self.add_car_hrtf(enh_signal, scene["hr"])
+        processed_signal = self.add_hrtf_to_stereo_signal(
+            enh_signal, hrtf["car"], "Car"
+        )
 
         if config.evaluate.save_intermediate_wavs:
             audio_manager.add_audios_to_save("enh_signal", enh_signal)

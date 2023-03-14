@@ -17,6 +17,7 @@ from tqdm import tqdm
 from clarity.evaluator.haaqi import compute_haaqi
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
+    load_hrtf,
     load_listeners_and_scenes,
     make_scene_listener_list,
     read_mp3,
@@ -114,6 +115,7 @@ def evaluate_scene(
     current_scene: dict,
     listener_audiogram: dict,
     car_scene_acoustic: CarSceneAcoustics,
+    hrtf: dict,
     config: DictConfig,
 ) -> Tuple[float, float]:
     """Evaluate a single scene and return HAAQI scores for left and right ears
@@ -133,6 +135,9 @@ def evaluate_scene(
         car_scene_acoustic (CarSceneAcoustics): An instance of the CarSceneAcoustics class,
             which is used to generate car noise and add binaural room impulse responses (BRIRs)
             to the enhanced signal.
+        hrtf (dict): A dictionary containing the head-related transfer functions (HRTFs)
+            for the listener being evaluated. This includes the left and right HRTFs for
+            the car and the anechoic room.
         config (DictConfig): A dictionary-like object containing various configuration
             parameters for the evaluation. This includes the path to the enhanced signal folder,
             the path to the music directory, and a flag indicating whether to set a random seed.
@@ -157,6 +162,7 @@ def evaluate_scene(
         enh_signal,
         current_scene,
         listener_audiogram,
+        hrtf,
         audio_manager,
         config,
     )
@@ -165,11 +171,18 @@ def evaluate_scene(
     # ref_signal = ref_signal * scale_factor
     # Following Spotify standard, Max level is -11 LUFS to avoid clipping
     # https://artists.spotify.com/en/help/article/loudness-normalization
+    if config.evaluate.save_intermediate_wavs:
+        audio_manager.add_audios_to_save("ref_signal", ref_signal)
+
+    ref_signal = car_scene_acoustic.add_hrtf_to_stereo_signal(
+        enh_signal, hrtf["anechoic"], "Anechoic"
+    )
+    if config.evaluate.save_intermediate_wavs:
+        audio_manager.add_audios_to_save("ref_signal_anechoic", ref_signal)
 
     ref_signal = car_scene_acoustic.equalise_level(
-        signal=ref_signal, reference_signal=processed_signal, max_level=-11
+        signal=ref_signal, reference_signal=processed_signal, max_level=-14
     )
-
     audio_manager.add_audios_to_save("ref_signal_normalised", ref_signal)
 
     audio_manager.save_audios()
@@ -205,6 +218,8 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
+    hrtfs = load_hrtf(config)
+
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
 
@@ -230,6 +245,9 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         # Retrieve audiograms
         listener = listener_audiograms[listener_id]
 
+        # Retrieve HRTF according to the listener's head orientation
+        hrtf_scene = hrtfs[str(current_scene["hr"])]
+
         # Load reference signal
         reference_song_path = (
             Path(config.path.music_dir) / f"{current_scene['song_path']}"
@@ -238,10 +256,6 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         reference_signal, _ = read_mp3(
             reference_song_path.as_posix(), sample_rate=config.sample_rate
         )
-
-        if reference_signal.ndim == 1:
-            # If mono, duplicate to stereo
-            reference_signal = np.stack([reference_signal, reference_signal], axis=0)
 
         # Load enhanced signal
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
@@ -262,6 +276,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
             current_scene,
             listener,
             car_scene_acoustic,
+            hrtf_scene,
             config,
         )
 

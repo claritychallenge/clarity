@@ -70,10 +70,6 @@ def enhance_song(
         out_right (np.ndarray): The enhanced right channel.
 
     """
-
-    if waveform.ndim == 1:
-        waveform = np.array([waveform, waveform])
-
     meter = pyln.Meter(config.sample_rate)
     original_loudness = meter.integrated_loudness(waveform.T)
 
