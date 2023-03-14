@@ -5,7 +5,7 @@ import pathlib
 
 import hydra
 import numpy as np
-from evaluate import make_scene_listener_list
+from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm

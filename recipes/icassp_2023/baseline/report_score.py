@@ -4,7 +4,7 @@ import logging
 
 import hydra
 import pandas as pd
-from evaluate import make_scene_listener_list
+from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
