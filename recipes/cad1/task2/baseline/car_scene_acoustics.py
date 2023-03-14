@@ -296,7 +296,6 @@ class CarSceneAcoustics:
         min_length = min(signal1.shape[1], signal2.shape[1])
         return signal1[:, :min_length] + signal2[:, :min_length]
 
-    # pylint: disable=too-many-arguments
     def apply_car_acoustics_to_signal(
         self,
         enh_signal: np.ndarray,
