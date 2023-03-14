@@ -1,3 +1,4 @@
+"""Data preparation for the E032 Sheffield CPC1 recipe."""
 import csv
 import json
 import logging
