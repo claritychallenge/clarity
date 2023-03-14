@@ -86,4 +86,4 @@ ci:
   autofix_commit_msg: '[pre-commit.ci] Fixing issues with pre-commit'
   autoupdate_schedule: weekly
   autoupdate_commit_msg: '[pre-commit.ci] pre-commit-autoupdate'
-  skip: [pylint] # Optionally list ids of hooks to skip on CI
+  skip: [] # Optionally list ids of hooks to skip on CI
