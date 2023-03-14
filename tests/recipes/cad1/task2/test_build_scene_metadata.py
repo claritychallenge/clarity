@@ -8,7 +8,7 @@ import pytest
 
 from recipes.cad1.task2.data_preparation.build_scene_metadata import (
     get_random_car_params,
-    get_random_dict_item,
+    get_random_head_rotation,
     read_json,
     set_seed,
 )
@@ -24,12 +24,12 @@ def test_set_seed():
     np.testing.assert_array_almost_equal(np.random.rand(), 0.6964691855978616)
 
 
-def test_get_random_dict_item():
+def test_get_random_head_rotation():
     """Test that the function returns a random item from the dictionary"""
-    input_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
+    input_dict = {"1": "value1", "2": "value2", "3": "value3"}
     np.random.seed(42)
-    random_item = get_random_dict_item(input_dict)
-    assert random_item == "value1"
+    random_item = get_random_head_rotation(input_dict)
+    assert random_item == 1
 
 
 def test_get_random_car_params():
