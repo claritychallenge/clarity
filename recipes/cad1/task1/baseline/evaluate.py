@@ -222,12 +222,18 @@ def run_calculate_aq(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
 
-    results_file = ResultsFile("scores.csv")
+    results_file = ResultsFile(
+        f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv"
+    )
     results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
         songs["Track Name"].tolist(), listener_audiograms, config.evaluate.small_test
     )
+
+    song_listener_pair = song_listener_pair[
+        config.evaluate.batch :: config.evaluate.batch_size
+    ]
 
     for song, listener in song_listener_pair:
         split_dir = "train"
