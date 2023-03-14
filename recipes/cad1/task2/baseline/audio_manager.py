@@ -1,6 +1,7 @@
 """A utility class for managing audio files."""
 
 import logging
+import warnings
 from pathlib import Path
 from typing import Dict, Tuple, Union
 
@@ -58,9 +59,7 @@ class AudioManager:
         """
         waveform = waveform.T if waveform.shape[0] == 2 else waveform
 
-        waveform = self.scale_to_lufs(waveform, -14).T
-
-        n_clipped, waveform = self.clip_audio(-1.0, 1.0, waveform)
+        n_clipped, waveform = self.clip_audio(waveform)
         if n_clipped > 0:
             logger.warning(
                 f"Writing {self.output_audio_path / file_name}: {n_clipped} samples clipped"
@@ -75,14 +74,14 @@ class AudioManager:
         )
 
     def clip_audio(
-        self, min_val: float, max_val: float, signal: np.ndarray
+        self, signal: np.ndarray, min_val: float = -1, max_val: float = 1
     ) -> Tuple[int, np.ndarray]:
         """Clip a WAV file to the given range.
 
         Args:
-            min_val (float): The minimum value to clip to.
-            max_val (float): The maximum value to clip to.
             signal (np.ndarray): The WAV file to clip.
+            min_val (float): The minimum value to clip to. Defaults to -1.
+            max_val (float): The maximum value to clip to. Defaults to 1.
 
         Returns:
             Tuple[int, np.ndarray]: The number of samples clipped and the clipped signal.
@@ -114,4 +113,6 @@ class AudioManager:
             np.ndarray: The scaled signal.
         """
         current_lufs = self.get_lufs_level(signal)
-        return pyln.normalize.loudness(signal, current_lufs, target_lufs).T
+        with warnings.catch_warnings(record=True):
+            scaled_signal = pyln.normalize.loudness(signal, current_lufs, target_lufs).T
+        return scaled_signal

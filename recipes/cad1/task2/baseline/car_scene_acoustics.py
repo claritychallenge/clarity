@@ -5,7 +5,7 @@
 import logging
 import warnings
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 import pyloudnorm as pyln
@@ -299,18 +299,16 @@ class CarSceneAcoustics:
     def apply_car_acoustics_to_signal(
         self,
         enh_signal: np.ndarray,
-        ref_signal: np.ndarray,
         scene: dict,
         listener: dict,
         audio_manager: AudioManager,
         config: DictConfig,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> np.ndarray:
         """
         Applies the car acoustics to the enhanced signal.
 
         Args:
             enh_signal (np.ndarray): The enhanced signal to apply the car acoustics to.
-            ref_signal (np.ndarray): The reference signal.
             scene (dict): The scene dictionary with the acoustics parameters.
             listener (dict): The listener dictionary with the audiograms.
             audio_manager (AudioManager): The audio manager object.
@@ -387,9 +385,7 @@ class CarSceneAcoustics:
             )
 
         # processed_signal = np.clip(processed_signal, -1.0, 1.0)
-        n_clipped, processed_signal = audio_manager.clip_audio(
-            -1.0, 1.0, processed_signal
-        )
+        n_clipped, processed_signal = audio_manager.clip_audio(processed_signal)
 
         if n_clipped > 0:
             logger.warning(
@@ -398,17 +394,4 @@ class CarSceneAcoustics:
 
         audio_manager.add_audios_to_save("ha_processed_signal", processed_signal)
 
-        # 6. Normalise reference signal level to ha_processed_signal level
-        # ref_signal = ref_signal * scale_factor
-        # Following Spotify standard, Max level is -11 LUFS to avoid clipping
-        # https://artists.spotify.com/en/help/article/loudness-normalization
-
-        ref_signal = self.equalise_level(
-            signal=ref_signal, reference_signal=processed_signal, max_level=-11
-        )
-
-        audio_manager.add_audios_to_save("ref_signal_normalised", ref_signal)
-
-        audio_manager.save_audios()
-
-        return processed_signal, ref_signal
+        return processed_signal

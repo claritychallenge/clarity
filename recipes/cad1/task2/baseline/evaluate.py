@@ -153,14 +153,26 @@ def evaluate_scene(
 
     # Applies the Car Acoustics to the enhanced signal, i.e., the speakers output
 
-    processed_signal, ref_signal = car_scene_acoustic.apply_car_acoustics_to_signal(
+    processed_signal = car_scene_acoustic.apply_car_acoustics_to_signal(
         enh_signal,
-        ref_signal,
         current_scene,
         listener_audiogram,
         audio_manager,
         config,
     )
+
+    # Normalise reference signal level to ha_processed_signal level
+    # ref_signal = ref_signal * scale_factor
+    # Following Spotify standard, Max level is -11 LUFS to avoid clipping
+    # https://artists.spotify.com/en/help/article/loudness-normalization
+
+    ref_signal = car_scene_acoustic.equalise_level(
+        signal=ref_signal, reference_signal=processed_signal, max_level=-11
+    )
+
+    audio_manager.add_audios_to_save("ref_signal_normalised", ref_signal)
+
+    audio_manager.save_audios()
 
     # 8. Compute HAAQI scores
     aq_score_l = compute_haaqi(
