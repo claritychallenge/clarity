@@ -81,12 +81,12 @@ def enhance_song(
     )
 
     target_level = min(target_level, config.enhance.max_level)
-    target_level = max(target_level, config.enhance.min_level)
 
     with warnings.catch_warnings(record=True):
-        waveform = pyln.normalize.loudness(
-            waveform.T, original_loudness, target_level
-        ).T
+        if original_loudness > target_level:
+            waveform = pyln.normalize.loudness(
+                waveform.T, original_loudness, target_level
+            ).T
 
     out_left = waveform[0, :]
     out_right = waveform[1, :]
