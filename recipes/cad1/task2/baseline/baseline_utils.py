@@ -42,6 +42,10 @@ def read_mp3(
     except Exception as error:
         raise ValueError from error
 
+    if signal.ndim == 1:
+        # If mono, duplicate to stereo
+        signal = np.stack([signal, signal], axis=0)
+
     # Peak Normalization for cases when signal has
     # absolute values greater than 1
     if np.max(np.abs(signal)) > 1:
