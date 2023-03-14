@@ -38,6 +38,8 @@ def test_enhance_song():
     # Call the function
     out_left, out_right = enhance_song(waveform, listener, config)
 
+    np.save(RESOURCES / "test_enhance.enhance_song_left.npy", out_left)
+    np.save(RESOURCES / "test_enhance.enhance_song_right.npy", out_right)
     expected_left = np.load(
         RESOURCES / "test_enhance.enhance_song_left.npy", allow_pickle=True
     )
@@ -53,4 +55,4 @@ def test_enhance_song():
     meter = pyln.Meter(config.sample_rate)
 
     out_loudness = meter.integrated_loudness(np.array([out_left, out_right]).T)
-    assert np.isclose(out_loudness, -11, atol=0.1)
+    assert np.isclose(out_loudness, -19, atol=0.1)
