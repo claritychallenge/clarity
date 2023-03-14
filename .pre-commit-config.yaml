@@ -52,11 +52,6 @@ repos:
         args: ["--extend-ignore=E203,E402,E501"]
       - id: nbqa-isort
 
-#  - repo: https://github.com/datarootsio/databooks
-#    rev: 1.0.5
-#    hooks:
-#      - id: databooks-meta
-
   - repo: https://github.com/kynan/nbstripout
     rev: 0.6.1
     hooks:
@@ -68,6 +63,16 @@ repos:
     hooks:
       - id: mypy
 
+  # Serious pylint errors that will be enforced by CI
+  - repo: local
+    hooks:
+      - id: pylint_errors
+        name: Pylint Errors Only
+        entry: python -m pylint -E
+        language: system
+        files: \.py$
+
+  # Pylint warnings that are bing skipped by CI (see skip: [pylint] below)
   - repo: local
     hooks:
       - id: pylint
