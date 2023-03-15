@@ -385,13 +385,6 @@ class CarSceneAcoustics:
         processed_signal = np.stack(
             [processed_signal_left, processed_signal_right], axis=0
         )
-        if config.evaluate.save_intermediate_wavs:
-            audio_manager.add_audios_to_save(
-                "ha_processed_signal_left", processed_signal_left
-            )
-            audio_manager.add_audios_to_save(
-                "ha_processed_signal_right", processed_signal_right
-            )
 
         # processed_signal = np.clip(processed_signal, -1.0, 1.0)
         n_clipped, processed_signal = audio_manager.clip_audio(processed_signal)
