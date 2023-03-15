@@ -42,7 +42,7 @@ class ASR(sb.core.Brain):
 
     def init_ensembles(self, n_ensemble):
         ensembles = []
-        for j in range(n_ensemble):
+        for _j in range(n_ensemble):
             ensembles.append(copy.deepcopy(self.hparams.model))
         return ensembles
 
