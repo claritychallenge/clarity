@@ -84,7 +84,7 @@ repos:
       - id: pylint_warnings
         args: ["--rcfile=.pylintrc"]
         name: pylint-warnings
-        entry: python -m pylint --disable all --enable W0612 --enable W0613 # -E means only show errors (temporary)
+        entry: python -m pylint --disable all -E # -E means only show errors (temporary)
         language: system
         files: \.py$
 ci:

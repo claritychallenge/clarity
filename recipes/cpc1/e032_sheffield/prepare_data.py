@@ -112,7 +112,7 @@ def run_msbg_simulation(cfg, track):
                 f"{outfile_stem}_HL-output.wav",
             ]
             # if all signals to write exist, pass
-            if all([os.path.isfile(f) for f in signal_files_to_write]):
+            if all(os.path.isfile(f) for f in signal_files_to_write):
                 continue
             signal = read_signal(signal_file)
 

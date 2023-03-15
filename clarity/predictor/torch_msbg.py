@@ -6,12 +6,12 @@ import os
 
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torchaudio
 from scipy.fftpack import fft
 from scipy.interpolate import interp1d
 from scipy.signal import ellip, firwin, firwin2, freqz
+from torch import nn
 
 from clarity.evaluator.msbg.msbg_utils import (
     DF_ED,

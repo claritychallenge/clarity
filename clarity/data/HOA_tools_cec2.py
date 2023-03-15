@@ -553,12 +553,8 @@ def compute_rotation_vector(
     """
     turn_direction = -np.sign(start_angle - end_angle)
     with np.errstate(divide="raise"):
-        try:
-            increment = (
-                np.abs(start_angle - end_angle) / signal_length
-            ) * turn_direction
-        except FloatingPointError:
-            raise
+        increment = (np.abs(start_angle - end_angle) / signal_length) * turn_direction
+
     theta = np.arange(start_angle, end_angle, increment)
     idx = rotation_control_vector(signal_length, start_idx, end_idx)
     return theta[idx]

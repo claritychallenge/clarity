@@ -389,7 +389,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
             Whether the hyps has been full.
         """
         hyps_len = [len(lst) for lst in hyps]
-        beam_size = [self.beam_size for _ in range(len(hyps_len))]
+        beam_size = [self.beam_size] * len(hyps_len)
         return hyps_len == beam_size
 
     def _check_attn_shift(self, attn, prev_attn_peak):

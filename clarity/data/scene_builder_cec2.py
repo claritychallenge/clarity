@@ -597,7 +597,7 @@ class SceneBuilder:
         Returns:
             None
         """
-        scenes = [s for s in self.scenes]
+        scenes = self.scenes.copy()
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
