@@ -81,7 +81,7 @@ def hasqi_v2(
     # Mel cepstrum correlation using smoothed envelopes
     (
         average_cepstral_correlation,
-        individual_cepstral_correlations,
+        _individual_cepstral_correlations,
     ) = eb.mel_cepstrum_correlation(
         reference_smooth, processed_smooth, silence_threshold, add_noise
     )
@@ -90,14 +90,14 @@ def hasqi_v2(
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    d_loud, d_norm, d_slope = eb.spectrum_diff(reference_sl, processed_sl)
+    d_loud, _d_norm, d_slope = eb.spectrum_diff(reference_sl, processed_sl)
 
     # Temporal fine structure correlation measurements
     # Compute the time-frequency segment covariances
     (
         signal_cross_covariance,
         reference_mean_square,
-        processed_mean_square,
+        _processed_mean_square,
     ) = eb.bm_covary(
         reference_basilar_membrane,
         processed_basilar_membrane,

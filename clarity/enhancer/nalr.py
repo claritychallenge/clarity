@@ -11,7 +11,7 @@ def firwin2(
     f: np.ndarray,
     a: np.ndarray,
     window: Optional[Union[str, float]] = None,
-    antisymmetric: Optional[bool] = None,
+    antisymmetric: Optional[bool] = None,  # pylint: disable=unused-argument
 ) -> np.ndarray:
     """FIR filter design using the window method.
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.

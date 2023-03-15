@@ -56,7 +56,7 @@ def test_GHA_inputs(regtest):
     infile_names = [
         f"tests/test_data/scenes/S06001_mixed_CH{ch}.wav" for ch in range(1, 4)
     ]
-    fd_merged, merged_filename = tempfile.mkstemp(
+    _fd_merged, merged_filename = tempfile.mkstemp(
         prefix="clarity-merged-", suffix=".wav"
     )
     enhancer.create_HA_inputs(infile_names, merged_filename)

@@ -49,7 +49,7 @@ class Model:
     def fit(self, pred, intel):
         """Fit a mapping betweeen mbstoi scores and intelligibility scores."""
         initial_guess = [50.0, 1.0]  # Initial guess for parameter values
-        self.params, pcov = curve_fit(
+        self.params, _pcov = curve_fit(
             self._logistic_mapping, pred, intel, initial_guess
         )
 

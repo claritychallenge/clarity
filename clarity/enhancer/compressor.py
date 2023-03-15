@@ -16,7 +16,7 @@ class Compressor:
         attenuation: float = 0.0001,
         rms_buffer_size: float = 0.2,
         makeup_gain: int = 1,
-        **kwargs,
+        **_kwargs,
     ):
         """Instantiate the Compressor Class.
 

@@ -114,7 +114,7 @@ def init_asr(asr_config):
     return asr_brain, tokenizer, bos_index
 
 
-def compute_uncertainty(left_proc_path, asr_model, bos_index, tokenizer):
+def compute_uncertainty(left_proc_path, asr_model, bos_index, _tokenizer):
     wav_len = torch.tensor([1], dtype=torch.float32)
     tokens_bos = torch.LongTensor([bos_index]).view(1, -1)
 

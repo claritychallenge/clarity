@@ -117,7 +117,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                     ) % (10**8)
                     np.random.seed(scene_md5)
 
-                fs_unproc, unproc = wavfile.read(
+                _fs_unproc, unproc = wavfile.read(
                     os.path.join(cfg.path.scenes_folder, f"{scene}_mix_CH1.wav")
                 )
                 unproc = unproc / 32768.0

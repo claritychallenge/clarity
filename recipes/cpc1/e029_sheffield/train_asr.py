@@ -329,7 +329,7 @@ def main():
     )
 
     # here we create the datasets objects as well as tokenization and encoding
-    train_data, valid_data, test_datasets, tokenizer = dataio_prepare(hparams)
+    train_data, valid_data, test_datasets, _tokenizer = dataio_prepare(hparams)
 
     # We download the pretrained LM from HuggingFace (or elsewhere depending on
     # the path given in the YAML file). The tokenizer is loaded at the same time.

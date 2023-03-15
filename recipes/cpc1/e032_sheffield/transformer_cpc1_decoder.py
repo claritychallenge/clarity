@@ -486,6 +486,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
                 hyps_and_scores[batch_id].append((hyp, log_probs, final_scores))
         return is_eos
 
+    # pylint: disable=W0613
     def _get_top_score_prediction(self, all_hyps_and_scores, topk):
         """Sort the scores and return corresponding hypothesis and log probs.
 
@@ -495,6 +496,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
             To store generated hypotheses and scores.
         topk : int
             Number of hypothesis to return.
+            Deprecated, use self.topk instead.
 
         Returns
         -------
@@ -507,6 +509,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
         topk_log_probs : list
             The log probabilities of each hypotheses.
         """
+
         top_hyps, top_log_probs, top_scores, top_lengths = [], [], [], []
         batch_size = len(all_hyps_and_scores)
 
@@ -776,7 +779,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
         (
             topk_hyps,
             topk_scores,
-            topk_lengths,
+            _topk_lengths,
             log_probs,
         ) = self._get_top_score_prediction(hyps_and_scores, topk=self.topk)
         # pick the best hyp
