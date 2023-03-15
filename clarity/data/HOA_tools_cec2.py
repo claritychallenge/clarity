@@ -531,7 +531,7 @@ def rotation_control_vector(
     return np.array(np.floor(idx * (array_length - 1)), dtype=int)
 
 
-def rotation_vector(
+def compute_rotation_vector(
     start_angle: float,
     end_angle: float,
     signal_length: int,

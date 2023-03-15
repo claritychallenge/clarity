@@ -3,7 +3,7 @@ import logging
 import math
 
 import numpy as np
-from scipy import interpolate, signal
+import scipy
 from scipy.signal import firwin, lfilter
 
 from clarity.evaluator.msbg.cochlea import Cochlea
@@ -67,7 +67,7 @@ class Ear:
         elif src_pos == "df":
             src_correction = DF_ED
         elif src_pos == "ITU":  # transfer to same grid
-            field = interpolate.interp1d(ITU_HZ, ITU_ERP_DRP, kind="linear")
+            field = scipy.interpolate.interp1d(ITU_HZ, ITU_ERP_DRP, kind="linear")
             src_correction = field(HZ)
         else:
             logging.error(
@@ -110,7 +110,7 @@ class Ear:
 
         # sig from free field to cochlea: 0 dB at 1kHz
         correction = src_correction - MIDEAR
-        field = interpolate.interp1d(HZ, correction, kind="linear")
+        field = scipy.interpolate.interp1d(HZ, correction, kind="linear")
         last_correction = field(nyquist)  # generate synthetic response at Nyquist
 
         correction_used = np.append(correction[ixf_useful], last_correction)
@@ -125,7 +125,7 @@ class Ear:
         hz_used = hz_used / nyquist
 
         b = firwin2(n_wdw + 1, hz_used.flatten(), correction_used, window=("kaiser", 4))
-        op_sig = signal.lfilter(b, 1, ip_sig)
+        op_sig = scipy.signal.lfilter(b, 1, ip_sig)
 
         return op_sig
 

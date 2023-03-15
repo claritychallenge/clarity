@@ -17,6 +17,8 @@ from speechbrain.utils.distributed import run_on_main
 
 logger = logging.getLogger(__name__)
 
+tokenizer = None
+
 
 # Define training procedure
 class ASR(sb.core.Brain):
@@ -309,7 +311,7 @@ def dataio_prepare(hparams):
     return train_data, valid_data, test_datasets, tokenizer
 
 
-if __name__ == "__main__":
+def main():
     # CLI:
     hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:])
     with open(hparams_file) as fin:
@@ -365,3 +367,7 @@ if __name__ == "__main__":
             max_key="ACC",
             test_loader_kwargs=hparams["test_dataloader_opts"],
         )
+
+
+if __name__ == "__main__":
+    main()

@@ -11,11 +11,11 @@ from clarity.data.HOA_tools_cec2 import (
     W,
     centred_element,
     compute_rms,
+    compute_rotation_vector,
     compute_UVW_coefficients,
     dB_to_gain,
     equalise_rms_levels,
     rotation_control_vector,
-    rotation_vector,
     smoothstep,
 )
 
@@ -372,7 +372,7 @@ def test_rotation_control_vector_value_error(
         ),
     ],
 )
-def test_rotation_vector(
+def test_compute_rotation_vector(
     start_angle: float,
     end_angle: float,
     signal_length: int,
@@ -382,15 +382,17 @@ def test_rotation_vector(
 ) -> None:
     """Test for rotation_vector() function."""
     np.testing.assert_array_equal(
-        rotation_vector(start_angle, end_angle, signal_length, start_idx, end_idx),
+        compute_rotation_vector(
+            start_angle, end_angle, signal_length, start_idx, end_idx
+        ),
         expected,
     )
 
 
-def test_rotation_vector_floating_point_error() -> None:
+def test_compute_rotation_vector_floating_point_error() -> None:
     """Test rotation_vector() raises FloatingPointError if signal_length is
     zero function."""
     with pytest.raises(FloatingPointError):
-        rotation_vector(
+        compute_rotation_vector(
             start_angle=10, end_angle=20, signal_length=0, start_idx=2, end_idx=8
         )

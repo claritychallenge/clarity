@@ -38,7 +38,7 @@ def two_point_rotation(rotation: dict, origin: np.ndarray, duration: int) -> np.
     angle_origin = np.arctan2(origin[1], origin[0])
     angles = [math.radians(r["angle"]) - angle_origin for r in rotation]
     logger.info("angles=%s", angles)
-    theta = hoa.rotation_vector(
+    theta = hoa.compute_rotation_vector(
         angles[0], angles[1], duration, rotation[0]["sample"], rotation[1]["sample"]
     )
     return theta
