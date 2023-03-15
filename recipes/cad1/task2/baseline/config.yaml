@@ -1,5 +1,5 @@
 path:
-  root: ./
+  root: ../../cadenza_task2_data_demo/cad1/task2
   audio_dir: ${path.root}/audio
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.audio_dir}/music

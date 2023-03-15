@@ -60,8 +60,8 @@ clarity_CPC2_data
 To help you to start with the challenge, we provide a small subset of the data.
 The `demo_data` folder contains a single song and two listeners from the validation set.
 
-To use the demo data, simply download the package `cadenza_data_demo.tar.xz`
-from [here](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek5qKW?usp=share_link)
+To use the demo data, simply download the package `cadenza_task2_data_demo.tar.tar.xz`
+from [here](https://drive.google.com/drive/folders/1On5Bv7Sd6zLZWfA76jdkM-FmGS61Mbi-?usp=share_link)
 and unpack it under `recipes/cad1/task2/`, i.e., one level above the baseline directory.
 Note that the `root.path` variable in `config.yaml` is already set to the demo data by default.
 
