@@ -33,7 +33,7 @@ enhance:
 evaluate:
   set_random_seed: True
   small_test: False
-  save_intermediate_wavs: True
+  save_intermediate_wavs: False
   split: valid # train, valid
   batch_size: 1   # Number of batches
   batch: 0      # Batch number to evaluate
