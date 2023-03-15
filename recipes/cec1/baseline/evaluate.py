@@ -106,10 +106,11 @@ def run_HL_processing(cfg: DictConfig) -> None:
                 listen(ear, ddf_signal, left_audiogram, right_audiogram),
                 listen(ear, mixture_signal, left_audiogram, right_audiogram),
             ]
-            for i in range(len(signals_to_write)):
+
+            for signal, signal_file in zip(signals_to_write, signal_files_to_write):
                 write_signal(
-                    signal_files_to_write[i],
-                    signals_to_write[i],
+                    signal_file,
+                    signal,
                     MSBG_FS,
                     floating_point=True,
                 )

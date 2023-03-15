@@ -495,12 +495,12 @@ class S2SBeamSearcher(S2SBaseSearcher):
                 hyps_and_scores[batch_id].append((hyp, log_probs, final_scores))
         return is_eos
 
-    def _get_top_score_prediction(self, hyps_and_scores, topk):
+    def _get_top_score_prediction(self, all_hyps_and_scores, topk):
         """Sort the scores and return corresponding hypothesis and log probs.
 
         Arguments
         ---------
-        hyps_and_scores : list
+        all_hyps_and_scores : list
             To store generated hypotheses and scores.
         topk : int
             Number of hypothesis to return.
@@ -517,11 +517,11 @@ class S2SBeamSearcher(S2SBaseSearcher):
             The log probabilities of each hypotheses.
         """
         top_hyps, top_log_probs, top_scores, top_lengths = [], [], [], []
-        batch_size = len(hyps_and_scores)
+        batch_size = len(all_hyps_and_scores)
 
         # Collect hypotheses
-        for i in range(len(hyps_and_scores)):
-            hyps, log_probs, scores = zip(*hyps_and_scores[i])
+        for hyps_and_scores in all_hyps_and_scores:
+            hyps, log_probs, scores = zip(*hyps_and_scores)
             top_hyps += hyps
             top_scores += scores
             top_log_probs += log_probs
@@ -849,8 +849,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
                 # for entropy prediction
                 beam_logprobs = log_probs[j * self.topk : (j + 1) * self.topk]
                 beam_seq_probs = []
-                for m in range(len(beam_logprobs)):
-                    seq_prob = torch.sum(beam_logprobs[m])
+                for beam_logprob in beam_logprobs:
+                    seq_prob = torch.sum(beam_logprob)
                     beam_seq_probs.append(seq_prob)
                 beam_seq_probs = torch.stack(beam_seq_probs, dim=0)
                 beam_seq_probs_softmax = torch.nn.functional.softmax(beam_seq_probs)

@@ -103,9 +103,9 @@ def dtw_similarity(x, y):
     )[1]
 
     x_, y_ = [], []
-    for step in range(len(path)):
-        x_.append(x[:, path[step][0], :])
-        y_.append(y[:, path[step][1], :])
+    for step in path:
+        x_.append(x[:, step[0], :])
+        y_.append(y[:, step[1], :])
     x_ = torch.stack(x_, dim=1)
     y_ = torch.stack(y_, dim=1)
     return torch.nn.functional.cosine_similarity(x_, y_, dim=-1)

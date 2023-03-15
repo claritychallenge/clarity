@@ -144,10 +144,11 @@ def run_msbg_simulation(cfg, track):
             signals_to_write = [
                 listen(ear, signal, left_audiogram, right_audiogram),
             ]
-            for i in range(len(signals_to_write)):
+
+            for signal, signal_file in zip(signals_to_write, signal_files_to_write):
                 write_signal(
-                    signal_files_to_write[i],
-                    signals_to_write[i],
+                    signal_file,
+                    signal,
                     MSBG_FS,
                     floating_point=True,
                 )
@@ -280,16 +281,16 @@ def run_signal_generation_train(cfg, track):
     ]
 
     datasets_to_generate = []
-    for i in range(len(lists_to_generate)):
-        with open(lists_to_generate[i], "r", encoding="utf-8") as fp:
+    for list_to_generate in lists_to_generate:
+        with open(list_to_generate, "r", encoding="utf-8") as fp:
             datasets_to_generate.append(json.load(fp))
 
-    for i in range(len(lists_to_generate)):
+    for list_to_generate, dataset in zip(lists_to_generate, datasets_to_generate):
         # generate_data_split(
         #     train_json_path,
         #     train_signal_folder,
         #     target_folder,
-        #     os.path.basename(lists_to_generate[i]).split("_")[1],
+        #     os.path.basename(list_to_generate).split("_")[1],
         #     datasets_to_generate[i],
         # )
 
@@ -297,8 +298,8 @@ def run_signal_generation_train(cfg, track):
             train_json_path,
             train_signal_folder,
             target_folder,
-            os.path.basename(lists_to_generate[i]).split("_")[1],
-            datasets_to_generate[i],
+            os.path.basename(list_to_generate).split("_")[1],
+            dataset,
             if_msbg=True,
         )
 
@@ -306,8 +307,8 @@ def run_signal_generation_train(cfg, track):
             train_json_path,
             train_signal_folder,
             target_folder,
-            os.path.basename(lists_to_generate[i]).split("_")[1],
-            datasets_to_generate[i],
+            os.path.basename(list_to_generate).split("_")[1],
+            dataset,
             if_ref=True,
         )
 
