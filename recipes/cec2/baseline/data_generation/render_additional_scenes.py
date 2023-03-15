@@ -37,5 +37,6 @@ def run(cfg: DictConfig) -> None:
     render_scenes(cfg)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

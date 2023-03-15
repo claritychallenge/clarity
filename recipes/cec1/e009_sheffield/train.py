@@ -219,5 +219,6 @@ def run(cfg: DictConfig) -> None:
     train_amp(cfg, ear="right")
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

@@ -1,5 +1,5 @@
 import numpy as np
-from numba.typed import List
+from numba.typed import List  # pylint: disable=no-name-in-module
 from scipy.spatial.transform import Rotation as R
 
 from clarity.data import HOA_tools_cec2 as hoa

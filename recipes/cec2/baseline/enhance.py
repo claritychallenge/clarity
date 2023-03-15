@@ -61,5 +61,6 @@ def enhance(cfg: DictConfig) -> None:
             wavfile.write(os.path.join(enhanced_folder, filename), fs, signal_16)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     enhance()

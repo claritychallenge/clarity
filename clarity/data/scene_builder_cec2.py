@@ -629,6 +629,8 @@ class SceneBuilder:
             n_scenes (int): number of scenes to generate
             room_selection (str): SEQUENTIAL or RANDOM
             scene_start_index (int): index to start for scene IDs
+
+        Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
         rooms = self.rb.rooms.copy()
         if self.shuffle_rooms:
@@ -647,7 +649,7 @@ class SceneBuilder:
             for scene in scenes:
                 scene["room"] = random.choice(rooms)
         else:
-            assert False, "Unknown room selection mode"
+            raise TypeError(f"Invalid room selection mode: {room_selection}")
         self.scenes.extend(scenes)
 
         # Set the scene ID
@@ -673,8 +675,7 @@ class SceneBuilder:
             post_samples_range (list): Parameters for number osamples to continue player after target offsets.
 
 
-        Raises:
-            Exception: _description_
+        Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
         with open(target_speakers, "r", encoding="utf-8") as f:
             targets = json.load(f)
@@ -700,7 +701,7 @@ class SceneBuilder:
                     post_samples_range,
                 )
         else:
-            assert False, "Unknown target selection mode"
+            raise TypeError(f"Invalid room selection mode: {target_selection}")
 
     def add_SNR_to_scene(self, snr_range: list):
         """Add the Signal Noise Ratio info to the scenes.

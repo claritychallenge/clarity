@@ -174,5 +174,6 @@ def run_calculate_si(cfg: DictConfig) -> None:
         )
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
-    run_calculate_si()  # noqa
+    run_calculate_si()

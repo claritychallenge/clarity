@@ -5,7 +5,7 @@ import pathlib
 
 import hydra
 import numpy as np
-from evaluate import make_scene_listener_list
+from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
@@ -59,5 +59,6 @@ def enhance(cfg: DictConfig) -> None:
         )
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     enhance()

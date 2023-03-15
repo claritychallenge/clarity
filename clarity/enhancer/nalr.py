@@ -133,10 +133,10 @@ class NALR:
     def hl_interp(self, hl: np.ndarray, cfs: np.ndarray):
         try:
             hl_interpf = scipy.interpolate.interp1d(cfs, hl)
-        except ValueError:
+        except ValueError as exception:
             raise ValueError(
                 "Hearing losses (hl) and center frequencies (cfs) don't match!"
-            )
+            ) from exception
         return hl_interpf(self.aud)
 
     def build(

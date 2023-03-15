@@ -131,5 +131,6 @@ def run(cfg: DictConfig) -> None:
         json.dump({"enc_results": enc_scores, "dec_results": dec_scores}, f)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()
