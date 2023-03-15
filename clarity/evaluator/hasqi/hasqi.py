@@ -22,27 +22,32 @@ def hasqi_v2(
     impaired hearing.
 
     Arguments:
-    reference (np.ndarray): Clear input reference speech signal with no noise or distortion.
-              If a hearing loss is specified, NAL-R equalization is optional
-    reference_freq (int): Sampling rate in Hz for reference signal.
-    processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or processing.
-    processed_freq (int): Sampling rate in Hz for processed signal.
-    hearing_loss (np.ndarray): vector of hearing loss at the 6 audiometric frequencies
-                  [250, 500, 1000, 2000, 4000, 6000] Hz.
-    equalisation (int): Flag to provide equalization for the hearing loss to reference signal:
+        reference (np.ndarray): Clear input reference speech signal with no noise or
+            distortion. If a hearing loss is specified, NAL-R equalization is optional
+        reference_freq (int): Sampling rate in Hz for reference signal.
+        processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or
+            processing.
+        processed_freq (int): Sampling rate in Hz for processed signal.
+        hearing_loss (np.ndarray): vector of hearing loss at the 6 audiometric
+            frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
+        equalisation (int): Mode to use when equalising the reference signal:
                 1 = no EQ has been provided, the function will add NAL-R
                 2 = NAL-R EQ has already been added to the reference signal
-    level1    Optional input specifying level in dB SPL that corresponds to a
+        level1: Optional input specifying level in dB SPL that corresponds to a
               signal RMS = 1. Default is 65 dB SPL if argument not provided.
-    silence_threshold (float): Silence threshold sum across bands, dB above audio threshold. Default: 2.5
-    add_noise (float): Additive noise in dB SL to conditiona cross-covariance. Default: 0.0
-    segment_covariance (int): Segment size for the covariance calculation. Default: 16
+        silence_threshold (float): Silence threshold sum across bands, dB above audio
+            threshold. Default: 2.5
+        add_noise (float): Additive noise in dB SL to conditiona cross-covariance.
+            Default is 0.0
+        segment_covariance (int): Segment size for the covariance calculation.
+            Default is 16
 
     Returns:
-    Combined  Quality estimate is the product of the nonlinear and linear terms
-    Nonlin    Nonlinear quality component = (cepstral corr)^2 x seg BM coherence
-    Linear    Linear quality component = std of spectrum and spectrum slope
-    raw       Vector of raw values = [CepCorr, BMsync5, Dloud, Dslope]
+        tuple(Combined, Nonlin, Linear, raw)
+            Combined: Quality estimate is the product of the nonlinear and linear terms
+            Nonlin: Nonlinear quality component = (cepstral corr)^2 x seg BM coherence
+            Linear: Linear quality component = std of spectrum and spectrum slope
+            raw: Vector of raw values = [CepCorr, BMsync5, Dloud, Dslope]
 
     James M. Kates, 5 August 2013.
     Translated from MATLAB to Python by Gerardo Roa Dabike, October 2022.

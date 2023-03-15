@@ -41,7 +41,8 @@ def test_gha_audiogram(regtest):
         levels_r = np.round(np.log10(np.random.rand(6) / 20) * (-i), 0)
         ag = Audiogram(levels_l, levels_r, cfs)
         regtest.write(
-            f"Audiogram original: \n{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
+            "Audiogram original: \n"
+            f"{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
         )
         ag = ag.select_subset_of_cfs(np.array([500, 1000, 2000]))
         regtest.write(

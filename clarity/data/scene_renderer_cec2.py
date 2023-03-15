@@ -193,8 +193,8 @@ class SceneRenderer:
     def make_hoa_target_anechoic(self, target, room):
         """Make the HOA anechoic target.
 
-        Applies an anechoic HOA IR that models a source straight in front of the listener.
-        The signal is delayed to match the propagation delay of the room.
+        Applies an anechoic HOA IR that models a source straight in front of the
+        listener. The signal is delayed to match the propagation delay of the room.
 
         Args:
             target ():
@@ -371,7 +371,8 @@ class SceneRenderer:
         ]
         hrirs = [loadmat(hrir_filename) for hrir_filename in hrir_filenames]
 
-        # Target and (flattened) interferer mixed down to binaural using each set of hrirs
+        # Target and (flattened) interferer mixed down to binaural using each
+        # set of hrirs
         targets = [
             hoa.binaural_mixdown(hoa_target, hrir, self.metadata.hrir_metadata)
             for hrir in hrirs

@@ -27,12 +27,13 @@ EPS = 1e-8
 # set RMS so that peak of output file so that no clipping occurs, set so that
 # equiv0dBfileSPL > 100dB for LOUD input files
 ref_RMSdB = -31.2
-calib_dBSPL = (
-    65  # what RMS of INPUT speech file translates to in real world (unweighted)
-)
-equiv0dBfileSPL = (
-    calib_dBSPL - ref_RMSdB
-)  # what 0dB file signal would translate to in dB SPL: constant for cochlear_simulate function
+
+# what RMS of INPUT speech file translates to in real world (unweighted)
+calib_dBSPL = 65
+
+# what 0dB file signal would translate to in dB SPL:
+# constant for cochlear_simulate function
+equiv0dBfileSPL = calib_dBSPL - ref_RMSdB
 
 # clarity msbg
 equiv0dBSPL = 100
@@ -76,16 +77,19 @@ def generate_key_percent(signal, thr_dB, winlen):
 
 
 def measure_rms(signal, sr, dB_rel_rms):
-    """Measures toatal power of all 10 msec frams that are above a user-specified threshold
+    """Compute RMS level of a signal.
+
+    Measures total power of all 10 msec frames that are above a user-specified threshold
 
     Args:
         signal: input signal
         sr: sampling rate
-        dB_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array, second value over rules.)
-                    only single value supported currently
+        dB_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array,
+            second value over rules. only single value supported currently)
+
     Returns:
-        tuple: The percentage of frames that are required to be tracked for measuring RMS (useful when DR compression
-               changes histogram shape)
+        tuple: The percentage of frames that are required to be tracked for measuring
+        RMS (useful when DR compression changes histogram shape)
     """
     win_secs = 0.01
     # first RMS is of all signal

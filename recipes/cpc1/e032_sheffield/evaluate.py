@@ -30,7 +30,8 @@ def std_err(x, y):
 class Model:
     """Class to represent the mapping from mbstoi parameters to intelligibility scores.
     The mapping uses a simple logistic function scaled between 0 and 100.
-    The mapping parameters need to fit first using mbstoi, intelligibility score pairs, using fit().
+    The mapping parameters need to fit first using mbstoi, intelligibility score
+    pairs, using fit().
     Once the fit has been made predictions can be made by calling predict()
     """
 

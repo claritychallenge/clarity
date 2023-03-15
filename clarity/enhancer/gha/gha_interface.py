@@ -81,7 +81,9 @@ class GHAHearingAid:
         output = template.render(
             io_in=input_file,
             io_out=output_file,
-            peaklevel_in=f"[{peaklevel_in} {peaklevel_in} {peaklevel_in} {peaklevel_in}]",
+            peaklevel_in=(
+                f"[{peaklevel_in} {peaklevel_in} {peaklevel_in} {peaklevel_in}]"
+            ),
             peaklevel_out=f"[{peaklevel_out} {peaklevel_out}]",
             gtdata=formatted_sGt,
         )
@@ -182,7 +184,8 @@ class GHAHearingAid:
 
         Args:
             filename (string): Name of file to read
-            offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
+            offset (int, optional): Offset in samples or seconds (from start).
+                Defaults to 0.
             nchannels: expected number of channel (default: 0 = any number OK)
             offset_is_samples (bool): measurement units for offset (default: False)
         Returns:

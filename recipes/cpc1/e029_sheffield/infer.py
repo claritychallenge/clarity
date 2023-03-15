@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class ASR(sb.core.Brain):
     def compute_uncertainty(self, wavs, wav_lens, tokens_bos):
-        """Forward computations from the waveform batches to the output probabilities."""
+        """Forward computations from waveform batches to the output probabilities."""
         # batch = batch.to(self.device)
         wavs, wav_lens, tokens_bos = (
             wavs.to(self.device),

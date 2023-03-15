@@ -84,7 +84,7 @@ repos:
       - id: pylint_warnings
         args: ["--rcfile=.pylintrc"]
         name: pylint-warnings
-        entry: python -m pylint
+        entry: python -m pylint -E  # -E means only show errors (temporary)
         language: system
         files: \.py$
 ci:

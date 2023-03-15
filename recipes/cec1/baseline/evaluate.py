@@ -133,7 +133,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 os.path.join(proc_folder, f"{scene}_{listener}_HLddf-output.wav")
             )
 
-            # Calculate channel-specific unit impulse delay due to HL model and audiograms
+            # Calculate channel-specific unit impulse delay due to HL model
+            # and audiograms
             delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))
             if delay[0] != delay[1]:
                 logging.info(f"Difference in delay of {delay[0] - delay[1]}.")

@@ -123,7 +123,8 @@ html_theme = "pydata_sphinx_theme"
 #         {
 #             "rel": "icon",
 #             "sizes": "156x20",
-#             "href": "https://github.com/Mesnage-Org/clarity/actions/workflows/ci-tests.yml/badge.svg",
+#             "href": "https://github.com/Mesnage-Org/clarity/actions/workflows/\
+#                           ci-tests.yml/badge.svg",
 #         },
 #         {
 #             "rel": "icon",

@@ -2,7 +2,9 @@
 import numpy as np
 import pytest
 
-from clarity.data.HOA_tools_cec2 import (  # HOARotator,; ambisonic_convolve,; binaural_mixdown,; compute_band_rotation,; compute_rotation_matrix,;  dot,; dot,
+# HOARotator,; ambisonic_convolve,; binaural_mixdown,;;;
+# compute_band_rotation,;; compute_rotation_matrix,;  dot,; dot,
+from clarity.data.HOA_tools_cec2 import (
     P,
     U,
     V,
@@ -39,7 +41,8 @@ def test_centred_element(
 
 
 def test_centred_element_index_error(random_matrix: np.ndarray) -> None:
-    """Test centered_element() raises an IndexError if centering is outside of matrix dimensions."""
+    """Test that centered_element() raises an IndexError if centering is outside
+    of matrix dimensions."""
     with pytest.raises(IndexError):
         centred_element(random_matrix, row=101, col=2)
     with pytest.raises(IndexError):
@@ -158,7 +161,8 @@ def test_W(
         (0, 2, 2, (0.5773502691896257, -0.28867513459481287, -0.0)),
         (1, 2, 2, (0.5, 0.3535533905932738, -0.0)),
         (-1, 2, 3, (1.2649110640673518, 0.7745966692414834, -0.31622776601683794)),
-        # (-1, 2, 1, (-0.0, np.nan, -0.0)),  # FixMe : This is probably going to cause problems how to capture?
+        # (-1, 2, 1, (-0.0, np.nan, -0.0)),
+        #   # FixMe : This is probably going to cause problems how to capture?
     ],
 )
 def test_compute_UVW_coefficients(
@@ -174,24 +178,28 @@ def test_compute_UVW_coefficients_zero_division_error() -> None:
         compute_UVW_coefficients(degree=-1, n=2, order=-2)
 
 
-# FixMe : Not yet working, I don't understand how to get the `output` passed in correctly
+# FixMe : Not yet working, I don't understand how to get `output` passed in correctly
 # @pytest.mark.parametrize(
 #     "el, output, expected",
 #     [
 #         (2, np.asarray([0, 0]), np.asarray([[1, 2], [3, 4]])),
 #     ],
 # )
-# def test_compute_band_rotation(el: int, output: np.ndarray, random_matrix: np.ndarray, expected: np.ndarray) -> None:
+# def test_compute_band_rotation(el: int, output: np.ndarray,
+#   random_matrix: np.ndarray, expected: np.ndarray) -> None:
 #     """Test for compute_band_rotation() function."""
-#     np.testing.assert_array_equal(compute_band_rotation(el, [random_matrix, random_matrix], output), expected)
+#     np.testing.assert_array_equal(compute_band_rotation(el,
+# [random_matrix, random_matrix], output), expected)
 
 
 # FixMe : Not working yet, results in a typing error???
 # @pytest.mark.parametrize(
 #     "A, B, expected",
 #     [
-#         (np.asarray([[1, 2], [3, 4]]), np.asarray([[4, 3], [2, 1]]), np.asarray([[1, 2], [3, 4]])),
-#         (np.asarray([[5, 6], [7, 8]]), np.asarray([[8, 7], [6, 5]]), np.asarray([[1, 2], [3, 4]])),
+#         (np.asarray([[1, 2], [3, 4]]), np.asarray([[4, 3], [2, 1]]),
+#               np.asarray([[1, 2], [3, 4]])),
+#         (np.asarray([[5, 6], [7, 8]]), np.asarray([[8, 7], [6, 5]]),
+#               np.asarray([[1, 2], [3, 4]])),
 #     ],
 # )
 # def test_dot(A: np.ndarray, B: np.ndarray, expected: np.ndarray) -> None:
@@ -327,7 +335,8 @@ def test_rotation_control_vector(
 def test_rotation_control_vector_value_error(
     array_length: int, start_idx: int, end_idx: int
 ) -> None:
-    """Test rotation_control_vector() raises ValueError if start_idx > end_idx or end_idx > array_length."""
+    """Test rotation_control_vector() raises ValueError if start_idx > end_idx or
+    end_idx > array_length."""
     with pytest.raises(ValueError):
         rotation_control_vector(array_length, start_idx, end_idx)
 
@@ -379,7 +388,8 @@ def test_rotation_vector(
 
 
 def test_rotation_vector_floating_point_error() -> None:
-    """Test rotation_vector() raises FloatingPointError if signal_length is zero function."""
+    """Test rotation_vector() raises FloatingPointError if signal_length is
+    zero function."""
     with pytest.raises(FloatingPointError):
         rotation_vector(
             start_angle=10, end_angle=20, signal_length=0, start_idx=2, end_idx=8

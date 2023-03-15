@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Recipe for training a Transformer ASR system with librispeech, from the SpeechBrain LibriSpeech/ASR recipe.
-The SpeechBrain version used in this work is:
+Recipe for training a Transformer ASR system with librispeech, from the SpeechBrain
+LibriSpeech/ASR recipe. The SpeechBrain version used in this work is:
 https://github.com/speechbrain/speechbrain/tree/1eddf66eea01866d3cf9dfe61b00bb48d2062236
 """
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Define training procedure
 class ASR(sb.core.Brain):
     def compute_forward(self, batch, stage):
-        """Forward computations from the waveform batches to the output probabilities."""
+        """Forward computations from waveform batches to output probabilities."""
         batch = batch.to(self.device)
         wavs, wav_lens = batch.sig
         tokens_bos, _ = batch.tokens_bos
@@ -57,8 +57,8 @@ class ASR(sb.core.Brain):
             hyps = None
             current_epoch = self.hparams.epoch_counter.current
             if current_epoch % self.hparams.valid_search_interval == 0:
-                # for the sake of efficiency, we only perform beamsearch with limited capacity
-                # and no LM to give user some idea of how the AM is doing
+                # for the sake of efficiency, we only perform beamsearch with limited
+                # capacity and no LM to give user some idea of how the AM is doing
                 hyps, _ = self.hparams.valid_search(enc_out.detach(), wav_lens)
         elif stage == sb.Stage.TEST:
             hyps, _ = self.hparams.test_search(enc_out.detach(), wav_lens)
@@ -225,7 +225,8 @@ class ASR(sb.core.Brain):
 
             # Load latest checkpoint to resume training if interrupted
             if self.checkpointer is not None:
-                # do not reload the weights if training is interrupted right before stage 2
+                # do not reload the weights if training is interrupted right before
+                # stage 2
                 group = current_optimizer.param_groups[0]
                 if "momentum" not in group:
                     return

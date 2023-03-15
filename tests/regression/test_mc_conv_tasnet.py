@@ -56,7 +56,7 @@ def test_convtasnet(regtest):
     cfg["test_loader"] = {
         "batch_size": 1,
         "shuffle": False,
-        "num_workers": 0,  # Overhead of multiprocessing not worth it for tiny test dataset
+        "num_workers": 0,  # Overhead of multiprocessing not worth it for tiny dataset
     }
     cfg = OmegaConf.create(cfg)
     device = "cuda" if torch.cuda.is_available() else None

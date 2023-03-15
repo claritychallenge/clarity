@@ -110,7 +110,7 @@ def test_process_stems_for_listener():
         threshold=0.35, attenuation=0.1, attack=50, release=1000, rms_buffer_size=0.064
     )
 
-    # Call the process_stems_for_listener function and check that the output is as expected
+    # Call the process_stems_for_listener function and check output is as expected
     output = process_stems_for_listener(
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
