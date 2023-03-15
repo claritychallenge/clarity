@@ -82,7 +82,7 @@ repos:
   - repo: local
     hooks:
       - id: pylint_warnings
-        args: ["--rcfile=.pylintrc", "--errors-only"]
+        args: ["--rcfile=.pylintrc"]
         name: pylint-warnings
         entry: python -m pylint
         language: system
