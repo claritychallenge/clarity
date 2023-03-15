@@ -343,7 +343,6 @@ class CarSceneAcoustics:
         )
 
         if config.evaluate.save_intermediate_wavs:
-            audio_manager.add_audios_to_save("enh_signal", enh_signal)
             audio_manager.add_audios_to_save("enh_signal_hrtf", processed_signal)
 
         # 3. Scale noise to target SNR
