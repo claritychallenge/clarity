@@ -78,7 +78,7 @@ class ResultsFile:
             haaqi_right (float): The HAAQI score for the right channel.
         """
 
-        logger.info(f"The combined score is {score}")
+        logger.info(f"The combined score for scene {scene}: {score:.4f}")
 
         with open(self.file_name, "a", encoding="utf-8") as csv_f:
             csv_writer = csv.writer(

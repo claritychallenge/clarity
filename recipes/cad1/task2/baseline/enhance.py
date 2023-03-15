@@ -45,7 +45,7 @@ def compute_average_hearing_loss(listener: dict) -> float:
         for i in range(len(listener["audiogram_cfs"]))
         if listener["audiogram_cfs"][i] in cfs
     ]
-    return (np.mean(left_loss) + np.mean(right_loss)) / 2
+    return max(float(np.mean(left_loss)), float(np.mean(right_loss)))
 
 
 def enhance_song(
@@ -74,9 +74,13 @@ def enhance_song(
     original_loudness = meter.integrated_loudness(waveform.T)
 
     average_hearing_loss = compute_average_hearing_loss(listener_audiograms)
+
+    extra_reduction = (
+        (average_hearing_loss - 50) / 5 if (average_hearing_loss - 50) / 5 > 0 else 0
+    )
     target_level = (
-        config.enhance.min_level
-        if average_hearing_loss > 50
+        config.enhance.min_level - extra_reduction
+        if average_hearing_loss >= 50
         else config.enhance.average_level
     )
 
