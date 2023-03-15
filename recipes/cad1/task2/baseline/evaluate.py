@@ -180,6 +180,7 @@ def evaluate_scene(
     ref_signal = car_scene_acoustic.equalise_level(
         signal=ref_signal, reference_signal=processed_signal, max_level=-14
     )
+    audio_manager.add_audios_to_save("ref_signal_for_eval", ref_signal)
 
     audio_manager.save_audios()
 
