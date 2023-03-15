@@ -194,21 +194,22 @@ def V(degree, n, order, rotation_matrices):
     """
     d = 0
     if degree == 0:
-        return P(1, 1, n, order, rotation_matrices) + P(
+        v_coeff = P(1, 1, n, order, rotation_matrices) + P(
             -1, -1, n, order, rotation_matrices
         )
     elif degree > 0:
         if degree == 1:
             d = 1.0
-        return P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
+        v_coeff = P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
             -1, -degree + 1, n, order, rotation_matrices
         ) * (1 - d)
     else:
         if degree == -1:
             d = 1.0
-        return P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
+        v_coeff = P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
             -1, -degree - 1, n, order, rotation_matrices
         ) * np.sqrt(1 + d)
+    return v_coeff
 
 
 @njit

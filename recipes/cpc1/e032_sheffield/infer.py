@@ -131,7 +131,6 @@ def feat2similarity(
             ),
             dim=-1,
         )[0]
-        return sim
     else:
         max_length = torch.max(
             torch.LongTensor(
@@ -173,7 +172,8 @@ def feat2similarity(
             padded_ref_feats_right, padded_proc_feats_right, dim=-1
         )
         sim = torch.stack([ll_sim, lr_sim, rl_sim, rr_sim], dim=-1).max(dim=-1)[0]
-        return torch.mean(sim, dim=-1)
+        sim = torch.mean(sim, dim=-1)
+    return sim
 
 
 def compute_similarity(left_proc_path, wrd, asr_model, bos_index, tokenizer):

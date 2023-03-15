@@ -396,10 +396,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
         """
         hyps_len = [len(lst) for lst in hyps]
         beam_size = [self.beam_size for _ in range(len(hyps_len))]
-        if hyps_len == beam_size:
-            return True
-        else:
-            return False
+        return hyps_len == beam_size
 
     def _check_attn_shift(self, attn, prev_attn_peak):
         """This method checks whether attention shift is more than attn_shift.
@@ -868,8 +865,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
                 uncertainty.append({"confidence": confidence, "entropy": entropy})
 
             return predictions, topk_scores, uncertainty
-        else:
-            return predictions, topk_scores
+
+        return predictions, topk_scores
 
     def ctc_forward_step(self, x, model_idx):
         logits = self.ctc_fc[model_idx](x)
