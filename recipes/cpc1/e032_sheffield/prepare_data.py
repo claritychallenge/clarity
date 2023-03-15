@@ -33,17 +33,13 @@ def run_data_split(cfg, track):
         logger.info("Train set and dev set lists exist...")
         return
 
-    scenes_dict = json.load(
-        open(
-            os.path.join(
-                cfg.path.root,
-                "clarity_CPC1_data_train/metadata",
-                f"CPC1.{'train'+track}.json",
-            ),
-            "r",
-            encoding="utf-8",
-        )
+    filepath = os.path.join(
+        cfg.path.root,
+        "clarity_CPC1_data_train/metadata",
+        f"CPC1.{'train'+track}.json",
     )
+    with open(filepath, "r", encoding="utf-8") as fp:
+        scenes_dict = json.load(fp)
     scene_list = []
     for item in scenes_dict:
         scene_list.append(item["scene"])
@@ -85,31 +81,21 @@ def run_msbg_simulation(cfg, track):
         dataset = split + track
         dataset_folder = os.path.join(cfg.path.root, "clarity_CPC1_data_" + split)
         output_path = os.path.join(dataset_folder, "clarity_data/HA_outputs", dataset)
-        scenes = json.load(
-            open(
-                os.path.join(dataset_folder, "metadata", f"CPC1.{dataset}.json"),
-                "r",
-                encoding="utf-8",
-            )
-        )
+        file_path = os.path.join(dataset_folder, "metadata", f"CPC1.{dataset}.json")
+        with open(file_path, "r", encoding="utf-8") as fp:
+            scenes = json.load(fp)
         if split == "train":
-            listener_audiograms = json.load(
-                open(
-                    os.path.join(
-                        dataset_folder, "metadata", "listeners.CPC1_train.json"
-                    ),
-                    "r",
-                    encoding="utf-8",
-                )
+            file_path = os.path.join(
+                dataset_folder, "metadata", "listeners.CPC1_train.json"
             )
+            with open(file_path, "r", encoding="utf-8") as fp:
+                listener_audiograms = json.load(fp)
         else:
-            listener_audiograms = json.load(
-                open(
-                    os.path.join(dataset_folder, "metadata", "listeners.CPC1_all.json"),
-                    "r",
-                    encoding="utf-8",
-                )
+            file_path = os.path.join(
+                dataset_folder, "metadata", "listeners.CPC1_all.json"
             )
+            with open(file_path, "r", encoding="utf-8") as fp:
+                listener_audiograms = json.load(fp)
 
         # initialize ear
         ear = Ear(**cfg["MSBGEar"])

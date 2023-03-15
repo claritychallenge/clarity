@@ -27,12 +27,10 @@ def read_csv_scores(file):
 
 @hydra.main(config_path=".", config_name="config")
 def run_calculate_SI(cfg: DictConfig) -> None:
-    scenes_listeners = json.load(
-        open(cfg.path.scenes_listeners_file, "r", encoding="utf-8")
-    )
-    listener_audiograms = json.load(
-        open(cfg.path.listeners_file, "r", encoding="utf-8")
-    )
+    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
     os.makedirs(cfg.path.exp_folder, exist_ok=True)
 
     enhanced_folder = os.path.join(cfg.path.exp_folder, "enhanced_signals")

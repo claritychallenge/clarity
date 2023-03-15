@@ -37,15 +37,14 @@ class CEC1Dataset(data.Dataset):
         self.testing = testing
 
         self.scene_list = []
-        with open(scenes_file, "r") as f:
-            scene_json = json.load(f)
+        with open(scenes_file, "r", encoding="utf-8") as fp:
+            scene_json = json.load(fp)
             if not testing:
-                for i in range(len(scene_json)):
-                    self.scene_list.append(scene_json[i]["scene"])
+                for scene in scene_json:
+                    self.scene_list.append(scene["scene"])
             else:
                 for scene in scene_json.keys():
                     self.scene_list.append(scene)
-            f.close()
 
         if self.num_channels == 2:
             self.mixed_suffix = "_mixed_CH1.wav"

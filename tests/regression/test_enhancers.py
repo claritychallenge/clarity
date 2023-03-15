@@ -68,7 +68,8 @@ def test_GHA_inputs(regtest):
 
 def test_GHA_config(regtest):
     enhancer = gha(**gha_params)
-    listeners = json.load(open("tests/test_data/metadata/listeners.json"))
+    with open("tests/test_data/metadata/listeners.json", "r", encoding="utf-8") as fp:
+        listeners = json.load(fp)
     listener = listeners["L0001"]
     cfs = np.array(listener["audiogram_cfs"], dtype="int")
     audiogram_left = np.array(listener["audiogram_levels_l"])

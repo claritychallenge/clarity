@@ -75,11 +75,13 @@ def read_data(pred_json, label_json):
 
     # read label_json to dict
     label_dict = {}
-    label_json = json.load(open(label_json, "r", encoding="utf-8"))
+    with open(label_json, "r", encoding="utf-8") as fp:
+        label_json = json.load(fp)
     for item in label_json:
         label_dict[item["signal"]] = item["correctness"]
 
-    pred_dict = json.load(open(pred_json, "r", encoding="utf-8"))
+    with open(pred_json, "r", encoding="utf-8") as fp:
+        pred_dict = json.load(fp)
     for signal, pred in pred_dict.items():
         prediction.append(pred * 100.0)
         label.append(label_dict[signal])

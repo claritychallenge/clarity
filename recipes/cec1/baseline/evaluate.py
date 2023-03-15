@@ -41,12 +41,10 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def run_HL_processing(cfg: DictConfig) -> None:
     output_path = os.path.join(cfg["path"]["exp_folder"], "eval_signals")
     os.makedirs(output_path, exist_ok=True)
-    scenes_listeners = json.load(
-        open(cfg["path"]["scenes_listeners_file"], "r", encoding="utf-8")
-    )
-    listener_audiograms = json.load(
-        open(cfg["path"]["listeners_file"], "r", encoding="utf-8")
-    )
+    with open(cfg["path"]["scenes_listeners_file"], "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+    with open(cfg["path"]["listeners_file"], "r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
     enhanced_folder = cfg["path"]["enhanced_signals"]
 
     # initialize ear
@@ -118,9 +116,8 @@ def run_HL_processing(cfg: DictConfig) -> None:
 
 @hydra.main(config_path=".", config_name="config")
 def run_calculate_SI(cfg: DictConfig) -> None:
-    scenes_listeners = json.load(
-        open(cfg["path"]["scenes_listeners_file"], "r", encoding="utf-8")
-    )
+    with open(cfg["path"]["scenes_listeners_file"], "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
     proc_folder = os.path.join(cfg["path"]["exp_folder"], "eval_signals")
     sii_file = os.path.join(cfg["path"]["exp_folder"], "sii.csv")
     csv_lines = [["scene", "listener", "sii"]]
