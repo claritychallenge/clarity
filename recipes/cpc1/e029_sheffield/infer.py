@@ -83,8 +83,8 @@ class ASR(sb.core.Brain):
 
 def init_asr(asr_config):
     hparams_file, run_opts, overrides = sb.parse_arguments([asr_config])
-    with open(hparams_file) as fin:
-        hparams = load_hyperpyyaml(fin, overrides)
+    with open(hparams_file, "r", encoding="utf-8") as fp:
+        hparams = load_hyperpyyaml(fp, overrides)
 
     tokenizer = hparams["tokenizer"]
     bos_index = hparams["bos_index"]
@@ -158,10 +158,14 @@ def run(cfg: DictConfig) -> None:
         dev_conf[wav_id] = uncertainty[0].tolist()
         dev_negent[wav_id] = uncertainty[1].tolist()
 
-        with open(os.path.join(cfg.path.exp_folder, "dev_conf.json"), "w") as f:
-            json.dump(dev_conf, f)
-        with open(os.path.join(cfg.path.exp_folder, "dev_negent.json"), "w") as f:
-            json.dump(dev_negent, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_conf.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(dev_conf, fp)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_negent.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(dev_negent, fp)
 
     # test set similarity
     test_conf = {}
@@ -174,10 +178,15 @@ def run(cfg: DictConfig) -> None:
         test_conf[wav_id] = uncertainty[0].tolist()
         test_negent[wav_id] = uncertainty[1].tolist()
 
-        with open(os.path.join(cfg.path.exp_folder, "test_conf.json"), "w") as f:
-            json.dump(test_conf, f)
-        with open(os.path.join(cfg.path.exp_folder, "test_negent.json"), "w") as f:
-            json.dump(test_negent, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "test_conf.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(test_conf, fp)
+
+        with open(
+            os.path.join(cfg.path.exp_folder, "test_negent.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(test_negent, fp)
 
 
 # pylint: disable=no-value-for-parameter

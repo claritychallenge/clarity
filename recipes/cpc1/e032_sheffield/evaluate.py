@@ -75,11 +75,11 @@ def read_data(pred_json, label_json):
 
     # read label_json to dict
     label_dict = {}
-    label_json = json.load(open(label_json))
+    label_json = json.load(open(label_json, "r", encoding="utf-8"))
     for item in label_json:
         label_dict[item["signal"]] = item["correctness"]
 
-    pred_dict = json.load(open(pred_json))
+    pred_dict = json.load(open(pred_json, "r", encoding="utf-8"))
     for signal, pred in pred_dict.items():
         prediction.append(pred * 100.0)
         label.append(label_dict[signal])
@@ -128,7 +128,9 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(prediction_test)
     dec_scores = compute_scores(fit_pred, label_test)
 
-    with open(os.path.join(cfg.path.exp_folder, "results.json"), "w") as f:
+    with open(
+        os.path.join(cfg.path.exp_folder, "results.json"), "w", encoding="utf-8"
+    ) as f:
         json.dump({"enc_results": enc_scores, "dec_results": dec_scores}, f)
 
 

@@ -113,13 +113,13 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(data_eval["prediction"].to_numpy())
     open_set_scores = compute_scores(fit_pred, data_eval["label"].to_numpy())
 
-    with open("results.json", "w") as f:
+    with open("results.json", "w", encoding="utf-8") as fp:
         json.dump(
             {
                 "closed_set scores:": closed_set_scores,
                 "open_set scores:": open_set_scores,
             },
-            f,
+            fp,
         )
 
 

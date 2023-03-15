@@ -39,7 +39,9 @@ def run_data_split(cfg, track):
                 cfg.path.root,
                 "clarity_CPC1_data_train/metadata",
                 f"CPC1.{'train'+track}.json",
-            )
+            ),
+            "r",
+            encoding="utf-8",
         )
     )
     scene_list = []
@@ -51,10 +53,10 @@ def run_data_split(cfg, track):
     )
     scene_train_list = list(set(scene_list) - set(scene_dev_list))
 
-    with open(scene_train_json, "w") as f:
-        json.dump(scene_train_list, f)
-    with open(scene_dev_json, "w") as f:
-        json.dump(scene_dev_list, f)
+    with open(scene_train_json, "w", encoding="utf-8") as fp:
+        json.dump(scene_train_list, fp)
+    with open(scene_dev_json, "w", encoding="utf-8") as fp:
+        json.dump(scene_dev_list, fp)
 
 
 def listen(ear, signal, audiogram_l, audiogram_r):
@@ -84,20 +86,28 @@ def run_msbg_simulation(cfg, track):
         dataset_folder = os.path.join(cfg.path.root, "clarity_CPC1_data_" + split)
         output_path = os.path.join(dataset_folder, "clarity_data/HA_outputs", dataset)
         scenes = json.load(
-            open(os.path.join(dataset_folder, "metadata", f"CPC1.{dataset}.json"))
+            open(
+                os.path.join(dataset_folder, "metadata", f"CPC1.{dataset}.json"),
+                "r",
+                encoding="utf-8",
+            )
         )
         if split == "train":
             listener_audiograms = json.load(
                 open(
                     os.path.join(
                         dataset_folder, "metadata", "listeners.CPC1_train.json"
-                    )
+                    ),
+                    "r",
+                    encoding="utf-8",
                 )
             )
         else:
             listener_audiograms = json.load(
                 open(
-                    os.path.join(dataset_folder, "metadata", "listeners.CPC1_all.json")
+                    os.path.join(dataset_folder, "metadata", "listeners.CPC1_all.json"),
+                    "r",
+                    encoding="utf-8",
                 )
             )
 
@@ -152,8 +162,8 @@ def generate_data_split(
     if_msbg=False,
     if_ref=False,
 ):
-    with open(orig_data_json, "r") as f:
-        all_data_list = json.load(f)
+    with open(orig_data_json, "r", encoding="utf-8") as fp:
+        all_data_list = json.load(fp)
 
     left_tgt_signal_folder = os.path.join(
         target_data_folder, orig_signal_folder.split("/")[-2] + "_left"
@@ -232,21 +242,21 @@ def generate_data_split(
                 ["right_" + snt_id, str(duration), wav_file_right, spk_id, wrds]
             )
 
-    with open(left_csvfile, mode="w") as csv_f:
+    with open(left_csvfile, mode="w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         for line in csv_lines_left:
             csv_writer.writerow(line)
 
-    with open(right_csvfile, mode="w") as csv_f:
+    with open(right_csvfile, mode="w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         for line in csv_lines_right:
             csv_writer.writerow(line)
 
-    with open(binaural_csvfile, mode="w") as csv_f:
+    with open(binaural_csvfile, mode="w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
@@ -271,9 +281,8 @@ def run_signal_generation_train(cfg, track):
 
     datasets_to_generate = []
     for i in range(len(lists_to_generate)):
-        with open(lists_to_generate[i], "r") as f:
-            datasets_to_generate.append(json.load(f))
-            f.close()
+        with open(lists_to_generate[i], "r", encoding="utf-8") as fp:
+            datasets_to_generate.append(json.load(fp))
 
     for i in range(len(lists_to_generate)):
         # generate_data_split(

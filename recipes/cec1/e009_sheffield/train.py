@@ -107,8 +107,8 @@ def train_den(cfg, ear):
     trainer.fit(den_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
-    with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
-        json.dump(best_k, f, indent=0)
+    with open(os.path.join(exp_dir, "best_k_models.json"), "w", encoding="utf-8") as fp:
+        json.dump(best_k, fp, indent=0)
     state_dict = torch.load(checkpoint.best_model_path)
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
@@ -163,8 +163,8 @@ def train_amp(cfg, ear):
         )
 
     # build normal hearing and hearing loss ears
-    with open(cfg.listener.metafile, "r") as f:
-        listeners_file = json.load(f)
+    with open(cfg.listener.metafile, "r", encoding="utf-8") as fp:
+        listeners_file = json.load(fp)
         audiogram_cfs = listeners_file[cfg.listener.id]["audiogram_cfs"]
         audiogram_lvl_l = listeners_file[cfg.listener.id]["audiogram_levels_l"]
         audiogram_lvl_r = listeners_file[cfg.listener.id]["audiogram_levels_r"]
@@ -199,8 +199,8 @@ def train_amp(cfg, ear):
     trainer.fit(amp_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
-    with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
-        json.dump(best_k, f, indent=0)
+    with open(os.path.join(exp_dir, "best_k_models.json"), "w", encoding="utf-8") as fp:
+        json.dump(best_k, fp, indent=0)
     state_dict = torch.load(checkpoint.best_model_path)
     amp_module.load_state_dict(state_dict=state_dict["state_dict"])
     amp_module.cpu()

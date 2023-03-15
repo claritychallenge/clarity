@@ -183,8 +183,8 @@ class ASR(sb.core.Brain):
                 stats_meta={"Epoch loaded": self.hparams.epoch_counter.current},
                 test_stats=stage_stats,
             )
-            with open(self.hparams.wer_file, "w") as w:
-                self.wer_metric.write_stats(w)
+            with open(self.hparams.wer_file, "w", encoding="utf-8") as fp:
+                self.wer_metric.write_stats(fp)
 
             # save the averaged checkpoint at the end of the evaluation stage
             # delete the rest of the intermediate checkpoints
@@ -312,8 +312,8 @@ def dataio_prepare(hparams):
 def main():
     # CLI:
     hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:])
-    with open(hparams_file) as fin:
-        hparams = load_hyperpyyaml(fin, overrides)
+    with open(hparams_file, "r", encoding="utf-8") as fp:
+        hparams = load_hyperpyyaml(fp, overrides)
 
     # If distributed_launch=True then
     # create ddp_group with the right communication protocol

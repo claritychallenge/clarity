@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def read_csv_scores(file):
     score_dict = {}
-    with open(file, "r") as f:
+    with open(file, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         _ = next(reader)
         for row in reader:
@@ -27,8 +27,12 @@ def read_csv_scores(file):
 
 @hydra.main(config_path=".", config_name="config")
 def run_calculate_SI(cfg: DictConfig) -> None:
-    scenes_listeners = json.load(open(cfg.path.scenes_listeners_file))
-    listener_audiograms = json.load(open(cfg.path.listeners_file))
+    scenes_listeners = json.load(
+        open(cfg.path.scenes_listeners_file, "r", encoding="utf-8")
+    )
+    listener_audiograms = json.load(
+        open(cfg.path.listeners_file, "r", encoding="utf-8")
+    )
     os.makedirs(cfg.path.exp_folder, exist_ok=True)
 
     enhanced_folder = os.path.join(cfg.path.exp_folder, "enhanced_signals")
@@ -132,7 +136,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
                 unproc_csv_lines.append([scene, listener, str(si_unproc)])
 
-    with open(si_file, "w") as csv_f:
+    with open(si_file, "w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
@@ -145,7 +149,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
     )
 
     if cfg.evaluate.cal_unprocessed_si:
-        with open(unproc_si_file, "w") as csv_f:
+        with open(unproc_si_file, "w", encoding="utf-8") as csv_f:
             csv_writer = csv.writer(
                 csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
             )

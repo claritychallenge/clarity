@@ -42,8 +42,8 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def run_HL_processing(cfg, path):
     output_path = os.path.join(path.exp_folder, "eval_signals")
     os.makedirs(output_path, exist_ok=True)
-    scenes = json.load(open(path.scenes_file))
-    listener_audiograms = json.load(open(path.listeners_file))
+    scenes = json.load(open(path.scenes_file, "r", encoding="utf-8"))
+    listener_audiograms = json.load(open(path.listeners_file, "r", encoding="utf-8"))
     enhanced_folder = path.scenes_folder
 
     # initialize ear
@@ -103,7 +103,7 @@ def run_HL_processing(cfg, path):
 
 
 def run_calculate_SI(cfg, path) -> None:
-    scenes = json.load(open(path.scenes_file))
+    scenes = json.load(open(path.scenes_file, "r", encoding="utf-8"))
     proc_folder = os.path.join(path.exp_folder, "eval_signals")
     sii_file = os.path.join(path.exp_folder, "sii.csv")
     csv_lines = [["signal_ID", "intelligibility_score"]]
@@ -153,7 +153,7 @@ def run_calculate_SI(cfg, path) -> None:
         )
         csv_lines.append([f"{scene}_{listener}_{system}", sii])  # type: ignore
 
-    with open(sii_file, "w") as csv_f:
+    with open(sii_file, "w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
