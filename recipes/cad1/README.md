@@ -21,7 +21,7 @@ The performance of each system on the validation set is reported below.
 
 ### Task 1 - Listening music via headphones
 
-TODO - add Table with results
+TODO - add Table with results.
 
 ### Task 2 - Listening music in a car wearing hearing aids
 
