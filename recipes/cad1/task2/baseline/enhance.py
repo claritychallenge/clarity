@@ -80,8 +80,6 @@ def enhance_song(
         else config.enhance.average_level
     )
 
-    target_level = min(target_level, config.enhance.max_level)
-
     with warnings.catch_warnings(record=True):
         if original_loudness > target_level:
             waveform = pyln.normalize.loudness(
