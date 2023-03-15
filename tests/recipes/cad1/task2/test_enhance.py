@@ -53,4 +53,4 @@ def test_enhance_song():
     meter = pyln.Meter(config.sample_rate)
 
     out_loudness = meter.integrated_loudness(np.array([out_left, out_right]).T)
-    assert np.isclose(out_loudness, -19, atol=0.1)
+    assert np.isclose(out_loudness, -14, atol=0.1)
