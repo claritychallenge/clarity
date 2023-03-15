@@ -5,6 +5,8 @@ LibriSpeech/ASR recipe. The SpeechBrain version used in this work is:
 https://github.com/speechbrain/speechbrain/tree/1eddf66eea01866d3cf9dfe61b00bb48d2062236
 """
 
+# pylint: disable=W0201  # code requires attributes defined outside __init__
+
 import logging
 import os
 import sys

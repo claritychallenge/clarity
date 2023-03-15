@@ -336,6 +336,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
             bos_index, eos_index, min_decode_ratio, max_decode_ratio
         )
         self.beam_size = beam_size
+        self.beam_offset = None
         self.topk = topk
         self.return_log_probs = return_log_probs
         self.length_normalization = length_normalization
@@ -761,7 +762,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
                 # the attn of transformer is
                 #   [batch_size*beam_size, current_step, source_len]
                 if len(cur_attn.size()) > 2:
-                    self.converage = torch.sum(cur_attn, dim=1)
+                    self.coverage = torch.sum(cur_attn, dim=1)
                 else:
                     # Update coverage
                     self.coverage = torch.index_select(

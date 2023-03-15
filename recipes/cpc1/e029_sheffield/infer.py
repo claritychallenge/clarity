@@ -18,8 +18,16 @@ logger = logging.getLogger(__name__)
 
 
 class ASR(sb.core.Brain):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.asr_ensemble = None
+        self.test_search = None
+
     def compute_uncertainty(self, wavs, wav_lens, tokens_bos):
         """Forward computations from waveform batches to the output probabilities."""
+        if self.asr_ensemble is None or self.test_search is None:
+            raise RuntimeError("ASR model not loaded")
+
         # batch = batch.to(self.device)
         wavs, wav_lens, tokens_bos = (
             wavs.to(self.device),

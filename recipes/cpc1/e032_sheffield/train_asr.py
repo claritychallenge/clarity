@@ -22,6 +22,15 @@ tokenizer = None
 
 # Define training procedure
 class ASR(sb.core.Brain):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.acc_metric = None
+        self.wer_metric = None
+        self.train_stats = None
+        self.switched = None
+        self.optimizer = None
+        self.tokenizer = None
+
     def compute_forward(self, batch, stage):
         """Forward computations from waveform batches to output probabilities."""
         batch = batch.to(self.device)
@@ -69,7 +78,8 @@ class ASR(sb.core.Brain):
 
     def compute_objectives(self, predictions, batch, stage):
         """Computes the loss (CTC+NLL) given predictions and targets."""
-
+        if self.wer_metric is None or self.acc_metric is None:
+            raise ValueError("wer_metric or acc_metric is None")
         (p_ctc, p_seq, wav_lens, hyps) = predictions
 
         ids = batch.id
@@ -102,6 +112,9 @@ class ASR(sb.core.Brain):
         """Train the parameters given a single batch in input"""
         # check if we need to switch optimizer
         # if so change the optimizer from Adam to SGD
+        if self.optimizer is None:
+            raise ValueError("optimizer is None")
+
         self.check_and_reset_optimizer()
 
         predictions = self.compute_forward(batch, sb.Stage.TRAIN)
@@ -137,6 +150,8 @@ class ASR(sb.core.Brain):
 
     def on_stage_end(self, stage, stage_loss, epoch):
         """Gets called at the end of a epoch."""
+        if self.wer_metric is None or self.acc_metric is None:
+            raise ValueError("wer_metric or acc_metric is None")
         # Compute/store important stats
         stage_stats = {"loss": stage_loss}
         if stage == sb.Stage.TRAIN:
@@ -329,7 +344,7 @@ def main():
     )
 
     # here we create the datasets objects as well as tokenization and encoding
-    train_data, valid_data, test_datasets, tokenizer = dataio_prepare(hparams)
+    train_data, valid_data, test_datasets, _tokenizer = dataio_prepare(hparams)
 
     # We download the pretrained LM from HuggingFace (or elsewhere depending on
     # the path given in the YAML file). The tokenizer is loaded at the same time.

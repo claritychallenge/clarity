@@ -22,7 +22,14 @@ logger = logging.getLogger(__name__)
 
 
 class DenModule(System):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ear_idx = None
+        self.down_sample = None
+
     def common_step(self, batch, batch_nb, train=True):
+        if self.down_sample is None:
+            raise RuntimeError("Hearing model not loaded")
         proc, ref = batch
         ref = ref[:, self.ear_idx, :]
         if self.config.downsample_factor != 1:
@@ -34,7 +41,24 @@ class DenModule(System):
 
 
 class AmpModule(System):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.hl_ear = None
+        self.nh_ear = None
+        self.down_sample = None
+        self.up_sample = None
+        self.ear_idx = None
+        self.den_model = None
+
     def common_step(self, batch, batch_nb, train=True):
+        if (
+            self.hl_ear is None
+            or self.nh_ear is None
+            or self.down_sample is None
+            or self.up_sample is None
+            or self.den_model is None
+        ):
+            raise RuntimeError("Hearing model not loaded")
         proc, ref = batch
         ref = ref[:, self.ear_idx, :]
         if self.config.downsample_factor != 1:

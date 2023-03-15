@@ -17,9 +17,16 @@ logger = logging.getLogger(__name__)
 
 
 class ASR(sb.core.Brain):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.test_search = None
+
     def generate_feats(self, wavs, wav_lens, tokens_bos):
         """Forward computations from the waveform batches to the output probs."""
         # batch = batch.to(self.device)
+        if self.test_search is None:
+            raise ValueError("test_search is not initialized")
+
         wavs, wav_lens, tokens_bos = (
             wavs.to(self.device),
             wav_lens.to(self.device),
