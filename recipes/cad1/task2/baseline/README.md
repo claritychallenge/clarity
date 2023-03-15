@@ -82,13 +82,12 @@ The objective of the enhancement stage is takes a song and optimise it to a list
 knowing metadata information about the car noise scenario (you won't have access to noise signal), head
 rotation of the listener and the SNR of the enhanced music and the noise at the hearing aid microphones.
 
-In the baseline, we simply attenuate the songs in 5 dB LUFS and save it in 16-bit PCM WAV format. The
-level was selected so fewer samples from the hearing aid output signal are clipped.
+In the baseline, we simply attenuate the song according to the average hearing loss and save it in 16-bit PCM WAV format.
+This attenuation prevents some clipping in the hearing aid output signal.
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
-where you have installed the Cadenza data. This parameter defaults to the working directory.
-You can also define your own `path.exp_folder` to store enhanced
-signals and evaluated results.
+where you have installed the Cadenza data foer the task2. This parameter defaults to one level above the recipe
+for the demo data. You can also define your own `path.exp_folder` to store enhanced and evaluated signal results.
 
 Then run:
 
@@ -113,8 +112,8 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 ### 2.2 Evaluation
 
 The `evaluate.py` module takes the enhanced signals and adds the room impulses and the car noise using
-the expected SNR. It then pass that signal through a fixed hearing aid. The hearing aid output and
-the reference song (scaled to the hearing aid output LUFS) are used to compute the HAAQI [2] score.
+the expected SNR. It then passes that signal through a fixed hearing aid. The hearing aid output and
+the reference song are used to compute the HAAQI [2] score.
 
 To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
