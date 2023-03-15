@@ -211,9 +211,9 @@ class CarSceneAcoustics:
         # add the BRIRs to the signal
         # Left Speaker (LS03)
         out_left = lfilter(hr_ls03_ch1_left, 1, signal[0, :])
-        out_right = lfilter(hr_ls03_ch1_right, 1, signal[1, :])
+        out_right = lfilter(hr_ls03_ch1_right, 1, signal[0, :])
         # Right Speaker (LS04)
-        out_left += lfilter(hr_ls04_ch1_left, 1, signal[0, :])
+        out_left += lfilter(hr_ls04_ch1_left, 1, signal[1, :])
         out_right += lfilter(hr_ls04_ch1_right, 1, signal[1, :])
 
         return np.stack([out_left, out_right], axis=0)
