@@ -171,9 +171,6 @@ def evaluate_scene(
     # ref_signal = ref_signal * scale_factor
     # Following Spotify standard, Max level is -11 LUFS to avoid clipping
     # https://artists.spotify.com/en/help/article/loudness-normalization
-    if config.evaluate.save_intermediate_wavs:
-        audio_manager.add_audios_to_save("ref_signal", ref_signal)
-
     ref_signal = car_scene_acoustic.add_hrtf_to_stereo_signal(
         enh_signal, hrtf["anechoic"], "Anechoic"
     )
@@ -183,7 +180,6 @@ def evaluate_scene(
     ref_signal = car_scene_acoustic.equalise_level(
         signal=ref_signal, reference_signal=processed_signal, max_level=-14
     )
-    audio_manager.add_audios_to_save("ref_signal_normalised", ref_signal)
 
     audio_manager.save_audios()
 
