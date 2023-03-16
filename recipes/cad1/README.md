@@ -21,7 +21,11 @@ The performance of each system on the validation set is reported below.
 
 ### Task 1 - Listening music via headphones
 
-TODO - add Table with results.
+The average HAAQI score per song is:
+
+| Song | HAAQI |
+|------|-------|
+| 1    | 0.75  |
 
 ### Task 2 - Listening music in a car wearing hearing aids
 
