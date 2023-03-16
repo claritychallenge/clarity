@@ -373,12 +373,13 @@ def main():
     )
 
     # Testing
-    for k in test_datasets.keys():  # keys are test_clean, test_other etc
+    for dataset_key, test_dataset in test_datasets.items():
+        # dataset_keys are test_clean, test_other etc
         asr_brain.hparams.wer_file = os.path.join(
-            hparams["output_folder"], f"wer_{k}.txt"
+            hparams["output_folder"], f"wer_{dataset_key}.txt"
         )
         asr_brain.evaluate(
-            test_datasets[k],
+            test_dataset,
             max_key="ACC",
             test_loader_kwargs=hparams["test_dataloader_opts"],
         )
