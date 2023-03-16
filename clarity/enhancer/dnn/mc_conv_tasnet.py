@@ -176,7 +176,7 @@ class SpatialEncoder(nn.Module):
     """Estimation of the nonnegative mixture weight by a 1-D conv layer."""
 
     def __init__(self, L, N, num_channels):
-        super(SpatialEncoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.L, self.N = L, N
         # Components
