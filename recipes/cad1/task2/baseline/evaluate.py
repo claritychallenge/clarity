@@ -184,7 +184,7 @@ def evaluate_scene(
 
     audio_manager.save_audios()
 
-    # 8. Compute HAAQI scores
+    # Compute HAAQI scores
     aq_score_l = compute_haaqi(
         processed_signal[0, :],
         ref_signal[0, :],
