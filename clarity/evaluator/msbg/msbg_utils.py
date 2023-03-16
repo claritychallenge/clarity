@@ -427,7 +427,8 @@ def generate_key_percent(
     # histogram should produce a two-peaked curve: thresh should be set in valley
     # between the two peaks, and set threshold a bit above that,
     # as it heads for main peak
-    # FixMe : Could Otsu's method (from image processing) be used here? https://en.wikipedia.org/wiki/Otsu's_method
+    # FixMe : Could Otsu's method (from image processing) be used here?
+    # https://en.wikipedia.org/wiki/Otsu's_method
     frame_index = np.nonzero(every_db >= expected)[0]
     valid_frames = len(frame_index)
     key = np.zeros((1, valid_frames * window_length))[0]

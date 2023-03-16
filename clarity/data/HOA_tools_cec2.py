@@ -93,7 +93,8 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     sub_matrices[1] = foa_rotmat
 
     typed_sub_matrices = TypedList()
-    [typed_sub_matrices.append(x) for x in sub_matrices]
+    for x in sub_matrices:
+        typed_sub_matrices.append(x)
 
     if n > 1:
         for i in np.arange(2, n + 1):

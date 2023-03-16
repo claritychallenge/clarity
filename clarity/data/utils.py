@@ -1,4 +1,5 @@
 """Utilities for data generation."""
+# pylint: disable=wrong-import-position
 import os
 import sys
 
