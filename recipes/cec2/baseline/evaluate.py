@@ -43,7 +43,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             ave_score = np.mean(list(score_dict.values()))
             logger.info(
                 "si_unproc.csv exists, and the average HASPI scores for unprocessed "
-                "scenes is {:.4f}".format(ave_score)
+                "scenes is %.4f",
+                ave_score,
             )
 
     si_file = os.path.join(cfg.path.exp_folder, "si.csv")
@@ -51,9 +52,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
     if os.path.exists(si_file):
         score_dict = read_csv_scores(si_file)
         ave_score = np.mean(list(score_dict.values()))
-        logger.info(
-            "si.csv exists, and the average HASPI scores is {:.4f}".format(ave_score)
-        )
+        logger.info("si.csv exists, and the average HASPI scores is %4f", ave_score)
         return
 
     for scene in tqdm(scenes_listeners):
@@ -142,9 +141,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             csv_writer.writerow(line)
     score_dict = read_csv_scores(si_file)
     ave_score = np.mean(list(score_dict.values()))
-    logger.info(
-        "si.csv exists, and the average HASPI scores is {:.4f}".format(ave_score)
-    )
+    logger.info("si.csv exists, and the average HASPI scores is %.4f", ave_score)
 
     if cfg.evaluate.cal_unprocessed_si:
         with open(unproc_si_file, "w", encoding="utf-8") as csv_f:
@@ -157,7 +154,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
         ave_score = np.mean(list(score_dict.values()))
         logger.info(
             "si_unproc.csv exists, and the average HASPI scores "
-            "for unprocessed scenes is {:.4f}".format(ave_score)
+            "for unprocessed scenes is %.4f",
+            ave_score,
         )
 
 
