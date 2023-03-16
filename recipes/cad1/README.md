@@ -39,7 +39,6 @@ The average HAAQI score per song is:
 | Triviul - Angelsaint                            |   0.2883   |
 | **Total Result**                                | **0.3608** |
 
-
 ### Task 2 - Listening music in a car wearing hearing aids
 
 TODO - add Table with results
