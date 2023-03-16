@@ -10,10 +10,10 @@ and the instruction on how to obtain the data.
 
 [Learning Resources](http://cadenzachallenge.org/docs/learning_resources/learning_intro) are available on the challenge homepage. Specific topics include...
 
-- [Installation](https://colab.research.google.com/drive/1m2EvNyBmaZT5njbWkHOUAIvPKyxR8iRc?usp=sharing){:target="_blank"}
-- [Interacting with Metadata](https://colab.research.google.com/drive/1XtoMp8Vv_6ZtU4AE9OmQj7uRbsCzw_ZY?usp=sharing){:target="_blank"}
-- [Baseline system CAD1 - Task1](https://colab.research.google.com/drive/1j8L2dBo8rTQsbKzPTxAymVvDMgHtgtnK?usp=sharing){:target="_blank"}
-- [Baseline system CAD1 - Task2](https://colab.research.google.com/drive/1fgvnrgCUiylUHL26ElShp6egIZiU_vNz?usp=sharing){:target="_blank"}
+- <a href="https://colab.research.google.com/drive/1m2EvNyBmaZT5njbWkHOUAIvPKyxR8iRc?usp=sharing" target="_blank">Installation</a>
+- <a href="https://colab.research.google.com/drive/1XtoMp8Vv_6ZtU4AE9OmQj7uRbsCzw_ZY?usp=sharing" target="_blank">Interacting with Metadata</a>
+- <a href="https://colab.research.google.com/drive/1j8L2dBo8rTQsbKzPTxAymVvDMgHtgtnK?usp=sharing" target="_blank">Baseline system CAD1 - Task1</a>
+- <a href="https://colab.research.google.com/drive/1fgvnrgCUiylUHL26ElShp6egIZiU_vNz?usp=sharing" target="_blank">Baseline system CAD1 - Task2</a>
 
 ## Baseline Results
 
