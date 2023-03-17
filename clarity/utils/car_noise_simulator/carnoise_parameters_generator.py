@@ -72,8 +72,8 @@ class CarNoiseParametersGenerator:
                 for Secondary Filter
             secondary_filter_constant_hz (float, optional): The constant cutoff in Hz
                 for Secondary Filter
-            random_flag (bool, optional): Flag to indicate whether some parameters should
-                be randomized or not
+            random_flag (bool, optional): Flag to indicate whether some parameters
+                should be randomized or not
             random_seed (int, optional): Random seed to use for randomization
 
         """
