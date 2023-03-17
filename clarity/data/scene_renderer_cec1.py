@@ -62,19 +62,15 @@ class Renderer:
         Returns:
             np.ndarray: audio signal
         """
-        try:
-            wave_file = SoundFile(filename)
-        except Exception as e:
-            # Ensure incorrect error (24 bit) is not generated
-            raise Exception(f"Unable to read {filename}.") from e
+        wave_file = SoundFile(filename)
 
         if nchannels not in (0, wave_file.channels):
-            raise Exception(
+            raise ValueError(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
         if wave_file.samplerate != self.sample_rate:
-            raise Exception(
+            raise ValueError(
                 f"Sampling rate is not {self.sample_rate} for filename {filename}."
             )
 
