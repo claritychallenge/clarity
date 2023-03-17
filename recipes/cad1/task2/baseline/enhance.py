@@ -130,7 +130,7 @@ def enhance(config: DictConfig) -> None:
         )
 
         enhanced = np.stack([out_l, out_r], axis=1)
-        filename = f"{listener['name']}_{current_scene['song']}.wav"
+        filename = f"{scene_id}_{listener['name']}_{current_scene['song']}.wav"
 
         # Clip and save
         if config.soft_clip:

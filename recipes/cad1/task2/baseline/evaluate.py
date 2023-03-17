@@ -148,7 +148,7 @@ def evaluate_scene(
     """
     audio_manager = AudioManager(
         output_audio_path=Path("evaluation_signals")
-        / f"{listener_audiogram['name']} / {current_scene['song']}",
+        / f"{scene_id}_{listener_audiogram['name']} / {current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
@@ -172,7 +172,7 @@ def evaluate_scene(
     # Following Spotify standard, Max level is -11 LUFS to avoid clipping
     # https://artists.spotify.com/en/help/article/loudness-normalization
     ref_signal = car_scene_acoustic.add_hrtf_to_stereo_signal(
-        enh_signal, hrtf["anechoic"], "Anechoic"
+        ref_signal, hrtf["anechoic"], "Anechoic"
     )
     if config.evaluate.save_intermediate_wavs:
         audio_manager.add_audios_to_save("ref_signal_anechoic", ref_signal)
