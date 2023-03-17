@@ -29,12 +29,12 @@ The HRTFs data is based on the eBrIRD - ELOSPHERES binaural room impulse respons
 
 To download the data, please visit [here](https://forms.gle/9L5ncYKe2YhD5c828).
 
-The data will download into a package file called `cadenza_cad1_task2_core.v1.0.tar.gz`.
+The data will download into a package file called `cadenza_cad1_task2_core.v1_1.tar.gz`.
 
 Unpack this package using
 
 ```bash
-tar -xvzf cadenza_cad1_task2_core.v1.0.tar.gz
+tar -xvzf cadenza_cad1_task2_core.v1_1.tar.gz
 ```
 
 Once unpacked the directory structure will be as follows
