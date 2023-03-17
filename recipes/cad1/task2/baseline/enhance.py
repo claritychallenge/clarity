@@ -131,7 +131,7 @@ def enhance(config: DictConfig) -> None:
         enhanced = np.stack([out_l, out_r], axis=1)
         filename = f"{scene_id}_{listener['name']}_{current_scene['song']}.wav"
 
-        enhanced_folder_listener = enhanced_folder / listener["name"]
+        enhanced_folder_listener = enhanced_folder / f"{listener['name']}"
         enhanced_folder_listener.mkdir(parents=True, exist_ok=True)
 
         # Clip and save
