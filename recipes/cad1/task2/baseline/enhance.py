@@ -106,7 +106,6 @@ def enhance(config: DictConfig) -> None:
         config (dict): Dictionary of configuration options for enhancing music.
     """
     enhanced_folder = Path("enhanced_signals") / config.evaluate.split
-    enhanced_folder.mkdir(parents=True, exist_ok=True)
 
     # Load scenes and listeners depending on config.evaluate.split
     scenes, listener_audiograms, scenes_listeners = load_listeners_and_scenes(config)
@@ -130,7 +129,10 @@ def enhance(config: DictConfig) -> None:
         )
 
         enhanced = np.stack([out_l, out_r], axis=1)
-        filename = f"{listener['name']}_{current_scene['song']}.wav"
+        filename = f"{scene_id}_{listener['name']}_{current_scene['song']}.wav"
+
+        enhanced_folder_listener = enhanced_folder / f"{listener['name']}"
+        enhanced_folder_listener.mkdir(parents=True, exist_ok=True)
 
         # Clip and save
         if config.soft_clip:
@@ -140,7 +142,9 @@ def enhance(config: DictConfig) -> None:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
         np.clip(enhanced, -1.0, 1.0, out=enhanced)
         signal_16 = (32768.0 * enhanced).astype(np.int16)
-        wavfile.write(enhanced_folder / filename, config.sample_rate, signal_16)
+        wavfile.write(
+            enhanced_folder_listener / filename, config.sample_rate, signal_16
+        )
 
 
 # pylint: disable = no-value-for-parameter

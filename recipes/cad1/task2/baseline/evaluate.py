@@ -172,7 +172,7 @@ def evaluate_scene(
     # Following Spotify standard, Max level is -11 LUFS to avoid clipping
     # https://artists.spotify.com/en/help/article/loudness-normalization
     ref_signal = car_scene_acoustic.add_hrtf_to_stereo_signal(
-        enh_signal, hrtf["anechoic"], "Anechoic"
+        ref_signal, hrtf["anechoic"], "Anechoic"
     )
     if config.evaluate.save_intermediate_wavs:
         audio_manager.add_audios_to_save("ref_signal_anechoic", ref_signal)
@@ -256,8 +256,10 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
 
         # Load enhanced signal
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
-        enhanced_song_id = f"{listener['name']}_{current_scene['song']}"
-        enhanced_song_path = enhanced_folder / f"{enhanced_song_id}.wav"
+        enhanced_song_id = f"{scene_id}_{listener['name']}_{current_scene['song']}"
+        enhanced_song_path = (
+            enhanced_folder / f"{listener['name']}" / f"{enhanced_song_id}.wav"
+        )
 
         # Read WAV enhanced signal using scipy.io.wavfile
         enhanced_sample_rate, enhanced_signal = wavfile.read(enhanced_song_path)
