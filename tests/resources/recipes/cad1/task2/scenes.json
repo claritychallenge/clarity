@@ -1,0 +1,8 @@
+{
+    "SCENE01": {
+        "split": "valid"
+    },
+    "SCENE02": {
+        "split": "valid"
+    }
+}

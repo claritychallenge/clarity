@@ -1,0 +1,21 @@
+path:
+  root: ./
+  metadata_dir: ${path.root}/metadata
+  train_music_file: ${path.metadata_dir}/music.train.json
+  valid_music_file: ${path.metadata_dir}/music.valid.json
+  listeners_train_file: ${path.metadata_dir}/listeners.train.json
+  listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
+  brir_file: ${path.metadata_dir}/eBrird_BRIR.json
+  scenes_file: ${path.metadata_dir}/scenes.json
+  scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
+
+# Every seed value generates 8000 new samples.
+# Seed 2023 must never be removed.
+# If you want to add more seeds, add them to the list.
+# eg., seed: [2023, 2024, 2025]
+seed: [2023]
+valid_seed: 2023
+
+hydra:
+  run:
+    dir: .
