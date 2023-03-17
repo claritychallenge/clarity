@@ -151,6 +151,9 @@ class S2SGreedySearcher(S2SBaseSearcher):
     greedy decoding approach. See also S2SBaseSearcher().
     """
 
+    # pylint: disable=W0223
+    # This class is intentionally abstract so disable these warnings
+
     def forward(self, enc_states, wav_len):
         enc_lens = torch.round(enc_states.shape[1] * wav_len).int()
         device = enc_states.device
@@ -216,6 +219,9 @@ class S2SRNNGreedySearcher(S2SGreedySearcher):
     >>> wav_len = torch.rand([2])
     >>> hyps, scores = searcher(enc, wav_len)
     """
+
+    # pylint: disable=W0223
+    # Doesn't implement lm_forward_step() or reset_lm_mem()
 
     def __init__(self, embedding, decoder, linear, **kwargs):
         super().__init__(**kwargs)
@@ -879,6 +885,9 @@ class S2SRNNBeamSearcher(S2SBeamSearcher):
     >>> wav_len = torch.rand([2])
     >>> hyps, scores = searcher(enc, wav_len)
     """
+
+    # pylint: disable=W0223
+    # Doesn't implement lm_forward_step(), permute_lm_mem() or reset_lm_mem()
 
     def __init__(
         self, embedding, decoder, linear, ctc_linear=None, temperature=1.0, **kwargs

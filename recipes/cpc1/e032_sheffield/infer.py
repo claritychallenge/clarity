@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 class ASR(sb.core.Brain):
+    # pylint: disable=abstract-method
+    # Note, no implementation of compute_forward() or compute_objectives() provided
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.test_search = None
