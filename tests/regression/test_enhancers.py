@@ -4,7 +4,7 @@ import tempfile
 import numpy as np
 import torch
 
-from clarity.enhancer.dsp import filter
+from clarity.enhancer.dsp import filter  # pylint: disable=redefined-builtin
 from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable

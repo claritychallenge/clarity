@@ -5,6 +5,8 @@ https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py
 import pytorch_lightning as pl
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
+# pylint: disable=W0221  # false positives
+
 
 class System(pl.LightningModule):
     def __init__(

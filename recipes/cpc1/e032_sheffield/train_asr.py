@@ -142,13 +142,13 @@ class ASR(sb.core.Brain):
             loss = self.compute_objectives(predictions, batch, stage=stage)
         return loss.detach()
 
-    def on_stage_start(self, stage, epoch):
+    def on_stage_start(self, stage, epoch=None):
         """Gets called at the beginning of each epoch"""
         if stage != sb.Stage.TRAIN:
             self.acc_metric = self.hparams.acc_computer()
             self.wer_metric = self.hparams.error_rate_computer()
 
-    def on_stage_end(self, stage, stage_loss, epoch):
+    def on_stage_end(self, stage, stage_loss, epoch=None):
         """Gets called at the end of a epoch."""
         if self.wer_metric is None or self.acc_metric is None:
             raise ValueError("wer_metric or acc_metric is None")

@@ -39,7 +39,7 @@ autodoc_mock_imports = [
 # -- Project information -----------------------------------------------------
 
 project = "pyclarity"
-copyright = "2022, pyclarity authors"
+copyright = "2022, pyclarity authors"  # pylint: disable=redefined-builtin
 author = "pyclarity authors"
 
 # The short X.Y version

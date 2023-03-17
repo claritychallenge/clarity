@@ -237,7 +237,8 @@ class S2SRNNGreedySearcher(S2SGreedySearcher):
         c = torch.zeros(batch_size, self.dec.attn_dim, device=device)
         return hs, c
 
-    def forward_step(self, inp_tokens, memory, enc_states, enc_lens):
+    def forward_step(self, inp_tokens, memory, enc_states, enc_lens, _index=0):
+        # Note, _index is not used here, but it is defined in base class method
         hs, c = memory
         e = self.emb(inp_tokens)
         dec_out, hs, c, w = self.dec.forward_step(e, hs, c, enc_states, enc_lens)
@@ -543,8 +544,9 @@ class S2SBeamSearcher(S2SBaseSearcher):
 
         return topk_hyps, topk_scores, topk_lengths, topk_log_probs
 
-    # def forward(self, enc_states, wav_len):  # noqa: C901
+    # Extra parameters have been added to overriden function
     def forward(self, src, tokens_bos, wav_lens, pad_idx):  # noqa: C901
+        # pylint: disable=arguments-differ
         all_enc_states = []
         all_enc_lens = []
         all_memory = []
@@ -975,7 +977,8 @@ class S2SRNNBeamSearcher(S2SBeamSearcher):
         c = torch.zeros(batch_size, self.dec.attn_dim, device=device)
         return hs, c
 
-    def forward_step(self, inp_tokens, memory, enc_states, enc_lens):
+    def forward_step(self, inp_tokens, memory, enc_states, enc_lens, _index=0):
+        # Note, _index is not used here, but it is defined in base class method
         with torch.no_grad():
             hs, c = memory
             e = self.emb(inp_tokens)
@@ -1295,10 +1298,10 @@ class S2STransformerBeamSearch(S2SBeamSearcher):
         memory = torch.index_select(memory, dim=0, index=index)
         return memory
 
-    def forward_step(self, inp_tokens, memory, enc_states, enc_lens, model_idx):
+    def forward_step(self, inp_tokens, memory, enc_states, enc_lens, index=0):
         memory = _update_mem(inp_tokens, memory)
-        pred, attn = self.model[model_idx].decode(memory, enc_states)
-        prob_dist = self.softmax(self.fc[model_idx](pred) / self.temperature)
+        pred, attn = self.model[index].decode(memory, enc_states)
+        prob_dist = self.softmax(self.fc[index](pred) / self.temperature)
         return prob_dist[:, -1, :], memory, attn
 
     def lm_forward_step(self, inp_tokens, memory):
