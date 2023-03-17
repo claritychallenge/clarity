@@ -84,5 +84,6 @@ def run(cfg: DictConfig) -> None:
             )
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()
