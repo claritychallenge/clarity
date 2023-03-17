@@ -61,7 +61,6 @@ def test_P(
     i: int, a: int, b: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for P() function."""
-    # FixMe : how long is the list of matrices that is passed in?
     assert (
         P(
             i,
@@ -76,7 +75,6 @@ def test_P(
 
 def test_P_index_error(random_matrix: np.ndarray) -> None:
     """Test P() raises IndexError if invalid indices to r are provided."""
-    # FixMe : how long is the list of matrices that is passed in?
     with pytest.raises(IndexError):
         assert P(i=1, a=5, b=1, order=1, rotation_matrices=[random_matrix])
     with pytest.raises(IndexError):
@@ -162,7 +160,7 @@ def test_W(
         (1, 2, 2, (0.5, 0.3535533905932738, -0.0)),
         (-1, 2, 3, (1.2649110640673518, 0.7745966692414834, -0.31622776601683794)),
         # (-1, 2, 1, (-0.0, np.nan, -0.0)),
-        #   # FixMe : This is probably going to cause problems how to capture?
+        # TODO : This is probably going to cause problems how to capture?
     ],
 )
 def test_compute_UVW_coefficients(
@@ -178,7 +176,7 @@ def test_compute_UVW_coefficients_zero_division_error() -> None:
         compute_UVW_coefficients(degree=-1, n=2, order=-2)
 
 
-# FixMe : Not yet working, I don't understand how to get `output` passed in correctly
+# TODO : Not yet working, I don't understand how to get `output` passed in correctly
 # @pytest.mark.parametrize(
 #     "el, output, expected",
 #     [
@@ -192,7 +190,7 @@ def test_compute_UVW_coefficients_zero_division_error() -> None:
 # [random_matrix, random_matrix], output), expected)
 
 
-# FixMe : Not working yet, results in a typing error???
+# TODO : Not working yet, results in a typing error???
 # @pytest.mark.parametrize(
 #     "A, B, expected",
 #     [
@@ -212,7 +210,7 @@ def test_HOARotator() -> None:
     assert True
 
 
-# FixMe : need examples of hrir_metadata dictionary to be able to write a tests for this
+# TODO : need examples of hrir_metadata dictionary to be able to write a tests for this
 def test_binaural_mixdown() -> None:
     """Test for binaural_mixdown() function."""
     assert True
