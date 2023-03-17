@@ -76,6 +76,14 @@ tar -xvf cadenza_data_demo.tar.xz
 In the `baseline/` folder, we provide code for running the baseline enhancement system and performing
 the objective evaluation. Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
+The baseline uses librosa to read the MP3 audio files. Librosa will raise error is libsoundfile and ffmpeg are not installed.
+If you have an Anaconda or Miniconda environment, you can install them as:
+
+* conda install -c conda-forge ffmpeg
+* conda install -c conda-forge libsndfile
+
+```bash
+
 ### 2.1 Enhancement
 
 The objective of the enhancement stage is takes a song and optimise it to a listener hearing characteristics
