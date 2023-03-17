@@ -148,7 +148,7 @@ def evaluate_scene(
     """
     audio_manager = AudioManager(
         output_audio_path=Path("evaluation_signals")
-        / f"{scene_id}_{listener_audiogram['name']} / {current_scene['song']}",
+        / f"{listener_audiogram['name']} / {current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
@@ -256,7 +256,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
 
         # Load enhanced signal
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
-        enhanced_song_id = f"{listener['name']}_{current_scene['song']}"
+        enhanced_song_id = f"{scene_id}_{listener['name']}_{current_scene['song']}"
         enhanced_song_path = enhanced_folder / f"{enhanced_song_id}.wav"
 
         # Read WAV enhanced signal using scipy.io.wavfile
