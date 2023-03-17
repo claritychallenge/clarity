@@ -21,7 +21,23 @@ The performance of each system on the validation set is reported below.
 
 ### Task 1 - Listening music via headphones
 
-TODO - add Table with results.
+The average HAAQI score per song is:
+
+| Song                                            |   HAAQI    |
+|:------------------------------------------------|:----------:|
+| Actions - One Minute Smile                      |   0.3066   |
+| Alexander Ross - Goodbye Bolero                 |   0.4257   |
+| ANiMAL - Rockshow                               |   0.2389   |
+| Clara Berry And Wooldog - Waltz For My Victims  |   0.4202   |
+| Fergessen - Nos Palpitants                      |   0.4554   |
+| James May - On The Line                         |   0.3889   |
+| Johnny Lokke - Promises & Lies                  |   0.3395   |
+| Leaf - Summerghost                              |   0.3595   |
+| Meaxic - Take A Step                            |   0.3470   |
+| Patrick Talbot - A Reason To Leave              |   0.4545   |
+| Skelpolu - Human Mistakes                       |   0.3055   |
+| Triviul - Angelsaint                            |   0.2883   |
+| **Total Result**                                | **0.3608** |
 
 ### Task 2 - Listening music in a car wearing hearing aids
 
