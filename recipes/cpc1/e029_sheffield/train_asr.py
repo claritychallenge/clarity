@@ -8,7 +8,6 @@ https://github.com/speechbrain/speechbrain/tree/1eddf66eea01866d3cf9dfe61b00bb48
 # pylint: disable=W0201  # code requires attributes defined outside __init__
 
 import logging
-import os
 import sys
 from pathlib import Path
 
@@ -360,8 +359,8 @@ def main():
 
     # Testing
     for dataset_key, test_dataset in test_datasets.items():
-        asr_brain.hparams.wer_file = os.path.join(
-            hparams["output_folder"], f"wer_{dataset_key}.txt"
+        asr_brain.hparams.wer_file = (
+            Path(hparams["output_folder"]) / f"wer_{dataset_key}.txt"
         )
         asr_brain.evaluate(
             test_dataset,
