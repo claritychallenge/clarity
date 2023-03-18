@@ -47,4 +47,4 @@ omit = [
 line-length = 88
 # pyflakes, pycodestyle, isort
 select = ["F", "E", "W", "B", "I001"]
-ignore = ["B905", "E501"]
+ignore = ["B905"]

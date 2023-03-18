@@ -311,7 +311,8 @@ def enhance(config: DictConfig) -> None:
     for idx, song_listener in enumerate(valid_song_listener_pairs, 1):
         song_name, listener_name = song_listener
         logger.info(
-            f"[{idx:03d}/{num_song_list_pair:03d}] Processing {song_name} for {listener_name}..."
+            f"[{idx:03d}/{num_song_list_pair:03d}] "
+            f"Processing {song_name} for {listener_name}..."
         )
         # Get the listener's audiogram
         listener_info = listener_valid_audiograms[listener_name]
@@ -353,9 +354,9 @@ def enhance(config: DictConfig) -> None:
                 audiogram_right,
             )
 
-        # Baseline applies NALR prescription to each stem
-        # instead of using the listener's audiograms in the decomposition
-        # This stemp can be skipped if the listener's audiograms are used in the decomposition
+        # Baseline applies NALR prescription to each stem instead of using the
+        # listener's audiograms in the decomposition. This stem can be skipped
+        # if the listener's audiograms are used in the decomposition
         processed_stems = process_stems_for_listener(
             stems,
             enhancer,

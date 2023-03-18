@@ -31,28 +31,31 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     neural networks to compute the estimated intelligibility.
 
     Args:
-    reference (np.ndarray): Clear input reference speech signal with no noise or distortion.
-              If a hearing loss is specified, no amplification should be provided.
-    reference_freq (int): Sampling rate in Hz for signal x
-    processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or processing.
-    processed_freq (int): Sampling rate in Hz for signal y.
-    hearing_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric frequencies
-                    [250, 500, 1000, 2000, 4000, 6000] Hz.
-    level1 (int): Optional input specifying level in dB SPL that corresponds to a
-              signal RMS = 1. Default is 65 dB SPL if argument not provided.
-    f_lp (int):
-    itype (int): Intelligibility model
+        reference (np.ndarray): Clear input reference speech signal with no noise or
+            distortion. If a hearing loss is specified, no amplification should be
+            provided.
+        reference_freq (int): Sampling rate in Hz for signal x
+        processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or
+            processing.
+        processed_freq (int): Sampling rate in Hz for signal y.
+        hearing_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric
+            frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
+        level1 (int): Optional input specifying level in dB SPL that corresponds to a
+            signal RMS = 1. Default is 65 dB SPL if argument not provided.
+        f_lp (int):
+        itype (int): Intelligibility model
 
     Returns:
-    Intel     Intelligibility estimated by passing the cepstral coefficients
+        tuple(Intel: float, raw: nd-array)
+        Intel: Intelligibility estimated by passing the cepstral coefficients
               through a modulation filterbank followed by an ensemble of
               neural networks.
-    raw       vector of 10 cep corr modulation filterbank outputs, averaged
+        raw: vector of 10 cep corr modulation filterbank outputs, averaged
               over basis funct 2-6.
 
     Updates:
-    James M. Kates, 5 August 2013.
-    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+        James M. Kates, 5 August 2013.
+        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
     # Auditory model for intelligibility
@@ -75,7 +78,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         reference_env, processed_env, f_lp, fsub, fsamp
     )
 
-    # Compute the ceptstral coefficients as a function of subsampled time
+    # Compute the cepstral coefficients as a function of subsampled time
     nbasis = 6  # Use 6 basis functions
     thr = 2.5  # Silence threshold in dB SL
     dither = 0.1  # Dither in dB RMS to add to envelope signals
@@ -83,7 +86,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         reference_lp, processed_lp, thr, dither, nbasis
     )
 
-    # Cepstral coeffifiencts filtered at each modulation rate
+    # Cepstral coefficients filtered at each modulation rate
     # Band center frequencies [2, 6, 10, 16, 25, 40, 64, 100, 160, 256] Hz
     # Band edges [0, 4, 8, 12.5, 20.5, 30.5, 52.4, 78.1, 128, 200, 328] Hz
     reference_mod, processed_mod, _ = fir_modulation_filter(
@@ -131,21 +134,21 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
     Calculates HASPI for left and right ear and selects the better result.
 
     Args:
-    ref_left (np.ndarray): left channel of reference signal
-    ref_right (np.ndarray): right channel of reference signal
-    proc_left (np.ndarray): left channel of processed signal
-    proc_right (np.ndarray): right channel of processed signal
-    fs_signal (int): sampling rate for both signal
-    audiogram_left (): left ear audiogram
-    audiogram_right (): right ear audiogram
-    audiogram_cfs: audiogram frequencies
-    Level: level in dB SPL corresponding to RMS=1
+        ref_left (np.ndarray): left channel of reference signal
+        ref_right (np.ndarray): right channel of reference signal
+        proc_left (np.ndarray): left channel of processed signal
+        proc_right (np.ndarray): right channel of processed signal
+        fs_signal (int): sampling rate for both signal
+        audiogram_left (): left ear audiogram
+        audiogram_right (): right ear audiogram
+        audiogram_cfs: audiogram frequencies
+        level: level in dB SPL corresponding to RMS=1
 
     Returns:
-    float: beHASPI score
+        float: beHASPI score
 
     Updates:
-    Zuzanna Podwinska, March 2022
+        Zuzanna Podwinska, March 2022
     """
 
     # HASPI assumes the following audiogram frequencies:

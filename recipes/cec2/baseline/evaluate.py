@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def read_csv_scores(file):
     score_dict = {}
-    with open(file, "r") as f:
+    with open(file, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         _ = next(reader)
         for row in reader:
@@ -27,8 +27,10 @@ def read_csv_scores(file):
 
 @hydra.main(config_path=".", config_name="config")
 def run_calculate_SI(cfg: DictConfig) -> None:
-    scenes_listeners = json.load(open(cfg.path.scenes_listeners_file))
-    listener_audiograms = json.load(open(cfg.path.listeners_file))
+    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
     os.makedirs(cfg.path.exp_folder, exist_ok=True)
 
     enhanced_folder = os.path.join(cfg.path.exp_folder, "enhanced_signals")
@@ -40,9 +42,9 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             score_dict = read_csv_scores(unproc_si_file)
             ave_score = np.mean(list(score_dict.values()))
             logger.info(
-                "si_unproc.csv exists, and the average HASPI scores for unprocessed scenes is {:.4f}".format(
-                    ave_score
-                )
+                "si_unproc.csv exists, and the average HASPI scores for unprocessed "
+                "scenes is %.4f",
+                ave_score,
             )
 
     si_file = os.path.join(cfg.path.exp_folder, "si.csv")
@@ -50,9 +52,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
     if os.path.exists(si_file):
         score_dict = read_csv_scores(si_file)
         ave_score = np.mean(list(score_dict.values()))
-        logger.info(
-            "si.csv exists, and the average HASPI scores is {:.4f}".format(ave_score)
-        )
+        logger.info("si.csv exists, and the average HASPI scores is %4f", ave_score)
         return
 
     for scene in tqdm(scenes_listeners):
@@ -116,7 +116,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                     ) % (10**8)
                     np.random.seed(scene_md5)
 
-                fs_unproc, unproc = wavfile.read(
+                _fs_unproc, unproc = wavfile.read(
                     os.path.join(cfg.path.scenes_folder, f"{scene}_mix_CH1.wav")
                 )
                 unproc = unproc / 32768.0
@@ -133,7 +133,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
                 unproc_csv_lines.append([scene, listener, str(si_unproc)])
 
-    with open(si_file, "w") as csv_f:
+    with open(si_file, "w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
@@ -141,12 +141,10 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             csv_writer.writerow(line)
     score_dict = read_csv_scores(si_file)
     ave_score = np.mean(list(score_dict.values()))
-    logger.info(
-        "si.csv exists, and the average HASPI scores is {:.4f}".format(ave_score)
-    )
+    logger.info("si.csv exists, and the average HASPI scores is %.4f", ave_score)
 
     if cfg.evaluate.cal_unprocessed_si:
-        with open(unproc_si_file, "w") as csv_f:
+        with open(unproc_si_file, "w", encoding="utf-8") as csv_f:
             csv_writer = csv.writer(
                 csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
             )
@@ -155,9 +153,9 @@ def run_calculate_SI(cfg: DictConfig) -> None:
         score_dict = read_csv_scores(unproc_si_file)
         ave_score = np.mean(list(score_dict.values()))
         logger.info(
-            "si_unproc.csv exists, and the average HASPI scores for unprocessed scenes is {:.4f}".format(
-                ave_score
-            )
+            "si_unproc.csv exists, and the average HASPI scores "
+            "for unprocessed scenes is %.4f",
+            ave_score,
         )
 
 

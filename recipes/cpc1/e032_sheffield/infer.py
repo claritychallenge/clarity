@@ -17,9 +17,19 @@ logger = logging.getLogger(__name__)
 
 
 class ASR(sb.core.Brain):
+    # pylint: disable=abstract-method
+    # Note, no implementation of compute_forward() or compute_objectives() provided
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.test_search = None
+
     def generate_feats(self, wavs, wav_lens, tokens_bos):
         """Forward computations from the waveform batches to the output probs."""
         # batch = batch.to(self.device)
+        if self.test_search is None:
+            raise ValueError("test_search is not initialized")
+
         wavs, wav_lens, tokens_bos = (
             wavs.to(self.device),
             wav_lens.to(self.device),
@@ -74,8 +84,8 @@ class ASR(sb.core.Brain):
 
 def init_asr(asr_config):
     hparams_file, run_opts, overrides = sb.parse_arguments([asr_config])
-    with open(hparams_file) as fin:
-        hparams = load_hyperpyyaml(fin, overrides)
+    with open(hparams_file, "r", encoding="utf-8") as fp:
+        hparams = load_hyperpyyaml(fp, overrides)
 
     tokenizer = hparams["tokenizer"]
     bos_index = hparams["bos_index"]
@@ -103,9 +113,9 @@ def dtw_similarity(x, y):
     )[1]
 
     x_, y_ = [], []
-    for step in range(len(path)):
-        x_.append(x[:, path[step][0], :])
-        y_.append(y[:, path[step][1], :])
+    for step in path:
+        x_.append(x[:, step[0], :])
+        y_.append(y[:, step[1], :])
     x_ = torch.stack(x_, dim=1)
     y_ = torch.stack(y_, dim=1)
     return torch.nn.functional.cosine_similarity(x_, y_, dim=-1)
@@ -131,7 +141,6 @@ def feat2similarity(
             ),
             dim=-1,
         )[0]
-        return sim
     else:
         max_length = torch.max(
             torch.LongTensor(
@@ -173,7 +182,8 @@ def feat2similarity(
             padded_ref_feats_right, padded_proc_feats_right, dim=-1
         )
         sim = torch.stack([ll_sim, lr_sim, rl_sim, rr_sim], dim=-1).max(dim=-1)[0]
-        return torch.mean(sim, dim=-1)
+        sim = torch.mean(sim, dim=-1)
+    return sim
 
 
 def compute_similarity(left_proc_path, wrd, asr_model, bos_index, tokenizer):
@@ -240,13 +250,17 @@ def run(cfg: DictConfig) -> None:
         dev_dec_similarity[wav_id] = similarity[1].tolist()
 
         with open(
-            os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"), "w"
-        ) as f:
-            json.dump(dev_enc_similarity, f)
+            os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"),
+            "w",
+            encoding="utf-8",
+        ) as fp:
+            json.dump(dev_enc_similarity, fp)
         with open(
-            os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"), "w"
-        ) as f:
-            json.dump(dev_dec_similarity, f)
+            os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"),
+            "w",
+            encoding="utf-8",
+        ) as fp:
+            json.dump(dev_dec_similarity, fp)
 
     # test set similarity
     test_enc_similarity = {}
@@ -261,13 +275,18 @@ def run(cfg: DictConfig) -> None:
         test_dec_similarity[wav_id] = similarity[1].tolist()
 
         with open(
-            os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"), "w"
-        ) as f:
-            json.dump(test_enc_similarity, f)
+            os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"),
+            "w",
+            encoding="utf-8",
+        ) as fp:
+            json.dump(test_enc_similarity, fp)
+
         with open(
-            os.path.join(cfg.path.exp_folder, "test_dec_similarity.json"), "w"
-        ) as f:
-            json.dump(test_dec_similarity, f)
+            os.path.join(cfg.path.exp_folder, "test_dec_similarity.json"),
+            "w",
+            encoding="utf-8",
+        ) as fp:
+            json.dump(test_dec_similarity, fp)
 
 
 # pylint: disable=no-value-for-parameter

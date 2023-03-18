@@ -62,7 +62,8 @@ class AudioManager:
         n_clipped, waveform = self.clip_audio(waveform)
         if n_clipped > 0:
             logger.warning(
-                f"Writing {self.output_audio_path / file_name}: {n_clipped} samples clipped"
+                f"Writing {self.output_audio_path / file_name}: {n_clipped} "
+                "samples clipped"
             )
 
         waveform = (32768.0 * waveform).astype(np.int16)
@@ -84,7 +85,7 @@ class AudioManager:
             max_val (float): The maximum value to clip to. Defaults to 1.
 
         Returns:
-            Tuple[int, np.ndarray]: The number of samples clipped and the clipped signal.
+            Tuple[int, np.ndarray]: Number of samples clipped and the clipped signal.
         """
         if self.soft_clip:
             signal = np.tanh(signal)

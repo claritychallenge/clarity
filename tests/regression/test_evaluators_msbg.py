@@ -9,9 +9,13 @@ from clarity.evaluator.msbg.msbg_utils import (
     pad,
 )
 
+# pylint: disable=W0613
+# pylint false positives due to fixtures. pylint-pytest does not seem to work :(
 
-@pytest.fixture
-def use_numpy():
+
+@pytest.fixture(name="use_numpy")
+def fixture_use_numpy():
+    """Set numpy seed and print options for each test"""
     np.random.seed(0)
     np_print_opts = np.get_printoptions()
     np.set_printoptions(precision=5, threshold=1000)

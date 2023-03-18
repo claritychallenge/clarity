@@ -116,7 +116,7 @@ def test_make_song_listener_list():
 def test_evaluate_song_listener(
     song, listener, config, split_dir, listener_audiograms, expected_results, tmp_path
 ):
-    """Test the function _evaluate_song_listener returns the correct results given the input"""
+    """Test the function _evaluate_song_listener returns correct results given input"""
     np.random.seed(2023)
 
     # Generate reference and enhanced wav files

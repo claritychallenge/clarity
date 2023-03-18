@@ -127,23 +127,25 @@ def evaluate_scene(
             containing the enhanced signal.
         sample_rate (int): The sampling frequency of the reference and enhanced signals.
         scene_id (str): A string identifier for the scene being evaluated.
-        current_scene (dict): A dictionary containing information about the scene being evaluated,
-            including the song ID, the listener ID, the car noise type, and the split.
-        listener_audiogram (dict): A dictionary containing the listener's audiogram data,
-            including the center frequencies (cfs) and the hearing levels for both ears
-            (audiogram_levels_l and audiogram_levels_r).
-        car_scene_acoustic (CarSceneAcoustics): An instance of the CarSceneAcoustics class,
-            which is used to generate car noise and add binaural room impulse responses (BRIRs)
-            to the enhanced signal.
+        current_scene (dict): A dictionary containing information about the scene being
+            evaluated, including the song ID, the listener ID, the car noise type, and
+            the split.
+        listener_audiogram (dict): A dictionary containing the listener's audiogram
+            data, including the center frequencies (cfs) and the hearing levels for both
+            ears (audiogram_levels_l and audiogram_levels_r).
+        car_scene_acoustic (CarSceneAcoustics): An instance of the CarSceneAcoustics
+            class, which is used to generate car noise and add binaural room impulse
+            responses (BRIRs) to the enhanced signal.
         hrtf (dict): A dictionary containing the head-related transfer functions (HRTFs)
             for the listener being evaluated. This includes the left and right HRTFs for
             the car and the anechoic room.
         config (DictConfig): A dictionary-like object containing various configuration
-            parameters for the evaluation. This includes the path to the enhanced signal folder,
-            the path to the music directory, and a flag indicating whether to set a random seed.
+            parameters for the evaluation. This includes the path to the enhanced signal
+            folder,the path to the music directory, and a flag indicating whether to set
+            a random seed.
 
     Returns:
-        Tuple[float, float]: A tuple containing the HAAQI scores for the left and right ears.
+        Tuple[float, float]: A tuple containing HAAQI scores for left and right ears.
 
     """
     audio_manager = AudioManager(

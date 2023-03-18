@@ -64,6 +64,7 @@ def test_decompose_signal():
         RESOURCES / "test_enhance.test_decompose_signal.npy",
         allow_pickle=True,
     )[()]
+
     for key, item in output.items():
         np.testing.assert_array_almost_equal(item, expected_results[key])
 
@@ -110,7 +111,7 @@ def test_process_stems_for_listener():
         threshold=0.35, attenuation=0.1, attack=50, release=1000, rms_buffer_size=0.064
     )
 
-    # Call the process_stems_for_listener function and check that the output is as expected
+    # Call the process_stems_for_listener function and check output is as expected
     output = process_stems_for_listener(
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
@@ -118,6 +119,7 @@ def test_process_stems_for_listener():
         RESOURCES / "test_enhance.test_process_stems_for_listener.npy",
         allow_pickle=True,
     )[()]
+
     for key, item in output.items():
         np.testing.assert_array_almost_equal(item, expected_results[key])
 

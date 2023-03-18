@@ -23,6 +23,7 @@ def enhance(cfg: DictConfig) -> None:
     with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
+    # pylint: disable=unused-variable
     with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)  # noqa: F841
 

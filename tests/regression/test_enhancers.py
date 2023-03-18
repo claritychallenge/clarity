@@ -4,7 +4,7 @@ import tempfile
 import numpy as np
 import torch
 
-from clarity.enhancer.dsp import filter
+from clarity.enhancer.dsp import filter  # pylint: disable=redefined-builtin
 from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
@@ -41,7 +41,8 @@ def test_gha_audiogram(regtest):
         levels_r = np.round(np.log10(np.random.rand(6) / 20) * (-i), 0)
         ag = Audiogram(levels_l, levels_r, cfs)
         regtest.write(
-            f"Audiogram original: \n{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
+            "Audiogram original: \n"
+            f"{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
         )
         ag = ag.select_subset_of_cfs(np.array([500, 1000, 2000]))
         regtest.write(
@@ -55,7 +56,7 @@ def test_GHA_inputs(regtest):
     infile_names = [
         f"tests/test_data/scenes/S06001_mixed_CH{ch}.wav" for ch in range(1, 4)
     ]
-    fd_merged, merged_filename = tempfile.mkstemp(
+    _fd_merged, merged_filename = tempfile.mkstemp(
         prefix="clarity-merged-", suffix=".wav"
     )
     enhancer.create_HA_inputs(infile_names, merged_filename)
@@ -67,7 +68,8 @@ def test_GHA_inputs(regtest):
 
 def test_GHA_config(regtest):
     enhancer = gha(**gha_params)
-    listeners = json.load(open("tests/test_data/metadata/listeners.json"))
+    with open("tests/test_data/metadata/listeners.json", "r", encoding="utf-8") as fp:
+        listeners = json.load(fp)
     listener = listeners["L0001"]
     cfs = np.array(listener["audiogram_cfs"], dtype="int")
     audiogram_left = np.array(listener["audiogram_levels_l"])

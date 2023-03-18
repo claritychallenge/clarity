@@ -2,18 +2,20 @@
 import numpy as np
 import pytest
 
-from clarity.data.HOA_tools_cec2 import (  # HOARotator,; ambisonic_convolve,; binaural_mixdown,; compute_band_rotation,; compute_rotation_matrix,;  dot,; dot,
+# HOARotator,; ambisonic_convolve,; binaural_mixdown,;;;
+# compute_band_rotation,;; compute_rotation_matrix,;  dot,; dot,
+from clarity.data.HOA_tools_cec2 import (
     P,
     U,
     V,
     W,
     centred_element,
     compute_rms,
+    compute_rotation_vector,
     compute_UVW_coefficients,
     dB_to_gain,
     equalise_rms_levels,
     rotation_control_vector,
-    rotation_vector,
     smoothstep,
 )
 
@@ -39,7 +41,8 @@ def test_centred_element(
 
 
 def test_centred_element_index_error(random_matrix: np.ndarray) -> None:
-    """Test centered_element() raises an IndexError if centering is outside of matrix dimensions."""
+    """Test that centered_element() raises an IndexError if centering is outside
+    of matrix dimensions."""
     with pytest.raises(IndexError):
         centred_element(random_matrix, row=101, col=2)
     with pytest.raises(IndexError):
@@ -58,7 +61,6 @@ def test_P(
     i: int, a: int, b: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for P() function."""
-    # FixMe : how long is the list of matrices that is passed in?
     assert (
         P(
             i,
@@ -73,7 +75,6 @@ def test_P(
 
 def test_P_index_error(random_matrix: np.ndarray) -> None:
     """Test P() raises IndexError if invalid indices to r are provided."""
-    # FixMe : how long is the list of matrices that is passed in?
     with pytest.raises(IndexError):
         assert P(i=1, a=5, b=1, order=1, rotation_matrices=[random_matrix])
     with pytest.raises(IndexError):
@@ -158,7 +159,8 @@ def test_W(
         (0, 2, 2, (0.5773502691896257, -0.28867513459481287, -0.0)),
         (1, 2, 2, (0.5, 0.3535533905932738, -0.0)),
         (-1, 2, 3, (1.2649110640673518, 0.7745966692414834, -0.31622776601683794)),
-        # (-1, 2, 1, (-0.0, np.nan, -0.0)),  # FixMe : This is probably going to cause problems how to capture?
+        # (-1, 2, 1, (-0.0, np.nan, -0.0)),
+        # TODO : This is probably going to cause problems how to capture?
     ],
 )
 def test_compute_UVW_coefficients(
@@ -174,24 +176,28 @@ def test_compute_UVW_coefficients_zero_division_error() -> None:
         compute_UVW_coefficients(degree=-1, n=2, order=-2)
 
 
-# FixMe : Not yet working, I don't understand how to get the `output` passed in correctly
+# TODO : Not yet working, I don't understand how to get `output` passed in correctly
 # @pytest.mark.parametrize(
 #     "el, output, expected",
 #     [
 #         (2, np.asarray([0, 0]), np.asarray([[1, 2], [3, 4]])),
 #     ],
 # )
-# def test_compute_band_rotation(el: int, output: np.ndarray, random_matrix: np.ndarray, expected: np.ndarray) -> None:
+# def test_compute_band_rotation(el: int, output: np.ndarray,
+#   random_matrix: np.ndarray, expected: np.ndarray) -> None:
 #     """Test for compute_band_rotation() function."""
-#     np.testing.assert_array_equal(compute_band_rotation(el, [random_matrix, random_matrix], output), expected)
+#     np.testing.assert_array_equal(compute_band_rotation(el,
+# [random_matrix, random_matrix], output), expected)
 
 
-# FixMe : Not working yet, results in a typing error???
+# TODO : Not working yet, results in a typing error???
 # @pytest.mark.parametrize(
 #     "A, B, expected",
 #     [
-#         (np.asarray([[1, 2], [3, 4]]), np.asarray([[4, 3], [2, 1]]), np.asarray([[1, 2], [3, 4]])),
-#         (np.asarray([[5, 6], [7, 8]]), np.asarray([[8, 7], [6, 5]]), np.asarray([[1, 2], [3, 4]])),
+#         (np.asarray([[1, 2], [3, 4]]), np.asarray([[4, 3], [2, 1]]),
+#               np.asarray([[1, 2], [3, 4]])),
+#         (np.asarray([[5, 6], [7, 8]]), np.asarray([[8, 7], [6, 5]]),
+#               np.asarray([[1, 2], [3, 4]])),
 #     ],
 # )
 # def test_dot(A: np.ndarray, B: np.ndarray, expected: np.ndarray) -> None:
@@ -204,7 +210,7 @@ def test_HOARotator() -> None:
     assert True
 
 
-# FixMe : need examples of hrir_metadata dictionary to be able to write a tests for this
+# TODO : need examples of hrir_metadata dictionary to be able to write a tests for this
 def test_binaural_mixdown() -> None:
     """Test for binaural_mixdown() function."""
     assert True
@@ -327,7 +333,8 @@ def test_rotation_control_vector(
 def test_rotation_control_vector_value_error(
     array_length: int, start_idx: int, end_idx: int
 ) -> None:
-    """Test rotation_control_vector() raises ValueError if start_idx > end_idx or end_idx > array_length."""
+    """Test rotation_control_vector() raises ValueError if start_idx > end_idx or
+    end_idx > array_length."""
     with pytest.raises(ValueError):
         rotation_control_vector(array_length, start_idx, end_idx)
 
@@ -363,7 +370,7 @@ def test_rotation_control_vector_value_error(
         ),
     ],
 )
-def test_rotation_vector(
+def test_compute_rotation_vector(
     start_angle: float,
     end_angle: float,
     signal_length: int,
@@ -373,14 +380,17 @@ def test_rotation_vector(
 ) -> None:
     """Test for rotation_vector() function."""
     np.testing.assert_array_equal(
-        rotation_vector(start_angle, end_angle, signal_length, start_idx, end_idx),
+        compute_rotation_vector(
+            start_angle, end_angle, signal_length, start_idx, end_idx
+        ),
         expected,
     )
 
 
-def test_rotation_vector_floating_point_error() -> None:
-    """Test rotation_vector() raises FloatingPointError if signal_length is zero function."""
+def test_compute_rotation_vector_floating_point_error() -> None:
+    """Test rotation_vector() raises FloatingPointError if signal_length is
+    zero function."""
     with pytest.raises(FloatingPointError):
-        rotation_vector(
+        compute_rotation_vector(
             start_angle=10, end_angle=20, signal_length=0, start_idx=2, end_idx=8
         )

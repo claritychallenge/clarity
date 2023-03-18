@@ -81,7 +81,9 @@ class GHAHearingAid:
         output = template.render(
             io_in=input_file,
             io_out=output_file,
-            peaklevel_in=f"[{peaklevel_in} {peaklevel_in} {peaklevel_in} {peaklevel_in}]",
+            peaklevel_in=(
+                f"[{peaklevel_in} {peaklevel_in} {peaklevel_in} {peaklevel_in}]"
+            ),
             peaklevel_out=f"[{peaklevel_out} {peaklevel_out}]",
             gtdata=formatted_sGt,
         )
@@ -182,25 +184,23 @@ class GHAHearingAid:
 
         Args:
             filename (string): Name of file to read
-            offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
+            offset (int, optional): Offset in samples or seconds (from start).
+                Defaults to 0.
             nchannels: expected number of channel (default: 0 = any number OK)
             offset_is_samples (bool): measurement units for offset (default: False)
         Returns:
             ndarray: audio signal
         """
-        try:
-            wave_file = SoundFile(filename)
-        except Exception as e:
-            # Ensure incorrect error (24 bit) is not generated
-            raise Exception(f"Unable to read {filename}.") from e
+
+        wave_file = SoundFile(filename)
 
         if nchannels not in (0, wave_file.channels):
-            raise Exception(
+            raise ValueError(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
         if wave_file.samplerate != self.fs:
-            raise Exception(f"Sampling rate is not {self.fs} for filename {filename}.")
+            raise ValueError(f"Sampling rate is not {self.fs} for filename {filename}.")
 
         if not offset_is_samples:  # Default behaviour
             offset = int(offset * wave_file.samplerate)
@@ -235,7 +235,7 @@ class GHAHearingAid:
         """Create input signal for baseline hearing aids."""
 
         if (infile_names[0][-5] != "1") or (infile_names[2][-5] != "3"):
-            raise Exception("HA-input signal error: channel mismatch!")
+            raise ValueError("HA-input signal error: channel mismatch!")
 
         signal_CH1 = self.read_signal(infile_names[0])
         signal_CH3 = self.read_signal(infile_names[2])
