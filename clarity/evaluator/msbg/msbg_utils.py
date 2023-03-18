@@ -103,7 +103,7 @@ def read_gtf_file(gtf_file: str) -> Dict:
     """
 
     # Fix filename if necessary
-    gtf_file_path = Path(__file__) / gtf_file
+    gtf_file_path = Path(__file__).parent / gtf_file
     with gtf_file_path.open("r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
