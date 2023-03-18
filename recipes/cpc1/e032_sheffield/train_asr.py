@@ -290,7 +290,8 @@ def dataio_prepare(hparams):
 
     # We get the tokenizer as we need it to encode the labels when creating
     # mini-batches.
-    tokenizer = hparams["tokenizer"]
+    # (Note, tokenizer is also defined in global space. TODO: fix the design)
+    tokenizer = hparams["tokenizer"]  # pylint: disable=redefined-outer-name
 
     # 2. Define audio pipeline:
     @sb.utils.data_pipeline.takes("wav")
