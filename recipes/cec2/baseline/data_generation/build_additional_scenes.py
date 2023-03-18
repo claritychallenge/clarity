@@ -1,5 +1,5 @@
 import logging
-import os
+from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig
@@ -10,15 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 def instantiate_scenes(cfg):
-    rb = RoomBuilder()
+    room_builder = RoomBuilder()
     set_random_seed(cfg.random_seed)
-    room_file = os.path.join(cfg.path.metadata_dir, "rooms.train.json")
+    room_file = Path(cfg.path.metadata_dir) / "rooms.train.json"
     for dataset in cfg.scene_datasets:
-        if not os.path.exists(cfg.path.additional_data_file):
+        if not Path(cfg.path.additional_data_file).exists():
             logger.info(f"instantiate scenes for {dataset} set")
-            rb.load(room_file)
-            sb = SceneBuilder(
-                rb=rb,
+            room_builder.load(str(room_file))
+            scene_builder = SceneBuilder(
+                rb=room_builder,
                 scene_datasets=cfg.scene_datasets[dataset],
                 target=cfg.target,
                 interferer=cfg.interferer,
@@ -26,8 +26,8 @@ def instantiate_scenes(cfg):
                 listener=cfg.listener,
                 shuffle_rooms=cfg.shuffle_rooms,
             )
-            sb.instantiate_scenes(dataset=dataset)
-            sb.save_scenes(cfg.path.additional_data_file)
+            scene_builder.instantiate_scenes(dataset=dataset)
+            scene_builder.save_scenes(cfg.path.additional_data_file)
         else:
             logger.info(f"scenes.{dataset}.json has existed, skip")
 
