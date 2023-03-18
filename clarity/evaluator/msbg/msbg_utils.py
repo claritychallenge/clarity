@@ -2,7 +2,7 @@
 import json
 import logging
 import math
-import os
+from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
 import numpy as np
@@ -103,9 +103,8 @@ def read_gtf_file(gtf_file: str) -> Dict:
     """
 
     # Fix filename if necessary
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r", encoding="utf-8") as fp:
+    gtf_file_path = Path(__file__) / gtf_file
+    with gtf_file_path.open("r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
         if isinstance(data[key], list):
