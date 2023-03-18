@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -16,12 +16,14 @@ from clarity.enhancer.dsp.filter import AudiometricFIR
 
 @hydra.main(config_path=".", config_name="config")
 def run(cfg: DictConfig) -> None:
-    output_folder = os.path.join(cfg.path.exp_folder, "enhanced_" + cfg.listener.id)
-    os.makedirs(output_folder, exist_ok=True)
+    exp_folder = Path(cfg.path.exp_folder)
+    output_folder = exp_folder / f"enhanced_{cfg.listener.id}"
+    output_folder.mkdir(parents=True, exist_ok=True)
 
     test_set = CEC1Dataset(**cfg.test_dataset)
     test_loader = DataLoader(dataset=test_set, **cfg.test_loader)
 
+    down_sample = up_sample = None
     if cfg.downsample_factor != 1:
         down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.sr,
@@ -44,9 +46,8 @@ def run(cfg: DictConfig) -> None:
                 torch.cuda.empty_cache()
                 # load denoising module
                 den_model = ConvTasNet(**cfg.mc_conv_tasnet)
-                den_model_path = os.path.join(
-                    os.path.join(cfg.path.exp_folder, ear + "_den"), "best_model.pth"
-                )
+                den_model_path = exp_folder / f"{ear}_den/best_model.pth"
+
                 den_model.load_state_dict(
                     torch.load(den_model_path, map_location=device)
                 )
@@ -55,9 +56,8 @@ def run(cfg: DictConfig) -> None:
 
                 # load amplification module
                 amp_model = AudiometricFIR(**cfg.fir)
-                amp_model_path = os.path.join(
-                    os.path.join(cfg.path.exp_folder, ear + "_amp"), "best_model.pth"
-                )
+                amp_model_path = exp_folder / f"{ear}_amp/best_model.pth"
+
                 amp_model.load_state_dict(
                     torch.load(amp_model_path, map_location=device)
                 )
@@ -65,20 +65,18 @@ def run(cfg: DictConfig) -> None:
                 _amp_model.eval()
 
                 noisy = noisy.to(device)
-                if cfg.downsample_factor != 1:
+                proc = noisy
+                if down_sample is not None:
                     proc = down_sample(noisy)
                 enhanced = amp_model(den_model(proc)).squeeze(1)
-                if cfg.downsample_factor != 1:
+                if up_sample is not None:
                     enhanced = up_sample(enhanced)
                 enhanced = torch.clamp(enhanced, -1, 1)
                 out.append(enhanced.detach().cpu().numpy()[0])
 
             out = np.stack(out, axis=0).transpose()
             write(
-                os.path.join(
-                    output_folder,
-                    scene[0] + "_" + cfg.listener.id + "_" + "HA-output.wav",
-                ),
+                output_folder / f"{scene[0]}_{cfg.listener.id}_HA-output.wav",
                 out,
                 cfg.sr,
             )
