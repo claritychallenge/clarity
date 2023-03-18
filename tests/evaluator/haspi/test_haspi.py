@@ -2,10 +2,10 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.hasqi import hasqi_v2, hasqi_v2_better_ear
+from clarity.evaluator.haspi import haspi_v2, haspi_v2_be
 
 
-def test_hasqi_v2() -> None:
+def test_haspi_v2() -> None:
     """Test for hasqi_v2 index"""
     np.random.seed(0)
     sample_rate = 16000
@@ -13,16 +13,13 @@ def test_hasqi_v2() -> None:
     y = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
     hearing_loss = np.array([45, 45, 35, 45, 60, 65])
-    equalisation_mode = 1
     level1 = 65
 
-    score, _, _, _ = hasqi_v2(
-        x, sample_rate, y, sample_rate, hearing_loss, equalisation_mode, level1
-    )
-    assert score == pytest.approx(0.002525809, rel=1e-7)
+    score, _ = haspi_v2(x, sample_rate, y + x, sample_rate, hearing_loss, level1)
+    assert score == pytest.approx(0.043808448934532965, rel=1e-7)
 
 
-def test_hasqi_v2_better_ear() -> None:
+def test_haspi_v2_better_ear() -> None:
     """Test for hasqi_v2_better_ear index"""
 
     np.random.seed(0)
@@ -36,17 +33,16 @@ def test_hasqi_v2_better_ear() -> None:
     proc_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     proc_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
-    score = hasqi_v2_better_ear(
+    score = haspi_v2_be(
         reference_left=ref_left,
         reference_right=ref_right,
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
-        sample_freq=sample_rate,
+        fs_signal=sample_rate,
         audiogram_left=hl_left,
         audiogram_right=hl_right,
-        audiogram_frequencies=freqs,
+        audiogram_cfs=freqs,
         level=100,
-        audiogram_freq=None,
     )
 
-    assert score == pytest.approx(0.1256893032667640)
+    assert score == pytest.approx(0.839975335323691)
