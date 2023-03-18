@@ -1,7 +1,7 @@
 """Utilities for data generation."""
 # pylint: disable=wrong-import-position
-import os
 import sys
+from pathlib import Path
 
 if sys.version_info >= (3, 8):
     from typing import Literal
@@ -15,9 +15,7 @@ import scipy
 import scipy.io
 
 SPEECH_FILTER = scipy.io.loadmat(
-    os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "params", "speech_weight.mat"
-    ),
+    Path(__file__) / "params/speech_weight.mat",
     squeeze_me=True,
 )
 SPEECH_FILTER = np.array(SPEECH_FILTER["filt"])
