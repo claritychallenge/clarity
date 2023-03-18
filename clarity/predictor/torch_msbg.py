@@ -2,7 +2,7 @@
 An FIR-based torch implementation of approximated MSBG hearing loss model
 """
 import json
-import os
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -26,57 +26,57 @@ EPS = 1e-8
 # old msbg matlab
 # set RMS so that peak of output file so that no clipping occurs, set so that
 # equiv0dBfileSPL > 100dB for LOUD input files
-ref_RMSdB = -31.2
+REF_RMS_DB = -31.2
 
 # what RMS of INPUT speech file translates to in real world (unweighted)
-calib_dBSPL = 65
+CALIB_DB_SPL = 65
 
 # what 0dB file signal would translate to in dB SPL:
 # constant for cochlear_simulate function
-equiv0dBfileSPL = calib_dBSPL - ref_RMSdB
+EQUIV_0_DB_FILE_SPL = CALIB_DB_SPL - REF_RMS_DB
 
 # clarity msbg
-equiv0dBSPL = 100
-ahr = 20
-equiv_0dB_SPL = equiv0dBSPL + ahr
+EQUIV_0_DB_SPL = 100
+AHR = 20
+EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
 
 
-def generate_key_percent(signal, thr_dB, winlen):
-    if winlen != np.floor(winlen):
-        winlen = np.int(np.floor(winlen))
+def generate_key_percent(signal, thr_db, win_len):
+    if win_len != np.floor(win_len):
+        win_len = np.int(np.floor(win_len))
         print("\nGenerate_key_percent: \t Window length must be integer")
 
-    siglen = len(signal)
-    expected = thr_dB.copy()  # expected threshold
+    signal_len = len(signal)
+    expected = thr_db.copy()  # expected threshold
     non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
 
-    nframes = 0
-    totframes = np.int(np.floor(siglen / winlen))
-    every_dB = np.zeros(totframes)
+    n_frames = 0
+    total_frames = np.int(np.floor(signal_len / win_len))
+    every_db = np.zeros(total_frames)
 
-    for ix in range(totframes):
-        start = ix * winlen
-        this_sum = np.sum(signal[start : start + winlen] ** 2)  # sum of squares
-        every_dB[nframes] = 10 * np.log10(non_zero + this_sum / winlen)
-        nframes += 1
+    for ix in range(total_frames):
+        start = ix * win_len
+        this_sum = np.sum(signal[start : start + win_len] ** 2)  # sum of squares
+        every_db[n_frames] = 10 * np.log10(non_zero + this_sum / win_len)
+        n_frames += 1
 
-    used_thr_dB = expected.copy()
+    used_thr_db = expected.copy()
 
     # histogram should produce a two-peaked curve: thresh should be set in valley
     # between the two peaks, and set a bit above that, as it heads for main peak
-    frame_idx = np.where(every_dB >= expected)[0]
+    frame_idx = np.where(every_db >= expected)[0]
     valid_frames = len(frame_idx)
-    key = np.zeros(valid_frames * winlen, dtype=np.int)
+    key = np.zeros(valid_frames * win_len, dtype=np.int)
 
     # convert frame numbers into indices for signal
     for ix in range(valid_frames):
-        key[ix * winlen : ix * winlen + winlen] = np.arange(
-            frame_idx[ix] * winlen, frame_idx[ix] * winlen + winlen, dtype=np.int
+        key[ix * win_len : ix * win_len + win_len] = np.arange(
+            frame_idx[ix] * win_len, frame_idx[ix] * win_len + win_len, dtype=np.int
         )
-    return key, used_thr_dB
+    return key, used_thr_db
 
 
-def measure_rms(signal, sr, dB_rel_rms):
+def measure_rms(signal, sr, db_rel_rms):
     """Compute RMS level of a signal.
 
     Measures total power of all 10 msec frames that are above a user-specified threshold
@@ -84,7 +84,7 @@ def measure_rms(signal, sr, dB_rel_rms):
     Args:
         signal: input signal
         sr: sampling rate
-        dB_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array,
+        db_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array,
             second value over rules. only single value supported currently)
 
     Returns:
@@ -95,35 +95,35 @@ def measure_rms(signal, sr, dB_rel_rms):
     # first RMS is of all signal
     first_stage_rms = np.sqrt(np.mean(signal**2))
     # use this RMS to generate key threshold to more accurate RMS
-    key_thr_dB = np.max([20 * np.log10(first_stage_rms) + dB_rel_rms, -80])
-    key, used_thr_dB = generate_key_percent(
-        signal, key_thr_dB, np.int(np.round(win_secs * sr))
+    key_thr_db = np.max([20 * np.log10(first_stage_rms) + db_rel_rms, -80])
+    key, used_thr_db = generate_key_percent(
+        signal, key_thr_db, np.int(np.round(win_secs * sr))
     )
     # active = 100.0 * len(key) / len(signal)
     rms = np.sqrt(np.mean(signal[key] ** 2))
-    rel_dB_thresh = used_thr_dB - 20 * np.log10(rms)
-    return rms, key, rel_dB_thresh
+    rel_db_thresh = used_thr_db - 20 * np.log10(rms)
+    return rms, key, rel_db_thresh
 
 
 def makesmearmat3(rl, ru, sr):
-    fftsize = 512
-    nyquist = np.int(fftsize // 2)
-    fnor = audfilt(1, 1, nyquist, sr)
-    fwid = audfilt(rl, ru, nyquist, sr)
-    fnext = np.hstack([fnor, np.zeros([nyquist, nyquist // 2])])
+    fft_size = 512
+    nyquist = np.int(fft_size // 2)
+    f_nor = audfilt(1, 1, nyquist, sr)
+    f_wid = audfilt(rl, ru, nyquist, sr)
+    f_next = np.hstack([f_nor, np.zeros([nyquist, nyquist // 2])])
 
     for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=np.int):
-        fnext[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
-            fnor[
+        f_next[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
+            f_nor[
                 i - 1, np.max([1, 2 * i - 3 * nyquist // 2]) - 1 : (2 * i - nyquist - 1)
             ]
         )
-    fsmear = np.linalg.lstsq(fnext, fwid)[
+    f_smear = np.linalg.lstsq(f_next, f_wid)[
         0
     ]  # https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
-    fsmear = fsmear[:nyquist, :]
+    f_smear = f_smear[:nyquist, :]
 
-    return fsmear
+    return f_smear
 
 
 def audfilt(rl, ru, size, sr):
@@ -144,17 +144,17 @@ def audfilt(rl, ru, size, sr):
 
     g = np.zeros(size)
     for i in np.arange(2, size + 1, 1, dtype=np.int):
-        fhz = (i - 1) * sr / (2 * size)
-        erbhz = 24.7 * ((fhz * 0.00437) + 1)
-        pl = 4 * fhz / (erbhz * rl)
-        pu = 4 * fhz / (erbhz * ru)
+        f_hz = (i - 1) * sr / (2 * size)
+        erb_hz = 24.7 * ((f_hz * 0.00437) + 1)
+        pl = 4 * f_hz / (erb_hz * rl)
+        pu = 4 * f_hz / (erb_hz * ru)
         j = np.arange(1, i, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
         j = np.arange(i, size + 1, dtype=np.int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
-        aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erbhz * (rl + ru) / (2 * 24.7))
+        aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erb_hz * (rl + ru) / (2 * 24.7))
     return aud_filter
 
 
@@ -165,14 +165,14 @@ class MSBGHearingModel(nn.Module):
         audiometric,
         sr=44100,
         spl_cali=True,
-        src_posn="ff",
+        src_position="ff",
         kernel_size=1025,
         device=None,
     ):
         super().__init__()
         self.sr = sr
         self.spl_cali = spl_cali
-        self.src_posn = src_posn
+        self.src_position = src_position
         self.kernel_size = kernel_size
         if device is None:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -193,16 +193,16 @@ class MSBGHearingModel(nn.Module):
             np.array([0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 14, 16])
             * 1000
         )
-        interpf = interp1d(audiometric, audiogram)
-        audiogram = interpf(audiogram_cfs)
+        interp_f = interp1d(audiometric, audiogram)
+        audiogram = interp_f(audiogram_cfs)
 
         # settings for src_to_cochlea_filt
 
-        if src_posn == "ff":
+        if src_position == "ff":
             src_corrn = FF_ED
-        elif src_posn == "df":
+        elif src_position == "df":
             src_corrn = DF_ED
-        elif src_posn == "ITU":
+        elif src_position == "ITU":
             interf_itu = interp1d(ITU_HZ, ITU_ERP_DRP)
             src_corrn = interf_itu(HZ)
         nyquist = sr / 2
@@ -215,20 +215,24 @@ class MSBGHearingModel(nn.Module):
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
         n_wdw = np.int(2 * np.floor((sr / 16e3) * 368 / 2))
-        coch_filter_forward = firwin2(
+        cochlear_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
-        coch_filter_backward = firwin2(
+        cochlear_filter_backward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_backward, window=("kaiser", 4)
         )
-        self.coch_padding = len(coch_filter_forward) // 2
-        self.coch_filter_forward = (
-            torch.tensor(coch_filter_forward, dtype=torch.float32, device=self.device)
+        self.cochlear_padding = len(cochlear_filter_forward) // 2
+        self.cochlear_filter_forward = (
+            torch.tensor(
+                cochlear_filter_forward, dtype=torch.float32, device=self.device
+            )
             .unsqueeze(0)
             .unsqueeze(1)
         )
-        self.coch_filter_backward = (
-            torch.tensor(coch_filter_backward, dtype=torch.float32, device=self.device)
+        self.cochlear_filter_backward = (
+            torch.tensor(
+                cochlear_filter_backward, dtype=torch.float32, device=self.device
+            )
             .unsqueeze(0)
             .unsqueeze(1)
         )
@@ -248,44 +252,36 @@ class MSBGHearingModel(nn.Module):
         # impairment degree affects smearing simulation, and now recruitment,
         # (assuming we do not have too much SEVERE losses present)
 
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        gtf_dir = os.path.join(current_dir, "../evaluator/msbg/msbg_hparams")
+        current_dir = Path(__file__).parent
+        gtf_dir = current_dir / "../evaluator/msbg/msbg_hparams"
         if impaired_degree > 56:
             severe_not_moderate = 1
-            GT4Bankfile = os.path.join(
-                gtf_dir, "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs.json"
-            )
+            gt4_bank_file = gtf_dir / "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs.json"
             bw_broaden_coef = 3
         elif impaired_degree > 35:
             severe_not_moderate = 0
-            GT4Bankfile = os.path.join(
-                gtf_dir, "GT4FBank_Brd2.0E_Spaced1.5E_44100Fs.json"
-            )
+            gt4_bank_file = gtf_dir / "GT4FBank_Brd2.0E_Spaced1.5E_44100Fs.json"
             bw_broaden_coef = 2
         elif impaired_degree > 15:
             severe_not_moderate = -1
-            GT4Bankfile = os.path.join(
-                gtf_dir, "GT4FBank_Brd1.5E_Spaced1.1E_44100Fs.json"
-            )
+            gt4_bank_file = gtf_dir / "GT4FBank_Brd1.5E_Spaced1.1E_44100Fs.json"
             bw_broaden_coef = 1
         else:
             severe_not_moderate = -2
-            GT4Bankfile = os.path.join(
-                gtf_dir, "GT4FBank_Brd1.5E_Spaced1.1E_44100Fs.json"
-            )
+            gt4_bank_file = gtf_dir / "GT4FBank_Brd1.5E_Spaced1.1E_44100Fs.json"
             bw_broaden_coef = 1
-        # GT4Bank = loadmat(GT4Bankfile)
-        with open(GT4Bankfile, "r", encoding="utf-8") as fp:
-            GT4Bank = json.load(fp)
+        # gt4_bank = loadmat(gt4_bank_file)
+        with gt4_bank_file.open("r", encoding="utf-8") as fp:
+            gt4_bank = json.load(fp)
 
         if severe_not_moderate > 0:
-            fsmear = makesmearmat3(4, 2, sr)
+            f_smear = makesmearmat3(4, 2, sr)
         elif severe_not_moderate == 0:
-            fsmear = makesmearmat3(2.4, 1.6, sr)
+            f_smear = makesmearmat3(2.4, 1.6, sr)
         elif severe_not_moderate == -1:
-            fsmear = makesmearmat3(1.6, 1.1, sr)
+            f_smear = makesmearmat3(1.6, 1.1, sr)
         elif severe_not_moderate == -2:
-            fsmear = makesmearmat3(1.001, 1.001, sr)
+            f_smear = makesmearmat3(1.001, 1.001, sr)
 
         self.smear_nfft = 512
         self.smear_win_len = 256
@@ -303,83 +299,85 @@ class MSBGHearingModel(nn.Module):
         self.smear_window = torch.tensor(
             smear_window, dtype=torch.float32, device=self.device
         )
-        self.fsmear = torch.tensor(fsmear, dtype=torch.float32, device=self.device)
+        self.f_smear = torch.tensor(f_smear, dtype=torch.float32, device=self.device)
 
         """ settings for recruitment"""
-        cf_expnsn = 0 * np.array(GT4Bank["GTn_CentFrq"])
-        eq_loud_db = 0 * np.array(GT4Bank["GTn_CentFrq"])
-        for ix_cfreq in range(len(GT4Bank["GTn_CentFrq"])):
-            if GT4Bank["GTn_CentFrq"][ix_cfreq] < audiogram_cfs[0]:
-                cf_expnsn[ix_cfreq] = catch_up / (catch_up - audiogram[0])
-            elif GT4Bank["GTn_CentFrq"][ix_cfreq] > audiogram_cfs[-1]:
-                cf_expnsn[ix_cfreq] = catch_up / (catch_up - audiogram[-1])
+        cf_expansion = 0 * np.array(gt4_bank["GTn_CentFrq"])
+        eq_loud_db = 0 * np.array(gt4_bank["GTn_CentFrq"])
+        for ix_cfreq in range(len(gt4_bank["GTn_CentFrq"])):
+            if gt4_bank["GTn_CentFrq"][ix_cfreq] < audiogram_cfs[0]:
+                cf_expansion[ix_cfreq] = catch_up / (catch_up - audiogram[0])
+            elif gt4_bank["GTn_CentFrq"][ix_cfreq] > audiogram_cfs[-1]:
+                cf_expansion[ix_cfreq] = catch_up / (catch_up - audiogram[-1])
             else:
-                interp_audiog = interp1d(audiogram_cfs, audiogram)
-                audiog_cf = interp_audiog(GT4Bank["GTn_CentFrq"][ix_cfreq])
-                cf_expnsn[ix_cfreq] = catch_up / (catch_up - audiog_cf)
+                interp_audiogram = interp1d(audiogram_cfs, audiogram)
+                audiog_cf = interp_audiogram(gt4_bank["GTn_CentFrq"][ix_cfreq])
+                cf_expansion[ix_cfreq] = catch_up / (catch_up - audiog_cf)
             eq_loud_db[ix_cfreq] = catch_up
 
-        self.nchans = GT4Bank["NChans"]
+        self.n_chans = gt4_bank["NChans"]
         self.gtn_denoms = torch.tensor(
-            GT4Bank["GTn_denoms"], dtype=torch.float32, device=self.device
+            gt4_bank["GTn_denoms"], dtype=torch.float32, device=self.device
         )
         self.gtn_nums = torch.tensor(
-            GT4Bank["GTn_nums"], dtype=torch.float32, device=self.device
+            gt4_bank["GTn_nums"], dtype=torch.float32, device=self.device
         )
         self.hp_denoms = torch.tensor(
-            GT4Bank["HP_denoms"], dtype=torch.float32, device=self.device
+            gt4_bank["HP_denoms"], dtype=torch.float32, device=self.device
         )
         self.hp_nums = torch.tensor(
-            GT4Bank["HP_nums"], dtype=torch.float32, device=self.device
+            gt4_bank["HP_nums"], dtype=torch.float32, device=self.device
         )
-        self.ngamma = int(GT4Bank["NGAMMA"])
-        self.gtn_delays = GT4Bank["GTnDelays"]
-        self.start2polehp = GT4Bank["Start2PoleHP"]
+        self.ngamma = int(gt4_bank["NGAMMA"])
+        self.gtn_delays = gt4_bank["GTnDelays"]
+        self.start_2_pole_hp = gt4_bank["Start2PoleHP"]
 
-        erbn_centfrq = GT4Bank["ERBn_CentFrq"]
-        chan_lpfB = []
-        chan_lpfA = []
+        erbn_centre_freq = gt4_bank["ERBn_CentFrq"]
+        chan_lpf_b = []
+        chan_lpf_a = []
         fir_lpf = []
-        for ixch in range(self.nchans):
-            fc_envlp = (30 / 40) * np.min([100, erbn_centfrq[ixch]])
-            chan_lpfB_ch, chan_lpfA_ch = ellip(2, 0.25, 35, fc_envlp / (self.sr / 2))
-            chan_lpfB.append(chan_lpfB_ch)
-            chan_lpfA.append(chan_lpfA_ch)
+        for ixch in range(self.n_chans):
+            fc_envelope = (30 / 40) * np.min([100, erbn_centre_freq[ixch]])
+            chan_lpf_b_ch, chan_lpf_a_ch = ellip(
+                2, 0.25, 35, fc_envelope / (self.sr / 2)
+            )
+            chan_lpf_b.append(chan_lpf_b_ch)
+            chan_lpf_a.append(chan_lpf_a_ch)
             fir_lpf_ch = firwin(
-                self.kernel_size, fc_envlp / (self.sr / 2), pass_zero="lowpass"
+                self.kernel_size, fc_envelope / (self.sr / 2), pass_zero="lowpass"
             ) / np.sqrt(
                 2
             )  # sqrt(2) is for the consistency with IIR
             fir_lpf.append(fir_lpf_ch)
-        self.chan_lpfB = torch.tensor(
-            np.array(chan_lpfB), dtype=torch.float32, device=self.device
+        self.chan_lpf_b = torch.tensor(
+            np.array(chan_lpf_b), dtype=torch.float32, device=self.device
         )
-        self.chan_lpfA = torch.tensor(
-            np.array(chan_lpfA), dtype=torch.float32, device=self.device
+        self.chan_lpf_a = torch.tensor(
+            np.array(chan_lpf_a), dtype=torch.float32, device=self.device
         )
         self.fir_lpf = torch.tensor(
             np.array(fir_lpf), dtype=torch.float32, device=self.device
         ).unsqueeze(1)
 
-        self.expnsn_m1 = torch.tensor(
-            cf_expnsn - 1, dtype=torch.float32, device=self.device
+        self.expansion_m1 = torch.tensor(
+            cf_expansion - 1, dtype=torch.float32, device=self.device
         )
         # self.envlp_max = torch.tensor(10 ** (0.05 * (eq_loud_db - equiv0dBfileSPL)),
         # dtype=torch.float32, device=self.device)
-        self.envlp_max = torch.tensor(
-            10 ** (0.05 * (eq_loud_db - equiv_0dB_SPL)),
+        self.envelope_max = torch.tensor(
+            10 ** (0.05 * (eq_loud_db - EQUIV_0_DB_SPL)),
             dtype=torch.float32,
             device=self.device,
         )
 
-        recombination_dB = GT4Bank["Recombination_dB"]
-        self.recruitmnet_out_coef = torch.tensor(
-            10 ** (-0.05 * recombination_dB), dtype=torch.float32, device=self.device
+        recombination_db = gt4_bank["Recombination_dB"]
+        self.recruitment_out_coef = torch.tensor(
+            10 ** (-0.05 * recombination_db), dtype=torch.float32, device=self.device
         )
 
         "settings for FIR Gammatone Filters"
-        gt_cfreq = np.array(GT4Bank["GTn_CentFrq"])
-        gt_bw = np.array(GT4Bank["ERBn_CentFrq"]) * 1.1019 * bw_broaden_coef
+        gt_cfreq = np.array(gt4_bank["GTn_CentFrq"])
+        gt_bw = np.array(gt4_bank["ERBn_CentFrq"]) * 1.1019 * bw_broaden_coef
 
         self.padding = (self.kernel_size - 1) // 2
         n_lin = torch.linspace(
@@ -414,20 +412,20 @@ class MSBGHearingModel(nn.Module):
         self.peaks = torch.argmax(gammatone, dim=1)  # for gammatone delay calibration
 
         gammatone_sin = kernel * carrier_sin
-        filters = (gammatone * window_).view(self.nchans, 1, self.kernel_size)
+        filters = (gammatone * window_).view(self.n_chans, 1, self.kernel_size)
         # To get the normalised amplitude
         filters = filters.squeeze(1).cpu().numpy()
-        fr_max = np.zeros(self.nchans)
-        for i in range(self.nchans):
+        fr_max = np.zeros(self.n_chans)
+        for i in range(self.n_chans):
             fr = np.abs(fft(filters[i]))
             fr_ = fr[: int(self.kernel_size / 2)]
             fr_max[i] = np.max(fr_)
         amp = torch.tensor(fr_max, dtype=torch.float32, device=self.device)
         gammatone = gammatone / amp.unsqueeze(1)
         gammatone_sin = gammatone_sin / amp.unsqueeze(1)
-        self.gt_fir = (gammatone * window_).view(self.nchans, 1, self.kernel_size)
+        self.gt_fir = (gammatone * window_).view(self.n_chans, 1, self.kernel_size)
         self.gt_fir_sin = (gammatone_sin * window_).view(
-            self.nchans, 1, self.kernel_size
+            self.n_chans, 1, self.kernel_size
         )
 
         "settings for spl calibration"
@@ -437,8 +435,8 @@ class MSBGHearingModel(nn.Module):
 
     def measure_rms(self, wav):
         bs = wav.shape[0]
-        ave_rms = torch.sqrt(torch.mean(wav**2, dim=1) + EPS)
-        thr_db = 20 * torch.log10(ave_rms + EPS) + self.db_relative_rms
+        average_rms = torch.sqrt(torch.mean(wav**2, dim=1) + EPS)
+        threshold_db = 20 * torch.log10(average_rms + EPS) + self.db_relative_rms
 
         num_frames = wav.shape[1] // self.win_len
         wav_reshaped = torch.reshape(
@@ -448,7 +446,7 @@ class MSBGHearingModel(nn.Module):
 
         key_frames = (
             torch.where(
-                db_frames > thr_db.unsqueeze(1),
+                db_frames > threshold_db.unsqueeze(1),
                 torch.tensor(1, dtype=torch.float32, device=self.device),
                 torch.tensor(0, dtype=torch.float32, device=self.device),
             )
@@ -465,15 +463,17 @@ class MSBGHearingModel(nn.Module):
 
     def calibrate_spl(self, x):
         if self.spl_cali:
-            levelreFS = 10 * torch.log10(torch.mean(x**2, dim=1, keepdim=True) + EPS)
-            leveldBSPL = equiv_0dB_SPL + levelreFS
+            level_re_fs = 10 * torch.log10(
+                torch.mean(x**2, dim=1, keepdim=True) + EPS
+            )
+            level_db_spl = EQUIV_0_DB_SPL + level_re_fs
             rms = self.measure_rms(x)
-            change_dB = leveldBSPL - (equiv_0dB_SPL + 20 * torch.log10(rms + EPS))
-            x = x * 10 ** (0.05 * change_dB)
+            change_db = level_db_spl - (EQUIV_0_DB_SPL + 20 * torch.log10(rms + EPS))
+            x = x * 10 ** (0.05 * change_db)
         return x
 
-    def src_to_cochlea_filt(self, x, coch_filter):
-        return F.conv1d(x, coch_filter, padding=self.coch_padding)
+    def src_to_cochlea_filt(self, x, cochlear_filter):
+        return F.conv1d(x, cochlear_filter, padding=self.cochlear_padding)
 
     def smear(self, x):
         """Padding issue needs to be worked out"""
@@ -493,7 +493,7 @@ class MSBGHearingModel(nn.Module):
         phasor = spec[:, : self.smear_nfft // 2, :, :] / (mag + EPS)
 
         smeared_power = (
-            torch.matmul(power.transpose(-1, -2), self.fsmear.transpose(0, 1))
+            torch.matmul(power.transpose(-1, -2), self.f_smear.transpose(0, 1))
             .transpose(-1, -2)
             .unsqueeze(-1)
             + EPS
@@ -517,10 +517,10 @@ class MSBGHearingModel(nn.Module):
         return smeared_wav.unsqueeze(1)
 
     def recruitment(self, x):
-        nsamps = x.shape[-1]
+        n_samples = x.shape[-1]
         ixhp = 0
         outputs = []
-        for ixch in range(self.nchans):
+        for ixch in range(self.n_chans):
             # Gammaton filtering
             pass_n = torchaudio.functional.lfilter(
                 x, self.gtn_denoms[ixch, :], self.gtn_nums[ixch, :]
@@ -532,71 +532,77 @@ class MSBGHearingModel(nn.Module):
             dly = self.gtn_delays[ixch]
 
             pass_n_cali = torch.zeros_like(pass_n)
-            pass_n_cali[:, :, : nsamps - dly] = pass_n[:, :, dly:nsamps]
+            pass_n_cali[:, :, : n_samples - dly] = pass_n[:, :, dly:n_samples]
             # Tail control
-            if ixch >= self.start2polehp:
+            if ixch >= self.start_2_pole_hp:
                 ixhp += 1
                 pass_n_cali = torchaudio.functional.lfilter(
                     pass_n_cali, self.hp_denoms[ixhp - 1, :], self.hp_nums[ixhp - 1, :]
                 )
 
             # Get the envelope
-            envlp_out = torchaudio.functional.lfilter(
-                torch.abs(pass_n_cali), self.chan_lpfA[ixch, :], self.chan_lpfB[ixch, :]
+            envelope_out = torchaudio.functional.lfilter(
+                torch.abs(pass_n_cali),
+                self.chan_lpf_a[ixch, :],
+                self.chan_lpf_b[ixch, :],
             )
-            envlp_out = torch.flip(envlp_out, dims=[-1])
-            envlp_out = torchaudio.functional.lfilter(
-                envlp_out, self.chan_lpfA[ixch, :], self.chan_lpfB[ixch, :]
+            envelope_out = torch.flip(envelope_out, dims=[-1])
+            envelope_out = torchaudio.functional.lfilter(
+                envelope_out, self.chan_lpf_a[ixch, :], self.chan_lpf_b[ixch, :]
             )
-            envlp_out = torch.flip(envlp_out, dims=[-1])
+            envelope_out = torch.flip(envelope_out, dims=[-1])
 
-            envlp_out = torch.clamp(envlp_out, min=EPS, max=self.envlp_max[ixch])
-            gain = (envlp_out / self.envlp_max[ixch]) ** self.expnsn_m1[ixch]
+            envelope_out = torch.clamp(
+                envelope_out, min=EPS, max=self.envelope_max[ixch]
+            )
+            gain = (envelope_out / self.envelope_max[ixch]) ** self.expansion_m1[ixch]
             outputs.append(gain * pass_n_cali)
 
         y = torch.stack(outputs, dim=-1).sum(dim=-1)
-        y = y * self.recruitmnet_out_coef
+        y = y * self.recruitment_out_coef
         return y
 
     def recruitment_fir(self, x):
-        nsamps = x.shape[-1]
-        x = x.repeat([1, self.nchans, 1])
+        n_samples = x.shape[-1]
+        x = x.repeat([1, self.n_chans, 1])
         real = F.conv1d(
-            x, self.gt_fir, bias=None, padding=self.padding, groups=self.nchans
+            x, self.gt_fir, bias=None, padding=self.padding, groups=self.n_chans
         )
         imag = F.conv1d(
-            x, self.gt_fir_sin, bias=None, padding=self.padding, groups=self.nchans
+            x, self.gt_fir_sin, bias=None, padding=self.padding, groups=self.n_chans
         )
         real_cali = torch.zeros_like(real)
         imag_cali = torch.zeros_like(imag)
-        for i in range(self.nchans):
-            real_cali[:, i, : nsamps - self.peaks[i]] = real[
-                :, i, self.peaks[i] : nsamps
+        for i in range(self.n_chans):
+            real_cali[:, i, : n_samples - self.peaks[i]] = real[
+                :, i, self.peaks[i] : n_samples
             ]
-            imag_cali[:, i, : nsamps - self.peaks[i]] = imag[
-                :, i, self.peaks[i] : nsamps
+            imag_cali[:, i, : n_samples - self.peaks[i]] = imag[
+                :, i, self.peaks[i] : n_samples
             ]
 
         env = torch.sqrt(real_cali * real_cali + imag_cali * imag_cali + EPS)
         env = F.conv1d(
-            env, self.fir_lpf, bias=None, padding=self.padding, groups=self.nchans
+            env, self.fir_lpf, bias=None, padding=self.padding, groups=self.n_chans
         )
 
-        env_max = self.envlp_max.unsqueeze(0).unsqueeze(-1).repeat([1, 1, nsamps])
+        env_max = self.envelope_max.unsqueeze(0).unsqueeze(-1).repeat([1, 1, n_samples])
         gain = torch.clamp(env / env_max, min=EPS, max=1)
-        gain = gain ** self.expnsn_m1.unsqueeze(0).unsqueeze(-1).repeat([1, 1, nsamps])
+        gain = gain ** self.expansion_m1.unsqueeze(0).unsqueeze(-1).repeat(
+            [1, 1, n_samples]
+        )
         y = torch.sum(gain * real_cali, dim=1, keepdim=True)
-        y = y * self.recruitmnet_out_coef
+        y = y * self.recruitment_out_coef
         return y
 
     def forward(self, x):
         x = self.calibrate_spl(x)
         x = x.unsqueeze(1)
-        x = self.src_to_cochlea_filt(x, self.coch_filter_forward)
+        x = self.src_to_cochlea_filt(x, self.cochlear_filter_forward)
         x = self.smear(x)
         # x = self.recruitment(x)
         x = self.recruitment_fir(x)
-        y = self.src_to_cochlea_filt(x, self.coch_filter_backward)
+        y = self.src_to_cochlea_filt(x, self.cochlear_filter_backward)
         return y.squeeze(1)
 
 
