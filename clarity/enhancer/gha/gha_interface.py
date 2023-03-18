@@ -116,10 +116,8 @@ class GHAHearingAid:
         )
         formatted_sGt = format_gaintable(gaintable, noisegate_corr=True)
 
-        cfg_template = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "cfg_files",
-            f"{self.cfg_file}_template.cfg",
+        cfg_template = (
+            Path(__file__).parent / f"cfg_files/{self.cfg_file}_template.cfg",
         )
 
         # Merge CH1 and CH3 files. This is the baseline configuration.
