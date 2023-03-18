@@ -275,7 +275,7 @@ def dataio_prepare(hparams):
 
     # We get the tokenizer as we need it to encode the labels when creating
     # mini-batches.
-    tokenizer = hparams["tokenizer"]
+    the_tokenizer = hparams["tokenizer"]
 
     # 2. Define audio pipeline:
     @sb.utils.data_pipeline.takes("wav")
@@ -293,7 +293,7 @@ def dataio_prepare(hparams):
     )
     def text_pipeline(wrd):
         yield wrd
-        tokens_list = tokenizer.encode_as_ids(wrd)
+        tokens_list = the_tokenizer.encode_as_ids(wrd)
         yield tokens_list
         tokens_bos = torch.LongTensor([hparams["bos_index"]] + (tokens_list))
         yield tokens_bos
@@ -308,7 +308,7 @@ def dataio_prepare(hparams):
     sb.dataio.dataset.set_output_keys(
         datasets, ["id", "sig", "wrd", "tokens_bos", "tokens_eos", "tokens"]
     )
-    return train_data, valid_data, test_datasets, tokenizer
+    return train_data, valid_data, test_datasets, the_tokenizer
 
 
 def main():

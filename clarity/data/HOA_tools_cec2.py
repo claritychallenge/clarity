@@ -227,15 +227,16 @@ def W(degree, n, order, rotation_matrices):
         float: W value
     """
     if degree == 0:
-        return 0.0
+        w_value = 0.0
     elif degree > 0:
-        return P(1, degree + 1, n, order, rotation_matrices) + P(
+        w_value = P(1, degree + 1, n, order, rotation_matrices) + P(
             -1, -degree - 1, n, order, rotation_matrices
         )
     else:
-        return P(1, degree - 1, n, order, rotation_matrices) - P(
+        w_value = P(1, degree - 1, n, order, rotation_matrices) - P(
             -1, -degree + 1, n, order, rotation_matrices
         )
+    return w_value
 
 
 @njit
