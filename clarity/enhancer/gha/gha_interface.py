@@ -3,6 +3,8 @@ import os
 import pathlib
 import subprocess
 import tempfile
+from pathlib import Path
+from typing import Union
 
 import numpy as np
 import soundfile
@@ -178,7 +180,12 @@ class GHAHearingAid:
         logging.info("OpenMHA processing complete")
 
     def read_signal(
-        self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
+        self,
+        filename: Union[str, Path],
+        offset: int = 0,
+        nsamples: int = -1,
+        nchannels: int = 0,
+        offset_is_samples: bool = False,
     ):
         """Read a wavefile and return as numpy array of floats.
 
@@ -212,7 +219,9 @@ class GHAHearingAid:
 
         return x
 
-    def write_signal(self, filename, x, floating_point=True):
+    def write_signal(
+        self, filename: Union[str, Path], x, floating_point: bool = True
+    ) -> None:
         """Write a signal as fixed or floating point wav file."""
 
         if floating_point is False:
