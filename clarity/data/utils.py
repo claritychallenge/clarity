@@ -15,7 +15,7 @@ import scipy
 import scipy.io
 
 SPEECH_FILTER = scipy.io.loadmat(
-    Path(__file__) / "params/speech_weight.mat",
+    Path(__file__).parent / "params/speech_weight.mat",
     squeeze_me=True,
 )
 SPEECH_FILTER = np.array(SPEECH_FILTER["filt"])
