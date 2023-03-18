@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -68,22 +68,18 @@ def compute_scores(predictions, labels):
     }
 
 
-def read_data(pred_json, label_json):
-    prediction = []
-    label = []
-
+def read_data(pred_json: Path, label_json: Path):
     # read label_json to dict
-    label_dict = {}
-    with open(label_json, "r", encoding="utf-8") as fp:
-        label_json = json.load(fp)
-    for item in label_json:
-        label_dict[item["signal"]] = item["correctness"] / 100.0
+    with label_json.open("r", encoding="utf-8") as fp:
+        labels = json.load(fp)
 
-    with open(pred_json, "r", encoding="utf-8") as fp:
+    label_dict = {item["signal"]: item["correctness"] for item in labels}
+
+    with pred_json.open("r", encoding="utf-8") as fp:
         pred_dict = json.load(fp)
-    for signal, pred in pred_dict.items():
-        prediction.append(pred * 100.0)
-        label.append(label_dict[signal])
+
+    prediction = [pred * 100.0 for pred in pred_dict.values()]
+    label = [label_dict[signal] for signal in pred_dict]
 
     return np.array(prediction), np.array(label)
 
@@ -99,12 +95,12 @@ def run(cfg: DictConfig) -> None:
 
     # encoder representation evaluation
     prediction_dev, label_dev = read_data(
-        os.path.join(cfg.path.exp_folder, "dev_conf.json"),
-        os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
+        Path(cfg.path.exp_folder) / "dev_conf.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
     )
     prediction_test, label_test = read_data(
-        os.path.join(cfg.path.exp_folder, "test_conf.json"),
-        f"../test_listener_responses/CPC1.{'test'+track}.json",
+        Path(cfg.path.exp_folder) / "test_conf.json",
+        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
@@ -115,12 +111,12 @@ def run(cfg: DictConfig) -> None:
 
     # decoder representation evaluation
     prediction_dev, label_dev = read_data(
-        os.path.join(cfg.path.exp_folder, "dev_negent.json"),
-        os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
+        Path(cfg.path.exp_folder) / "dev_negent.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
     )
     prediction_test, label_test = read_data(
-        os.path.join(cfg.path.exp_folder, "test_negent.json"),
-        f"../test_listener_responses/CPC1.{'test'+track}.json",
+        Path(cfg.path.exp_folder) / "test_negent.json",
+        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
@@ -129,9 +125,8 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(prediction_test)
     negent_scores = compute_scores(fit_pred * 100, label_test * 100)
 
-    with open(
-        os.path.join(cfg.path.exp_folder, "results.json"), "w", encoding="utf-8"
-    ) as fp:
+    results_file = Path(cfg.path.exp_folder) / "results.json"
+    with results_file.open("w", encoding="utf-8") as fp:
         json.dump(
             {
                 "confidence_results": conf_scores,
