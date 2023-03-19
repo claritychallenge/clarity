@@ -42,6 +42,10 @@ The performance of each system on the validation set is reported below.
 
 ### Task 2 - Listening music in a car with presence of noise
 
+**The overall HAAQI score is 0.1248.**
+
+#### Average HAAQI score per genre
+
 | Genre          |   HAAQI    |
 |:---------------|:----------:|
 | Classical      |   0.1240   |
