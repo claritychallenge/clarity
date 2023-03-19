@@ -10,7 +10,9 @@ from hyperpyyaml import load_hyperpyyaml
 from omegaconf import DictConfig
 from speechbrain.utils.distributed import run_on_main
 from tqdm import tqdm
-from transformer_cpc1_ensemble_decoder import S2STransformerBeamSearch
+from transformer_cpc1_ensemble_decoder import (  # pylint: disable=E0401
+    S2STransformerBeamSearch,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +42,7 @@ class ASR(sb.core.Brain):
 
     def init_ensembles(self, n_ensemble):
         ensembles = []
-        for j in range(n_ensemble):
+        for _j in range(n_ensemble):
             ensembles.append(copy.deepcopy(self.hparams.model))
         return ensembles
 
@@ -178,5 +180,6 @@ def run(cfg: DictConfig) -> None:
             json.dump(test_negent, f)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

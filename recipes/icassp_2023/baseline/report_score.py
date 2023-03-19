@@ -4,7 +4,7 @@ import logging
 
 import hydra
 import pandas as pd
-from evaluate import make_scene_listener_list
+from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
@@ -40,5 +40,6 @@ def report_score(cfg: DictConfig) -> None:
         print(selected_results_df[["haspi", "hasqi", "combined"]].mean(axis=0))
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     report_score()
