@@ -13,11 +13,12 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
     the filtering operation.
 
     Args:
-    reference_db (np.ndarray): env in dB SL for the ref signal in each auditory band
-    processed_db (np.ndarray): env in dB SL for the degraded signal in each auditory band
-    filter_cutoff ():  LP filter cutoff frequency for the filtered envelope, Hz
-    freq_sub_samp ():  subsampling frequency in Hz for the LP filtered envelopes
-    freq_samp ():  sampling rate in Hz for the signals xdB and ydB
+        reference_db (np.ndarray): env in dB SL for the ref signal in each auditory band
+        processed_db (np.ndarray): env in dB SL for the degraded signal in each auditory
+         band
+        filter_cutoff ():  LP filter cutoff frequency for the filtered envelope, Hz
+        freq_sub_samp ():  subsampling frequency in Hz for the LP filtered envelopes
+        freq_samp ():  sampling rate in Hz for the signals xdB and ydB
 
     Returns:
     tuple: reference_env - LP filtered and subsampled reference signal envelope
@@ -30,12 +31,11 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Check the filter design parameters
-    assert (
-        freq_sub_sample <= freq_samp
-    ), "Error in ebm.EnvFilt: Subsampling rate too high."
-    assert (
-        filter_cutoff <= 0.5 * freq_sub_sample
-    ), "Error in ebm.EnvFilt: LP cutoff frequency too high."
+    if freq_sub_sample > freq_samp:
+        raise ValueError("ubsampling rate too high.")
+
+    if filter_cutoff > 0.5 * freq_sub_sample:
+        raise ValueError("LP cutoff frequency too high.")
 
     # Check the data matrix orientation
     # Require each frequency band to be a separate column
@@ -53,10 +53,11 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
     nhalf = floor(nfilt / 2)
     nfilt = int(2 * nhalf)  # Force an even filter length
 
-    # Design the FIR LP filter using a von Hann window to ensure that there are no negative
-    # envelope values. The MATLAB code uses the hanning() function, which returns the Hann
-    # window without the first and last zero-weighted window samples,
-    # unlike np.hann and scipy.signal.windows.hann; the code below replicates this behaviour
+    # Design the FIR LP filter using a von Hann window to ensure that there are no
+    # negative envelope values. The MATLAB code uses the hanning() function, which
+    # returns the Hann window without the first and last zero-weighted window samples,
+    # unlike np.hann and scipy.signal.windows.hann; the code below replicates this
+    # behaviour
     window = 0.5 * (1 - np.cos(2 * np.pi * np.arange(1, nfilt / 2 + 1) / (nfilt + 1)))
     benv = np.concatenate((window, np.flip(window)))
     benv = benv / np.sum(benv)
@@ -94,8 +95,10 @@ def cepstral_correlation_coef(
     nbasis    number of cepstral basis functions to use
 
     Returns:
-    tuple: refernce_cep cepstral coefficient matrix for the ref signal (nsamp,nbasis)
-           processed_cep cepstral coefficient matrix for the output signal (nsamp,nbasis) each column is a separate basis function, from low to high
+        tuple: refernce_cep cepstral coefficient matrix for the ref signal
+            (nsamp,nbasis) processed_cep cepstral coefficient matrix for the output
+            signal (nsamp,nbasis) each column is a separate basis function, from low to
+            high
 
     Updates:
     James M. Kates, 23 April 2015.
@@ -125,7 +128,8 @@ def cepstral_correlation_coef(
     nsamp = len(index)  # Number of segments above threshold
 
     # Exit if not enough segments above zero
-    assert nsamp > 1, "Function ebm_CepCoef: Signal below threshold"
+    if nsamp <= 1:
+        raise ValueError("Signal below threshold")
 
     # Remove the silent samples
     reference_db = reference_db[index, :]
@@ -139,8 +143,9 @@ def cepstral_correlation_coef(
     reference_cep = reference_db @ cepm
     processed_cep = processed_db @ cepm
 
-    # Remove the average value from the cepstral coefficients. The cepstral cross-correlation
-    # will thus be a cross-covariance, and there is no effect of the absolute signal level in dB.
+    # Remove the average value from the cepstral coefficients. The cepstral
+    # cross-correlation will thus be a cross-covariance, and there is no effect of the
+    # absolute signal level in dB.
     for n in range(nbasis):
         x = reference_cep[:, n]
         x = x - np.mean(x)
@@ -194,12 +199,14 @@ def fir_modulation_filter(
     filter outputs.
 
     Args:
-    reference_envelope (np.ndarray) : matrix containing the subsampled reference envelope values. Each
+        reference_envelope (np.ndarray) : matrix containing the subsampled reference
+        envelope values. Each
              column is a different frequency band or cepstral basis function
              arranged from low to high.
-    processed_envelope (np.ndarray): matrix containing the subsampled processed envelope values
-    freq_sub_sampling (): envelope sub-sampling rate in Hz
-    center_frequencies (np.ndarray): Center Frequencies
+        processed_envelope (np.ndarray): matrix containing the subsampled processed
+            envelope values
+        freq_sub_sampling (): envelope sub-sampling rate in Hz
+        center_frequencies (np.ndarray): Center Frequencies
 
     Returns:
     tuple:  reference_modulation ():  a cell array containing the
@@ -207,12 +214,14 @@ def fir_modulation_filter(
                 reference_modulation is of size {nchan,nmodfilt} where
                 nchan is the number of frequency channels or cepstral
                 basis functions in reference_envelope, and nmodfilt is
-                the number of modulation filters used in the analysis. Each cell contains a column vector
-                of length nsamp, where nsamp is the number of samples in each
-                envelope sequence contained in the columns of reference_envelope.
-            processed_modulation (): cell array containing the processed signal output of the
-                modulation filterbank.
-            center_frequencies (): vector of the modulation rate filter center frequencies
+                the number of modulation filters used in the analysis. Each cell
+                contains a column vector of length nsamp, where nsamp is the number of
+                samples in each envelope sequence contained in the columns of
+                reference_envelope.
+            processed_modulation (): cell array containing the processed signal output
+                of the modulation filterbank.
+            center_frequencies (): vector of the modulation rate filter center
+                frequencies
 
     Updates:
     James M. Kates, 14 February 2019.
@@ -340,28 +349,28 @@ def fir_modulation_filter(
 
 def modulation_cross_correlation(reference_modulation, processed_modulation):
     """
-     Compute the cross-correlations between the input signal time-frequency
-     envelope and the distortion time-frequency envelope. The cepstral
-     coefficients or envelopes in each frequency band have been passed
-     through the modulation filterbank using function ebm_ModFilt.
+    Compute the cross-correlations between the input signal time-frequency
+    envelope and the distortion time-frequency envelope. The cepstral
+    coefficients or envelopes in each frequency band have been passed
+    through the modulation filterbank using function ebm_ModFilt.
 
-     Args:
-     reference_modulation (np.array): cell array containing the reference signal output of the
-              modulation filterbank. Xmod is of size {nchan,nmodfilt} where
-              nchan is the number of frequency channels or cepstral basis
-              functions in Xenv, and nmodfilt is the number of modulation
-              filters used in the analysis. Each cell contains a column vector
-              of length nsamp, where nsamp is the number of samples in each
-              envelope sequence contained in the columns of Xenv.
-    processed_modulation (np.ndarray): subsampled distorted output signal envelope
+    Args:
+       reference_modulation (np.array): cell array containing the reference signal
+            output of the modulation filterbank. Xmod is of size {nchan,nmodfilt} where
+            nchan is the number of frequency channels or cepstral basis
+            functions in Xenv, and nmodfilt is the number of modulation
+            filters used in the analysis. Each cell contains a column vector
+            of length nsamp, where nsamp is the number of samples in each
+            envelope sequence contained in the columns of Xenv.
+       processed_modulation (np.ndarray): subsampled distorted output signal envelope
 
-     Output:
-         float: aveCM modulation correlations averaged over basis functions 2-6
-              vector of size nmodfilt
+    Output:
+        float: aveCM modulation correlations averaged over basis functions 2-6
+             vector of size nmodfilt
 
-     Updates:
-     James M. Kates, 21 February 2019.
-     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+    Updates:
+    James M. Kates, 21 February 2019.
+    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Processing parameters
     nchan = reference_modulation.shape[0]  # Number of basis functions
