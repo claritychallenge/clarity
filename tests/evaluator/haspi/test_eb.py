@@ -5,10 +5,15 @@ import pytest
 
 from clarity.evaluator.haspi.eb import (
     bandwidth_adjust,
+    basilar_membrane_add_noise,
     center_frequency,
     ear_model,
+    env_compress_basilar_membrane,
+    envelope_align,
+    envelope_sl,
     gammatone_bandwidth_demodulation,
     gammatone_basilar_membrane,
+    inner_hair_cell_adaptation,
     input_align,
     loss_parameters,
     middle_ear,
@@ -216,15 +221,127 @@ def test_bandwidth_adjust(scale, bw_min, bw_max, expected):
     assert bw_adjusted == pytest.approx(expected)
 
 
-# env_compress_basilar_membrane
+def test_env_compress_basilar_membrane():
+    """Test env_compress_basilar_membrane"""
+    np.random.seed(0)
+    sig_len = 600
+    env_sig = np.random.random(size=sig_len)
+    bm = np.random.random(size=sig_len) * 0.001
+    control = np.random.random(size=sig_len)
+    compressed_signal, compressed_basilar_membrane = env_compress_basilar_membrane(
+        env_sig,
+        bm,  # pylint: disable=invalid-name
+        control,
+        attn_ohc=0.01,
+        threshold_low=70.0,
+        compression_ratio=0.1,
+        fsamp=24000,
+        level1=140,
+        small=1e-30,
+        threshold_high=120,
+    )
+    # check shapes
+    assert compressed_signal.shape == (600,)
+    assert compressed_basilar_membrane.shape == (600,)
+    # check values
+    assert np.mean(np.abs(compressed_signal)) == pytest.approx(15486012153068.807)
+    assert np.mean(np.abs(compressed_basilar_membrane)) == pytest.approx(
+        15415471156.59357
+    )
+
 
 # envelope_align
+def test_envelope_align():
+    """Test envelope align"""
+
+    np.random.seed(0)
+    sig_len = 600
+    scale = 1.1
+    reference = np.random.random(size=sig_len)
+
+    # Make output look like a shifted copy of the reference
+    output = reference.copy()
+    output[50:] = output[:-50]
+    output[0:50] = 0
+    output *= scale
+
+    aligned_output = envelope_align(
+        reference, output, freq_sample=24000, corr_range=100
+    )
+
+    # check shapes and values
+    assert aligned_output.shape == (600,)
+    assert np.sum(np.abs(aligned_output)) == pytest.approx(299.1891022020615)
+    # Check output is now aligned with the reference
+    assert aligned_output[100] == pytest.approx(scale * reference[100])
+
 
 # envelope_sl
+def test_envelope_sl():
+    """Test envelope sl"""
+
+    np.random.seed(0)
+    sig_len = 600
+    ref = np.random.random(size=sig_len)
+    bm = np.random.random(size=sig_len) * 0.001
+
+    reference, basilar_membrane = envelope_sl(
+        reference=ref,
+        basilar_membrane=bm,
+        attnenuated_ihc=40.0,
+        level1=120,
+        small=1e-30,
+    )
+
+    assert reference.shape == (600,)
+    assert basilar_membrane.shape == (600,)
+    assert np.sum(np.abs(reference)) == pytest.approx(42746.12859151134)
+    assert np.sum(np.abs(basilar_membrane)) == pytest.approx(98.97646233693762)
+
 
 # inner_hair_cell_adaptation
+def test_inner_hair_cell_adaptation():
+    """Test inner hair cell adaptation"""
+
+    np.random.seed(0)
+    sig_len = 600
+    ref = np.random.random(size=sig_len)
+    bm = np.random.random(size=sig_len) * 0.001
+
+    output_db, output_basilar_membrane = inner_hair_cell_adaptation(
+        reference_db=ref, reference_basilar_membrane=bm, delta=1.00, freq_sample=24000
+    )
+
+    # check shapes and values
+    assert output_db.shape == (600,)
+    assert output_basilar_membrane.shape == (600,)
+    assert np.sum(np.abs(output_db)) == pytest.approx(298.9359292744365)
+    assert np.sum(np.abs(output_basilar_membrane)) == pytest.approx(0.2963082865723811)
+
 
 # basilar_membrane_add_noise
+def test_basilar_membrane_add_noise():
+    """Test basilar membrane add noise"""
+
+    np.random.seed(0)
+    sig_len = 600
+    ref = np.random.random(size=sig_len)
+
+    noisy_reference = basilar_membrane_add_noise(
+        reference=ref, threshold=40, level1=120
+    )
+
+    # check shapes and values and that signal has changed
+    assert noisy_reference.shape == (600,)
+    assert np.sum(np.abs(noisy_reference)) == pytest.approx(298.919051930547)
+    assert not np.allclose(noisy_reference, ref)
+
+    # Check that adding on nearly 0 noise (-100 db) doesn't change the signal
+    noisy_reference = basilar_membrane_add_noise(
+        reference=ref, threshold=-100, level1=120
+    )
+    assert np.allclose(noisy_reference, ref)
+
 
 # group_delay_compensate
 
