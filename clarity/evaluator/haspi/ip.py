@@ -1,10 +1,10 @@
 """Functions for ???"""
-from typing import Dict
+from typing import Dict, List, Tuple
 
 import numpy as np
 
 
-def get_neural_net():
+def get_neural_net() -> Tuple[Dict, List[np.ndarray], List[np.ndarray], float]:
     """
     Provide the weights derived for the ensemble of ten neural
     networks used for the HASPI_v2 intelligibility model. The neural networks
@@ -209,7 +209,10 @@ def get_neural_net():
 
 
 def nn_feed_forward_ensemble(
-    data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
+    data: np.ndarray,
+    neural_net_params: Dict,
+    weights_hidden: List[np.ndarray],
+    weights_out: List[np.ndarray],
 ) -> np.ndarray:
     """
     Function to compute the neural network ensemble response to a set of
@@ -217,7 +220,7 @@ def nn_feed_forward_ensemble(
 
     Args:
     data (np.ndarray): array of features input to the neural network
-    neural_net_params (dict): vector of neural network paramters
+    neural_net_params (dict): vector of neural network parameters
     weights_hidden (list): cell array of hidden layer weights for each network
     weights_out (list): cell array of output layer weights for each network
 
@@ -250,11 +253,14 @@ def nn_feed_forward_ensemble(
 
 
 def nn_feed_forward(
-    data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
-):
+    data: np.ndarray,
+    neural_net_params: Dict,
+    weights_hidden: np.ndarray,
+    weights_out: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Compute the outputs at each layer of a neural network given
-    the input to the network and the weights. The activiation function is an
+    the input to the network and the weights. The activation function is an
     offset logistic function that gives either a logsig or hyperbolic
     tangent; the outputs from each layer have been reduced by the offset. The
     structure of the network is an input layer, one hidden layer, and an
