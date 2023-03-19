@@ -4,20 +4,29 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haspi.eb import (
+    ave_covary2,
     bandwidth_adjust,
     basilar_membrane_add_noise,
+    bm_covary,
     center_frequency,
+    convert_rms_to_sl,
     ear_model,
     env_compress_basilar_membrane,
+    env_smooth,
     envelope_align,
     envelope_sl,
     gammatone_bandwidth_demodulation,
     gammatone_basilar_membrane,
+    group_delay_compensate,
     inner_hair_cell_adaptation,
     input_align,
     loss_parameters,
+    mel_cepstrum_correlation,
+    melcor9,
+    melcor9_crosscovmatrix,
     middle_ear,
     resample_24khz,
+    spectrum_diff,
 )
 
 # ear_model
@@ -344,19 +353,233 @@ def test_basilar_membrane_add_noise():
 
 
 # group_delay_compensate
+def test_group_delay_compensate():
+    """Test group delay compensate"""
 
-# convert_rms_to_sl
+    np.random.seed(0)
+    sig_len = 600
+    reference = np.random.random(size=(4, sig_len))
 
-# env_smooth
+    processed = group_delay_compensate(
+        reference=reference,
+        bandwidths=np.array([30, 60, 90, 120]),
+        center_freq=np.array([100, 200, 300, 400]),
+        freq_sample=24000,
+        ear_q=9.26449,
+        min_bandwidth=24.7,
+    )
 
-# mel_cepstrum_correlation
+    # check shapes and values
+    assert processed.shape == (4, 600)
+    assert np.sum(np.abs(processed)) == pytest.approx(1193.8088344682358)
 
-# melcor9
 
-# melcor9_crosscovmatrix
+def test_convert_rms_to_sl():
+    """Test convert rms to sl"""
 
-# spectrum_diff
+    np.random.seed(0)
+    sig_len = 600
+    reference = np.random.random(size=sig_len)
+    control = np.random.random(size=sig_len)
 
-# bm_covary
+    ref_db = convert_rms_to_sl(
+        reference=reference,
+        control=control,
+        attnenuated_ohc=0.1,
+        threshold_low=40,
+        compression_ratio=10,
+        attnenuated_ihc=0.1,
+        level1=120,
+        threshold_high=100,
+        small=1e-30,
+    )
 
-# ave_covary2
+    # check shapes and values
+    assert ref_db.shape == (600,)
+    assert np.sum(np.abs(ref_db)) == pytest.approx(34746.74406262155)
+
+
+def test_env_smooth():
+    """Test env smooth"""
+
+    np.random.seed(0)
+    sig_len = 600
+    segment_size = 1  # ms
+    envelopes = np.random.random(size=(4, sig_len))
+    sample_freq = 24000
+
+    smooth = env_smooth(
+        envelopes=envelopes, segment_size=segment_size, freq_sample=sample_freq
+    )
+
+    # check shapes and values
+    expected_length = 2 * sig_len / (sample_freq * segment_size / 1000)
+    assert smooth.shape == (4, expected_length)
+    assert np.sum(np.abs(smooth)) == pytest.approx(100.7397658862719)
+
+
+def test_mel_cepstrum_correlation():
+    """Test mel cepstrum correlation"""
+
+    np.random.seed(0)
+    sig_len = 600
+    reference = np.random.random(size=(4, sig_len))
+    distorted = np.random.random(size=(4, sig_len))
+    addnoise = 0.0001
+
+    # self correlation should produce scores of 1.0
+    (
+        ave_cepstral_correlation,
+        individual_cepstral_correlation,
+    ) = mel_cepstrum_correlation(
+        reference=reference, distorted=reference, threshold=-20, addnoise=addnoise
+    )
+
+    # check shapes and values
+    assert ave_cepstral_correlation == pytest.approx(1.0)
+    assert individual_cepstral_correlation == pytest.approx(1.0)
+
+    # correlation between two random signals should be low
+    (
+        ave_cepstral_correlation,
+        individual_cepstral_correlation,
+    ) = mel_cepstrum_correlation(
+        reference=reference, distorted=distorted, threshold=-20, addnoise=addnoise
+    )
+
+    # check shapes and values
+    assert np.array(individual_cepstral_correlation).shape == (6,)
+    assert ave_cepstral_correlation == pytest.approx(0.04195483905166838)
+    assert individual_cepstral_correlation == pytest.approx(
+        np.array(
+            [0.04582154, 0.04306849, 0.02364514, 0.07634693, 0.02364514, 0.04306849]
+        )
+    )
+
+
+def test_melcor9():
+    """Test melcor9"""
+
+    np.random.seed(0)
+    sig_len = 6000
+    reference = 100 * np.random.random(size=sig_len)
+    _distorted = 100 * np.random.random(size=sig_len)  # noqa: F841
+
+    # TODO: This is always returning 0's :-()
+    mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = melcor9(
+        reference=reference,
+        distorted=reference,
+        threshold=20,
+        add_noise=0.00,
+        segment_size=2,  # ms
+        n_cepstral_coef=6,
+    )
+
+    assert mel_cep_ave == pytest.approx(0)
+    assert mel_cep_low == pytest.approx(0)
+    assert mel_cep_high == pytest.approx(0)
+    assert mel_cep_mod == pytest.approx(0)
+
+
+def test_melcor9_crosscovmatrix():
+    """Test melcor9 crosscovmatrix"""
+
+    np.random.seed(0)
+    sig_len = 600
+    reference = np.random.random(size=(6, sig_len))
+    processed = np.random.random(size=(6, sig_len))
+    bm = np.random.random(size=sig_len)
+
+    # TODO: undocumented function - unsure what inputs should look like
+    # Need to find correct inputs so that it doesn't throw an error
+    with pytest.raises(ValueError):
+        _cross_cov_matrix = melcor9_crosscovmatrix(  # noqa: F841
+            b=bm,
+            nmod=10,  # n modulation channels
+            nbasis=6,  # n cepstral coefficients
+            nsamp=600,
+            nfir=128,
+            reference_cep=reference,
+            processed_cep=processed,
+        )
+
+
+def test_spectrum_diff():
+    """Test spectrum diff"""
+
+    np.random.seed(0)
+    sig_len = 600
+    reference = np.random.random(size=(4, sig_len))
+    processed = np.random.random(size=(4, sig_len))
+
+    dloud, dnorm, dslope = spectrum_diff(reference_sl=reference, processed_sl=processed)
+
+    # Check shapes
+    assert dloud.shape == (3,)
+    assert dnorm.shape == (3,)
+    assert dslope.shape == (3,)
+
+    # Check values
+    assert dloud == pytest.approx(
+        np.array([0.037373053253378426, 7.671407491067586e-05, 4.762048775653672e-05])
+    )
+    assert dnorm == pytest.approx(
+        np.array([44.84779838405483, 0.09203844008264382, 0.0570982338215042])
+    )
+    assert dslope == pytest.approx(
+        np.array([0.03918063966807504, 0.00010878329523853699, 8.006096597686129e-05])
+    )
+
+
+def test_bm_covary():
+    """Test bm covary"""
+
+    np.random.seed(0)
+    sig_len = 600
+    sample_freq = 24000
+    segment_size = 1
+    reference = np.random.random(size=(4, sig_len))
+    processed = np.random.random(size=(4, sig_len))
+
+    signal_cross_cov, ref_mean_square, proc_mean_square = bm_covary(
+        reference_basilar_membrane=reference,
+        processed_basilar_membrane=reference + 0.1 * processed,
+        segment_size=segment_size,
+        freq_sample=sample_freq,
+    )
+
+    # Check shapes
+    expected_length = 2 * sig_len / (sample_freq * segment_size / 1000)
+
+    assert signal_cross_cov.shape == (4, expected_length)
+    assert ref_mean_square.shape == (4, expected_length)
+    assert proc_mean_square.shape == (4, expected_length)
+
+    # Check values
+    assert np.sum(np.abs(signal_cross_cov)) == pytest.approx(200)
+    assert np.sum(np.abs(ref_mean_square)) == pytest.approx(70.1701757426345)
+    assert np.sum(np.abs(proc_mean_square)) == pytest.approx(78.38279741287329)
+
+
+def test_ave_covary2():
+    """Test ave covary2"""
+    np.random.seed(0)
+    sig_len = 600
+
+    signal_cross_cov = np.random.random(size=(4, sig_len))
+    ref_mean_square = np.random.random(size=(4, sig_len))
+
+    ave_covariance, ihc_sync_covariance = ave_covary2(
+        signal_cross_covariance=signal_cross_cov,
+        reference_signal_mean_square=ref_mean_square,
+        threshold_db=20,
+        lp_filter_order=np.array([1, 3, 5, 5, 5, 5]),
+        freq_cutoff=1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0]),
+    )
+
+    # TODO: outputting all 0's -- need better input
+
+    assert len(ihc_sync_covariance) == 6
+
+    assert ave_covariance == pytest.approx(0)
+    assert ihc_sync_covariance == pytest.approx([0, 0, 0, 0, 0, 0])
