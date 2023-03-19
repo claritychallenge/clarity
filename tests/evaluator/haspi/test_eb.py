@@ -4,9 +4,14 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haspi.eb import (
+    bandwidth_adjust,
     center_frequency,
     ear_model,
+    gammatone_bandwidth_demodulation,
+    gammatone_basilar_membrane,
+    input_align,
     loss_parameters,
+    middle_ear,
     resample_24khz,
 )
 
@@ -97,8 +102,8 @@ def test_loss_parameters():
     assert np.sum(annenuated_ihc) == pytest.approx(129.6085067183270)
 
 
-# resample_24khz
 def test_resample():
+    """Test resample"""
     np.random.seed(0)
     sig_len = 600
     reference_signal = np.random.random(size=sig_len)
@@ -114,11 +119,102 @@ def test_resample():
     assert freq_sample_hz == 24000
 
 
-# input_align
+def test_input_align():
+    """Test input align"""
+    np.random.seed(0)
+    sig_len = 600
+    reference_signal = 100 * np.random.random(size=sig_len)
+    processed_signal = reference_signal.copy()
+    processed_signal[50:] = processed_signal[:-50]
+    processed_signal[0:50] = 0
 
-# middle_ear
+    ref, proc = input_align(reference_signal, processed_signal)
 
-# gammatone_bandwith_demodulation
+    assert ref.shape == (600,)
+    assert proc.shape == (600,)
+    assert np.sum(np.abs(ref)) == pytest.approx(29892.167176853407)
+    assert np.sum(np.abs(proc)) == pytest.approx(27199.009291096496)
+
+
+def test_middle_ear():
+    """Test middle ear"""
+    np.random.seed(0)
+    sig_len = 600
+    reference_signal = 100 * np.random.random(size=sig_len)
+    filtered_signal = middle_ear(reference_signal, 24000)
+
+    assert filtered_signal.shape == (600,)
+    assert np.sum(np.abs(filtered_signal)) == pytest.approx(9241.220369749171)
+
+
+def test_gammatone_basilar_membrane():
+    """Test gammatone basilar membrane"""
+    np.random.seed(0)
+    sig_len = 600
+    ref = 100 * np.random.random(size=sig_len)
+    proc = ref + 10 * np.random.random(size=sig_len)
+
+    (
+        reference_envelope,
+        reference_basilar_membrane,
+        processed_envelope,
+        processed_basilar_membrane,
+    ) = gammatone_basilar_membrane(
+        reference=ref,
+        reference_bandwidth=1.4,
+        processed=proc,
+        processed_bandwidth=2.0,
+        freq_sample=24000,
+        center_freq=1000,
+        ear_q=9.26449,
+        min_bandwidth=24.7,
+    )
+
+    # check shapes
+    assert reference_envelope.shape == (600,)
+    assert reference_basilar_membrane.shape == (600,)
+    assert processed_envelope.shape == (600,)
+    assert processed_basilar_membrane.shape == (600,)
+    # check values
+    assert np.sum(np.abs(reference_envelope)) == pytest.approx(3605.427313705984)
+    assert np.sum(np.abs(reference_basilar_membrane)) == pytest.approx(2288.3557465)
+    assert np.sum(np.abs(processed_envelope)) == pytest.approx(4426.111706599469)
+    assert np.sum(np.abs(processed_basilar_membrane)) == pytest.approx(2804.93743475)
+
+
+def test_gammatone_bandwidth_demodulation():
+    """Test gammatone bandwidth demodulation"""
+    centre_freq_sin, centre_freq_cos = gammatone_bandwidth_demodulation(
+        npts=100,
+        tpt=0.001,
+        center_freq=1000,
+        center_freq_cos=np.zeros(100),
+        center_freq_sin=np.zeros(100),
+    )
+    assert centre_freq_sin.shape == (100,)
+    assert centre_freq_cos.shape == (100,)
+    assert np.sum(centre_freq_sin) == pytest.approx(-0.3791946274493412)
+    assert np.sum(centre_freq_cos) == pytest.approx(-0.39460748051808026)
+
+
+@pytest.mark.parametrize(
+    "scale, bw_min, bw_max, expected",
+    [
+        (100.0, 1.0, 2.0, 1.0),
+        (1000000.0, 1.0, 2.0, 2.0),
+        (1000.0, 1.0, 2.0, 1.22),
+    ],
+)
+def test_bandwidth_adjust(scale, bw_min, bw_max, expected):
+    """Test bandwidth adjust"""
+    bw_adjusted = bandwidth_adjust(
+        control=scale * np.array([1, -1, 1]),
+        bandwidth_min=bw_min,
+        bandwidth_max=bw_max,
+        level1=1,
+    )
+    assert bw_adjusted == pytest.approx(expected)
+
 
 # env_compress_basilar_membrane
 
