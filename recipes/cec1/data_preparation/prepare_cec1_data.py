@@ -18,7 +18,7 @@ def prepare_data(root_path, metafile_path, scene_folder, num_channels):
         scene_folder: folder containing generated scenes
         num_channels: number of channels
     """
-    with open(metafile_path, "r") as f:
+    with open(metafile_path, "r", encoding="utf-8") as f:
         scenes = json.load(f)
 
     os.makedirs(scene_folder, exist_ok=True)

@@ -76,11 +76,12 @@ def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict, dict]:
     Args:
         config (DictConfig): A dictionary-like object containing various configuration
             parameters for the evaluation. This includes the path to the scenes file,
-            the path to the listeners train file, and the path to the listeners valid file.
+            the path to the listeners train file, and the path to the listeners valid
+            file.
 
     Returns:
-        Tuple[dict, dict, dict]: A tuple containing the scene data, the listener data and
-            the pair scenes-listeners.
+        Tuple[dict, dict, dict]: A tuple containing the scene data, the listener data
+            and the pair scenes-listeners.
 
     """
     # Load listener data

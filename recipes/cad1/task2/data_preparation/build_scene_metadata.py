@@ -26,7 +26,8 @@ def get_random_head_rotation(input_dict: dict) -> Any:
     Selects a random head rotation degree.
 
     Args:
-        input_dict (dict): A dictionary where keys are bird IDs and values are bird data.
+        input_dict (dict): A dictionary where keys are bird IDs and values are bird
+            data.
 
     Returns:
         A random item from the input dictionary.
@@ -45,7 +46,7 @@ def get_random_car_params(min_speed: int = 50, max_speed: int = 120) -> Dict:
         - max_speed (int): The maximum speed that can be returned (default 120).
 
     Returns:
-        A dictionary containing the parameters needed by the CarNoiseSignalGeneration class.
+        A dictionary containing parameters needed by CarNoiseSignalGeneration class.
     """
     speed = np.random.randint(min_speed, max_speed)
     car_params = CarNoiseParametersGenerator().gen_parameters(speed)
@@ -82,7 +83,7 @@ def get_random_snr(min_snr, max_snr, round_to=4) -> float:
 
 @hydra.main(config_path=".", config_name="config")
 def run(cfg: DictConfig) -> None:
-    """Main function to generate the metadata for the scenes in the CAD-1 Task-2 challenge.
+    """Main function to generate metadata for the scenes in the CAD-1 Task-2 challenge.
 
     This function relies on a random seed to generate the metadata.
     The seed is set to 2023 by default and it should always be present.

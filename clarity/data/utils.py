@@ -1,4 +1,5 @@
 """Utilities for data generation."""
+# pylint: disable=wrong-import-position
 import os
 import sys
 
@@ -35,11 +36,8 @@ def better_ear_speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> floa
     """
     if np.ndim(target) == 1:
         # analysis left ear and right ear for single channel target
-        try:
-            left_snr = speechweighted_snr(target, noise[:, 0])
-            right_snr = speechweighted_snr(target, noise[:, 1])
-        except IndexError:
-            raise
+        left_snr = speechweighted_snr(target, noise[:, 0])
+        right_snr = speechweighted_snr(target, noise[:, 1])
     else:
         # analysis left ear and right ear for two channel target
         left_snr = speechweighted_snr(target[:, 0], noise[:, 0])
@@ -60,15 +58,12 @@ def speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> float:
         (float):
     Signal Noise Ratio
     """
-    try:
-        target_filt = scipy.signal.convolve(
-            target, SPEECH_FILTER, mode="full", method="fft"
-        )
-        noise_filt = scipy.signal.convolve(
-            noise, SPEECH_FILTER, mode="full", method="fft"
-        )
-    except ValueError:
-        raise
+
+    target_filt = scipy.signal.convolve(
+        target, SPEECH_FILTER, mode="full", method="fft"
+    )
+    noise_filt = scipy.signal.convolve(noise, SPEECH_FILTER, mode="full", method="fft")
+
     # rms of the target after speech weighted filter
     targ_rms = np.sqrt(np.mean(target_filt**2))
 
@@ -108,10 +103,10 @@ def pad(signal: np.ndarray, length: int) -> np.ndarray:
     Returns:
         np.array:
     """
-    try:
-        assert length >= signal.shape[0]
-    except AssertionError:
-        raise
+
+    if length < signal.shape[0]:
+        raise ValueError("Length must be greater than signal length")
+
     return np.pad(
         signal, ([(0, length - signal.shape[0])] + ([(0, 0)] * (len(signal.shape) - 1)))
     )

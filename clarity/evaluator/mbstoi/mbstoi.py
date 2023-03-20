@@ -46,7 +46,7 @@ def mbstoi(
     tau_0: float = 1.6e-3,
     level_shift_deviation: float = 1.6,
 ) -> float:
-    """Implementation of the Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.
+    """The Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.
 
     Args:
         left_ear_clean (np.ndarray): Clean speech signal from left ear.
@@ -54,7 +54,8 @@ def mbstoi(
         left_ear_noisy (np.ndarray) : Noisy/processed speech signal from left ear.
         right_ear_noisy (np.ndarray) : Noisy/processed speech signal from right ear.
         fs_signal (int) : Frequency sample rate of signal.
-        gridcoarseness (int) : Grid coarseness as denominator of ntaus and ngammas (default: 1).
+        gridcoarseness (int) : Grid coarseness as denominator of ntaus and ngammas.
+            Defaults to 1.
         sample_rate (int) :  Sample Rate.
         n_frame (int) :  Number of Frames.
         fft_size_in_samples (int) :  ??? size in samples.
@@ -76,14 +77,15 @@ def mbstoi(
         float : mbtsoi index d.
 
     Notes:
-        All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the original Matlab software are
-        owned by oticon a/s and/or Aalborg University. please see details at
-        `http://ah-andersen.net/code/<http://ah-andersen.net/code/>`
+        All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the
+        original Matlab software are owned by oticon a/s and/or Aalborg University.
+        Please see `http://ah-andersen.net/code/<http://ah-andersen.net/code/>`
 
 
-    .. [1] A. H. Andersen, J. M. de Haan, Z.-H. Tan, and J. Jensen (2018) Refinement and validation of the binaural
-    short time objective intelligibility measure for spatially diverse conditions. Speech Communication vol. 102,
-    pp. 1-13 `doi:10.1016/j.specom.2018.06.001 <https://doi.org/10.1016/j.specom.2018.06.001>`_
+    .. [1] A. H. Andersen, J. M. de Haan, Z.-H. Tan, and J. Jensen (2018) Refinement and
+        validation of the binaural short time objective intelligibility measure for
+        spatially diverse conditions. Speech Communication vol. 102, pp. 1-13
+        doi:10.1016/j.specom.2018.06.001 <https://doi.org/10.1016/j.specom.2018.06.001>
     """
 
     n_taus = math.ceil(100 / gridcoarseness)  # number of tau values to try out

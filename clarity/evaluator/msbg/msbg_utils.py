@@ -126,9 +126,10 @@ def firwin2(
 
     Args:
         n_taps (int): The number of taps in the FIR filter.
-        frequencies (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
+        frequencies (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0
+            being Nyquist.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
-        window (string or (string, float), optional): See scipy.firwin2 (default: (None))
+        window (string or (string, float), optional): See scipy.firwin2. Default is None
         antisymmetric (bool, optional): Unused but present to main compatability
             with scipy firwin2.
 
@@ -168,8 +169,8 @@ def fir2(
 
     Args:
         filter_length (int): Order
-        frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where 1 is Nyquist rate.
-                        First and last elements must be 0 and 1 respectively.
+        frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where
+            1 is Nyquist rate. First and last elements must be 0 and 1 respectively.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
         n_interpolate (int, optional): Number of points for freq response interpolation
             (default: max(smallest power of 2 greater than nn, 512))
@@ -238,8 +239,9 @@ def gen_tone(
     Args:
         freq (float): Frequency of tone in Hz.
         duration (float): Duration of tone in seconds.
-        sample_frequency (float, optional): Sample rate of generated tone in Hz. (default: 44100)
-        level (float, optional): Level of tone in dB SPL. (default: 0)
+        sample_frequency (float, optional): Sample rate of generated tone in Hz.
+            Default is 44100.
+        level (float, optional): Level of tone in dB SPL. Default is 0.
 
     Returns:
         np.ndarray
@@ -265,7 +267,8 @@ def gen_eh2008_speech_noise(
 ) -> np.ndarray:
     """Generate speech shaped noise.
 
-    Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and sloping -9db/oct beyond that.
+    Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and sloping
+        -9db/oct beyond that.
 
     Slightly different shape from SII stylised same as EarHEar 2008 paper, Moore et al.
 
@@ -273,7 +276,8 @@ def gen_eh2008_speech_noise(
         duration (float): Duration of signal in seconds
         sample_frequency (float): Sampling rate
         level (float, optional): Normalise to level dB if present
-        supplied_b (ndarray, optional): High-pass filter (default: uses built-in pre-emphasis filter)
+        supplied_b (ndarray, optional): High-pass filter. Default uses built-in
+            pre-emphasis filter
 
     Returns:
         ndarray: Noise signal
@@ -348,7 +352,8 @@ def generate_key_percent(
         signal (ndarray): The signal to analyse.
         threshold_db (float): fixed energy threshold (dB).
         window_length (int): length of window in samples.
-        percent_to_track (float, optional): Track a percentage of frames (default: {None}).
+        percent_to_track (float, optional): Track a percentage of frames.
+            Default is None
 
     Raises:
         ValueError: percent_to_track is set too high.
@@ -422,7 +427,8 @@ def generate_key_percent(
     # histogram should produce a two-peaked curve: thresh should be set in valley
     # between the two peaks, and set threshold a bit above that,
     # as it heads for main peak
-    # FixMe : Could Otsu's method (from image processing) be used here? https://en.wikipedia.org/wiki/Otsu's_method
+    # TODO : Could Otsu's method (from image processing) be used here?
+    # https://en.wikipedia.org/wiki/Otsu's_method
     frame_index = np.nonzero(every_db >= expected)[0]
     valid_frames = len(frame_index)
     key = np.zeros((1, valid_frames * window_length))[0]
@@ -512,7 +518,7 @@ def read_signal(
 
     Args:
         filename (string): Name of file to read
-        offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
+        offset (int, optional): Offset in samples or seconds (from start). Default is 0.
         nsamples (int): Number of samples.
         nchannels (int): expected number of channel (default: 0 = any number OK)
         offset_is_samples (bool): measurement units for offset (default: False)
@@ -520,14 +526,11 @@ def read_signal(
     Returns:
         np.ndarray: audio signal
     """
-    try:
-        wave_file = SoundFile(filename)
-    except Exception as e:
-        # Ensure incorrect error (24 bit) is not generated
-        raise Exception(f"Unable to read {filename}.") from e
+
+    wave_file = SoundFile(filename)
 
     if nchannels not in (0, wave_file.channels):
-        raise Exception(
+        raise ValueError(
             f"Wav file ({filename}) was expected to have {nchannels} channels."
         )
 
@@ -564,7 +567,8 @@ def write_signal(
 
     if sample_frequency != MSBG_FS:
         logging.warning(
-            f"Sampling rate mismatch: {filename} with sample frequency = {sample_frequency}."
+            f"Sampling rate mismatch: {filename} with "
+            f"sample frequency = {sample_frequency}."
         )
         # raise ValueError("Sampling rate mismatch")
 

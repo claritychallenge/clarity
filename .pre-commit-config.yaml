@@ -82,11 +82,12 @@ repos:
   - repo: local
     hooks:
       - id: pylint_warnings
-        args: ["--rcfile=.pylintrc"]
+        args: ["--rcfile=.pylintrc.precommit.ini"]
         name: pylint-warnings
         entry: python -m pylint
         language: system
         files: \.py$
+        exclude: clarity/_version.py # 3rd party code that doesn't conform
 ci:
   autofix_prs: true
   autofix_commit_msg: '[pre-commit.ci] Fixing issues with pre-commit'

@@ -141,5 +141,5 @@ def test_pad(signal: np.ndarray, length: int, expected: np.ndarray) -> None:
 
 def test_pad_invalid_length_assertion_error() -> None:
     """Test pad() raises an exception when length < signal.shape[0]."""
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         pad(signal=np.asarray([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), length=2)

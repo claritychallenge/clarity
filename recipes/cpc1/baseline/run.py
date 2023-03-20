@@ -42,8 +42,10 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def run_HL_processing(cfg, path):
     output_path = os.path.join(path.exp_folder, "eval_signals")
     os.makedirs(output_path, exist_ok=True)
-    scenes = json.load(open(path.scenes_file))
-    listener_audiograms = json.load(open(path.listeners_file))
+    with open(path.scenes_file, "r", encoding="utf-8") as fp:
+        scenes = json.load(fp)
+    with open(path.listeners_file, "r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
     enhanced_folder = path.scenes_folder
 
     # initialize ear
@@ -64,7 +66,7 @@ def run_HL_processing(cfg, path):
             f"{outfile_stem}_HL-mixoutput.wav",
         ]
         # if all signals to write exist, pass
-        if all([os.path.isfile(f) for f in signal_files_to_write]):
+        if all(os.path.isfile(f) for f in signal_files_to_write):
             continue
 
         signal = read_signal(signal_file)
@@ -93,17 +95,18 @@ def run_HL_processing(cfg, path):
             listen(ear, ddf_signal, left_audiogram, right_audiogram),
             listen(ear, mixture_signal, left_audiogram, right_audiogram),
         ]
-        for i in range(len(signals_to_write)):
+        for signal, signal_file in zip(signals_to_write, signal_files_to_write):
             write_signal(
-                signal_files_to_write[i],
-                signals_to_write[i],
+                signal_file,
+                signal,
                 MSBG_FS,
                 floating_point=True,
             )
 
 
 def run_calculate_SI(cfg, path) -> None:
-    scenes = json.load(open(path.scenes_file))
+    with open(path.scenes_file, "r", encoding="utf-8") as fp:
+        scenes = json.load(fp)
     proc_folder = os.path.join(path.exp_folder, "eval_signals")
     sii_file = os.path.join(path.exp_folder, "sii.csv")
     csv_lines = [["signal_ID", "intelligibility_score"]]
@@ -153,7 +156,7 @@ def run_calculate_SI(cfg, path) -> None:
         )
         csv_lines.append([f"{scene}_{listener}_{system}", sii])  # type: ignore
 
-    with open(sii_file, "w") as csv_f:
+    with open(sii_file, "w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
