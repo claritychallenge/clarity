@@ -1,3 +1,24 @@
+# Pathlib
+7f109ad31a87914d397e6fe8f89c5f361c586cc7 # Ignoring pathlib commits
+0114314e74bc9b85ceff9f8f09f44b5cc3ba31ca # Fixes to recipes/e029+e032_sheffield/prepare_data
+af9938bde769f674b50ba5a05394c35c28a390a6 # Fixes for enhancer/gha/gha_interface
+baa6a8feab8cc52d96c18ba11e63c630e50bf888 # Made final fixes for clarity/data/cec1_dataset
+c6e005ea05bc7f16f471e340893d22153ad5338d # Made fixes for clarity/data/cec1_dataset
+8d664a1016aac5c3a7f7a153d8733d38e2610386 # Made fixes for clarity/predictor/torch_msbg
+a7d73877239ef7f2f4501c58d20c88beaddb2118 # Made fixes for recipes/cec1/e009_sheffield
+91f3e449a6103407ab452177423a5d8bb2496b21 # Made fixes for recipes/cec1/baseline
+9ea8acdff1a226ea4af172ef8eaac5e94c52240a # Made fixes for cpc1/e029 and cpc/e032 train
+746d2497c3e78dfe40616e49fb3a77fa4ab39362 # Made fixes for cpc1/e029 and cpc/e032 infer
+59eeb1dddf041a1c9c16a339b9891b495e49c7d9 # Fixed files in tests/
+7c155ee832a0a3e8319047e8b62581de10c95340 # Fixed a bug introduced using Path(__file__)
+01ffb888822dfc2d41644ebb748ce18d0b4e2e1c # Fixed files in recipes/cpc1/baseline
+902dac5dcf9e5d861b80e3c85139bd17fc49a5c3 # Mixed files in clarity/data
+5ff7b0d09381151925396b6ec0e56847d19a8c97 # pathlib for clarity/evaluator/msbg/msbg_utils.py
+f012d461b0c84dab631d6e1cc92473356c41ab35 # Converted recipes/cpc1/e029_sheffield/prepare_data.py
+bf308a4534ed20765aa6a2d990d0434fad08746f # Made fixes for cpc1/e029 and cpc/e032 evaluate
+107feef722715bbaddb4551898683afd1238ba53 # Made fixes for recipes/cec2
+
+
 # pylint compliance (https://github.com/claritychallenge/clarity/pull/224)
 1c4f7def50b63e449c1292ebcb1072a333752dc2 # Ignoring commit that fix pylint errors
 bd5f3068d3d149a2c169bcf2fe1ba42e00f04c22 # Dealt with F6401 false positives, and final, final missed issues.
