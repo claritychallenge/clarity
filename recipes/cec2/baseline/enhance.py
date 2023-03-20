@@ -18,8 +18,10 @@ logger = logging.getLogger(__name__)
 def enhance(cfg: DictConfig) -> None:
     enhanced_folder = os.path.join(cfg.path.exp_folder, "enhanced_signals")
     os.makedirs(enhanced_folder, exist_ok=True)
-    scenes_listeners = json.load(open(cfg.path.scenes_listeners_file))
-    listener_audiograms = json.load(open(cfg.path.listeners_file))
+    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
 
     enhancer = NALR(**cfg.nalr)
     compressor = Compressor(**cfg.compressor)
@@ -61,5 +63,6 @@ def enhance(cfg: DictConfig) -> None:
             wavfile.write(os.path.join(enhanced_folder, filename), fs, signal_16)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     enhance()

@@ -38,7 +38,7 @@ class S2SBaseSearcher(torch.nn.Module):
     """
 
     def __init__(self, bos_index, eos_index, min_decode_ratio, max_decode_ratio):
-        super(S2SBaseSearcher, self).__init__()
+        super().__init__()
         self.bos_index = bos_index
         self.eos_index = eos_index
         self.min_decode_ratio = min_decode_ratio
@@ -151,6 +151,9 @@ class S2SGreedySearcher(S2SBaseSearcher):
     greedy decoding approach. See also S2SBaseSearcher().
     """
 
+    # pylint: disable=W0223
+    # This class is intentionally abstract so disable these warnings
+
     def forward(self, enc_states, wav_len):
         enc_lens = torch.round(enc_states.shape[1] * wav_len).int()
         device = enc_states.device
@@ -164,7 +167,7 @@ class S2SGreedySearcher(S2SBaseSearcher):
         log_probs_lst = []
         max_decode_steps = int(enc_states.shape[1] * self.max_decode_ratio)
 
-        for t in range(max_decode_steps):
+        for _t in range(max_decode_steps):
             log_probs, memory, _ = self.forward_step(
                 inp_tokens, memory, enc_states, enc_lens
             )
@@ -217,8 +220,11 @@ class S2SRNNGreedySearcher(S2SGreedySearcher):
     >>> hyps, scores = searcher(enc, wav_len)
     """
 
+    # pylint: disable=W0223
+    # Doesn't implement lm_forward_step() or reset_lm_mem()
+
     def __init__(self, embedding, decoder, linear, **kwargs):
-        super(S2SRNNGreedySearcher, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.emb = embedding
         self.dec = decoder
         self.fc = linear
@@ -274,7 +280,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
     coverage_penalty: float
         The coefficient of coverage penalty (η).
         log P(y|x) + λ log P_LM(y) + γ*len(y) + η*coverage(x,y). (default: 0.0)
-        Reference: https://arxiv.org/pdf/1612.02695.pdf, https://arxiv.org/pdf/1808.10792.pdf
+        Reference: https://arxiv.org/pdf/1612.02695.pdf
+            https://arxiv.org/pdf/1808.10792.pdf
     lm_weight : float
         The weight of LM when performing beam search (λ).
         log P(y|x) + λ log P_LM(y). (default: 0.0)
@@ -288,7 +295,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
         CTC prefix scoring on "partial" token or "full: token.
     ctc_window_size: int
         Default: 0
-        Compute the ctc scores over the time frames using windowing based on attention peaks.
+        Compute the ctc scores over the time frames using windowing based on
+            attention peaks.
         If 0, no windowing applied.
     using_max_attn_shift: bool
         Whether using the max_attn_shift constraint. (default: False)
@@ -326,10 +334,9 @@ class S2SBeamSearcher(S2SBaseSearcher):
         max_attn_shift=60,
         minus_inf=-1e20,
     ):
-        super(S2SBeamSearcher, self).__init__(
-            bos_index, eos_index, min_decode_ratio, max_decode_ratio
-        )
+        super().__init__(bos_index, eos_index, min_decode_ratio, max_decode_ratio)
         self.beam_size = beam_size
+        self.beam_offset = None
         self.topk = topk
         self.return_log_probs = return_log_probs
         self.length_normalization = length_normalization
@@ -359,7 +366,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
         if self.ctc_weight > 0.0:
             if len({self.bos_index, self.eos_index, self.blank_index}) < 3:
                 raise ValueError(
-                    "To perform joint ATT/CTC decoding, set blank, eos and bos to different indexes."
+                    "To perform joint ATT/CTC decoding, set blank, eos and bos to "
+                    "different indexes."
                 )
 
         # ctc already initialized
@@ -374,7 +382,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
         ---------
         hyps : List
             This list contains batch_size number.
-            Each inside list contains a list stores all the hypothesis for this sentence.
+            Each inside list contains a list storing all the hypothesis
+                for this sentence.
         beam_size : int
             The number of beam_size.
 
@@ -384,11 +393,8 @@ class S2SBeamSearcher(S2SBaseSearcher):
             Whether the hyps has been full.
         """
         hyps_len = [len(lst) for lst in hyps]
-        beam_size = [self.beam_size for _ in range(len(hyps_len))]
-        if hyps_len == beam_size:
-            return True
-        else:
-            return False
+        beam_size = [self.beam_size] * len(hyps_len)
+        return hyps_len == beam_size
 
     def _check_attn_shift(self, attn, prev_attn_peak):
         """This method checks whether attention shift is more than attn_shift.
@@ -484,15 +490,17 @@ class S2SBeamSearcher(S2SBaseSearcher):
                 hyps_and_scores[batch_id].append((hyp, log_probs, final_scores))
         return is_eos
 
-    def _get_top_score_prediction(self, hyps_and_scores, topk):
-        """This method sorts the scores and return corresponding hypothesis and log probs.
+    # pylint: disable=W0613
+    def _get_top_score_prediction(self, all_hyps_and_scores, topk):
+        """Sort the scores and return corresponding hypothesis and log probs.
 
         Arguments
         ---------
-        hyps_and_scores : list
+        all_hyps_and_scores : list
             To store generated hypotheses and scores.
         topk : int
             Number of hypothesis to return.
+            Deprecated, use self.topk instead.
 
         Returns
         -------
@@ -505,12 +513,13 @@ class S2SBeamSearcher(S2SBaseSearcher):
         topk_log_probs : list
             The log probabilities of each hypotheses.
         """
+
         top_hyps, top_log_probs, top_scores, top_lengths = [], [], [], []
-        batch_size = len(hyps_and_scores)
+        batch_size = len(all_hyps_and_scores)
 
         # Collect hypotheses
-        for i in range(len(hyps_and_scores)):
-            hyps, log_probs, scores = zip(*hyps_and_scores[i])
+        for hyps_and_scores in all_hyps_and_scores:
+            hyps, log_probs, scores = zip(*hyps_and_scores)
             top_hyps += hyps
             top_scores += scores
             top_log_probs += log_probs
@@ -579,7 +588,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
         # keep only the first to make sure no redundancy.
         sequence_scores.index_fill_(0, self.beam_offset, 0.0)
 
-        # keep the hypothesis that reaches eos and their corresponding score and log_probs.
+        # keep the hypothesis that reaches eos and corresponding score and log_probs.
         hyps_and_scores = [[] for _ in range(batch_size)]
 
         # keep the sequences that still not reaches eos.
@@ -673,7 +682,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
             if self.length_normalization:
                 sequence_scores = sequence_scores * (t + 1)
 
-            # The index of which beam the current top-K output came from in (t-1) timesteps.
+            # The index of beam the current top-K output came from in (t-1) timesteps.
             predecessors = (
                 torch.div(candidates, vocab_size, rounding_mode="floor")
                 + self.beam_offset.unsqueeze(1).expand_as(candidates)
@@ -687,7 +696,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
             if self.ctc_weight > 0:
                 ctc_memory = ctc_scorer.permute_mem(ctc_memory, candidates)
 
-            # If using_max_attn_shift, then the previous attn peak has to be permuted too.
+            # If using_max_attn_shift, then previous attn peak has to be permuted too.
             if self.using_max_attn_shift:
                 prev_attn_peak = torch.index_select(
                     prev_attn_peak, dim=0, index=predecessors
@@ -702,9 +711,10 @@ class S2SBeamSearcher(S2SBaseSearcher):
                     # Init coverage
                     self.coverage = cur_attn
 
-                # the attn of transformer is [batch_size*beam_size, current_step, source_len]
+                # the attn of transformer is
+                #   [batch_size*beam_size, current_step, source_len]
                 if len(cur_attn.size()) > 2:
-                    self.converage = torch.sum(cur_attn, dim=1)
+                    self.coverage = torch.sum(cur_attn, dim=1)
                 else:
                     # Update coverage
                     self.coverage = torch.index_select(
@@ -773,7 +783,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
         (
             topk_hyps,
             topk_scores,
-            topk_lengths,
+            _topk_lengths,
             log_probs,
         ) = self._get_top_score_prediction(hyps_and_scores, topk=self.topk)
         # pick the best hyp
@@ -782,13 +792,13 @@ class S2SBeamSearcher(S2SBaseSearcher):
 
         if self.return_log_probs:
             return predictions, topk_scores, log_probs
-        else:
-            return (
-                predictions,
-                topk_scores,
-                dec_outputs[0, :, :],
-                torch.exp(log_probs[0]),
-            )
+
+        return (
+            predictions,
+            topk_scores,
+            dec_outputs[0, :, :],
+            torch.exp(log_probs[0]),
+        )
 
     def ctc_forward_step(self, x):
         logits = self.ctc_fc(x)
@@ -876,10 +886,13 @@ class S2SRNNBeamSearcher(S2SBeamSearcher):
     >>> hyps, scores = searcher(enc, wav_len)
     """
 
+    # pylint: disable=W0223
+    # Doesn't implement lm_forward_step(), permute_lm_mem() or reset_lm_mem()
+
     def __init__(
         self, embedding, decoder, linear, ctc_linear=None, temperature=1.0, **kwargs
     ):
-        super(S2SRNNBeamSearcher, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.emb = embedding
         self.dec = decoder
         self.fc = linear
@@ -977,7 +990,7 @@ class S2SRNNBeamSearchLM(S2SRNNBeamSearcher):
     def __init__(
         self, embedding, decoder, linear, language_model, temperature_lm=1.0, **kwargs
     ):
-        super(S2SRNNBeamSearchLM, self).__init__(embedding, decoder, linear, **kwargs)
+        super().__init__(embedding, decoder, linear, **kwargs)
 
         self.lm = language_model
         self.lm.eval()
@@ -1063,9 +1076,7 @@ class S2SRNNBeamSearchTransformerLM(S2SRNNBeamSearcher):
     def __init__(
         self, embedding, decoder, linear, language_model, temperature_lm=1.0, **kwargs
     ):
-        super(S2SRNNBeamSearchTransformerLM, self).__init__(
-            embedding, decoder, linear, **kwargs
-        )
+        super().__init__(embedding, decoder, linear, **kwargs)
 
         self.lm = language_model
         self.lm.eval()
@@ -1121,7 +1132,7 @@ def inflate_tensor(tensor, times, dim):
 
 
 def mask_by_condition(tensor, cond, fill_value):
-    """This function will mask some element in the tensor with fill_value, if condition=False.
+    """Mask some element in the tensor with fill_value, if condition=False.
 
     Arguments
     ---------
@@ -1187,7 +1198,7 @@ class S2STransformerBeamSearch(S2SBeamSearcher):
     """
 
     def __init__(self, modules, temperature=1.0, temperature_lm=1.0, **kwargs):
-        super(S2STransformerBeamSearch, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.model = modules[0]
         self.fc = modules[1]

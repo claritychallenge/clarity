@@ -1,0 +1,44 @@
+path:
+  root: ../../cadenza_task2_data_demo/cad1/task2
+  audio_dir: ${path.root}/audio
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.audio_dir}/music
+  hrtf_dir: ${path.audio_dir}/eBrird
+  listeners_train_file: ${path.metadata_dir}/listeners.train.json
+  listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
+  scenes_file: ${path.metadata_dir}/scenes.json
+  scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
+  hrtf_file: ${path.metadata_dir}/eBrird_BRIR.json
+  exp_folder: ./exp # folder to store enhanced signals and final results
+
+sample_rate: 44100
+
+nalr:
+  nfir: 220
+  fs: ${sample_rate}
+
+compressor:
+  threshold: 0.7
+  attenuation: 0.1
+  attack: 5
+  release: 20
+  rms_buffer_size: 0.064
+
+soft_clip: False
+
+enhance:
+  average_level: -14   # Average level according Spotify's levels
+  min_level: -19
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+  save_intermediate_wavs: False
+  split: valid # train, valid
+  batch_size: 1   # Number of batches
+  batch: 0      # Batch number to evaluate
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}

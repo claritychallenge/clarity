@@ -5,7 +5,7 @@ import pathlib
 
 import hydra
 import numpy as np
-from evaluate import make_scene_listener_list
+from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
@@ -23,6 +23,7 @@ def enhance(cfg: DictConfig) -> None:
     with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
+    # pylint: disable=unused-variable
     with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)  # noqa: F841
 
@@ -59,5 +60,6 @@ def enhance(cfg: DictConfig) -> None:
         )
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     enhance()

@@ -4,7 +4,7 @@ from typing import List
 
 import numpy as np
 from numba import njit
-from numba.typed import List as TypedList
+from numba.typed import List as TypedList  # pylint: disable=no-name-in-module
 from scipy.signal import convolve
 from scipy.spatial.transform import Rotation as R
 from scipy.special import comb
@@ -19,7 +19,8 @@ def convert_a_to_b_format(
     back_right_up: np.ndarray,
 ):
     """Converts 1st order A format audio into 1st order B format.
-    For more information on ambisonic formats see Gerzon, Michael A.. “Ambisonics. Part two: Studio techniques.” (1975).
+    For more information on ambisonic formats see Gerzon, Michael A.
+    “Ambisonics. Part two: Studio techniques.” (1975).
 
     Args:
         front_left_up (np.ndarray): Front-left-up audio
@@ -92,7 +93,8 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     sub_matrices[1] = foa_rotmat
 
     typed_sub_matrices = TypedList()
-    [typed_sub_matrices.append(x) for x in sub_matrices]
+    for x in sub_matrices:
+        typed_sub_matrices.append(x)
 
     if n > 1:
         for i in np.arange(2, n + 1):
@@ -166,7 +168,8 @@ def U(degree, n, order, rotation_matrices):
     """U coefficient initialiser for rotation matrix calculation.
 
     Args:
-        rotation_degree (int): Upper parameters of spherical harmonic component Y and n the lower.
+        rotation_degree (int): Upper parameters of spherical harmonic
+                               component Y and n the lower.
         n (int): index
         order (int): order
         rotation_matrices (list(matrix)): rotation matrices
@@ -192,21 +195,22 @@ def V(degree, n, order, rotation_matrices):
     """
     d = 0
     if degree == 0:
-        return P(1, 1, n, order, rotation_matrices) + P(
+        v_coeff = P(1, 1, n, order, rotation_matrices) + P(
             -1, -1, n, order, rotation_matrices
         )
     elif degree > 0:
         if degree == 1:
             d = 1.0
-        return P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
+        v_coeff = P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
             -1, -degree + 1, n, order, rotation_matrices
         ) * (1 - d)
     else:
         if degree == -1:
             d = 1.0
-        return P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
+        v_coeff = P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
             -1, -degree - 1, n, order, rotation_matrices
         ) * np.sqrt(1 + d)
+    return v_coeff
 
 
 @njit
@@ -223,15 +227,16 @@ def W(degree, n, order, rotation_matrices):
         float: W value
     """
     if degree == 0:
-        return 0.0
+        w_value = 0.0
     elif degree > 0:
-        return P(1, degree + 1, n, order, rotation_matrices) + P(
+        w_value = P(1, degree + 1, n, order, rotation_matrices) + P(
             -1, -degree - 1, n, order, rotation_matrices
         )
     else:
-        return P(1, degree - 1, n, order, rotation_matrices) - P(
+        w_value = P(1, degree - 1, n, order, rotation_matrices) - P(
             -1, -degree + 1, n, order, rotation_matrices
         )
+    return w_value
 
 
 @njit
@@ -401,7 +406,8 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
 
     # Decode to loudspeaker positions
 
-    # # No need to apply max-rE weights given we are using virtual speakers and headphones
+    # # No need to apply max-rE weights given we are using
+    # # virtual speakers and headphones
     # y = np.dot(ambisonic_signals * weights, inv_matrix)
 
     n_chans = ambisonic_signals.shape[1]
@@ -528,7 +534,7 @@ def rotation_control_vector(
     return np.array(np.floor(idx * (array_length - 1)), dtype=int)
 
 
-def rotation_vector(
+def compute_rotation_vector(
     start_angle: float,
     end_angle: float,
     signal_length: int,
@@ -549,12 +555,8 @@ def rotation_vector(
     """
     turn_direction = -np.sign(start_angle - end_angle)
     with np.errstate(divide="raise"):
-        try:
-            increment = (
-                np.abs(start_angle - end_angle) / signal_length
-            ) * turn_direction
-        except FloatingPointError:
-            raise
+        increment = (np.abs(start_angle - end_angle) / signal_length) * turn_direction
+
     theta = np.arange(start_angle, end_angle, increment)
     idx = rotation_control_vector(signal_length, start_idx, end_idx)
     return theta[idx]

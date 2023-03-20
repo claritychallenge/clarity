@@ -12,8 +12,9 @@ logger = logging.getLogger(__name__)
 def render_scenes(cfg):
     for dataset in cfg.scene_renderer:
         logger.info(f"Beginning scene generation for {dataset} set...")
-        with open(cfg.scene_renderer[dataset].metadata.scene_definitions, "r") as f:
-            scenes = json.load(f)
+        file_path = cfg.scene_renderer[dataset].metadata.scene_definitions
+        with open(file_path, "r", encoding="utf-8") as fp:
+            scenes = json.load(fp)
 
         starting_scene = (
             cfg.scene_renderer[dataset].chunk_size * cfg.render_starting_chunk
@@ -37,5 +38,6 @@ def run(cfg: DictConfig) -> None:
     render_scenes(cfg)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

@@ -10,14 +10,27 @@ from hyperpyyaml import load_hyperpyyaml
 from omegaconf import DictConfig
 from speechbrain.utils.distributed import run_on_main
 from tqdm import tqdm
-from transformer_cpc1_ensemble_decoder import S2STransformerBeamSearch
+from transformer_cpc1_ensemble_decoder import (  # pylint: disable=E0401
+    S2STransformerBeamSearch,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class ASR(sb.core.Brain):
+    # pylint: disable=abstract-method
+    # Note, no implementation of compute_forward() or compute_objectives() provided
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.asr_ensemble = None
+        self.test_search = None
+
     def compute_uncertainty(self, wavs, wav_lens, tokens_bos):
-        """Forward computations from the waveform batches to the output probabilities."""
+        """Forward computations from waveform batches to the output probabilities."""
+        if self.asr_ensemble is None or self.test_search is None:
+            raise RuntimeError("ASR model not loaded")
+
         # batch = batch.to(self.device)
         wavs, wav_lens, tokens_bos = (
             wavs.to(self.device),
@@ -40,7 +53,7 @@ class ASR(sb.core.Brain):
 
     def init_ensembles(self, n_ensemble):
         ensembles = []
-        for j in range(n_ensemble):
+        for _j in range(n_ensemble):
             ensembles.append(copy.deepcopy(self.hparams.model))
         return ensembles
 
@@ -81,8 +94,8 @@ class ASR(sb.core.Brain):
 
 def init_asr(asr_config):
     hparams_file, run_opts, overrides = sb.parse_arguments([asr_config])
-    with open(hparams_file) as fin:
-        hparams = load_hyperpyyaml(fin, overrides)
+    with open(hparams_file, "r", encoding="utf-8") as fp:
+        hparams = load_hyperpyyaml(fp, overrides)
 
     tokenizer = hparams["tokenizer"]
     bos_index = hparams["bos_index"]
@@ -104,7 +117,7 @@ def init_asr(asr_config):
     return asr_brain, tokenizer, bos_index
 
 
-def compute_uncertainty(left_proc_path, asr_model, bos_index, tokenizer):
+def compute_uncertainty(left_proc_path, asr_model, bos_index, _tokenizer):
     wav_len = torch.tensor([1], dtype=torch.float32)
     tokens_bos = torch.LongTensor([bos_index]).view(1, -1)
 
@@ -156,10 +169,14 @@ def run(cfg: DictConfig) -> None:
         dev_conf[wav_id] = uncertainty[0].tolist()
         dev_negent[wav_id] = uncertainty[1].tolist()
 
-        with open(os.path.join(cfg.path.exp_folder, "dev_conf.json"), "w") as f:
-            json.dump(dev_conf, f)
-        with open(os.path.join(cfg.path.exp_folder, "dev_negent.json"), "w") as f:
-            json.dump(dev_negent, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_conf.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(dev_conf, fp)
+        with open(
+            os.path.join(cfg.path.exp_folder, "dev_negent.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(dev_negent, fp)
 
     # test set similarity
     test_conf = {}
@@ -172,11 +189,17 @@ def run(cfg: DictConfig) -> None:
         test_conf[wav_id] = uncertainty[0].tolist()
         test_negent[wav_id] = uncertainty[1].tolist()
 
-        with open(os.path.join(cfg.path.exp_folder, "test_conf.json"), "w") as f:
-            json.dump(test_conf, f)
-        with open(os.path.join(cfg.path.exp_folder, "test_negent.json"), "w") as f:
-            json.dump(test_negent, f)
+        with open(
+            os.path.join(cfg.path.exp_folder, "test_conf.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(test_conf, fp)
+
+        with open(
+            os.path.join(cfg.path.exp_folder, "test_negent.json"), "w", encoding="utf-8"
+        ) as fp:
+            json.dump(test_negent, fp)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

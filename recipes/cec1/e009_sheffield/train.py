@@ -22,7 +22,14 @@ logger = logging.getLogger(__name__)
 
 
 class DenModule(System):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ear_idx = None
+        self.down_sample = None
+
     def common_step(self, batch, batch_nb, train=True):
+        if self.down_sample is None:
+            raise RuntimeError("Hearing model not loaded")
         proc, ref = batch
         ref = ref[:, self.ear_idx, :]
         if self.config.downsample_factor != 1:
@@ -34,7 +41,24 @@ class DenModule(System):
 
 
 class AmpModule(System):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.hl_ear = None
+        self.nh_ear = None
+        self.down_sample = None
+        self.up_sample = None
+        self.ear_idx = None
+        self.den_model = None
+
     def common_step(self, batch, batch_nb, train=True):
+        if (
+            self.hl_ear is None
+            or self.nh_ear is None
+            or self.down_sample is None
+            or self.up_sample is None
+            or self.den_model is None
+        ):
+            raise RuntimeError("Hearing model not loaded")
         proc, ref = batch
         ref = ref[:, self.ear_idx, :]
         if self.config.downsample_factor != 1:
@@ -107,8 +131,8 @@ def train_den(cfg, ear):
     trainer.fit(den_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
-    with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
-        json.dump(best_k, f, indent=0)
+    with open(os.path.join(exp_dir, "best_k_models.json"), "w", encoding="utf-8") as fp:
+        json.dump(best_k, fp, indent=0)
     state_dict = torch.load(checkpoint.best_model_path)
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
@@ -163,8 +187,8 @@ def train_amp(cfg, ear):
         )
 
     # build normal hearing and hearing loss ears
-    with open(cfg.listener.metafile, "r") as f:
-        listeners_file = json.load(f)
+    with open(cfg.listener.metafile, "r", encoding="utf-8") as fp:
+        listeners_file = json.load(fp)
         audiogram_cfs = listeners_file[cfg.listener.id]["audiogram_cfs"]
         audiogram_lvl_l = listeners_file[cfg.listener.id]["audiogram_levels_l"]
         audiogram_lvl_r = listeners_file[cfg.listener.id]["audiogram_levels_r"]
@@ -199,8 +223,8 @@ def train_amp(cfg, ear):
     trainer.fit(amp_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
-    with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
-        json.dump(best_k, f, indent=0)
+    with open(os.path.join(exp_dir, "best_k_models.json"), "w", encoding="utf-8") as fp:
+        json.dump(best_k, fp, indent=0)
     state_dict = torch.load(checkpoint.best_model_path)
     amp_module.load_state_dict(state_dict=state_dict["state_dict"])
     amp_module.cpu()
@@ -219,5 +243,6 @@ def run(cfg: DictConfig) -> None:
     train_amp(cfg, ear="right")
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

@@ -22,27 +22,32 @@ def hasqi_v2(
     impaired hearing.
 
     Arguments:
-    reference (np.ndarray): Clear input reference speech signal with no noise or distortion.
-              If a hearing loss is specified, NAL-R equalization is optional
-    reference_freq (int): Sampling rate in Hz for reference signal.
-    processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or processing.
-    processed_freq (int): Sampling rate in Hz for processed signal.
-    hearing_loss (np.ndarray): vector of hearing loss at the 6 audiometric frequencies
-                  [250, 500, 1000, 2000, 4000, 6000] Hz.
-    equalisation (int): Flag to provide equalization for the hearing loss to reference signal:
+        reference (np.ndarray): Clear input reference speech signal with no noise or
+            distortion. If a hearing loss is specified, NAL-R equalization is optional
+        reference_freq (int): Sampling rate in Hz for reference signal.
+        processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or
+            processing.
+        processed_freq (int): Sampling rate in Hz for processed signal.
+        hearing_loss (np.ndarray): vector of hearing loss at the 6 audiometric
+            frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
+        equalisation (int): Mode to use when equalising the reference signal:
                 1 = no EQ has been provided, the function will add NAL-R
                 2 = NAL-R EQ has already been added to the reference signal
-    level1    Optional input specifying level in dB SPL that corresponds to a
+        level1: Optional input specifying level in dB SPL that corresponds to a
               signal RMS = 1. Default is 65 dB SPL if argument not provided.
-    silence_threshold (float): Silence threshold sum across bands, dB above audio threshold. Default: 2.5
-    add_noise (float): Additive noise in dB SL to conditiona cross-covariance. Default: 0.0
-    segment_covariance (int): Segment size for the covariance calculation. Default: 16
+        silence_threshold (float): Silence threshold sum across bands, dB above audio
+            threshold. Default: 2.5
+        add_noise (float): Additive noise in dB SL to conditiona cross-covariance.
+            Default is 0.0
+        segment_covariance (int): Segment size for the covariance calculation.
+            Default is 16
 
     Returns:
-    Combined  Quality estimate is the product of the nonlinear and linear terms
-    Nonlin    Nonlinear quality component = (cepstral corr)^2 x seg BM coherence
-    Linear    Linear quality component = std of spectrum and spectrum slope
-    raw       Vector of raw values = [CepCorr, BMsync5, Dloud, Dslope]
+        tuple(Combined, Nonlin, Linear, raw)
+            Combined: Quality estimate is the product of the nonlinear and linear terms
+            Nonlin: Nonlinear quality component = (cepstral corr)^2 x seg BM coherence
+            Linear: Linear quality component = std of spectrum and spectrum slope
+            raw: Vector of raw values = [CepCorr, BMsync5, Dloud, Dslope]
 
     James M. Kates, 5 August 2013.
     Translated from MATLAB to Python by Gerardo Roa Dabike, October 2022.
@@ -76,7 +81,7 @@ def hasqi_v2(
     # Mel cepstrum correlation using smoothed envelopes
     (
         average_cepstral_correlation,
-        individual_cepstral_correlations,
+        _individual_cepstral_correlations,
     ) = eb.mel_cepstrum_correlation(
         reference_smooth, processed_smooth, silence_threshold, add_noise
     )
@@ -85,14 +90,14 @@ def hasqi_v2(
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    d_loud, d_norm, d_slope = eb.spectrum_diff(reference_sl, processed_sl)
+    d_loud, _d_norm, d_slope = eb.spectrum_diff(reference_sl, processed_sl)
 
     # Temporal fine structure correlation measurements
     # Compute the time-frequency segment covariances
     (
         signal_cross_covariance,
         reference_mean_square,
-        processed_mean_square,
+        _processed_mean_square,
     ) = eb.bm_covary(
         reference_basilar_membrane,
         processed_basilar_membrane,
@@ -150,7 +155,7 @@ def hasqi_v2_better_ear(
     audiogram_right,
     audiogram_frequencies,
     level=100,
-    audiogram_freq=[250, 500, 1000, 2000, 4000, 6000],
+    audiogram_freq=None,
 ) -> float:
     """Better ear HASQI.
 
@@ -166,12 +171,17 @@ def hasqi_v2_better_ear(
         audiogram_r: right ear audiogram
         audiogram_cfs: audiogram frequencies
         level: level in dB SPL corresponding to RMS=1
+        audiogram_freq: selected frequencies to use for audiogram
 
     Returns:
         float: beHASQI score
 
     Gerardo Roa Dabike, November 2022
     """
+    # Default frequencies
+    if audiogram_freq is None:
+        audiogram_freq = [250, 500, 1000, 2000, 4000, 6000]
+
     # Adjust to match the frequencies
     adjusted_left = [
         audiogram_left[i]

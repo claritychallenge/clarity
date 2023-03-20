@@ -41,8 +41,10 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def run_HL_processing(cfg: DictConfig) -> None:
     output_path = os.path.join(cfg["path"]["exp_folder"], "eval_signals")
     os.makedirs(output_path, exist_ok=True)
-    scenes_listeners = json.load(open(cfg["path"]["scenes_listeners_file"]))
-    listener_audiograms = json.load(open(cfg["path"]["listeners_file"]))
+    with open(cfg["path"]["scenes_listeners_file"], "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+    with open(cfg["path"]["listeners_file"], "r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
     enhanced_folder = cfg["path"]["enhanced_signals"]
 
     # initialize ear
@@ -69,7 +71,7 @@ def run_HL_processing(cfg: DictConfig) -> None:
                 f"{outfile_stem}_HL-mixoutput.wav",
             ]
             # if all signals to write exist, pass
-            if all([os.path.isfile(f) for f in signal_files_to_write]):
+            if all(os.path.isfile(f) for f in signal_files_to_write):
                 continue
 
             signal = read_signal(signal_file)
@@ -102,10 +104,11 @@ def run_HL_processing(cfg: DictConfig) -> None:
                 listen(ear, ddf_signal, left_audiogram, right_audiogram),
                 listen(ear, mixture_signal, left_audiogram, right_audiogram),
             ]
-            for i in range(len(signals_to_write)):
+
+            for signal, signal_file in zip(signals_to_write, signal_files_to_write):
                 write_signal(
-                    signal_files_to_write[i],
-                    signals_to_write[i],
+                    signal_file,
+                    signal,
                     MSBG_FS,
                     floating_point=True,
                 )
@@ -113,7 +116,8 @@ def run_HL_processing(cfg: DictConfig) -> None:
 
 @hydra.main(config_path=".", config_name="config")
 def run_calculate_SI(cfg: DictConfig) -> None:
-    scenes_listeners = json.load(open(cfg["path"]["scenes_listeners_file"]))
+    with open(cfg["path"]["scenes_listeners_file"], "r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
     proc_folder = os.path.join(cfg["path"]["exp_folder"], "eval_signals")
     sii_file = os.path.join(cfg["path"]["exp_folder"], "sii.csv")
     csv_lines = [["scene", "listener", "sii"]]
@@ -133,7 +137,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 os.path.join(proc_folder, f"{scene}_{listener}_HLddf-output.wav")
             )
 
-            # Calculate channel-specific unit impulse delay due to HL model and audiograms
+            # Calculate channel-specific unit impulse delay due to HL model
+            # and audiograms
             delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))
             if delay[0] != delay[1]:
                 logging.info(f"Difference in delay of {delay[0] - delay[1]}.")
@@ -164,7 +169,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             )
             csv_lines.append([scene, listener, sii])  # type: ignore
 
-    with open(sii_file, "w") as csv_f:
+    with open(sii_file, "w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
@@ -172,6 +177,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             csv_writer.writerow(line)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run_HL_processing()
     run_calculate_SI()

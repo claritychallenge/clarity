@@ -27,35 +27,40 @@ def equalisation_cancellation(
 ):
     """Run the equalisation-cancellation (EC) stage of the MBSTOI metric.
 
-    The EC loop evaluates one huge equation in every iteration (see referenced notes for details). The left and right
-    ear signals are level adjusted by gamma (in dB) and time shifted by tau relative to one-another and are thereafter
-    subtracted. The processed signals are treated similarly. To obtain performance similar to that of humans,the EC
-    stage adds jitter. We are searching for the level and time adjustments that maximise the intermediate correlation
-    coefficients d. Could add location of source and interferer to this to reduce search space.
+    The EC loop evaluates one huge equation in every iteration (see referenced notes
+    for details). The left and right ear signals are level adjusted by gamma (in dB) and
+    time shifted by tau relative to one-another and are thereafter subtracted. The
+    processed signals are treated similarly. To obtain performance similar to that of
+    humans,the EC stage adds jitter. We are searching for the level and time adjustments
+    that maximise the intermediate correlation coefficients d. Could add location of
+    source and interferer to this to reduce search space.
 
     Args:
-        left_ear_clean_hat (np.ndarray) : Clean left ear short-time DFT coefficients (single-sided) per frequency
-    bin and frame.
-        right_ear_clean_hat (np.ndarray) : Clean right ear short-time DFT coefficients (single-sided) per frequency bin and frame.
-        left_ear_noisy_hat (np.ndarray) : Noisy/processed left ear short-time DFT coefficients (single-sided) per
-    frequency bin and frame.
-        right_ear_noisy_hat (np.ndarray) : Noisy/processed right eat short-time DFT coefficients (single-sided) per
-    frequency bin and frame.
-    n_third_octave_bands (int) : Number of one-third octave bands.
-    n_frames (int) : Number of frames for intermediate intelligibility measure.
-    fids (np.ndarray) : Indices of frequency band edges.
-    cf (np.ndarray) : Centre frequencies.
-    taus (np.ndarray) : Interaural delay (tau) values.
-    n_taus (int) : Number of tau values.
-    gammas (np.ndarray) : Interaural level difference (gamma) values.
-    ngammas (int) : Number of gamma values.
-    intermediate_intelligibility_measure_grid (np.ndarray) : Grid for intermediate intelligibility measure.
-    p_ec_max (np.ndarray) : Empty grid for maximum values.
-    sigma_epsilon (np.ndarray) : Jitter for gammas.
-    sigma_delta (np.ndarray) : Jitter for taus.
+        left_ear_clean_hat (np.ndarray) : Clean left ear short-time DFT coefficients
+            (single-sided) per frequency bin and frame.
+        right_ear_clean_hat (np.ndarray) : Clean right ear short-time DFT coefficients
+            (single-sided) per frequency bin and frame.
+        left_ear_noisy_hat (np.ndarray) : Noisy/processed left ear short-time DFT
+            coefficients (single-sided) per frequency bin and frame.
+        right_ear_noisy_hat (np.ndarray) : Noisy/processed right eat short-time DFT
+            coefficients (single-sided) per frequency bin and frame.
+        n_third_octave_bands (int) : Number of one-third octave bands.
+        n_frames (int) : Number of frames for intermediate intelligibility measure.
+        fids (np.ndarray) : Indices of frequency band edges.
+        cf (np.ndarray) : Centre frequencies.
+        taus (np.ndarray) : Interaural delay (tau) values.
+        n_taus (int) : Number of tau values.
+        gammas (np.ndarray) : Interaural level difference (gamma) values.
+        ngammas (int) : Number of gamma values.
+        intermediate_intelligibility_measure_grid (np.ndarray) : Grid for intermediate
+            intelligibility measure.
+        p_ec_max (np.ndarray) : Empty grid for maximum values.
+        sigma_epsilon (np.ndarray) : Jitter for gammas.
+        sigma_delta (np.ndarray) : Jitter for taus.
 
     Returns:
-        intermediate_intelligibility_measure_grid (np.ndarray) : updated grid for intermediate intelligibility measure
+        intermediate_intelligibility_measure_grid (np.ndarray) : updated grid for
+            intermediate intelligibility measure
         p_ec_max (np.ndarray) : grid containing maximum values.
     """
     taus = np.expand_dims(taus, axis=0)
@@ -382,7 +387,8 @@ def remove_silent_frames(
         right_ear_clean (np.ndarray) : Clean input signal right channel.
         left_ear_noisy (np.ndarray) : Degraded/processed signal left channel.
         right_ear_noisy (np.ndarray) : Degraded/processed signal right channel.
-        dyn_range (np.ndarray) : Range, energy range to determine which frame is silent (default : 40).
+        dyn_range (np.ndarray) : Range, energy range to determine which frame is silent
+            Default is 40.
         framelen (int) : Window size for energy evaluation (default : 256).
         hop (int) : Hop size for energy evaluation (default : 128).
 
@@ -457,7 +463,8 @@ def remove_silent_frames(
 
 
 def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
-    """Returns the 1/3 octave band matrix and its center frequencies based on mpariente/pystoi.
+    """Returns the 1/3 octave band matrix and its center frequencies
+    based on mpariente/pystoi.
 
     Args:
         fs (int) : Frequency sampling rate.
@@ -507,14 +514,16 @@ def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
 
 
 def find_delay_impulse(ddf: np.ndarray, initial_value: int = 22050):
-    """Find binaural delay in signal ddf given initial location of unit impulse, initial_value.
+    """Find binaural delay in signal ddf.
+
+    Finds delay given initial location of unit impulse, initial_value.
 
     Args:
         ddf (np.ndarray) :
         initial_value: (int) : Initial value (default: 22050)
 
     Returns:
-
+        delay (np.ndarray) : Binaural delay.
     """
     pk0 = find_peaks(ddf[:, 0])
     pk1 = find_peaks(ddf[:, 1])

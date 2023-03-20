@@ -1,5 +1,5 @@
 import numpy as np
-from numba.typed import List
+from numba.typed import List  # pylint: disable=no-name-in-module
 from scipy.spatial.transform import Rotation as R
 
 from clarity.data import HOA_tools_cec2 as hoa
@@ -85,8 +85,7 @@ def test_compute_band_rotation(regtest):
 
     sub_matrices = [np.eye(i * 2 + 1) for i in np.arange(n + 1)]
     sub_matrices[1] = foa_rotmat
-    typed_sub_matrices = List()
-    [typed_sub_matrices.append(x) for x in sub_matrices]
+    typed_sub_matrices = sub_matrices.copy()
 
     if n > 1:
         for i in np.arange(2, n + 1):

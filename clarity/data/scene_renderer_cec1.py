@@ -13,8 +13,8 @@ from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
 
 class Renderer:
     """
-    SceneGenerator of CEC1 training and development sets. The render() function generates all
-    simulated signals for each scene given the parameters specified in the
+    SceneGenerator of CEC1 training and development sets. The render() function
+    generates all simulated signals for each scene given the parameters specified in the
     metadata/scenes.train.json or metadata/scenes.dev.json file.
     """
 
@@ -40,11 +40,11 @@ class Renderer:
         self.test_nbits = test_nbits
 
         if num_channels == 0:
-            # This will only generate the initial target, masker and anechoic target signal
+            # Generate just the initial target, masker and anechoic target signal
             self.channels = []
         else:
-            # ... as above plus N hearing aid input channels plus 'channel 0' (the eardrum signal).
-            # e.g. num_channel = 2  => channels [1, 2, 0]
+            # ... as above plus N hearing aid input channels plus 'channel 0'
+            # (the eardrum signal). e.g. num_channel = 2  => channels [1, 2, 0]
             self.channels = list(range(1, num_channels + 1)) + [0]
 
     def read_signal(
@@ -54,26 +54,23 @@ class Renderer:
 
         Args:
             filename (string): Name of file to read
-            offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
+            offset (int, optional): Offset in samples or seconds from start.
+                Defaults to 0.
             nchannels: expected number of channel (default: 0 = any number OK)
             offset_is_samples (bool): measurement units for offset (default: False)
 
         Returns:
             np.ndarray: audio signal
         """
-        try:
-            wave_file = SoundFile(filename)
-        except Exception as e:
-            # Ensure incorrect error (24 bit) is not generated
-            raise Exception(f"Unable to read {filename}.") from e
+        wave_file = SoundFile(filename)
 
         if nchannels not in (0, wave_file.channels):
-            raise Exception(
+            raise ValueError(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
         if wave_file.samplerate != self.sample_rate:
-            raise Exception(
+            raise ValueError(
                 f"Sampling rate is not {self.sample_rate} for filename {filename}."
             )
 
@@ -145,11 +142,11 @@ class Renderer:
         return signal_ramped
 
     def apply_brir(self, signal, brir):
-        """Convolve a signal with a BRIR.
+        """Convolve a signal with a binaural room impulse response (BRIR).
 
         Args:
             signal (ndarray): The mono or stereo signal stored as array of floats
-            brir (ndarray): The binaural room impulse response stored a 2xN array of floats
+            brir (ndarray): The BRIR stored a 2xN array of floats
             n_tail (int): Truncate output to input signal length + n_tail
 
         Returns:
@@ -195,7 +192,8 @@ class Renderer:
             assert len(segment_target) == len(segment_noise)
         except AssertionError as e:
             raise ValueError(
-                f"Target ({len(segment_target)}) differs in length from Noise ({len(segment_noise)})"
+                f"Target ({len(segment_target)}) "
+                f"differs in length from Noise ({len(segment_noise)})"
             ) from e
 
         snr = better_ear_speechweighted_snr(segment_target, segment_noise)
@@ -268,7 +266,7 @@ class Renderer:
                 )
                 logging.debug("Using channel %s as reference.", channel)
 
-            # Apply snr_ref reference scaling to get 0 dB and then scale to target snr_dB
+            # Apply snr_ref reference scaling to get 0 dB, then scale to target snr_dB
             interferer_at_ear = interferer_at_ear * snr_ref
             interferer_at_ear = interferer_at_ear * 10 ** ((-snr_dB) / 20)
 
@@ -320,8 +318,8 @@ def check_scene_exists(scene: dict, output_path: str, num_channels: int) -> bool
         # This will only generate the initial target, masker and anechoic target signal
         pass
     else:
-        # ... as above plus N hearing aid input channels plus 'channel 0' (the eardrum signal).
-        # e.g. num_channel = 2  => channels [1, 2, 0]
+        # ... as above plus N hearing aid input channels plus 'channel 0' (the eardrum
+        # signal), e.g., num_channel = 2  => channels [1, 2, 0]
         channels = list(range(1, num_channels + 1)) + [0]
 
     pattern = f"{output_path}/{scene['scene']}"

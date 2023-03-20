@@ -38,7 +38,7 @@ def two_point_rotation(rotation: dict, origin: np.ndarray, duration: int) -> np.
     angle_origin = np.arctan2(origin[1], origin[0])
     angles = [math.radians(r["angle"]) - angle_origin for r in rotation]
     logger.info("angles=%s", angles)
-    theta = hoa.rotation_vector(
+    theta = hoa.compute_rotation_vector(
         angles[0], angles[1], duration, rotation[0]["sample"], rotation[1]["sample"]
     )
     return theta
@@ -193,8 +193,8 @@ class SceneRenderer:
     def make_hoa_target_anechoic(self, target, room):
         """Make the HOA anechoic target.
 
-        Applies an anechoic HOA IR that models a source straight in front of the listener.
-        The signal is delayed to match the propagation delay of the room.
+        Applies an anechoic HOA IR that models a source straight in front of the
+        listener. The signal is delayed to match the propagation delay of the room.
 
         Args:
             target ():
@@ -371,7 +371,8 @@ class SceneRenderer:
         ]
         hrirs = [loadmat(hrir_filename) for hrir_filename in hrir_filenames]
 
-        # Target and (flattened) interferer mixed down to binaural using each set of hrirs
+        # Target and (flattened) interferer mixed down to binaural using each
+        # set of hrirs
         targets = [
             hoa.binaural_mixdown(hoa_target, hrir, self.metadata.hrir_metadata)
             for hrir in hrirs

@@ -87,13 +87,13 @@ def predict(cfg: DictConfig):
     records_df = pd.DataFrame(records)
 
     # make predictions for each item in the data
-    for i, record in records_df.iterrows():
+    for i, _record in records_df.iterrows():
         test_df = records_df.iloc[[i]].copy()
 
-        # The prediction is made using a logistic mapping from HASPI scores to intelligibility
-        # It is important that this mapping is trained using a disjoint set of data
-        # i.e. we define a training data set that does not contain systems, listeners or signals
-        # that appear in the test data sample.
+        # The prediction is made using a logistic mapping from HASPI scores to
+        # intelligibility. It is important that this mapping is trained using a
+        # disjoint set of data, i.e. we define a training data set that does not
+        # contain systems, listeners or signals that appear in the test data sample.
 
         train_df = make_disjoint_train_set(records_df, test_df)
 

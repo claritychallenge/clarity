@@ -62,8 +62,8 @@ def get_room_dims(text: str) -> List:
     """Find the room dimensions in the rpf file.
 
     Args:
-        text (str): String to be searched for room dimensions (string to be searched for is of the form 'ProjectName =
-    CuboidRoom_5.9x3.4186x2.9').
+        text (str): String to be searched for room dimensions (string to be searched
+            for is of the form 'ProjectName = CuboidRoom_5.9x3.4186x2.9').
 
 
     Returns:
@@ -94,7 +94,8 @@ def read_rpf_file(rpf_filename: str) -> Dict:
         rpf_filename (str): Path to an rpf file to be read.
 
     Returns:
-        dict: dictionary of rpf file contents {"position": sourcePositions, "view_vector": sourceViewVectors}
+        dict: dictionary of rpf file contents
+            {"position": sourcePositions, "view_vector": sourceViewVectors}
     """
     with open(rpf_filename, "r", encoding="utf-8") as f:
         text = f.read()
@@ -190,7 +191,7 @@ def get_num_pre_samples(pre_samples_range: list) -> int:
     """Number of samples prior to target onset.
 
     Args:
-        pre_samples_range (list): parameters for number of samples priot to target onset.
+        pre_samples_range (list): parameters for number of samples prior to target onset
 
     Returns:
     """
@@ -214,13 +215,13 @@ def add_this_target_to_scene(
 ):
     """Add the target details to the scene dict.
 
-    Adds given target to given scene. Target details will be taken from the target dict but
-    the start time will be according to the CEC2 target start time specification.
+    Adds given target to given scene. Target details will be taken from the target dict
+    but the start time will be according to the CEC2 target start time specification.
 
     Args:
         target (dict): target dict read from target metadata file.
         scene (dict): complete scene dictionary.
-        pre_samples_range (list): parameters for number of samples prior to target onset.
+        pre_samples_range (list): parameters for number of samples prior to target onset
         post_samples_range (list): parameters for number of samples to continue
             player after target offsets.
     """
@@ -236,11 +237,10 @@ def add_this_target_to_scene(
 
 # SNR handling
 def generate_snr(snr_range: List[int]) -> float:
-    """Generate a random Signal Noise Ratio.
+    """Generate a random Signal Noise Ratio (SNR).
 
     Args:
-        snr_range (list): Range of values for a Uniform distribution from which to sample
-            Signal Noise Ratio.
+        snr_range (list): Range from which to uniformly sample SNR.
 
     Returns:
         float: random number from uniform distribution in given range.
@@ -367,8 +367,10 @@ def add_interferer_to_scene_inner(
         scene (dict): the scene description
         interferers (dict): the interferer metadata
         number (list): number of interferers
-        start_time_range (list): range of starting points as integers, a random number is selected between these.
-        end_early_time_range (list): range of end points as integers, a random number is selected between these.
+        start_time_range (list): range of starting points as integers, a random number
+            is selected between these.
+        end_early_time_range (list): range of end points as integers, a random number
+            is selected between these.
     """
     dataset = scene["dataset"]
     selected_interferer_types = select_interferer_types(number)
@@ -429,7 +431,8 @@ def generate_rotation(
 
     Args:
         scene (dict): the scene description
-        relative_start_time_range (list): Range from which start time is selected at random.
+        relative_start_time_range (list): Range from which start time is
+            uniformly selected at random.
         duration_mean (float): mean of the time offset for start of turn
         duration_sd (float): standard deviation of the time offset for start of turn
         angle_initial_mean (float):
@@ -594,7 +597,7 @@ class SceneBuilder:
         Returns:
             None
         """
-        scenes = [s for s in self.scenes]
+        scenes = self.scenes.copy()
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
@@ -602,7 +605,7 @@ class SceneBuilder:
             json.dump(self.scenes, f, indent=2)
 
     def instantiate_scenes(self, dataset) -> None:
-        """Instantiate scenes with targets, interferers, signal noise ratio and listeners.
+        """Instantiate scenes with targets, interferers, SNR and listeners.
 
         Args:
             dataset:
@@ -629,6 +632,8 @@ class SceneBuilder:
             n_scenes (int): number of scenes to generate
             room_selection (str): SEQUENTIAL or RANDOM
             scene_start_index (int): index to start for scene IDs
+
+        Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
         rooms = self.rb.rooms.copy()
         if self.shuffle_rooms:
@@ -647,7 +652,7 @@ class SceneBuilder:
             for scene in scenes:
                 scene["room"] = random.choice(rooms)
         else:
-            assert False, "Unknown room selection mode"
+            raise TypeError(f"Invalid room selection mode: {room_selection}")
         self.scenes.extend(scenes)
 
         # Set the scene ID
@@ -663,18 +668,20 @@ class SceneBuilder:
         post_samples_range: list,
     ):
         """Add target info to the scenes.
-        Target speaker file set via config.
+
+        Uses target speaker file set via config.
 
         Args:
             dataset (str): dataset to be added.
             target_speakers (str):
-            target_selection (str): Type of target to be added, valid values are 'SEQUENTIAL' and 'RANDOM'.
-            pre_samples_range (list): Parameters for number of samples prior to target onset.
-            post_samples_range (list): Parameters for number osamples to continue player after target offsets.
+            target_selection (str): Type of target to be added, valid values are
+                'SEQUENTIAL' and 'RANDOM'.
+            pre_samples_range (list): Parameters for number of samples prior to target
+                onset.
+            post_samples_range (list): Parameters for number of samples to continue
+                player after target offsets.
 
-
-        Raises:
-            Exception: _description_
+        Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
         with open(target_speakers, "r", encoding="utf-8") as f:
             targets = json.load(f)
@@ -700,13 +707,13 @@ class SceneBuilder:
                     post_samples_range,
                 )
         else:
-            assert False, "Unknown target selection mode"
+            raise TypeError(f"Invalid room selection mode: {target_selection}")
 
     def add_SNR_to_scene(self, snr_range: list):
-        """Add the Signal Noise Ratio info to the scenes.
+        """Add the Signal Noise Ratio (SNR) info to the scenes.
 
         Args:
-            snr_range (list): Range of values from which Signal Noise Ratio will be sampled.
+            snr_range (list): Range of values from which SNR will be sampled.
 
         Returns:
         """
@@ -791,7 +798,8 @@ class SceneBuilder:
         Args:
             heads ():
             channels ():
-            relative_start_time_range (list): Range from which start time is selected at random.
+            relative_start_time_range (list): Range from which start time is selected at
+                random.
             duration_mean (float): mean of the time offset for start of turn
             duration_sd (float): standard deviation of the time offset for start of turn
             angle_initial_mean (float):

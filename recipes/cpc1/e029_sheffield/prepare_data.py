@@ -33,15 +33,13 @@ def run_data_split(cfg, track):
         logger.info("Train set and dev set lists exist...")
         return
 
-    scenes_dict = json.load(
-        open(
-            os.path.join(
-                cfg.path.root,
-                "clarity_CPC1_data_train/metadata",
-                f"CPC1.{'train'+track}.json",
-            )
-        )
+    file_path = os.path.join(
+        cfg.path.root,
+        "clarity_CPC1_data_train/metadata",
+        f"CPC1.{'train'+track}.json",
     )
+    with open(file_path, "r", encoding="utf-8") as fp:
+        scenes_dict = json.load(fp)
     scene_list = []
     for item in scenes_dict:
         scene_list.append(item["scene"])
@@ -51,10 +49,10 @@ def run_data_split(cfg, track):
     )
     scene_train_list = list(set(scene_list) - set(scene_dev_list))
 
-    with open(scene_train_json, "w") as f:
-        json.dump(scene_train_list, f)
-    with open(scene_dev_json, "w") as f:
-        json.dump(scene_dev_list, f)
+    with open(scene_train_json, "w", encoding="utf-8") as fp:
+        json.dump(scene_train_list, fp)
+    with open(scene_dev_json, "w", encoding="utf-8") as fp:
+        json.dump(scene_dev_list, fp)
 
 
 def listen(ear, signal, audiogram_l, audiogram_r):
@@ -83,23 +81,21 @@ def run_msbg_simulation(cfg, track):
         dataset = split + track
         dataset_folder = os.path.join(cfg.path.root, "clarity_CPC1_data_" + split)
         output_path = os.path.join(dataset_folder, "clarity_data/HA_outputs", dataset)
-        scenes = json.load(
-            open(os.path.join(dataset_folder, "metadata", f"CPC1.{dataset}.json"))
-        )
+        file_path = os.path.join(dataset_folder, "metadata", f"CPC1.{dataset}.json")
+        with open(file_path, "r", encoding="utf-8") as fp:
+            scenes = json.load(fp)
         if split == "train":
-            listener_audiograms = json.load(
-                open(
-                    os.path.join(
-                        dataset_folder, "metadata", "listeners.CPC1_train.json"
-                    )
-                )
+            file_path = os.path.join(
+                dataset_folder, "metadata", "listeners.CPC1_train.json"
             )
+            with open(file_path, "r", encoding="utf-8") as fp:
+                listener_audiograms = json.load(fp)
         else:
-            listener_audiograms = json.load(
-                open(
-                    os.path.join(dataset_folder, "metadata", "listeners.CPC1_all.json")
-                )
+            file_path = os.path.join(
+                dataset_folder, "metadata", "listeners.CPC1_all.json"
             )
+            with open(file_path, "r", encoding="utf-8") as fp:
+                listener_audiograms = json.load(fp)
 
         # initialize ear
         ear = Ear(**cfg["MSBGEar"])
@@ -116,7 +112,7 @@ def run_msbg_simulation(cfg, track):
                 f"{outfile_stem}_HL-output.wav",
             ]
             # if all signals to write exist, pass
-            if all([os.path.isfile(f) for f in signal_files_to_write]):
+            if all(os.path.isfile(f) for f in signal_files_to_write):
                 continue
             signal = read_signal(signal_file)
 
@@ -134,10 +130,11 @@ def run_msbg_simulation(cfg, track):
             signals_to_write = [
                 listen(ear, signal, left_audiogram, right_audiogram),
             ]
-            for i in range(len(signals_to_write)):
+
+            for signal, signal_file in zip(signals_to_write, signal_files_to_write):
                 write_signal(
-                    signal_files_to_write[i],
-                    signals_to_write[i],
+                    signal_file,
+                    signal,
                     MSBG_FS,
                     floating_point=True,
                 )
@@ -152,8 +149,8 @@ def generate_data_split(
     if_msbg=False,
     if_ref=False,
 ):
-    with open(orig_data_json, "r") as f:
-        all_data_list = json.load(f)
+    with open(orig_data_json, "r", encoding="utf-8") as fp:
+        all_data_list = json.load(fp)
 
     left_tgt_signal_folder = os.path.join(
         target_data_folder, orig_signal_folder.split("/")[-2] + "_left"
@@ -212,7 +209,9 @@ def generate_data_split(
             wrds = item["prompt"].upper()
 
             utt, orig_fs = sf.read(wav_file)
-            utt_16k = resample(np.array(utt).transpose(), orig_fs, targ_fs).transpose()
+            utt_16k = resample(
+                np.array(utt).transpose(), orig_sr=orig_fs, target_sr=targ_fs
+            ).transpose()
             duration = (
                 len(utt_16k[2 * targ_fs :, 0]) / targ_fs
             )  # Get rid of the first two seconds, as there is no speech
@@ -230,21 +229,21 @@ def generate_data_split(
                 ["right_" + snt_id, str(duration), wav_file_right, spk_id, wrds]
             )
 
-    with open(left_csvfile, mode="w") as csv_f:
+    with open(left_csvfile, mode="w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         for line in csv_lines_left:
             csv_writer.writerow(line)
 
-    with open(right_csvfile, mode="w") as csv_f:
+    with open(right_csvfile, mode="w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         for line in csv_lines_right:
             csv_writer.writerow(line)
 
-    with open(binaural_csvfile, mode="w") as csv_f:
+    with open(binaural_csvfile, mode="w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(
             csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
@@ -268,17 +267,16 @@ def run_signal_generation_train(cfg, track):
     ]
 
     datasets_to_generate = []
-    for i in range(len(lists_to_generate)):
-        with open(lists_to_generate[i], "r") as f:
-            datasets_to_generate.append(json.load(f))
-            f.close()
+    for list_to_generate in lists_to_generate:
+        with open(list_to_generate, "r", encoding="utf-8") as fp:
+            datasets_to_generate.append(json.load(fp))
 
-    for i in range(len(lists_to_generate)):
+    for list_to_generate, dataset in zip(lists_to_generate, datasets_to_generate):
         # generate_data_split(
         #     train_json_path,
         #     train_signal_folder,
         #     target_folder,
-        #     os.path.basename(lists_to_generate[i]).split("_")[1],
+        #     os.path.basename(list_to_generate).split("_")[1],
         #     datasets_to_generate[i],
         # )
 
@@ -286,8 +284,8 @@ def run_signal_generation_train(cfg, track):
             train_json_path,
             train_signal_folder,
             target_folder,
-            os.path.basename(lists_to_generate[i]).split("_")[1],
-            datasets_to_generate[i],
+            os.path.basename(list_to_generate).split("_")[1],
+            dataset,
             if_msbg=True,
         )
 
@@ -295,8 +293,8 @@ def run_signal_generation_train(cfg, track):
             train_json_path,
             train_signal_folder,
             target_folder,
-            os.path.basename(lists_to_generate[i]).split("_")[1],
-            datasets_to_generate[i],
+            os.path.basename(list_to_generate).split("_")[1],
+            dataset,
             if_ref=True,
         )
 
@@ -342,5 +340,6 @@ def run(cfg: DictConfig) -> None:
     run_signal_generation_test(cfg, track)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

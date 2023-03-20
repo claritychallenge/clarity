@@ -52,11 +52,6 @@ repos:
         args: ["--extend-ignore=E203,E402,E501"]
       - id: nbqa-isort
 
-#  - repo: https://github.com/datarootsio/databooks
-#    rev: 1.0.5
-#    hooks:
-#      - id: databooks-meta
-
   - repo: https://github.com/kynan/nbstripout
     rev: 0.6.1
     hooks:
@@ -68,17 +63,34 @@ repos:
     hooks:
       - id: mypy
 
-  - repo: local
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+  # Ruff version.
+    rev: 'v0.0.245'
+    hooks:
+    - id: ruff
+
+  # Serious pylint errors that will be enforced by CI
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.0
     hooks:
       - id: pylint
-        args: ["--rcfile=.pylintrc"]
-        name: Pylint
+        args:
+        - --errors-only
+        - --disable=E0401
+
+  # Pylint warnings that are bing skipped by CI (see skip: [pylint_warnings] below)
+  - repo: local
+    hooks:
+      - id: pylint_warnings
+        args: ["--rcfile=.pylintrc.precommit.ini"]
+        name: pylint-warnings
         entry: python -m pylint
         language: system
         files: \.py$
+        exclude: clarity/_version.py # 3rd party code that doesn't conform
 ci:
   autofix_prs: true
   autofix_commit_msg: '[pre-commit.ci] Fixing issues with pre-commit'
   autoupdate_schedule: weekly
   autoupdate_commit_msg: '[pre-commit.ci] pre-commit-autoupdate'
-  skip: [pylint] # Optionally list ids of hooks to skip on CI
+  skip: [pylint_warnings] # Optionally list ids of hooks to skip on CI

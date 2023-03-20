@@ -31,8 +31,8 @@ def std_err(x, y):
 class Model:
     """Class to represent the mapping from mbstoi parameters to intelligibility scores.
     The mapping uses a simple logistic function scaled between 0 and 100.
-    The mapping parameters need to fit first using mbstoi, intelligibility score pairs, using fit().
-    Once the fit has been made predictions can be made by calling predict()
+    The mapping parameters need to fit first using mbstoi, intelligibility score pairs,
+    using fit(). Once the fit has been made predictions can be made by calling predict()
     """
 
     params = None  # The model params
@@ -49,7 +49,7 @@ class Model:
     def fit(self, pred, intel):
         """Fit a mapping betweeen mbstoi scores and intelligibility scores."""
         initial_guess = [0.5, 1.0]  # Initial guess for parameter values
-        self.params, pcov = curve_fit(
+        self.params, *_remaining_returns = curve_fit(
             self._logistic_mapping, pred, intel, initial_guess
         )
 
@@ -73,7 +73,9 @@ def read_data(pred_csv, label_json):
     df_pred = pd.read_csv(pred_csv).rename(
         columns={"signal_ID": "signal", "intelligibility_score": "prediction"}
     )
-    df_label = pd.read_json(label_json).rename(columns={"correctness": "label"})
+    df_label = pd.read_json(label_json).rename(  # pylint: disable=no-member
+        columns={"correctness": "label"}
+    )
     data = df_pred.merge(df_label[["signal", "label"]])
     data["prediction"] = data["prediction"].apply(lambda x: x * 100)
     return data
@@ -111,15 +113,16 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(data_eval["prediction"].to_numpy())
     open_set_scores = compute_scores(fit_pred, data_eval["label"].to_numpy())
 
-    with open("results.json", "w") as f:
+    with open("results.json", "w", encoding="utf-8") as fp:
         json.dump(
             {
                 "closed_set scores:": closed_set_scores,
                 "open_set scores:": open_set_scores,
             },
-            f,
+            fp,
         )
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

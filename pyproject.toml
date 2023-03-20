@@ -41,3 +41,10 @@ exclude = [
 omit = [
     "clarity/_version.py"
 ]
+
+
+[tool.ruff]
+line-length = 88
+# pyflakes, pycodestyle, isort
+select = ["F", "E", "W", "B", "I001"]
+ignore = ["B905"]

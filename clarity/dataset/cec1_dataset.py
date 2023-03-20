@@ -37,15 +37,14 @@ class CEC1Dataset(data.Dataset):
         self.testing = testing
 
         self.scene_list = []
-        with open(scenes_file, "r") as f:
-            scene_json = json.load(f)
+        with open(scenes_file, "r", encoding="utf-8") as fp:
+            scene_json = json.load(fp)
             if not testing:
-                for i in range(len(scene_json)):
-                    self.scene_list.append(scene_json[i]["scene"])
+                for scene in scene_json:
+                    self.scene_list.append(scene["scene"])
             else:
                 for scene in scene_json.keys():
                     self.scene_list.append(scene)
-            f.close()
 
         if self.num_channels == 2:
             self.mixed_suffix = "_mixed_CH1.wav"
@@ -66,7 +65,8 @@ class CEC1Dataset(data.Dataset):
     def wav_sample(self, x, y):
         """
         A 2 second silence is in the beginning of clarity data
-        Get rid of the silence segment in the beginning & sample a constant wav length for training.
+        Get rid of the silence segment in the beginning & sample a
+        constant wav length for training.
         """
         silence_len = int(self.wav_silence_len * self.sr)
         x = x[:, silence_len:]
@@ -79,7 +79,6 @@ class CEC1Dataset(data.Dataset):
             end = start + sample_len
             x = x[:, start:end]
             y = y[:, start:end]
-            return x, y
         elif wav_len < sample_len:
             x = np.append(
                 x, np.zeros([x.shape[1], sample_len - wav_len], dtype=np.float32)
@@ -87,9 +86,8 @@ class CEC1Dataset(data.Dataset):
             y = np.append(
                 y, np.zeros([x.shape[1], sample_len - wav_len], dtype=np.float32)
             )
-            return x, y
-        else:
-            return x, y
+
+        return x, y
 
     def lowpass_filtering(self, x):
         return lfilter(self.lowpass_filter, 1, x)
@@ -122,11 +120,15 @@ class CEC1Dataset(data.Dataset):
         if self.sr != 44100:
             mixed_resampled, target_resampled = [], []
             for i in range(mixed.shape[0]):
-                mixed_resampled.append(librosa.resample(mixed[i], 44100, self.sr))
+                mixed_resampled.append(
+                    librosa.resample(mixed[i], target_sr=44100, orig_sr=self.sr)
+                )
             mixed = np.array(mixed_resampled)
             if not self.testing:
                 for i in range(target.shape[0]):
-                    target_resampled.append(librosa.resample(target[i], 44100, self.sr))
+                    target_resampled.append(
+                        librosa.resample(target[i], target_sr=44100, orig_sr=self.sr)
+                    )
                 target = np.array(target_resampled)
 
         if self.wav_sample_len is not None:
@@ -138,12 +140,17 @@ class CEC1Dataset(data.Dataset):
             target = target / mixed_max
 
         if not self.testing:
-            return (
+            return_data = (
                 torch.tensor(mixed, dtype=torch.float32),
                 torch.tensor(target, dtype=torch.float32),
             )
         else:
-            return torch.tensor(mixed, dtype=torch.float32), self.scene_list[item]
+            return_data = (
+                torch.tensor(mixed, dtype=torch.float32),
+                self.scene_list[item],
+            )
+
+        return return_data
 
     def __len__(self):
         return len(self.scene_list)

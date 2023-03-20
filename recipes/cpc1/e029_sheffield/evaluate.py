@@ -30,8 +30,8 @@ def std_err(x, y):
 class Model:
     """Class to represent the mapping from mbstoi parameters to intelligibility scores.
     The mapping uses a simple logistic function scaled between 0 and 100.
-    The mapping parameters need to fit first using mbstoi, intelligibility score pairs, using fit().
-    Once the fit has been made predictions can be made by calling predict()
+    The mapping parameters need to fit first using mbstoi, intelligibility score pairs,
+    using fit(). Once the fit has been made predictions can be made by calling predict()
     """
 
     params = None  # The model params
@@ -48,7 +48,7 @@ class Model:
     def fit(self, pred, intel):
         """Fit a mapping betweeen mbstoi scores and intelligibility scores."""
         initial_guess = [0.5, 1.0]  # Initial guess for parameter values
-        self.params, pcov = curve_fit(
+        self.params, *_remaining_returns = curve_fit(
             self._logistic_mapping, pred, intel, initial_guess
         )
 
@@ -74,11 +74,13 @@ def read_data(pred_json, label_json):
 
     # read label_json to dict
     label_dict = {}
-    label_json = json.load(open(label_json))
+    with open(label_json, "r", encoding="utf-8") as fp:
+        label_json = json.load(fp)
     for item in label_json:
         label_dict[item["signal"]] = item["correctness"] / 100.0
 
-    pred_dict = json.load(open(pred_json))
+    with open(pred_json, "r", encoding="utf-8") as fp:
+        pred_dict = json.load(fp)
     for signal, pred in pred_dict.items():
         prediction.append(pred * 100.0)
         label.append(label_dict[signal])
@@ -127,15 +129,18 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(prediction_test)
     negent_scores = compute_scores(fit_pred * 100, label_test * 100)
 
-    with open(os.path.join(cfg.path.exp_folder, "results.json"), "w") as f:
+    with open(
+        os.path.join(cfg.path.exp_folder, "results.json"), "w", encoding="utf-8"
+    ) as fp:
         json.dump(
             {
                 "confidence_results": conf_scores,
                 "negative_entropy_results": negent_scores,
             },
-            f,
+            fp,
         )
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

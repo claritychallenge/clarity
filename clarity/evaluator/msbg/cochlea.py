@@ -230,7 +230,8 @@ class Cochlea:
 
         Args:
             audiogram (Audiogram): Audiogram characterising hearing loss
-            catch_up_level (float, optional): loudness catch-up level in dB (default: {105})
+            catch_up_level (float, optional): loudness catch-up level in dB
+                Default is 105 dB
             fs (float, optional): sampling frequency
 
         """
