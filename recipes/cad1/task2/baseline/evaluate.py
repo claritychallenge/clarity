@@ -50,7 +50,9 @@ class ResultsFile:
             )
             csv_writer.writerow(
                 [
+                    "scene",
                     "song",
+                    "genre",
                     "listener",
                     "score",
                     "haaqi_left",
@@ -58,10 +60,12 @@ class ResultsFile:
                 ]
             )
 
+    # pylint: disable=too-many-arguments
     def add_result(
         self,
         scene: str,
         song: str,
+        genre: str,
         listener: str,
         score: float,
         haaqi_left: float,
@@ -72,6 +76,7 @@ class ResultsFile:
         Args:
             scene (str): The name of the scene that the result is for.
             song (str): The name of the song that the result is for.
+            genre (str): The genre of the song that the result is for.
             listener (str): The name of the listener who submitted the result.
             score (float): The combined score for the result.
             haaqi_left (float): The HAAQI score for the left channel.
@@ -88,6 +93,7 @@ class ResultsFile:
                 [
                     scene,
                     song,
+                    genre,
                     listener,
                     str(score),
                     str(haaqi_left),
@@ -150,7 +156,8 @@ def evaluate_scene(
     """
     audio_manager = AudioManager(
         output_audio_path=Path("evaluation_signals")
-        / f"{listener_audiogram['name']} / {current_scene['song']}",
+        / f"{listener_audiogram['name']}"
+        / f"{current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
@@ -286,6 +293,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         results_file.add_result(
             scene_id,
             current_scene["song"],
+            current_scene["song_path"].split("/")[-2],
             listener_id,
             score=float(score),
             haaqi_left=aq_score_l,
