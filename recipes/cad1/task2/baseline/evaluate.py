@@ -154,7 +154,8 @@ def evaluate_scene(
     """
     audio_manager = AudioManager(
         output_audio_path=Path("evaluation_signals")
-        / f"{listener_audiogram['name']} / {current_scene['song']}",
+        / f"{listener_audiogram['name']}"
+        / f"{current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
