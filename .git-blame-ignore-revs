@@ -1,3 +1,34 @@
+# pylint compliance (https://github.com/claritychallenge/clarity/pull/224)
+1c4f7def50b63e449c1292ebcb1072a333752dc2 # Ignoring commit that fix pylint errors
+bd5f3068d3d149a2c169bcf2fe1ba42e00f04c22 # Dealt with F6401 false positives, and final, final missed issues.
+1e4d8d6b634cb08d2c75d8b360bef1a87a03f83c # Mopped up a few missed issues
+072b2ca24c3c8e7e1bd5efd2c2a199440a2184bf # Disabled missing docstrings from .pylintrc.precommit.ini
+e14f2306c6ad98ae06628f249911b4f6b3ecd6a0 # Added the .pylintrc to use for precommit
+77cb687d09721d32dec33df03f9aa260b21b533b # Dealt with W0223 missing abstract method definition warnings
+08f04ac78b576bb254a7f213de7a4b5589223921 # Fixed error introduce when dealing with exceptions
+b80f63be56d4911c1222371d815b232e94eff339 # Fixed W0221, W0222, W0237 overridden signature change issues
+154f398410bdc391b8e84f304ca4112260627434 # Fixed all W0718 and W0719 exception issues
+d2b7285866fad9e5adf140e319ebbce2f4cda374 # Fixing long line wrapping on merged commits
+eea79f3ea082c505ef76ccd699a0e47e5ee6e8ac # Merge branch 'main' into 222-fix-issues-raised-by-pylint
+23d6ef58bfdf3b07089790a2da9de6da7961a9fb # Fixed W0106 expression not assigned issue
+b05d8d7949d3300db3e8a320f4748a7701648e9a # Fixed all R1725 removing default values from super() issues
+885a3b4aa23986b4d91f29b081c3c2dd8207d713 # Fixed all C0201, C0206 - dictionary iteration issues
+4f5de575980cdce4635674986a0424113615d4a3 # Fixed all C0209 f-string issues
+42d3d86565da49bb068c38f9d5cea1696933a6fa # Fixed test that was broken by previous commit
+3a9a3116bb786e432e19c9aa502955d28c797602 # Added torch<2.0 in setup.cfg to stay on old version
+ec57cda3e9be1b5005893926bd0e36b031de9485 # Fixed a bunch of rare pylint issues. See below.
+4e9889b8e6b024fe30e3a9a20579409214eb9630 # Fixed all W0612 and W0613 unused vars and params issues
+5e491d7db7ef76b40826f26eedd2eb623cac4664 # Fixed all W0201: Attribute defined outside __init__
+00c36d1e6e646af0cbbf2f5fcdb19f42b6b7468b # Fixed all R1732 consider using with issues
+7bc62369914dd71d802ff315d7c0d3523bd6808f # Fixed all R1705 Unnecessary else after return issues
+abd4992d14ed357bde180132f80c3772ba65fe3a # Fixed all C0200 use enumerate issues
+626af27bea3ae56f0a7b4bab911d417d098c5d26 # Fixed all W1514 using open without explicit encoding issues
+18ff821ce058be8011d23436126ee0f456c56902 # Fixed all W0621 redefined from outer scoper issues
+73cdab6028d5a8320ae3031c4e28cc933b5f90af # Install pylint-pytest to fix pytest related false positives
+65f263d073f1e6c6d03cafd6e2f2232ecf4cd36b # Fixed all lines over the 88 character limit used in Black
+3ddfdab42496db024610d265120639ac6731c8c6 # Merge pull request #223 from claritychallenge/jpb/220-enable-some-pylint-error-checking-in-run_tests-github-workflow
+
+
 # PEP8 compliance - clarity/evaluators/hasqi
 14e21eff76a1350cabaa19ad26f2556892d51761
 961846ca661b5b97f0d1a75585452aed6f15c5f7
