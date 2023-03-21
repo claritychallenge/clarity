@@ -2028,22 +2028,22 @@ def ave_covary2(
     # Compute the time-frequency weights. The weight=1 if a segment in a
     # frequency band is above threshold, and weight=0 if below threshold.
     weight = np.zeros((n_channels, nseg))  # No IHC synchronization roll-off
-
-    # Loss of IHC synchronization at high frequencies
-    wsync = np.zeros((6, n_channels, nseg))
-
     weight[signal_rms > threshold_db] = 1
 
-    # TODO: The following can surely be vectorized
-    for k in range(n_channels):
-        for n in range(nseg):
-            # Thresh in dB SL for including time-freq tile
-            if signal_rms[k, n] > threshold_db:
-                wsync[:, k, n] = fsync[:, k]
-
-    # # ChatGPT suggests the followig, but it does not work: :-)
-    # mask = signal_rms > threshold_db
-    # wsync[:, mask] = fsync[:, None, :][mask]
+    # The wsync tensor should be constructed as follows:
+    #
+    # wsync = np.zeros((6, n_channels, nseg))
+    # for k in range(n_channels):
+    #    for n in range(nseg):
+    #        # Thresh in dB SL for including time-freq tile
+    #        if signal_rms[k, n] > threshold_db:
+    #            wsync[:, k, n] = fsync[:, k]
+    #
+    # This can be written is an efficient vectorsized form as follows:
+    wsync = np.zeros((6, n_channels, nseg))
+    mask = signal_rms > threshold_db
+    fsync3d = np.repeat(fsync[..., None], nseg, axis=2)
+    wsync[:, mask] = fsync3d[:, mask]
 
     # Sum the weighted covariance values
     # Sum of weighted time-freq tiles
