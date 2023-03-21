@@ -75,7 +75,7 @@ number of linting tools.
 
 To ensure these coding conventions are applied to code that is submitted to the `main` branch PyClarity uses
 [`pre-commit`](https://pre-commit.com/) and [`pre-commit.ci`](https://pre-commit.ci) which run Git Hooks before each
-commit is made (the former locally, the later on pull requests) for the above linting (and more e.g. Markdown style is
+commit is made (the former locally, the latter on pull requests) for the above linting (and more e.g. Markdown style is
 also checked).
 
 Whilst the `pre-commit` Python package will have been installed in your environment when you `pip install .[dev]` you
