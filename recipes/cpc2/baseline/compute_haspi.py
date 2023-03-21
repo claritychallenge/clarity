@@ -47,9 +47,7 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
     scene, listener, _ = parse_cec2_signal_name(signal_name)
 
     # Retrieve audiograms
-    with open(
-        Path(path["metadata_dir"]) / "listeners.json", "r", encoding="utf-8"
-    ) as fp:
+    with open(Path(path["metadata_dir"]) / "listeners.json", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
         audiogram = listener_audiograms[listener]
 

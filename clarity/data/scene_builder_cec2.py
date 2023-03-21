@@ -97,7 +97,7 @@ def read_rpf_file(rpf_filename: str) -> Dict:
         dict: dictionary of rpf file contents
             {"position": sourcePositions, "view_vector": sourceViewVectors}
     """
-    with open(rpf_filename, "r", encoding="utf-8") as f:
+    with open(rpf_filename, encoding="utf-8") as f:
         text = f.read()
 
     rpf_dict = {}
@@ -541,7 +541,7 @@ class RoomBuilder:
         Args:
             filename (str): filename to JSON file from which room data is loaded.
         """
-        with open(filename, "r", encoding="utf-8") as f:
+        with open(filename, encoding="utf-8") as f:
             self.rooms = json.load(f)
         self.rebuild_dict()
 
@@ -683,7 +683,7 @@ class SceneBuilder:
 
         Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
-        with open(target_speakers, "r", encoding="utf-8") as f:
+        with open(target_speakers, encoding="utf-8") as f:
             targets = json.load(f)
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
@@ -743,7 +743,7 @@ class SceneBuilder:
             None
         """
         # Load and prepare speech interferer metadata
-        with open(speech_interferers, "r", encoding="utf-8") as f:
+        with open(speech_interferers, encoding="utf-8") as f:
             interferers_speech = json.load(f)
         for interferer in interferers_speech:
             interferer["ID"] = (
@@ -753,7 +753,7 @@ class SceneBuilder:
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        with open(noise_interferers, "r", encoding="utf-8") as f:
+        with open(noise_interferers, encoding="utf-8") as f:
             interferers_noise = json.load(f)
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
@@ -763,7 +763,7 @@ class SceneBuilder:
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        with open(music_interferers, "r", encoding="utf-8") as f:
+        with open(music_interferers, encoding="utf-8") as f:
             interferers_music = json.load(f)
         for interferer in interferers_music:
             interferer["ID"] = interferer[

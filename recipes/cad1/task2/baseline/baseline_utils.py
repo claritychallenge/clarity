@@ -65,7 +65,7 @@ def load_hrtf(config: DictConfig) -> dict:
         hrtf_data (dict): A dictionary containing the HRTF data for the dataset.
 
     """
-    with open(config.path.hrtf_file, "r", encoding="utf-8") as fp:
+    with open(config.path.hrtf_file, encoding="utf-8") as fp:
         hrtf_data = json.load(fp)
     return hrtf_data[config.evaluate.split]
 
@@ -85,21 +85,21 @@ def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict, dict]:
 
     """
     # Load listener data
-    with open(config.path.scenes_file, "r", encoding="utf-8") as fp:
+    with open(config.path.scenes_file, encoding="utf-8") as fp:
         df_scenes = pd.read_json(fp, orient="index")
 
     # Load audiograms and scence data for the corresponding split
     if config.evaluate.split == "train":
-        with open(config.path.listeners_train_file, "r", encoding="utf-8") as fp:
+        with open(config.path.listeners_train_file, encoding="utf-8") as fp:
             listener_audiograms = json.load(fp)
         scenes = df_scenes[df_scenes["split"] == "train"].to_dict("index")
 
     elif config.evaluate.split == "valid":
-        with open(config.path.listeners_valid_file, "r", encoding="utf-8") as fp:
+        with open(config.path.listeners_valid_file, encoding="utf-8") as fp:
             listener_audiograms = json.load(fp)
         scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
 
-    with open(config.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(config.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
         scenes_listeners = {
             k: v for k, v in scenes_listeners.items() if k in scenes.keys()

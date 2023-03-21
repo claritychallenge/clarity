@@ -41,9 +41,9 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def run_HL_processing(cfg: DictConfig) -> None:
     output_path = Path(cfg.path.exp_folder) / "eval_signals"
     output_path.mkdir(parents=True, exist_ok=True)
-    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.listeners_file, encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
     enhanced_folder = Path(cfg.path.enhanced_signals)
 
@@ -87,12 +87,12 @@ def run_HL_processing(cfg: DictConfig) -> None:
             right_audiogram = Audiogram(cfs=cfs, levels=audiogram_right)
 
             # Create discrete delta function (DDF) signal for time alignment
-            ddf_signal = np.zeros((np.shape(signal)))
+            ddf_signal = np.zeros(np.shape(signal))
             ddf_signal[:, 0] = unit_impulse(len(signal), int(MSBG_FS / 2))
             ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
 
             # Get flat-0dB ear audiograms
-            flat0dB_audiogram = Audiogram(cfs=cfs, levels=np.zeros((np.shape(cfs))))
+            flat0dB_audiogram = Audiogram(cfs=cfs, levels=np.zeros(np.shape(cfs)))
 
             signals_to_write = [
                 listen(ear, ddf_signal, flat0dB_audiogram, flat0dB_audiogram),
@@ -112,7 +112,7 @@ def run_HL_processing(cfg: DictConfig) -> None:
 
 @hydra.main(config_path=".", config_name="config")
 def run_calculate_SI(cfg: DictConfig) -> None:
-    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
     proc_folder = Path(cfg.path.exp_folder) / "eval_signals"
     sii_file = Path(cfg.path.exp_folder) / "sii.csv"

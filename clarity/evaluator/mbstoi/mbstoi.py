@@ -311,7 +311,7 @@ def mbstoi(
     idx = np.isfinite(dr_interm)
     dr_interm[~idx] = 0
     p_be_max = np.maximum(left_improved, right_improved)
-    dbe_interm = np.zeros((np.shape(dl_interm)))
+    dbe_interm = np.zeros(np.shape(dl_interm))
 
     idx = left_improved > right_improved
     dbe_interm[idx] = dl_interm[idx]

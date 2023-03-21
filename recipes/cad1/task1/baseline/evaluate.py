@@ -211,12 +211,12 @@ def _evaluate_song_listener(
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
     # Load test songs
-    with open(config.path.music_valid_file, "r", encoding="utf-8") as fp:
+    with open(config.path.music_valid_file, encoding="utf-8") as fp:
         songs = json.load(fp)
     songs = pd.DataFrame.from_dict(songs)
 
     # Load listener data
-    with open(config.path.listeners_valid_file, "r", encoding="utf-8") as fp:
+    with open(config.path.listeners_valid_file, encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
 
     enhanced_folder = Path("enhanced_signals")

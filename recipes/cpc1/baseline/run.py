@@ -42,9 +42,9 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 def run_HL_processing(cfg, path):
     output_path = Path(path.exp_folder) / "eval_signals"
     output_path.mkdir(parents=True, exist_ok=True)
-    with open(path.scenes_file, "r", encoding="utf-8") as fp:
+    with open(path.scenes_file, encoding="utf-8") as fp:
         scenes = json.load(fp)
-    with open(path.listeners_file, "r", encoding="utf-8") as fp:
+    with open(path.listeners_file, encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
     enhanced_folder = Path(path.scenes_folder)
 
@@ -80,12 +80,12 @@ def run_HL_processing(cfg, path):
         right_audiogram = Audiogram(cfs=cfs, levels=audiogram_right)
 
         # Create discrete delta function (DDF) signal for time alignment
-        ddf_signal = np.zeros((np.shape(signal)))
+        ddf_signal = np.zeros(np.shape(signal))
         ddf_signal[:, 0] = unit_impulse(len(signal), int(MSBG_FS / 2))
         ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
 
         # Get flat-0dB ear audiograms
-        flat0dB_audiogram = Audiogram(cfs=cfs, levels=np.zeros((np.shape(cfs))))
+        flat0dB_audiogram = Audiogram(cfs=cfs, levels=np.zeros(np.shape(cfs)))
 
         signals_to_write = [
             listen(ear, ddf_signal, flat0dB_audiogram, flat0dB_audiogram),
@@ -103,7 +103,7 @@ def run_HL_processing(cfg, path):
 
 
 def run_calculate_SI(cfg, path) -> None:
-    with open(path.scenes_file, "r", encoding="utf-8") as fp:
+    with open(path.scenes_file, encoding="utf-8") as fp:
         scenes = json.load(fp)
     proc_folder = Path(path.exp_folder) / "eval_signals"
     ref_folder = Path(path.ref_folder)

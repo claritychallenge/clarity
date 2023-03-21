@@ -94,7 +94,7 @@ class ASR(sb.core.Brain):
 
 def init_asr(asr_config):
     hparams_file, run_opts, overrides = sb.parse_arguments([asr_config])
-    with open(hparams_file, "r", encoding="utf-8") as fp:
+    with open(hparams_file, encoding="utf-8") as fp:
         hparams = load_hyperpyyaml(fp, overrides)
 
     tokenizer = hparams["tokenizer"]

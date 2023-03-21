@@ -1347,7 +1347,7 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     k = np.arange(nbands)
     mel_cepstral = np.zeros((nbands, nbasis))
     for n in range(nbasis):
-        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
         mel_cepstral[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
@@ -1466,7 +1466,7 @@ def melcor9(
     k = np.arange(nbands)
     cepm = np.zeros((nbands, n_cepstral_coef))
     for n in range(n_cepstral_coef):
-        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
         cepm[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate

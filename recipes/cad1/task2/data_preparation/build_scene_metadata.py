@@ -61,7 +61,7 @@ def read_json(path_file) -> Dict:
         path_file (str): Path to the json file.
     """
 
-    with open(path_file, "r", encoding="utf-8") as file:
+    with open(path_file, encoding="utf-8") as file:
         json_data = json.load(file)
     return json_data
 

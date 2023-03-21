@@ -14,9 +14,9 @@ from clarity.enhancer.gha.gha_interface import GHAHearingAid
 def enhance(cfg: DictConfig) -> None:
     enhanced_folder = Path(cfg.path.exp_folder) / "enhanced_signals"
     enhanced_folder.mkdir(parents=True, exist_ok=True)
-    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.listeners_file, encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
 
     enhancer = GHAHearingAid(**cfg["GHAHearingAid"])
