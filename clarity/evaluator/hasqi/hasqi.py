@@ -150,7 +150,7 @@ def hasqi_v2_better_ear(
     audiogram_right,
     audiogram_frequencies,
     level=100,
-    audiogram_freq=[250, 500, 1000, 2000, 4000, 6000],
+    audiogram_freq=None,
 ) -> float:
     """Better ear HASQI.
 
@@ -166,12 +166,17 @@ def hasqi_v2_better_ear(
         audiogram_r: right ear audiogram
         audiogram_cfs: audiogram frequencies
         level: level in dB SPL corresponding to RMS=1
+        audiogram_freq: selected frequencies to use for audiogram
 
     Returns:
         float: beHASQI score
 
     Gerardo Roa Dabike, November 2022
     """
+    # Default frequencies
+    if audiogram_freq is None:
+        audiogram_freq = [250, 500, 1000, 2000, 4000, 6000]
+
     # Adjust to match the frequencies
     adjusted_left = [
         audiogram_left[i]

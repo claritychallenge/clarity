@@ -212,7 +212,9 @@ def generate_data_split(
             wrds = item["prompt"].upper()
 
             utt, orig_fs = sf.read(wav_file)
-            utt_16k = resample(np.array(utt).transpose(), orig_fs, targ_fs).transpose()
+            utt_16k = resample(
+                np.array(utt).transpose(), orig_sr=orig_fs, target_sr=targ_fs
+            ).transpose()
             duration = (
                 len(utt_16k[2 * targ_fs :, 0]) / targ_fs
             )  # Get rid of the first two seconds, as there is no speech
@@ -342,5 +344,6 @@ def run(cfg: DictConfig) -> None:
     run_signal_generation_test(cfg, track)
 
 
+# pylint: disable=no-value-for-parameter
 if __name__ == "__main__":
     run()

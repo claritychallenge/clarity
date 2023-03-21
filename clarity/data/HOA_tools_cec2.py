@@ -4,7 +4,7 @@ from typing import List
 
 import numpy as np
 from numba import njit
-from numba.typed import List as TypedList
+from numba.typed import List as TypedList  # pylint: disable=no-name-in-module
 from scipy.signal import convolve
 from scipy.spatial.transform import Rotation as R
 from scipy.special import comb
@@ -19,7 +19,8 @@ def convert_a_to_b_format(
     back_right_up: np.ndarray,
 ):
     """Converts 1st order A format audio into 1st order B format.
-    For more information on ambisonic formats see Gerzon, Michael A.. “Ambisonics. Part two: Studio techniques.” (1975).
+    For more information on ambisonic formats see Gerzon, Michael A.
+    “Ambisonics. Part two: Studio techniques.” (1975).
 
     Args:
         front_left_up (np.ndarray): Front-left-up audio
@@ -166,7 +167,8 @@ def U(degree, n, order, rotation_matrices):
     """U coefficient initialiser for rotation matrix calculation.
 
     Args:
-        rotation_degree (int): Upper parameters of spherical harmonic component Y and n the lower.
+        rotation_degree (int): Upper parameters of spherical harmonic
+                               component Y and n the lower.
         n (int): index
         order (int): order
         rotation_matrices (list(matrix)): rotation matrices
@@ -401,7 +403,8 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
 
     # Decode to loudspeaker positions
 
-    # # No need to apply max-rE weights given we are using virtual speakers and headphones
+    # # No need to apply max-rE weights given we are using
+    # # virtual speakers and headphones
     # y = np.dot(ambisonic_signals * weights, inv_matrix)
 
     n_chans = ambisonic_signals.shape[1]
