@@ -43,10 +43,11 @@ dependencies = [
   "pandas>=1.3.5",
   "pyloudnorm>=0.1.0",
   "pystoi",
+  "resampy",
   "scikit-learn>=1.0.2",
   "scipy>=1.7.3",
   "SoundFile>=0.10.3.post1",
-  "torch",
+  "torch<2.0",
   "torchaudio",
   "tqdm>=4.62.3",
   "typing_extensions",
@@ -54,8 +55,11 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
+  "coverage",
   "isort",
   "flake8",
+  "flake8-print",
+  "Flake8-pyproject",
   "mypy",
   "pre-commit",
   "py",
@@ -77,18 +81,10 @@ docs =[
 ]
 dev = [
   "black",
-  "coverage",
-  "flake8",
-  "flake8-print",
-  "Flake8-pyproject",
-  "isort",
-  "mypy",
   "pre-commit",
   "pycodestyle",
   "pylint",
-  "pytest",
-  "pytest-cov",
-  "pytest-regtest",
+  "pylint-pytest",
   "yamllint",
 ]
 pypi =[
@@ -207,7 +203,7 @@ exclude = [
     "venv",
 ]
 # per-file-ignores = []
-line-length = 120
+line-length = 88
 target-version = "py37"
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F", "R", "S", "W", "U"]
@@ -217,14 +213,4 @@ ignore_missing_imports = true
 exclude = [
     "docs/*",
     "build/*"
-[tool.coverage.run]
-omit = [
-    "clarity/_version.py"
 ]
-
-
-[tool.ruff]
-line-length = 88
-# pyflakes, pycodestyle, isort
-select = ["F", "E", "W", "B", "I001"]
-ignore = ["B905"]
