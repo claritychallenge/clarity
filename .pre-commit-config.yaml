@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0  # Use the ref you want to point at
+    rev: v4.4.0 # Use the ref you want to point at
     hooks:
       - id: trailing-whitespace
         types: [file, text]
@@ -18,17 +18,23 @@ repos:
       - id: check-byte-order-marker
       # - id: check-yaml
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.1
+    hooks:
+      - id: pyupgrade
+        args: [--py37-plus]
+
   - repo: https://github.com/psf/black
     rev: 23.1.0
     hooks:
       - id: black
         types: [python]
-        additional_dependencies: ['click==8.0.4']
+        additional_dependencies: ["click==8.0.4"]
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.6.0
     hooks:
-    - id: markdownlint-cli2
+      - id: markdownlint-cli2
 
   - repo: https://github.com/pycqa/flake8.git
     rev: 6.0.0
@@ -45,7 +51,7 @@ repos:
         args: ["--profile", "black"]
 
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.6.4
+    rev: 1.6.3
     hooks:
       - id: nbqa-black
       - id: nbqa-flake8
@@ -57,17 +63,16 @@ repos:
     hooks:
       - id: nbstripout
 
-
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.1.1
     hooks:
       - id: mypy
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-  # Ruff version.
-    rev: 'v0.0.257'
+    # Ruff version.
+    rev: "v0.0.245"
     hooks:
-    - id: ruff
+      - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
@@ -75,8 +80,8 @@ repos:
     hooks:
       - id: pylint
         args:
-        - --errors-only
-        - --disable=E0401
+          - --errors-only
+          - --disable=E0401
 
   # Pylint warnings that are bing skipped by CI (see skip: [pylint_warnings] below)
   - repo: local
@@ -90,7 +95,7 @@ repos:
         exclude: clarity/_version.py # 3rd party code that doesn't conform
 ci:
   autofix_prs: true
-  autofix_commit_msg: '[pre-commit.ci] Fixing issues with pre-commit'
+  autofix_commit_msg: "[pre-commit.ci] Fixing issues with pre-commit"
   autoupdate_schedule: weekly
-  autoupdate_commit_msg: '[pre-commit.ci] pre-commit-autoupdate'
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit-autoupdate"
   skip: [pylint_warnings] # Optionally list ids of hooks to skip on CI
