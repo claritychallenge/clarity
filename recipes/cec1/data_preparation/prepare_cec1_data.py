@@ -20,7 +20,7 @@ def prepare_data(
         scene_folder: folder containing generated scenes
         num_channels: number of channels
     """
-    with open(metafile_path, "r", encoding="utf-8") as fp:
+    with open(metafile_path, encoding="utf-8") as fp:
         scenes = json.load(fp)
 
     Path(scene_folder).mkdir(parents=True, exist_ok=True)

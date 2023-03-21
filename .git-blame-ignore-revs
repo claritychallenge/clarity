@@ -1,4 +1,5 @@
-# pathlib consistency (https://github.com/claritychallenge/clarity/pull/236)
+# pathlib consistency (<https://github.com/claritychallenge/clarity/pull/236>)
+
 c2a4a8b9853a4f459b369b1bfcb5071f59a88cdb # Ignoring pathlib consistency commits from blame history
 3386ea686528fc04ef75b8451371ac1b2aa571a8 # Merge pull request #242 from claritychallenge/main
 90eb7f02d153e8c34db94591d8f2fdfaac60cc02 # Fixes to recipes/e029+e032_sheffield/prepare_data
@@ -20,8 +21,8 @@ c6963d7041a372f193540217eb74890dbfc0d739 # pathlib for clarity/evaluator/msbg/ms
 6055023abadfb5e806b43d92de3ff3de62a50fad # Made fixes for recipes/cec2
 049588082b5566d816388f35a23eb00635c1e858 # Merge pull request #235 from claritychallenge/222-fix-issues-raised-by-pylint
 
+# pylint compliance (<https://github.com/claritychallenge/clarity/pull/224>)
 
-# pylint compliance (https://github.com/claritychallenge/clarity/pull/224)
 1c4f7def50b63e449c1292ebcb1072a333752dc2 # Ignoring commit that fix pylint errors
 bd5f3068d3d149a2c169bcf2fe1ba42e00f04c22 # Dealt with F6401 false positives, and final, final missed issues.
 1e4d8d6b634cb08d2c75d8b360bef1a87a03f83c # Mopped up a few missed issues
@@ -51,26 +52,36 @@ abd4992d14ed357bde180132f80c3772ba65fe3a # Fixed all C0200 use enumerate issues
 65f263d073f1e6c6d03cafd6e2f2232ecf4cd36b # Fixed all lines over the 88 character limit used in Black
 3ddfdab42496db024610d265120639ac6731c8c6 # Merge pull request #223 from claritychallenge/jpb/220-enable-some-pylint-error-checking-in-run_tests-github-workflow
 
-
 # PEP8 compliance - clarity/evaluators/hasqi
+
 14e21eff76a1350cabaa19ad26f2556892d51761
 961846ca661b5b97f0d1a75585452aed6f15c5f7
 
 # PEP8 compliance - clarity/evaluators/haaqi
+
 55e7f5c81b0e5a2bf27bd21a0a1319dd16ddbd3c
 14f6ae14279b6abccd3da6876c712a1c3f66a0b9
 
 # PEP8 compliance - clarity/evaluators/haspi
+
 41db4281fa6b3ea6758cadbd49c8403caeea3529
 8b1198d7e5c7b1436b15d40e95f5581939030164
 86092355a8777cc191491739e7a28ae7a7a6421a
 3e49c8496f7c44e631ff379961cde509e0868d5d
 
 # PEP8 compliance - clarity/evaluators/msbg
+
 3f7505d79cc6e1fe4cb6d4dc8b783ba845d3eadf
 fa7810ca3dd73a705128bc2e94dbbaaa3dfa2162
 396807bf710ee017d600cc9f6f30557f3337d803
 
 # PEP8 compliance - clarity/evaluators/mbstoi
+
 d0ebc22b2da8482dcfa75c7206fe4f089ad6ddd8
 8f5426e3e854fe818fcc288a4b3cf9bc696914c0
+
+# pyupgrade compliance (<https://github.com/claritychallenge/clarity/issues/244>)
+
+8cd7155c4a08df5aaa2d2baa313be2475004ce79 # Committing fixes made by pyupgrade on complete codebase
+73838d09ca94dd8c13c49ff4f5a60b92544cb480 # Upgrading all files with Tuple annotations
+32a0122f3bcf14dce7400edf761db32cde0727a5 # Upgrading all files that imported typing

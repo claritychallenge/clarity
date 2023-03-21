@@ -186,7 +186,7 @@ def train_amp(cfg, ear):
         )
 
     # build normal hearing and hearing loss ears
-    with open(cfg.listener.metafile, "r", encoding="utf-8") as fp:
+    with open(cfg.listener.metafile, encoding="utf-8") as fp:
         listeners_file = json.load(fp)
         audiogram_cfs = listeners_file[cfg.listener.id]["audiogram_cfs"]
         audiogram_lvl_l = listeners_file[cfg.listener.id]["audiogram_levels_l"]

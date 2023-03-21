@@ -314,7 +314,7 @@ def dataio_prepare(hparams):
 def main():
     # CLI:
     hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:])
-    with open(hparams_file, "r", encoding="utf-8") as fp:
+    with open(hparams_file, encoding="utf-8") as fp:
         hparams = load_hyperpyyaml(fp, overrides)
 
     # If distributed_launch=True then

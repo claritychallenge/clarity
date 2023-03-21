@@ -1,4 +1,6 @@
 """Utilities for data generation."""
+from __future__ import annotations
+
 # pylint: disable=wrong-import-position
 import sys
 from pathlib import Path
@@ -7,8 +9,6 @@ if sys.version_info >= (3, 8):
     from typing import Literal
 else:
     from typing_extensions import Literal
-
-from typing import Union
 
 import numpy as np
 import scipy
@@ -71,7 +71,7 @@ def speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> float:
     return sw_snr
 
 
-def sum_signals(signals: list) -> Union[np.ndarray, Literal[0]]:
+def sum_signals(signals: list) -> np.ndarray | Literal[0]:
     """Return sum of a list of signals.
 
     Signals are stored as a list of ndarrays whose size can vary in the first

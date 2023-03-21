@@ -378,7 +378,7 @@ def gainrule_camfit_compr(
             16000,
         ]
     )
-    LTASS_edge_freq = np.zeros((26))
+    LTASS_edge_freq = np.zeros(26)
     LTASS_edge_freq[1:-1] = np.sqrt(LTASS_freq[0:-1] * LTASS_freq[1:])
     LTASS_edge_freq[-1] = 16000 * np.power(2, (1 / 6))
     LTASS_lev = np.array(

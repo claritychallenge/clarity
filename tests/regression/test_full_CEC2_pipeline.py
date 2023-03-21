@@ -1,9 +1,6 @@
 """Regression Tests for CEC2"""
 # pylint: disable=too-many-locals invalid-name
-
-# Pass some random data through code and compare with reference output
-# scene_renderer, enhancer, compressor, haspi
-from typing import Optional
+from __future__ import annotations
 
 import numpy as np
 from cpuinfo import get_cpu_info
@@ -14,6 +11,10 @@ from clarity.data.scene_renderer_cec2 import SceneRenderer
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
+
+# Pass some random data through code and compare with reference output
+# scene_renderer, enhancer, compressor, haspi
+
 
 CPUINFO = get_cpu_info()
 
@@ -97,7 +98,7 @@ SCENE_RENDERER = SceneRenderer(
 def test_full_cec2_pipeline(
     regtest,
     tmp_path,
-    scene: Optional[dict] = None,
+    scene: dict | None = None,
     _test_paths: OmegaConf = TEST_PATHS,
     _test_metadata: OmegaConf = TEST_METADATA,
     scene_renderer: SceneRenderer = SCENE_RENDERER,

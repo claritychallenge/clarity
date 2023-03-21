@@ -13,7 +13,7 @@ def render_scenes(cfg):
     for dataset in cfg.scene_renderer:
         logger.info(f"Beginning scene generation for {dataset} set...")
         file_path = cfg.scene_renderer[dataset].metadata.scene_definitions
-        with open(file_path, "r", encoding="utf-8") as fp:
+        with open(file_path, encoding="utf-8") as fp:
             scenes = json.load(fp)
 
         starting_scene = (

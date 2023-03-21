@@ -37,7 +37,7 @@ class CEC1Dataset(data.Dataset):
         self.testing = testing
 
         self.scene_list = []
-        with open(scenes_file, "r", encoding="utf-8") as fp:
+        with open(scenes_file, encoding="utf-8") as fp:
             scene_json = json.load(fp)
             if not testing:
                 for scene in scene_json:
