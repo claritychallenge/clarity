@@ -1,9 +1,10 @@
 """Module to Generate the metadata for the scenes in the CAD-1 Task-2 challenge."""
 # pylint: disable=import-error
+from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Dict
+from typing import Any
 
 import hydra
 import numpy as np
@@ -35,7 +36,7 @@ def get_random_head_rotation(input_dict: dict) -> Any:
     return float(np.random.choice(list(input_dict.keys()), size=1, replace=False)[0])
 
 
-def get_random_car_params(min_speed: int = 50, max_speed: int = 120) -> Dict:
+def get_random_car_params(min_speed: int = 50, max_speed: int = 120) -> dict:
     """
     Returns a dictionary with the parameters for a car noise.
     These parameters are generated randomly, based on the car speed.
@@ -53,7 +54,7 @@ def get_random_car_params(min_speed: int = 50, max_speed: int = 120) -> Dict:
     return car_params
 
 
-def read_json(path_file) -> Dict:
+def read_json(path_file) -> dict:
     """Function the read a json file and return the data as a dictionary
     or only the keys if ```return_keys``` is True.
 
@@ -113,9 +114,9 @@ def run(cfg: DictConfig) -> None:
     brir = read_json(cfg.path.brir_file)
 
     # Start generating scenes for training
-    train_scenes: Dict = {}
-    valid_scenes: Dict = {}
-    scene_listener: Dict[str, list] = {}
+    train_scenes: dict = {}
+    valid_scenes: dict = {}
+    scene_listener: dict[str, list] = {}
 
     logger.info("... training metadata")
     scene_id = 100000

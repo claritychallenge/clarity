@@ -1,5 +1,5 @@
-"""Functions for ???"""
-from typing import Dict
+"""Functions for HASPI neural network stage."""
+from __future__ import annotations
 
 import numpy as np
 
@@ -210,7 +210,7 @@ def get_neural_net():
 
 
 def nn_feed_forward_ensemble(
-    data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
+    data: np.ndarray, neural_net_params: dict, weights_hidden, weights_out
 ) -> np.ndarray:
     """
     Function to compute the neural network ensemble response to a set of
@@ -251,7 +251,7 @@ def nn_feed_forward_ensemble(
 
 
 def nn_feed_forward(
-    data: np.ndarray, neural_net_params: Dict, weights_hidden, weights_out
+    data: np.ndarray, neural_net_params: dict, weights_hidden, weights_out
 ):
     """
     Compute the outputs at each layer of a neural network given

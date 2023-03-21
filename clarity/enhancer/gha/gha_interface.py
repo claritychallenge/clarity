@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import logging
 import os
 import pathlib
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 import soundfile
@@ -179,7 +180,7 @@ class GHAHearingAid:
 
     def read_signal(
         self,
-        filename: Union[str, Path],
+        filename: str | Path,
         offset: int = 0,
         nsamples: int = -1,
         nchannels: int = 0,
@@ -218,7 +219,7 @@ class GHAHearingAid:
         return x
 
     def write_signal(
-        self, filename: Union[str, Path], x, floating_point: bool = True
+        self, filename: str | Path, x, floating_point: bool = True
     ) -> None:
         """Write a signal as fixed or floating point wav file."""
 
