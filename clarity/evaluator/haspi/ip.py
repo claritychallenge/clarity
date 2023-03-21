@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 
-def get_neural_net() -> Tuple[Dict, List[np.ndarray], List[np.ndarray], float]:
+def get_neural_net() -> tuple[dict, list[np.ndarray], list[np.ndarray], float]:
     """
     Provide the weights derived for the ensemble of ten neural
     networks used for the HASPI_v2 intelligibility model. The neural networks
@@ -211,9 +211,9 @@ def get_neural_net() -> Tuple[Dict, List[np.ndarray], List[np.ndarray], float]:
 
 def nn_feed_forward_ensemble(
     data: np.ndarray,
-    neural_net_params: Dict,
-    weights_hidden: List[np.ndarray],
-    weights_out: List[np.ndarray],
+    neural_net_params: dict,
+    weights_hidden: list[np.ndarray],
+    weights_out: list[np.ndarray],
 ) -> np.ndarray:
     """
     Function to compute the neural network ensemble response to a set of
@@ -255,10 +255,10 @@ def nn_feed_forward_ensemble(
 
 def nn_feed_forward(
     data: np.ndarray,
-    neural_net_params: Dict,
+    neural_net_params: dict,
     weights_hidden: np.ndarray,
     weights_out: np.ndarray,
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Compute the outputs at each layer of a neural network given
     the input to the network and the weights. The activation function is an
