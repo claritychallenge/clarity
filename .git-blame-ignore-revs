@@ -1,3 +1,26 @@
+# pathlib consistency (https://github.com/claritychallenge/clarity/pull/236)
+c2a4a8b9853a4f459b369b1bfcb5071f59a88cdb # Ignoring pathlib consistency commits from blame history
+3386ea686528fc04ef75b8451371ac1b2aa571a8 # Merge pull request #242 from claritychallenge/main
+90eb7f02d153e8c34db94591d8f2fdfaac60cc02 # Fixes to recipes/e029+e032_sheffield/prepare_data
+5200a5a361f47aaf66bff4378efa5b810b4532db # Fixes for enhancer/gha/gha_interface
+953f8e44a10b04410dd0443c7f3e9a523bf562f1 # Made final fixes for clarity/data/cec1_dataset
+38664e1c50d97bce58242245596bea37a8ccc7db # Made fixes for clarity/data/cec1_dataset
+b815b23158891e7e81193b19883d3b3a8edbeebe # Made fixes for clarity/predictor/torch_msbg
+f1f6075d260850ad2044ca06c7a1692a91a9686f # Made fixes for recipes/cec1/e009_sheffield
+14daec63384e5c0fb9de599256ed9e86c2da81d7 # Made fixes for recipes/cec1/baseline
+72cb8dbfee2bd1656ae71d11e3f228e54cc643d7 # Made fixes for cpc1/e029 and cpc/e032 train
+a68d98c15006e29614f138241245483398a1310e # Made fixes for cpc1/e029 and cpc/e032 infer
+4852633d4af38a3a3c827042968872cae8e251ee # Fixed files in tests/
+f1d7850df68d82cbbc4e3eb53c0c2074eac6084c # Fixed a bug introduced using Path(__file__)
+a5a247c675c948a8769568032ec9af7c274927e8 # Fixed files in recipes/cpc1/baseline
+6e5b53655441bf59c103d88d04d39427addac648 # Mixed files in clarity/data
+c6963d7041a372f193540217eb74890dbfc0d739 # pathlib for clarity/evaluator/msbg/msbg_utils.py
+6b83a96cd4ab5f4122b708a1f254a8792b222bb5 # Converted recipes/cpc1/e029_sheffield/prepare_data.py
+0b942c784d35791d43e1e2d61b984c935754e4a8 # Made fixes for cpc1/e029 and cpc/e032 evaluate
+6055023abadfb5e806b43d92de3ff3de62a50fad # Made fixes for recipes/cec2
+049588082b5566d816388f35a23eb00635c1e858 # Merge pull request #235 from claritychallenge/222-fix-issues-raised-by-pylint
+
+
 # pylint compliance (https://github.com/claritychallenge/clarity/pull/224)
 1c4f7def50b63e449c1292ebcb1072a333752dc2 # Ignoring commit that fix pylint errors
 bd5f3068d3d149a2c169bcf2fe1ba42e00f04c22 # Dealt with F6401 false positives, and final, final missed issues.
