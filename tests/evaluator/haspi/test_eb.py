@@ -462,23 +462,64 @@ def test_melcor9():
 
     np.random.seed(0)
     sig_len = 6000
-    reference = 100 * np.random.random(size=sig_len)
-    _distorted = 100 * np.random.random(size=sig_len)  # noqa: F841
+    reference = 20 * np.random.random(size=(4, sig_len))
+    distorted = 20 * np.random.random(size=(4, sig_len))  # noqa: F841
 
     # TODO: This is always returning 0's :-()
     mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = melcor9(
         reference=reference,
-        distorted=reference,
-        threshold=20,
+        distorted=distorted,
+        threshold=12,
         add_noise=0.00,
-        segment_size=2,  # ms
+        segment_size=4,  # ms
         n_cepstral_coef=6,
     )
 
-    assert mel_cep_ave == pytest.approx(0)
-    assert mel_cep_low == pytest.approx(0)
-    assert mel_cep_high == pytest.approx(0)
-    assert mel_cep_mod == pytest.approx(0)
+    assert mel_cep_mod.shape == (8,)
+
+    assert mel_cep_ave == pytest.approx(0.07847183114015181)
+    assert mel_cep_low == pytest.approx(0.08244466051783299)
+    assert mel_cep_high == pytest.approx(0.07449900176247062)
+    assert mel_cep_mod == pytest.approx(
+        np.array(
+            [
+                0.08074834547870297,
+                0.035224248042312015,
+                0.10987800587454441,
+                0.10392804267577263,
+                0.12997273983987667,
+                0.09738887779419407,
+                0.06127608591547042,
+                0.009358303500341338,
+            ]
+        )
+    )
+
+
+def test_melcor9_equal_input():
+    """Test melcor9"""
+
+    np.random.seed(0)
+    sig_len = 6000
+    reference = 20 * np.random.random(size=(4, sig_len))
+
+    mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = melcor9(
+        reference=reference,
+        distorted=reference,
+        threshold=12,
+        add_noise=0.00,
+        segment_size=4,  # ms
+        n_cepstral_coef=6,
+    )
+
+    assert mel_cep_mod.shape == (8,)
+
+    assert mel_cep_ave == pytest.approx(1.0)
+    assert mel_cep_low == pytest.approx(1.0)
+    assert mel_cep_high == pytest.approx(1.0)
+    assert mel_cep_mod == pytest.approx(
+        np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+    )
 
 
 def test_melcor9_crosscovmatrix():
@@ -486,22 +527,24 @@ def test_melcor9_crosscovmatrix():
 
     np.random.seed(0)
     sig_len = 600
-    reference = np.random.random(size=(6, sig_len))
-    processed = np.random.random(size=(6, sig_len))
-    bm = np.random.random(size=sig_len)
+    n_modulations = 4
+    n_basis = 6
+    reference = np.random.random(size=(n_basis, sig_len))
+    processed = np.random.random(size=(n_basis, sig_len))
+    basilar_membrane = np.random.random(size=(n_modulations, sig_len))
 
-    # TODO: undocumented function - unsure what inputs should look like
-    # Need to find correct inputs so that it doesn't throw an error
-    with pytest.raises(ValueError):
-        _cross_cov_matrix = melcor9_crosscovmatrix(  # noqa: F841
-            b=bm,
-            nmod=10,  # n modulation channels
-            nbasis=6,  # n cepstral coefficients
-            nsamp=600,
-            nfir=128,
-            reference_cep=reference,
-            processed_cep=processed,
-        )
+    cross_cov_matrix = melcor9_crosscovmatrix(
+        b=basilar_membrane,
+        nmod=n_modulations,  # n modulation channels
+        nbasis=n_basis,  # n cepstral coefficient
+        nsamp=sig_len,
+        nfir=32,
+        reference_cep=reference,
+        processed_cep=processed,
+    )
+
+    assert cross_cov_matrix.shape == (n_modulations, n_basis)
+    assert np.mean(cross_cov_matrix) == pytest.approx(0.9981200876213588)
 
 
 def test_spectrum_diff():
@@ -531,34 +574,51 @@ def test_spectrum_diff():
     )
 
 
-def test_bm_covary():
+def test_bm_covary_ok():
     """Test bm covary"""
 
     np.random.seed(0)
     sig_len = 600
     sample_freq = 24000
-    segment_size = 1
+    segment_size = 4
     reference = np.random.random(size=(4, sig_len))
     processed = np.random.random(size=(4, sig_len))
 
     signal_cross_cov, ref_mean_square, proc_mean_square = bm_covary(
         reference_basilar_membrane=reference,
-        processed_basilar_membrane=reference + 0.1 * processed,
+        processed_basilar_membrane=reference + 0.4 * processed,
         segment_size=segment_size,
         freq_sample=sample_freq,
     )
 
     # Check shapes
-    expected_length = 2 * sig_len / (sample_freq * segment_size / 1000)
-
-    assert signal_cross_cov.shape == (4, expected_length)
-    assert ref_mean_square.shape == (4, expected_length)
-    assert proc_mean_square.shape == (4, expected_length)
+    assert signal_cross_cov.shape == (4, 12)
+    assert ref_mean_square.shape == (4, 12)
+    assert proc_mean_square.shape == (4, 12)
 
     # Check values
-    assert np.sum(np.abs(signal_cross_cov)) == pytest.approx(200)
-    assert np.sum(np.abs(ref_mean_square)) == pytest.approx(70.1701757426345)
-    assert np.sum(np.abs(proc_mean_square)) == pytest.approx(78.38279741287329)
+    assert np.sum(np.abs(signal_cross_cov)) == pytest.approx(46.43935095481214)
+    assert np.sum(np.abs(ref_mean_square)) == pytest.approx(16.65809872708418)
+    assert np.sum(np.abs(proc_mean_square)) == pytest.approx(26.110255782462076)
+
+
+def test_bm_covary_error():
+    """Test bm covary fails when segment size too small"""
+
+    np.random.seed(0)
+    sig_len = 600
+    sample_freq = 24000
+    segment_size = 2  # needs to be a little over 2 ms
+    reference = np.random.random(size=(4, sig_len))
+    processed = np.random.random(size=(4, sig_len))
+
+    with pytest.raises(ValueError):
+        _signal_cross_cov, _ref_mean_square, _proc_mean_square = bm_covary(
+            reference_basilar_membrane=reference,
+            processed_basilar_membrane=reference + 0.4 * processed,
+            segment_size=segment_size,
+            freq_sample=sample_freq,
+        )
 
 
 def test_ave_covary2():
@@ -572,14 +632,23 @@ def test_ave_covary2():
     ave_covariance, ihc_sync_covariance = ave_covary2(
         signal_cross_covariance=signal_cross_cov,
         reference_signal_mean_square=ref_mean_square,
-        threshold_db=20,
+        threshold_db=0.6,
         lp_filter_order=np.array([1, 3, 5, 5, 5, 5]),
         freq_cutoff=1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0]),
     )
 
-    # TODO: outputting all 0's -- need better input
-
     assert len(ihc_sync_covariance) == 6
 
-    assert ave_covariance == pytest.approx(0)
-    assert ihc_sync_covariance == pytest.approx([0, 0, 0, 0, 0, 0])
+    assert ave_covariance == pytest.approx(0.5129961720524688)
+    assert np.sum(ihc_sync_covariance) == pytest.approx(3.057984614887033)
+
+    assert ihc_sync_covariance == pytest.approx(
+        [
+            0.5072428879657319,
+            0.5051636721505166,
+            0.5087880598896098,
+            0.511743935480639,
+            0.5124431322756856,
+            0.5126029271248499,
+        ]
+    )
