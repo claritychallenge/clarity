@@ -1,23 +1,25 @@
 """Utility functions for the baseline model."""
-# pylint: disable=import-error
+from __future__ import annotations
 
 import json
 import logging
 import warnings
 from pathlib import Path
-from typing import Optional, Tuple, Union
 
 import librosa
 import numpy as np
 import pandas as pd
 from omegaconf import DictConfig
 
+# pylint: disable=import-error
+
+
 logger = logging.getLogger(__name__)
 
 
 def read_mp3(
-    file_path: Union[str, Path], sample_rate: Optional[int] = None
-) -> Tuple[np.ndarray, Optional[int]]:
+    file_path: str | Path, sample_rate: int | None = None
+) -> tuple[np.ndarray, int | None]:
     """Read a MP3 file and return its signal.
 
     Args:
@@ -70,7 +72,7 @@ def load_hrtf(config: DictConfig) -> dict:
     return hrtf_data[config.evaluate.split]
 
 
-def load_listeners_and_scenes(config: DictConfig) -> Tuple[dict, dict, dict]:
+def load_listeners_and_scenes(config: DictConfig) -> tuple[dict, dict, dict]:
     """Load listener and scene data
 
     Args:

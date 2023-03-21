@@ -1,6 +1,5 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
-# pylint: disable=too-many-locals
-# pylint: disable=import-error
+from __future__ import annotations
 
 import csv
 import hashlib
@@ -8,7 +7,7 @@ import itertools
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import hydra
 import numpy as np
@@ -17,6 +16,10 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
+
+# pylint: disable=too-many-locals
+# pylint: disable=import-error
+
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +66,7 @@ class ResultsFile:
         listener: str,
         song: str,
         score: float,
-        instruments_scores: Dict[str, float],
+        instruments_scores: dict[str, float],
     ):
         """Add a result to the CSV file.
 
@@ -105,8 +108,8 @@ def set_song_seed(song: str) -> None:
 
 
 def make_song_listener_list(
-    songs: List[str], listeners: Dict[str, Any], small_test: bool = False
-) -> List[Tuple[str, str]]:
+    songs: list[str], listeners: dict[str, Any], small_test: bool = False
+) -> list[tuple[str, str]]:
     """Make the list of scene-listener pairing to process"""
     song_listener_pairs = list(itertools.product(songs, listeners.keys()))
 
@@ -123,7 +126,7 @@ def _evaluate_song_listener(
     split_dir: str,
     listener_audiograms: dict,
     enhanced_folder: Path,
-) -> Tuple[float, dict]:
+) -> tuple[float, dict]:
     """Evaluate a single song-listener pair
 
     Args:

@@ -1,12 +1,12 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
+from __future__ import annotations
 
 import csv
 import hashlib
 import logging
 from pathlib import Path
-from typing import Tuple
 
 import hydra
 import numpy as np
@@ -123,7 +123,7 @@ def evaluate_scene(
     car_scene_acoustic: CarSceneAcoustics,
     hrtf: dict,
     config: DictConfig,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """Evaluate a single scene and return HAAQI scores for left and right ears
 
     Args:
