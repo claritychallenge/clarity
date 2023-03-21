@@ -1,8 +1,9 @@
 """Make intelligibility predictions from HASPI scores."""
+from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 import hydra
 import numpy as np
@@ -21,7 +22,7 @@ class LogisticModel:
     Fits a logistic mapping from input values x to output values y.
     """
 
-    params: Optional[np.ndarray] = None  # The model params
+    params: np.ndarray | None = None  # The model params
 
     def _logistic_mapping(self, x, x_0, k):
         """Logistic function
@@ -90,10 +91,10 @@ def predict(cfg: DictConfig):
     for i, _record in records_df.iterrows():
         test_df = records_df.iloc[[i]].copy()
 
-        # The prediction is made using a logistic mapping from HASPI scores to intelligibility
-        # It is important that this mapping is trained using a disjoint set of data
-        # i.e. we define a training data set that does not contain systems, listeners or signals
-        # that appear in the test data sample.
+        # The prediction is made using a logistic mapping from HASPI scores to
+        # intelligibility. It is important that this mapping is trained using a
+        # disjoint set of data, i.e. we define a training data set that does not
+        # contain systems, listeners or signals that appear in the test data sample.
 
         train_df = make_disjoint_train_set(records_df, test_df)
 

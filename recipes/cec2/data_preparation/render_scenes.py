@@ -12,8 +12,11 @@ logger = logging.getLogger(__name__)
 def render_scenes(cfg):
     for dataset in cfg.scene_renderer:
         logger.info(f"Beginning scene generation for {dataset} set...")
-        with open(cfg.scene_renderer[dataset].metadata.scene_definitions, "r") as f:
-            scenes = json.load(f)
+        with open(
+            cfg.scene_renderer[dataset].metadata.scene_definitions,
+            encoding="utf-8",
+        ) as fp:
+            scenes = json.load(fp)
 
         starting_scene = (
             cfg.scene_renderer[dataset].chunk_size * cfg.render_starting_chunk

@@ -1,11 +1,11 @@
 """A class for the car acoustic environment."""
 # pylint: disable=import-error
 # pylint: disable=too-many-instance-attributes
+from __future__ import annotations
 
 import logging
 import warnings
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pyloudnorm as pyln
@@ -28,8 +28,8 @@ class CarSceneAcoustics:
     A class for the car acoustic environment.
 
     Constants:
-        ANECHOIC_HRTF_FOR_NOISE (dict): A dictionary containing the names of the anechoic BRIRs
-            for the following directions:
+        ANECHOIC_HRTF_FOR_NOISE (dict): A dictionary containing the names of the
+            anechoic BRIRs for the following directions:
                 0 degrees: front
                     - 000_left: The left channel of the BRIR for 0 degrees.
                     - 000_right: The right channel of the BRIR for 0 degrees.
@@ -182,12 +182,13 @@ class CarSceneAcoustics:
         Args:
             signal (np.ndarray): a numpy array of shape (2, n_samples) containing the
                 stereo audio signal.
-            hrir: a dictionary containing the HRIR (head-related impulse response) filenames.
+            hrir: a dictionary containing the HRIR (head-related impulse response)
+                filenames.
             hrtf_type: the type of HRTF to use. Can be either "Anechoic" or "Car".
 
         Returns:
-            A numpy array of shape (2, n_samples) containing the stereo audio signal with the
-                BRIR added.
+            A numpy array of shape (2, n_samples) containing the stereo audio signal
+                with the BRIR added.
 
         """
         car_hrtf_path = Path(self.hrtf_dir) / hrtf_type / "audio"
@@ -222,7 +223,7 @@ class CarSceneAcoustics:
         self,
         signal: np.ndarray,
         reference_signal: np.ndarray = None,
-        snr: Optional[float] = 0,
+        snr: float | None = 0,
     ) -> np.ndarray:
         """
         Scales the target signal to the desired SNR.
@@ -315,9 +316,9 @@ class CarSceneAcoustics:
             enh_signal (np.ndarray): The enhanced signal to apply the car acoustics to.
             scene (dict): The scene dictionary with the acoustics parameters.
             listener (dict): The listener dictionary with the audiograms.
-            hrtf (dict): A dictionary containing the head-related transfer functions (HRTFs)
-                for the listener being evaluated. This includes the left and right HRTFs for
-                the car and the anechoic room.
+            hrtf (dict): A dictionary containing the head-related transfer functions
+                (HRTFs) for the listener being evaluated. This includes the left and
+                right HRTFs for the car and the anechoic room.
             audio_manager (AudioManager): The audio manager object.
             config (DictConfig): The config object.
 
@@ -360,7 +361,8 @@ class CarSceneAcoustics:
             )
 
         # 4. Add the scaled anechoic car noise to the enhanced signal
-        # processed_signal = (enh_signal * car HRTF) + (car_noise * Anechoic HRTF) * scale_factor
+        # processed_signal = (enh_signal * car HRTF)
+        #   + (car_noise * Anechoic HRTF) * scale_factor
         processed_signal = self.add_two_signals(processed_signal, car_noise_anechoic)
 
         if config.evaluate.save_intermediate_wavs:
@@ -390,7 +392,8 @@ class CarSceneAcoustics:
 
         if n_clipped > 0:
             logger.warning(
-                f"Scene {scene['scene']}: {n_clipped} samples clipped in evaluation signal."
+                f"Scene {scene['scene']}: {n_clipped}"
+                " samples clipped in evaluation signal."
             )
 
         audio_manager.add_audios_to_save("ha_processed_signal", processed_signal)

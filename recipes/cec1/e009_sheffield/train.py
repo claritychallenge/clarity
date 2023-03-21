@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -22,7 +22,14 @@ logger = logging.getLogger(__name__)
 
 
 class DenModule(System):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ear_idx = None
+        self.down_sample = None
+
     def common_step(self, batch, batch_nb, train=True):
+        if self.down_sample is None:
+            raise RuntimeError("Hearing model not loaded")
         proc, ref = batch
         ref = ref[:, self.ear_idx, :]
         if self.config.downsample_factor != 1:
@@ -34,7 +41,24 @@ class DenModule(System):
 
 
 class AmpModule(System):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.hl_ear = None
+        self.nh_ear = None
+        self.down_sample = None
+        self.up_sample = None
+        self.ear_idx = None
+        self.den_model = None
+
     def common_step(self, batch, batch_nb, train=True):
+        if (
+            self.hl_ear is None
+            or self.nh_ear is None
+            or self.down_sample is None
+            or self.up_sample is None
+            or self.den_model is None
+        ):
+            raise RuntimeError("Hearing model not loaded")
         proc, ref = batch
         ref = ref[:, self.ear_idx, :]
         if self.config.downsample_factor != 1:
@@ -53,8 +77,8 @@ class AmpModule(System):
 
 
 def train_den(cfg, ear):
-    exp_dir = os.path.join(cfg.path.exp_folder, ear + "_den")
-    if os.path.exists(os.path.join(exp_dir, "best_model.pth")):
+    exp_dir = Path(cfg.path.exp_folder) / "{ear}_den"
+    if (exp_dir / "best_model.pth").exists():
         logger.info("Enhancement module exist")
         return
 
@@ -87,9 +111,9 @@ def train_den(cfg, ear):
 
     # callbacks
     callbacks = []
-    checkpoint_dir = os.path.join(exp_dir, "checkpoints/")
+    checkpoint_dir = exp_dir / "checkpoints/"
     checkpoint = ModelCheckpoint(
-        checkpoint_dir, monitor="val_loss", mode="min", save_top_k=5, verbose=True
+        str(checkpoint_dir), monitor="val_loss", mode="min", save_top_k=5, verbose=True
     )
     callbacks.append(checkpoint)
 
@@ -99,7 +123,7 @@ def train_den(cfg, ear):
     trainer = pl.Trainer(
         max_epochs=cfg.den_trainer.epochs,
         callbacks=callbacks,
-        default_root_dir=exp_dir,
+        default_root_dir=str(exp_dir),
         gpus=gpus,
         limit_train_batches=1.0,  # Useful for fast experiment
         gradient_clip_val=cfg.den_trainer.gradient_clip_val,
@@ -107,17 +131,17 @@ def train_den(cfg, ear):
     trainer.fit(den_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
-    with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
-        json.dump(best_k, f, indent=0)
+    with (exp_dir / "best_k_models.json").open("w", encoding="utf-8") as fp:
+        json.dump(best_k, fp, indent=0)
     state_dict = torch.load(checkpoint.best_model_path)
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
-    torch.save(den_module.model.state_dict(), os.path.join(exp_dir, "best_model.pth"))
+    torch.save(den_module.model.state_dict(), str(exp_dir / "best_model.pth"))
 
 
 def train_amp(cfg, ear):
-    exp_dir = os.path.join(cfg.path.exp_folder, ear + "_amp")
-    if os.path.exists(os.path.join(exp_dir, "best_model.pth")):
+    exp_dir = Path(cfg.path.exp_folder) / "{ear}_amp"
+    if (exp_dir / "best_model.pth").exists():
         logger.info("Amplification module exist")
         return
 
@@ -128,9 +152,8 @@ def train_amp(cfg, ear):
 
     # load denoising module
     den_model = ConvTasNet(**cfg.mc_conv_tasnet)
-    den_model_path = os.path.join(
-        os.path.join(cfg.path.exp_folder, ear + "_den"), "best_model.pth"
-    )
+    den_model_path = exp_dir / "{ear}_den/best_model.pth"
+
     den_model.load_state_dict(torch.load(den_model_path))
 
     # amplification module
@@ -163,8 +186,8 @@ def train_amp(cfg, ear):
         )
 
     # build normal hearing and hearing loss ears
-    with open(cfg.listener.metafile, "r") as f:
-        listeners_file = json.load(f)
+    with open(cfg.listener.metafile, encoding="utf-8") as fp:
+        listeners_file = json.load(fp)
         audiogram_cfs = listeners_file[cfg.listener.id]["audiogram_cfs"]
         audiogram_lvl_l = listeners_file[cfg.listener.id]["audiogram_levels_l"]
         audiogram_lvl_r = listeners_file[cfg.listener.id]["audiogram_levels_r"]
@@ -179,9 +202,9 @@ def train_amp(cfg, ear):
 
     # callbacks
     callbacks = []
-    checkpoint_dir = os.path.join(exp_dir, "checkpoints/")
+    checkpoint_dir = exp_dir / "checkpoints/"
     checkpoint = ModelCheckpoint(
-        checkpoint_dir, monitor="val_loss", mode="min", save_top_k=5, verbose=True
+        str(checkpoint_dir), monitor="val_loss", mode="min", save_top_k=5, verbose=True
     )
     callbacks.append(checkpoint)
 
@@ -199,12 +222,12 @@ def train_amp(cfg, ear):
     trainer.fit(amp_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
-    with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
-        json.dump(best_k, f, indent=0)
+    with (exp_dir / "best_k_models.json").open("w", encoding="utf-8") as fp:
+        json.dump(best_k, fp, indent=0)
     state_dict = torch.load(checkpoint.best_model_path)
     amp_module.load_state_dict(state_dict=state_dict["state_dict"])
     amp_module.cpu()
-    torch.save(amp_module.model.state_dict(), os.path.join(exp_dir, "best_model.pth"))
+    torch.save(amp_module.model.state_dict(), str(exp_dir / "best_model.pth"))
 
 
 @hydra.main(config_path=".", config_name="config")

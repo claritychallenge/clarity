@@ -1,11 +1,9 @@
 """ Run the dummy enhancement. """
-# pylint: disable=too-many-locals
-# pylint: disable=import-error
+from __future__ import annotations
 
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Union
 
 import hydra
 import numpy as np
@@ -21,16 +19,20 @@ from clarity.enhancer.nalr import NALR
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
+# pylint: disable=too-many-locals
+# pylint: disable=import-error
+
+
 logger = logging.getLogger(__name__)
 
 
 def separate_sources(
     model: torch.nn.Module,
-    mix: Union[torch.Tensor, np.ndarray],
+    mix: torch.Tensor | np.ndarray,
     sample_rate: int,
     segment: float = 10.0,
     overlap: float = 0.1,
-    device: Union[torch.device, str] = None,
+    device: torch.device | str = None,
 ):
     """
     Apply model to a given mixture.
@@ -117,7 +119,7 @@ def get_device(device: str) -> tuple:
     raise ValueError(f"Unsupported device type: {device}")
 
 
-def map_to_dict(sources: np.ndarray, sources_list: List[str]) -> Dict:
+def map_to_dict(sources: np.ndarray, sources_list: list[str]) -> dict:
     """Map sources to a dictionary separating audio into left and right channels.
 
     Args:
@@ -146,7 +148,7 @@ def decompose_signal(
     device: torch.device,
     left_audiogram: np.ndarray,
     right_audiogram: np.ndarray,
-) -> Dict[str, np.ndarray]:
+) -> dict[str, np.ndarray]:
     """
     Decompose signal into 8 stems.
 
@@ -286,10 +288,10 @@ def enhance(config: DictConfig) -> None:
 
     # Processing Validation Set
     # Load listener audiograms and songs
-    with open(config.path.listeners_valid_file, "r", encoding="utf-8") as file:
+    with open(config.path.listeners_valid_file, encoding="utf-8") as file:
         listener_valid_audiograms = json.load(file)
 
-    with open(config.path.music_valid_file, "r", encoding="utf-8") as file:
+    with open(config.path.music_valid_file, encoding="utf-8") as file:
         song_data = json.load(file)
     songs_valid = pd.DataFrame.from_dict(song_data)
 
@@ -311,7 +313,8 @@ def enhance(config: DictConfig) -> None:
     for idx, song_listener in enumerate(valid_song_listener_pairs, 1):
         song_name, listener_name = song_listener
         logger.info(
-            f"[{idx:03d}/{num_song_list_pair:03d}] Processing {song_name} for {listener_name}..."
+            f"[{idx:03d}/{num_song_list_pair:03d}] "
+            f"Processing {song_name} for {listener_name}..."
         )
         # Get the listener's audiogram
         listener_info = listener_valid_audiograms[listener_name]
@@ -353,9 +356,9 @@ def enhance(config: DictConfig) -> None:
                 audiogram_right,
             )
 
-        # Baseline applies NALR prescription to each stem
-        # instead of using the listener's audiograms in the decomposition
-        # This stemp can be skipped if the listener's audiograms are used in the decomposition
+        # Baseline applies NALR prescription to each stem instead of using the
+        # listener's audiograms in the decomposition. This stem can be skipped
+        # if the listener's audiograms are used in the decomposition
         processed_stems = process_stems_for_listener(
             stems,
             enhancer,

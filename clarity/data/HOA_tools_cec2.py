@@ -1,6 +1,7 @@
 """Tools to support higher order ambisonic processing."""
+from __future__ import annotations
+
 import logging
-from typing import List
 
 import numpy as np
 from numba import njit
@@ -93,7 +94,8 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
     sub_matrices[1] = foa_rotmat
 
     typed_sub_matrices = TypedList()
-    [typed_sub_matrices.append(x) for x in sub_matrices]
+    for x in sub_matrices:
+        typed_sub_matrices.append(x)
 
     if n > 1:
         for i in np.arange(2, n + 1):
@@ -194,21 +196,22 @@ def V(degree, n, order, rotation_matrices):
     """
     d = 0
     if degree == 0:
-        return P(1, 1, n, order, rotation_matrices) + P(
+        v_coeff = P(1, 1, n, order, rotation_matrices) + P(
             -1, -1, n, order, rotation_matrices
         )
     elif degree > 0:
         if degree == 1:
             d = 1.0
-        return P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
+        v_coeff = P(1, degree - 1, n, order, rotation_matrices) * np.sqrt(1 + d) - P(
             -1, -degree + 1, n, order, rotation_matrices
         ) * (1 - d)
     else:
         if degree == -1:
             d = 1.0
-        return P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
+        v_coeff = P(1, degree + 1, n, order, rotation_matrices) * (1 - d) + P(
             -1, -degree - 1, n, order, rotation_matrices
         ) * np.sqrt(1 + d)
+    return v_coeff
 
 
 @njit
@@ -225,15 +228,16 @@ def W(degree, n, order, rotation_matrices):
         float: W value
     """
     if degree == 0:
-        return 0.0
+        w_value = 0.0
     elif degree > 0:
-        return P(1, degree + 1, n, order, rotation_matrices) + P(
+        w_value = P(1, degree + 1, n, order, rotation_matrices) + P(
             -1, -degree - 1, n, order, rotation_matrices
         )
     else:
-        return P(1, degree - 1, n, order, rotation_matrices) - P(
+        w_value = P(1, degree - 1, n, order, rotation_matrices) - P(
             -1, -degree + 1, n, order, rotation_matrices
         )
+    return w_value
 
 
 @njit
@@ -454,7 +458,7 @@ def compute_rms(input_signal: np.ndarray, axis: int = 0) -> float:
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
-def equalise_rms_levels(inputs: List[np.ndarray]) -> List[np.ndarray]:
+def equalise_rms_levels(inputs: list[np.ndarray]) -> list[np.ndarray]:
     """Equalise RMS levels.
 
     Args:
@@ -531,7 +535,7 @@ def rotation_control_vector(
     return np.array(np.floor(idx * (array_length - 1)), dtype=int)
 
 
-def rotation_vector(
+def compute_rotation_vector(
     start_angle: float,
     end_angle: float,
     signal_length: int,
@@ -552,12 +556,8 @@ def rotation_vector(
     """
     turn_direction = -np.sign(start_angle - end_angle)
     with np.errstate(divide="raise"):
-        try:
-            increment = (
-                np.abs(start_angle - end_angle) / signal_length
-            ) * turn_direction
-        except FloatingPointError:
-            raise
+        increment = (np.abs(start_angle - end_angle) / signal_length) * turn_direction
+
     theta = np.arange(start_angle, end_angle, increment)
     idx = rotation_control_vector(signal_length, start_idx, end_idx)
     return theta[idx]

@@ -1,5 +1,5 @@
 """Tests for the data.utils module."""
-from typing import List
+from __future__ import annotations
 
 import numpy as np
 import pytest
@@ -111,7 +111,7 @@ def test_speechweighted_snr_unequal_arrays_value_error() -> None:
         ),
     ],
 )
-def test_sum_signals(signals: List[int], expected: np.ndarray) -> None:
+def test_sum_signals(signals: list[int], expected: np.ndarray) -> None:
     """Test of sum_signals()."""
     summed_signals = sum_signals(signals)
     np.testing.assert_array_equal(summed_signals, expected)
@@ -141,5 +141,5 @@ def test_pad(signal: np.ndarray, length: int, expected: np.ndarray) -> None:
 
 def test_pad_invalid_length_assertion_error() -> None:
     """Test pad() raises an exception when length < signal.shape[0]."""
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         pad(signal=np.asarray([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), length=2)

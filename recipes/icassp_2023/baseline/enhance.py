@@ -20,10 +20,11 @@ def enhance(cfg: DictConfig) -> None:
     enhanced_folder = pathlib.Path("enhanced_signals")
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
-    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
-    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+    # pylint: disable=unused-variable
+    with open(cfg.path.listeners_file, encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)  # noqa: F841
 
     # Make list of all scene listener pairs that will be run

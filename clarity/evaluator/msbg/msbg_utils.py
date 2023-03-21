@@ -1,9 +1,10 @@
 """Support for the MSBG hearing loss model."""
+from __future__ import annotations
+
 import json
 import logging
 import math
-import os
-from typing import Dict, Optional, Tuple, Union
+from pathlib import Path
 
 import numpy as np
 import scipy
@@ -95,7 +96,7 @@ EMPHASIS = np.array(
 ) * (7.5 / 9)
 
 
-def read_gtf_file(gtf_file: str) -> Dict:
+def read_gtf_file(gtf_file: str) -> dict:
     """Read a gammatone filterbank file.
 
     List data is converted into numpy arrays.
@@ -103,9 +104,8 @@ def read_gtf_file(gtf_file: str) -> Dict:
     """
 
     # Fix filename if necessary
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r", encoding="utf-8") as fp:
+    gtf_file_path = Path(__file__).parent / gtf_file
+    with gtf_file_path.open("r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
         if isinstance(data[key], list):
@@ -117,8 +117,8 @@ def firwin2(
     n_taps: int,
     frequencies: np.ndarray,
     filter_gains: np.ndarray,
-    window: Union[None, str, tuple] = None,
-    antisymmetric: Optional[bool] = None,
+    window: None | str | tuple = None,
+    antisymmetric: bool | None = None,
 ):  # pylint: disable=W0613
     """FIR filter design using the window method.
 
@@ -126,9 +126,10 @@ def firwin2(
 
     Args:
         n_taps (int): The number of taps in the FIR filter.
-        frequencies (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0 being Nyquist.
+        frequencies (ndarray): The frequency sampling points. 0.0 to 1.0 with 1.0
+            being Nyquist.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
-        window (string or (string, float), optional): See scipy.firwin2 (default: (None))
+        window (string or (string, float), optional): See scipy.firwin2. Default is None
         antisymmetric (bool, optional): Unused but present to main compatability
             with scipy firwin2.
 
@@ -160,16 +161,16 @@ def fir2(
     filter_length: int,
     frequencies: np.ndarray,
     filter_gains: np.ndarray,
-    n_interpolate: Optional[int] = None,
-) -> Tuple[np.ndarray, int]:
+    n_interpolate: int | None = None,
+) -> tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
     Translation of MATLAB fir2.
 
     Args:
         filter_length (int): Order
-        frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where 1 is Nyquist rate.
-                        First and last elements must be 0 and 1 respectively.
+        frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where
+            1 is Nyquist rate. First and last elements must be 0 and 1 respectively.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
         n_interpolate (int, optional): Number of points for freq response interpolation
             (default: max(smallest power of 2 greater than nn, 512))
@@ -214,7 +215,7 @@ def fir2(
             ne = int(np.fix(frequencies[i + 1] * n_interpolate)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc: Union[float, np.ndarray] = 0.0 if nb == ne else (j - nb) / (ne - nb)
+        inc: float | np.ndarray = 0.0 if nb == ne else (j - nb) / (ne - nb)
         H[nb : (ne + 1)] = inc * filter_gains[i + 1] + (1 - inc) * filter_gains[i]
         nb = ne + 1
 
@@ -238,8 +239,9 @@ def gen_tone(
     Args:
         freq (float): Frequency of tone in Hz.
         duration (float): Duration of tone in seconds.
-        sample_frequency (float, optional): Sample rate of generated tone in Hz. (default: 44100)
-        level (float, optional): Level of tone in dB SPL. (default: 0)
+        sample_frequency (float, optional): Sample rate of generated tone in Hz.
+            Default is 44100.
+        level (float, optional): Level of tone in dB SPL. Default is 0.
 
     Returns:
         np.ndarray
@@ -260,12 +262,13 @@ def gen_tone(
 def gen_eh2008_speech_noise(
     duration: float,
     sample_frequency: float = 44100.0,
-    level: Optional[float] = None,
-    supplied_b: Optional[np.ndarray] = None,
+    level: float | None = None,
+    supplied_b: np.ndarray | None = None,
 ) -> np.ndarray:
     """Generate speech shaped noise.
 
-    Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and sloping -9db/oct beyond that.
+    Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and sloping
+        -9db/oct beyond that.
 
     Slightly different shape from SII stylised same as EarHEar 2008 paper, Moore et al.
 
@@ -273,7 +276,8 @@ def gen_eh2008_speech_noise(
         duration (float): Duration of signal in seconds
         sample_frequency (float): Sampling rate
         level (float, optional): Normalise to level dB if present
-        supplied_b (ndarray, optional): High-pass filter (default: uses built-in pre-emphasis filter)
+        supplied_b (ndarray, optional): High-pass filter. Default uses built-in
+            pre-emphasis filter
 
     Returns:
         ndarray: Noise signal
@@ -337,8 +341,8 @@ def generate_key_percent(
     signal: np.ndarray,
     threshold_db: float,
     window_length: int,
-    percent_to_track: Optional[float] = None,
-) -> Tuple[np.ndarray, float]:
+    percent_to_track: float | None = None,
+) -> tuple[np.ndarray, float]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
@@ -348,7 +352,8 @@ def generate_key_percent(
         signal (ndarray): The signal to analyse.
         threshold_db (float): fixed energy threshold (dB).
         window_length (int): length of window in samples.
-        percent_to_track (float, optional): Track a percentage of frames (default: {None}).
+        percent_to_track (float, optional): Track a percentage of frames.
+            Default is None
 
     Raises:
         ValueError: percent_to_track is set too high.
@@ -422,7 +427,8 @@ def generate_key_percent(
     # histogram should produce a two-peaked curve: thresh should be set in valley
     # between the two peaks, and set threshold a bit above that,
     # as it heads for main peak
-    # FixMe : Could Otsu's method (from image processing) be used here? https://en.wikipedia.org/wiki/Otsu's_method
+    # TODO : Could Otsu's method (from image processing) be used here?
+    # https://en.wikipedia.org/wiki/Otsu's_method
     frame_index = np.nonzero(every_db >= expected)[0]
     valid_frames = len(frame_index)
     key = np.zeros((1, valid_frames * window_length))[0]
@@ -443,7 +449,7 @@ def measure_rms(
     signal: np.ndarray,
     sample_frequency: float,
     db_rel_rms: float,
-    percent_to_track: Optional[float] = None,
+    percent_to_track: float | None = None,
 ) -> tuple:
     """Measure Root Mean Square.
 
@@ -502,7 +508,7 @@ def pad(signal, length):
 
 
 def read_signal(
-    filename: str,
+    filename: str | Path,
     offset: int = 0,
     nsamples: int = -1,
     nchannels: int = 0,
@@ -511,8 +517,8 @@ def read_signal(
     """Read a wavefile and return as numpy array of floats.
 
     Args:
-        filename (string): Name of file to read
-        offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
+        filename (str|Path): Name of file to read
+        offset (int, optional): Offset in samples or seconds (from start). Default is 0.
         nsamples (int): Number of samples.
         nchannels (int): expected number of channel (default: 0 = any number OK)
         offset_is_samples (bool): measurement units for offset (default: False)
@@ -520,14 +526,11 @@ def read_signal(
     Returns:
         np.ndarray: audio signal
     """
-    try:
-        wave_file = SoundFile(filename)
-    except Exception as e:
-        # Ensure incorrect error (24 bit) is not generated
-        raise Exception(f"Unable to read {filename}.") from e
+
+    wave_file = SoundFile(filename)
 
     if nchannels not in (0, wave_file.channels):
-        raise Exception(
+        raise ValueError(
             f"Wav file ({filename}) was expected to have {nchannels} channels."
         )
 
@@ -548,7 +551,7 @@ def read_signal(
 
 
 def write_signal(
-    filename: str,
+    filename: str | Path,
     signal: np.ndarray,
     sample_frequency: float,
     floating_point: bool = True,
@@ -556,7 +559,7 @@ def write_signal(
     """Write a signal as fixed or floating point wav file.
 
     Args:
-        filename (str): name of file in to write to.
+        filename (str|Path): name of file in to write to.
         signal (ndarray): signal to write.
         sample_frequency (float): sampling frequency.
         floating_point (bool): write as floating point else an ints (default: True).
@@ -564,7 +567,8 @@ def write_signal(
 
     if sample_frequency != MSBG_FS:
         logging.warning(
-            f"Sampling rate mismatch: {filename} with sample frequency = {sample_frequency}."
+            f"Sampling rate mismatch: {filename} with "
+            f"sample frequency = {sample_frequency}."
         )
         # raise ValueError("Sampling rate mismatch")
 

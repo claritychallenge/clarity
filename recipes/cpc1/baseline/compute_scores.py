@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -49,7 +49,7 @@ class Model:
     def fit(self, pred, intel):
         """Fit a mapping betweeen mbstoi scores and intelligibility scores."""
         initial_guess = [0.5, 1.0]  # Initial guess for parameter values
-        self.params, pcov = curve_fit(
+        self.params, *_remaining_returns = curve_fit(
             self._logistic_mapping, pred, intel, initial_guess
         )
 
@@ -69,7 +69,7 @@ def compute_scores(predictions, labels):
     }
 
 
-def read_data(pred_csv, label_json):
+def read_data(pred_csv: Path, label_json: Path):
     df_pred = pd.read_csv(pred_csv).rename(
         columns={"signal_ID": "signal", "intelligibility_score": "prediction"}
     )
@@ -85,12 +85,12 @@ def read_data(pred_csv, label_json):
 def run(cfg: DictConfig) -> None:
     logger.info("Run evaluation on the closed set.")
     data_tr = read_data(
-        pred_csv=os.path.join(cfg.train_path.exp_folder, "sii.csv"),
-        label_json=cfg.train_path.scenes_file,
+        pred_csv=Path(cfg.train_path.exp_folder) / "sii.csv",
+        label_json=Path(cfg.train_path.scenes_file),
     )
     data_eval = read_data(
-        pred_csv=os.path.join(cfg.test_path.exp_folder, "sii.csv"),
-        label_json="../test_listener_responses/CPC1.test.json",
+        pred_csv=Path(cfg.test_path.exp_folder) / "sii.csv",
+        label_json=Path("../test_listener_responses/CPC1.test.json"),
     )
     logger.info("Apply logistic fitting.")
     model = Model()
@@ -100,12 +100,12 @@ def run(cfg: DictConfig) -> None:
 
     logger.info("Run evaluation on the open set.")
     data_tr = read_data(
-        pred_csv=os.path.join(cfg.train_indep_path.exp_folder, "sii.csv"),
-        label_json=cfg.train_indep_path.scenes_file,
+        pred_csv=Path(cfg.train_indep_path.exp_folder) / "sii.csv",
+        label_json=Path(cfg.train_indep_path.scenes_file),
     )
     data_eval = read_data(
-        pred_csv=os.path.join(cfg.test_indep_path.exp_folder, "sii.csv"),
-        label_json="../test_listener_responses/CPC1.test_indep.json",
+        pred_csv=Path(cfg.test_indep_path.exp_folder) / "sii.csv",
+        label_json=Path("../test_listener_responses/CPC1.test_indep.json"),
     )
     logger.info("Apply logistic fitting.")
     model = Model()
@@ -113,13 +113,13 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(data_eval["prediction"].to_numpy())
     open_set_scores = compute_scores(fit_pred, data_eval["label"].to_numpy())
 
-    with open("results.json", "w") as f:
+    with open("results.json", "w", encoding="utf-8") as fp:
         json.dump(
             {
                 "closed_set scores:": closed_set_scores,
                 "open_set scores:": open_set_scores,
             },
-            f,
+            fp,
         )
 
 

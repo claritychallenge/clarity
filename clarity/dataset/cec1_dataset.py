@@ -1,5 +1,5 @@
 import json
-import os
+from pathlib import Path
 
 import librosa
 import numpy as np
@@ -37,15 +37,14 @@ class CEC1Dataset(data.Dataset):
         self.testing = testing
 
         self.scene_list = []
-        with open(scenes_file, "r") as f:
-            scene_json = json.load(f)
+        with open(scenes_file, encoding="utf-8") as fp:
+            scene_json = json.load(fp)
             if not testing:
-                for i in range(len(scene_json)):
-                    self.scene_list.append(scene_json[i]["scene"])
+                for scene in scene_json:
+                    self.scene_list.append(scene["scene"])
             else:
                 for scene in scene_json.keys():
                     self.scene_list.append(scene)
-            f.close()
 
         if self.num_channels == 2:
             self.mixed_suffix = "_mixed_CH1.wav"
@@ -80,7 +79,6 @@ class CEC1Dataset(data.Dataset):
             end = start + sample_len
             x = x[:, start:end]
             y = y[:, start:end]
-            return x, y
         elif wav_len < sample_len:
             x = np.append(
                 x, np.zeros([x.shape[1], sample_len - wav_len], dtype=np.float32)
@@ -88,36 +86,31 @@ class CEC1Dataset(data.Dataset):
             y = np.append(
                 y, np.zeros([x.shape[1], sample_len - wav_len], dtype=np.float32)
             )
-            return x, y
-        else:
-            return x, y
+
+        return x, y
 
     def lowpass_filtering(self, x):
         return lfilter(self.lowpass_filter, 1, x)
 
     def __getitem__(self, item):
+        scenes_folder = Path(self.scenes_folder)
         if self.num_channels == 2:
             mixed = read_wavfile(
-                os.path.join(
-                    self.scenes_folder, self.scene_list[item] + self.mixed_suffix
-                )
+                scenes_folder / (self.scene_list[item] + self.mixed_suffix)
             )
         elif self.num_channels == 6:
             mixed = []
             for suffix in self.mixed_suffix:
                 mixed.append(
-                    read_wavfile(
-                        os.path.join(self.scenes_folder, self.scene_list[item] + suffix)
-                    )
+                    read_wavfile(scenes_folder / (self.scene_list[item] + suffix))
                 )
             mixed = np.concatenate(mixed, axis=0)
         else:
             raise NotImplementedError
+        target = None
         if not self.testing:
             target = read_wavfile(
-                os.path.join(
-                    self.scenes_folder, self.scene_list[item] + self.target_suffix
-                )
+                scenes_folder / (self.scene_list[item] + self.target_suffix)
             )
 
         if self.sr != 44100:
@@ -127,7 +120,7 @@ class CEC1Dataset(data.Dataset):
                     librosa.resample(mixed[i], target_sr=44100, orig_sr=self.sr)
                 )
             mixed = np.array(mixed_resampled)
-            if not self.testing:
+            if target is not None:
                 for i in range(target.shape[0]):
                     target_resampled.append(
                         librosa.resample(target[i], target_sr=44100, orig_sr=self.sr)
@@ -140,15 +133,21 @@ class CEC1Dataset(data.Dataset):
         if self.norm:
             mixed_max = np.max(np.abs(mixed))
             mixed = mixed / mixed_max
-            target = target / mixed_max
+            if target is not None:
+                target = target / mixed_max
 
         if not self.testing:
-            return (
+            return_data = (
                 torch.tensor(mixed, dtype=torch.float32),
                 torch.tensor(target, dtype=torch.float32),
             )
         else:
-            return torch.tensor(mixed, dtype=torch.float32), self.scene_list[item]
+            return_data = (
+                torch.tensor(mixed, dtype=torch.float32),
+                self.scene_list[item],
+            )
+
+        return return_data
 
     def __len__(self):
         return len(self.scene_list)

@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -16,10 +16,12 @@ logger = logging.getLogger(__name__)
 
 @hydra.main(config_path=".", config_name="config")
 def enhance(cfg: DictConfig) -> None:
-    enhanced_folder = os.path.join(cfg.path.exp_folder, "enhanced_signals")
-    os.makedirs(enhanced_folder, exist_ok=True)
-    scenes_listeners = json.load(open(cfg.path.scenes_listeners_file))
-    listener_audiograms = json.load(open(cfg.path.listeners_file))
+    enhanced_folder = Path(cfg.path.exp_folder) / "enhanced_signals"
+    enhanced_folder.mkdir(parents=True, exist_ok=True)
+    with Path(cfg.path.scenes_listeners_file).open("r", encoding="utf-8") as fp:
+        scenes_listeners = json.load(fp)
+    with Path(cfg.path.listeners_file).open("r", encoding="utf-8") as fp:
+        listener_audiograms = json.load(fp)
 
     enhancer = NALR(**cfg.nalr)
     compressor = Compressor(**cfg.compressor)
@@ -36,7 +38,7 @@ def enhance(cfg: DictConfig) -> None:
             )
 
             fs, signal = wavfile.read(
-                os.path.join(cfg.path.scenes_folder, f"{scene}_mix_CH1.wav")
+                Path(cfg.path.scenes_folder) / f"{scene}_mix_CH1.wav"
             )
             signal = signal / 32768.0
             assert fs == cfg.nalr.fs
@@ -58,7 +60,7 @@ def enhance(cfg: DictConfig) -> None:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
             np.clip(enhanced, -1.0, 1.0, out=enhanced)
             signal_16 = (32768.0 * enhanced).astype(np.int16)
-            wavfile.write(os.path.join(enhanced_folder, filename), fs, signal_16)
+            wavfile.write(enhanced_folder / filename, fs, signal_16)
 
 
 # pylint: disable=no-value-for-parameter

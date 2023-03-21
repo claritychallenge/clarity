@@ -1,12 +1,12 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
+from __future__ import annotations
 
 import csv
 import hashlib
 import logging
 from pathlib import Path
-from typing import Tuple
 
 import hydra
 import numpy as np
@@ -50,7 +50,9 @@ class ResultsFile:
             )
             csv_writer.writerow(
                 [
+                    "scene",
                     "song",
+                    "genre",
                     "listener",
                     "score",
                     "haaqi_left",
@@ -58,10 +60,12 @@ class ResultsFile:
                 ]
             )
 
+    # pylint: disable=too-many-arguments
     def add_result(
         self,
         scene: str,
         song: str,
+        genre: str,
         listener: str,
         score: float,
         haaqi_left: float,
@@ -72,6 +76,7 @@ class ResultsFile:
         Args:
             scene (str): The name of the scene that the result is for.
             song (str): The name of the song that the result is for.
+            genre (str): The genre of the song that the result is for.
             listener (str): The name of the listener who submitted the result.
             score (float): The combined score for the result.
             haaqi_left (float): The HAAQI score for the left channel.
@@ -88,6 +93,7 @@ class ResultsFile:
                 [
                     scene,
                     song,
+                    genre,
                     listener,
                     str(score),
                     str(haaqi_left),
@@ -117,7 +123,7 @@ def evaluate_scene(
     car_scene_acoustic: CarSceneAcoustics,
     hrtf: dict,
     config: DictConfig,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """Evaluate a single scene and return HAAQI scores for left and right ears
 
     Args:
@@ -127,28 +133,31 @@ def evaluate_scene(
             containing the enhanced signal.
         sample_rate (int): The sampling frequency of the reference and enhanced signals.
         scene_id (str): A string identifier for the scene being evaluated.
-        current_scene (dict): A dictionary containing information about the scene being evaluated,
-            including the song ID, the listener ID, the car noise type, and the split.
-        listener_audiogram (dict): A dictionary containing the listener's audiogram data,
-            including the center frequencies (cfs) and the hearing levels for both ears
-            (audiogram_levels_l and audiogram_levels_r).
-        car_scene_acoustic (CarSceneAcoustics): An instance of the CarSceneAcoustics class,
-            which is used to generate car noise and add binaural room impulse responses (BRIRs)
-            to the enhanced signal.
+        current_scene (dict): A dictionary containing information about the scene being
+            evaluated, including the song ID, the listener ID, the car noise type, and
+            the split.
+        listener_audiogram (dict): A dictionary containing the listener's audiogram
+            data, including the center frequencies (cfs) and the hearing levels for both
+            ears (audiogram_levels_l and audiogram_levels_r).
+        car_scene_acoustic (CarSceneAcoustics): An instance of the CarSceneAcoustics
+            class, which is used to generate car noise and add binaural room impulse
+            responses (BRIRs) to the enhanced signal.
         hrtf (dict): A dictionary containing the head-related transfer functions (HRTFs)
             for the listener being evaluated. This includes the left and right HRTFs for
             the car and the anechoic room.
         config (DictConfig): A dictionary-like object containing various configuration
-            parameters for the evaluation. This includes the path to the enhanced signal folder,
-            the path to the music directory, and a flag indicating whether to set a random seed.
+            parameters for the evaluation. This includes the path to the enhanced signal
+            folder,the path to the music directory, and a flag indicating whether to set
+            a random seed.
 
     Returns:
-        Tuple[float, float]: A tuple containing the HAAQI scores for the left and right ears.
+        Tuple[float, float]: A tuple containing HAAQI scores for left and right ears.
 
     """
     audio_manager = AudioManager(
         output_audio_path=Path("evaluation_signals")
-        / f"{listener_audiogram['name']} / {current_scene['song']}",
+        / f"{listener_audiogram['name']}"
+        / f"{current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
     )
@@ -284,6 +293,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         results_file.add_result(
             scene_id,
             current_scene["song"],
+            current_scene["song_path"].split("/")[-2],
             listener_id,
             score=float(score),
             haaqi_left=aq_score_l,

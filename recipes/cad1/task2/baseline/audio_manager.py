@@ -1,9 +1,9 @@
 """A utility class for managing audio files."""
+from __future__ import annotations
 
 import logging
 import warnings
 from pathlib import Path
-from typing import Dict, Tuple, Union
 
 import numpy as np
 import pyloudnorm as pyln
@@ -18,11 +18,11 @@ class AudioManager:
     def __init__(
         self,
         sample_rate: int = 44100,
-        output_audio_path: Union[str, Path] = "",
+        output_audio_path: str | Path = "",
         soft_clip: bool = False,
     ):
         """Initialize the AudioManager instance."""
-        self.audios_to_save: Dict[str, np.adarray] = {}
+        self.audios_to_save: dict[str, np.adarray] = {}
         self.sample_rate = sample_rate
         self.soft_clip = soft_clip
         self.output_audio_path = Path(output_audio_path)
@@ -62,7 +62,8 @@ class AudioManager:
         n_clipped, waveform = self.clip_audio(waveform)
         if n_clipped > 0:
             logger.warning(
-                f"Writing {self.output_audio_path / file_name}: {n_clipped} samples clipped"
+                f"Writing {self.output_audio_path / file_name}: {n_clipped} "
+                "samples clipped"
             )
 
         waveform = (32768.0 * waveform).astype(np.int16)
@@ -75,7 +76,7 @@ class AudioManager:
 
     def clip_audio(
         self, signal: np.ndarray, min_val: float = -1, max_val: float = 1
-    ) -> Tuple[int, np.ndarray]:
+    ) -> tuple[int, np.ndarray]:
         """Clip a WAV file to the given range.
 
         Args:
@@ -84,7 +85,7 @@ class AudioManager:
             max_val (float): The maximum value to clip to. Defaults to 1.
 
         Returns:
-            Tuple[int, np.ndarray]: The number of samples clipped and the clipped signal.
+            Tuple[int, np.ndarray]: Number of samples clipped and the clipped signal.
         """
         if self.soft_clip:
             signal = np.tanh(signal)

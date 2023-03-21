@@ -18,13 +18,6 @@ from clarity.enhancer.nalr import NALR
 
 logger = logging.getLogger(__name__)
 
-# pylint: disable=line-too-long
-# pylint: disable=too-many-arguments
-# pylint: disable=too-many-branches
-# pylint: disable=too-many-lines
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-statements
-
 
 def ear_model(
     reference,
@@ -53,31 +46,33 @@ def ear_model(
     and IHC loss attenuation.
 
     Arguments:
-    reference (np.ndarray): reference signal: should be adjusted to 65 dB SPL (itype=0 or 1)
-               or to 65 dB SPL plus NAL-R gain (itype=2)
-    reference_freq (int): sampling rate for the reference signal, Hz
-    processed (np.ndarray): processed signal (e.g. hearing-aid output) includes HA gain
-    processed_freq (int): sampling rate for the processed signal, Hz
-    hearing_loss (np.ndarray): audiogram giving the hearing loss in dB at six audiometric
-               frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz
-    itype (int): purpose for the calculation:
-             0=intelligibility: reference is nornal hearing and must not
+        reference (np.ndarray): reference signal: should be adjusted to 65 dB SPL
+            (itype=0 or 1) or to 65 dB SPL plus NAL-R gain (itype=2)
+        reference_freq (int): sampling rate for the reference signal, Hz
+        processed (np.ndarray): processed signal (e.g. hearing-aid output) includes
+            HA gain
+        processed_freq (int): sampling rate for the processed signal, Hz
+        hearing_loss (np.ndarray): audiogram giving the hearing loss in dB at 6
+            audiometric frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz
+        itype (int): purpose for the calculation:
+             0=intelligibility: reference is normal hearing and must not
                include NAL-R EQ
              1=quality: reference does not include NAL-R EQ
              2=quality: reference already has NAL-R EQ applied
-    level1   level calibration: signal RMS=1 corresponds to Level1 dB SPL
-    nchan (int): auditory frequency bands
-    m_delay (int): Compensate for the gammatone group delay.
-    shift (float): Basal shift of the basilar membrane length
+        level1:   level calibration: signal RMS=1 corresponds to Level1 dB SPL
+        nchan (int): auditory frequency bands
+        m_delay (int): Compensate for the gammatone group delay.
+        shift (float): Basal shift of the basilar membrane length
 
     Returns:
-    reference_db (): envelope for the reference in each band
-    reference_basilar_membrane (): BM motion for the reference in each band
-    processed_db (): envelope for the processed signal in each band
-    processed_basilar_membrane (): BM motion for the processed signal in each band
-    reference_sl (): compressed RMS average reference in each band converted to dB SL
-    processed_sl (): compressed RMS average output in each band converted to dB SL
-    freq_sample (): sampling rate in Hz for the model outputs
+        reference_db (): envelope for the reference in each band
+        reference_basilar_membrane (): BM motion for the reference in each band
+        processed_db (): envelope for the processed signal in each band
+        processed_basilar_membrane (): BM motion for the processed signal in each band
+        reference_sl (): compressed RMS average reference in each band converted
+            to dB SL
+        processed_sl (): compressed RMS average output in each band converted to dB SL
+        freq_sample (): sampling rate in Hz for the model outputs
 
     Updates:
     James M. Kates, 27 October 2011.
@@ -106,7 +101,8 @@ def ear_model(
     ) = loss_parameters(hearing_loss, _center_freq)
 
     # The cochlear model parameters for the reference are the same as for the hearing
-    # loss if calculating quality, but are for normal hearing if calculating intelligibility.
+    # loss if calculating quality, but are for normal hearing if calculating
+    # intelligibility.
     if itype == 0:
         hearing_loss_x = [0] * len(hearing_loss)
     else:
@@ -143,7 +139,8 @@ def ear_model(
     reference_24hz, processed_24hz = input_align(reference_24hz, processed_24hz)
     nsamp = len(reference_24hz)
 
-    # For HASQI, here add NAL-R equalization if the quality reference doesn't already have it.
+    # For HASQI, here add NAL-R equalization if the quality reference doesn't
+    # already have it.
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, freq_sample)
@@ -322,21 +319,20 @@ def center_frequency(
     min_bw=24.7,
 ):
     """
-    Compute the Equivalent Rectangular Bandwidth_[1] frequency spacing for the gammatone filter bank. The equation
-    comes from Malcolm Slaney[2]_ .
+    Compute the Equivalent Rectangular Bandwidth_[1] frequency spacing for the
+    gammatone filter bank. The equation comes from Malcolm Slaney[2].
 
     Arguments:
-    nchan (int): number of filters in the filter bank
-    low_freq (int): Low Frequency level.
-    high_freq (int): High Frequency level.
-    shift (): optional frequency shift of the filter bank specified as a
-              fractional shift in distance along the BM. A positive shift
-              is an increase in frequency (basal shift), and negative is
-              a decrease in frequency (apical shift). The total length of
-              the BM is normalized to 1. The frequency-to-distance map is
-              from D.D. Greenwood[3]_.
-    ear_q (float):
-    min_bw (float):
+        nchan (int): number of filters in the filter bank
+        low_freq (int): Low Frequency level.
+        high_freq (int): High Frequency level.
+        shift (): optional frequency shift of the filter bank specified as a fractional
+            shift in distance along the BM. A positive shift is an increase in frequency
+            (basal shift), and negative is a decrease in frequency (apical shift). The
+            total length of the BM is normalized to 1. The frequency-to-distance map is
+            from D.D. Greenwood[3].
+        ear_q (float):
+        min_bw (float):
 
     Returns:
 
@@ -380,7 +376,8 @@ def center_frequency(
 
     # All of the following expressions are derived in Apple TR #35,
     # "An Efficient Implementation of the Patterson-Holdsworth Cochlear
-    # Filter Bank" by Malcolm Slaney. https://engineering.purdue.edu/~malcolm/apple/tr35/PattersonsEar.pdf
+    # Filter Bank" by Malcolm Slaney.
+    # https://engineering.purdue.edu/~malcolm/apple/tr35/PattersonsEar.pdf
     _center_freq = -(ear_q * min_bw) + np.exp(
         np.arange(1, nchan)
         * (-np.log(high_freq + ear_q * min_bw) + np.log(low_freq + ear_q * min_bw))
@@ -400,18 +397,18 @@ def loss_parameters(hearing_loss, center_freq, audiometric_freq=None):
     in proportion to the OHC fraction of the total loss.
 
     Arguments:
-    hearing_loss (np.ndarray): hearing loss at the 6 audiometric frequencies
-    center_freq (np.ndarray): array containing the center frequencies of the
-        gammatone filters arranged from low to high
-    audiometric_freq (list):
+        hearing_loss (np.ndarray): hearing loss at the 6 audiometric frequencies
+        center_freq (np.ndarray): array containing the center frequencies of the
+            gammatone filters arranged from low to high
+        audiometric_freq (list):
 
     Returns:
-    attenuated_ohc (): attenuation in dB for the OHC gammatone filters
-    bandwidth (): OHC filter bandwidth expressed in terms of normal
-    low_knee (): Lower kneepoint for the low-level linear amplification
-    compression_ratio (): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal
-        hearing. Reduced in proportion to the OHC loss to 1:1.
-    attenuated_ihc ():	attenuation in dB for the input to the IHC synapse
+        attenuated_ohc (): attenuation in dB for the OHC gammatone filters
+        bandwidth (): OHC filter bandwidth expressed in terms of normal
+        low_knee (): Lower kneepoint for the low-level linear amplification
+        compression_ratio (): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal
+            hearing. Reduced in proportion to the OHC loss to 1:1.
+        attenuated_ihc ():	attenuation in dB for the input to the IHC synapse
 
     Updates:
     James M. Kates, 25 January 2007.
@@ -447,8 +444,8 @@ def loss_parameters(hearing_loss, center_freq, audiometric_freq=None):
     # frequency band to 3.5:1 in the 8-kHz frequency band
     compression_ratio = 1.25 + 2.25 * np.arange(nfilt) / (nfilt - 1)
 
-    # Maximum OHC sensitivity loss depends on the compression ratio.
-    # The compression I/O curves assume linear below 30 and above 100 dB SPL in normal ears.
+    # Maximum OHC sensitivity loss depends on the compression ratio. The compression
+    # I/O curves assume linear below 30 and above 100 dB SPL in normal ears.
     max_ohc = 70 * (
         1 - (1 / compression_ratio)
     )  # HC loss that results in 1:1 compression
@@ -667,33 +664,33 @@ def gammatone_basilar_membrane(
     min_bandwidth=24.7,
 ):
     """
-    4th-order gammatone auditory filter. This implementation is based
-    on the c program published on-line by Ning Ma, U. Sheffield, UK[1]_
-    that gives an implementation of the Martin Cooke filters[2]_:
-    an impulse-invariant transformation of the gammatone filter. The
-    signal is demodulated down to baseband using a complex exponential,
+    4th-order gammatone auditory filter. This implementation is based on the c program
+    published on-line by Ning Ma, U. Sheffield, UK[1]_ that gives an implementation of
+    the Martin Cooke filters[2]_: an impulse-invariant transformation of the gammatone
+    filter. The signal is demodulated down to baseband using a complex exponential,
     and then passed through a cascade of four one-pole low-pass filters.
 
-    This version filters two signals that have the same sampling rate and the
-    same gammatone filter center frequencies. The lengths of the two signals
-    should match; if they don't, the signals are truncated to the shorter of
-    the two lengths.
+    This version filters two signals that have the same sampling rate and the same
+    gammatone filter center frequencies. The lengths of the two signals should match;
+    if they don't, the signals are truncated to the shorter of the two lengths.
 
     Arguments:
-    reference (): first sequence to be filtered
-    reference_bandwidth: bandwidth for x relative to that of a normal ear
-    processed (): second sequence to be filtered
-    processed_bandwidth (): bandwidth for x relative to that of a normal ear
-    freq_sample (): sampling rate in Hz
-    center_frequency (int): filter center frequency in Hz
-    ear_q: (float): ???
-    min_bandwidth (float): ???
+        reference (): first sequence to be filtered
+        reference_bandwidth: bandwidth for x relative to that of a normal ear
+        processed (): second sequence to be filtered
+        processed_bandwidth (): bandwidth for x relative to that of a normal ear
+        freq_sample (): sampling rate in Hz
+        center_frequency (int): filter center frequency in Hz
+        ear_q: (float): ???
+        min_bandwidth (float): ???
 
     Returns:
-    reference_envelope (): filter envelope output (modulated down to baseband) 1st signal
-    reference_basilar_membrane (): Basilar Membrane for the first signal
-    processed_envelope (): filter envelope output (modulated down to baseband) 2nd signal
-    processed_basilar_membrane (): Basilar Membrane for the second signal
+        reference_envelope (): filter envelope output (modulated down to baseband)
+            1st signal
+        reference_basilar_membrane (): Basilar Membrane for the first signal
+        processed_envelope (): filter envelope output (modulated down to baseband)
+            2nd signal
+        processed_basilar_membrane (): Basilar Membrane for the second signal
 
     References:
     .. [1] Ma N, Green P, Barker J, Coy A (2007) Exploiting correlogram
@@ -712,7 +709,8 @@ def gammatone_basilar_membrane(
     Cosine/sine loop speed increased, 9 August 2013.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    # Filter Equivalent Rectangular Bandwidth from Moore and Glasberg (1983) doi: 10.1121/1.389861
+    # Filter Equivalent Rectangular Bandwidth from Moore and Glasberg (1983)
+    # doi: 10.1121/1.389861
     erb = min_bandwidth + (center_freq / ear_q)
 
     # Check the lengths of the two signals and trim to shortest
@@ -779,15 +777,15 @@ def gammatone_bandwidth_demodulation(
     """Gamma tone bandwidth demodulation
 
     Arguments:
-    npts (): ???
-    tpt (): ???
-    center_freq (): ???
-    center_freq_cos (): ???
-    sincf (): ???
+        npts (): ???
+        tpt (): ???
+        center_freq (): ???
+        center_freq_cos (): ???
+        sincf (): ???
 
     Returns:
-    sincf (): ???
-    coscf (): ???
+        sincf (): ???
+        coscf (): ???
     """
     cos_n = np.cos(tpt * center_freq)
     sin_n = np.sin(tpt * center_freq)
@@ -807,17 +805,16 @@ def gammatone_bandwidth_demodulation(
 
 def bandwidth_adjust(control, bandwidth_min, bandwidth_max, level1):
     """
-    Compute the increase in auditory filter bandwidth in response to high
-    signal levels.
+    Compute the increase in auditory filter bandwidth in response to high signal levels.
 
     Arguments:
-    control (): envelope output in the control filter band
-    bandwidth_min (): auditory filter bandwidth computed for the loss (or NH)
-    bandwidth_max (): auditory filter bandwidth at maximum OHC damage
-    level1 ():     RMS=1 corresponds to Level1 dB SPL
+        control (): envelope output in the control filter band
+        bandwidth_min (): auditory filter bandwidth computed for the loss (or NH)
+        bandwidth_max (): auditory filter bandwidth at maximum OHC damage
+        level1 ():     RMS=1 corresponds to Level1 dB SPL
 
     Returns:
-    bandwidth (): filter bandwidth increased for high signal levels
+        bandwidth (): filter bandwidth increased for high signal levels
 
     Updates:
     James M. Kates, 21 June 2011.
@@ -851,30 +848,29 @@ def env_compress_basilar_membrane(
     threshold_high=100,
 ):
     """
-    Compute the cochlear compression in one auditory filter band. The
-    gain is linear below the lower threshold, compressive with a
-    compression ratio of CR:1 between the lower and upper thresholds,
-    and reverts to linear above the upper threshold. The compressor
-    assumes that auditory thresold is 0 dB SPL.
+    Compute the cochlear compression in one auditory filter band. The gain is linear
+    below the lower threshold, compressive with a compression ratio of CR:1 between the
+    lower and upper thresholds, and reverts to linear above the upper threshold. The
+    compressor assumes that auditory threshold is 0 dB SPL.
 
     Arguments:
-    envsig (): analytic signal envelope (magnitude) returned by the
+        envsig (): analytic signal envelope (magnitude) returned by the
                 gammatone filter bank
-    bm (): BM motion output by the filter bank
-    control (): analytic control envelope returned by the wide control
+        bm (): BM motion output by the filter bank
+        control (): analytic control envelope returned by the wide control
                 path filter bank
-    attn_ohc (): OHC attenuation at the input to the compressor
-    threshold_Low (): kneepoint for the low-level linear amplification
-    compression_ratio (): compression ratio
-    fsamp (): sampling rate in Hz
-    level1 (): dB reference level: a signal having an RMS value of 1 is
+        attn_ohc (): OHC attenuation at the input to the compressor
+        threshold_Low (): kneepoint for the low-level linear amplification
+        compression_ratio (): compression ratio
+        fsamp (): sampling rate in Hz
+        level1 (): dB reference level: a signal having an RMS value of 1 is
                 assigned to Level1 dB SPL.
-    small (): ???
-    threshold_high: kneepoint for the high-level linear amplification
+        small (): ???
+        threshold_high: kneepoint for the high-level linear amplification
 
     Returns:
-    compressed_signal (): compressed version of the signal envelope
-    compressed_basilar_membrane (): compressed version of the BM motion
+        compressed_signal (): compressed version of the signal envelope
+        compressed_basilar_membrane (): compressed version of the BM motion
 
     Updates:
     James M. Kates, 19 January 2007.
@@ -913,16 +909,16 @@ def env_compress_basilar_membrane(
 
 def envelope_align(reference, output, freq_sample=24000, corr_range=100):
     """
-    Align the envelope of the processed signal to that of the reference
-    signal.
+    Align the envelope of the processed signal to that of the reference signal.
 
     Arguments:
-    reference (): envelope or BM motion of the reference signal
-    output (): envelope or BM motion of the output signal
-    freq_sample (int): Frequency sample rate in Hz
-    corr_range (int): range in msec for the correlation
+        reference (): envelope or BM motion of the reference signal
+        output (): envelope or BM motion of the output signal
+        freq_sample (int): Frequency sample rate in Hz
+        corr_range (int): range in msec for the correlation
+
     Returns:
-    y (): shifted output envelope to match the input
+        y (): shifted output envelope to match the input
 
     Updates:
     James M. Kates, 28 October 2011.
@@ -931,9 +927,9 @@ def envelope_align(reference, output, freq_sample=24000, corr_range=100):
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    # The MATLAB code limits the range of lags to search (to 100 ms) to save
-    # computation time - no such option exists in numpy, but the code below limits the delay
-    # to the same range as in Matlab, for consistent results
+    # The MATLAB code limits the range of lags to search (to 100 ms) to save computation
+    # time - no such option exists in numpy, but the code below limits the delay to the
+    # same range as in Matlab, for consistent results
     lags = round(0.001 * corr_range * freq_sample)  # Range in samples
     npts = len(reference)
     lags = min(lags, npts)
@@ -956,15 +952,16 @@ def envelope_sl(reference, basilar_membrane, attnenuated_ihc, level1, small=1e-3
     Convert the compressed envelope returned by cochlear_envcomp to dB SL.
 
     Arguments:
-    reference (): linear envelope after compression
-    basilar_membrane (): linear Basilar Membrane vibration after compression
-    attnenuated_ihc (): IHC attenuation at the input to the synapse
-    level1 (): level in dB SPL corresponding to 1 RMS
-    small (float): ???
+        reference (): linear envelope after compression
+        basilar_membrane (): linear Basilar Membrane vibration after compression
+        attenuated_ihc (): IHC attenuation at the input to the synapse
+        level1 (): level in dB SPL corresponding to 1 RMS
+        small (float): ???
 
     Returns:
-    _reference (): reference envelope in dB SL
-    _basilar_membrane (): Basilar Membrane vibration with envelope converted to dB SL
+        _reference (): reference envelope in dB SL
+        _basilar_membrane (): Basilar Membrane vibration withenvelope converted to
+            dB SL
 
     Updates:
     James M. Kates, 20 Feb 07.
@@ -999,15 +996,17 @@ def inner_hair_cell_adaptation(
     auditory threshold are provided by a subsequent call to eb_BMatten.
 
     Arguments:
-    reference_db (np.ndarray): signal envelope in one frequency band in dB SL
+        reference_db (np.ndarray): signal envelope in one frequency band in dB SL
              contains OHC compression and IHC attenuation
-    reference_basilar_membrane (): basilar membrane vibration with OHC compression but no IHC atten
-    delta (): overshoot factor = delta x steady-state
-    freq_sample (int): sampling rate in Hz
+        reference_basilar_membrane (): basilar membrane vibration with OHC compression
+            but no IHC attenuation
+        delta (): overshoot factor = delta x steady-state
+        freq_sample (int): sampling rate in Hz
 
     Returns:
-    output_db ():     envelope in dB SL with IHC adaptation
-    output_basilar_membrane (): Basilar Membrane multiplied by the IHC adaptation gain function
+        output_db (): envelope in dB SL with IHC adaptation
+        output_basilar_membrane (): Basilar Membrane multiplied by the IHC adaptation
+            gain function
 
     Updates:
     James M. Kates, 1 October 2012.
@@ -1074,21 +1073,21 @@ def inner_hair_cell_adaptation(
 
 def basilar_membrane_add_noise(reference, threshold, level1):
     """
-    Apply the IHC attenuation to the BM motion and to add a
-    low-level Gaussian noise to give the auditory threshold.
+    Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise to
+    give the auditory threshold.
 
     Arguments:
-    reference ():         BM motion to be attenuated
-    threshold (): additive noise level in dB re:auditory threshold
-    level1 (): an input having RMS=1 corresponds to Leve1 dB SPL
+        reference (): BM motion to be attenuated
+        threshold (): additive noise level in dB re:auditory threshold
+        level1 (): an input having RMS=1 corresponds to Leve1 dB SPL
 
     Returns:
-    Attenuated signal with threhsold noise added
+        Attenuated signal with threshold noise added
 
     Updates:
-    James M. Kates, 19 June 2012.
-    Just additive noise, 2 Oct 2012.
-    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+        James M. Kates, 19 June 2012.
+        Just additive noise, 2 Oct 2012.
+        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     gain = 10 ** ((threshold - level1) / 20)  # Linear gain for the noise
 
@@ -1114,19 +1113,19 @@ def group_delay_compensate(
     the same group delay.
 
     Arguments:
-    xenv (np.ndarray): matrix of signal envelopes or BM motion
-    bandwidths (): gammatone filter bandwidths adjusted for loss
-    center_freq (): center frequencies of the bands
-    freq_sample (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
-    ear_q (float):
-    min_bandwidth (float) :
+        xenv (np.ndarray): matrix of signal envelopes or BM motion
+        bandwidths (): gammatone filter bandwidths adjusted for loss
+        center_freq (): center frequencies of the bands
+        freq_sample (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
+        ear_q (float):
+        min_bandwidth (float) :
 
     Returns:
-    processed (): envelopes or BM motion compensated for the group delay.
+        processed (): envelopes or BM motion compensated for the group delay.
 
     Updates:
-    James M. Kates, 28 October 2011.
-    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+        James M. Kates, 28 October 2011.
+        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Processing parameters
     nchan = len(bandwidths)
@@ -1191,25 +1190,25 @@ def convert_rms_to_sl(
     assumes that auditory thresold is 0 dB SPL.
 
     Arguments:
-    reference (): analytic signal envelope (magnitude) returned by the
-    gammatone filter bank, RMS average level
-    control (): control signal envelope
-    attenuated_ohc (): OHC attenuation at the input to the compressor
-    threshold_low (): kneepoint for the low-level linear amplification
-    compression_ratio (): compression ratio
-    attenuated_ihc (): IHC attenuation at the input to the synapse
-    level1 (): dB reference level: a signal having an RMS value of 1 is
+        reference (): analytic signal envelope (magnitude) returned by the
+        gammatone filter bank, RMS average level
+        control (): control signal envelope
+        attenuated_ohc (): OHC attenuation at the input to the compressor
+        threshold_low (): kneepoint for the low-level linear amplification
+        compression_ratio (): compression ratio
+        attenuated_ihc (): IHC attenuation at the input to the synapse
+        level1 (): dB reference level: a signal having an RMS value of 1 is
                 assigned to Level1 dB SPL.
-    threshold_high (int):
-    small (float):
+        threshold_high (int):
+        small (float):
 
     Returns:
-    reference_db (): compressed output in dB above the impaired threshold
+        reference_db (): compressed output in dB above the impaired threshold
 
     Updates:
-    James M. Kates, 6 August 2007.
-    Version for two-tone suppression, 29 August 2008.
-    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+        James M. Kates, 6 August 2007.
+        Version for two-tone suppression, 29 August 2008.
+        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
     # Initialize the compression parameters
@@ -1246,17 +1245,17 @@ def env_smooth(envelopes: np.ndarray, segment_size, freq_sample):
     2*(1000/segsize).
 
     Arguments:
-    envelopes (np.ndarray): matrix of envelopes in each of the auditory bands
-    segment_size: averaging segment size in msec
-    freq_sample (int): input envelope sampling rate in Hz
+        envelopes (np.ndarray): matrix of envelopes in each of the auditory bands
+        segment_size: averaging segment size in msec
+        freq_sample (int): input envelope sampling rate in Hz
 
     Returns:
-    smooth: matrix of subsampled windowed averages in each band
+        smooth: matrix of subsampled windowed averages in each band
 
     Updates:
-    James M. Kates, 26 January 2007.
-    Final half segment added 27 August 2012.
-    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+        James M. Kates, 26 January 2007.
+        Final half segment added 27 August 2012.
+        Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Compute the window
@@ -1321,21 +1320,22 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     then computed.
 
     Arguments:
-    reference (): subsampled input signal envelope in dB SL in each critical band
-    distorted (): subsampled distorted output signal envelope
-    threshold (): threshold in dB SPL to include segment in calculation
-    addnoise (): additive Gaussian noise to ensure 0 cross-corr at low levels
+        reference (): subsampled input signal envelope in dB SL in each critical band
+        distorted (): subsampled distorted output signal envelope
+        threshold (): threshold in dB SPL to include segment in calculation
+        addnoise (): additive Gaussian noise to ensure 0 cross-corr at low levels
 
     Returns:
-    average_cepstral_correlation : average cepstral correlation 2-6, input vs output
-    individual_cepstral_correlations : individual cepstral correlations, input vs output
+        average_cepstral_correlation : average cepstral correlation 2-6, input vs output
+        individual_cepstral_correlations : individual cepstral correlations,
+            input vs output
 
     Updates:
-    James M. Kates, 24 October 2006.
-    Difference signal removed for cochlear model, 31 January 2007.
-    Absolute value added 13 May 2011.
-    Changed to loudness criterion for silence threhsold, 28 August 2012.
-    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+        James M. Kates, 24 October 2006.
+        Difference signal removed for cochlear model, 31 January 2007.
+        Absolute value added 13 May 2011.
+        Changed to loudness criterion for silence threhsold, 28 August 2012.
+        Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Processing parameters
@@ -1347,7 +1347,7 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     k = np.arange(nbands)
     mel_cepstral = np.zeros((nbands, nbasis))
     for n in range(nbasis):
-        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
         mel_cepstral[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
@@ -1405,7 +1405,6 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
                 np.sum(reference_cep[k, :] * processed_cep[k, :]) / np.sqrt(xsum * ysum)
             )
 
-    #
     # Figure of merit is the average of the cepstral correlations, ignoring
     # the first (average spectrum level).
     average_cepstral_correlation = np.sum(
@@ -1433,29 +1432,29 @@ def melcor9(
     the 8 modulation frequencies.
 
     Arguments:
-    reference (): subsampled input signal envelope in dB SL in each critical band
-    distorted (): subsampled distorted output signal envelope
-    threshold (): threshold in dB SPL to include segment in calculation
-    add_noise (): additive Gaussian noise to ensure 0 cross-corr at low levels
-    segment_size (): segment size in ms used for the envelope LP filter (8 msec)
-    n_cepstral_coef (int): Number of cepstral coefficients
+        reference (): subsampled input signal envelope in dB SL in each critical band
+        distorted (): subsampled distorted output signal envelope
+        threshold (): threshold in dB SPL to include segment in calculation
+        add_noise (): additive Gaussian noise to ensure 0 cross-corr at low levels
+        segment_size (): segment size in ms used for the envelope LP filter (8 msec)
+        n_cepstral_coef (int): Number of cepstral ceofficients
 
     Returns:
-    mel_cepstral_average (): average of the modulation correlations across analysis frequency
-        bands and modulation frequency bands, basis functions 2 -6
-    mel_cepstral_low (): average over the four lower mod freq bands, 0 - 20 Hz
-    mel_cepstral_high (): average over the four higher mod freq bands, 20 - 125 Hz
-    mel_cepstral_modulation (): vector of cross-correlations by modulation frequency,
-            averaged over analysis frequency band
+        mel_cepstral_average (): average of the modulation correlations across analysis
+            frequency bands and modulation frequency bands, basis functions 2 -6
+        mel_cepstral_low (): average over the four lower mod freq bands, 0 - 20 Hz
+        mel_cepstral_high (): average over the four higher mod freq bands, 20 - 125 Hz
+        mel_cepstral_modulation (): vector of cross-correlations by modulation
+            frequency, averaged over ananlysis frequency band
 
     Updates:
-    James M. Kates, 24 October 2006.
-    Difference signal removed for cochlear model, 31 January 2007.
-    Absolute value added 13 May 2011.
-    Changed to loudness criterion for silence threshold, 28 August 2012.
-    Version using envelope modulation filters, 15 July 2014.
-    Modulation frequency vector output added 27 August 2014.
-    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+        James M. Kates, 24 October 2006.
+        Difference signal removed for cochlear model, 31 January 2007.
+        Absolute value added 13 May 2011.
+        Changed to loudness criterion for silence threshold, 28 August 2012.
+        Version using envelope modulation filters, 15 July 2014.
+        Modulation frequency vector output added 27 August 2014.
+        Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Processing parameters
@@ -1466,7 +1465,7 @@ def melcor9(
     k = np.arange(nbands)
     cepm = np.zeros((nbands, n_cepstral_coef))
     for n in range(n_cepstral_coef):
-        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
         cepm[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
@@ -1610,16 +1609,16 @@ def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, reference_cep, processe
     """Compute the cross-covariance matrix.
 
     Arguments:
-    b (): ???
-    nmod (): ???
-    nbasis (): ???
-    nsamp (): ???
-    nfir (): ???
-    xcep (): ???
-    ycep (): ???
+        b (): ???
+        nmod (): ???
+        nbasis (): ???
+        nsamp (): ???
+        nfir (): ???
+        xcep (): ???
+        ycep (): ???
 
     Returns:
-    cross_covariance_matrix ():
+        cross_covariance_matrix ():
     """
     small = 1.0e-30
     nfir2 = nfir / 2
@@ -1691,8 +1690,8 @@ def spectrum_diff(reference_sl, processed_sl):
            <http://www.aes.org/e-lib/browse.cfm?elib=13018>.
 
     Updates:
-    James M. Kates, 28 June 2012.
-    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+        James M. Kates, 28 June 2012.
+        Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Convert the dB SL to linear magnitude values. Because of the auditory
@@ -1754,25 +1753,26 @@ def bm_covary(
     reference_basilar_membrane, processed_basilar_membrane, segment_size, freq_sample
 ):
     """
-    Compute the cross-covariance (normalized cross-correlation) between
-    the reference and processed signals in each auditory band. The
-    signals are divided into segments having 50% overlap.
+    Compute the cross-covariance (normalized cross-correlation) between  the reference
+    and processed signals in each auditory band. The signals are divided into segments
+    having 50% overlap.
 
     Arguments:
-    reference_basilar_membrane (): Basilar Membrane movement, reference signal
-    processed_basilar_membrane (): Basilar Membrane movement, processed signal
-    segment_size (): signal segment size, msec
-    freq_sample (int): sampling rate in Hz
+        reference_basilar_membrane (): Basilar Membrane movement, reference signal
+        processed_basilar_membrane (): Basilar Membrane movement, processed signal
+        segment_size (): signal segment size, msec
+        freq_sample (int): sampling rate in Hz
 
     Returns:
-    signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
-    reference_mean_square (np.array) : [nchan,nseg] of MS input signal energy values
-    processed_mean_square (np.array) : [nchan,nseg] of MS processed signal energy values
+        signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
+        reference_mean_square (np.array) : [nchan,nseg] of MS input signal energy values
+        processed_mean_square (np.array) : [nchan,nseg] of MS processed signal energy
+            values
 
     Updates:
-    James M. Kates, 28 August 2012.
-    Output amplitude adjustment added, 30 october 2012.
-    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+        James M. Kates, 28 August 2012.
+        Output amplitude adjustment added, 30 october 2012.
+        Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Initialize parameters
@@ -1940,19 +1940,19 @@ def ave_covary2(
     frequencies Johnson[2]_.
 
     Arguments:
-    signal_cross_covariance (np.array): [nchan,nseg] of cross-covariance values
-    reference_signal_mean_square (np.array): [nchan,nseg] of reference signal MS
-        values
-    threshold_db (): threshold in dB SL to include segment ave over freq in
-        average
-    lp_filter (list): LP filter order
-    freq_cutoff (list): Cutoff frequencies in Hz
+        signal_cross_covariance (np.array): [nchan,nseg] of cross-covariance values
+        reference_signal_mean_square (np.array): [nchan,nseg] of reference signal MS
+            values
+        threshold_db (): threshold in dB SL to include segment ave over freq in
+            average
+        lp_filter (list): LP filter order
+        freq_cutoff (list): Cutoff frequencies in Hz
 
     Returns:
-    average_covariance (): cross-covariance in segments averaged over time and
-        frequency
-    ihc_sync_covariance (): cross-coraviance array, 6 different weightings for loss of
-              IHC synchronization at high frequencies:
+        average_covariance (): cross-covariance in segments averaged over time and
+            frequency
+        ihc_sync_covariance (): cross-coraviance array, 6 different weightings for loss
+            of IHC synchronization at high frequencies:
               LP Filter Order     Cutoff Freq, kHz
                 1              1.5
                 3              2.0
@@ -1969,12 +1969,13 @@ def ave_covary2(
            responses of auditory‐nerve fibers to single tones J Acoustocal Soc of Am
            68:1115 Available at.
            <https://doi.org/10.1121/1.384982>
+
     Updates:
-    James M. Kates, 28 August 2012.
-    Adjusted for BM vibration in dB SL, 30 October 2012.
-    Threshold for including time-freq tile modified, 30 January 2013.
-    Version for different sync loss, 15 February 2013.
-    Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+        James M. Kates, 28 August 2012.
+        Adjusted for BM vibration in dB SL, 30 October 2012.
+        Threshold for including time-freq tile modified, 30 January 2013.
+        Version for different sync loss, 15 February 2013.
+        Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
     # Array dimensions

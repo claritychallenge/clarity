@@ -1,8 +1,8 @@
 """Gammatone filterbank simulation of the Cochlea."""
+from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Tuple, Union
 
 import numpy as np
 import scipy
@@ -24,7 +24,7 @@ class FilterBank:
 
 
 # Parameters for smearing and gammatone filtering according to degree of loss
-HL_PARAMS: Dict[str, Dict[str, Union[str, tuple]]] = {
+HL_PARAMS: dict[str, dict[str, str | tuple]] = {
     "SEVERE": {
         "gtfbank_file": "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs",
         "smear_params": (4, 2),  # asymmetric severe smearing
@@ -46,7 +46,7 @@ HL_PARAMS: Dict[str, Dict[str, Union[str, tuple]]] = {
 
 def compute_recruitment_parameters(
     gtn_cf: np.ndarray, audiogram: Audiogram, catch_up: float
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """Compute parameters to be used in recruitment model.
 
     Computes expansion ratios for each gammatone filterbank channel and
@@ -230,7 +230,8 @@ class Cochlea:
 
         Args:
             audiogram (Audiogram): Audiogram characterising hearing loss
-            catch_up_level (float, optional): loudness catch-up level in dB (default: {105})
+            catch_up_level (float, optional): loudness catch-up level in dB
+                Default is 105 dB
             fs (float, optional): sampling frequency
 
         """

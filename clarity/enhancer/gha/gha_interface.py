@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import logging
 import os
 import pathlib
 import subprocess
 import tempfile
+from pathlib import Path
 
 import numpy as np
 import soundfile
@@ -81,7 +84,9 @@ class GHAHearingAid:
         output = template.render(
             io_in=input_file,
             io_out=output_file,
-            peaklevel_in=f"[{peaklevel_in} {peaklevel_in} {peaklevel_in} {peaklevel_in}]",
+            peaklevel_in=(
+                f"[{peaklevel_in} {peaklevel_in} {peaklevel_in} {peaklevel_in}]"
+            ),
             peaklevel_out=f"[{peaklevel_out} {peaklevel_out}]",
             gtdata=formatted_sGt,
         )
@@ -112,10 +117,8 @@ class GHAHearingAid:
         )
         formatted_sGt = format_gaintable(gaintable, noisegate_corr=True)
 
-        cfg_template = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "cfg_files",
-            f"{self.cfg_file}_template.cfg",
+        cfg_template = (
+            Path(__file__).parent / f"cfg_files/{self.cfg_file}_template.cfg",
         )
 
         # Merge CH1 and CH3 files. This is the baseline configuration.
@@ -176,31 +179,34 @@ class GHAHearingAid:
         logging.info("OpenMHA processing complete")
 
     def read_signal(
-        self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
+        self,
+        filename: str | Path,
+        offset: int = 0,
+        nsamples: int = -1,
+        nchannels: int = 0,
+        offset_is_samples: bool = False,
     ):
         """Read a wavefile and return as numpy array of floats.
 
         Args:
             filename (string): Name of file to read
-            offset (int, optional): Offset in samples or seconds (from start). Defaults to 0.
+            offset (int, optional): Offset in samples or seconds (from start).
+                Defaults to 0.
             nchannels: expected number of channel (default: 0 = any number OK)
             offset_is_samples (bool): measurement units for offset (default: False)
         Returns:
             ndarray: audio signal
         """
-        try:
-            wave_file = SoundFile(filename)
-        except Exception as e:
-            # Ensure incorrect error (24 bit) is not generated
-            raise Exception(f"Unable to read {filename}.") from e
+
+        wave_file = SoundFile(filename)
 
         if nchannels not in (0, wave_file.channels):
-            raise Exception(
+            raise ValueError(
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
         if wave_file.samplerate != self.fs:
-            raise Exception(f"Sampling rate is not {self.fs} for filename {filename}.")
+            raise ValueError(f"Sampling rate is not {self.fs} for filename {filename}.")
 
         if not offset_is_samples:  # Default behaviour
             offset = int(offset * wave_file.samplerate)
@@ -212,7 +218,9 @@ class GHAHearingAid:
 
         return x
 
-    def write_signal(self, filename, x, floating_point=True):
+    def write_signal(
+        self, filename: str | Path, x, floating_point: bool = True
+    ) -> None:
         """Write a signal as fixed or floating point wav file."""
 
         if floating_point is False:
@@ -235,7 +243,7 @@ class GHAHearingAid:
         """Create input signal for baseline hearing aids."""
 
         if (infile_names[0][-5] != "1") or (infile_names[2][-5] != "3"):
-            raise Exception("HA-input signal error: channel mismatch!")
+            raise ValueError("HA-input signal error: channel mismatch!")
 
         signal_CH1 = self.read_signal(infile_names[0])
         signal_CH3 = self.read_signal(infile_names[2])

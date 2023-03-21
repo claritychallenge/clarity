@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -30,7 +30,8 @@ def std_err(x, y):
 class Model:
     """Class to represent the mapping from mbstoi parameters to intelligibility scores.
     The mapping uses a simple logistic function scaled between 0 and 100.
-    The mapping parameters need to fit first using mbstoi, intelligibility score pairs, using fit().
+    The mapping parameters need to fit first using mbstoi, intelligibility score
+    pairs, using fit().
     Once the fit has been made predictions can be made by calling predict()
     """
 
@@ -48,7 +49,7 @@ class Model:
     def fit(self, pred, intel):
         """Fit a mapping betweeen mbstoi scores and intelligibility scores."""
         initial_guess = [50.0, 1.0]  # Initial guess for parameter values
-        self.params, pcov = curve_fit(
+        self.params, *_remaining_returns = curve_fit(
             self._logistic_mapping, pred, intel, initial_guess
         )
 
@@ -68,20 +69,18 @@ def compute_scores(predictions, labels):
     }
 
 
-def read_data(pred_json, label_json):
-    prediction = []
-    label = []
-
+def read_data(pred_json: Path, label_json: Path):
     # read label_json to dict
-    label_dict = {}
-    label_json = json.load(open(label_json))
-    for item in label_json:
-        label_dict[item["signal"]] = item["correctness"]
+    with label_json.open("r", encoding="utf-8") as fp:
+        labels = json.load(fp)
 
-    pred_dict = json.load(open(pred_json))
-    for signal, pred in pred_dict.items():
-        prediction.append(pred * 100.0)
-        label.append(label_dict[signal])
+    label_dict = {item["signal"]: item["correctness"] for item in labels}
+
+    with pred_json.open("r", encoding="utf-8") as fp:
+        pred_dict = json.load(fp)
+
+    prediction = [pred * 100.0 for pred in pred_dict.values()]
+    label = [label_dict[signal] for signal in pred_dict]
 
     return np.array(prediction), np.array(label)
 
@@ -97,12 +96,12 @@ def run(cfg: DictConfig) -> None:
 
     # encoder representation evaluation
     prediction_dev, label_dev = read_data(
-        os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"),
-        os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
+        Path(cfg.path.exp_folder) / "dev_enc_similarity.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
     )
     prediction_test, label_test = read_data(
-        os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"),
-        f"../test_listener_responses/CPC1.{'test'+track}.json",
+        Path(cfg.path.exp_folder) / "test_enc_similarity.json",
+        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
@@ -113,12 +112,12 @@ def run(cfg: DictConfig) -> None:
 
     # decoder representation evaluation
     prediction_dev, label_dev = read_data(
-        os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"),
-        os.path.join(cfg.path.cpc1_train_data, f"metadata/CPC1.{'train'+track}.json"),
+        Path(cfg.path.exp_folder) / "dev_dec_similarity.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
     )
     prediction_test, label_test = read_data(
-        os.path.join(cfg.path.exp_folder, "test_dec_similarity.json"),
-        f"../test_listener_responses/CPC1.{'test'+track}.json",
+        Path(cfg.path.exp_folder) / "test_dec_similarity.json",
+        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
@@ -127,8 +126,9 @@ def run(cfg: DictConfig) -> None:
     fit_pred = model.predict(prediction_test)
     dec_scores = compute_scores(fit_pred, label_test)
 
-    with open(os.path.join(cfg.path.exp_folder, "results.json"), "w") as f:
-        json.dump({"enc_results": enc_scores, "dec_results": dec_scores}, f)
+    results_file = Path(cfg.path.exp_folder) / "results.json"
+    with results_file.open("w", encoding="utf-8") as fp:
+        json.dump({"enc_results": enc_scores, "dec_results": dec_scores}, fp)
 
 
 # pylint: disable=no-value-for-parameter

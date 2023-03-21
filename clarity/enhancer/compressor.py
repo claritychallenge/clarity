@@ -1,7 +1,7 @@
 """Compressor Class"""
 from __future__ import annotations
 
-from typing import Any, List, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -16,7 +16,7 @@ class Compressor:
         attenuation: float = 0.0001,
         rms_buffer_size: float = 0.2,
         makeup_gain: int = 1,
-        **kwargs,
+        **_kwargs,
     ):
         """Instantiate the Compressor Class.
 
@@ -68,7 +68,7 @@ class Compressor:
         reciprocal_time = 1 / t_sec
         self.release = reciprocal_time / self.fs
 
-    def process(self, signal: np.ndarray) -> Tuple[Any, np.ndarray, List[Any]]:
+    def process(self, signal: np.ndarray) -> tuple[Any, np.ndarray, list[Any]]:
         """DESCRIPTION
 
         Args:

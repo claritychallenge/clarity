@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def report_score(cfg: DictConfig) -> None:
     """Run the dummy enhancement."""
 
-    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
     results_df = pd.read_csv("scores.csv")

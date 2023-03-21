@@ -29,22 +29,26 @@ def haaqi_v1(
     impaired hearing.
 
     Arguments:
-    reference (ndarray):  Clear input reference speech signal with no noise or distortion.
+        reference (ndarray):  Input reference speech signal with no noise or distortion.
             If a hearing loss is specified, NAL-R equalization is optional
-    reference_freq (int): Sampling rate in Hz for reference signal.
-    processed (np.ndarray):  Output signal with noise, distortion, HA gain, and/or processing.
-    processed_freq (int): Sampling rate in Hz for processed signal.
-    hearling_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric frequencies
-        [250, 500, 1000, 2000, 4000, 6000] Hz.
-    equalisation (int): Flag to provide equalization for the hearing loss to signal processed:
+        reference_freq (int): Sampling rate in Hz for reference signal.
+        processed (np.ndarray):  Output signal with noise, distortion, HA gain,
+            and/or processing.
+        processed_freq (int): Sampling rate in Hz for processed signal.
+        hearing_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric
+            frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
+        equalisation (int): hearing loss equalization mode for reference signal:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
-    level1 (int): Optional input specifying level in dB SPL that corresponds to a
+        level1 (int): Optional input specifying level in dB SPL that corresponds to a
            signal RMS = 1. Default is 65 dB SPL if argument not provided.
            Default: 65
-    silence_threshold (float): Silence threshold sum across bands, dB above aud threshold. Default : 2.5
-    add_noise (float): Additive noise in dB SL to condition cross-covariances. Default: 0.0
-    segment_covariance (int): Segment size for the covariance calculation. Default: 16
+        silence_threshold (float): Silence threshold sum across bands,
+            dB above auditory threshold. Default : 2.5
+        add_noise (float): Additive noise dB SL to condition cross-covariances.
+            Defaults to 0.0
+        segment_covariance (int): Segment size for the covariance calculation.
+            Defaults to 16
 
     Returns:
         combined : Quality is the polynomial sum of the nonlinear and linear terms

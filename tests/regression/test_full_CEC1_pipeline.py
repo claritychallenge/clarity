@@ -149,7 +149,7 @@ def test_full_cec1_pipeline(regtest):
     enhanced_audio = np.tanh(enhanced_audio) * 100  # * 10000
 
     # Create discrete delta function (DDF) signal for time alignment
-    ddf_signal = np.zeros((np.shape(signal)))
+    ddf_signal = np.zeros(np.shape(signal))
 
     print(ddf_signal.shape)
     ddf_signal[:, 0] = unit_impulse(len(signal), int(MSBG_FS / 2))

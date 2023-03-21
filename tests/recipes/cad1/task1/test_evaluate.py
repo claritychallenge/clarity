@@ -36,7 +36,7 @@ def test_results_file(tmp_path):
             "right_vocals": 0.95,
         },
     )
-    with open(results_file, "r", encoding="utf-8") as file:
+    with open(results_file, encoding="utf-8") as file:
         contents = file.read()
         assert (
             "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"
@@ -116,7 +116,7 @@ def test_make_song_listener_list():
 def test_evaluate_song_listener(
     song, listener, config, split_dir, listener_audiograms, expected_results, tmp_path
 ):
-    """Test the function _evaluate_song_listener returns the correct results given the input"""
+    """Test the function _evaluate_song_listener returns correct results given input"""
     np.random.seed(2023)
 
     # Generate reference and enhanced wav files

@@ -1,4 +1,6 @@
 """Code for building the scenes.json files."""
+from __future__ import annotations
+
 import itertools
 import json
 import logging
@@ -6,7 +8,6 @@ import math
 import random
 import re
 from enum import Enum
-from typing import Dict, List
 
 import numpy as np
 from tqdm import tqdm
@@ -39,7 +40,7 @@ def set_random_seed(random_seed):
         np.random.seed(random_seed)
 
 
-def get_vector(text: str, vector_name: str) -> List[float]:
+def get_vector(text: str, vector_name: str) -> list[float]:
     """Get a vector quantity from the rpf file.
     Will read rpf vector quantities, eg.
     "sourceViewVectors = -0.095,-0.995, 0.000"
@@ -58,12 +59,12 @@ def get_vector(text: str, vector_name: str) -> List[float]:
     return x
 
 
-def get_room_dims(text: str) -> List:
+def get_room_dims(text: str) -> list:
     """Find the room dimensions in the rpf file.
 
     Args:
-        text (str): String to be searched for room dimensions (string to be searched for is of the form 'ProjectName =
-    CuboidRoom_5.9x3.4186x2.9').
+        text (str): String to be searched for room dimensions (string to be searched
+            for is of the form 'ProjectName = CuboidRoom_5.9x3.4186x2.9').
 
 
     Returns:
@@ -87,16 +88,17 @@ def get_room_name(text: str) -> str:
     return re.findall(r"R\d\d\d\d\d", text)[0]
 
 
-def read_rpf_file(rpf_filename: str) -> Dict:
+def read_rpf_file(rpf_filename: str) -> dict:
     """Process an rpf file and return key contents as a dictionary.
 
     Args:
         rpf_filename (str): Path to an rpf file to be read.
 
     Returns:
-        dict: dictionary of rpf file contents {"position": sourcePositions, "view_vector": sourceViewVectors}
+        dict: dictionary of rpf file contents
+            {"position": sourcePositions, "view_vector": sourceViewVectors}
     """
-    with open(rpf_filename, "r", encoding="utf-8") as f:
+    with open(rpf_filename, encoding="utf-8") as f:
         text = f.read()
 
     rpf_dict = {}
@@ -123,7 +125,7 @@ def read_rpf_file(rpf_filename: str) -> Dict:
     return rpf_dict
 
 
-def build_room(target_file: str, interferer_files: List[str]) -> Dict:
+def build_room(target_file: str, interferer_files: list[str]) -> dict:
     """Build room json file from contents of related rpf files.
     Note, there is an rpf file for each source in the scene. All of these
     files are read and a single scene json file is constructed.
@@ -158,7 +160,7 @@ def build_room(target_file: str, interferer_files: List[str]) -> Dict:
 
 def make_rpf_filename_dict(
     rpf_location: str, scene_str: str, n_interferers: int
-) -> Dict:
+) -> dict:
     """Construct dictionary storing all rpf files that will be processed.
 
     Args:
@@ -190,7 +192,7 @@ def get_num_pre_samples(pre_samples_range: list) -> int:
     """Number of samples prior to target onset.
 
     Args:
-        pre_samples_range (list): parameters for number of samples priot to target onset.
+        pre_samples_range (list): parameters for number of samples prior to target onset
 
     Returns:
     """
@@ -214,13 +216,13 @@ def add_this_target_to_scene(
 ):
     """Add the target details to the scene dict.
 
-    Adds given target to given scene. Target details will be taken from the target dict but
-    the start time will be according to the CEC2 target start time specification.
+    Adds given target to given scene. Target details will be taken from the target dict
+    but the start time will be according to the CEC2 target start time specification.
 
     Args:
         target (dict): target dict read from target metadata file.
         scene (dict): complete scene dictionary.
-        pre_samples_range (list): parameters for number of samples prior to target onset.
+        pre_samples_range (list): parameters for number of samples prior to target onset
         post_samples_range (list): parameters for number of samples to continue
             player after target offsets.
     """
@@ -235,12 +237,11 @@ def add_this_target_to_scene(
 
 
 # SNR handling
-def generate_snr(snr_range: List[int]) -> float:
-    """Generate a random Signal Noise Ratio.
+def generate_snr(snr_range: list[int]) -> float:
+    """Generate a random Signal Noise Ratio (SNR).
 
     Args:
-        snr_range (list): Range of values for a Uniform distribution from which to sample
-            Signal Noise Ratio.
+        snr_range (list): Range from which to uniformly sample SNR.
 
     Returns:
         float: random number from uniform distribution in given range.
@@ -257,7 +258,7 @@ class InterfererType(Enum):
     MUSIC = "music"
 
 
-def select_interferer_types(allowed_n_interferers: list) -> List[InterfererType]:
+def select_interferer_types(allowed_n_interferers: list) -> list[InterfererType]:
     """Select the interferer types to use.
 
     The number of interferer is drawn randomly from list of allowed valued.
@@ -283,8 +284,8 @@ def select_interferer_types(allowed_n_interferers: list) -> List[InterfererType]
 
 
 def select_random_interferer(
-    interferers: List[list], dataset: str, required_samples: int
-) -> Dict:
+    interferers: list[list], dataset: str, required_samples: int
+) -> dict:
     """Randomly select an interferer.
     Interferers stored as list of list. First randomly select a sublist
     then randomly select an item from sublist matching constraints.
@@ -345,8 +346,8 @@ def add_interferer_to_scene_inner(
     scene: dict,
     interferers: dict,
     number: list,
-    start_time_range: List[int],
-    end_early_time_range: List[int],
+    start_time_range: list[int],
+    end_early_time_range: list[int],
 ):
     """Randomly select interferers and add them to the given scene.
     A random number of interferers is chosen, then each is given a random type
@@ -367,8 +368,10 @@ def add_interferer_to_scene_inner(
         scene (dict): the scene description
         interferers (dict): the interferer metadata
         number (list): number of interferers
-        start_time_range (list): range of starting points as integers, a random number is selected between these.
-        end_early_time_range (list): range of end points as integers, a random number is selected between these.
+        start_time_range (list): range of starting points as integers, a random number
+            is selected between these.
+        end_early_time_range (list): range of end points as integers, a random number
+            is selected between these.
     """
     dataset = scene["dataset"]
     selected_interferer_types = select_interferer_types(number)
@@ -423,13 +426,14 @@ def generate_rotation(
     angle_initial_mean: float,
     angle_initial_sd: float,
     angle_final_range: tuple,
-) -> List[dict]:
+) -> list[dict]:
     """Generate a suitable head rotation for the given scene.
     Based on behavioural studies by Hadley et al. TODO: find ref
 
     Args:
         scene (dict): the scene description
-        relative_start_time_range (list): Range from which start time is selected at random.
+        relative_start_time_range (list): Range from which start time is
+            uniformly selected at random.
         duration_mean (float): mean of the time offset for start of turn
         duration_sd (float): standard deviation of the time offset for start of turn
         angle_initial_mean (float):
@@ -538,7 +542,7 @@ class RoomBuilder:
         Args:
             filename (str): filename to JSON file from which room data is loaded.
         """
-        with open(filename, "r", encoding="utf-8") as f:
+        with open(filename, encoding="utf-8") as f:
             self.rooms = json.load(f)
         self.rebuild_dict()
 
@@ -594,7 +598,7 @@ class SceneBuilder:
         Returns:
             None
         """
-        scenes = [s for s in self.scenes]
+        scenes = self.scenes.copy()
         # Replace the room structure with the room ID
         for scene in scenes:
             scene["room"] = scene["room"]["name"]
@@ -602,7 +606,7 @@ class SceneBuilder:
             json.dump(self.scenes, f, indent=2)
 
     def instantiate_scenes(self, dataset) -> None:
-        """Instantiate scenes with targets, interferers, signal noise ratio and listeners.
+        """Instantiate scenes with targets, interferers, SNR and listeners.
 
         Args:
             dataset:
@@ -665,19 +669,22 @@ class SceneBuilder:
         post_samples_range: list,
     ):
         """Add target info to the scenes.
-        Target speaker file set via config.
+
+        Uses target speaker file set via config.
 
         Args:
             dataset (str): dataset to be added.
             target_speakers (str):
-            target_selection (str): Type of target to be added, valid values are 'SEQUENTIAL' and 'RANDOM'.
-            pre_samples_range (list): Parameters for number of samples prior to target onset.
-            post_samples_range (list): Parameters for number osamples to continue player after target offsets.
-
+            target_selection (str): Type of target to be added, valid values are
+                'SEQUENTIAL' and 'RANDOM'.
+            pre_samples_range (list): Parameters for number of samples prior to target
+                onset.
+            post_samples_range (list): Parameters for number of samples to continue
+                player after target offsets.
 
         Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
-        with open(target_speakers, "r", encoding="utf-8") as f:
+        with open(target_speakers, encoding="utf-8") as f:
             targets = json.load(f)
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
@@ -704,10 +711,10 @@ class SceneBuilder:
             raise TypeError(f"Invalid room selection mode: {target_selection}")
 
     def add_SNR_to_scene(self, snr_range: list):
-        """Add the Signal Noise Ratio info to the scenes.
+        """Add the Signal Noise Ratio (SNR) info to the scenes.
 
         Args:
-            snr_range (list): Range of values from which Signal Noise Ratio will be sampled.
+            snr_range (list): Range of values from which SNR will be sampled.
 
         Returns:
         """
@@ -737,7 +744,7 @@ class SceneBuilder:
             None
         """
         # Load and prepare speech interferer metadata
-        with open(speech_interferers, "r", encoding="utf-8") as f:
+        with open(speech_interferers, encoding="utf-8") as f:
             interferers_speech = json.load(f)
         for interferer in interferers_speech:
             interferer["ID"] = (
@@ -747,7 +754,7 @@ class SceneBuilder:
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        with open(noise_interferers, "r", encoding="utf-8") as f:
+        with open(noise_interferers, encoding="utf-8") as f:
             interferers_noise = json.load(f)
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
@@ -757,7 +764,7 @@ class SceneBuilder:
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        with open(music_interferers, "r", encoding="utf-8") as f:
+        with open(music_interferers, encoding="utf-8") as f:
             interferers_music = json.load(f)
         for interferer in interferers_music:
             interferer["ID"] = interferer[
@@ -792,7 +799,8 @@ class SceneBuilder:
         Args:
             heads ():
             channels ():
-            relative_start_time_range (list): Range from which start time is selected at random.
+            relative_start_time_range (list): Range from which start time is selected at
+                random.
             duration_mean (float): mean of the time offset for start of turn
             duration_sd (float): standard deviation of the time offset for start of turn
             angle_initial_mean (float):

@@ -1,5 +1,5 @@
-"""Functions for ???"""
-from typing import Dict, List, Tuple
+"""Functions for HASPI neural network stage."""
+from __future__ import annotations
 
 import numpy as np
 
@@ -14,17 +14,18 @@ def get_neural_net() -> Tuple[Dict, List[np.ndarray], List[np.ndarray], float]:
     Arguments: None
 
     Returned values:
-    neural_net_params (dict): parameters defining the neural network
-    weights_hidden (): cell array 10 x 1 for the weights linking the input to the hidden
-             layer. Each cell is a 11 x 4 matrix of weights
-    weights_out (): call array 5 x 1 for the weights linking the hidden to the output
-             layer. Each cell is a 5 x 1 vector of weights.
-    normalization_factor (): normalization so that the maximum neural net output is exactly 1.
+        neural_net_params (dict): parameters defining the neural network
+        weights_hidden (): cell array 10 x 1 for the weights linking the input to the
+        hidden layer. Each cell is a 11 x 4 matrix of weights
+        weights_out (): call array 5 x 1 for the weights linking the hidden to the
+            output layer. Each cell is a 5 x 1 vector of weights.
+        normalization_factor (): normalization so that the maximum neural net output is
+            exactly 1.
 
     Updates:
-    James M. Kates, 8 October 2019.
-    Version for new neural network using actual TFS scores, 24 October 2019.
-    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+        James M. Kates, 8 October 2019.
+        Version for new neural network using actual TFS scores, 24 October 2019.
+        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Set up the neural network parameters
     neural_net_params = {}
@@ -238,7 +239,7 @@ def nn_feed_forward_ensemble(
     ncond = data.shape[0]  # Number of conditions in the input data
     n_networks = len(weights_hidden)  # Number of networks in the ensemble
 
-    # Ensemble average of the predictions over the set of neural networks used for training
+    # Ensemble average of predictions over set of neural networks used for training
     predict = np.zeros((ncond, n_networks))
     for k in range(n_networks):
         for n in range(ncond):

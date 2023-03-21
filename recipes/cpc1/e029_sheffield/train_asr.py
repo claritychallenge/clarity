@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Recipe for training a Transformer ASR system with librispeech, from the SpeechBrain LibriSpeech/ASR recipe.
-The SpeechBrain version used in this work is:
+Recipe for training a Transformer ASR system with librispeech, from the SpeechBrain
+LibriSpeech/ASR recipe. The SpeechBrain version used in this work is:
 https://github.com/speechbrain/speechbrain/tree/1eddf66eea01866d3cf9dfe61b00bb48d2062236
 """
 
+# pylint: disable=W0201  # code requires attributes defined outside __init__
+
 import logging
-import os
 import sys
 from pathlib import Path
 
@@ -17,11 +18,13 @@ from speechbrain.utils.distributed import run_on_main
 
 logger = logging.getLogger(__name__)
 
+tokenizer = None
+
 
 # Define training procedure
 class ASR(sb.core.Brain):
     def compute_forward(self, batch, stage):
-        """Forward computations from the waveform batches to the output probabilities."""
+        """Forward computations from waveform batches to the output probabilities."""
         batch = batch.to(self.device)
         wavs, wav_lens = batch.sig
         tokens_bos, _ = batch.tokens_bos
@@ -57,8 +60,8 @@ class ASR(sb.core.Brain):
             hyps = None
             current_epoch = self.hparams.epoch_counter.current
             if current_epoch % self.hparams.valid_search_interval == 0:
-                # for the sake of efficiency, we only perform beamsearch with limited capacity
-                # and no LM to give user some idea of how the AM is doing
+                # for the sake of efficiency, we only perform beamsearch with limited
+                # capacity and no LM to give user some idea of how the AM is doing
                 hyps, _ = self.hparams.valid_search(enc_out.detach(), wav_lens)
         elif stage == sb.Stage.TEST:
             hyps, _ = self.hparams.test_search(enc_out.detach(), wav_lens)
@@ -127,13 +130,13 @@ class ASR(sb.core.Brain):
             loss = self.compute_objectives(predictions, batch, stage=stage)
         return loss.detach()
 
-    def on_stage_start(self, stage, epoch):
+    def on_stage_start(self, stage, epoch=None):
         """Gets called at the beginning of each epoch"""
         if stage != sb.Stage.TRAIN:
             self.acc_metric = self.hparams.acc_computer()
             self.wer_metric = self.hparams.error_rate_computer()
 
-    def on_stage_end(self, stage, stage_loss, epoch):
+    def on_stage_end(self, stage, stage_loss, epoch=None):
         """Gets called at the end of a epoch."""
         # Compute/store important stats
         stage_stats = {"loss": stage_loss}
@@ -181,8 +184,8 @@ class ASR(sb.core.Brain):
                 stats_meta={"Epoch loaded": self.hparams.epoch_counter.current},
                 test_stats=stage_stats,
             )
-            with open(self.hparams.wer_file, "w") as w:
-                self.wer_metric.write_stats(w)
+            with open(self.hparams.wer_file, "w", encoding="utf-8") as fp:
+                self.wer_metric.write_stats(fp)
 
             # save the averaged checkpoint at the end of the evaluation stage
             # delete the rest of the intermediate checkpoints
@@ -223,7 +226,8 @@ class ASR(sb.core.Brain):
 
             # Load latest checkpoint to resume training if interrupted
             if self.checkpointer is not None:
-                # do not reload the weights if training is interrupted right before stage 2
+                # do not reload the weights if training is interrupted right before
+                # stage 2
                 group = current_optimizer.param_groups[0]
                 if "momentum" not in group:
                     return
@@ -270,7 +274,8 @@ def dataio_prepare(hparams):
 
     # We get the tokenizer as we need it to encode the labels when creating
     # mini-batches.
-    tokenizer = hparams["tokenizer"]
+    # (Note, tokenizer is also defined in global space. TODO: fix the design)
+    tokenizer = hparams["tokenizer"]  # pylint: disable=redefined-outer-name
 
     # 2. Define audio pipeline:
     @sb.utils.data_pipeline.takes("wav")
@@ -306,11 +311,11 @@ def dataio_prepare(hparams):
     return train_data, valid_data, test_datasets, tokenizer
 
 
-if __name__ == "__main__":
+def main():
     # CLI:
     hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:])
-    with open(hparams_file) as fin:
-        hparams = load_hyperpyyaml(fin, overrides)
+    with open(hparams_file, encoding="utf-8") as fp:
+        hparams = load_hyperpyyaml(fp, overrides)
 
     # If distributed_launch=True then
     # create ddp_group with the right communication protocol
@@ -324,7 +329,7 @@ if __name__ == "__main__":
     )
 
     # here we create the datasets objects as well as tokenization and encoding
-    train_data, valid_data, test_datasets, tokenizer = dataio_prepare(hparams)
+    train_data, valid_data, test_datasets, _tokenizer = dataio_prepare(hparams)
 
     # We download the pretrained LM from HuggingFace (or elsewhere depending on
     # the path given in the YAML file). The tokenizer is loaded at the same time.
@@ -353,12 +358,16 @@ if __name__ == "__main__":
     )
 
     # Testing
-    for k in test_datasets.keys():  # keys are test_clean, test_other etc
-        asr_brain.hparams.wer_file = os.path.join(
-            hparams["output_folder"], "wer_{}.txt".format(k)
+    for dataset_key, test_dataset in test_datasets.items():
+        asr_brain.hparams.wer_file = (
+            Path(hparams["output_folder"]) / f"wer_{dataset_key}.txt"
         )
         asr_brain.evaluate(
-            test_datasets[k],
+            test_dataset,
             max_key="ACC",
             test_loader_kwargs=hparams["test_dataloader_opts"],
         )
+
+
+if __name__ == "__main__":
+    main()

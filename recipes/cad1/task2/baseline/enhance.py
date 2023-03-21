@@ -1,11 +1,11 @@
 """ Run the dummy enhancement. """
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
+from __future__ import annotations
 
 import logging
 import warnings
 from pathlib import Path
-from typing import Tuple
 
 import hydra
 import numpy as np
@@ -52,7 +52,7 @@ def enhance_song(
     waveform: np.ndarray,
     listener_audiograms: dict,
     config: DictConfig,
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Enhance a single song for a listener.
 
