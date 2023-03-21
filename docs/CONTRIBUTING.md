@@ -96,7 +96,7 @@ carefully  to find out what you need to manually fix.
 ### `pathlib` over `os`
 
 PyClarity uses the object-orientated package [`pathlib`](https://docs.python.org/3/library/pathlib.html)
-through the code base for any operations involving the file system and path components as it makes code easier to
+throughout the code base for any operations involving the file system and path components as it makes code easier to
 read. We ask that any contributions follow this convention and use `pathlib` rather than `os`. For more on `pathlib` see
 [1] and [2].
 
