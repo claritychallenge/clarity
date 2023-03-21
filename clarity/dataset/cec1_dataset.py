@@ -1,5 +1,5 @@
 import json
-import os
+from pathlib import Path
 
 import librosa
 import numpy as np
@@ -93,28 +93,24 @@ class CEC1Dataset(data.Dataset):
         return lfilter(self.lowpass_filter, 1, x)
 
     def __getitem__(self, item):
+        scenes_folder = Path(self.scenes_folder)
         if self.num_channels == 2:
             mixed = read_wavfile(
-                os.path.join(
-                    self.scenes_folder, self.scene_list[item] + self.mixed_suffix
-                )
+                scenes_folder / (self.scene_list[item] + self.mixed_suffix)
             )
         elif self.num_channels == 6:
             mixed = []
             for suffix in self.mixed_suffix:
                 mixed.append(
-                    read_wavfile(
-                        os.path.join(self.scenes_folder, self.scene_list[item] + suffix)
-                    )
+                    read_wavfile(scenes_folder / (self.scene_list[item] + suffix))
                 )
             mixed = np.concatenate(mixed, axis=0)
         else:
             raise NotImplementedError
+        target = None
         if not self.testing:
             target = read_wavfile(
-                os.path.join(
-                    self.scenes_folder, self.scene_list[item] + self.target_suffix
-                )
+                scenes_folder / (self.scene_list[item] + self.target_suffix)
             )
 
         if self.sr != 44100:
@@ -124,7 +120,7 @@ class CEC1Dataset(data.Dataset):
                     librosa.resample(mixed[i], target_sr=44100, orig_sr=self.sr)
                 )
             mixed = np.array(mixed_resampled)
-            if not self.testing:
+            if target is not None:
                 for i in range(target.shape[0]):
                     target_resampled.append(
                         librosa.resample(target[i], target_sr=44100, orig_sr=self.sr)
@@ -137,7 +133,8 @@ class CEC1Dataset(data.Dataset):
         if self.norm:
             mixed_max = np.max(np.abs(mixed))
             mixed = mixed / mixed_max
-            target = target / mixed_max
+            if target is not None:
+                target = target / mixed_max
 
         if not self.testing:
             return_data = (

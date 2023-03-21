@@ -1,7 +1,7 @@
 import copy
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import speechbrain as sb
@@ -148,56 +148,51 @@ def run(cfg: DictConfig) -> None:
         track = ""
     else:
         logger.error("cpc1_track has to be closed or open")
+        raise ValueError("cpc1_track has to be closed or open")
 
     asr_model, tokenizer, bos_index = init_asr(cfg.asr_config)
 
     left_dev_csv = sb.dataio.dataio.load_data_csv(
-        os.path.join(cfg.path.exp_folder, "cpc1_asr_data" + track, "left_dev_msbg.csv")
+        Path(cfg.path.exp_folder) / f"cpc1_asr_data{track}/left_dev_msbg.csv"
     )  # using left ear csvfile for data loading
     left_test_csv = sb.dataio.dataio.load_data_csv(
-        os.path.join(cfg.path.exp_folder, "cpc1_asr_data" + track, "left_test_msbg.csv")
+        Path(cfg.path.exp_folder) / f"cpc1_asr_data{track}/left_test_msbg.csv"
     )  # using left ear csvfile for data loading
 
-    dev_conf = {}
-    dev_negent = {}
+    exp_path = Path(cfg.path.exp_folder)
+
     # dev set uncertainty
+    dev_conf = {}
+    dev_neg_entropy = {}
     for wav_id, wav_obj in tqdm(left_dev_csv.items()):
         left_proc_path = wav_obj["wav"]
         uncertainty = compute_uncertainty(
             left_proc_path, asr_model, bos_index, tokenizer
         )
         dev_conf[wav_id] = uncertainty[0].tolist()
-        dev_negent[wav_id] = uncertainty[1].tolist()
+        dev_neg_entropy[wav_id] = uncertainty[1].tolist()
 
-        with open(
-            os.path.join(cfg.path.exp_folder, "dev_conf.json"), "w", encoding="utf-8"
-        ) as fp:
+        with (exp_path / "dev_conf.json").open("w", encoding="utf-8") as fp:
             json.dump(dev_conf, fp)
-        with open(
-            os.path.join(cfg.path.exp_folder, "dev_negent.json"), "w", encoding="utf-8"
-        ) as fp:
-            json.dump(dev_negent, fp)
+        with (exp_path / "dev_negent.json").open("w", encoding="utf-8") as fp:
+            json.dump(dev_neg_entropy, fp)
 
     # test set similarity
     test_conf = {}
-    test_negent = {}
+    test_neg_entropy = {}
     for wav_id, wav_obj in tqdm(left_test_csv.items()):
         left_proc_path = wav_obj["wav"]
         uncertainty = compute_uncertainty(
             left_proc_path, asr_model, bos_index, tokenizer
         )
         test_conf[wav_id] = uncertainty[0].tolist()
-        test_negent[wav_id] = uncertainty[1].tolist()
+        test_neg_entropy[wav_id] = uncertainty[1].tolist()
 
-        with open(
-            os.path.join(cfg.path.exp_folder, "test_conf.json"), "w", encoding="utf-8"
-        ) as fp:
+        with (exp_path / "test_conf.json").open("w", encoding="utf-8") as fp:
             json.dump(test_conf, fp)
 
-        with open(
-            os.path.join(cfg.path.exp_folder, "test_negent.json"), "w", encoding="utf-8"
-        ) as fp:
-            json.dump(test_negent, fp)
+        with (exp_path / "test_negent.json").open("w", encoding="utf-8") as fp:
+            json.dump(test_neg_entropy, fp)
 
 
 # pylint: disable=no-value-for-parameter

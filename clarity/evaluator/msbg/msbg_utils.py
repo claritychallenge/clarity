@@ -2,7 +2,7 @@
 import json
 import logging
 import math
-import os
+from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
 import numpy as np
@@ -103,9 +103,8 @@ def read_gtf_file(gtf_file: str) -> Dict:
     """
 
     # Fix filename if necessary
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r", encoding="utf-8") as fp:
+    gtf_file_path = Path(__file__).parent / gtf_file
+    with gtf_file_path.open("r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
         if isinstance(data[key], list):
@@ -508,7 +507,7 @@ def pad(signal, length):
 
 
 def read_signal(
-    filename: str,
+    filename: Union[str, Path],
     offset: int = 0,
     nsamples: int = -1,
     nchannels: int = 0,
@@ -517,7 +516,7 @@ def read_signal(
     """Read a wavefile and return as numpy array of floats.
 
     Args:
-        filename (string): Name of file to read
+        filename (str|Path): Name of file to read
         offset (int, optional): Offset in samples or seconds (from start). Default is 0.
         nsamples (int): Number of samples.
         nchannels (int): expected number of channel (default: 0 = any number OK)
@@ -551,7 +550,7 @@ def read_signal(
 
 
 def write_signal(
-    filename: str,
+    filename: Union[str, Path],
     signal: np.ndarray,
     sample_frequency: float,
     floating_point: bool = True,
@@ -559,7 +558,7 @@ def write_signal(
     """Write a signal as fixed or floating point wav file.
 
     Args:
-        filename (str): name of file in to write to.
+        filename (str|Path): name of file in to write to.
         signal (ndarray): signal to write.
         sample_frequency (float): sampling frequency.
         floating_point (bool): write as floating point else an ints (default: True).

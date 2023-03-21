@@ -1,7 +1,7 @@
 import csv
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import numpy as np
@@ -40,13 +40,13 @@ def listen(ear, signal, audiogram_l, audiogram_r):
 
 
 def run_HL_processing(cfg, path):
-    output_path = os.path.join(path.exp_folder, "eval_signals")
-    os.makedirs(output_path, exist_ok=True)
+    output_path = Path(path.exp_folder) / "eval_signals"
+    output_path.mkdir(parents=True, exist_ok=True)
     with open(path.scenes_file, "r", encoding="utf-8") as fp:
         scenes = json.load(fp)
     with open(path.listeners_file, "r", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
-    enhanced_folder = path.scenes_folder
+    enhanced_folder = Path(path.scenes_folder)
 
     # initialize ear
     ear = Ear(**cfg["MSBGEar"])
@@ -55,7 +55,7 @@ def run_HL_processing(cfg, path):
         scene = scene_dict["scene"]
         listener = scene_dict["listener"]
         system = scene_dict["system"]
-        signal_file = os.path.join(enhanced_folder, f"{scene}_{listener}_{system}.wav")
+        signal_file = enhanced_folder / f"{scene}_{listener}_{system}.wav"
 
         # signals to write
         outfile_stem = f"{output_path}/{scene}_{listener}_{system}"
@@ -66,13 +66,11 @@ def run_HL_processing(cfg, path):
             f"{outfile_stem}_HL-mixoutput.wav",
         ]
         # if all signals to write exist, pass
-        if all(os.path.isfile(f) for f in signal_files_to_write):
+        if all(Path(f).exists() for f in signal_files_to_write):
             continue
 
         signal = read_signal(signal_file)
-        mixture_signal = read_signal(
-            os.path.join(path.ref_folder, f"{scene}_mixed_CH0.wav")
-        )
+        mixture_signal = read_signal(Path(path.ref_folder) / f"{scene}_mixed_CH0.wav")
 
         # retrieve audiograms
         cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
@@ -107,23 +105,18 @@ def run_HL_processing(cfg, path):
 def run_calculate_SI(cfg, path) -> None:
     with open(path.scenes_file, "r", encoding="utf-8") as fp:
         scenes = json.load(fp)
-    proc_folder = os.path.join(path.exp_folder, "eval_signals")
-    sii_file = os.path.join(path.exp_folder, "sii.csv")
+    proc_folder = Path(path.exp_folder) / "eval_signals"
+    ref_folder = Path(path.ref_folder)
+    sii_file = Path(path.exp_folder) / "sii.csv"
     csv_lines = [["signal_ID", "intelligibility_score"]]
 
     for scene_dict in tqdm(scenes):
         scene = scene_dict["scene"]
         listener = scene_dict["listener"]
         system = scene_dict["system"]
-        proc = read_signal(
-            os.path.join(proc_folder, f"{scene}_{listener}_{system}_HL-output.wav")
-        )
-        clean = read_signal(
-            os.path.join(path.ref_folder, f"{scene}_target_anechoic.wav")
-        )
-        ddf = read_signal(
-            os.path.join(proc_folder, f"{scene}_{listener}_{system}_HLddf-output.wav")
-        )
+        proc = read_signal(proc_folder / f"{scene}_{listener}_{system}_HL-output.wav")
+        clean = read_signal(ref_folder / f"{scene}_target_anechoic.wav")
+        ddf = read_signal(proc_folder / f"{scene}_{listener}_{system}_HLddf-output.wav")
 
         # Calculate channel-specific unit impulse delay due to HL model and audiograms
         delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))
