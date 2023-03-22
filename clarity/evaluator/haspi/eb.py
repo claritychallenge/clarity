@@ -1896,7 +1896,7 @@ def bm_covary(
         )  # Normalize signal MS value by the window
         proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-        correlation = np.correlate(reference_seg, processed_seg, "full")
+        correlation = correlate(reference_seg, processed_seg, "full")
         correlation = correlation[
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
         ]
