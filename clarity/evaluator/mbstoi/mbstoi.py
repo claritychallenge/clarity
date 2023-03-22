@@ -27,7 +27,7 @@ def mbstoi(
     right_ear_clean: np.ndarray,
     left_ear_noisy: np.ndarray,
     right_ear_noisy: np.ndarray,
-    fs_signal,
+    fs_signal: float,
     gridcoarseness: int = 1,
     sample_rate: int = 10000,
     n_frame: int = 256,

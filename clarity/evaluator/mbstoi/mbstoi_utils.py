@@ -1,30 +1,33 @@
 """Utilities for MBSTOI processing."""
+from __future__ import annotations
+
 import logging
 
 import numpy as np
+from numpy import ndarray
 from scipy.signal import find_peaks
 
 EPS = np.finfo("float").eps
 
 
 def equalisation_cancellation(
-    left_ear_clean_hat: np.ndarray,
-    right_ear_clean_hat: np.ndarray,
-    left_ear_noisy_hat: np.ndarray,
-    right_ear_noisy_hat: np.ndarray,
+    left_ear_clean_hat: ndarray,
+    right_ear_clean_hat: ndarray,
+    left_ear_noisy_hat: ndarray,
+    right_ear_noisy_hat: ndarray,
     n_third_octave_bands: int,
     n_frames: int,
-    frequency_band_edges_indices: np.ndarray,
-    centre_frequencies: np.ndarray,
-    taus: np.ndarray,
+    frequency_band_edges_indices: ndarray,
+    centre_frequencies: ndarray,
+    taus: ndarray,
     n_taus: int,
-    gammas: np.ndarray,
+    gammas: ndarray,
     n_gammas: int,
-    intermediate_intelligibility_measure_grid: np.ndarray,
-    p_ec_max: np.ndarray,
-    sigma_epsilon: np.ndarray,
-    sigma_delta: np.ndarray,
-):
+    intermediate_intelligibility_measure_grid: ndarray,
+    p_ec_max: ndarray,
+    sigma_epsilon: ndarray,
+    sigma_delta: ndarray,
+) -> tuple[ndarray, ndarray]:
     """Run the equalisation-cancellation (EC) stage of the MBSTOI metric.
 
     The EC loop evaluates one huge equation in every iteration (see referenced notes
@@ -63,6 +66,7 @@ def equalisation_cancellation(
             intermediate intelligibility measure
         p_ec_max (np.ndarray) : grid containing maximum values.
     """
+
     taus = np.expand_dims(taus, axis=0)
     sigma_delta = np.expand_dims(sigma_delta, axis=0)
     sigma_epsilon = np.expand_dims(sigma_epsilon, axis=0)
@@ -139,7 +143,7 @@ def equalisation_cancellation(
             # Andersen et al. 2018
 
             # Calculate Exy
-            firstpart = firstpartfunc(
+            firstpart = _firstpartfunc(
                 left_ear_clean,
                 left_ear_noisy,
                 right_ear_clean,
@@ -148,17 +152,17 @@ def equalisation_cancellation(
                 gammas,
                 epsexp,
             )
-            secondpart = secondpartfunc(
+            secondpart = _secondpartfunc(
                 left_ear_clean, left_ear_noisy, rhoy, rhox, tauexp, epsdelexp, gammas
             )
-            thirdpart = thirdpartfunc(
+            thirdpart = _thirdpartfunc(
                 right_ear_clean, right_ear_noisy, rhoy, rhox, tauexp, epsdelexp, gammas
             )
-            fourthpart = fourthpartfunc(rhox, rhoy, tauexp2, n_gammas, deltexp)
+            fourthpart = _fourthpartfunc(rhox, rhoy, tauexp2, n_gammas, deltexp)
             exy = np.real(firstpart - secondpart - thirdpart + fourthpart)
 
             # Calculate Exx
-            firstpart = firstpartfunc(
+            firstpart = _firstpartfunc(
                 left_ear_clean,
                 left_ear_clean,
                 right_ear_clean,
@@ -167,17 +171,17 @@ def equalisation_cancellation(
                 gammas,
                 epsexp,
             )
-            secondpart = secondpartfunc(
+            secondpart = _secondpartfunc(
                 left_ear_clean, left_ear_clean, rhox, rhox, tauexp, epsdelexp, gammas
             )
-            thirdpart = thirdpartfunc(
+            thirdpart = _thirdpartfunc(
                 right_ear_clean, right_ear_clean, rhox, rhox, tauexp, epsdelexp, gammas
             )
-            fourthpart = fourthpartfunc(rhox, rhox, tauexp2, n_gammas, deltexp)
+            fourthpart = _fourthpartfunc(rhox, rhox, tauexp2, n_gammas, deltexp)
             exx = np.real(firstpart - secondpart - thirdpart + fourthpart)
 
             # Calculate Eyy
-            firstpart = firstpartfunc(
+            firstpart = _firstpartfunc(
                 left_ear_noisy,
                 left_ear_noisy,
                 right_ear_noisy,
@@ -186,13 +190,13 @@ def equalisation_cancellation(
                 gammas,
                 epsexp,
             )
-            secondpart = secondpartfunc(
+            secondpart = _secondpartfunc(
                 left_ear_noisy, left_ear_noisy, rhoy, rhoy, tauexp, epsdelexp, gammas
             )
-            thirdpart = thirdpartfunc(
+            thirdpart = _thirdpartfunc(
                 right_ear_noisy, right_ear_noisy, rhoy, rhoy, tauexp, epsdelexp, gammas
             )
-            fourthpart = fourthpartfunc(rhoy, rhoy, tauexp2, n_gammas, deltexp)
+            fourthpart = _fourthpartfunc(rhoy, rhoy, tauexp2, n_gammas, deltexp)
             eyy = np.real(firstpart - secondpart - thirdpart + fourthpart)
 
             # Ensure that intermediate correlation will be sensible and compute it
@@ -217,16 +221,15 @@ def equalisation_cancellation(
 
 
 # pylint: disable=invalid-name,fixme
-def firstpartfunc(
-    L1: np.ndarray,
-    L2: np.ndarray,
-    R1: np.ndarray,
-    R2: np.ndarray,
+def _firstpartfunc(
+    L1: ndarray,
+    L2: ndarray,
+    R1: ndarray,
+    R2: ndarray,
     n_taus: int,
-    gammas: np.ndarray,
-    epsexp,
-):
-    # FixMe : Complete Docstring
+    gammas: ndarray,
+    epsexp: ndarray | float,
+) -> ndarray:
     """Need a description
 
     Args:
@@ -239,25 +242,28 @@ def firstpartfunc(
 
     Returns:
     """
-    result = (
+
+    return (
         np.ones((n_taus, 1))
         * (
-            (
-                10 ** (2 * gammas) * np.sum(L1 * L2)
-                + 10 ** (-2 * gammas) * np.sum(R1 * R2)
-            )
-            * epsexp
+            10.0 ** (2 * gammas) * np.sum(L1 * L2)
+            + 10.0 ** (-2 * gammas) * np.sum(R1 * R2)
         )
+        * epsexp
         + np.sum(L1 * R2)
         + np.sum(R1 * L2)
     )
-    return result
 
 
-def secondpartfunc(
-    L1: np.ndarray, L2: np.ndarray, rho1, rho2, tauexp, epsdelexp, gammas: np.ndarray
-):
-    # FixMe : Complete Docstring
+def _secondpartfunc(
+    L1: ndarray,
+    L2: ndarray,
+    rho1: ndarray,
+    rho2: ndarray,
+    tauexp: ndarray,
+    epsdelexp: ndarray,
+    gammas: ndarray,
+) -> ndarray:
     """Need a description
 
     Args:
@@ -271,21 +277,26 @@ def secondpartfunc(
 
     Returns:
     """
-    result = (
-        2
-        * (
-            np.transpose(
-                np.dot(L1, np.real(np.transpose(rho1) * tauexp))
-                + np.dot(L2, np.real(np.transpose(rho2) * tauexp))
-            )
-            * 10**gammas
+    return (
+        2.0
+        * np.transpose(
+            np.dot(L1, np.real(np.transpose(rho1) * tauexp))
+            + np.dot(L2, np.real(np.transpose(rho2) * tauexp))
         )
+        * 10.0**gammas
         * epsdelexp
     )
-    return result
 
 
-def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas: np.ndarray):
+def _thirdpartfunc(
+    R1: ndarray,
+    R2: ndarray,
+    rho1: ndarray,
+    rho2: ndarray,
+    tauexp: ndarray,
+    epsdelexp: ndarray,
+    gammas: ndarray,
+) -> ndarray:
     # FixMe : Complete docstring
     """Need a description
 
@@ -300,19 +311,24 @@ def thirdpartfunc(R1, R2, rho1, rho2, tauexp, epsdelexp, gammas: np.ndarray):
 
     Returns:
     """
-    result = (
-        2
+    return (
+        2.0
         * np.transpose(
             np.dot(R1, np.real(np.dot(np.transpose(rho1), tauexp)))
             + np.dot(R2, np.real(np.transpose(rho2) * tauexp))
         )
-        * 10**-gammas
+        * 10.0**-gammas
         * epsdelexp
     )
-    return result
 
 
-def fourthpartfunc(rho1, rho2, tauexp2, n_gammas, deltexp):
+def _fourthpartfunc(
+    rho1: ndarray,
+    rho2: ndarray,
+    tauexp2: ndarray,
+    n_gammas: int,
+    deltexp: ndarray,
+) -> ndarray:
     # FixMe : Complete docstring
     """Need a description
 
@@ -325,8 +341,8 @@ def fourthpartfunc(rho1, rho2, tauexp2, n_gammas, deltexp):
 
     Returns
     """
-    result = (
-        2
+    return (
+        2.0
         * np.transpose(
             np.real(np.dot(rho1, np.conj(np.transpose(rho2))))
             + deltexp * np.real(np.dot(rho1, np.transpose(rho2) * tauexp2))
@@ -334,13 +350,15 @@ def fourthpartfunc(rho1, rho2, tauexp2, n_gammas, deltexp):
         * np.ones((1, n_gammas))
     )
 
-    return result
-
 
 # pylint: enable=invalid-name,fixme
 
 
-def stft(signal: np.ndarray, win_size: int, fft_size: int) -> np.ndarray:
+def stft(
+    signal: ndarray,
+    win_size: int,
+    fft_size: int,
+) -> ndarray:
     """Short-time Fourier transform based on MBSTOI Matlab code.
 
     Args:
@@ -368,14 +386,14 @@ def stft(signal: np.ndarray, win_size: int, fft_size: int) -> np.ndarray:
 
 
 def remove_silent_frames(
-    left_ear_clean: np.ndarray,
-    right_ear_clean: np.ndarray,
-    left_ear_noisy: np.ndarray,
-    right_ear_noisy: np.ndarray,
-    dynamic_range: np.ndarray = 40,
+    left_ear_clean: ndarray,
+    right_ear_clean: ndarray,
+    left_ear_noisy: ndarray,
+    right_ear_noisy: ndarray,
+    dynamic_range: int = 40,
     frame_length: int = 256,
-    hop: float = 128,
-):
+    hop: int | float = 128,
+) -> tuple[ndarray, ndarray, ndarray, ndarray]:
     """Remove silent frames of x and y based on x
 
     A frame is excluded if its energy is lower than max(energy) - dyn_range
@@ -398,8 +416,8 @@ def remove_silent_frames(
         yl_sil (np.ndarray): left_ear_noisy without the silent frames in xl_sil.
         yr_sil (np.ndarray): right_ear_noisy without the silent frames in rl_sil.
     """
-    dyn_range = int(dynamic_range)
-    hop = int(hop)
+    dyn_range = int(dynamic_range)  # TODO: remove this useless line
+    hop = int(hop)  # TODO: enforce hop to be int as parameter, callers have to cast
 
     # Compute Mask
     hanning_window = np.hanning(frame_length + 2)[1:-1]
@@ -462,7 +480,12 @@ def remove_silent_frames(
     return xl_sil, xr_sil, yl_sil, yr_sil
 
 
-def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
+def thirdoct(
+    frequency_sampling: int,
+    nfft: int,
+    num_bands: int,
+    min_freq: int,
+) -> tuple[ndarray, ndarray, ndarray, ndarray, ndarray]:
     """Returns the 1/3 octave band matrix and its center frequencies
     based on mpariente/pystoi.
 
@@ -513,7 +536,10 @@ def thirdoct(frequency_sampling: int, nfft: int, num_bands: int, min_freq: int):
     )
 
 
-def find_delay_impulse(ddf: np.ndarray, initial_value: int = 22050):
+def find_delay_impulse(
+    ddf: ndarray,
+    initial_value: int = 22050,
+) -> ndarray:
     """Find binaural delay in signal ddf.
 
     Finds delay given initial location of unit impulse, initial_value.
