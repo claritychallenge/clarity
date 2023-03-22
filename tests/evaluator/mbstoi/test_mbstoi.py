@@ -17,8 +17,8 @@ def test_mbstoi() -> None:
     left_clean = 100 * np.random.random(size=sig_len)
     right_clean = left_clean.copy()
     right_clean[4:] = right_clean[:-4]
-    left_noisy = left_clean + 1 * np.random.random(size=sig_len)
-    right_noisy = right_clean + 1 * np.random.random(size=sig_len)
+    left_noisy = left_clean + 30 * np.random.random(size=sig_len)
+    right_noisy = right_clean + 30 * np.random.random(size=sig_len)
 
     mbstoi_val = mbstoi(
         left_ear_clean=left_clean,
@@ -27,8 +27,10 @@ def test_mbstoi() -> None:
         right_ear_noisy=right_noisy,
         fs_signal=sample_freq,  # signal sample rate
         sample_rate=9000,  # operating sample rate
-        fft_size_in_samples=32,
-        n_third_octave_bands=3,
+        fft_size_in_samples=64,
+        n_third_octave_bands=5,
+        centre_freq_first_third_octave_hz=500,
+        dyn_range=60,
     )
 
-    assert mbstoi_val == pytest.approx(-0.3333821403316491)
+    assert mbstoi_val == pytest.approx(0.9061193314307591)
