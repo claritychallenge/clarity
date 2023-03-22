@@ -4,30 +4,29 @@ from __future__ import annotations
 import logging
 
 import numpy as np
-from numpy import ndarray
 from scipy.signal import find_peaks
 
 EPS = np.finfo("float").eps
 
 
 def equalisation_cancellation(
-    left_ear_clean_hat: ndarray,
-    right_ear_clean_hat: ndarray,
-    left_ear_noisy_hat: ndarray,
-    right_ear_noisy_hat: ndarray,
+    left_ear_clean_hat: np.ndarray,
+    right_ear_clean_hat: np.ndarray,
+    left_ear_noisy_hat: np.ndarray,
+    right_ear_noisy_hat: np.ndarray,
     n_third_octave_bands: int,
     n_frames: int,
-    frequency_band_edges_indices: ndarray,
-    centre_frequencies: ndarray,
-    taus: ndarray,
+    frequency_band_edges_indices: np.ndarray,
+    centre_frequencies: np.ndarray,
+    taus: np.ndarray,
     n_taus: int,
-    gammas: ndarray,
+    gammas: np.ndarray,
     n_gammas: int,
-    intermediate_intelligibility_measure_grid: ndarray,
-    p_ec_max: ndarray,
-    sigma_epsilon: ndarray,
-    sigma_delta: ndarray,
-) -> tuple[ndarray, ndarray]:
+    intermediate_intelligibility_measure_grid: np.ndarray,
+    p_ec_max: np.ndarray,
+    sigma_epsilon: np.ndarray,
+    sigma_delta: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
     """Run the equalisation-cancellation (EC) stage of the MBSTOI metric.
 
     The EC loop evaluates one huge equation in every iteration (see referenced notes
@@ -222,14 +221,14 @@ def equalisation_cancellation(
 
 # pylint: disable=invalid-name,fixme
 def _firstpartfunc(
-    L1: ndarray,
-    L2: ndarray,
-    R1: ndarray,
-    R2: ndarray,
+    L1: np.ndarray,
+    L2: np.ndarray,
+    R1: np.ndarray,
+    R2: np.ndarray,
     n_taus: int,
-    gammas: ndarray,
-    epsexp: ndarray | float,
-) -> ndarray:
+    gammas: np.ndarray,
+    epsexp: np.ndarray | float,
+) -> np.ndarray:
     """Need a description
 
     Args:
@@ -256,14 +255,14 @@ def _firstpartfunc(
 
 
 def _secondpartfunc(
-    L1: ndarray,
-    L2: ndarray,
-    rho1: ndarray,
-    rho2: ndarray,
-    tauexp: ndarray,
-    epsdelexp: ndarray,
-    gammas: ndarray,
-) -> ndarray:
+    L1: np.ndarray,
+    L2: np.ndarray,
+    rho1: np.ndarray,
+    rho2: np.ndarray,
+    tauexp: np.ndarray,
+    epsdelexp: np.ndarray,
+    gammas: np.ndarray,
+) -> np.ndarray:
     """Need a description
 
     Args:
@@ -289,14 +288,14 @@ def _secondpartfunc(
 
 
 def _thirdpartfunc(
-    R1: ndarray,
-    R2: ndarray,
-    rho1: ndarray,
-    rho2: ndarray,
-    tauexp: ndarray,
-    epsdelexp: ndarray,
-    gammas: ndarray,
-) -> ndarray:
+    R1: np.ndarray,
+    R2: np.ndarray,
+    rho1: np.ndarray,
+    rho2: np.ndarray,
+    tauexp: np.ndarray,
+    epsdelexp: np.ndarray,
+    gammas: np.ndarray,
+) -> np.ndarray:
     # FixMe : Complete docstring
     """Need a description
 
@@ -323,12 +322,12 @@ def _thirdpartfunc(
 
 
 def _fourthpartfunc(
-    rho1: ndarray,
-    rho2: ndarray,
-    tauexp2: ndarray,
+    rho1: np.ndarray,
+    rho2: np.ndarray,
+    tauexp2: np.ndarray,
     n_gammas: int,
-    deltexp: ndarray,
-) -> ndarray:
+    deltexp: np.ndarray,
+) -> np.ndarray:
     # FixMe : Complete docstring
     """Need a description
 
@@ -355,10 +354,10 @@ def _fourthpartfunc(
 
 
 def stft(
-    signal: ndarray,
+    signal: np.ndarray,
     win_size: int,
     fft_size: int,
-) -> ndarray:
+) -> np.ndarray:
     """Short-time Fourier transform based on MBSTOI Matlab code.
 
     Args:
@@ -386,14 +385,14 @@ def stft(
 
 
 def remove_silent_frames(
-    left_ear_clean: ndarray,
-    right_ear_clean: ndarray,
-    left_ear_noisy: ndarray,
-    right_ear_noisy: ndarray,
+    left_ear_clean: np.ndarray,
+    right_ear_clean: np.ndarray,
+    left_ear_noisy: np.ndarray,
+    right_ear_noisy: np.ndarray,
     dynamic_range: int = 40,
     frame_length: int = 256,
     hop: int | float = 128,
-) -> tuple[ndarray, ndarray, ndarray, ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Remove silent frames of x and y based on x
 
     A frame is excluded if its energy is lower than max(energy) - dyn_range
@@ -485,7 +484,7 @@ def thirdoct(
     nfft: int,
     num_bands: int,
     min_freq: int,
-) -> tuple[ndarray, ndarray, ndarray, ndarray, ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Returns the 1/3 octave band matrix and its center frequencies
     based on mpariente/pystoi.
 
@@ -537,9 +536,9 @@ def thirdoct(
 
 
 def find_delay_impulse(
-    ddf: ndarray,
+    ddf: np.ndarray,
     initial_value: int = 22050,
-) -> ndarray:
+) -> np.ndarray:
     """Find binaural delay in signal ddf.
 
     Finds delay given initial location of unit impulse, initial_value.
