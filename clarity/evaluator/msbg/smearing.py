@@ -1,4 +1,6 @@
 """Temporal smearing component of MSBG model."""
+from __future__ import annotations
+
 import math
 
 import numpy as np
@@ -8,7 +10,12 @@ FRAME_SIZE = 256
 SHIFT = 64
 
 
-def audfilt(rl, ru, sampfreq, asize=256):
+def audfilt(
+    rl: int | float,
+    ru: int | float,
+    sampfreq: int | float,
+    asize: int = 256,
+) -> np.ndarray:
     """Calculate an auditory filter array.
 
     Args:
@@ -45,7 +52,7 @@ def audfilt(rl, ru, sampfreq, asize=256):
     return aud_filter
 
 
-def make_smear_mat3(rl, ru, fs):
+def make_smear_mat3(rl: float, ru: float, fs: int | float) -> np.darray:
     """Make the smearing filter matrix.
 
     Args:
@@ -83,7 +90,7 @@ def make_smear_mat3(rl, ru, fs):
     return f_smear
 
 
-def smear3(f_smear, inbuffer):
+def smear3(f_smear: np.ndarray, inbuffer: np.ndarray) -> np.ndarray:
     """Direct translation of smear3.m from MSBG hearing loss model.
 
     Args:
@@ -155,12 +162,7 @@ def smear3(f_smear, inbuffer):
 class Smearer:
     """Class to hold the re-usable smearing filter."""
 
-    rl: np.ndarray
-    ru: np.ndarray
-    fs: np.ndarray
-    f_smear: np.ndarray
-
-    def __init__(self, rl, ru, fs):
+    def __init__(self, rl: float, ru: float, fs: int | float) -> None:
         self.rl = rl
         self.ru = ru
         self.fs = fs
