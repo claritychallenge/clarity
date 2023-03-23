@@ -68,6 +68,8 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         hearing_loss,
         itype,
         level1,
+        # shift=0.02 # Original HASPI code had a bug such that this shift was not used
+        shift=None,
     )
 
     # Envelope modulation features

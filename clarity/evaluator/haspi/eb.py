@@ -29,7 +29,7 @@ def ear_model(
     level1,
     nchan=32,
     m_delay=1,
-    shift=0.02,
+    shift=None,
 ):
     """
     Function that implements a cochlear model that includes the middle ear,
@@ -357,9 +357,6 @@ def center_frequency(
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    # In the Matlab code, the loop below never evaluates
-    # (but the current code was trained with this bug)
-    shift = None  # This is to keep consistency with MATLAB code
     if shift is not None:
         k = 1
         A = 165.4  # pylint: disable=invalid-name
