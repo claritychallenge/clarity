@@ -1,8 +1,9 @@
 """Make intelligibility predictions from HASPI scores."""
+from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 import hydra
 import numpy as np
@@ -21,7 +22,7 @@ class LogisticModel:
     Fits a logistic mapping from input values x to output values y.
     """
 
-    params: Optional[np.ndarray] = None  # The model params
+    params: np.ndarray | None = None  # The model params
 
     def _logistic_mapping(self, x, x_0, k):
         """Logistic function

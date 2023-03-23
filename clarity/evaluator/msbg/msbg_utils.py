@@ -1,9 +1,10 @@
 """Support for the MSBG hearing loss model."""
+from __future__ import annotations
+
 import json
 import logging
 import math
-import os
-from typing import Dict, Optional, Tuple, Union
+from pathlib import Path
 
 import numpy as np
 import scipy
@@ -95,7 +96,7 @@ EMPHASIS = np.array(
 ) * (7.5 / 9)
 
 
-def read_gtf_file(gtf_file: str) -> Dict:
+def read_gtf_file(gtf_file: str) -> dict:
     """Read a gammatone filterbank file.
 
     List data is converted into numpy arrays.
@@ -103,9 +104,8 @@ def read_gtf_file(gtf_file: str) -> Dict:
     """
 
     # Fix filename if necessary
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    gtf_file = os.path.join(dirname, gtf_file)
-    with open(gtf_file, "r", encoding="utf-8") as fp:
+    gtf_file_path = Path(__file__).parent / gtf_file
+    with gtf_file_path.open("r", encoding="utf-8") as fp:
         data = json.load(fp)
     for key in data:
         if isinstance(data[key], list):
@@ -117,8 +117,8 @@ def firwin2(
     n_taps: int,
     frequencies: np.ndarray,
     filter_gains: np.ndarray,
-    window: Union[None, str, tuple] = None,
-    antisymmetric: Optional[bool] = None,
+    window: None | str | tuple = None,
+    antisymmetric: bool | None = None,
 ):  # pylint: disable=W0613
     """FIR filter design using the window method.
 
@@ -161,8 +161,8 @@ def fir2(
     filter_length: int,
     frequencies: np.ndarray,
     filter_gains: np.ndarray,
-    n_interpolate: Optional[int] = None,
-) -> Tuple[np.ndarray, int]:
+    n_interpolate: int | None = None,
+) -> tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
     Translation of MATLAB fir2.
@@ -215,7 +215,7 @@ def fir2(
             ne = int(np.fix(frequencies[i + 1] * n_interpolate)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc: Union[float, np.ndarray] = 0.0 if nb == ne else (j - nb) / (ne - nb)
+        inc: float | np.ndarray = 0.0 if nb == ne else (j - nb) / (ne - nb)
         H[nb : (ne + 1)] = inc * filter_gains[i + 1] + (1 - inc) * filter_gains[i]
         nb = ne + 1
 
@@ -262,8 +262,8 @@ def gen_tone(
 def gen_eh2008_speech_noise(
     duration: float,
     sample_frequency: float = 44100.0,
-    level: Optional[float] = None,
-    supplied_b: Optional[np.ndarray] = None,
+    level: float | None = None,
+    supplied_b: np.ndarray | None = None,
 ) -> np.ndarray:
     """Generate speech shaped noise.
 
@@ -341,8 +341,8 @@ def generate_key_percent(
     signal: np.ndarray,
     threshold_db: float,
     window_length: int,
-    percent_to_track: Optional[float] = None,
-) -> Tuple[np.ndarray, float]:
+    percent_to_track: float | None = None,
+) -> tuple[np.ndarray, float]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
@@ -449,7 +449,7 @@ def measure_rms(
     signal: np.ndarray,
     sample_frequency: float,
     db_rel_rms: float,
-    percent_to_track: Optional[float] = None,
+    percent_to_track: float | None = None,
 ) -> tuple:
     """Measure Root Mean Square.
 
@@ -508,7 +508,7 @@ def pad(signal, length):
 
 
 def read_signal(
-    filename: str,
+    filename: str | Path,
     offset: int = 0,
     nsamples: int = -1,
     nchannels: int = 0,
@@ -517,7 +517,7 @@ def read_signal(
     """Read a wavefile and return as numpy array of floats.
 
     Args:
-        filename (string): Name of file to read
+        filename (str|Path): Name of file to read
         offset (int, optional): Offset in samples or seconds (from start). Default is 0.
         nsamples (int): Number of samples.
         nchannels (int): expected number of channel (default: 0 = any number OK)
@@ -551,7 +551,7 @@ def read_signal(
 
 
 def write_signal(
-    filename: str,
+    filename: str | Path,
     signal: np.ndarray,
     sample_frequency: float,
     floating_point: bool = True,
@@ -559,7 +559,7 @@ def write_signal(
     """Write a signal as fixed or floating point wav file.
 
     Args:
-        filename (str): name of file in to write to.
+        filename (str|Path): name of file in to write to.
         signal (ndarray): signal to write.
         sample_frequency (float): sampling frequency.
         floating_point (bool): write as floating point else an ints (default: True).

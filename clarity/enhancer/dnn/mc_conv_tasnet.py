@@ -1,8 +1,7 @@
-"""
-Adopted from https://github.com/kaituoxu/Conv-TasNet
-"""
+"""Adopted from https://github.com/kaituoxu/Conv-TasNet"""
+from __future__ import annotations
+
 import math
-from typing import Optional
 
 import torch
 import torch.nn.functional as F
@@ -197,7 +196,7 @@ class SpatialEncoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, N, L, device: Optional[str] = None):
+    def __init__(self, N, L, device: str | None = None):
         super().__init__()
         # device for overlap_and add
         if device is None:

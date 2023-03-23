@@ -36,7 +36,7 @@ def test_results_file(tmp_path):
             "right_vocals": 0.95,
         },
     )
-    with open(results_file, "r", encoding="utf-8") as file:
+    with open(results_file, encoding="utf-8") as file:
         contents = file.read()
         assert (
             "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"

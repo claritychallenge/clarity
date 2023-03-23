@@ -1,23 +1,21 @@
 """Utilities for data generation."""
+from __future__ import annotations
+
 # pylint: disable=wrong-import-position
-import os
 import sys
+from pathlib import Path
 
 if sys.version_info >= (3, 8):
     from typing import Literal
 else:
     from typing_extensions import Literal
 
-from typing import Union
-
 import numpy as np
 import scipy
 import scipy.io
 
 SPEECH_FILTER = scipy.io.loadmat(
-    os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "params", "speech_weight.mat"
-    ),
+    Path(__file__).parent / "params/speech_weight.mat",
     squeeze_me=True,
 )
 SPEECH_FILTER = np.array(SPEECH_FILTER["filt"])
@@ -73,7 +71,7 @@ def speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> float:
     return sw_snr
 
 
-def sum_signals(signals: list) -> Union[np.ndarray, Literal[0]]:
+def sum_signals(signals: list) -> np.ndarray | Literal[0]:
     """Return sum of a list of signals.
 
     Signals are stored as a list of ndarrays whose size can vary in the first

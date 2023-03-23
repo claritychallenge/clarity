@@ -1,6 +1,7 @@
 """Tools to support higher order ambisonic processing."""
+from __future__ import annotations
+
 import logging
-from typing import List
 
 import numpy as np
 from numba import njit
@@ -457,7 +458,7 @@ def compute_rms(input_signal: np.ndarray, axis: int = 0) -> float:
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
-def equalise_rms_levels(inputs: List[np.ndarray]) -> List[np.ndarray]:
+def equalise_rms_levels(inputs: list[np.ndarray]) -> list[np.ndarray]:
     """Equalise RMS levels.
 
     Args:

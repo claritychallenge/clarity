@@ -1,9 +1,9 @@
-from typing import Tuple
+from __future__ import annotations
 
 import numpy as np
 
 
-def normalize_signal(signal: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def normalize_signal(signal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Standardize the signal to have zero mean and unit variance.
 
     Args:

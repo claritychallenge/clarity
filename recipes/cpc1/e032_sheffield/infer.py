@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+from pathlib import Path
 
 import hydra
 import speechbrain as sb
@@ -84,7 +84,7 @@ class ASR(sb.core.Brain):
 
 def init_asr(asr_config):
     hparams_file, run_opts, overrides = sb.parse_arguments([asr_config])
-    with open(hparams_file, "r", encoding="utf-8") as fp:
+    with open(hparams_file, encoding="utf-8") as fp:
         hparams = load_hyperpyyaml(fp, overrides)
 
     tokenizer = hparams["tokenizer"]
@@ -227,14 +227,16 @@ def run(cfg: DictConfig) -> None:
         track = ""
     else:
         logger.error("cpc1_track has to be closed or open")
+        raise ValueError("cpc1_track has to be closed or open")
 
     asr_model, tokenizer, bos_index = init_asr(cfg.asr_config)
 
+    exp_path = Path(cfg.path.exp_folder)
     left_dev_csv = sb.dataio.dataio.load_data_csv(
-        os.path.join(cfg.path.exp_folder, "cpc1_asr_data" + track, "left_dev_msbg.csv")
+        exp_path / f"cpc1_asr_data{track}/left_dev_msbg.csv"
     )  # using left ear csvfile for data loading
     left_test_csv = sb.dataio.dataio.load_data_csv(
-        os.path.join(cfg.path.exp_folder, "cpc1_asr_data" + track, "left_test_msbg.csv")
+        exp_path / f"cpc1_asr_data{track}/left_test_msbg.csv"
     )  # using left ear csvfile for data loading
 
     # dev set similarity
@@ -249,17 +251,9 @@ def run(cfg: DictConfig) -> None:
         dev_enc_similarity[wav_id] = similarity[0].tolist()
         dev_dec_similarity[wav_id] = similarity[1].tolist()
 
-        with open(
-            os.path.join(cfg.path.exp_folder, "dev_enc_similarity.json"),
-            "w",
-            encoding="utf-8",
-        ) as fp:
+        with (exp_path / "dev_enc_similarity.json").open("w", encoding="utf-8") as fp:
             json.dump(dev_enc_similarity, fp)
-        with open(
-            os.path.join(cfg.path.exp_folder, "dev_dec_similarity.json"),
-            "w",
-            encoding="utf-8",
-        ) as fp:
+        with (exp_path / "dev_dec_similarity.json").open("w", encoding="utf-8") as fp:
             json.dump(dev_dec_similarity, fp)
 
     # test set similarity
@@ -274,18 +268,10 @@ def run(cfg: DictConfig) -> None:
         test_enc_similarity[wav_id] = similarity[0].tolist()
         test_dec_similarity[wav_id] = similarity[1].tolist()
 
-        with open(
-            os.path.join(cfg.path.exp_folder, "test_enc_similarity.json"),
-            "w",
-            encoding="utf-8",
-        ) as fp:
+        with (exp_path / "test_enc_similarity.json").open("w", encoding="utf-8") as fp:
             json.dump(test_enc_similarity, fp)
 
-        with open(
-            os.path.join(cfg.path.exp_folder, "test_dec_similarity.json"),
-            "w",
-            encoding="utf-8",
-        ) as fp:
+        with (exp_path / "test_dec_similarity.json").open("w", encoding="utf-8") as fp:
             json.dump(test_dec_similarity, fp)
 
 

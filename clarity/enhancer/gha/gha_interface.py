@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import logging
 import os
 import pathlib
 import subprocess
 import tempfile
+from pathlib import Path
 
 import numpy as np
 import soundfile
@@ -114,10 +117,8 @@ class GHAHearingAid:
         )
         formatted_sGt = format_gaintable(gaintable, noisegate_corr=True)
 
-        cfg_template = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "cfg_files",
-            f"{self.cfg_file}_template.cfg",
+        cfg_template = (
+            Path(__file__).parent / f"cfg_files/{self.cfg_file}_template.cfg",
         )
 
         # Merge CH1 and CH3 files. This is the baseline configuration.
@@ -178,7 +179,12 @@ class GHAHearingAid:
         logging.info("OpenMHA processing complete")
 
     def read_signal(
-        self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
+        self,
+        filename: str | Path,
+        offset: int = 0,
+        nsamples: int = -1,
+        nchannels: int = 0,
+        offset_is_samples: bool = False,
     ):
         """Read a wavefile and return as numpy array of floats.
 
@@ -212,7 +218,9 @@ class GHAHearingAid:
 
         return x
 
-    def write_signal(self, filename, x, floating_point=True):
+    def write_signal(
+        self, filename: str | Path, x, floating_point: bool = True
+    ) -> None:
         """Write a signal as fixed or floating point wav file."""
 
         if floating_point is False:

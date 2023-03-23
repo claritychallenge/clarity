@@ -1,5 +1,5 @@
 """Tests for the data.utils module."""
-from typing import List
+from __future__ import annotations
 
 import numpy as np
 import pytest
@@ -111,7 +111,7 @@ def test_speechweighted_snr_unequal_arrays_value_error() -> None:
         ),
     ],
 )
-def test_sum_signals(signals: List[int], expected: np.ndarray) -> None:
+def test_sum_signals(signals: list[int], expected: np.ndarray) -> None:
     """Test of sum_signals()."""
     summed_signals = sum_signals(signals)
     np.testing.assert_array_equal(summed_signals, expected)

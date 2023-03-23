@@ -14,7 +14,6 @@ def render_scenes(cfg):
         logger.info(f"Beginning scene generation for {dataset} set...")
         with open(
             cfg.scene_renderer[dataset].metadata.scene_definitions,
-            "r",
             encoding="utf-8",
         ) as fp:
             scenes = json.load(fp)

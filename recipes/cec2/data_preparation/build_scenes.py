@@ -1,5 +1,5 @@
 import logging
-import os
+from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig
@@ -10,27 +10,27 @@ logger = logging.getLogger(__name__)
 
 
 def build_rooms_from_rpf(cfg):
-    rb = RoomBuilder()
+    room_builder = RoomBuilder()
     for dataset in cfg.room_datasets:
-        room_file = os.path.join(cfg.path.metadata_dir, f"rooms.{dataset}.json")
-        if not os.path.exists(room_file):
-            rb.build_from_rpf(**cfg.room_datasets[dataset])
-            rb.save_rooms(room_file)
+        room_file = Path(cfg.path.metadata_dir) / f"rooms.{dataset}.json"
+        if not room_file.exists():
+            room_builder.build_from_rpf(**cfg.room_datasets[dataset])
+            room_builder.save_rooms(str(room_file))
         else:
             logger.info(f"rooms.{dataset}.json exists, skip")
 
 
 def instantiate_scenes(cfg):
-    rb = RoomBuilder()
+    room_builder = RoomBuilder()
     set_random_seed(cfg.random_seed)
     for dataset in cfg.scene_datasets:
-        scene_file = os.path.join(cfg.path.metadata_dir, f"scenes.{dataset}.json")
-        if not os.path.exists(scene_file):
+        scene_file = Path(cfg.path.metadata_dir) / f"scenes.{dataset}.json"
+        if not scene_file.exists():
             logger.info(f"instantiate scenes for {dataset} set")
-            room_file = os.path.join(cfg.path.metadata_dir, f"rooms.{dataset}.json")
-            rb.load(room_file)
-            sb = SceneBuilder(
-                rb=rb,
+            room_file = Path(cfg.path.metadata_dir) / f"rooms.{dataset}.json"
+            room_builder.load(str(room_file))
+            scene_builder = SceneBuilder(
+                rb=room_builder,
                 scene_datasets=cfg.scene_datasets[dataset],
                 target=cfg.target,
                 interferer=cfg.interferer,
@@ -38,8 +38,8 @@ def instantiate_scenes(cfg):
                 listener=cfg.listener,
                 shuffle_rooms=cfg.shuffle_rooms,
             )
-            sb.instantiate_scenes(dataset=dataset)
-            sb.save_scenes(scene_file)
+            scene_builder.instantiate_scenes(dataset=dataset)
+            scene_builder.save_scenes(str(scene_file))
         else:
             logger.info(f"scenes.{dataset}.json exists, skip")
 

@@ -6,7 +6,6 @@ https://github.com/speechbrain/speechbrain/tree/1eddf66eea01866d3cf9dfe61b00bb48
 """
 
 import logging
-import os
 import sys
 from pathlib import Path
 
@@ -330,7 +329,7 @@ def dataio_prepare(hparams):
 def main():
     # CLI:
     hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:])
-    with open(hparams_file, "r", encoding="utf-8") as fp:
+    with open(hparams_file, encoding="utf-8") as fp:
         hparams = load_hyperpyyaml(fp, overrides)
 
     # If distributed_launch=True then
@@ -376,8 +375,8 @@ def main():
     # Testing
     for dataset_key, test_dataset in test_datasets.items():
         # dataset_keys are test_clean, test_other etc
-        asr_brain.hparams.wer_file = os.path.join(
-            hparams["output_folder"], f"wer_{dataset_key}.txt"
+        asr_brain.hparams.wer_file = (
+            Path(hparams["output_folder"]) / f"wer_{dataset_key}.txt"
         )
         asr_brain.evaluate(
             test_dataset,

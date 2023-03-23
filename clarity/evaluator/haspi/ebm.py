@@ -31,12 +31,11 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
         Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
     # Check the filter design parameters
-    assert (
-        freq_sub_sample <= freq_samp
-    ), "Error in ebm.EnvFilt: Subsampling rate too high."
-    assert (
-        filter_cutoff <= 0.5 * freq_sub_sample
-    ), "Error in ebm.EnvFilt: LP cutoff frequency too high."
+    if freq_sub_sample > freq_samp:
+        raise ValueError("ubsampling rate too high.")
+
+    if filter_cutoff > 0.5 * freq_sub_sample:
+        raise ValueError("LP cutoff frequency too high.")
 
     # Check the data matrix orientation
     # Require each frequency band to be a separate column
@@ -96,9 +95,10 @@ def cepstral_correlation_coef(
         nbasis: number of cepstral basis functions to use
 
     Returns:
-        tuple: reference_cep cepstral coefficient matrix for the ref signal
-        (nsamp,nbasis) processed_cep cepstral coefficient matrix for the output signal
-        (nsamp,nbasis) each column is a separate basis function, from low to high
+        tuple: refernce_cep cepstral coefficient matrix for the ref signal
+            (nsamp,nbasis) processed_cep cepstral coefficient matrix for the output
+            signal (nsamp,nbasis) each column is a separate basis function, from low to
+            high
 
     Updates:
         James M. Kates, 23 April 2015.
@@ -128,7 +128,8 @@ def cepstral_correlation_coef(
     nsamp = len(index)  # Number of segments above threshold
 
     # Exit if not enough segments above zero
-    assert nsamp > 1, "Function ebm_CepCoef: Signal below threshold"
+    if nsamp <= 1:
+        raise ValueError("Signal below threshold")
 
     # Remove the silent samples
     reference_db = reference_db[index, :]

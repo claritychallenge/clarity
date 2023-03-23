@@ -1,7 +1,7 @@
 """Scene rendering for CEC1 challenge."""
 import logging
 import math
-import os
+from pathlib import Path
 
 import numpy as np
 import soundfile
@@ -337,7 +337,5 @@ def check_scene_exists(scene: dict, output_path: str, num_channels: int) -> bool
             ]
         )
 
-    scene_exists = True
-    for filename in files_to_check:
-        scene_exists = scene_exists and os.path.exists(filename)
-    return scene_exists
+    # Return True if all files exist, False otherwise
+    return all(Path(filename).exists() for filename in files_to_check)

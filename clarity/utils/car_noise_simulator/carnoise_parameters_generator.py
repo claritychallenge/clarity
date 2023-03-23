@@ -3,7 +3,7 @@ Class to generate random parameters for the Car noise signal generation
 
 These are 2 separated class to keep the logic separated
 """
-from typing import Dict, Optional, Tuple
+from __future__ import annotations
 
 import numpy as np
 
@@ -55,7 +55,7 @@ class CarNoiseParametersGenerator:
         secondary_filter_cutoff: float = 0.8,
         secondary_filter_constant_hz: float = 200,
         random_flag: bool = True,
-        random_seed: Optional[int] = None,
+        random_seed: int | None = None,
     ) -> None:
         """
         Constructor takes a boolean flag to indicate whether
@@ -114,7 +114,7 @@ class CarNoiseParametersGenerator:
             np.arange(0.9, 1.1, 0.001) if self.random_flag else [1]
         )
 
-    def gen_parameters(self, speed_kph: float) -> Dict:
+    def gen_parameters(self, speed_kph: float) -> dict:
         """
         Generate a dictionary of noise parameters for a given speed.
 
@@ -175,7 +175,7 @@ class CarNoiseParametersGenerator:
         rpm = self.RPM_LOOKUP[gear] * speed_kph * 60
         return rpm
 
-    def _generate_primary_filter(self, speed_kph: float) -> Dict:
+    def _generate_primary_filter(self, speed_kph: float) -> dict:
         return {
             "order": 1,
             "btype": "lowpass",
@@ -186,7 +186,7 @@ class CarNoiseParametersGenerator:
             * np.random.choice(self.randomisationrange_freqmultiplier),
         }
 
-    def _generate_secondary_filter(self, speed_kph: float) -> Dict:
+    def _generate_secondary_filter(self, speed_kph: float) -> dict:
         return {
             "order": 2,
             "btype": "lowpass",
@@ -197,7 +197,7 @@ class CarNoiseParametersGenerator:
             * np.random.choice(self.randomisationrange_freqmultiplier),
         }
 
-    def _generate_bump_filter(self) -> Dict:
+    def _generate_bump_filter(self) -> dict:
         bumpfilter_order = 1 if not self.random_flag else np.random.choice([1, 2])
         bumpfilter_f1_hz = (
             30 if not self.random_flag else np.random.randint(20, 101, size=1)[0]
@@ -214,7 +214,7 @@ class CarNoiseParametersGenerator:
         }
         return filter_dict
 
-    def _generate_dip_filter(self) -> Tuple[Dict, Dict]:
+    def _generate_dip_filter(self) -> tuple[dict, dict]:
         dipfilter_order = 2 if not self.random_flag else np.random.choice([1, 2])
         dipfilter_f1_hz = (
             200 if not self.random_flag else np.random.choice(range(30, 201, 10))

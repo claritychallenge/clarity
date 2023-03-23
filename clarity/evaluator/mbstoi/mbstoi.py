@@ -27,7 +27,7 @@ def mbstoi(
     right_ear_clean: np.ndarray,
     left_ear_noisy: np.ndarray,
     right_ear_noisy: np.ndarray,
-    fs_signal,
+    fs_signal: float,
     gridcoarseness: int = 1,
     sample_rate: int = 10000,
     n_frame: int = 256,
@@ -157,10 +157,10 @@ def mbstoi(
         fft_size_in_samples,
         n_third_octave_bands,
         centre_freq_first_third_octave_hz,
-    )  # (fs, nfft, num_bands, min_freq)
-    centre_frequencies = (
-        2 * math.pi * centre_frequencies
-    )  # This is now the angular frequency in radians per sec
+    )
+
+    # This is now the angular frequency in radians per sec
+    centre_frequencies = 2 * math.pi * centre_frequencies
 
     # Apply short time DFT to signals and transpose
     left_ear_clean_hat = stft(left_ear_clean, n_frame, fft_size_in_samples).transpose()
@@ -292,6 +292,7 @@ def mbstoi(
             right_ear_noisy_n = (
                 right_ear_noisy_seg[n, :] - np.sum(right_ear_noisy_seg[n, :]) / n_frames
             )
+            np.sum(left_ear_clean_n * left_ear_clean_n)
             left_improved[n, m - n_frames] = np.sum(
                 left_ear_clean_n * left_ear_clean_n
             ) / np.sum(left_ear_noisy_n * left_ear_noisy_n)
@@ -311,7 +312,7 @@ def mbstoi(
     idx = np.isfinite(dr_interm)
     dr_interm[~idx] = 0
     p_be_max = np.maximum(left_improved, right_improved)
-    dbe_interm = np.zeros((np.shape(dl_interm)))
+    dbe_interm = np.zeros(np.shape(dl_interm))
 
     idx = left_improved > right_improved
     dbe_interm[idx] = dl_interm[idx]

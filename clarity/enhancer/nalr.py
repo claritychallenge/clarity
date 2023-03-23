@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import math
-from typing import Optional, Tuple, Union
 
 import numpy as np
 import scipy
@@ -10,8 +11,8 @@ def firwin2(
     n: int,
     f: np.ndarray,
     a: np.ndarray,
-    window: Optional[Union[str, float]] = None,
-    antisymmetric: Optional[bool] = None,  # pylint: disable=unused-argument
+    window: str | float | None = None,
+    antisymmetric: bool | None = None,  # pylint: disable=unused-argument
 ) -> np.ndarray:
     """FIR filter design using the window method.
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -27,8 +28,8 @@ def firwin2(
         np.ndarray:  The FIR filter coefficients as a 1-D array of length n.
     """
     window_shape = None
-    window_type: Union[str, float, None]
-    window_param: Union[str, float]
+    window_type: str | float | None
+    window_param: str | float
     if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
@@ -48,8 +49,8 @@ def firwin2(
 
 
 def fir2(
-    nn: int, ff: np.ndarray, aa: np.ndarray, npt: Optional[int] = None
-) -> Tuple[np.ndarray, int]:
+    nn: int, ff: np.ndarray, aa: np.ndarray, npt: int | None = None
+) -> tuple[np.ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
     Translation of MATLAB fir2.
 
@@ -96,7 +97,7 @@ def fir2(
             ne = int(np.fix(ff[i + 1] * npt)) - 1
 
         j = np.arange(nb, ne + 1)
-        inc: Union[float, np.ndarray] = 0.0 if nb == ne else (j - nb) / (ne - nb)
+        inc: float | np.ndarray = 0.0 if nb == ne else (j - nb) / (ne - nb)
         H[nb : (ne + 1)] = (inc * aa[i + 1]) + ((1 - inc) * aa[i])
         nb = ne + 1
 

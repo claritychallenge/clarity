@@ -4,7 +4,7 @@ import json
 
 def read_jsonl(filename: str) -> list:
     """Read a jsonl file into a list of dictionaries."""
-    with open(filename, "r", encoding="utf-8") as fp:
+    with open(filename, encoding="utf-8") as fp:
         records = [json.loads(line) for line in fp]
     return records
 

@@ -103,7 +103,7 @@ class SceneRenderer:
         self.hoa_rotator = HOARotator(self.ambisonic_order, resolution=0.1)
 
         # Build dictionary for looking up room data
-        with open(f"{self.metadata.room_definitions}", "r", encoding="utf-8") as f:
+        with open(f"{self.metadata.room_definitions}", encoding="utf-8") as f:
             rooms = json.load(f)
         self.room_dict = {room["name"]: room for room in rooms}
 
@@ -431,7 +431,7 @@ class SceneRenderer:
         """
         # Make all necessary output directories
         output_path = self.paths.scenes
-        for dataset in set(s["dataset"] for s in scenes):
+        for dataset in {s["dataset"] for s in scenes}:
             full_output_path = Path(output_path.format(dataset=dataset))
             if not full_output_path.exists():
                 full_output_path.mkdir(parents=True, exist_ok=True)
