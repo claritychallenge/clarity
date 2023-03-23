@@ -1,15 +1,15 @@
 """
 Class to generate the car noise signal.
 """
-from typing import Dict, Tuple, Union
+from __future__ import annotations
 
 import numpy as np
 from scipy.signal import butter, lfilter
 
 
 def _butter_filter(
-    order: int, cutoff_hz: Union[list, np.ndarray], btype: str, sample_rate: int
-) -> Tuple[np.ndarray, np.ndarray]:
+    order: int, cutoff_hz: list | np.ndarray, btype: str, sample_rate: int
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Function that creates a butter filter
     Args:
@@ -99,7 +99,7 @@ class CarNoiseSignalGenerator:
         # .. reference level = no speed dependence  plus a small randomization
         referencelevel_db = noise_parameters["reference_level_db"]
 
-        filter_numer_denom: Dict = {}
+        filter_numer_denom: dict = {}
         for filter_type in [
             "primary_filter",
             "secondary_filter",
@@ -162,11 +162,11 @@ class CarNoiseSignalGenerator:
     def generate_source_noise(
         self,
         reference_level_db: float,
-        primary_filter: Dict[str, np.ndarray],
-        secondary_filter: Dict[str, np.ndarray],
-        bump_filter: Dict[str, np.ndarray],
-        dip_low_filter: Dict[str, np.ndarray],
-        dip_high_filter: Dict[str, np.ndarray],
+        primary_filter: dict[str, np.ndarray],
+        secondary_filter: dict[str, np.ndarray],
+        bump_filter: dict[str, np.ndarray],
+        dip_low_filter: dict[str, np.ndarray],
+        dip_high_filter: dict[str, np.ndarray],
     ) -> np.ndarray:
         """
         Method that generates the noise of a single source.
@@ -230,8 +230,8 @@ class CarNoiseSignalGenerator:
         rpm: float,
         reference_level_db: float,
         engine_num_harmonics: int,
-        primary_filter: Dict[str, np.ndarray],
-        secondary_filter: Dict[str, np.ndarray],
+        primary_filter: dict[str, np.ndarray],
+        secondary_filter: dict[str, np.ndarray],
     ) -> np.ndarray:
         """
         Method that generates the noise of the engine.
@@ -286,7 +286,7 @@ class CarNoiseSignalGenerator:
 
         return engine_noise
 
-    def get_bump_params(self, reference_level_db: float) -> Tuple[float, float]:
+    def get_bump_params(self, reference_level_db: float) -> tuple[float, float]:
         """
         Method that gets the parameters of the bump noise
         Args:
@@ -314,7 +314,7 @@ class CarNoiseSignalGenerator:
         rpm: float,
         reference_level_db: float,
         engine_num_harmonics: int,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Method that gets the parameters of the engine noise
 

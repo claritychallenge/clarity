@@ -49,7 +49,7 @@ def evaluate(cfg: DictConfig) -> None:
 
     # Load the intelligibility dataset records
     dataset_filename = Path(cfg.path.metadata_dir) / f"{cfg.dataset}.json"
-    with open(dataset_filename, "r", encoding="utf-8") as fp:
+    with open(dataset_filename, encoding="utf-8") as fp:
         records = json.load(fp)
     record_index = {record["signal"]: record for record in records}
 

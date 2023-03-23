@@ -1,10 +1,10 @@
 """ Compute the HASPI scores. """
+from __future__ import annotations
 
 import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Tuple
 
 import hydra
 import numpy as np
@@ -24,7 +24,7 @@ def set_seed_with_string(seed_string: str) -> None:
     np.random.seed(md5_int)
 
 
-def parse_cec2_signal_name(signal_name: str) -> Tuple[str, str, str]:
+def parse_cec2_signal_name(signal_name: str) -> tuple[str, str, str]:
     """Parse the CEC2 signal name."""
     # e.g. S0001_L0001_E001_hr -> S0001, L0001, E001_hr
     scene, listener, *system = signal_name.split("_")
@@ -47,9 +47,7 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
     scene, listener, _ = parse_cec2_signal_name(signal_name)
 
     # Retrieve audiograms
-    with open(
-        Path(path["metadata_dir"]) / "listeners.json", "r", encoding="utf-8"
-    ) as fp:
+    with open(Path(path["metadata_dir"]) / "listeners.json", encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
         audiogram = listener_audiograms[listener]
 

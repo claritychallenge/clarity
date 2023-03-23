@@ -1,4 +1,6 @@
 """Code for building the scenes.json files."""
+from __future__ import annotations
+
 import itertools
 import json
 import logging
@@ -6,7 +8,6 @@ import math
 import random
 import re
 from enum import Enum
-from typing import Dict, List
 
 import numpy as np
 from tqdm import tqdm
@@ -39,7 +40,7 @@ def set_random_seed(random_seed):
         np.random.seed(random_seed)
 
 
-def get_vector(text: str, vector_name: str) -> List[float]:
+def get_vector(text: str, vector_name: str) -> list[float]:
     """Get a vector quantity from the rpf file.
     Will read rpf vector quantities, eg.
     "sourceViewVectors = -0.095,-0.995, 0.000"
@@ -58,7 +59,7 @@ def get_vector(text: str, vector_name: str) -> List[float]:
     return x
 
 
-def get_room_dims(text: str) -> List:
+def get_room_dims(text: str) -> list:
     """Find the room dimensions in the rpf file.
 
     Args:
@@ -87,7 +88,7 @@ def get_room_name(text: str) -> str:
     return re.findall(r"R\d\d\d\d\d", text)[0]
 
 
-def read_rpf_file(rpf_filename: str) -> Dict:
+def read_rpf_file(rpf_filename: str) -> dict:
     """Process an rpf file and return key contents as a dictionary.
 
     Args:
@@ -97,7 +98,7 @@ def read_rpf_file(rpf_filename: str) -> Dict:
         dict: dictionary of rpf file contents
             {"position": sourcePositions, "view_vector": sourceViewVectors}
     """
-    with open(rpf_filename, "r", encoding="utf-8") as f:
+    with open(rpf_filename, encoding="utf-8") as f:
         text = f.read()
 
     rpf_dict = {}
@@ -124,7 +125,7 @@ def read_rpf_file(rpf_filename: str) -> Dict:
     return rpf_dict
 
 
-def build_room(target_file: str, interferer_files: List[str]) -> Dict:
+def build_room(target_file: str, interferer_files: list[str]) -> dict:
     """Build room json file from contents of related rpf files.
     Note, there is an rpf file for each source in the scene. All of these
     files are read and a single scene json file is constructed.
@@ -159,7 +160,7 @@ def build_room(target_file: str, interferer_files: List[str]) -> Dict:
 
 def make_rpf_filename_dict(
     rpf_location: str, scene_str: str, n_interferers: int
-) -> Dict:
+) -> dict:
     """Construct dictionary storing all rpf files that will be processed.
 
     Args:
@@ -236,7 +237,7 @@ def add_this_target_to_scene(
 
 
 # SNR handling
-def generate_snr(snr_range: List[int]) -> float:
+def generate_snr(snr_range: list[int]) -> float:
     """Generate a random Signal Noise Ratio (SNR).
 
     Args:
@@ -257,7 +258,7 @@ class InterfererType(Enum):
     MUSIC = "music"
 
 
-def select_interferer_types(allowed_n_interferers: list) -> List[InterfererType]:
+def select_interferer_types(allowed_n_interferers: list) -> list[InterfererType]:
     """Select the interferer types to use.
 
     The number of interferer is drawn randomly from list of allowed valued.
@@ -283,8 +284,8 @@ def select_interferer_types(allowed_n_interferers: list) -> List[InterfererType]
 
 
 def select_random_interferer(
-    interferers: List[list], dataset: str, required_samples: int
-) -> Dict:
+    interferers: list[list], dataset: str, required_samples: int
+) -> dict:
     """Randomly select an interferer.
     Interferers stored as list of list. First randomly select a sublist
     then randomly select an item from sublist matching constraints.
@@ -345,8 +346,8 @@ def add_interferer_to_scene_inner(
     scene: dict,
     interferers: dict,
     number: list,
-    start_time_range: List[int],
-    end_early_time_range: List[int],
+    start_time_range: list[int],
+    end_early_time_range: list[int],
 ):
     """Randomly select interferers and add them to the given scene.
     A random number of interferers is chosen, then each is given a random type
@@ -425,7 +426,7 @@ def generate_rotation(
     angle_initial_mean: float,
     angle_initial_sd: float,
     angle_final_range: tuple,
-) -> List[dict]:
+) -> list[dict]:
     """Generate a suitable head rotation for the given scene.
     Based on behavioural studies by Hadley et al. TODO: find ref
 
@@ -541,7 +542,7 @@ class RoomBuilder:
         Args:
             filename (str): filename to JSON file from which room data is loaded.
         """
-        with open(filename, "r", encoding="utf-8") as f:
+        with open(filename, encoding="utf-8") as f:
             self.rooms = json.load(f)
         self.rebuild_dict()
 
@@ -683,7 +684,7 @@ class SceneBuilder:
 
         Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM
         """
-        with open(target_speakers, "r", encoding="utf-8") as f:
+        with open(target_speakers, encoding="utf-8") as f:
             targets = json.load(f)
 
         targets_dataset = [t for t in targets if t["dataset"] == dataset]
@@ -743,7 +744,7 @@ class SceneBuilder:
             None
         """
         # Load and prepare speech interferer metadata
-        with open(speech_interferers, "r", encoding="utf-8") as f:
+        with open(speech_interferers, encoding="utf-8") as f:
             interferers_speech = json.load(f)
         for interferer in interferers_speech:
             interferer["ID"] = (
@@ -753,7 +754,7 @@ class SceneBuilder:
         interferers_speech = [interferers_speech]
 
         # Load and prepare noise (i.e. noise) interferer metadata
-        with open(noise_interferers, "r", encoding="utf-8") as f:
+        with open(noise_interferers, encoding="utf-8") as f:
             interferers_noise = json.load(f)
         for interferer in interferers_noise:
             interferer["ID"] += ".wav"
@@ -763,7 +764,7 @@ class SceneBuilder:
         interferers_noise = list(interferer_by_type.values())
 
         # Load and prepare music interferer metadata
-        with open(music_interferers, "r", encoding="utf-8") as f:
+        with open(music_interferers, encoding="utf-8") as f:
             interferers_music = json.load(f)
         for interferer in interferers_music:
             interferer["ID"] = interferer[

@@ -1,11 +1,11 @@
 """A class for the car acoustic environment."""
 # pylint: disable=import-error
 # pylint: disable=too-many-instance-attributes
+from __future__ import annotations
 
 import logging
 import warnings
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pyloudnorm as pyln
@@ -223,7 +223,7 @@ class CarSceneAcoustics:
         self,
         signal: np.ndarray,
         reference_signal: np.ndarray = None,
-        snr: Optional[float] = 0,
+        snr: float | None = 0,
     ) -> np.ndarray:
         """
         Scales the target signal to the desired SNR.

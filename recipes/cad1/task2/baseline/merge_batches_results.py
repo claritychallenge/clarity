@@ -14,7 +14,9 @@ def join_batches(config: DictConfig) -> None:
     batches_results = []
     for batch in range(config.evaluate.batch_size):
         batches_results.append(
-            pd.read_csv(f"scores_{batch}-{config.evaluate.batch_size}.csv")
+            pd.read_csv(
+                f"scores_{batch}-{config.evaluate.batch_size}.csv", index_col=False
+            )
         )
     df_res = pd.concat(batches_results, ignore_index=True)
     df_res.to_csv("scores.csv", index=False)

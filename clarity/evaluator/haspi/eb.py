@@ -1347,7 +1347,7 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     k = np.arange(nbands)
     mel_cepstral = np.zeros((nbands, nbasis))
     for n in range(nbasis):
-        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
         mel_cepstral[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
@@ -1419,7 +1419,7 @@ def melcor9(
     threshold,
     add_noise,
     segment_size,
-    n_cepstral_coef=6.0,
+    n_cepstral_coef=6,
 ):
     """
     Compute the cross-correlations between the input signal
@@ -1461,27 +1461,26 @@ def melcor9(
     nbands = reference.shape[0]
 
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
-    n_cepstral_coef = 6  # Number of cepstral coefficients to be used
     freq = np.arange(n_cepstral_coef)
     k = np.arange(nbands)
     cepm = np.zeros((nbands, n_cepstral_coef))
     for n in range(n_cepstral_coef):
-        basis = np.cos(k * float(freq[n]) * np.pi / float((nbands - 1)))
+        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
         cepm[:, n] = basis / np.linalg.norm(basis)
 
     # Find the segments that lie sufficiently above the quiescent rate
-    reference_linear = 10 ** (
-        reference / 20
-    )  # Convert envelope dB to linear (specific loudness)
-    reference_sum = (
-        np.sum(reference_linear, 0) / nbands
-    )  # Proportional to loudness in sones
-    reference_sum = 20 * np.log10(
-        reference_sum
-    )  # Convert back to dB (loudness in phons)
-    index = np.where(reference_sum > threshold)[
-        0
-    ]  # Identify those segments above threshold
+    # Convert envelope dB to linear (specific loudness)
+    reference_linear = 10 ** (reference / 20)
+
+    # Proportional to loudness in sones
+    reference_sum = np.sum(reference_linear, 0) / nbands
+
+    # Convert back to dB (loudness in phons)
+    reference_sum = 20 * np.log10(reference_sum)
+
+    # Identify those segments above threshold
+    index = np.where(reference_sum > threshold)[0]
+
     segments_above_threshold = index.shape[0]  # Number of segments above threshold
 
     # Modulation filter bands, segment size is 8 msec
@@ -1628,14 +1627,11 @@ def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, reference_cep, processe
     processed = np.zeros((nmod, nbasis, nsamp))
     for m in range(nmod):
         for j in range(nbasis):
+            # colve and remove transients
             c = convolve(b[m], reference_cep[j, :], mode="full")
-            reference[m, j, :] = c[
-                int(nfir2) : int(nfir2 + nsamp)
-            ]  # Remove the transients
+            reference[m, j, :] = c[int(nfir2) : int(nfir2 + nsamp)]
             c = convolve(b[m], processed_cep[j, :], mode="full")
-            processed[m, j, :] = c[
-                int(nfir2) : int(nfir2 + nsamp)
-            ]  # Remove the transients
+            processed[m, j, :] = c[int(nfir2) : int(nfir2 + nsamp)]
 
     # Compute the cross-covariance matrix
     cross_covariance_matrix = np.zeros((nmod, nbasis))
@@ -1786,34 +1782,37 @@ def bm_covary(
     lagsize = 1.0  # Lag (+/-) in msec
     maxlag = np.around(lagsize * (0.001 * freq_sample))  # Lag in samples
 
-    # Compute the segment window
-    nwin = int(
-        np.around(segment_size * (0.001 * freq_sample))
-    )  # Segment size in samples
-    test = nwin - 2 * np.floor(nwin / 2)  # 0=even, 1=odd
-    if test > 0:
-        nwin = nwin + 1  # Force window length to be even
+    # Compute the segment size in samples
+    nwin = int(np.around(segment_size * (0.001 * freq_sample)))
 
+    nwin += nwin % 2 == 1  # Force window length to be even
     window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
-    wincorr = correlate(window, window, "full")  # Window autocorrelation, inverted
-    wincorr = wincorr[int(len(window) - 1 - maxlag) : int(maxlag + len(window))]
-    wincorr = 1 / wincorr
-    winsum2 = 1.0 / np.sum(window**2)  # Window power, inverted
+
+    # compute inverted Window autocorrelation
+    win_corr = correlate(window, window, "full")
+    start_sample = int(len(window) - 1 - maxlag)
+    end_sample = int(maxlag + len(window))
+    if start_sample < 0:
+        raise ValueError("segment size too small")
+    win_corr = 1 / win_corr[start_sample:end_sample]
+    win_sum2 = 1.0 / np.sum(window**2)  # Window power, inverted
 
     # The first segment has a half window
     nhalf = int(nwin / 2)
-    halfwindow = window[nhalf:nwin]
-    halfcorr = correlate(halfwindow, halfwindow, "full")
-    halfcorr = halfcorr[
-        int(len(halfwindow) - 1 - maxlag) : int(maxlag + len(halfwindow))
-    ]
-    halfcorr = 1 / halfcorr
-    halfsum2 = 1.0 / np.sum(halfwindow**2)  # MS sum normalization, first segment
+    half_window = window[nhalf:nwin]
+    half_corr = correlate(half_window, half_window, "full")
+    start_sample = int(len(half_window) - 1 - maxlag)
+    end_sample = int(maxlag + len(half_window))
+    if start_sample < 0:
+        raise ValueError("segment size too small")
+    half_corr = 1 / half_corr[start_sample:end_sample]
+    halfsum2 = 1.0 / np.sum(half_window**2)  # MS sum normalization, first segment
 
     # Number of segments
     nchan = reference_basilar_membrane.shape[0]
     npts = reference_basilar_membrane.shape[1]
     nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
+
     reference_mean_square = np.zeros((nchan, nseg))
     processed_mean_square = np.zeros((nchan, nseg))
     signal_cross_covariance = np.zeros((nchan, nseg))
@@ -1827,25 +1826,25 @@ def bm_covary(
 
         # The first (half) windowed segment
         nstart = 0
-        reference_seg = x[nstart:nhalf] * halfwindow  # Window the reference
-        processed_seg = y[nstart:nhalf] * halfwindow  # Window the processed signal
+        reference_seg = x[nstart:nhalf] * half_window  # Window the reference
+        processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
         reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
         processed_seg = processed_seg - np.mean(processed_seg)
-        ref_mean_square = (
-            np.sum(reference_seg**2) * halfsum2
-        )  # Normalize signal MS value by the window
+
+        # Normalize signal MS value by the window
+        ref_mean_square = np.sum(reference_seg**2) * halfsum2
+
         proc_mean_squared = np.sum(processed_seg**2) * halfsum2
         correlation = correlate(reference_seg, processed_seg, "full")
         correlation = correlation[
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
         ]
-        unbiased_cross_correlation = np.max(
-            np.abs(correlation * halfcorr)
-        )  # Unbiased cross-correlation
+        unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
         if (ref_mean_square > small) and (proc_mean_squared > small):
+            # Normalize cross-covariance
             signal_cross_covariance[k, 0] = unbiased_cross_correlation / np.sqrt(
                 ref_mean_square * proc_mean_squared
-            )  # Normalized cross-covariance
+            )
         else:
             signal_cross_covariance[k, 0] = 0.0
 
@@ -1861,28 +1860,25 @@ def bm_covary(
             processed_seg = y[nstart:nstop] * window  # Window the processed signal
             reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
             processed_seg = processed_seg - np.mean(processed_seg)
-            ref_mean_square = (
-                np.sum(reference_seg**2) * winsum2
-            )  # Normalize signal MS value by the window
-            proc_mean_squared = np.sum(processed_seg**2) * winsum2
+
+            # Normalize signal MS value by the window
+            ref_mean_square = np.sum(reference_seg**2) * win_sum2
+            proc_mean_squared = np.sum(processed_seg**2) * win_sum2
             correlation = correlate(reference_seg, processed_seg, "full")
             correlation = correlation[
                 int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
             ]
-            unbiased_cross_correlation = np.max(
-                np.abs(correlation * wincorr)
-            )  # Unbiased cross-corr
+            unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
             if (ref_mean_square > small) and (proc_mean_squared > small):
+                # Normalize cross-covariance
                 signal_cross_covariance[k, n] = unbiased_cross_correlation / np.sqrt(
                     ref_mean_square * proc_mean_squared
-                )  # Normalized cross-covariance
+                )
             else:
                 signal_cross_covariance[k, n] = 0.0
 
-            reference_mean_square[k, n] = ref_mean_square  # Save the reference MS level
-            processed_mean_square[
-                k, n
-            ] = proc_mean_squared  # Save the reference MS level
+            reference_mean_square[k, n] = ref_mean_square
+            processed_mean_square[k, n] = proc_mean_squared
 
         # The last (half) windowed segment
         nstart = nstart + nhalf
@@ -1891,9 +1887,8 @@ def bm_covary(
         processed_seg = y[nstart:nstop] * window[0:nhalf]  # Window the processed signal
         reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
         processed_seg = processed_seg - np.mean(processed_seg)
-        ref_mean_square = (
-            np.sum(reference_seg**2) * halfsum2
-        )  # Normalize signal MS value by the window
+        # Normalize signal MS value by the window
+        ref_mean_square = np.sum(reference_seg**2) * halfsum2
         proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
         correlation = np.correlate(reference_seg, processed_seg, "full")
@@ -1901,13 +1896,12 @@ def bm_covary(
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
         ]
 
-        unbiased_cross_correlation = np.max(
-            np.abs(correlation * halfcorr)
-        )  # Unbiased cross-correlation
+        unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
         if (ref_mean_square > small) and (proc_mean_squared > small):
+            # Normalized cross-covariance
             signal_cross_covariance[k, nseg - 1] = unbiased_cross_correlation / np.sqrt(
                 ref_mean_square * proc_mean_squared
-            )  # Normalized cross-covariance
+            )
         else:
             signal_cross_covariance[k, nseg - 1] = 0.0
 
@@ -2034,48 +2028,35 @@ def ave_covary2(
     # Compute the time-frequency weights. The weight=1 if a segment in a
     # frequency band is above threshold, and weight=0 if below threshold.
     weight = np.zeros((n_channels, nseg))  # No IHC synchronization roll-off
-    wsync1 = np.zeros(
-        (n_channels, nseg)
-    )  # Loss of IHC synchronization at high frequencies
-    wsync2 = np.zeros((n_channels, nseg))
-    wsync3 = np.zeros((n_channels, nseg))
-    wsync4 = np.zeros((n_channels, nseg))
-    wsync5 = np.zeros((n_channels, nseg))
-    wsync6 = np.zeros((n_channels, nseg))
-    for k in range(n_channels):
-        for n in range(nseg):
-            if (
-                signal_rms[k, n] > threshold_db
-            ):  # Thresh in dB SL for including time-freq tile
-                weight[k, n] = 1
-                wsync1[k, n] = fsync[0, k]
-                wsync2[k, n] = fsync[1, k]
-                wsync3[k, n] = fsync[2, k]
-                wsync4[k, n] = fsync[3, k]
-                wsync5[k, n] = fsync[4, k]
-                wsync6[k, n] = fsync[5, k]
+    weight[signal_rms > threshold_db] = 1
+
+    # The wsync tensor should be constructed as follows:
+    #
+    # wsync = np.zeros((6, n_channels, nseg))
+    # for k in range(n_channels):
+    #    for n in range(nseg):
+    #        # Thresh in dB SL for including time-freq tile
+    #        if signal_rms[k, n] > threshold_db:
+    #            wsync[:, k, n] = fsync[:, k]
+    #
+    # This can be written is an efficient vectorsized form as follows:
+    wsync = np.zeros((6, n_channels, nseg))
+    mask = signal_rms > threshold_db
+    fsync3d = np.repeat(fsync[..., None], nseg, axis=2)
+    wsync[:, mask] = fsync3d[:, mask]
 
     # Sum the weighted covariance values
-    csum = np.sum(
-        np.sum(weight * signal_cross_covariance)
-    )  # Sum of weighted time-freq tiles
-    wsum = np.sum(np.sum(weight))  # Total number of tiles above thresold
-    sum_weighted_time_freq = np.zeros(6)
-    tiles_above_threshold = np.zeros(6)
     # Sum of weighted time-freq tiles
-    sum_weighted_time_freq[0] = np.sum(np.sum(wsync1 * signal_cross_covariance))
-    sum_weighted_time_freq[1] = np.sum(np.sum(wsync2 * signal_cross_covariance))
-    sum_weighted_time_freq[2] = np.sum(np.sum(wsync3 * signal_cross_covariance))
-    sum_weighted_time_freq[3] = np.sum(np.sum(wsync4 * signal_cross_covariance))
-    sum_weighted_time_freq[4] = np.sum(np.sum(wsync5 * signal_cross_covariance))
-    sum_weighted_time_freq[5] = np.sum(np.sum(wsync6 * signal_cross_covariance))
-    # Total number of tiles above thresold
-    tiles_above_threshold[2] = np.sum(np.sum(wsync3))
-    tiles_above_threshold[0] = np.sum(np.sum(wsync1))
-    tiles_above_threshold[1] = np.sum(np.sum(wsync2))
-    tiles_above_threshold[3] = np.sum(np.sum(wsync4))
-    tiles_above_threshold[4] = np.sum(np.sum(wsync5))
-    tiles_above_threshold[5] = np.sum(np.sum(wsync6))
+    csum = np.sum(np.sum(weight * signal_cross_covariance))
+
+    wsum = np.sum(np.sum(weight))  # Total number of tiles above thresold
+
+    tiles_above_threshold = np.zeros(6)
+
+    # Sum of weighted time-freq tiles
+    sum_weighted_time_freq = np.sum(wsync * signal_cross_covariance, axis=(1, 2))
+
+    tiles_above_threshold = np.sum(wsync, axis=(1, 2))
 
     # Exit if not enough segments above zero
     if wsum < 1:

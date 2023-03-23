@@ -1,8 +1,9 @@
 """Gammatone filterbank simulation of the Cochlea."""
+from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Tuple, Union
+from typing import Any
 
 import numpy as np
 import scipy
@@ -24,10 +25,10 @@ class FilterBank:
 
 
 # Parameters for smearing and gammatone filtering according to degree of loss
-HL_PARAMS: Dict[str, Dict[str, Union[str, tuple]]] = {
+HL_PARAMS: dict[str, dict[str, Any]] = {
     "SEVERE": {
         "gtfbank_file": "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs",
-        "smear_params": (4, 2),  # asymmetric severe smearing
+        "smear_params": (4.0, 2.0),  # asymmetric severe smearing
     },
     "MODERATE": {
         "gtfbank_file": "GT4FBank_Brd2.0E_Spaced1.5E_44100Fs",
@@ -46,7 +47,7 @@ HL_PARAMS: Dict[str, Dict[str, Union[str, tuple]]] = {
 
 def compute_recruitment_parameters(
     gtn_cf: np.ndarray, audiogram: Audiogram, catch_up: float
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """Compute parameters to be used in recruitment model.
 
     Computes expansion ratios for each gammatone filterbank channel and
@@ -251,8 +252,8 @@ class Cochlea:
         # Set-up the smearer
         self.smearer = None
         if severity_level != "NOTHING":
-            smear_params = HL_PARAMS[severity_level]["smear_params"]
-            self.smearer = Smearer(smear_params[0], smear_params[1], fs)
+            r_lower, r_upper = HL_PARAMS[severity_level]["smear_params"]
+            self.smearer = Smearer(r_lower, r_upper, fs)
 
         logging.info("Severity level - %s", severity_level)
 

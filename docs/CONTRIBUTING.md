@@ -60,11 +60,50 @@ Once you have created an issue you can
 [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) the
 pyClarity repository to your own account and create a branch on which to undertake development.
 
-### Coding Style
+## Coding Style
 
-We ask that you adhere to the [PEP8](https://pep8.org/) coding style when writing your code. To facilitate this we use
-[flake8](https://flake8.pycqa.org/en/latest/) and [isort](https://pycqa.github.io/isort/). Most popular Integrated
-Development Environments (IDEs) include plugins that will apply flake8 to your code on saving a file.
+We ask that you adhere to the [PEP8](https://pep8.org/) coding style when writing your code. To facilitate this we use a
+number of linting tools.
+
+* [flake8](https://flake8.pycqa.org/en/latest/)
+* [black](https://black.readthedocs.io/en/stable/index.html)
+* [isort](https://pycqa.github.io/isort/)
+* [mypy](https://mypy.readthedocs.io/en/stable/)
+* [pylint](pylint.org)
+
+### pre-commit
+
+To ensure these coding conventions are applied to code that is submitted to the `main` branch PyClarity uses
+[`pre-commit`](https://pre-commit.com/) and [`pre-commit.ci`](https://pre-commit.ci) which run Git Hooks before each
+commit is made (the former locally, the latter on pull requests) for the above linting (and more e.g. Markdown style is
+also checked).
+
+Whilst the `pre-commit` Python package will have been installed in your environment when you `pip install .[dev]` you
+need to install the configured hooks (which are defined in
+[`.precommit-config.yaml`](https://github.com/claritychallenge/clarity/blob/main/.pre-commit-config.yaml)) in your local
+copy of the PyClarity repository. To do so run the following from the `clarity` directory...
+
+``` bash
+pre-commit install
+```
+
+This installs `.git/hooks/pre-commit` commit hook which is triggered each time you make a new commit.
+
+If your commit fails to pass the checks please read the error messages carefully. Some changes are fixed automatically
+(e.g. `black` will format files in place where it can), but not all changes can be fixed and you should read the output
+carefully  to find out what you need to manually fix.
+
+### `pathlib` over `os`
+
+PyClarity uses the object-orientated package [`pathlib`](https://docs.python.org/3/library/pathlib.html)
+throughout the code base for any operations involving the file system and path components as it makes code easier to
+read. We ask that any contributions follow this convention and use `pathlib` rather than `os`. For more on `pathlib` see
+[1] and [2].
+
+### IDEs
+
+Most popular Integrated Development Environments (IDEs) include plugins that will apply `flake8` / `black` to your code
+on saving a file.
 
 For information on how to configure some popular IDEs see the following links.
 
@@ -72,23 +111,7 @@ For information on how to configure some popular IDEs see the following links.
 * [Flake8 support - PyCharm Plugin](https://plugins.jetbrains.com/plugin/11563-flake8-support)
 * [Emacs flymake-python-pyflakes](https://github.com/purcell/flymake-python-pyflakes/)
 
-Further we have implemented a [`pre-commit`](https://pre-commit.com/) hook to ensure flake8 and isort are applied each
-time you make a commit. Whilst the `pre-commit` package will have been installed in your environment when you need to
-install the configured hooks (which are defined in
-[`.precommit-config.yaml`](https://github.com/claritychallenge/clarity/blob/main/.pre-commit-config.yaml)) in your local
-repository. To do so run the following from the `clarity` directory...
-
-``` bash
-pre-commit install
-```
-
-This installs `.git/hooks/pre-commit` commit hook which is triggered each time you make a new commit. When run this will
-automatically lint your code with flake8 and isort so please check the changes carefully.
-
-If your commit fails to pass the checks please read the error messages carefully to find out what has changed and what
-you need to manually fix.
-
-### Testing
+## Testing
 
 All new code should be covered by [unit
 tests](https://carpentries-incubator.github.io/python-testing/04-units/index.html) with at least 70% coverage and where
@@ -103,4 +126,13 @@ The Continuous Integration in place on GitHub Actions runs `pytest` on newly cre
 pass successfully before merging so it is useful to ensure they pass before you create pull requests at the very
 least. Sometimes it may be sensible to run them against commits too.
 
-To run the tests simply call `pytest` from the root of the project folder.
+To run the tests you should install the additional dependencies and then call `pytest` from the root of the project
+folder.
+
+``` bash
+pip install .[tests]
+pytest
+```
+
+[1]: https://treyhunner.com/2018/12/why-you-should-be-using-pathlib/
+[2]: https://treyhunner.com/2019/01/no-really-pathlib-is-great/

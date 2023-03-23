@@ -96,10 +96,10 @@ def run_calculate_si(cfg: DictConfig) -> None:
     """Evaluate the enhanced signals using a combination of HASPI and HASQI metrics"""
 
     # Load listener data
-    with open(cfg.path.scenes_listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
-    with open(cfg.path.listeners_file, "r", encoding="utf-8") as fp:
+    with open(cfg.path.listeners_file, encoding="utf-8") as fp:
         listener_audiograms = json.load(fp)
 
     enhancer = NALR(**cfg.nalr)
