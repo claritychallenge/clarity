@@ -30,6 +30,13 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     version of HASPI uses a modulation filterbank followed by an ensemble of
     neural networks to compute the estimated intelligibility.
 
+    **NB** - The original HASPI model derivation included a bug which meant that
+    although the 'shift' parameter used in band centre frequency calculations was set to
+    '0.02' it was never actually applied. To replicate this behaviour ear_model is
+    called with 'shift' set to None.  For discussion please refer to the discussion in
+    `Issue #105 <https://github.com/claritychallenge/clarity/issues/105>`
+    for further details.
+
     Args:
         reference (np.ndarray): Clear input reference speech signal with no noise or
             distortion. If a hearing loss is specified, no amplification should be
@@ -68,6 +75,8 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         hearing_loss,
         itype,
         level1,
+        # shift=0.02 # See comment in docstring
+        shift=None,
     )
 
     # Envelope modulation features
