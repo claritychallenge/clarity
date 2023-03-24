@@ -117,11 +117,10 @@ def ear_model(
 
     # Parameters for the control filter bank
     hl_max = [100, 100, 100, 100, 100, 100]
-    _center_freq_control = center_frequency(
-        nchan, shift
-    )  # Center frequencies for the control
-    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
+    # Compute center frequencies for the control
+    _center_freq_control = center_frequency(nchan, shift)
     # Maximum BW for the control
+    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
 
     # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
