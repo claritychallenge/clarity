@@ -46,7 +46,9 @@ def test_better_ear_speechweighted_snr(
     """Test of better_ear_speechweighted_snr()."""
     better_ear_signal_noise_ratio = better_ear_speechweighted_snr(target, noise)
     assert isinstance(better_ear_signal_noise_ratio, float)
-    assert better_ear_signal_noise_ratio == expected
+    assert better_ear_signal_noise_ratio == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_better_ear_speechweighted_snr_noise_wrong_shape_index_error() -> None:
@@ -79,7 +81,9 @@ def test_speechweighted_snr(target: np.array, noise: np.array, expected: float) 
     """Test of speechweighted_snr()."""
     signal_noise_ratio = speechweighted_snr(target, noise)
     assert isinstance(signal_noise_ratio, float)
-    assert signal_noise_ratio == expected
+    assert signal_noise_ratio == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_speechweighted_snr_unequal_arrays_value_error() -> None:

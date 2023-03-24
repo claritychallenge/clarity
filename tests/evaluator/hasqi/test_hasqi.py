@@ -19,7 +19,9 @@ def test_hasqi_v2() -> None:
     score, _, _, _ = hasqi_v2(
         x, sample_rate, y, sample_rate, hearing_loss, equalisation_mode, level1
     )
-    assert score == pytest.approx(0.002525809, rel=1e-7)
+    assert score == pytest.approx(
+        0.002525809, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_hasqi_v2_better_ear() -> None:
@@ -49,4 +51,6 @@ def test_hasqi_v2_better_ear() -> None:
         audiogram_freq=None,
     )
 
-    assert score == pytest.approx(0.1256893032667640)
+    assert score == pytest.approx(
+        0.1256893032667640, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

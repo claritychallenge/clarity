@@ -15,3 +15,9 @@ rng = np.random.default_rng(SEED)
 def random_matrix() -> np.ndarray:
     """Generate a random matrix for use in tests."""
     return np.asarray(rng.random((100, 100)))
+
+
+def pytest_configure() -> None:
+    """Configure custom variables for pytest"""
+    pytest.abs_tolerance = 1e-7
+    pytest.rel_tolerance = 1e-7

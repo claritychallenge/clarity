@@ -19,7 +19,9 @@ def test_haaqi_v1() -> None:
     score, _, _, _ = haaqi_v1(
         x, sample_rate, y, sample_rate, hearing_loss, equalisation_mode, level1
     )
-    assert score == pytest.approx(0.111290948, rel=1e-7)
+    assert score == pytest.approx(
+        0.111290948, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_compute_haaqi():
@@ -43,4 +45,6 @@ def test_compute_haaqi():
     )
 
     # Check that the score is a float between 0 and 1
-    assert score == pytest.approx(0.113759275, rel=1e-7)
+    assert score == pytest.approx(
+        0.113759275, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

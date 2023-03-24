@@ -1,9 +1,9 @@
 """Test for AudioManager module"""
 # pylint: disable=import-error
-
 from pathlib import Path
 
 import numpy as np
+import pytest
 from scipy.io import wavfile
 
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
@@ -30,4 +30,6 @@ def test_save_audios(tmp_path):
 
     # Check if audio data was saved correctly
     sample_rate, _ = wavfile.read(audio_file)
-    assert sample_rate == audio_manager.sample_rate
+    assert sample_rate == pytest.approx(
+        audio_manager.sample_rate, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

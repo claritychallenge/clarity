@@ -19,7 +19,9 @@ from recipes.cpc2.baseline.evaluate import (
 )
 def test_rmse_score_ok(x, y, expected):
     """Test the function rmse_score valid inputs"""
-    assert rmse_score(np.array(x), np.array(y)) == pytest.approx(expected)
+    assert rmse_score(np.array(x), np.array(y)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -38,7 +40,9 @@ def test_rmse_score_error(x, y, expected):
 )
 def test_ncc_score_ok(x, y, expected):
     """Test the function ncc_score valid inputs"""
-    assert ncc_score(np.array(x), np.array(y)) == pytest.approx(expected)
+    assert ncc_score(np.array(x), np.array(y)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -56,7 +60,9 @@ def test_ncc_score_error(x, y, expected):
 )
 def test_kt_score_ok(x, y, expected):
     """Test the function kt_score valid inputs"""
-    assert kt_score(np.array(x), np.array(y)) == pytest.approx(expected)
+    assert kt_score(np.array(x), np.array(y)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -82,7 +88,9 @@ def test_kt_score_error(x, y, expected):
 )
 def test_std_err_ok(x, y, expected):
     """Test the function std_err valid inputs"""
-    assert std_err(np.array(x), np.array(y)) == pytest.approx(expected)
+    assert std_err(np.array(x), np.array(y)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
