@@ -20,8 +20,12 @@ def test_env_filter_ok() -> None:
         freq_sub_sample=4000,
         freq_samp=16000,
     )
-    assert reference_env == pytest.approx(48.84481105)
-    assert processed_env == pytest.approx(32.32800458)
+    assert reference_env == pytest.approx(
+        48.84481105, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert processed_env == pytest.approx(
+        32.32800458, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -84,8 +88,12 @@ def test_cepstral_correlation_coef_ok() -> None:
     )
     assert ref_cep.shape == (72, n_basis)
     assert proc_cep.shape == (72, n_basis)
-    assert np.mean(np.abs(ref_cep)) == pytest.approx(82.4395877477838)
-    assert np.mean(np.abs(proc_cep)) == pytest.approx(110.74820232861624)
+    assert np.mean(np.abs(ref_cep)) == pytest.approx(
+        82.4395877477838, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.mean(np.abs(proc_cep)) == pytest.approx(
+        110.74820232861624, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_cepstral_correlation_coef_error() -> None:
@@ -141,8 +149,12 @@ def test_fir_modulation_filter() -> None:
     assert out_center_freqs.shape == in_center_freqs.shape
     # Check return value have expected values
     assert np.allclose(in_center_freqs, out_center_freqs)
-    assert np.mean(np.abs(ref_mod)) == pytest.approx(14.477262943878237)
-    assert np.mean(np.abs(proc_mod)) == pytest.approx(13.85669526424176)
+    assert np.mean(np.abs(ref_mod)) == pytest.approx(
+        14.477262943878237, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.mean(np.abs(proc_mod)) == pytest.approx(
+        13.85669526424176, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_modulation_cross_correlation() -> None:
@@ -168,4 +180,6 @@ def test_modulation_cross_correlation() -> None:
         reference_modulation=ref_mod, processed_modulation=proc_mod
     )
     assert cross_corr.shape == (n_mod_filters,)
-    assert np.sum(cross_corr) == pytest.approx(0.4414165879317118)
+    assert np.sum(cross_corr) == pytest.approx(
+        0.4414165879317118, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

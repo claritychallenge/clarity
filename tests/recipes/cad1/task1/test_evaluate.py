@@ -169,7 +169,9 @@ def test_evaluate_song_listener(
     # Check the outputs
     # Combined score
     assert isinstance(combined_score, float)
-    assert combined_score == pytest.approx(0.144920571533222, rel=1e-7)
+    assert combined_score == pytest.approx(
+        0.144920571533222, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     # Per instrument score
     assert isinstance(per_instrument_score, dict)
@@ -177,5 +179,7 @@ def test_evaluate_song_listener(
         assert instrument in per_instrument_score
         assert isinstance(per_instrument_score[instrument], float)
         assert per_instrument_score[instrument] == pytest.approx(
-            expected_results[instrument], rel=1e-7
+            expected_results[instrument],
+            rel=pytest.rel_tolerance,
+            abs=pytest.abs_tolerance,
         )

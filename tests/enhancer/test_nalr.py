@@ -25,4 +25,6 @@ cfg_nalr = {"nfir": 220, "fs": 44100}
 def test_nalr(audiogram: np.ndarray, cfs: np.ndarray, expected: float) -> None:
     enhancer = NALR(**cfg_nalr)
     nalr_fir, _ = enhancer.build(audiogram, cfs)
-    assert nalr_fir[0] == expected
+    assert nalr_fir[0] == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

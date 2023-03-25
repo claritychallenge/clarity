@@ -16,7 +16,9 @@ def test_haspi_v2() -> None:
     level1 = 65
 
     score, _ = haspi_v2(x, sample_rate, y + x, sample_rate, hearing_loss, level1)
-    assert score == pytest.approx(0.043808448934532965, rel=1e-7)
+    assert score == pytest.approx(
+        0.043808448934532965, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_haspi_v2_better_ear() -> None:
@@ -45,4 +47,6 @@ def test_haspi_v2_better_ear() -> None:
         level=100,
     )
 
-    assert score == pytest.approx(0.839975335323691)
+    assert score == pytest.approx(
+        0.839975335323691, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

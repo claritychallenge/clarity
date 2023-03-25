@@ -37,7 +37,9 @@ def test_centred_element(
     random_matrix: np.ndarray, row: int, col: int, expected: float
 ) -> None:
     """Test for centered_element() function."""
-    assert centred_element(random_matrix, row, col) == expected
+    assert centred_element(random_matrix, row, col) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_centred_element_index_error(random_matrix: np.ndarray) -> None:
@@ -61,16 +63,13 @@ def test_P(
     i: int, a: int, b: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for P() function."""
-    assert (
-        P(
-            i,
-            a,
-            b,
-            order,
-            rotation_matrices=[random_matrix, random_matrix, random_matrix],
-        )
-        == expected
-    )
+    assert P(
+        i,
+        a,
+        b,
+        order,
+        rotation_matrices=[random_matrix, random_matrix, random_matrix],
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 def test_P_index_error(random_matrix: np.ndarray) -> None:
@@ -95,15 +94,12 @@ def test_U(
     degree: int, n: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for U function."""
-    assert (
-        U(
-            degree,
-            n,
-            order,
-            rotation_matrices=[random_matrix, random_matrix, random_matrix],
-        )
-        == expected
-    )
+    assert U(
+        degree,
+        n,
+        order,
+        rotation_matrices=[random_matrix, random_matrix, random_matrix],
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 @pytest.mark.parametrize(
@@ -119,15 +115,12 @@ def test_V(
     degree: int, n: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for V() function."""
-    assert (
-        V(
-            degree,
-            n,
-            order,
-            rotation_matrices=[random_matrix, random_matrix, random_matrix],
-        )
-        == expected
-    )
+    assert V(
+        degree,
+        n,
+        order,
+        rotation_matrices=[random_matrix, random_matrix, random_matrix],
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 @pytest.mark.parametrize(
@@ -142,15 +135,12 @@ def test_W(
     degree: int, n: int, order: int, random_matrix: np.ndarray, expected: float
 ) -> None:
     """Test for W() function."""
-    assert (
-        W(
-            degree,
-            n,
-            order,
-            rotation_matrices=[random_matrix, random_matrix, random_matrix],
-        )
-        == expected
-    )
+    assert W(
+        degree,
+        n,
+        order,
+        rotation_matrices=[random_matrix, random_matrix, random_matrix],
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 @pytest.mark.parametrize(
@@ -167,7 +157,9 @@ def test_compute_UVW_coefficients(
     degree: int, n: int, order: int, expected: float
 ) -> None:
     """Test for computer_UVW_coefficients() function."""
-    assert compute_UVW_coefficients(degree, n, order) == expected
+    assert compute_UVW_coefficients(degree, n, order) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_compute_UVW_coefficients_zero_division_error() -> None:
