@@ -1,4 +1,6 @@
 """Fixtures for testing."""
+from __future__ import annotations
+
 from pathlib import Path
 
 import numpy as np
@@ -12,9 +14,26 @@ rng = np.random.default_rng(SEED)
 
 
 @pytest.fixture
-def random_matrix() -> np.ndarray:
+def make_random_matrix():
     """Generate a random matrix for use in tests."""
-    return np.asarray(rng.random((100, 100)))
+
+    # The fixture returns a function that can be called to generate a random matrix
+    # >>> def my_test(random_matrix):
+    # >>>     matrix = random_matrix(seed=1234)
+    # or use the global seed
+    # >>>     matrix = random_matrix()
+    # or
+    def _random_matrix(seed: int | None = None) -> np.ndarray:
+        if seed is not None:
+            # Seed is supplied so use a generator with that seed...
+            rng_to_use = np.random.default_rng(seed)
+        else:
+            # ... else use the global generator
+            print("HERE...")
+            rng_to_use = rng
+        return np.asarray(rng_to_use.random((100, 100)))
+
+    return _random_matrix
 
 
 def pytest_configure() -> None:
