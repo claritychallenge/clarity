@@ -6,6 +6,7 @@ import logging
 import numpy as np
 from numba import njit
 from numba.typed import List as TypedList  # pylint: disable=no-name-in-module
+from numpy import ndarray
 from scipy.signal import convolve
 from scipy.spatial.transform import Rotation as R
 from scipy.special import comb
@@ -56,7 +57,7 @@ def convert_a_to_b_format(
 
 # Code for generation ambisonic rotation matrices
 @njit
-def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
+def compute_rotation_matrix(n: int, foa_rotmat: ndarray) -> ndarray:
     """Generate a rotation matrix to rotate HOA soundfield.
 
     Based on [1]_ and [2]_. Operates on HOA of a given order rotates by azimuth theta
@@ -92,7 +93,6 @@ def compute_rotation_matrix(n: int, foa_rotmat: np.ndarray) -> np.ndarray:
 
     sub_matrices = [np.eye(i * 2 + 1) for i in np.arange(n + 1)]
     sub_matrices[1] = foa_rotmat
-
     typed_sub_matrices = TypedList()
     for x in sub_matrices:
         typed_sub_matrices.append(x)
@@ -297,7 +297,6 @@ def compute_band_rotation(order, rotation_matrices, output):
         matrix: rotation submatrix
     """
     # print(f'entering band rotation with l = {el}')
-
     for row, m in enumerate(np.arange(-order, order + 1, 1)):
         for col, n in enumerate(np.arange(-order, order + 1, 1)):
             u, v, w = compute_UVW_coefficients(m, n, order)
@@ -360,7 +359,7 @@ class HOARotator:
             foa_rotmat = np.linalg.inv(foa_rotmat)
             self.rotmat[i, :, :] = compute_rotation_matrix(order, foa_rotmat)
 
-    def rotate(self, signal, rotation_vector):
+    def rotate(self, signal: ndarray, rotation_vector: ndarray) -> ndarray:
         """Apply rotation to HOA signals using precomputed rotation matrices.
 
         Args:
@@ -389,7 +388,11 @@ class HOARotator:
         return signal
 
 
-def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
+def binaural_mixdown(
+    ambisonic_signals: ndarray,
+    hrir,
+    hrir_metadata,
+) -> ndarray:
     """Perform binaural mixdown of ambisonic signals.
 
     Args:
@@ -425,8 +428,8 @@ def binaural_mixdown(ambisonic_signals, hrir, hrir_metadata):
 
 
 def ambisonic_convolve(
-    signal: np.ndarray, hoa_impulse_responses: np.ndarray, order: int
-) -> np.ndarray:
+    signal: ndarray, hoa_impulse_responses: ndarray, order: int
+) -> ndarray:
     """Convolve HOA Impulse Responses with signals.
 
     Args:
@@ -438,6 +441,11 @@ def ambisonic_convolve(
         np.ndarray[samples, channels]: the convolved signal
     """
     n = (order + 1) ** 2
+    if n > hoa_impulse_responses.shape[1]:
+        raise ValueError(
+            f"Number of channels in impulse response ({hoa_impulse_responses.shape[1]})"
+            f" must be >= number of channels required for order {order} ({n})"
+        )
     return np.array(
         [
             convolve(impulse_response, signal)
@@ -446,7 +454,7 @@ def ambisonic_convolve(
     ).T
 
 
-def compute_rms(input_signal: np.ndarray, axis: int = 0) -> float:
+def compute_rms(input_signal: ndarray, axis: int = 0) -> ndarray:
     """Compute rms values along a given axis.
     Args:
         input_signal (np.ndarray): Input signal
@@ -458,7 +466,7 @@ def compute_rms(input_signal: np.ndarray, axis: int = 0) -> float:
     return np.sqrt(np.mean(input_signal**2, axis=axis))
 
 
-def equalise_rms_levels(inputs: list[np.ndarray]) -> list[np.ndarray]:
+def equalise_rms_levels(inputs: list[ndarray]) -> list[ndarray]:
     """Equalise RMS levels.
 
     Args:
@@ -473,7 +481,7 @@ def equalise_rms_levels(inputs: list[np.ndarray]) -> list[np.ndarray]:
     return outputs
 
 
-def dB_to_gain(x: float) -> float:
+def dB_to_gain(x: int | float) -> float:
     """Convert dB to gain.
 
     Args:
@@ -486,8 +494,8 @@ def dB_to_gain(x: float) -> float:
 
 
 def smoothstep(
-    x: np.ndarray, x_min: float = 0, x_max: float = 1, N: int = 1
-) -> np.ndarray:
+    x: ndarray, x_min: float = 0.0, x_max: float = 1.0, N: int = 1
+) -> ndarray:
     """Apply the smoothstep function.
 
     Args:
@@ -512,7 +520,7 @@ def smoothstep(
 
 def rotation_control_vector(
     array_length: int, start_index: int, end_index: int, smoothness: int = 1
-) -> np.ndarray:
+) -> ndarray:
     """Generate mapped rotation control vector for values of theta.
 
     Args:
@@ -541,7 +549,7 @@ def compute_rotation_vector(
     signal_length: int,
     start_idx: int,
     end_idx: int,
-) -> np.ndarray:
+) -> ndarray:
     """Compute the rotation vector.
 
     Args:

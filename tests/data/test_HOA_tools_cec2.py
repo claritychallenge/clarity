@@ -4,28 +4,64 @@ import pytest
 
 # HOARotator,; ambisonic_convolve,; binaural_mixdown,;;;
 # compute_band_rotation,;; compute_rotation_matrix,;  dot,; dot,
-from clarity.data.HOA_tools_cec2 import (  # compute_rotation_matrix,
+from clarity.data.HOA_tools_cec2 import (
     HOARotator,
     P,
     U,
     V,
     W,
+    ambisonic_convolve,
+    binaural_mixdown,
     centred_element,
+    compute_band_rotation,
     compute_rms,
+    compute_rotation_matrix,
     compute_rotation_vector,
     compute_UVW_coefficients,
+    convert_a_to_b_format,
     dB_to_gain,
+    dot,
     equalise_rms_levels,
     rotation_control_vector,
     smoothstep,
 )
 
-# def test_compute_rotation_matrix() -> None:
-#    """Test for compute_rotation_matrix() function."""
-#    # rot_mat = compute_rotation_matrix(2, np.eye(3))
-#    compute_rotation_matrix(
-#        2, np.array([[0, 0, -1.0], [0, 1.0, 0], [1.0, 0, 0]])
-#    )
+
+def test_convert_a_to_b_format() -> None:
+    """Test for convert_a_to_b_format() function."""
+    np.random.seed(1234)
+    signal = np.random.random((4, 100))
+    result = convert_a_to_b_format(
+        signal[0, :], signal[1, :], signal[2, :], signal[3, :]
+    )
+    assert result.shape == (4, 100)
+    assert np.sum(np.abs(signal)) == pytest.approx(208.78666127520782)
+
+
+def test_convert_a_to_b_format_index_error() -> None:
+    """Test convert_a_to_b_format() raises IndexError if inputs not same length."""
+    with pytest.raises(ValueError):
+        convert_a_to_b_format(np.zeros(100), np.zeros(100), np.zeros(100), np.zeros(80))
+
+
+def test_compute_rotation_matrix() -> None:
+    """Test for compute_rotation_matrix() function."""
+    order = 2
+    rot_mat_dim = (order + 1) ** 2
+
+    # Test for identity matrix
+    rot_mat = compute_rotation_matrix(order, np.eye(3))
+    assert rot_mat == pytest.approx(np.eye(rot_mat_dim))
+
+    # Test for 90 degree rotation about x-axis
+    rot_mat = compute_rotation_matrix(
+        2, np.array([[0.0, 0.0, -1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]])
+    )
+    assert rot_mat.shape == (rot_mat_dim, rot_mat_dim)
+    # For this matrix, all values should be either 0, 1 or -1
+    assert np.all(
+        np.isclose(rot_mat, 0.0) + np.isclose(rot_mat, 1.0) + np.isclose(rot_mat, -1.0)
+    )
 
 
 def test_hoa_rotator_construction() -> None:
@@ -33,15 +69,57 @@ def test_hoa_rotator_construction() -> None:
 
     # Testing 2nd order matrix with a 90 degree rotation step
     hoa_rotator = HOARotator(2, 90)
-    assert hoa_rotator.rotmat.shape == (4, 9, 9)
+    rot_mat = hoa_rotator.rotmat
+    assert rot_mat.shape == (4, 9, 9)
+    rot90 = np.array([[0.0, 0.0, -1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]])
+    assert rot_mat[1, :, :] == pytest.approx(compute_rotation_matrix(2, rot90))
+    # For multiples of 90 degrees all entries should be either 0, 1 or -1
+    assert np.all(
+        np.isclose(rot_mat, 0.0) + np.isclose(rot_mat, 1.0) + np.isclose(rot_mat, -1.0)
+    )
+
+
+def test_hoa_rotate_no_rotation() -> None:
+    """Test the HOARotator rotate method"""
+
+    # 1st order ambinsonic signal, ie 4 channels
+    np.random.seed(1234)
+    signal = np.random.random((100, 4))
+    # equal length signal specify rotation for each sample
+    rotations = np.zeros(100)
+    # Apply the rotation
+    hoa_rotator = HOARotator(1, 90)
+    result = hoa_rotator.rotate(signal, rotations)
+    assert result.shape == (100, 4)
+    assert result == pytest.approx(signal)
+
+
+@pytest.mark.parametrize(
+    "seed, expected",
+    [
+        (1234, 34.9827354617758),
+        (1235, 37.63083581519224),
+        (1236, 35.83739821236641),
+    ],
+)
+def test_hoa_rotate(seed: int, expected: float) -> None:
+    """Test the HOARotator rotate method"""
+
+    # 1st order ambinsonic signal, ie 4 channels
+    np.random.seed(seed)
+    signal = np.random.random((20, 4))
+    rotations = np.random.random(20)
+    hoa_rotator = HOARotator(1, 90)
+    result = hoa_rotator.rotate(signal, rotations)
+    assert np.sum(np.abs(result)) == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(
     "seed, row, col, expected",
     [
         (1234, 1, 1, 0.740996817336437),
-        (1235, 45, 54, 0.078972915583452),
-        (1236, 18, 91, 0.522131631590338),
+        (1235, 45, 24, 0.2617612929455504),
+        (1236, 18, 47, 0.2706397841499083),
     ],
 )
 def test_centred_element(
@@ -49,9 +127,7 @@ def test_centred_element(
 ) -> None:
     """Test for centered_element() function."""
     random_matrix = make_random_matrix(seed)
-    assert centred_element(random_matrix, row, col) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert centred_element(random_matrix, row, col) == pytest.approx(expected)
 
 
 def test_centred_element_index_error(make_random_matrix) -> None:
@@ -85,7 +161,7 @@ def test_P(
         b,
         order,
         rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
-    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
+    ) == pytest.approx(expected)
 
 
 def test_P_index_error(make_random_matrix) -> None:
@@ -119,7 +195,7 @@ def test_U(
         n,
         order,
         rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
-    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
+    ) == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(
@@ -143,7 +219,7 @@ def test_V(
         n,
         order,
         rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
-    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
+    ) == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(
@@ -167,7 +243,7 @@ def test_W(
         n,
         order,
         rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
-    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
+    ) == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(
@@ -184,9 +260,7 @@ def test_compute_UVW_coefficients(
     degree: int, n: int, order: int, expected: float
 ) -> None:
     """Test for computer_UVW_coefficients() function."""
-    assert compute_UVW_coefficients(degree, n, order) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert compute_UVW_coefficients(degree, n, order) == pytest.approx(expected)
 
 
 def test_compute_UVW_coefficients_zero_division_error() -> None:
@@ -195,90 +269,133 @@ def test_compute_UVW_coefficients_zero_division_error() -> None:
         compute_UVW_coefficients(degree=-1, n=2, order=-2)
 
 
-# TODO : Not yet working, I don't understand how to get `output` passed in correctly
-# @pytest.mark.parametrize(
-#     "el, output, expected",
-#     [
-#         (2, np.asarray([0, 0]), np.asarray([[1, 2], [3, 4]])),
-#     ],
-# )
-# def test_compute_band_rotation(el: int, output: np.ndarray,
-#   make_random_matrix, expected: np.ndarray) -> None:
-#     """Test for compute_band_rotation() function."""
-#     np.testing.assert_array_equal(compute_band_rotation(el,
-# [make_random_matrix(), make_random_matrix()], output), expected)
+def test_compute_band_rotation() -> None:
+    """Test for compute_band_rotation() function."""
+
+    # This is not a very useful test as it is just one special case
+    # but this function is tested implicitly in other tests
+    order = 2
+    rot_mats = [np.eye(1), np.eye(3), np.eye(5)]
+    output = np.eye(9)
+    new_output, new_rotation_matrices = compute_band_rotation(order, rot_mats, output)
+    # output and rotation matrices should be unchanged
+    assert new_output.shape == (9, 9)
+    assert new_output == pytest.approx(np.eye(9))
+    for new_rot_mat, expected_rot_mat in zip(new_rotation_matrices, rot_mats):
+        assert new_rot_mat == pytest.approx(expected_rot_mat)
 
 
-# TODO : Not working yet, results in a typing error???
-# @pytest.mark.parametrize(
-#     "A, B, expected",
-#     [
-#         (np.asarray([[1, 2], [3, 4]]), np.asarray([[4, 3], [2, 1]]),
-#               np.asarray([[1, 2], [3, 4]])),
-#         (np.asarray([[5, 6], [7, 8]]), np.asarray([[8, 7], [6, 5]]),
-#               np.asarray([[1, 2], [3, 4]])),
-#     ],
-# )
-# def test_dot(A: np.ndarray, B: np.ndarray, expected: np.ndarray) -> None:
-#     """Test for dot() function."""
-#     np.testing.assert_array_equal(dot(A, B), expected)
-
-
-def test_HOARotator() -> None:
-    """Test for test_HOARotator class."""
-    assert True
+@pytest.mark.parametrize(
+    "A, B, expected",
+    [
+        (
+            np.asarray([[1.0, 2.0], [3.0, 4.0]]),
+            np.asarray([[4.0, 3.0], [2.0, 1.0]]),
+            np.asarray([[8.0, 5.0], [20.0, 13.0]]),
+        ),
+        (
+            np.asarray([[5.0, 6.0], [7.0, 8.0]]),
+            np.asarray([[8.0, 7.0], [6.0, 5.0]]),
+            np.asarray([[76.0, 65.0], [104.0, 89.0]]),
+        ),
+    ],
+)
+def test_dot(A: np.ndarray, B: np.ndarray, expected: np.ndarray) -> None:
+    """Test for dot() function."""
+    result = dot(A, B)
+    assert result == pytest.approx(expected)
 
 
 # TODO : need examples of hrir_metadata dictionary to be able to write a tests for this
 def test_binaural_mixdown() -> None:
     """Test for binaural_mixdown() function."""
-    assert True
+    np.random.seed(1234)
+    hrir = {"M_data": np.random.random((100, 6, 2))}  # 6 random hrir filters
+    hrir_filters = [0, 2, 3, 5]  # 4 channels selected of possible 6
+    n_hrir_filters = len(hrir_filters)
+    hrir_metadata = {
+        "selected_channels": hrir_filters,
+        "matrix": np.eye(n_hrir_filters),  # no rotation
+    }
+    signals = np.random.random((100, n_hrir_filters))
+
+    result = binaural_mixdown(signals, hrir, hrir_metadata)
+    assert result.shape == (199, 2)
+    assert np.sum(np.abs(result)) == pytest.approx(19647.32682819124)
 
 
 def test_ambisonic_convolve() -> None:
     """Test for ambisonic_convolve() function."""
-    assert True
+    np.random.seed(1234)
+    signal = np.random.randn(100)
+    hoa_irs = np.random.random((100, 64))
+    order = 2
+    result = ambisonic_convolve(signal, hoa_irs, order=order)
+    # channel
+    assert result.shape == (199, (order + 1) ** 2)
+    assert np.sum(np.abs(result)) == pytest.approx(3359.04412270433)
+
+
+def test_ambisonic_convolve_error() -> None:
+    """Test for ambisonic_convolve() function."""
+    signal = np.random.randn(100)
+    hoa_irs = np.random.random((100, 64))
+    order = 10  # too high for number of hoa_ir channels
+    with pytest.raises(ValueError):
+        ambisonic_convolve(signal, hoa_irs, order=order)
 
 
 @pytest.mark.parametrize(
     "array, axis, expected",
     [
         (
-            np.asarray([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+            np.asarray([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]),
             0,
             [
-                np.sqrt(np.mean([1**2, 4**2, 7**2])),
-                np.sqrt(np.mean([2**2, 5**2, 8**2])),
-                np.sqrt(np.mean([3**2, 6**2, 9**2])),
+                np.sqrt(np.mean([1.0**2, 4.0**2, 7.0**2])),
+                np.sqrt(np.mean([2.0**2, 5.0**2, 8.0**2])),
+                np.sqrt(np.mean([3.0**2, 6.0**2, 9.0**2])),
             ],
         ),
         (
-            np.asarray([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+            np.asarray([[1.0, 2.0, 3.0], [4, 5.0, 6.0], [7.0, 8.0, 9.0]]),
             1,
             [
-                np.sqrt(np.mean([1**2, 2**2, 3**2])),
-                np.sqrt(np.mean([4**2, 5**2, 6**2])),
-                np.sqrt(np.mean([7**2, 8**2, 9**2])),
+                np.sqrt(np.mean([1.0**2, 2.0**2, 3.0**2])),
+                np.sqrt(np.mean([4.0**2, 5.0**2, 6.0**2])),
+                np.sqrt(np.mean([7.0**2, 8.0**2, 9.0**2])),
             ],
         ),
     ],
 )
 def test_compute_rms(array: np.ndarray, axis: int, expected: float) -> None:
     """Test for compute_rms() function along both axes."""
-    np.testing.assert_array_equal(compute_rms(input_signal=array, axis=axis), expected)
+    result = compute_rms(input_signal=array, axis=axis)
+    assert result == pytest.approx(expected)
 
 
-def test_equalise_rms_levels(make_random_matrix) -> None:
+def test_equalise_rms_levels() -> None:
     """Test for equalise_rms_levels() function."""
-    assert equalise_rms_levels(inputs=[make_random_matrix(), make_random_matrix()])
+    np.random.seed(1234)
+    signal_1 = np.random.random((100, 2)) * 100
+    signal_2 = np.random.random((100, 2)) * 200
+    signal_3 = np.random.random((100, 2)) * 200
+    results = equalise_rms_levels(inputs=[signal_1, signal_2, signal_3])
+    # Check all have same level after equalisation
+    rms_1 = compute_rms(results[0], axis=0)
+    rms_2 = compute_rms(results[1], axis=0)
+    rms_3 = compute_rms(results[2], axis=0)
+    assert rms_1[0] == pytest.approx(rms_3[0])
+    assert rms_2[0] == pytest.approx(rms_3[0])
 
 
 @pytest.mark.parametrize(
     "db, gain", [(10, 3.1622776601683795), (20, 10.0), (0.045, 1.0051942600951387)]
 )
 def test_dB_to_gain(db: float, gain: float) -> None:
-    """Test for XX function."""
-    assert dB_to_gain(db) == gain
+    """Test for test_dB_to_gain function."""
+    result = dB_to_gain(db)
+    assert result == pytest.approx(gain)
 
 
 @pytest.mark.parametrize(
@@ -286,29 +403,29 @@ def test_dB_to_gain(db: float, gain: float) -> None:
     [
         (
             np.asarray([100, 200, 300, 400]),
-            10,
-            300,
+            10.0,
+            300.0,
             1,
-            np.asarray([0.229161, 0.725286, 1.0, 1.0]),
+            np.asarray([0.22916068719504698, 0.725286, 1.0, 1.0]),
         ),
         (
             np.asarray([10, 200, 300, 4000]),
-            10,
-            300,
+            10.0,
+            300.0,
             1,
             np.asarray([0.0, 0.725286, 1.0, 1.0]),
         ),
         (
             np.asarray([10, -200, 300, 4000]),
-            -200,
-            300,
+            -200.0,
+            300.0,
             1,
             np.asarray([0.381024, 0.0, 1.0, 1.0]),
         ),
         (
             np.asarray([10, -50, 300, 4000]),
-            -200,
-            300,
+            -200.0,
+            300.0,
             1,
             np.asarray([0.381024, 0.216, 1.0, 1.0]),
         ),
@@ -318,7 +435,8 @@ def test_smoothstep(
     x: np.ndarray, x_min: float, x_max: float, N: int, expected
 ) -> None:
     """Test for smoothstep() function."""
-    np.testing.assert_array_almost_equal(smoothstep(x, x_min, x_max, N), expected)
+    result = smoothstep(x, x_min, x_max, N)
+    assert result == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(
@@ -337,9 +455,9 @@ def test_rotation_control_vector(
     array_length: int, start_idx: int, end_idx: int, expected: np.ndarray
 ) -> None:
     """Test for rotation_control_vector() function."""
-    np.testing.assert_array_equal(
-        rotation_control_vector(array_length, start_idx, end_idx), expected
-    )
+
+    result = rotation_control_vector(array_length, start_idx, end_idx)
+    assert result == pytest.approx(expected)
 
 
 @pytest.mark.parametrize(
