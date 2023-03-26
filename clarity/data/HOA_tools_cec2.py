@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import numpy as np
 from numba import njit
@@ -390,8 +391,8 @@ class HOARotator:
 
 def binaural_mixdown(
     ambisonic_signals: ndarray,
-    hrir,
-    hrir_metadata,
+    hrir: dict[str, Any],
+    hrir_metadata: dict[str, Any],
 ) -> ndarray:
     """Perform binaural mixdown of ambisonic signals.
 
