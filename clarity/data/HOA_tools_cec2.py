@@ -127,7 +127,13 @@ def centred_element(reference: np.ndarray, row: int, col: int):
 
 
 @njit
-def P(i, a, b, order, rotation_matrices):
+def P(
+    i: int,
+    a: int,
+    b: int,
+    order: int,
+    rotation_matrices: TypedList,
+) -> TypedList:
     """P function for rotation matrix calculation.
 
     Args:
@@ -166,7 +172,12 @@ def P(i, a, b, order, rotation_matrices):
 
 
 @njit
-def U(degree, n, order, rotation_matrices):
+def U(
+    degree: int,
+    n: int,
+    order: int,
+    rotation_matrices: TypedList,
+) -> TypedList:
     """U coefficient initialiser for rotation matrix calculation.
 
     Args:
@@ -183,7 +194,12 @@ def U(degree, n, order, rotation_matrices):
 
 
 @njit
-def V(degree, n, order, rotation_matrices):
+def V(
+    degree: int,
+    n: int,
+    order: int,
+    rotation_matrices: TypedList,
+) -> TypedList:
     """V coefficient initialiser for rotation matrix calculation.
 
     Args:
@@ -195,7 +211,7 @@ def V(degree, n, order, rotation_matrices):
     Returns:
         float: V value
     """
-    d = 0
+    d = 0.0
     if degree == 0:
         v_coeff = P(1, 1, n, order, rotation_matrices) + P(
             -1, -1, n, order, rotation_matrices
@@ -216,7 +232,7 @@ def V(degree, n, order, rotation_matrices):
 
 
 @njit
-def W(degree, n, order, rotation_matrices):
+def W(degree: int, n: int, order: int, rotation_matrices: TypedList) -> TypedList:
     """W coefficient initialiser for rotation matrix calculation.
 
     Args:
@@ -286,7 +302,7 @@ def compute_UVW_coefficients(degree, n, order):
 
 
 @njit
-def compute_band_rotation(order, rotation_matrices, output):
+def compute_band_rotation(order: int, rotation_matrices: TypedList, output):
     """Compute submatrix for rotation matrix.
 
     Args:

@@ -1,6 +1,7 @@
 """Tests for the data.HOA_tools_cec2 module."""
 import numpy as np
 import pytest
+from numba.typed import List as TypedList  # pylint: disable=no-name-in-module
 
 # HOARotator,; ambisonic_convolve,; binaural_mixdown,;;;
 # compute_band_rotation,;; compute_rotation_matrix,;  dot,; dot,
@@ -160,19 +161,20 @@ def test_P(
         a,
         b,
         order,
-        rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
+        rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
     ) == pytest.approx(expected)
 
 
 def test_P_index_error(make_random_matrix) -> None:
     """Test P() raises IndexError if invalid indices to r are provided."""
     random_matrix = make_random_matrix()
+    rotation_matrices = TypedList([random_matrix])
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=1, order=1, rotation_matrices=[random_matrix])
+        assert P(i=1, a=5, b=1, order=1, rotation_matrices=rotation_matrices)
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=1, order=-1, rotation_matrices=[random_matrix])
+        assert P(i=1, a=5, b=1, order=-1, rotation_matrices=rotation_matrices)
     with pytest.raises(IndexError):
-        assert P(i=1, a=5, b=4, order=3, rotation_matrices=[random_matrix])
+        assert P(i=1, a=5, b=4, order=3, rotation_matrices=rotation_matrices)
 
 
 @pytest.mark.parametrize(
@@ -194,7 +196,7 @@ def test_U(
         degree,
         n,
         order,
-        rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
+        rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
     ) == pytest.approx(expected)
 
 
@@ -218,7 +220,7 @@ def test_V(
         degree,
         n,
         order,
-        rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
+        rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
     ) == pytest.approx(expected)
 
 
@@ -242,7 +244,7 @@ def test_W(
         degree,
         n,
         order,
-        rotation_matrices=[r1_matrix, r2_matrix, r3_matrix],
+        rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
     ) == pytest.approx(expected)
 
 
@@ -275,7 +277,7 @@ def test_compute_band_rotation() -> None:
     # This is not a very useful test as it is just one special case
     # but this function is tested implicitly in other tests
     order = 2
-    rot_mats = [np.eye(1), np.eye(3), np.eye(5)]
+    rot_mats = TypedList([np.eye(1), np.eye(3), np.eye(5)])
     output = np.eye(9)
     new_output, new_rotation_matrices = compute_band_rotation(order, rot_mats, output)
     # output and rotation matrices should be unchanged
