@@ -1,4 +1,5 @@
 """Supplied dataclass to represent a monaural audiogram"""
+from __future__ import annotations
 
 from dataclasses import dataclass
 
@@ -40,7 +41,7 @@ class Audiogram:
     cfs: np.ndarray = np.array(DEFAULT_CLARITY_CFS)
 
     @property
-    def severity(self):
+    def severity(self) -> str:
         """Categorise HL severity level for the audiogram.
 
         Note that this categorisation is different from that of the British

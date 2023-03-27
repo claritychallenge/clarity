@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 import scipy
+from numpy import ndarray
 from scipy import signal
 
 from clarity.evaluator.msbg.audiogram import Audiogram
@@ -46,8 +47,8 @@ HL_PARAMS: dict[str, dict[str, Any]] = {
 
 
 def compute_recruitment_parameters(
-    gtn_cf: np.ndarray, audiogram: Audiogram, catch_up: float
-) -> tuple[np.ndarray, np.ndarray]:
+    gtn_cf: ndarray, audiogram: Audiogram, catch_up: float
+) -> tuple[ndarray, ndarray]:
     """Compute parameters to be used in recruitment model.
 
     Computes expansion ratios for each gammatone filterbank channel and
@@ -87,13 +88,13 @@ def compute_recruitment_parameters(
 
 
 def gammatone_filterbank(
-    x: np.ndarray,
+    x: ndarray,
     ngamma: int,
     gtn_filters: FilterBank,
-    gtn_delays: np.ndarray,
+    gtn_delays: ndarray,
     start2poleHP: int,
     hp_filters: FilterBank,
-) -> np.ndarray:
+) -> ndarray:
     """Pass signal through gammatone filterbank.
 
     Args:
@@ -136,9 +137,7 @@ def gammatone_filterbank(
     return cochleagram
 
 
-def compute_envelope(
-    coch_sig: np.ndarray, erbn_cf: np.ndarray, fs: float
-) -> np.ndarray:
+def compute_envelope(coch_sig: ndarray, erbn_cf: ndarray, fs: int | float) -> ndarray:
     """Obtain signal envelope.
 
     Envelope computed using full-wave rectification and low-pass filter
@@ -174,12 +173,12 @@ def compute_envelope(
 
 
 def recruitment(
-    coch_sig: np.ndarray,
-    envelope: np.ndarray,
-    SPL_equiv_0dB: float,
-    expansion_ratios: np.ndarray,
-    eq_loud_db: np.ndarray,
-) -> np.ndarray:
+    coch_sig: ndarray,
+    envelope: ndarray,
+    SPL_equiv_0dB: int | float,
+    expansion_ratios: ndarray,
+    eq_loud_db: ndarray,
+) -> ndarray:
     """Simulate loudness recruitment.
 
     Args:
@@ -225,7 +224,7 @@ class Cochlea:
 
     def __init__(
         self, audiogram: Audiogram, catch_up_level: float = 105.0, fs: float = 44100.0
-    ):
+    ) -> None:
         """Cochlea constructor.
 
         Args:
@@ -241,7 +240,7 @@ class Cochlea:
 
         # Compute severity level and set parameters accordingly
         severity_level = self.audiogram.severity
-        self.gtfbank_params = read_gtf_file(
+        self.gtfbank_params: dict[str, Any] = read_gtf_file(
             f"msbg_hparams/{HL_PARAMS[severity_level]['gtfbank_file']}.json"
         )
         self.cf_expansion, self.eq_loud_db_catch_up = compute_recruitment_parameters(
@@ -256,7 +255,7 @@ class Cochlea:
 
         logging.info("Severity level - %s", severity_level)
 
-    def simulate(self, coch_sig: np.ndarray, equiv_0dB_file_SPL: float) -> np.ndarray:
+    def simulate(self, coch_sig: ndarray, equiv_0dB_file_SPL: int | float) -> ndarray:
         """Pass a signal through the cochlea.
 
         Args:
