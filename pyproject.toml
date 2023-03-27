@@ -68,6 +68,7 @@ tests = [
   "pytest-cov",
   "pytest-mpl",
   "pytest-regtest",
+  "pytest-xdist",
   "yamllint",
 ]
 docs =[
@@ -205,6 +206,7 @@ exclude = [
 # per-file-ignores = []
 line-length = 88
 target-version = "py37"
+select = ["B", "E", "F", "I001", "W"]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F", "R", "S", "W", "U"]
 
