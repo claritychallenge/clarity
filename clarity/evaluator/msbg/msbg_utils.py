@@ -17,7 +17,6 @@ WIN_SECS = 0.01
 
 # read & write signal parameters
 MSBG_FS = 44100
-TEST_NBITS = 16
 
 # fmt: off
 HZ = np.array(
@@ -501,7 +500,8 @@ def pad(signal, length):
 
     Assumes required length is not less than input length.
     """
-    assert length >= signal.shape[0]
+    if length < signal.shape[0]:
+        raise ValueError("Required length is less than input length")
     return np.pad(
         signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
     )
@@ -555,14 +555,20 @@ def write_signal(
     signal: np.ndarray,
     sample_frequency: float,
     floating_point: bool = True,
+    strict: bool = False,
 ) -> None:
     """Write a signal as fixed or floating point wav file.
+
+    NB: setting 'strict' to True will raise error on overflow. This would be
+    a more natural default but it would break existing code that did not
+    check for overflow.
 
     Args:
         filename (str|Path): name of file in to write to.
         signal (ndarray): signal to write.
         sample_frequency (float): sampling frequency.
         floating_point (bool): write as floating point else an ints (default: True).
+        strict (bool): raise error if signal out of range for int16 (default: False).
     """
 
     if sample_frequency != MSBG_FS:
@@ -573,14 +579,13 @@ def write_signal(
         # raise ValueError("Sampling rate mismatch")
 
     if floating_point is False:
-        if TEST_NBITS == 16:
-            subtype = "PCM_16"
-            # If signal is float and we want int16
-            signal *= 32768
-            signal = signal.astype(np.dtype("int16"))
-            assert np.max(signal) <= 32767 and np.min(signal) >= -32768
-        elif TEST_NBITS == 24:
-            subtype = "PCM_24"
+        subtype = "PCM_16"
+        # Signal is float and we want to convert to int16
+        # *NB* Not  *= in next line as we need to make a copy
+        signal = signal * 32768
+        if strict and (np.max(signal) > 32767 or np.min(signal) < -32768):
+            raise ValueError("Signal out of range -1.0 to 1.0")
+        signal = signal.astype(np.dtype("int16"))
     else:
         subtype = "FLOAT"
 
