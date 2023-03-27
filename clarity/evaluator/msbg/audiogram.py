@@ -55,11 +55,13 @@ class Audiogram:
             str -- severity level, one of SEVERE, MODERATE, MILD, NOTHING
 
         """
-        # calculate mean hearing loss between 2 & 8 kHz
-        impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
-        tmp = self.levels[impairment_freqs]
+        # calculate mean hearing loss between critical frequencies of 2 & 8 kHz
+        critical_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
+        critical_levels = self.levels[critical_freqs]
+        # Remove any None values
+        critical_levels = [x for x in critical_levels if x is not None]
         # Ignore any None values
-        impairment_degree = np.mean(tmp[tmp is not None])
+        impairment_degree = np.mean(critical_levels) if len(critical_levels) > 0 else 0
 
         if impairment_degree > 56:
             severity_level = "SEVERE"
