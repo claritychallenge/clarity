@@ -152,7 +152,6 @@ def compute_envelope(
         ndarray: signal envelope
 
     """
-
     envelope = np.zeros(coch_sig.shape)
     n_chans = coch_sig.shape[0]
     for ixch in np.arange(0, n_chans):
