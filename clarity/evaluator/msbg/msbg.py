@@ -1,4 +1,6 @@
 """Implementation of the MSBG hearing loss model."""
+from __future__ import annotations
+
 import logging
 import math
 
@@ -78,7 +80,10 @@ class Ear:
 
     @staticmethod
     def src_to_cochlea_filt(
-        ip_sig: np.ndarray, src_correction: str, sample_frequency: int, backward=False
+        ip_sig: np.ndarray,
+        src_correction: np.ndarray,
+        sample_frequency: int,
+        backward=False,
     ) -> np.ndarray:
         """Simulate middle and outer ear transfer functions.
 
@@ -91,7 +96,9 @@ class Ear:
 
         Args:
             ip_sig (ndarray): signal to process
-            src_correction (str): correction to make for src position
+            src_correction (np.ndarray): correction to make for src position as an array
+                returned by get_src_correction(src_pos) where src_pos is one of ff, df
+                or ITU
             sample_frequency (int): sampling frequency
             backward (bool, optional): if true then cochlea to src (default: False)
 
@@ -129,11 +136,13 @@ class Ear:
 
         return op_sig
 
-    def make_calibration_signal(self, ref_rms_db):
+    def make_calibration_signal(
+        self, ref_rms_db: float
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Add the calibration signal to the start of the signal.
 
         Args:
-            ref_rms_db (ndarray): input signal
+            ref_rms_db (float): reference rms level in dB
 
         Returns:
             ndarray: the processed signal
@@ -190,6 +199,7 @@ class Ear:
             logging.error(
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
+            raise ValueError("Invalid sampling frequency")
 
         logging.info("Processing {len(chans)} samples")
 
