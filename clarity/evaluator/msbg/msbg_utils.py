@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import logging
 import math
-from pathlib import Path, PosixPath
+from pathlib import Path
 
 import numpy as np
 import scipy
@@ -512,7 +512,7 @@ def pad(signal: ndarray, length: int) -> ndarray:
 
 
 def read_signal(
-    filename: PosixPath,
+    filename: str | Path,
     offset: int = 0,
     nsamples: int = -1,
     nchannels: int = 0,
@@ -555,7 +555,7 @@ def read_signal(
 
 
 def write_signal(
-    filename: PosixPath,
+    filename: str | Path,
     signal: ndarray,
     sample_frequency: int,
     floating_point: bool = True,
