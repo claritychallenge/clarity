@@ -96,14 +96,3 @@ AUDIOGRAM_MODERATE_SEVERE = Audiogram(
     cfs=FULL_STANDARD_CFS,
     levels=np.array([19, 19, 28, 35, 40, 47, 52, 56, 58, 58, 63, 70, 75, 80, 80]),
 )
-
-if __name__ == "__main__":
-    # test code
-    audiogram = Audiogram(
-        cfs=np.array([1000, 3000, 10000]), levels=np.array([10, 50, 80])
-    )
-    print(audiogram, audiogram.severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([10])).severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([20])).severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([40])).severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([90])).severity)
