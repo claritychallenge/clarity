@@ -43,8 +43,12 @@ def test_get_neural_net() -> None:
     assert len(weights_out) == len(weights_hidden)
     # Check the specific values of the weights are correct
     assert normalization_factor == 0.9508
-    assert np.sum(weights_out) == pytest.approx(-33.8515)
-    assert np.sum(weights_hidden) == pytest.approx(-670.8200)
+    assert np.sum(weights_out) == pytest.approx(
+        -33.8515, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(weights_hidden) == pytest.approx(
+        -670.82009999, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_nn_feed_forward_ensemble() -> None:
@@ -63,7 +67,9 @@ def test_nn_feed_forward_ensemble() -> None:
 
     # Check that the output is correct
     x = nn_feed_forward_ensemble(data, neural_net_params, weights_hidden, weights_out)
-    assert x == pytest.approx(0.95078679)
+    assert x == pytest.approx(
+        0.95078679, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_nn_feed_forward() -> None:
@@ -90,5 +96,9 @@ def test_nn_feed_forward() -> None:
     assert hidden[0] == pytest.approx(1.0)
     assert output[0] == pytest.approx(1.0)
     # Check that the mean of the hidden and output layers are correct
-    assert np.mean(hidden) == pytest.approx(0.599999906437356)
-    assert np.mean(output) == pytest.approx(0.982229820658455)
+    assert np.mean(hidden) == pytest.approx(
+        0.599999906437356, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.mean(output) == pytest.approx(
+        0.982229820658455, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

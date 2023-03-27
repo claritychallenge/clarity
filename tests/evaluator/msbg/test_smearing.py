@@ -35,7 +35,9 @@ def test_smear_valid_input():
     input_signal = np.random.rand(10000)
     output_signal = Smearer(r_lower, r_upper, sample_freq).smear(input_signal)
     assert output_signal.shape == (10240,)
-    assert np.sum(np.abs(output_signal)) == pytest.approx(5066.986397433977)
+    assert np.sum(np.abs(output_signal)) == pytest.approx(
+        5066.986397433977, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_make_smear_mat3_valid_input():
