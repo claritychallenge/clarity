@@ -29,7 +29,7 @@ def ear_model(
     level1,
     nchan=32,
     m_delay=1,
-    shift=0.02,
+    shift=None,
 ):
     """
     Function that implements a cochlear model that includes the middle ear,
@@ -117,11 +117,10 @@ def ear_model(
 
     # Parameters for the control filter bank
     hl_max = [100, 100, 100, 100, 100, 100]
-    _center_freq_control = center_frequency(
-        nchan, shift
-    )  # Center frequencies for the control
-    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
+    # Compute center frequencies for the control
+    _center_freq_control = center_frequency(nchan, shift)
     # Maximum BW for the control
+    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
 
     # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
@@ -357,9 +356,6 @@ def center_frequency(
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    # In the Matlab code, the loop below never evaluates
-    # (but the current code was trained with this bug)
-    shift = None  # This is to keep consistency with MATLAB code
     if shift is not None:
         k = 1
         A = 165.4  # pylint: disable=invalid-name

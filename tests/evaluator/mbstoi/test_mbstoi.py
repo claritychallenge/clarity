@@ -33,4 +33,6 @@ def test_mbstoi() -> None:
         dyn_range=60,
     )
 
-    assert mbstoi_val == pytest.approx(0.9061193314307591)
+    assert mbstoi_val == pytest.approx(
+        0.9061193314307591, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
