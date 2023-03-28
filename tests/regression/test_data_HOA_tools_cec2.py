@@ -1,5 +1,5 @@
 import numpy as np
-from numba.typed import List  # pylint: disable=no-name-in-module
+from numba.typed import List as TypedList  # pylint: disable=no-name-in-module
 from scipy.spatial.transform import Rotation as R
 
 from clarity.data import HOA_tools_cec2 as hoa
@@ -24,7 +24,7 @@ def test_P(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = [foa, hoa.compute_rotation_matrix(order, foa)]
+    rotmats = TypedList([foa, hoa.compute_rotation_matrix(order, foa)])
     p = hoa.P.py_func(0, 1, 0, order, rotmats)
     regtest.write(f"P value {p:0.3f}\n")
 
@@ -35,7 +35,7 @@ def test_U(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = List([foa, hoa.compute_rotation_matrix(order, foa)])
+    rotmats = TypedList([foa, hoa.compute_rotation_matrix(order, foa)])
     u = hoa.U.py_func(m, n, order, rotmats)
     regtest.write(f"U value {u:0.3f}\n")
 
@@ -45,7 +45,7 @@ def test_V(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = List([foa, hoa.compute_rotation_matrix(order, foa)])
+    rotmats = TypedList([foa, hoa.compute_rotation_matrix(order, foa)])
     for i in range(3):
         v = hoa.V.py_func(i - 1, n, order, rotmats)
         regtest.write(f"V[{i}] value {v:0.3f}\n")
@@ -56,7 +56,7 @@ def test_W(regtest):
     theta = 45
     order = 2
     foa = R.from_euler("y", theta, degrees=True).as_matrix()
-    rotmats = List([foa, hoa.compute_rotation_matrix(order, foa)])
+    rotmats = TypedList([foa, hoa.compute_rotation_matrix(order, foa)])
     for i in range(3):
         w = hoa.W.py_func(i - 1, n, order, rotmats)
         regtest.write(f"W[{i}] value {w:0.3f}\n")
@@ -90,6 +90,6 @@ def test_compute_band_rotation(regtest):
     if n > 1:
         for i in np.arange(2, n + 1):
             rot_mat, typed_sub_matrices = hoa.compute_band_rotation.py_func(
-                i, typed_sub_matrices, rot_mat
+                i, TypedList(typed_sub_matrices), rot_mat
             )
     regtest.write(f"Band rotations {rot_mat}, {sub_matrices}\n")
