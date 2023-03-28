@@ -8,33 +8,9 @@ from clarity.evaluator.msbg.audiogram import (
     AUDIOGRAM_MODERATE,
     AUDIOGRAM_MODERATE_SEVERE,
 )
-from clarity.predictor.torch_msbg import (
-    MSBGHearingModel,
-    audfilt,
-    makesmearmat3,
-    torchloudnorm,
-)
+from clarity.predictor.torch_msbg import MSBGHearingModel, torchloudnorm
 
 # pylint: disable=redefined-outer-name,unused-argument  # pytest fixtures
-
-
-# *NB*: Test below identical to the teset in evaluator/msbg, i.e. this
-# version of audfilt is behaving identically and can be replaced
-
-
-def test_audfilt():
-    """Test the auditory filter function"""
-    sample_freq = 44100
-    r_lower = 0.5
-    r_upper = 1.5
-    n_taps = 128
-    filter_params = audfilt(rl=r_lower, ru=r_upper, sr=sample_freq, size=n_taps)
-    assert filter_params.shape == (n_taps, n_taps)
-    assert np.sum(np.abs(filter_params)) == pytest.approx(19.879915844855944)
-
-
-# *NB*: Test below identical to the teset in evaluator/msbg, i.e. this
-# version of makesmearmat is behaving identically and can be replaced
 
 
 @pytest.fixture
@@ -65,16 +41,6 @@ def msbg_model_quick():
         kernel_size=129,
     )
     return model
-
-
-def test_make_smear_mat3_valid_input():
-    """Tests that make_smear_mat3 returns matrix with the correct dimensions"""
-    r_lower = 0.5
-    r_upper = 1.5
-    sample_freq = 44100
-    f_smear = makesmearmat3(rl=r_lower, ru=r_upper, sr=sample_freq)
-    assert f_smear.shape == (256, 256)
-    assert np.sum(np.abs(f_smear)) == pytest.approx(2273.976168294156)
 
 
 # Tests for MSBGHearingModel class

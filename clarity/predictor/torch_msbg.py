@@ -10,7 +10,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torchaudio
-from numpy import ndarray
 from scipy.fftpack import fft
 from scipy.interpolate import interp1d
 from scipy.signal import ellip, firwin, firwin2, freqz
@@ -24,6 +23,7 @@ from clarity.evaluator.msbg.msbg_utils import (
     ITU_HZ,
     MIDEAR,
 )
+from clarity.evaluator.msbg.smearing import make_smear_mat3
 
 EPS = 1e-8
 # old msbg matlab
@@ -42,61 +42,6 @@ EQUIV_0_DB_FILE_SPL = CALIB_DB_SPL - REF_RMS_DB
 EQUIV_0_DB_SPL = 100
 AHR = 20
 EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
-
-
-# MARKED FOR DELETION - TO BE REPLACE WITH EVALUATOR/MSBG VERSION
-def makesmearmat3(rl: float, ru: float, sr: int) -> ndarray:
-    fft_size = 512
-    nyquist = np.int(fft_size // 2)
-    f_nor = audfilt(1, 1, nyquist, sr)
-    f_wid = audfilt(rl, ru, nyquist, sr)
-    f_next = np.hstack([f_nor, np.zeros([nyquist, nyquist // 2])])
-
-    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=np.int):
-        f_next[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
-            f_nor[
-                i - 1, np.max([1, 2 * i - 3 * nyquist // 2]) - 1 : (2 * i - nyquist - 1)
-            ]
-        )
-    f_smear = np.linalg.lstsq(f_next, f_wid)[
-        0
-    ]  # https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
-    f_smear = f_smear[:nyquist, :]
-
-    return f_smear
-
-
-# MARKED FOR DELETION - TO BE REPLACE WITH EVALUATOR/MSBG VERSION
-def audfilt(rl: int | float, ru: int | float, size: int, sr: int) -> ndarray:
-    """Calculate an auditory filter array
-
-    Args:
-        rl: broadening factor on the lower side
-        ru: broadening factor on the upper side
-        size:
-        sr:
-
-    Returns:
-        np.ndarray
-    """
-    aud_filter = np.zeros([size, size])
-    aud_filter[0, 0] = 1.0
-    aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
-
-    g = np.zeros(size)
-    for i in np.arange(2, size + 1, 1, dtype=np.int):
-        f_hz = (i - 1) * sr / (2 * size)
-        erb_hz = 24.7 * ((f_hz * 0.00437) + 1)
-        pl = 4 * f_hz / (erb_hz * rl)
-        pu = 4 * f_hz / (erb_hz * ru)
-        j = np.arange(1, i, dtype=np.int)
-        g[j - 1] = np.abs((i - j) / (i - 1))
-        aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
-        j = np.arange(i, size + 1, dtype=np.int)
-        g[j - 1] = np.abs((i - j) / (i - 1))
-        aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
-        aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erb_hz * (rl + ru) / (2 * 24.7))
-    return aud_filter
 
 
 class MSBGHearingModel(nn.Module):
@@ -216,13 +161,13 @@ class MSBGHearingModel(nn.Module):
             gt4_bank = json.load(fp)
 
         if severe_not_moderate > 0:
-            f_smear = makesmearmat3(4, 2, sr)
+            f_smear = make_smear_mat3(4, 2, sr)
         elif severe_not_moderate == 0:
-            f_smear = makesmearmat3(2.4, 1.6, sr)
+            f_smear = make_smear_mat3(2.4, 1.6, sr)
         elif severe_not_moderate == -1:
-            f_smear = makesmearmat3(1.6, 1.1, sr)
+            f_smear = make_smear_mat3(1.6, 1.1, sr)
         elif severe_not_moderate == -2:
-            f_smear = makesmearmat3(1.001, 1.001, sr)
+            f_smear = make_smear_mat3(1.001, 1.001, sr)
 
         self.smear_nfft = 512
         self.smear_win_len = 256
