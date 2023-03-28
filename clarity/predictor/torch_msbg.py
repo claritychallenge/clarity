@@ -139,7 +139,6 @@ class MSBGHearingModel(nn.Module):
 
         current_dir = Path(__file__).parent
         gtf_dir = current_dir / "../evaluator/msbg/msbg_hparams"
-        print(impaired_degree)
         if impaired_degree > 56:
             severe_not_moderate = 1
             gt4_bank_file = gtf_dir / "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs.json"
