@@ -86,9 +86,6 @@ def test_gen_eh2008_speech_noise():
     assert np.sum(np.abs(signal)) == pytest.approx(3544.690935132768)
 
 
-# generate_key_percent
-
-
 def test_measure_rms():
     """Test measure_rms"""
     np.random.seed(0)

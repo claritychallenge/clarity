@@ -205,7 +205,7 @@ class Ear:
             logging.error(
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
-            raise ValueError("Invalid sampling frequency")
+            raise ValueError("Invalid sampling frequency, valid value is 44100")
 
         logging.info("Processing {len(chans)} samples")
 

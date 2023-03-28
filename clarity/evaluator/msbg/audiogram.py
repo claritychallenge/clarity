@@ -65,14 +65,13 @@ class Audiogram:
         impairment_degree = np.mean(critical_levels) if len(critical_levels) > 0 else 0
 
         if impairment_degree > 56:
-            severity_level = "SEVERE"
-        elif impairment_degree > 35:
-            severity_level = "MODERATE"
-        elif impairment_degree > 15:
-            severity_level = "MILD"
-        else:
-            severity_level = "NOTHING"
-        return severity_level
+            return "SEVERE"
+        if impairment_degree > 35:
+            return "MODERATE"
+        if impairment_degree > 15:
+            return "MILD"
+
+        return "NOTHING"
 
 
 # Reference processing: use to check levels between original and processed,
