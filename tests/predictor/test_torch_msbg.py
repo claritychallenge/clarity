@@ -3,11 +3,20 @@ import numpy as np
 import pytest
 import torch
 
-from clarity.predictor.torch_msbg import (  # MSBGHearingModel,
+from clarity.evaluator.msbg.audiogram import (
+    AUDIOGRAM_MILD,
+    AUDIOGRAM_MODERATE,
+    AUDIOGRAM_MODERATE_SEVERE,
+)
+from clarity.predictor.torch_msbg import (
+    MSBGHearingModel,
     audfilt,
     makesmearmat3,
     torchloudnorm,
 )
+
+# pylint: disable=redefined-outer-name,unused-argument  # pytest fixtures
+
 
 # *NB*: Test below identical to the teset in evaluator/msbg, i.e. this
 # version of audfilt is behaving identically and can be replaced
@@ -28,6 +37,36 @@ def test_audfilt():
 # version of makesmearmat is behaving identically and can be replaced
 
 
+@pytest.fixture
+def use_torch():
+    """Fixture to ensure torch is used"""
+    torch.manual_seed(0)
+    torch.set_num_threads(1)
+    # torch.set_num_interop_threads(1)
+    torch.set_default_tensor_type(torch.FloatTensor)
+
+
+@pytest.fixture
+def msbg_model():
+    """MSBG model fixture"""
+    model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+    )
+    return model
+
+
+@pytest.fixture
+def msbg_model_quick():
+    """MSBG model fixture with smaller kernel for quick testing"""
+    model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        kernel_size=129,
+    )
+    return model
+
+
 def test_make_smear_mat3_valid_input():
     """Tests that make_smear_mat3 returns matrix with the correct dimensions"""
     r_lower = 0.5
@@ -38,26 +77,126 @@ def test_make_smear_mat3_valid_input():
     assert np.sum(np.abs(f_smear)) == pytest.approx(2273.976168294156)
 
 
-#  MSBGHearingModel (class)
-#  MSBGHearingModel.measure_rms
-#  MSBGHearingModel.calibrate_spl
-#  MSBGHearingModel.smear
-#  MSBGHearingModel.recruitment
-#  MSBGHearingModel.recruitment_fir
-#  MSBGHearingModel.forward
+# Tests for MSBGHearingModel class
 
 
-# torchloudnorm (class)
-# torchloudnorm.apply_filter
-# torchloudnorm.integrated_loudness
-# torchloudnorm.normalise_loudness
-# torchloudnorm.forward
+def test_msbg_hearing_model_init(use_torch):
+    """Test the MSBGHearingModel class init function"""
+    model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MILD.levels.tolist(),
+        audiometric=AUDIOGRAM_MILD.cfs.tolist(),
+    )
+    assert model.win_len == 441
+    model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+    )
+    assert model.win_len == 441
+    model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MODERATE_SEVERE.levels.tolist(),
+        audiometric=AUDIOGRAM_MODERATE_SEVERE.cfs.tolist(),
+    )
+    assert model.win_len == 441
+    model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+    )
+    assert model.win_len == 441
 
 
-def test_torchloudnorm_apply_filter():
+def test_msbg_hearing_model_measure_rms(use_torch, msbg_model):
+    """Test the measure_rms function"""
+    x = torch.randn(2, 20000)
+    x = x.cpu()
+    y_torch = msbg_model.measure_rms(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (2, 1)
+    assert y[0, 0] == pytest.approx(1.0040439)
+    assert y[1, 0] == pytest.approx(0.99920964)
+
+
+def test_msbg_hearing_model_calibrate_spl(use_torch, msbg_model):
+    """Test the calibrate_spl function"""
+    x = torch.randn(2, 20000)
+    x = x.cpu()
+    y_torch = msbg_model.calibrate_spl(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (2, 20000)
+    assert np.sum(np.abs(y)) == pytest.approx(32026.688)
+
+
+def test_msbg_hearing_model_calibrate_spl_null(use_torch):
+    """Test the calibrate_spl function does nothing is calibration is disabled"""
+    msbg_model = MSBGHearingModel(
+        audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        spl_cali=False,  # <--- Disable calibration
+    )
+    x = torch.randn(2, 20000)
+    x = x.cpu()
+    initial_sum = np.sum(np.abs(x.detach().numpy()))
+    y_torch = msbg_model.calibrate_spl(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (2, 20000)
+    assert np.sum(np.abs(y)) == pytest.approx(initial_sum)  # <--- No change
+
+
+@pytest.mark.skip(reason="Not implemented")
+def test_msbg_hearing_model_src_to_cochlea_filt(use_torch, msbg_model):
+    """Test the src_to_cochlea_filt function"""
+    x = torch.randn(1, 20000)
+    x = x.cpu()
+    y_torch = msbg_model.src_to_cochlea_filt(x, msbg_model.cochlea_filter_forward)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (1, 20000)
+    assert np.sum(np.abs(y)) == pytest.approx(14804.21875)
+
+
+def test_msbg_hearing_model_smear(use_torch, msbg_model):
+    """Test the smear function"""
+    x = torch.randn(2, 1, 20000)
+    x = x.cpu()
+    y_torch = msbg_model.smear(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (2, 1, 20000)
+    assert np.sum(np.abs(y)) == pytest.approx(29985.154)
+
+
+def test_msbg_hearing_model_recruitment(use_torch, msbg_model_quick):
+    """Test the recruitment function"""
+    x = torch.randn(2, 1, 10000)
+    x = x.cpu()
+    y_torch = msbg_model_quick.recruitment(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (2, 1, 10000)
+    assert np.sum(np.abs(y)) == pytest.approx(13046.6328125)
+
+
+def test_msbg_hearing_model_recruitment_fir(use_torch, msbg_model_quick):
+    """Test the recruitment_fir function"""
+    x = torch.randn(1, 10000)
+    x = x.cpu()
+    y_torch = msbg_model_quick.recruitment_fir(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (1, 1, 10000)
+    assert np.sum(np.abs(y)) == pytest.approx(5229.41162109375)
+
+
+def test_msbg_hearing_model_forward(use_torch, msbg_model_quick):
+    """Test the forward function"""
+    x = torch.randn(2, 10000)
+    x = x.cpu()
+    y_torch = msbg_model_quick.forward(x)
+    y = y_torch.cpu().detach().numpy()
+    assert y.shape == (2, 10000)
+    assert np.sum(np.abs(y)) == pytest.approx(8778.4501953125)
+
+
+# Tests for torchloudnorm class
+
+
+def test_torchloudnorm_apply_filter(use_torch):
     """Test torchloudnorm apply filter function"""
-    torch.manual_seed(0)
-    torch.set_num_threads(1)
 
     x = torch.randn(2, 1, 40000)
     x = x.cpu()
@@ -70,10 +209,8 @@ def test_torchloudnorm_apply_filter():
     assert np.sum(np.abs(y)) == pytest.approx(98578.4921875)
 
 
-def test_torchloudnorm_integrated_loudness():
+def test_torchloudnorm_integrated_loudness(use_torch):
     """Test torchloudnorm integrated loundness function"""
-    torch.manual_seed(0)
-    torch.set_num_threads(1)
 
     x = torch.randn(2, 1, 20000)
     x = x.cpu()
@@ -86,10 +223,8 @@ def test_torchloudnorm_integrated_loudness():
     assert np.sum(np.abs(y)) == pytest.approx(6.166536331176758)
 
 
-def test_torchloudnorm_normalise_loudness():
+def test_torchloudnorm_normalise_loudness(use_torch):
     """Test torchloudnorm normalise loudness function"""
-    torch.manual_seed(0)
-    torch.set_num_threads(1)
 
     lufs = torch.FloatTensor([[-30.0], [-40.0]]).cpu()
     x = torch.randn(2, 20000)
@@ -103,10 +238,8 @@ def test_torchloudnorm_normalise_loudness():
     assert True
 
 
-def test_torchloudnorm_forward():
+def test_torchloudnorm_forward(use_torch):
     """Test torchloudnorm forward function"""
-    torch.manual_seed(0)
-    torch.set_num_threads(1)
 
     x = torch.randn(2, 20000)
     x = x.cpu()

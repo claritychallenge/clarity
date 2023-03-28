@@ -35,7 +35,7 @@ REF_RMS_DB = -31.2
 CALIB_DB_SPL = 65
 
 # what 0dB file signal would translate to in dB SPL:
-# constant for cochlear_simulate function
+# constant for cochlea_simulate function
 EQUIV_0_DB_FILE_SPL = CALIB_DB_SPL - REF_RMS_DB
 
 # clarity msbg
@@ -119,7 +119,6 @@ class MSBGHearingModel(nn.Module):
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = device
-
         # settings for audiogram
 
         audiogram = np.array(audiogram)
@@ -156,23 +155,23 @@ class MSBGHearingModel(nn.Module):
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
         n_wdw = np.int(2 * np.floor((sr / 16e3) * 368 / 2))
-        cochlear_filter_forward = firwin2(
+        cochlea_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
-        cochlear_filter_backward = firwin2(
+        cochlea_filter_backward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_backward, window=("kaiser", 4)
         )
-        self.cochlear_padding = len(cochlear_filter_forward) // 2
-        self.cochlear_filter_forward = (
+        self.cochlea_padding = len(cochlea_filter_forward) // 2
+        self.cochlea_filter_forward = (
             torch.tensor(
-                cochlear_filter_forward, dtype=torch.float32, device=self.device
+                cochlea_filter_forward, dtype=torch.float32, device=self.device
             )
             .unsqueeze(0)
             .unsqueeze(1)
         )
-        self.cochlear_filter_backward = (
+        self.cochlea_filter_backward = (
             torch.tensor(
-                cochlear_filter_backward, dtype=torch.float32, device=self.device
+                cochlea_filter_backward, dtype=torch.float32, device=self.device
             )
             .unsqueeze(0)
             .unsqueeze(1)
@@ -195,6 +194,7 @@ class MSBGHearingModel(nn.Module):
 
         current_dir = Path(__file__).parent
         gtf_dir = current_dir / "../evaluator/msbg/msbg_hparams"
+        print(impaired_degree)
         if impaired_degree > 56:
             severe_not_moderate = 1
             gt4_bank_file = gtf_dir / "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs.json"
@@ -425,9 +425,9 @@ class MSBGHearingModel(nn.Module):
         return x
 
     def src_to_cochlea_filt(
-        self, x: torch.Tensor, cochlear_filter: torch.Tensor
+        self, x: torch.Tensor, cochlea_filter: torch.Tensor
     ) -> torch.Tensor:
-        return F.conv1d(x, cochlear_filter, padding=self.cochlear_padding)
+        return F.conv1d(x, cochlea_filter, padding=self.cochlea_padding)
 
     def smear(self, x: torch.Tensor) -> torch.Tensor:
         """Padding issue needs to be worked out"""
@@ -552,11 +552,11 @@ class MSBGHearingModel(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.calibrate_spl(x)
         x = x.unsqueeze(1)
-        x = self.src_to_cochlea_filt(x, self.cochlear_filter_forward)
+        x = self.src_to_cochlea_filt(x, self.cochlea_filter_forward)
         x = self.smear(x)
         # x = self.recruitment(x)
         x = self.recruitment_fir(x)
-        y = self.src_to_cochlea_filt(x, self.cochlear_filter_backward)
+        y = self.src_to_cochlea_filt(x, self.cochlea_filter_backward)
         return y.squeeze(1)
 
 
@@ -640,8 +640,6 @@ class torchloudnorm(nn.Module):
         return lufs
 
     def normalize_loudness(self, x: torch.Tensor, lufs: torch.Tensor) -> torch.Tensor:
-        print(x.cpu().detach().numpy().shape)
-        print(lufs.cpu().detach().numpy().shape)
         delta_loudness = self.norm_lufs - lufs
         gain = torch.pow(10, delta_loudness / 20)
         return gain * x
