@@ -1,6 +1,8 @@
 """
 An FIR-based torch implementation of approximated MSBG hearing loss model
 """
+from __future__ import annotations
+
 import json
 from pathlib import Path
 
@@ -8,6 +10,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torchaudio
+from numpy import ndarray
 from scipy.fftpack import fft
 from scipy.interpolate import interp1d
 from scipy.signal import ellip, firwin, firwin2, freqz
@@ -41,7 +44,8 @@ AHR = 20
 EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
 
 
-def makesmearmat3(rl, ru, sr):
+# MARKED FOR DELETION - TO BE REPLACE WITH EVALUATOR/MSBG VERSION
+def makesmearmat3(rl: float, ru: float, sr: int) -> ndarray:
     fft_size = 512
     nyquist = np.int(fft_size // 2)
     f_nor = audfilt(1, 1, nyquist, sr)
@@ -62,7 +66,8 @@ def makesmearmat3(rl, ru, sr):
     return f_smear
 
 
-def audfilt(rl, ru, size, sr):
+# MARKED FOR DELETION - TO BE REPLACE WITH EVALUATOR/MSBG VERSION
+def audfilt(rl: int | float, ru: int | float, size: int, sr: int) -> ndarray:
     """Calculate an auditory filter array
 
     Args:
@@ -97,14 +102,14 @@ def audfilt(rl, ru, size, sr):
 class MSBGHearingModel(nn.Module):
     def __init__(
         self,
-        audiogram,
-        audiometric,
-        sr=44100,
-        spl_cali=True,
-        src_position="ff",
-        kernel_size=1025,
-        device=None,
-    ):
+        audiogram: list[int],
+        audiometric: list[int],
+        sr: int = 44100,
+        spl_cali: bool = True,
+        src_position: str = "ff",
+        kernel_size: int = 1025,
+        device: str | None = None,
+    ) -> None:
         super().__init__()
         self.sr = sr
         self.spl_cali = spl_cali
@@ -369,7 +374,7 @@ class MSBGHearingModel(nn.Module):
         self.db_relative_rms = -12
         self.win_len = int(self.sr * win_sec)
 
-    def measure_rms(self, wav):
+    def measure_rms(self, wav: torch.Tensor) -> torch.Tensor:
         """Compute RMS level of a signal.
 
         Measures total power of all 10 msec frames that are above a specified
@@ -408,7 +413,7 @@ class MSBGHearingModel(nn.Module):
         )
         return key_rms.unsqueeze(1)
 
-    def calibrate_spl(self, x):
+    def calibrate_spl(self, x: torch.Tensor) -> torch.Tensor:
         if self.spl_cali:
             level_re_fs = 10 * torch.log10(
                 torch.mean(x**2, dim=1, keepdim=True) + EPS
@@ -419,10 +424,12 @@ class MSBGHearingModel(nn.Module):
             x = x * 10 ** (0.05 * change_db)
         return x
 
-    def src_to_cochlea_filt(self, x, cochlear_filter):
+    def src_to_cochlea_filt(
+        self, x: torch.Tensor, cochlear_filter: torch.Tensor
+    ) -> torch.Tensor:
         return F.conv1d(x, cochlear_filter, padding=self.cochlear_padding)
 
-    def smear(self, x):
+    def smear(self, x: torch.Tensor) -> torch.Tensor:
         """Padding issue needs to be worked out"""
         length = x.shape[2]
         x = x.view(x.shape[0], x.shape[2])
@@ -509,7 +516,7 @@ class MSBGHearingModel(nn.Module):
         y = y * self.recruitment_out_coef
         return y
 
-    def recruitment_fir(self, x):
+    def recruitment_fir(self, x: torch.Tensor) -> torch.Tensor:
         n_samples = x.shape[-1]
         x = x.repeat([1, self.n_chans, 1])
         real = F.conv1d(
@@ -542,7 +549,7 @@ class MSBGHearingModel(nn.Module):
         y = y * self.recruitment_out_coef
         return y
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.calibrate_spl(x)
         x = x.unsqueeze(1)
         x = self.src_to_cochlea_filt(x, self.cochlear_filter_forward)
@@ -556,13 +563,13 @@ class MSBGHearingModel(nn.Module):
 class torchloudnorm(nn.Module):
     def __init__(
         self,
-        sr=44100,
-        norm_lufs=-36,
-        kernel_size=1025,
-        block_size=0.4,
-        overlap=0.75,
-        gamma_a=-70,
-    ):
+        sr: int = 44100,
+        norm_lufs: int = -36,
+        kernel_size: int = 1025,
+        block_size: float = 0.4,
+        overlap: float = 0.75,
+        gamma_a: int = -70,
+    ) -> None:
         super().__init__()
         self.sr = sr
         self.norm_lufs = norm_lufs
@@ -604,12 +611,12 @@ class torchloudnorm(nn.Module):
         )
         self.gamma_a = gamma_a
 
-    def apply_filter(self, x):
+    def apply_filter(self, x: torch.Tensor) -> torch.Tensor:
         x = F.conv1d(x, self.high_shelf, padding=self.padding)
         x = F.conv1d(x, self.high_pass, padding=self.padding)
         return x
 
-    def integrated_loudness(self, x):
+    def integrated_loudness(self, x: torch.Tensor) -> torch.Tensor:
         x = self.apply_filter(x)
         x_unfold = self.unfold(x.unsqueeze(2))
 
@@ -632,12 +639,14 @@ class torchloudnorm(nn.Module):
         lufs = -0.691 + 10 * torch.log10(z_ave_gated_a_r + EPS)  # loudness
         return lufs
 
-    def normalize_loudness(self, x, lufs):
+    def normalize_loudness(self, x: torch.Tensor, lufs: torch.Tensor) -> torch.Tensor:
+        print(x.cpu().detach().numpy().shape)
+        print(lufs.cpu().detach().numpy().shape)
         delta_loudness = self.norm_lufs - lufs
         gain = torch.pow(10, delta_loudness / 20)
         return gain * x
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         loudness = self.integrated_loudness(x.unsqueeze(1))
         y = self.normalize_loudness(x, loudness)
         return y
