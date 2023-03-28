@@ -141,7 +141,6 @@ def test_msbg_hearing_model_calibrate_spl_null(use_torch):
     assert np.sum(np.abs(y)) == pytest.approx(initial_sum)  # <--- No change
 
 
-@pytest.mark.skip(reason="Not implemented")
 def test_msbg_hearing_model_src_to_cochlea_filt(use_torch, msbg_model):
     """Test the src_to_cochlea_filt function"""
     x = torch.randn(1, 20000)
