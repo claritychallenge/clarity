@@ -43,7 +43,7 @@ EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
 
 def generate_key_percent(signal, thr_db, win_len):
     if win_len != np.floor(win_len):
-        win_len = np.int(np.floor(win_len))
+        win_len = int(np.floor(win_len))
         print("\nGenerate_key_percent: \t Window length must be integer")
 
     signal_len = len(signal)
@@ -51,7 +51,7 @@ def generate_key_percent(signal, thr_db, win_len):
     non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
 
     n_frames = 0
-    total_frames = np.int(np.floor(signal_len / win_len))
+    total_frames = int(np.floor(signal_len / win_len))
     every_db = np.zeros(total_frames)
 
     for ix in range(total_frames):
@@ -66,12 +66,12 @@ def generate_key_percent(signal, thr_db, win_len):
     # between the two peaks, and set a bit above that, as it heads for main peak
     frame_idx = np.where(every_db >= expected)[0]
     valid_frames = len(frame_idx)
-    key = np.zeros(valid_frames * win_len, dtype=np.int)
+    key = np.zeros(valid_frames * win_len, dtype=int)
 
     # convert frame numbers into indices for signal
     for ix in range(valid_frames):
         key[ix * win_len : ix * win_len + win_len] = np.arange(
-            frame_idx[ix] * win_len, frame_idx[ix] * win_len + win_len, dtype=np.int
+            frame_idx[ix] * win_len, frame_idx[ix] * win_len + win_len, dtype=int
         )
     return key, used_thr_db
 
@@ -97,7 +97,7 @@ def measure_rms(signal, sr, db_rel_rms):
     # use this RMS to generate key threshold to more accurate RMS
     key_thr_db = np.max([20 * np.log10(first_stage_rms) + db_rel_rms, -80])
     key, used_thr_db = generate_key_percent(
-        signal, key_thr_db, np.int(np.round(win_secs * sr))
+        signal, key_thr_db, int(np.round(win_secs * sr))
     )
     # active = 100.0 * len(key) / len(signal)
     rms = np.sqrt(np.mean(signal[key] ** 2))
@@ -107,12 +107,12 @@ def measure_rms(signal, sr, db_rel_rms):
 
 def makesmearmat3(rl, ru, sr):
     fft_size = 512
-    nyquist = np.int(fft_size // 2)
+    nyquist = int(fft_size // 2)
     f_nor = audfilt(1, 1, nyquist, sr)
     f_wid = audfilt(rl, ru, nyquist, sr)
     f_next = np.hstack([f_nor, np.zeros([nyquist, nyquist // 2])])
 
-    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=np.int):
+    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=int):
         f_next[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
             f_nor[
                 i - 1, np.max([1, 2 * i - 3 * nyquist // 2]) - 1 : (2 * i - nyquist - 1)
@@ -143,15 +143,15 @@ def audfilt(rl, ru, size, sr):
     aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
 
     g = np.zeros(size)
-    for i in np.arange(2, size + 1, 1, dtype=np.int):
+    for i in np.arange(2, size + 1, 1, dtype=int):
         f_hz = (i - 1) * sr / (2 * size)
         erb_hz = 24.7 * ((f_hz * 0.00437) + 1)
         pl = 4 * f_hz / (erb_hz * rl)
         pu = 4 * f_hz / (erb_hz * ru)
-        j = np.arange(1, i, dtype=np.int)
+        j = np.arange(1, i, dtype=int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
-        j = np.arange(i, size + 1, dtype=np.int)
+        j = np.arange(i, size + 1, dtype=int)
         g[j - 1] = np.abs((i - j) / (i - 1))
         aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
         aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erb_hz * (rl + ru) / (2 * 24.7))
@@ -214,7 +214,7 @@ class MSBGHearingModel(nn.Module):
         corrn_used = np.append(corrn[ixf_useful], last_corrn)
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
-        n_wdw = np.int(2 * np.floor((sr / 16e3) * 368 / 2))
+        n_wdw = int(2 * np.floor((sr / 16e3) * 368 / 2))
         cochlear_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
