@@ -415,7 +415,7 @@ class MSBGHearingModel(nn.Module):
         )
         return smeared_wav.unsqueeze(1)
 
-    def recruitment(self, x):
+    def recruitment(self, x: torch.Tensor) -> torch.Tensor:
         n_samples = x.shape[-1]
         ixhp = 0
         outputs = []
