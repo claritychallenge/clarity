@@ -17,6 +17,7 @@ repos:
       - id: debug-statements
       - id: check-byte-order-marker
       # - id: check-yaml
+      - id: check-toml
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.1
@@ -40,7 +41,7 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
-        additional_dependencies: [flake8-print]
+        additional_dependencies: [flake8-print, Flake8-pyproject]
         types: [python]
 
   - repo: https://github.com/pycqa/isort
@@ -93,6 +94,7 @@ repos:
         language: system
         files: \.py$
         exclude: clarity/_version.py # 3rd party code that doesn't conform
+
 ci:
   autofix_prs: true
   autofix_commit_msg: "[pre-commit.ci] Fixing issues with pre-commit"

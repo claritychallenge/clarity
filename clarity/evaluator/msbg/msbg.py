@@ -1,11 +1,15 @@
 """Implementation of the MSBG hearing loss model."""
+from __future__ import annotations
+
 import logging
 import math
 
 import numpy as np
 import scipy
+from numpy import float64, ndarray
 from scipy.signal import firwin, lfilter
 
+from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.cochlea import Cochlea
 from clarity.evaluator.msbg.msbg_utils import (
     DF_ED,
@@ -29,7 +33,11 @@ class Ear:
     """Representation of a pairs of ears."""
 
     def __init__(
-        self, src_pos="ff", sample_frequency: float = 44100.0, equiv_0db_spl=100, ahr=20
+        self,
+        src_pos: str = "ff",
+        sample_frequency: int | float = 44100.0,
+        equiv_0db_spl: int = 100,
+        ahr: int = 20,
     ) -> None:
         """
         Constructor for the Ear class.
@@ -43,9 +51,9 @@ class Ear:
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv_0db_spl = equiv_0db_spl
         self.ahr = ahr
-        self.cochlea = None
+        self.cochlea: Cochlea | None = None
 
-    def set_audiogram(self, audiogram):
+    def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram to be used."""
         if np.max(audiogram.levels[audiogram.levels is not None]) > 80:
             logging.warning(
@@ -55,7 +63,7 @@ class Ear:
         self.cochlea = Cochlea(audiogram=audiogram)
 
     @staticmethod
-    def get_src_correction(src_pos: str) -> np.array:
+    def get_src_correction(src_pos: str) -> ndarray:
         """Select relevant external field to eardrum correction.
 
         Args:
@@ -78,8 +86,11 @@ class Ear:
 
     @staticmethod
     def src_to_cochlea_filt(
-        ip_sig: np.ndarray, src_correction: str, sample_frequency: int, backward=False
-    ) -> np.ndarray:
+        ip_sig: ndarray,
+        src_correction: ndarray,
+        sample_frequency: int,
+        backward: bool = False,
+    ) -> ndarray:
         """Simulate middle and outer ear transfer functions.
 
         Made more general, Mar2012, to include diffuse field as well as ITU reference
@@ -91,7 +102,9 @@ class Ear:
 
         Args:
             ip_sig (ndarray): signal to process
-            src_correction (str): correction to make for src position
+            src_correction (np.ndarray): correction to make for src position as an array
+                returned by get_src_correction(src_pos) where src_pos is one of ff, df
+                or ITU
             sample_frequency (int): sampling frequency
             backward (bool, optional): if true then cochlea to src (default: False)
 
@@ -129,11 +142,13 @@ class Ear:
 
         return op_sig
 
-    def make_calibration_signal(self, ref_rms_db):
+    def make_calibration_signal(
+        self, ref_rms_db: int | float64
+    ) -> tuple[ndarray, ndarray]:
         """Add the calibration signal to the start of the signal.
 
         Args:
-            ref_rms_db (ndarray): input signal
+            ref_rms_db (float): reference rms level in dB
 
         Returns:
             ndarray: the processed signal
@@ -159,7 +174,7 @@ class Ear:
         )
 
     @staticmethod
-    def array_to_list(chans: np.ndarray) -> np.ndarray:
+    def array_to_list(chans: ndarray) -> list[ndarray]:
         """Convert signal into a list of 1-D arrays.
 
         Args:
@@ -172,7 +187,7 @@ class Ear:
             chans = chans[..., np.newaxis]
         return [chans[:, i] for i in range(chans.shape[1])]
 
-    def process(self, signal: np.ndarray, add_calibration: bool = False) -> np.ndarray:
+    def process(self, signal: ndarray, add_calibration: bool = False) -> list[ndarray]:
         """Run the hearing loss simulation.
 
         Args:
@@ -190,6 +205,7 @@ class Ear:
             logging.error(
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
+            raise ValueError("Invalid sampling frequency, valid value is 44100")
 
         logging.info("Processing {len(chans)} samples")
 

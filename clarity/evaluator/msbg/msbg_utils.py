@@ -10,6 +10,7 @@ import numpy as np
 import scipy
 import scipy.signal
 import soundfile
+from numpy import float64, ndarray
 from soundfile import SoundFile
 
 # measure rms parameters
@@ -17,7 +18,6 @@ WIN_SECS = 0.01
 
 # read & write signal parameters
 MSBG_FS = 44100
-TEST_NBITS = 16
 
 # fmt: off
 HZ = np.array(
@@ -96,7 +96,7 @@ EMPHASIS = np.array(
 ) * (7.5 / 9)
 
 
-def read_gtf_file(gtf_file: str) -> dict:
+def read_gtf_file(gtf_file: str) -> dict[str, str | ndarray | int | float]:
     """Read a gammatone filterbank file.
 
     List data is converted into numpy arrays.
@@ -115,11 +115,11 @@ def read_gtf_file(gtf_file: str) -> dict:
 
 def firwin2(
     n_taps: int,
-    frequencies: np.ndarray,
-    filter_gains: np.ndarray,
-    window: None | str | tuple = None,
-    antisymmetric: bool | None = None,
-):  # pylint: disable=W0613
+    frequencies: list[float] | ndarray,
+    filter_gains: list[int | float] | ndarray,
+    window: tuple[str, int] | str | None = None,
+    antisymmetric: bool | None = None,  # pylint: disable=W0613
+) -> ndarray:  # pylint: disable=W0613
     """FIR filter design using the window method.
 
     Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.
@@ -130,7 +130,7 @@ def firwin2(
             being Nyquist.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
         window (string or (string, float), optional): See scipy.firwin2. Default is None
-        antisymmetric (bool, optional): Unused but present to main compatability
+        antisymmetric (bool, optional): Unused but present to maintain compatibility
             with scipy firwin2.
 
     Returns:
@@ -159,10 +159,10 @@ def firwin2(
 
 def fir2(
     filter_length: int,
-    frequencies: np.ndarray,
-    filter_gains: np.ndarray,
-    n_interpolate: int | None = None,
-) -> tuple[np.ndarray, int]:
+    frequencies: list[float] | ndarray,
+    filter_gains: list[int | float] | ndarray,
+    n_interpolate: ndarray | None = None,
+) -> tuple[ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
     Translation of MATLAB fir2.
@@ -232,8 +232,11 @@ def fir2(
 
 
 def gen_tone(
-    freq: float, duration: float, sample_frequency: float = 44100.0, level: float = 0.0
-) -> np.ndarray:
+    freq: int,
+    duration: float,
+    sample_frequency: float = 44100.0,
+    level: int | float | float64 = 0.0,
+) -> ndarray:
     """Generate a pure tone.
 
     Args:
@@ -260,11 +263,11 @@ def gen_tone(
 
 
 def gen_eh2008_speech_noise(
-    duration: float,
+    duration: int | float,
     sample_frequency: float = 44100.0,
-    level: float | None = None,
-    supplied_b: np.ndarray | None = None,
-) -> np.ndarray:
+    level: int | float | float64 | None = None,
+    supplied_b: None = None,
+) -> ndarray:
     """Generate speech shaped noise.
 
     Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and sloping
@@ -338,11 +341,11 @@ def gen_eh2008_speech_noise(
 
 
 def generate_key_percent(
-    signal: np.ndarray,
-    threshold_db: float,
+    signal: ndarray,
+    threshold_db: float64,
     window_length: int,
     percent_to_track: float | None = None,
-) -> tuple[np.ndarray, float]:
+) -> tuple[ndarray, float64]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
@@ -446,11 +449,11 @@ def generate_key_percent(
 
 
 def measure_rms(
-    signal: np.ndarray,
-    sample_frequency: float,
-    db_rel_rms: float,
+    signal: ndarray,
+    sample_frequency: int,
+    db_rel_rms: int | float,
     percent_to_track: float | None = None,
-) -> tuple:
+) -> tuple[float64, ndarray, float64, float]:
     """Measure Root Mean Square.
 
     A sophisticated method of measuring RMS in a file. It splits the signal up into
@@ -496,12 +499,13 @@ def measure_rms(
     return rms, idx, rel_db_thresh, active
 
 
-def pad(signal, length):
+def pad(signal: ndarray, length: int) -> ndarray:
     """Zero pad signal to required length.
 
     Assumes required length is not less than input length.
     """
-    assert length >= signal.shape[0]
+    if length < signal.shape[0]:
+        raise ValueError("Required length is less than input length")
     return np.pad(
         signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
     )
@@ -513,7 +517,7 @@ def read_signal(
     nsamples: int = -1,
     nchannels: int = 0,
     offset_is_samples: bool = False,
-) -> np.ndarray:
+) -> ndarray:
     """Read a wavefile and return as numpy array of floats.
 
     Args:
@@ -552,17 +556,23 @@ def read_signal(
 
 def write_signal(
     filename: str | Path,
-    signal: np.ndarray,
-    sample_frequency: float,
+    signal: ndarray,
+    sample_frequency: int,
     floating_point: bool = True,
+    strict: bool = False,
 ) -> None:
     """Write a signal as fixed or floating point wav file.
+
+    NB: setting 'strict' to True will raise error on overflow. This would be
+    a more natural default but it would break existing code that did not
+    check for overflow.
 
     Args:
         filename (str|Path): name of file in to write to.
         signal (ndarray): signal to write.
         sample_frequency (float): sampling frequency.
         floating_point (bool): write as floating point else an ints (default: True).
+        strict (bool): raise error if signal out of range for int16 (default: False).
     """
 
     if sample_frequency != MSBG_FS:
@@ -573,14 +583,13 @@ def write_signal(
         # raise ValueError("Sampling rate mismatch")
 
     if floating_point is False:
-        if TEST_NBITS == 16:
-            subtype = "PCM_16"
-            # If signal is float and we want int16
-            signal *= 32768
-            signal = signal.astype(np.dtype("int16"))
-            assert np.max(signal) <= 32767 and np.min(signal) >= -32768
-        elif TEST_NBITS == 24:
-            subtype = "PCM_24"
+        subtype = "PCM_16"
+        # Signal is float and we want to convert to int16
+        # *NB* Not  *= in next line as we need to make a copy
+        signal = signal * 32768
+        if strict and (np.max(signal) > 32767 or np.min(signal) < -32768):
+            raise ValueError("Signal out of range -1.0 to 1.0")
+        signal = signal.astype(np.dtype("int16"))
     else:
         subtype = "FLOAT"
 
