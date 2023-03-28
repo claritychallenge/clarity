@@ -4,6 +4,7 @@ from __future__ import annotations
 import math
 
 import numpy as np
+from numpy import ndarray
 
 FFT_SIZE = 512
 FRAME_SIZE = 256
@@ -15,7 +16,7 @@ def audfilt(
     ru: int | float,
     sampfreq: int | float,
     asize: int = 256,
-) -> np.ndarray:
+) -> ndarray:
     """Calculate an auditory filter array.
 
     Args:
@@ -52,7 +53,7 @@ def audfilt(
     return aud_filter
 
 
-def make_smear_mat3(rl: float, ru: float, fs: int | float) -> np.darray:
+def make_smear_mat3(rl: float, ru: float, fs: int | float) -> ndarray:
     """Make the smearing filter matrix.
 
     Args:
@@ -90,7 +91,7 @@ def make_smear_mat3(rl: float, ru: float, fs: int | float) -> np.darray:
     return f_smear
 
 
-def smear3(f_smear: np.ndarray, inbuffer: np.ndarray) -> np.ndarray:
+def smear3(f_smear: ndarray, inbuffer: ndarray) -> ndarray:
     """Direct translation of smear3.m from MSBG hearing loss model.
 
     Args:
@@ -168,6 +169,6 @@ class Smearer:
         self.fs = fs
         self.f_smear = make_smear_mat3(rl, ru, fs)
 
-    def smear(self, input_signal: np.ndarray) -> np.ndarray:
+    def smear(self, input_signal: ndarray) -> ndarray:
         """Smear a given input signal."""
         return smear3(self.f_smear, input_signal)
