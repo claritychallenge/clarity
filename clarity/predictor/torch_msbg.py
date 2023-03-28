@@ -41,70 +41,6 @@ AHR = 20
 EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
 
 
-def generate_key_percent(signal, thr_db, win_len):
-    if win_len != np.floor(win_len):
-        win_len = np.int(np.floor(win_len))
-        print("\nGenerate_key_percent: \t Window length must be integer")
-
-    signal_len = len(signal)
-    expected = thr_db.copy()  # expected threshold
-    non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
-
-    n_frames = 0
-    total_frames = np.int(np.floor(signal_len / win_len))
-    every_db = np.zeros(total_frames)
-
-    for ix in range(total_frames):
-        start = ix * win_len
-        this_sum = np.sum(signal[start : start + win_len] ** 2)  # sum of squares
-        every_db[n_frames] = 10 * np.log10(non_zero + this_sum / win_len)
-        n_frames += 1
-
-    used_thr_db = expected.copy()
-
-    # histogram should produce a two-peaked curve: thresh should be set in valley
-    # between the two peaks, and set a bit above that, as it heads for main peak
-    frame_idx = np.where(every_db >= expected)[0]
-    valid_frames = len(frame_idx)
-    key = np.zeros(valid_frames * win_len, dtype=np.int)
-
-    # convert frame numbers into indices for signal
-    for ix in range(valid_frames):
-        key[ix * win_len : ix * win_len + win_len] = np.arange(
-            frame_idx[ix] * win_len, frame_idx[ix] * win_len + win_len, dtype=np.int
-        )
-    return key, used_thr_db
-
-
-def measure_rms(signal, sr, db_rel_rms):
-    """Compute RMS level of a signal.
-
-    Measures total power of all 10 msec frames that are above a user-specified threshold
-
-    Args:
-        signal: input signal
-        sr: sampling rate
-        db_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array,
-            second value over rules. only single value supported currently)
-
-    Returns:
-        tuple: The percentage of frames that are required to be tracked for measuring
-        RMS (useful when DR compression changes histogram shape)
-    """
-    win_secs = 0.01
-    # first RMS is of all signal
-    first_stage_rms = np.sqrt(np.mean(signal**2))
-    # use this RMS to generate key threshold to more accurate RMS
-    key_thr_db = np.max([20 * np.log10(first_stage_rms) + db_rel_rms, -80])
-    key, used_thr_db = generate_key_percent(
-        signal, key_thr_db, np.int(np.round(win_secs * sr))
-    )
-    # active = 100.0 * len(key) / len(signal)
-    rms = np.sqrt(np.mean(signal[key] ** 2))
-    rel_db_thresh = used_thr_db - 20 * np.log10(rms)
-    return rms, key, rel_db_thresh
-
-
 def makesmearmat3(rl, ru, sr):
     fft_size = 512
     nyquist = np.int(fft_size // 2)
@@ -434,6 +370,17 @@ class MSBGHearingModel(nn.Module):
         self.win_len = int(self.sr * win_sec)
 
     def measure_rms(self, wav):
+        """Compute RMS level of a signal.
+
+        Measures total power of all 10 msec frames that are above a specified
+          threshold of db_relative_rms
+
+        Args:
+            wav: input signal
+
+        Returns:
+            RMS level in dB
+        """
         bs = wav.shape[0]
         average_rms = torch.sqrt(torch.mean(wav**2, dim=1) + EPS)
         threshold_db = 20 * torch.log10(average_rms + EPS) + self.db_relative_rms
