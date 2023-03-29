@@ -9,10 +9,12 @@ EPS = 1e-8
 class AudiometricFIR(nn.Module):
     def __init__(self, sr=44100, nfir=220, device=None):
         super().__init__()
-        if device is not None:
+        # if device is not None: <-- this line was previously wrong!
+        if device is None:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = device
+
         self.window_size = nfir + 1
         self.padding = nfir // 2
 
