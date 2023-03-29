@@ -66,6 +66,9 @@ class GHAHearingAid:
 
         if self.fs != 44100:
             logging.error("Current GHA configuration requires 44.1kHz sampling rate.")
+            raise ValueError(
+                "Current GHA configuration requires 44.1kHz sampling rate."
+            )
 
         cfg_template_file = pathlib.Path(cfg_template_file)
 

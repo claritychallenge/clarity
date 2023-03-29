@@ -9,7 +9,7 @@ def compute_proportion_overlap(a1, a2, b1, b2):
     """Compute proportion of overlap of two ranges.
 
     For ranges (a1, a2) and (b1, b2), express the extent of the overlap
-    in the range as a proportion of the extent of range (b1, b2).add()
+    in the range as a proportion of the extent of range (b1, b2)
 
     e.g (4, 9) and (6, 15) -> overlap (6,9), so proportion is (9-6)/(15-6)
 
@@ -17,10 +17,9 @@ def compute_proportion_overlap(a1, a2, b1, b2):
     left = max(a1, b1)
     right = min(a2, b2)
     if left > right:
-        overlap = 0.0
-    else:
-        overlap = float(right - left) / (b2 - b1)
-    return overlap
+        return 0.0
+
+    return float(right - left) / (b2 - b1)
 
 
 def isothr(vsDesF):
