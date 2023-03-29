@@ -149,7 +149,7 @@ def multifit_apply_noisegate(
         noisegate_slope (ndarray): determines slope below compression threshold
 
     Returns:
-        ndarray: Noise signal
+        dict: Noise signal
 
     """
 
