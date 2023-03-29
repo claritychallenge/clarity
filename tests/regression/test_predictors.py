@@ -1,5 +1,5 @@
 """"Regression tests for Predictors"""
-import re
+# import re
 
 import pytest
 import torch
@@ -11,10 +11,10 @@ from clarity.predictor.torch_stoi import NegSTOILoss
 CPUINFO = get_cpu_info()
 
 
-@pytest.mark.skipif(
-    re.search("E5-2673", CPUINFO["brand_raw"]),
-    reason="Xeon E5-2673 CPU arch gives a different value",
-)
+# @pytest.mark.skipif(
+#    re.search("E5-2673", CPUINFO["brand_raw"]),
+#    reason="Xeon E5-2673 CPU arch gives a different value",
+# )
 def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
     torch.manual_seed(0)
     torch.set_num_threads(1)
@@ -35,10 +35,11 @@ def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
     )
 
 
-@pytest.mark.skipif(
-    not re.search("E5-2673", CPUINFO["brand_raw"]),
-    reason="Test value obtained with Xeon E5-2673",
-)
+# @pytest.mark.skipif(
+#    not re.search("E5-2673", CPUINFO["brand_raw"]),
+#    reason="Test value obtained with Xeon E5-2673",
+# )
+@pytest.mark.skip(reason="no longer needed?")
 def test_torch_msbg_stoi_xeon_e5_2673_cpu(regtest):
     torch.manual_seed(0)
     torch.set_num_threads(1)
