@@ -12,8 +12,6 @@ from clarity.predictor.torch_stoi import (
     meanvar_norm,
 )
 
-# pylint: disable=redefined-outer-name,unused-argument  # pytest fixtures
-
 
 @pytest.fixture
 def use_torch():

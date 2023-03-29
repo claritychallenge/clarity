@@ -10,8 +10,6 @@ from clarity.evaluator.msbg.audiogram import (
 )
 from clarity.predictor.torch_msbg import MSBGHearingModel, torchloudnorm
 
-# pylint: disable=redefined-outer-name,unused-argument  # pytest fixtures
-
 
 @pytest.fixture
 def use_torch():
@@ -93,7 +91,7 @@ def test_msbg_hearing_model_calibrate_spl(use_torch, msbg_model):
 
 def test_msbg_hearing_model_calibrate_spl_null(use_torch):
     """Test the calibrate_spl function does nothing is calibration is disabled"""
-    msbg_model = MSBGHearingModel(
+    this_msbg_model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
         spl_cali=False,  # <--- Disable calibration
@@ -101,7 +99,7 @@ def test_msbg_hearing_model_calibrate_spl_null(use_torch):
     x = torch.randn(2, 20000)
     x = x.cpu()
     initial_sum = np.sum(np.abs(x.detach().numpy()))
-    y_torch = msbg_model.calibrate_spl(x)
+    y_torch = this_msbg_model.calibrate_spl(x)
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(initial_sum)  # <--- No change
