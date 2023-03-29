@@ -149,7 +149,7 @@ omit = [
 
 [tool.black]
 line-length = 88
-target-version = ['py37']
+target-version = ['py38']
 exclude = '''
 
 (
@@ -205,7 +205,7 @@ exclude = [
 ]
 # per-file-ignores = []
 line-length = 88
-target-version = "py37"
+target-version = "py38"
 select = ["B", "E", "F", "I001", "W"]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F", "R", "S", "W", "U"]
