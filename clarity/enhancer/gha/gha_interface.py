@@ -120,9 +120,7 @@ class GHAHearingAid:
         )
         formatted_sGt = format_gaintable(gaintable, noisegate_corr=True)
 
-        cfg_template = (
-            Path(__file__).parent / f"cfg_files/{self.cfg_file}_template.cfg",
-        )
+        cfg_template = Path(__file__).parent / f"cfg_files/{self.cfg_file}_template.cfg"
 
         # Merge CH1 and CH3 files. This is the baseline configuration.
         # CH2 is ignored.
@@ -140,7 +138,6 @@ class GHAHearingAid:
         )
         # Again, only need file name; must immediately close the unused file handle.
         os.close(fd_cfg)
-
         with open(cfg_filename, "w", encoding="utf-8") as f:
             f.write(
                 self.create_configured_cfgfile(
@@ -177,10 +174,13 @@ class GHAHearingAid:
         if not np.all(np.sum(abs(sig), axis=0)):
             raise ValueError("Channel empty.")
 
+        # Rewriting as floating point
         self.write_signal(outfile_name, sig, floating_point=True)
 
         logging.info("OpenMHA processing complete")
 
+    # TODO: MARKED FOR DEDUPLICATION
+    # Mirrors functionality that already exists in msbg_utils
     def read_signal(
         self,
         filename: str | Path,
@@ -221,30 +221,39 @@ class GHAHearingAid:
 
         return x
 
+    # TODO: MARKED FOR DEDUPLICATION
+    # Mirrors functionality that already exists in msbg_utils
     def write_signal(
-        self, filename: str | Path, x, floating_point: bool = True
+        self, filename: str | Path, x, floating_point: bool = True, strict: bool = False
     ) -> None:
         """Write a signal as fixed or floating point wav file."""
 
         if floating_point is False:
-            if self.test_nbits == 16:
-                subtype = "PCM_16"
-                # If signal is float and we want int16
-                x *= 32768
-                x = x.astype(np.dtype("int16"))
-                assert np.max(x) <= 32767 and np.min(x) >= -32768
-            elif self.test_nbits == 24:
-                subtype = "PCM_24"
-            else:
-                raise ValueError("test_nbits must be 16 or 24")
+            subtype = "PCM_16"
+            # If signal is float and we want int16
+            x = x * 32768
+            if strict and (np.max(x) > 32767 or np.min(x) < -32768):
+                raise ValueError("Signal out of range -1.0 to 1.0")
+            x = x.astype(np.dtype("int16"))
         else:
             subtype = "FLOAT"
 
         soundfile.write(filename, x, self.fs, subtype=subtype)
 
-    def create_HA_inputs(self, infile_names, merged_filename):
-        """Create input signal for baseline hearing aids."""
+    def create_HA_inputs(self, infile_names: list[str], merged_filename: str) -> None:
+        """Create input signal for baseline hearing aids.
 
+        The baseline hearing aid takes a 4-channel wav file as input. This is
+        constructed from the left and right signals of the front (CH1) and
+        rear (CH3) microphones that are available in the Clarity data.
+
+          Args:
+              infile_names (list[str]): Names of file to read
+              merged_file_name (str): Name of file to write
+
+          Raises:
+              ValueError: If input channel names are inconsistent
+        """
         if (infile_names[0][-5] != "1") or (infile_names[2][-5] != "3"):
             raise ValueError("HA-input signal error: channel mismatch!")
 
@@ -252,6 +261,7 @@ class GHAHearingAid:
         signal_CH3 = self.read_signal(infile_names[2])
 
         merged_signal = np.zeros((len(signal_CH1), 4))
+
         # channel index 0 = front microphone on the left hearing aid
         merged_signal[:, 0] = signal_CH1[:, 0]
         # channel index 1 = front microphone on the right hearing aid
@@ -261,4 +271,6 @@ class GHAHearingAid:
         # channel index 3 = rear microphone on the right hearing aid
         merged_signal[:, 3] = signal_CH3[:, 1]
 
-        self.write_signal(merged_filename, merged_signal, floating_point=True)
+        self.write_signal(
+            merged_filename, merged_signal, floating_point=True, strict=True
+        )
