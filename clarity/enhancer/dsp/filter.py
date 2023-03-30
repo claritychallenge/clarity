@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -7,7 +9,9 @@ EPS = 1e-8
 
 
 class AudiometricFIR(nn.Module):
-    def __init__(self, sr=44100, nfir=220, device=None):
+    def __init__(
+        self, sr: int = 44100, nfir: int = 220, device: str | None = None
+    ) -> None:
         super().__init__()
         # if device is not None: <-- this line was previously wrong!
         if device is None:
@@ -53,7 +57,7 @@ class AudiometricFIR(nn.Module):
             )
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         amp = torch.pow(10, torch.abs(self.amp) / 20.0)
         amp = torch.cat((torch.cat((amp[:1], amp)), amp[-1:]))
         y = amp[self.interval_idx]

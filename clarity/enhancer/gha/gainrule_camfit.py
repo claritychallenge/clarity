@@ -1,11 +1,24 @@
+from __future__ import annotations
+
 import copy
 import logging
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy.interpolate import interp1d
 
+if TYPE_CHECKING:
+    from numpy import ndarray
 
-def compute_proportion_overlap(a1, a2, b1, b2):
+    from clarity.enhancer.gha.audiogram import Audiogram
+
+
+def compute_proportion_overlap(
+    a1: float,
+    a2: float,
+    b1: float,
+    b2: float,
+) -> float:
     """Compute proportion of overlap of two ranges.
 
     For ranges (a1, a2) and (b1, b2), express the extent of the overlap
@@ -22,7 +35,7 @@ def compute_proportion_overlap(a1, a2, b1, b2):
     return float(right - left) / (b2 - b1)
 
 
-def isothr(vsDesF):
+def isothr(vsDesF: list[int] | ndarray) -> ndarray:
     """Calculate conversion factors of HL thresholds to SPL thresholds.
 
     Translation of OpenMHA isothr.m. Calculates conversion factors of HL
@@ -127,7 +140,7 @@ def isothr(vsDesF):
     return vIsoThrDB
 
 
-def freq_interp_sh(f_in, y_in, f):
+def freq_interp_sh(f_in: ndarray, y_in: ndarray, f: list[float] | ndarray) -> ndarray:
     """Linear interpolation on logarithmic frequency scale.
 
     Has samples and hold on edges.
@@ -161,7 +174,12 @@ def freq_interp_sh(f_in, y_in, f):
     return y
 
 
-def gains(compr_thr_inputs, compr_thr_gains, compression_ratios, levels):
+def gains(
+    compr_thr_inputs: list[int] | ndarray,
+    compr_thr_gains: list[int] | ndarray,
+    compression_ratios: list[float] | ndarray,
+    levels: list[float] | ndarray,
+) -> ndarray:
     """Based on OpenMHA gains subfunction of gainrule_camfit_compr.
 
     Args:
@@ -190,8 +208,12 @@ def gains(compr_thr_inputs, compr_thr_gains, compression_ratios, levels):
 
 
 def gainrule_camfit_linear(
-    audiogram, sFitmodel, noisegatelevels=45, noisegateslope=1, max_output_level=100
-):
+    audiogram: Audiogram,
+    sFitmodel: dict[str, Any],
+    noisegatelevels: int | list[int] = 45,
+    noisegateslope: int = 1,
+    max_output_level: int = 100,
+) -> dict[str, ndarray]:
     """Apply linear Cambridge rule for hearing aid fittings 'CAMFIT'.
 
     Based on OpenMHA gainrule_camfit_linear.m. Applies linear Cambridge rule for
@@ -304,13 +326,13 @@ def gainrule_camfit_linear(
 
 
 def gainrule_camfit_compr(
-    audiogram,
-    sFitmodel,
-    noisegatelevels=45,
-    noisegateslope=1,
-    level=0,
-    max_output_level=100,
-):
+    audiogram: Audiogram,
+    sFitmodel: dict[str, Any],
+    noisegatelevels: int | list[int] = 45,
+    noisegateslope: int = 1,
+    level: int = 0,
+    max_output_level: int = 100,
+) -> dict[str, ndarray]:
     """Applies compressive Cambridge rule for hearing aid fittings 'CAMFIT'.
 
     Translation of OpenMHA gainrule_camfit_compr.m.
@@ -455,7 +477,7 @@ def gainrule_camfit_compr(
         audiogram, sFitmodel, noisegatelevels, noisegateslope, max_output_level
     )
     insertion_gains = Gmid["insertion_gains"]
-    Gmid = Gmid["sGt"]
+    gmid_sgt = Gmid["sGt"]
 
     # Calculate compression ratios
     compression_ratio = np.zeros((np.size(frequencies), 2))
@@ -470,7 +492,7 @@ def gainrule_camfit_compr(
 
     for i, levels in enumerate([audiogram.levels_l, audiogram.levels_r]):
         if level != 0:
-            tmp = Lmid + Gmid[cr_idx, :, i].flatten() - Lmin - Gmin[:, i]
+            tmp = Lmid + gmid_sgt[cr_idx, :, i].flatten() - Lmin - Gmin[:, i]
         else:
             tmp = Lmid + insertion_gains[:, i] - Lmin - Gmin[:, i]
         idx = [i for i, x in enumerate(tmp < 13) if x]

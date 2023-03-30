@@ -1,14 +1,19 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 import scipy
 import scipy.signal
 
 from clarity.evaluator.msbg.msbg_utils import firwin2
 
+if TYPE_CHECKING:
+    from numpy import ndarray
+
 
 class NALR:
-    def __init__(self, nfir: int, fs: int):
+    def __init__(self, nfir: int, fs: int) -> None:
         """
         Args:
             nfir: Order of the NAL-R EQ filter and the matching delay
@@ -25,7 +30,7 @@ class NALR:
         self.delay = np.zeros(nfir + 1)
         self.delay[nfir // 2] = 1.0
 
-    def hl_interp(self, hl: np.ndarray, cfs: np.ndarray):
+    def hl_interp(self, hl: np.ndarray, cfs: np.ndarray) -> ndarray:
         try:
             hl_interpf = scipy.interpolate.interp1d(cfs, hl)
         except ValueError as exception:
@@ -38,7 +43,7 @@ class NALR:
         self,
         hl: np.ndarray,
         cfs: np.ndarray = None,
-    ):
+    ) -> tuple[ndarray, ndarray]:
         """
         Args:
             hl: hearing thresholds at [250, 500, 1000, 2000, 4000, 6000] Hz
@@ -84,7 +89,7 @@ class NALR:
             nalr = self.delay.copy()
         return nalr, self.delay
 
-    def apply(self, nalr: np.ndarray, wav: np.ndarray):
+    def apply(self, nalr: np.ndarray, wav: np.ndarray) -> ndarray:
         """
         Args:
             nalr: built NAL-R FIR filter
