@@ -1,5 +1,5 @@
 """Tests for enhancer.gha.gainrule_camfit module"""
-import numpy as np  # noqa: I001
+import numpy as np
 import pytest
 
 from clarity.enhancer.gha.audiogram import Audiogram
