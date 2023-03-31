@@ -1,6 +1,12 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from numpy import ndarray
 
 
 @dataclass
@@ -12,7 +18,7 @@ class Audiogram:
     cfs: np.ndarray
 
     @property
-    def severity(self):
+    def severity(self) -> list[str]:
         """Categorise HL severity level for the audiogram.
 
         Note that this categorisation is different from that of the British Society of
@@ -30,7 +36,7 @@ class Audiogram:
         """
         # calculate mean hearing loss between 2 & 8 kHz
         impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
-        severity_levels = [None, None]
+        severity_levels = ["NOTHING", "NOTHING"]
         for i, levels in enumerate([self.levels_l, self.levels_r]):
             impairment_degree = np.mean(levels[impairment_freqs])
             if impairment_degree > 56:
@@ -44,7 +50,7 @@ class Audiogram:
             severity_levels[i] = severity_level
         return severity_levels
 
-    def select_subset_of_cfs(self, selected_cfs):
+    def select_subset_of_cfs(self, selected_cfs: ndarray | list[int]) -> Audiogram:
         """Make a new audiogram using a given subset of centre freqs.
 
         Note, any selected_cfs that do not exist in the original audiogram
