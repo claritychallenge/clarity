@@ -33,6 +33,6 @@ jobs:
       - name: Upload release artifacts to Release Notes
         uses: Roang-zero1/github-upload-release-artifacts-action@v2
         with:
-          args "dist/"
+          args: "dist/"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
