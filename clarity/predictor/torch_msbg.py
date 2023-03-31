@@ -43,6 +43,7 @@ EQUIV_0_DB_SPL = 100
 AHR = 20
 EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
 
+
 class MSBGHearingModel(nn.Module):
     def __init__(
         self,
