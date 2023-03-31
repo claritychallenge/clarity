@@ -18,6 +18,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
+[![PyPI](https://img.shields.io/static/v1?label=CAD1%20and%20CPC2%20Challenges%20-%20pypi&message=v0.3.0&color=orange)](https://pypi.org/project/pyclarity/0.3.0/)
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202023%20Challenge%20-%20pypi&message=v0.2.1&color=orange)](https://pypi.org/project/pyclarity/0.2.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC2%20Challenge%20-%20pypi&message=v0.1.1&color=orange)](https://pypi.org/project/pyclarity/0.1.1/)
 
@@ -86,7 +87,7 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 Current challenge
 
 - [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
-- The 1st Clarity Prediction Challenge (CPC2) - Recipes coming soon.
+- [The 2nd Clarity Prediction Challenge (CPC2)](./recipes/cpc2)
 
 Previous challenges
 
