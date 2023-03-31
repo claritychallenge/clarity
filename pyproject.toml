@@ -66,6 +66,7 @@ tests = [
   "py-cpuinfo",
   "pytest",
   "pytest-cov",
+  "pytest-mock",
   "pytest-mpl",
   "pytest-regtest",
   "pytest-xdist",
@@ -127,6 +128,9 @@ recipes = [
 
 [tool.setuptools_scm]
 write_to = "clarity/_version.py"
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+git_describe_command = "git describe --tags"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -149,7 +153,7 @@ omit = [
 
 [tool.black]
 line-length = 88
-target-version = ['py37']
+target-version = ['py38']
 exclude = '''
 
 (
@@ -205,7 +209,7 @@ exclude = [
 ]
 # per-file-ignores = []
 line-length = 88
-target-version = "py37"
+target-version = "py38"
 select = ["B", "E", "F", "I001", "W"]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F", "R", "S", "W", "U"]

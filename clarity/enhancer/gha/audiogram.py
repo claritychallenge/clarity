@@ -35,7 +35,7 @@ class Audiogram:
 
         """
         # calculate mean hearing loss between 2 & 8 kHz
-        impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
+        impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)<<<<<<< 252-deprecation-warnings-in-tests
 
         if not np.any(impairment_freqs):
             return ["NOTHING", "NOTHING"]

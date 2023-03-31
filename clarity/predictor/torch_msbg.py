@@ -1,6 +1,8 @@
 """
 An FIR-based torch implementation of approximated MSBG hearing loss model
 """
+from __future__ import annotations
+
 import json
 from pathlib import Path
 
@@ -21,6 +23,7 @@ from clarity.evaluator.msbg.msbg_utils import (
     ITU_HZ,
     MIDEAR,
 )
+from clarity.evaluator.msbg.smearing import make_smear_mat3
 
 EPS = 1e-8
 # old msbg matlab
@@ -32,7 +35,7 @@ REF_RMS_DB = -31.2
 CALIB_DB_SPL = 65
 
 # what 0dB file signal would translate to in dB SPL:
-# constant for cochlear_simulate function
+# constant for cochlea_simulate function
 EQUIV_0_DB_FILE_SPL = CALIB_DB_SPL - REF_RMS_DB
 
 # clarity msbg
@@ -40,135 +43,17 @@ EQUIV_0_DB_SPL = 100
 AHR = 20
 EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
 
-
-def generate_key_percent(signal, thr_db, win_len):
-    if win_len != np.floor(win_len):
-        win_len = int(np.floor(win_len))
-        print("\nGenerate_key_percent: \t Window length must be integer")
-
-    signal_len = len(signal)
-    expected = thr_db.copy()  # expected threshold
-    non_zero = 10.0 ** ((expected - 30) / 10)  # put floor into histogram distribution
-
-    n_frames = 0
-    total_frames = int(np.floor(signal_len / win_len))
-    every_db = np.zeros(total_frames)
-
-    for ix in range(total_frames):
-        start = ix * win_len
-        this_sum = np.sum(signal[start : start + win_len] ** 2)  # sum of squares
-        every_db[n_frames] = 10 * np.log10(non_zero + this_sum / win_len)
-        n_frames += 1
-
-    used_thr_db = expected.copy()
-
-    # histogram should produce a two-peaked curve: thresh should be set in valley
-    # between the two peaks, and set a bit above that, as it heads for main peak
-    frame_idx = np.where(every_db >= expected)[0]
-    valid_frames = len(frame_idx)
-    key = np.zeros(valid_frames * win_len, dtype=int)
-
-    # convert frame numbers into indices for signal
-    for ix in range(valid_frames):
-        key[ix * win_len : ix * win_len + win_len] = np.arange(
-            frame_idx[ix] * win_len, frame_idx[ix] * win_len + win_len, dtype=int
-        )
-    return key, used_thr_db
-
-
-def measure_rms(signal, sr, db_rel_rms):
-    """Compute RMS level of a signal.
-
-    Measures total power of all 10 msec frames that are above a user-specified threshold
-
-    Args:
-        signal: input signal
-        sr: sampling rate
-        db_rel_rms: threshold relative to first-stage rms (if it is made of a 2*1 array,
-            second value over rules. only single value supported currently)
-
-    Returns:
-        tuple: The percentage of frames that are required to be tracked for measuring
-        RMS (useful when DR compression changes histogram shape)
-    """
-    win_secs = 0.01
-    # first RMS is of all signal
-    first_stage_rms = np.sqrt(np.mean(signal**2))
-    # use this RMS to generate key threshold to more accurate RMS
-    key_thr_db = np.max([20 * np.log10(first_stage_rms) + db_rel_rms, -80])
-    key, used_thr_db = generate_key_percent(
-        signal, key_thr_db, int(np.round(win_secs * sr))
-    )
-    # active = 100.0 * len(key) / len(signal)
-    rms = np.sqrt(np.mean(signal[key] ** 2))
-    rel_db_thresh = used_thr_db - 20 * np.log10(rms)
-    return rms, key, rel_db_thresh
-
-
-def makesmearmat3(rl, ru, sr):
-    fft_size = 512
-    nyquist = int(fft_size // 2)
-    f_nor = audfilt(1, 1, nyquist, sr)
-    f_wid = audfilt(rl, ru, nyquist, sr)
-    f_next = np.hstack([f_nor, np.zeros([nyquist, nyquist // 2])])
-
-    for i in np.arange(nyquist // 2 + 1, nyquist + 1, dtype=int):
-        f_next[i - 1, nyquist : np.min([2 * i - 1, 3 * nyquist // 2])] = np.flip(
-            f_nor[
-                i - 1, np.max([1, 2 * i - 3 * nyquist // 2]) - 1 : (2 * i - nyquist - 1)
-            ]
-        )
-    f_smear = np.linalg.lstsq(f_next, f_wid)[
-        0
-    ]  # https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
-    f_smear = f_smear[:nyquist, :]
-
-    return f_smear
-
-
-def audfilt(rl, ru, size, sr):
-    """Calculate an auditory filter array
-
-    Args:
-        rl: broadening factor on the lower side
-        ru: broadening factor on the upper side
-        size:
-        sr:
-
-    Returns:
-        np.ndarray
-    """
-    aud_filter = np.zeros([size, size])
-    aud_filter[0, 0] = 1.0
-    aud_filter[0, 0] = aud_filter[0, 0] / ((rl + ru) / 2)
-
-    g = np.zeros(size)
-    for i in np.arange(2, size + 1, 1, dtype=int):
-        f_hz = (i - 1) * sr / (2 * size)
-        erb_hz = 24.7 * ((f_hz * 0.00437) + 1)
-        pl = 4 * f_hz / (erb_hz * rl)
-        pu = 4 * f_hz / (erb_hz * ru)
-        j = np.arange(1, i, dtype=int)
-        g[j - 1] = np.abs((i - j) / (i - 1))
-        aud_filter[i - 1, j - 1] = (1 + (pl * g[j - 1])) * np.exp(-pl * g[j - 1])
-        j = np.arange(i, size + 1, dtype=int)
-        g[j - 1] = np.abs((i - j) / (i - 1))
-        aud_filter[i - 1, j - 1] = (1 + (pu * g[j - 1])) * np.exp(-pu * g[j - 1])
-        aud_filter[i - 1, :] = aud_filter[i - 1, :] / (erb_hz * (rl + ru) / (2 * 24.7))
-    return aud_filter
-
-
 class MSBGHearingModel(nn.Module):
     def __init__(
         self,
-        audiogram,
-        audiometric,
-        sr=44100,
-        spl_cali=True,
-        src_position="ff",
-        kernel_size=1025,
-        device=None,
-    ):
+        audiogram: list[int],
+        audiometric: list[int],
+        sr: int = 44100,
+        spl_cali: bool = True,
+        src_position: str = "ff",
+        kernel_size: int = 1025,
+        device: str | None = None,
+    ) -> None:
         super().__init__()
         self.sr = sr
         self.spl_cali = spl_cali
@@ -178,7 +63,6 @@ class MSBGHearingModel(nn.Module):
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = device
-
         # settings for audiogram
 
         audiogram = np.array(audiogram)
@@ -215,23 +99,24 @@ class MSBGHearingModel(nn.Module):
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
         n_wdw = int(2 * np.floor((sr / 16e3) * 368 / 2))
-        cochlear_filter_forward = firwin2(
+
+        cochlea_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
-        cochlear_filter_backward = firwin2(
+        cochlea_filter_backward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_backward, window=("kaiser", 4)
         )
-        self.cochlear_padding = len(cochlear_filter_forward) // 2
-        self.cochlear_filter_forward = (
+        self.cochlea_padding = len(cochlea_filter_forward) // 2
+        self.cochlea_filter_forward = (
             torch.tensor(
-                cochlear_filter_forward, dtype=torch.float32, device=self.device
+                cochlea_filter_forward, dtype=torch.float32, device=self.device
             )
             .unsqueeze(0)
             .unsqueeze(1)
         )
-        self.cochlear_filter_backward = (
+        self.cochlea_filter_backward = (
             torch.tensor(
-                cochlear_filter_backward, dtype=torch.float32, device=self.device
+                cochlea_filter_backward, dtype=torch.float32, device=self.device
             )
             .unsqueeze(0)
             .unsqueeze(1)
@@ -275,13 +160,13 @@ class MSBGHearingModel(nn.Module):
             gt4_bank = json.load(fp)
 
         if severe_not_moderate > 0:
-            f_smear = makesmearmat3(4, 2, sr)
+            f_smear = make_smear_mat3(4, 2, sr)
         elif severe_not_moderate == 0:
-            f_smear = makesmearmat3(2.4, 1.6, sr)
+            f_smear = make_smear_mat3(2.4, 1.6, sr)
         elif severe_not_moderate == -1:
-            f_smear = makesmearmat3(1.6, 1.1, sr)
+            f_smear = make_smear_mat3(1.6, 1.1, sr)
         elif severe_not_moderate == -2:
-            f_smear = makesmearmat3(1.001, 1.001, sr)
+            f_smear = make_smear_mat3(1.001, 1.001, sr)
 
         self.smear_nfft = 512
         self.smear_win_len = 256
@@ -433,7 +318,18 @@ class MSBGHearingModel(nn.Module):
         self.db_relative_rms = -12
         self.win_len = int(self.sr * win_sec)
 
-    def measure_rms(self, wav):
+    def measure_rms(self, wav: torch.Tensor) -> torch.Tensor:
+        """Compute RMS level of a signal.
+
+        Measures total power of all 10 msec frames that are above a specified
+          threshold of db_relative_rms
+
+        Args:
+            wav: input signal
+
+        Returns:
+            RMS level in dB
+        """
         bs = wav.shape[0]
         average_rms = torch.sqrt(torch.mean(wav**2, dim=1) + EPS)
         threshold_db = 20 * torch.log10(average_rms + EPS) + self.db_relative_rms
@@ -461,7 +357,7 @@ class MSBGHearingModel(nn.Module):
         )
         return key_rms.unsqueeze(1)
 
-    def calibrate_spl(self, x):
+    def calibrate_spl(self, x: torch.Tensor) -> torch.Tensor:
         if self.spl_cali:
             level_re_fs = 10 * torch.log10(
                 torch.mean(x**2, dim=1, keepdim=True) + EPS
@@ -472,10 +368,12 @@ class MSBGHearingModel(nn.Module):
             x = x * 10 ** (0.05 * change_db)
         return x
 
-    def src_to_cochlea_filt(self, x, cochlear_filter):
-        return F.conv1d(x, cochlear_filter, padding=self.cochlear_padding)
+    def src_to_cochlea_filt(
+        self, x: torch.Tensor, cochlea_filter: torch.Tensor
+    ) -> torch.Tensor:
+        return F.conv1d(x, cochlea_filter, padding=self.cochlea_padding)
 
-    def smear(self, x):
+    def smear(self, x: torch.Tensor) -> torch.Tensor:
         """Padding issue needs to be worked out"""
         length = x.shape[2]
         x = x.view(x.shape[0], x.shape[2])
@@ -516,7 +414,7 @@ class MSBGHearingModel(nn.Module):
         )
         return smeared_wav.unsqueeze(1)
 
-    def recruitment(self, x):
+    def recruitment(self, x: torch.Tensor) -> torch.Tensor:
         n_samples = x.shape[-1]
         ixhp = 0
         outputs = []
@@ -562,7 +460,7 @@ class MSBGHearingModel(nn.Module):
         y = y * self.recruitment_out_coef
         return y
 
-    def recruitment_fir(self, x):
+    def recruitment_fir(self, x: torch.Tensor) -> torch.Tensor:
         n_samples = x.shape[-1]
         x = x.repeat([1, self.n_chans, 1])
         real = F.conv1d(
@@ -595,27 +493,27 @@ class MSBGHearingModel(nn.Module):
         y = y * self.recruitment_out_coef
         return y
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.calibrate_spl(x)
         x = x.unsqueeze(1)
-        x = self.src_to_cochlea_filt(x, self.cochlear_filter_forward)
+        x = self.src_to_cochlea_filt(x, self.cochlea_filter_forward)
         x = self.smear(x)
         # x = self.recruitment(x)
         x = self.recruitment_fir(x)
-        y = self.src_to_cochlea_filt(x, self.cochlear_filter_backward)
+        y = self.src_to_cochlea_filt(x, self.cochlea_filter_backward)
         return y.squeeze(1)
 
 
 class torchloudnorm(nn.Module):
     def __init__(
         self,
-        sr=44100,
-        norm_lufs=-36,
-        kernel_size=1025,
-        block_size=0.4,
-        overlap=0.75,
-        gamma_a=-70,
-    ):
+        sr: int = 44100,
+        norm_lufs: int = -36,
+        kernel_size: int = 1025,
+        block_size: float = 0.4,
+        overlap: float = 0.75,
+        gamma_a: int = -70,
+    ) -> None:
         super().__init__()
         self.sr = sr
         self.norm_lufs = norm_lufs
@@ -657,12 +555,12 @@ class torchloudnorm(nn.Module):
         )
         self.gamma_a = gamma_a
 
-    def apply_filter(self, x):
+    def apply_filter(self, x: torch.Tensor) -> torch.Tensor:
         x = F.conv1d(x, self.high_shelf, padding=self.padding)
         x = F.conv1d(x, self.high_pass, padding=self.padding)
         return x
 
-    def integrated_loudness(self, x):
+    def integrated_loudness(self, x: torch.Tensor) -> torch.Tensor:
         x = self.apply_filter(x)
         x_unfold = self.unfold(x.unsqueeze(2))
 
@@ -685,12 +583,12 @@ class torchloudnorm(nn.Module):
         lufs = -0.691 + 10 * torch.log10(z_ave_gated_a_r + EPS)  # loudness
         return lufs
 
-    def normalize_loudness(self, x, lufs):
+    def normalize_loudness(self, x: torch.Tensor, lufs: torch.Tensor) -> torch.Tensor:
         delta_loudness = self.norm_lufs - lufs
         gain = torch.pow(10, delta_loudness / 20)
         return gain * x
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         loudness = self.integrated_loudness(x.unsqueeze(1))
         y = self.normalize_loudness(x, loudness)
         return y
