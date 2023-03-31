@@ -23,14 +23,13 @@ jobs:
           pip3 install .[pypi]
       - name: Build package
         run: |
+          pip3 install --upgrade setuptools
+          export DEB_PYTHON_INSTALL_LAYOUT=deb_system
           python -m build --no-isolation
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@v1.8.3
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         with:
-          run: |
-            pip3 install --upgrade setuptools
-            export DEB_PYTHON_INSTALL_LAYOUT=deb_system
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
       - name: Upload release artifacts to Release Notes
