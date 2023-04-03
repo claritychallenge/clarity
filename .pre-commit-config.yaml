@@ -13,7 +13,7 @@ repos:
         types: [python]
         args: [--fix=no]
       - id: check-added-large-files
-        args: [--maxkb=1024]
+        args: [--maxkb=2048]
       - id: debug-statements
       - id: check-byte-order-marker
       # - id: check-yaml

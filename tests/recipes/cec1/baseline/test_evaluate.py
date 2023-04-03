@@ -8,25 +8,22 @@ import hydra
 import numpy as np
 import pytest
 from numpy import ndarray
+from omegaconf import DictConfig
 
 import recipes
 from clarity.evaluator.msbg.msbg_utils import read_signal
 
-# pylint: disable=import-error, no-name-in-module
-from recipes.cec1.baseline.evaluate import run_HL_processing
+# pylint: disable=import-error, no-name-in-module, no-member
+from recipes.cec1.baseline.evaluate import run_calculate_SI, run_HL_processing
 
 # listen, run_calculate_SI,
 
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_listen():
-    """Test listen function."""
-
-
 def not_tqdm(iterable):
     """
-    replacement for tqdm that just passes back the iterable
-    useful to silence `tqdm` in tests
+    Replacement for tqdm that just passes back the iterable.
+
+    Useful for silencing `tqdm` in tests.
     """
     return iterable
 
@@ -38,35 +35,43 @@ def truncated_read_signal(
     nchannels: int = 0,
     offset_is_samples: bool = False,
 ) -> ndarray:
-    # print(f"In mocked read - truncating signal {filename} to 1 second")
+    """Replacement for read signal function.
+
+    Returns first 1 second of the signal
+    """
     signal = read_signal(filename, offset, nsamples, nchannels, offset_is_samples)
     # Take 1 second sample from the middle of the signal
-    middle = signal.shape[0] // 2
-    return signal[middle - 22050 : middle + 22050, :]
+    return signal[0:44100, :]
 
 
-@patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
-def test_run_HL_processing(tmp_path):
-    """Test run_HL_processing function."""
+@pytest.fixture()
+def hydra_cfg(tmp_path: Path):
+    """Fixture for hydra config."""
+    hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(config_path=".", job_name="test_cec1")
-    np.random.seed(0)
     cfg = hydra.compose(
         config_name="config", overrides=["path.root=.", f"path.exp_folder={tmp_path}"]
     )
+    return cfg
+
+
+@patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
+def test_run_HL_processing(tmp_path: Path, hydra_cfg: DictConfig) -> None:
+    """Test run_HL_processing function."""
+    np.random.seed(0)
 
     with patch.object(
-        # clarity.evaluator.msbg.msbg_utils,
         recipes.cec1.baseline.evaluate,
         "read_signal",
         side_effect=truncated_read_signal,
     ) as mock_read_signal:
-        run_HL_processing(cfg)
+        run_HL_processing(hydra_cfg)
         assert mock_read_signal.call_count == 2
 
     # check if output files exist and contents are correct
     expected_files = [
-        ("S06001_L0064_HL-mixoutput.wav", 2267.102214803097),
-        ("S06001_L0064_HL-output.wav", 2267.102214803097),
+        ("S06001_L0064_HL-mixoutput.wav", 2692.4437607042),
+        ("S06001_L0064_HL-output.wav", 2692.4437607042),
         ("S06001_L0064_HLddf-output.wav", 0.0439577816261102),
         ("S06001_flat0dB_HL-output.wav", 1.308636470194449),
     ]
@@ -77,10 +82,36 @@ def test_run_HL_processing(tmp_path):
         assert np.sum(np.abs(x)) == pytest.approx(sig_sum)
 
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_run_calculate_SI():
+@patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
+def test_run_calculate_SI(tmp_path: Path, hydra_cfg: DictConfig):
     """Test run_calculate_SI function."""
 
+    np.random.seed(0)
 
-# Mock the subprocess.run function as OpenMHA is not installed
-# m = mocker.patch("clarity.enhancer.gha.gha_interface.subprocess.run")
+    Path(f"{tmp_path}/eval_signals").mkdir(parents=True, exist_ok=True)
+
+    test_data = [
+        "S06001_L0064_HLddf-output.wav",
+        "S06001_L0064_HL-output.wav",
+    ]
+
+    # set up test data
+    for filename in test_data:
+        from_file = (
+            Path("tests/test_data/recipes/cec1/baseline/eval_signals") / filename
+        )
+        to_file = Path(f"{tmp_path}/eval_signals") / filename
+        to_file.write_bytes(from_file.read_bytes())
+
+    with patch.object(
+        recipes.cec1.baseline.evaluate,
+        "read_signal",
+        side_effect=truncated_read_signal,
+    ) as mock_read_signal:
+        run_calculate_SI(hydra_cfg)
+        assert mock_read_signal.call_count == 3
+
+    with open(f"{tmp_path}/sii.csv", encoding="utf-8") as f:
+        lines = f.readlines()
+        assert len(lines) == 2
+        assert lines[1][:24] == "S06001,L0064,-0.03769851"
