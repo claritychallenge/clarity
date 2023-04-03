@@ -48,7 +48,12 @@ def run_HL_processing(cfg: DictConfig) -> None:
     enhanced_folder = Path(cfg.path.enhanced_signals)
 
     # initialize ear
-    ear = Ear(**cfg["MSBGEar"])
+    ear = Ear(
+        src_pos=cfg.MSBGEar.src_pos,
+        sample_frequency=cfg.MSBGEar.fs,
+        equiv_0db_spl=cfg.MSBGEar.equiv0dBSPL,
+        ahr=cfg.MSBGEar.ahr,
+    )
 
     for scene in tqdm(scenes_listeners):
         for listener in scenes_listeners[scene]:

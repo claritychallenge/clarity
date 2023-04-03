@@ -1,6 +1,6 @@
 path:
   root: ???
-  exp_folder: ./results/  # folder to store intermediate signals and final results
+  exp_folder: ./results/ # folder to store intermediate signals and final results
   scenes_listeners_file: ${path.root}/clarity_CEC1_data/clarity_data/metadata/scenes_listeners.dev.json
   listeners_file: ${path.root}/clarity_CEC1_data/clarity_data/metadata/listeners.json
   scenes_folder: ${path.root}/clarity_CEC1_data/clarity_data/dev/scenes
@@ -12,7 +12,7 @@ fs: 44100
 ahr: 20
 equiv0dBSPL: 100
 
-GHAHearingAid:  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
+GHAHearingAid: # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
   fs: ${fs}
   ahr: ${ahr}
   audf: null
@@ -24,7 +24,7 @@ GHAHearingAid:  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making chan
   equiv0dBSPL: ${equiv0dBSPL}
   test_nbits: 16
 
-MSBGEar:   # hyperparameters for MSBG ear
+MSBGEar: # hyperparameters for MSBG ear
   src_pos: ff
   fs: ${fs}
   equiv0dBSPL: ${equiv0dBSPL}
@@ -33,7 +33,6 @@ MSBGEar:   # hyperparameters for MSBG ear
 mbstoi:
   fs: ${fs}
   gridcoarseness: 1
-
 
 # disable hydra loggings
 defaults:

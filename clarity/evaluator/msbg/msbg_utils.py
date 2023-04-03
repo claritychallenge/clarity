@@ -530,7 +530,6 @@ def read_signal(
     Returns:
         np.ndarray: audio signal
     """
-
     wave_file = SoundFile(filename)
 
     if nchannels not in (0, wave_file.channels):

@@ -143,7 +143,7 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-source = ["clarity"]
+source = ["clarity,recipes"]
 omit = [
   "*conftest.py",
   "*tests*",
