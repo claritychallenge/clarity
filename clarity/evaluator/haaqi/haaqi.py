@@ -159,8 +159,24 @@ def compute_haaqi(
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
     sample_rate: int,
+    equalisation: int = 1,
 ) -> float:
-    """Compute HAAQI metric"""
+    """Compute HAAQI metric
+
+    Args:
+        processed_signal (np.ndarray): Output signal with noise, distortion, HA gain,
+            and/or processing.
+        reference_signal (np.ndarray): Input reference speech signal with no noise
+            or distortion. If a hearing loss is specified, NAL-R equalization
+            is optional
+        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
+        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        sample_rate (int): Sample rate in Hz.
+        equalisation (int): hearing loss equalization mode for reference signal:
+            1 = no EQ has been provided, the function will add NAL-R
+            2 = NAL-R EQ has already been added to the reference signal
+            Defaults to 1.
+    """
 
     haaqi_audiogram_frequencies = [250, 500, 1000, 2000, 4000, 6000]
     audiogram_adjusted = np.array(
@@ -176,6 +192,6 @@ def compute_haaqi(
         processed=processed_signal,
         processed_freq=sample_rate,
         hearing_loss=audiogram_adjusted,
-        equalisation=1,
+        equalisation=equalisation,
     )
     return score
