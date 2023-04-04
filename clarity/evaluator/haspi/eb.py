@@ -1950,8 +1950,12 @@ def ave_covary2(
     if freq_cutoff is None:
         freq_cutoff = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
 
-    fc2p = np.atleast_2d(freq_cutoff ** (2 * lp_filter_order)).repeat(4, axis=0).T
-    freq2p = _center_freq ** (2 * np.atleast_2d(lp_filter_order).repeat(4, axis=0).T)
+    fc2p = (
+        np.atleast_2d(freq_cutoff ** (2 * lp_filter_order)).repeat(n_channels, axis=0).T
+    )
+    freq2p = _center_freq ** (
+        2 * np.atleast_2d(lp_filter_order).repeat(n_channels, axis=0).T
+    )
     fsync = np.sqrt(fc2p / (fc2p + freq2p))
 
     # Find the segments that lie sufficiently above the threshold.
