@@ -20,6 +20,8 @@ def test_render_scenes(mock_sr, tmp_path):
     scene_renderer_instance = MagicMock()
     mock_sr.return_value = scene_renderer_instance
 
+    # Using the config file from the actual recipe, but overriding
+    # just the paths to the scene data and the output directory
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
         config_path="../../../../../clarity/recipes/cec2/baseline/data_generation/",
