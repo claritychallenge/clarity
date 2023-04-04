@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from scipy.signal import cheby2, correlate, lfilter, resample_poly
 
 import numpy as np
+from scipy.signal import cheby2, convolve, correlate, lfilter, resample_poly
+
+from clarity.enhancer.nalr import NALR
 
 
 class ha_metrics:
@@ -107,6 +109,18 @@ class ha_metrics:
             reference_24hz, processed_24hz
         )
         nsamp = len(reference_24hz)
+
+        # For HASQI, here add NAL-R equalization if the quality reference doesn't
+        # already have it.
+        if self.equalisation == 1:
+            nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
+            enhancer = NALR(nfir, freq_sample)
+            aud = [250, 500, 1000, 2000, 4000, 6000]
+            nalr_fir, _ = enhancer.build(self.hearing_loss, aud)
+            reference_24hz = convolve(
+                reference_24hz, nalr_fir
+            )  # Apply the NAL-R filter
+            reference_24hz = reference_24hz[nfir : nfir + nsamp]
 
         return self.hearing_loss
 
