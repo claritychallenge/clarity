@@ -1596,27 +1596,6 @@ def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, reference_cep, processe
     # Compute the cross-covariance matrix
     cross_covariance_matrix = np.zeros((nmod, nbasis))
 
-    # Reduce one for loop
-    #
-    # for m in range(nmod):
-    #     for j in range(nbasis):
-    #         #  Index j gives the input reference band
-    #         x_j = reference[m, j]  # Input freq band j, modulation freq m
-    #         x_j = x_j - np.mean(x_j)
-    #         reference_sum = np.sum(x_j**2)
-    #
-    #         # Processed signal band
-    #         y_j = processed[m, j]  # Input freq band j, modulation freq m
-    #         y_j = y_j - np.mean(y_j)
-    #         processed_sum = np.sum(y_j**2)
-    #
-    #         # Cross-correlate the reference and processed signals
-    #         if (reference_sum < small) or (processed_sum < small):
-    #             cross_covariance_matrix[m, j] = 0
-    #         else:
-    #             cross_covariance_matrix[m, j] = np.abs(np.sum(x_j * y_j)) / np.sqrt(
-    #                 reference_sum * processed_sum
-    #             )
     for m in range(nmod):
         # Input freq band j, modulation freq m
         x_j = reference[m]
@@ -1970,11 +1949,10 @@ def ave_covary2(
     # Default cutoff frequencies in Hz
     if freq_cutoff is None:
         freq_cutoff = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
-    fsync = np.zeros((6, n_channels))  # Array of filter freq resp vs band center freq
-    for n in range(6):
-        fc2p = freq_cutoff[n] ** (2 * lp_filter_order[n])
-        freq2p = _center_freq ** (2 * lp_filter_order[n])
-        fsync[n, :] = np.sqrt(fc2p / (fc2p + freq2p))
+
+    fc2p = np.atleast_2d(freq_cutoff ** (2 * lp_filter_order)).repeat(4, axis=0).T
+    freq2p = _center_freq ** (2 * np.atleast_2d(lp_filter_order).repeat(4, axis=0).T)
+    fsync = np.sqrt(fc2p / (fc2p + freq2p))
 
     # Find the segments that lie sufficiently above the threshold.
     # Convert squared amplitude to dB envelope
