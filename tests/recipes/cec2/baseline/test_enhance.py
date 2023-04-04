@@ -46,3 +46,4 @@ def test_enhance(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     assert filename.exists()
     signal = read_signal(filename)
     assert np.sum(np.abs(signal)) == pytest.approx(78939.73132324219)
+    print(tmp_path)
