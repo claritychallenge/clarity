@@ -14,11 +14,11 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
 
-from recipes.cad1.task2.baseline.baseline_utils import (
+from clarity.recipes.cad1.task2.baseline.baseline_utils import (
     make_scene_listener_list,
     read_mp3,
 )
-from recipes.cad1.task2.baseline.evaluate import load_listeners_and_scenes
+from clarity.recipes.cad1.task2.baseline.evaluate import load_listeners_and_scenes
 
 logger = logging.getLogger(__name__)
 

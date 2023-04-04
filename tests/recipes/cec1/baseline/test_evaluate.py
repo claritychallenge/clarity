@@ -10,11 +10,11 @@ import pytest
 from numpy import ndarray
 from omegaconf import DictConfig
 
-import recipes
+import clarity
 from clarity.evaluator.msbg.msbg_utils import read_signal
 
 # pylint: disable=import-error, no-name-in-module, no-member
-from recipes.cec1.baseline.evaluate import run_calculate_SI, run_HL_processing
+from clarity.recipes.cec1.baseline.evaluate import run_calculate_SI, run_HL_processing
 
 # listen, run_calculate_SI,
 
@@ -55,13 +55,13 @@ def hydra_cfg(tmp_path: Path):
     return cfg
 
 
-@patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
+@patch("clarity.recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
 def test_run_HL_processing(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     """Test run_HL_processing function."""
     np.random.seed(0)
 
     with patch.object(
-        recipes.cec1.baseline.evaluate,
+        clarity.recipes.cec1.baseline.evaluate,
         "read_signal",
         side_effect=truncated_read_signal,
     ) as mock_read_signal:
@@ -82,7 +82,7 @@ def test_run_HL_processing(tmp_path: Path, hydra_cfg: DictConfig) -> None:
         assert np.sum(np.abs(x)) == pytest.approx(sig_sum)
 
 
-@patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
+@patch("clarity.recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
 def test_run_calculate_SI(tmp_path: Path, hydra_cfg: DictConfig):
     """Test run_calculate_SI function."""
 
@@ -104,7 +104,7 @@ def test_run_calculate_SI(tmp_path: Path, hydra_cfg: DictConfig):
         to_file.write_bytes(from_file.read_bytes())
 
     with patch.object(
-        recipes.cec1.baseline.evaluate,
+        clarity.recipes.cec1.baseline.evaluate,
         "read_signal",
         side_effect=truncated_read_signal,
     ) as mock_read_signal:

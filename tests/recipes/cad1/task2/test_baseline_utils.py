@@ -7,7 +7,7 @@ import librosa
 import numpy as np
 from omegaconf import OmegaConf
 
-from recipes.cad1.task2.baseline.baseline_utils import (
+from clarity.recipes.cad1.task2.baseline.baseline_utils import (
     load_listeners_and_scenes,
     read_mp3,
 )

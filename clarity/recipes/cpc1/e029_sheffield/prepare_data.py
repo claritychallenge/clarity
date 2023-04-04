@@ -1,4 +1,4 @@
-"""Data preparation for the E032 Sheffield CPC1 recipe."""
+"""Data preparation for the E029 Sheffield CPC1 recipe."""
 import csv
 import json
 import logging
@@ -8,7 +8,7 @@ from pathlib import Path
 import hydra
 import numpy as np
 import soundfile as sf
-from librosa import resample
+from librosa import resample  # pylint: disable=no-name-in-module
 from omegaconf import DictConfig
 from tqdm import tqdm
 

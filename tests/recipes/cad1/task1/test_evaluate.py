@@ -8,7 +8,7 @@ import pytest
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
-from recipes.cad1.task1.baseline.evaluate import (
+from clarity.recipes.cad1.task1.baseline.evaluate import (
     ResultsFile,
     _evaluate_song_listener,
     make_song_listener_list,

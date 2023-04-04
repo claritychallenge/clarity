@@ -5,8 +5,7 @@ import math
 import numpy as np
 import pytest
 
-# pylint: disable=import-error, no-name-in-module
-from recipes.cpc2.baseline.evaluate import (
+from clarity.recipes.cpc2.baseline.evaluate import (
     compute_scores,
     kt_score,
     ncc_score,

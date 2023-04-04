@@ -4,8 +4,7 @@
 import numpy as np
 import pytest
 
-# pylint: disable=import-error, no-name-in-module
-from recipes.cpc2.baseline.compute_haspi import (
+from clarity.recipes.cpc2.baseline.compute_haspi import (
     parse_cec2_signal_name,
     set_seed_with_string,
 )

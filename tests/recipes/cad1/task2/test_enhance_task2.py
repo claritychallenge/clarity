@@ -7,7 +7,7 @@ import numpy as np
 import pyloudnorm as pyln
 from omegaconf import DictConfig
 
-from recipes.cad1.task2.baseline.enhance import enhance_song
+from clarity.recipes.cad1.task2.baseline.enhance import enhance_song
 
 BASE_DIR = Path.cwd()
 RESOURCES = BASE_DIR / "tests" / "resources" / "recipes" / "cad1" / "task2"

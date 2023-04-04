@@ -101,25 +101,19 @@ Bug_Tracker = "https://github.com/claritychallenge/clarity/issues"
 Documentation = "https://claritychallenge.github.io/clarity_CC_doc"
 
 [tool.setuptools]
-# packages = ["clarity", "recipes"]
+# packages = ["clarity"]
 # packages = "find"
-# py-modules = ["clarity", "recipes"]
+# py-modules = ["clarity"]
 include-package-data = true
-#package-dir = ["clarity", "recipes"]
+#package-dir = ["clarity"]
 
 [tool.setuptools.packages.find]
-include = ["clarity*", "recipes*"]
+include = ["clarity*"]
 exclude = ["tests*"]
 namespaces = false
 
 [tool.setuptools.package-data]
 clarity = [
-  "*.json",
-  "*.mat",
-  "*.yaml"
-]
-recipes = [
-  "*.csv",
   "*.json",
   "*.mat",
   "*.yaml"
@@ -143,7 +137,7 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-source = ["clarity,recipes"]
+source = ["clarity"]
 omit = [
   "*conftest.py",
   "*tests*",

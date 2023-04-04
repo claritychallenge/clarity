@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-# pylint: disable=import-error, no-name-in-module
-from recipes.cpc2.baseline.predict import LogisticModel, make_disjoint_train_set
+from clarity.recipes.cpc2.baseline.predict import LogisticModel, make_disjoint_train_set
 
 
 # pylint: disable=redefined-outer-name

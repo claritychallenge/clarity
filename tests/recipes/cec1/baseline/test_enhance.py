@@ -11,7 +11,7 @@ from omegaconf import DictConfig
 from clarity.evaluator.msbg.msbg_utils import read_signal, write_signal
 
 # pylint: disable=import-error, no-name-in-module, no-member
-from recipes.cec1.baseline.enhance import enhance
+from clarity.recipes.cec1.baseline.enhance import enhance
 
 
 def not_tqdm(iterable):
@@ -34,7 +34,7 @@ def hydra_cfg(tmp_path: Path):
     return cfg
 
 
-@patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
+@patch("clarity.recipes.cec1.baseline.evaluate.tqdm", not_tqdm)
 def test_enhance(tmp_path: Path, hydra_cfg: DictConfig, mocker) -> None:
     """Test run_HL_processing function."""
     np.random.seed(0)
