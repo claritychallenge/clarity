@@ -1,50 +1,46 @@
-[
-  {
+[{
     "dataset": "dev",
     "room": "R06001",
     "scene": "S06001",
     "target": {
-      "name": "T024_BMR_00659",
-      "time_start": 78260,
-      "time_end": 243635
+        "name": "T010_G0N_02468",
+        "time_start": 78260,
+        "time_end": 243635
     },
     "duration": 287735,
-    "interferers": [
-      {
-        "position": 1,
-        "time_start": 0,
-        "time_end": 287735,
-        "type": "speech",
-        "name": "scf_04310.wav",
-        "offset": 31593565
-      },
-      {
-        "position": 3,
-        "time_start": 0,
-        "time_end": 287735,
-        "type": "noise",
-        "name": "CIN_washing_013.wav",
-        "offset": 245097
-      }
+    "interferers": [{
+            "position": 1,
+            "time_start": 0,
+            "time_end": 287735,
+            "type": "noise",
+            "name": "CIN_fan_014.wav",
+            "offset": 7565
+        },
+        {
+            "position": 3,
+            "time_start": 0,
+            "time_end": 287735,
+            "type": "speech",
+            "name": "som_04766_05.wav",
+            "offset": 5097
+        }
     ],
     "SNR": 2.5580,
     "listener": {
-      "rotation": [
-        {
-          "sample": 90952.7142,
-          "angle": -125.8235
-        },
-        {
-          "sample": 100246.7142,
-          "angle": -112.0054
-        }
-      ],
-      "hrir_filename": [
-        "VP_E4-ED",
-        "VP_E4-BTE_fr",
-        "VP_E4-BTE_mid",
-        "VP_E4-BTE_rear"
-      ]
+        "rotation": [{
+                "sample": 90952.7142,
+                "angle": -125.8235
+            },
+            {
+                "sample": 100246.7142,
+                "angle": -112.0054
+            }
+        ],
+        "hrir_filename": [
+            "VP_N6-ED",
+            "VP_N6-BTE_fr",
+            "VP_N6-BTE_mid",
+            "VP_N6-BTE_rear"
+        ]
     }
-  }
-]
+}]
