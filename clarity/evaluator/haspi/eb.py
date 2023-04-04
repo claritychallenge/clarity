@@ -1453,10 +1453,8 @@ def melcor9(
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
     freq = np.arange(n_cepstral_coef)
     k = np.arange(nbands)
-    cepm = np.zeros((nbands, n_cepstral_coef))
-    for n in range(n_cepstral_coef):
-        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
-        cepm[:, n] = basis / np.linalg.norm(basis)
+    basis = np.cos(np.outer(k, freq) * np.pi / (nbands - 1))
+    cepm = basis / np.linalg.norm(basis, axis=0, keepdims=True)
 
     # Find the segments that lie sufficiently above the quiescent rate
     # Convert envelope dB to linear (specific loudness)
