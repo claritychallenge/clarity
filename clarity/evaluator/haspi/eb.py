@@ -1,4 +1,5 @@
 """Module for HASPI, HASQI, HAAQI EBs"""
+# pylint: disable=import-error
 import logging
 
 import numpy as np
@@ -1502,24 +1503,33 @@ def melcor9(
     _distorted = distorted[:, index]
 
     # Add the low-level noise to the envelopes
-    _reference = _reference + add_noise * np.random.standard_normal(_reference.shape)
-    _distorted = _distorted + add_noise * np.random.standard_normal(_distorted.shape)
+    _reference += add_noise * np.random.standard_normal(_reference.shape)
+    _distorted += add_noise * np.random.standard_normal(_distorted.shape)
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
-    reference_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Input
-    distorted_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Output
-    for n in range(segments_above_threshold):
-        for k in range(n_cepstral_coef):
-            reference_cep[k, n] = np.sum(_reference[:, n] * cepm[:, k])
-            distorted_cep[k, n] = np.sum(_distorted[:, n] * cepm[:, k])
 
+    # Replace nested for loop with numpy
+    # reference_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Input
+    # distorted_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Output
+    #
+    # for n in range(segments_above_threshold):
+    #     for k in range(n_cepstral_coef):
+    #         reference_cep[k, n] = np.sum(_reference[:, n] * cepm[:, k])
+    #         distorted_cep[k, n] = np.sum(_distorted[:, n] * cepm[:, k])
+    reference_cep = np.dot(cepm.T, _reference[:, :segments_above_threshold])
+    distorted_cep = np.dot(cepm.T, _distorted[:, :segments_above_threshold])
+
+    # Replace for loop with numpy
+    #
     # Remove the average value from the cepstral coefficients. The
     # cross-correlation thus becomes a cross-covariance, and there
     # is no effect of the absolute signal level in dB.
-    for k in range(n_cepstral_coef):
-        reference_cep[k, :] = reference_cep[k, :] - np.mean(reference_cep[k, :], axis=0)
-        distorted_cep[k, :] = distorted_cep[k, :] - np.mean(distorted_cep[k, :], axis=0)
+    # for k in range(n_cepstral_coef):
+    #  reference_cep[k, :] = reference_cep[k, :] - np.mean(reference_cep[k, :], axis=0)
+    #  distorted_cep[k, :] = distorted_cep[k, :] - np.mean(distorted_cep[k, :], axis=0)
+    reference_cep -= np.mean(reference_cep, axis=1, keepdims=True)
+    distorted_cep -= np.mean(distorted_cep, axis=1, keepdims=True)
 
     # Envelope sampling parameters
     sampling_freq = 1000.0 / (0.5 * segment_size)  # Envelope sampling frequency in Hz
@@ -1562,36 +1572,43 @@ def melcor9(
         distorted_cep,
     )
 
+    # Replace nested for loop with numpy
+    #
     # Average over the  modulation filters and basis functions 2 - 6
-    for m in range(n_modulation_filter_bands):
-        for j in range(1, n_cepstral_coef):
-            mel_cepstral_average += mel_cepstral_cross_covar[m, j]
+    # for m in range(n_modulation_filter_bands):
+    #     for j in range(1, n_cepstral_coef):
+    #         mel_cepstral_average += mel_cepstral_cross_covar[m, j]
+    mel_cepstral_average = np.sum(mel_cepstral_cross_covar[:, 1:], axis=(0, 1))
+    mel_cepstral_average /= n_modulation_filter_bands * (n_cepstral_coef - 1)
 
-    mel_cepstral_average = mel_cepstral_average / (
-        n_modulation_filter_bands * (n_cepstral_coef - 1)
-    )
-
+    # Replace nested for loop with numpy
+    #
     # Average over the four lower modulation filters
-    for m in range(4):
-        for j in range(1, n_cepstral_coef):
-            mel_cepstral_low += mel_cepstral_cross_covar[m, j]
+    # for m in range(4):
+    #     for j in range(1, n_cepstral_coef):
+    #         mel_cepstral_low += mel_cepstral_cross_covar[m, j]
+    mel_cepstral_low = np.sum(mel_cepstral_cross_covar[:4, 1:])
+    mel_cepstral_low /= 4 * (n_cepstral_coef - 1)
 
-    mel_cepstral_low = mel_cepstral_low / (4 * (n_cepstral_coef - 1))
-
+    # Replace nested for loop with numpy
+    #
     #  Average over the four upper modulation filters
-    for m in range(4, 8):
-        for j in range(1, n_cepstral_coef):
-            mel_cepstral_high += mel_cepstral_cross_covar[m, j]
+    # for m in range(4, 8):
+    #     for j in range(1, n_cepstral_coef):
+    #         mel_cepstral_high += mel_cepstral_cross_covar[m, j]
+    mel_cepstral_high = np.sum(mel_cepstral_cross_covar[4:8, 1:])
+    mel_cepstral_high /= 4 * (n_cepstral_coef - 1)
 
-    mel_cepstral_high = mel_cepstral_high / (4 * (n_cepstral_coef - 1))
-
+    # Replace nested for loop with numpy
+    #
     # Average each modulation frequency over the basis functions
-    for m in range(n_modulation_filter_bands):
-        ave = 0
-        for j in range(1, n_cepstral_coef):
-            ave += mel_cepstral_cross_covar[m, j]
-
-        mel_cepstral_modulation[m] = ave / (n_cepstral_coef - 1)
+    # for m in range(n_modulation_filter_bands):
+    #     ave = 0
+    #     for j in range(1, n_cepstral_coef):
+    #         ave += mel_cepstral_cross_covar[m, j]
+    #
+    #     mel_cepstral_modulation[m] = ave / (n_cepstral_coef - 1)
+    mel_cepstral_modulation = np.mean(mel_cepstral_cross_covar[:, 1:], axis=1)
 
     return (
         mel_cepstral_average,
@@ -1631,25 +1648,45 @@ def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, reference_cep, processe
 
     # Compute the cross-covariance matrix
     cross_covariance_matrix = np.zeros((nmod, nbasis))
+
+    # Reduce one for loop
+    #
+    # for m in range(nmod):
+    #     for j in range(nbasis):
+    #         #  Index j gives the input reference band
+    #         x_j = reference[m, j]  # Input freq band j, modulation freq m
+    #         x_j = x_j - np.mean(x_j)
+    #         reference_sum = np.sum(x_j**2)
+    #
+    #         # Processed signal band
+    #         y_j = processed[m, j]  # Input freq band j, modulation freq m
+    #         y_j = y_j - np.mean(y_j)
+    #         processed_sum = np.sum(y_j**2)
+    #
+    #         # Cross-correlate the reference and processed signals
+    #         if (reference_sum < small) or (processed_sum < small):
+    #             cross_covariance_matrix[m, j] = 0
+    #         else:
+    #             cross_covariance_matrix[m, j] = np.abs(np.sum(x_j * y_j)) / np.sqrt(
+    #                 reference_sum * processed_sum
+    #             )
     for m in range(nmod):
-        for j in range(nbasis):
-            #  Index j gives the input reference band
-            x_j = reference[m, j]  # Input freq band j, modulation freq m
-            x_j = x_j - np.mean(x_j)
-            reference_sum = np.sum(x_j**2)
+        # Input freq band j, modulation freq m
+        x_j = reference[m]
+        x_j -= np.mean(x_j, axis=1, keepdims=True)
+        reference_sum = np.sum(x_j**2, axis=1)
 
-            # Processed signal band
-            y_j = processed[m, j]  # Input freq band j, modulation freq m
-            y_j = y_j - np.mean(y_j)
-            processed_sum = np.sum(y_j**2)
+        # Processed signal band
+        y_j = processed[m]
+        y_j -= np.mean(y_j, axis=1, keepdims=True)
+        processed_sum = np.sum(y_j**2, axis=1)
 
-            # Cross-correlate the reference and processed signals
-            if (reference_sum < small) or (processed_sum < small):
-                cross_covariance_matrix[m, j] = 0
-            else:
-                cross_covariance_matrix[m, j] = np.abs(np.sum(x_j * y_j)) / np.sqrt(
-                    reference_sum * processed_sum
-                )
+        xy = np.sum(x_j * y_j, axis=1)
+        mask = (reference_sum < small) | (processed_sum < small)
+        cross_covariance_matrix[m, ~mask] = np.abs(xy[~mask]) / np.sqrt(
+            reference_sum[~mask] * processed_sum[~mask]
+        )
+
     return cross_covariance_matrix
 
 
