@@ -68,6 +68,8 @@ repos:
     rev: v1.1.1
     hooks:
       - id: mypy
+        args:
+          - --explicit-package-bases
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
