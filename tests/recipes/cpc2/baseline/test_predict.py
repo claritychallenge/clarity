@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+# pylint: disable=import-error, no-name-in-module
 from recipes.cpc2.baseline.predict import LogisticModel, make_disjoint_train_set
 
 
@@ -75,3 +76,8 @@ def test_make_disjoint_train_set_empty(data_1, data_2, expected):
     assert disjoint.shape[0] == pytest.approx(
         expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_predict():
+    """Test predict function."""

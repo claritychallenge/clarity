@@ -5,6 +5,7 @@ import math
 import numpy as np
 import pytest
 
+# pylint: disable=import-error, no-name-in-module
 from recipes.cpc2.baseline.evaluate import (
     compute_scores,
     kt_score,
@@ -125,3 +126,8 @@ def test_compute_scores_ok(x, y):
     assert result["NCC"] == ncc_score(x, y)
     assert result["KT"] == kt_score(x, y)
     assert result["Std"] == std_err(x, y)
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_evaluate():
+    """Test evaluate function."""
