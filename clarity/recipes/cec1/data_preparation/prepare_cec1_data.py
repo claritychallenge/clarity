@@ -24,7 +24,7 @@ def prepare_data(
         scenes = json.load(fp)
 
     Path(scene_folder).mkdir(parents=True, exist_ok=True)
-
+    print(scene_folder)
     renderer = Renderer(input_path=root_path, output_path=scene_folder, num_channels=3)
     for scene in tqdm(scenes):
         if check_scene_exists(scene, scene_folder, num_channels):
