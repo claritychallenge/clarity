@@ -23,6 +23,7 @@ def not_tqdm(iterable):
 def test_prepare_data(tmp_path):
     """Test prepare_data function."""
 
+    hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(config_path=".", job_name="test_cec1")
     cfg = hydra.compose(
         config_name="data_config",
