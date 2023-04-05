@@ -1,4 +1,5 @@
 """Tests for eb module"""
+# pylint: disable=import-error
 
 import numpy as np
 import pytest
@@ -293,7 +294,7 @@ def test_env_compress_basilar_membrane():
         fsamp=24000,
         level1=140,
         small=1e-30,
-        threshold_high=120,
+        threshold_high=100,
     )
     # check shapes
     assert compressed_signal.shape == (600,)
