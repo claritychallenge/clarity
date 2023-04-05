@@ -47,7 +47,7 @@ def compute_haaqi_rms(
     """
 
     # align signals
-    processed_signal = align_signals(processed_signal, reference_signal)
+    processed_signal = align_signals(reference_signal, processed_signal)
 
     # find silence segments
     silence, non_silence = find_silence_segments(
@@ -89,7 +89,7 @@ def compute_haaqi_rms(
 
 
 def align_signals(
-    processed_signal: np.ndarray, reference_signal: np.ndarray
+    reference_signal: np.ndarray, processed_signal: np.ndarray
 ) -> np.ndarray:
     """Align processed signal to reference signals
 
@@ -155,5 +155,11 @@ def find_silence_segments(
     non_silence = []
     for start, end in zip(silence[:-1], silence[1:]):
         non_silence.append([start[-1] + 1, end[0] - 1])
+
+    # add first and last non-silence segments
+    if silence[0][0] > 0:
+        non_silence.insert(0, [0, silence[0][0] - 1])
+    if silence[-1][-1] < len(signal) - 1:
+        non_silence.append([silence[-1][-1] + 1, len(signal) - 1])
 
     return silence, non_silence
