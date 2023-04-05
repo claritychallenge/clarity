@@ -112,7 +112,7 @@ def test_process_stems_for_listener():
     )
 
     # Call the process_stems_for_listener function and check output is as expected
-    output = process_stems_for_listener(
+    output_stems, _ = process_stems_for_listener(
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
     expected_results = np.load(
@@ -120,7 +120,7 @@ def test_process_stems_for_listener():
         allow_pickle=True,
     )[()]
 
-    for key, item in output.items():
+    for key, item in output_stems.items():
         np.testing.assert_array_almost_equal(item, expected_results[key])
 
 
