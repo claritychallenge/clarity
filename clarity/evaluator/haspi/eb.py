@@ -116,12 +116,10 @@ def ear_model(
         attn_ihc_x,
     ] = loss_parameters(hearing_loss_x, _center_freq)
 
-    # Parameters for the control filter bank
-    hl_max = [100, 100, 100, 100, 100, 100]
     # Compute center frequencies for the control
     _center_freq_control = center_frequency(nchan, shift)
     # Maximum BW for the control
-    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
+    _, bandwidth_1, _, _, _ = loss_parameters(np.full(6, 100), _center_freq_control)
 
     # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
@@ -144,9 +142,9 @@ def ear_model(
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, freq_sample)
-        aud = [250, 500, 1000, 2000, 4000, 6000]
+        aud = np.array([250, 500, 1000, 2000, 4000, 6000])
         nalr_fir, _ = enhancer.build(hearing_loss, aud)
-        reference_24hz = convolve(reference_24hz, nalr_fir)  # Apply the NAL-R filter
+        reference_24hz = enhancer.apply(nalr_fir, reference_24hz)
         reference_24hz = reference_24hz[nfir : nfir + nsamp]
 
     # Cochlear model
@@ -877,9 +875,6 @@ def env_compress_basilar_membrane(
     Two-tone suppression added 22 August 2008.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    # Initialize the compression parameters
-    threshold_high = 100
-
     # Convert the control envelope to dB SPL
     logenv = np.maximum(control, small)
     logenv = level1 + 20 * np.log10(logenv)
