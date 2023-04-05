@@ -165,10 +165,10 @@ def test_full_cec2_pipeline(
         reference_right=reference[:, 1],
         processed_left=enhanced_audio[:, 0],
         processed_right=enhanced_audio[:, 1],
-        fs_signal=fs,
+        sample_freq=fs,
         audiogram_left=audiogram_l,
         audiogram_right=audiogram_r,
-        audiogram_cfs=audiogram_cfs,
+        audiogram_frequencies=audiogram_cfs,
     )
 
     regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")

@@ -132,10 +132,10 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
     reference_right,
     processed_left,
     processed_right,
-    fs_signal,
+    sample_freq,
     audiogram_left,
     audiogram_right,
-    audiogram_cfs,
+    audiogram_frequencies,
     level=100,
 ) -> float:
     """Better ear HASPI.
@@ -165,20 +165,29 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
 
     # Adjust listener.audiogram_levels_l and _r to match the frequencies above
     hearing_loss_left = [
-        audiogram_left[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+        audiogram_left[i]
+        for i in range(len(audiogram_frequencies))
+        if audiogram_frequencies[i] in aud
     ]
     hearing_loss_right = [
-        audiogram_right[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+        audiogram_right[i]
+        for i in range(len(audiogram_frequencies))
+        if audiogram_frequencies[i] in aud
     ]
 
     score_left, _ = haspi_v2(
-        reference_left, fs_signal, processed_left, fs_signal, hearing_loss_left, level
+        reference_left,
+        sample_freq,
+        processed_left,
+        sample_freq,
+        hearing_loss_left,
+        level,
     )
     score_right, _ = haspi_v2(
         reference_right,
-        fs_signal,
+        sample_freq,
         processed_right,
-        fs_signal,
+        sample_freq,
         hearing_loss_right,
         level,
     )

@@ -65,10 +65,10 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
         reference_right=ref[:, 1],
         processed_left=proc[:, 0],
         processed_right=proc[:, 1],
-        fs_signal=fs_proc,
+        sample_freq=fs_proc,
         audiogram_left=audiogram["audiogram_levels_l"],
         audiogram_right=audiogram["audiogram_levels_r"],
-        audiogram_cfs=audiogram["audiogram_cfs"],
+        audiogram_frequencies=audiogram["audiogram_cfs"],
     )
 
     return haspi_score

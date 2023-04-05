@@ -5,10 +5,11 @@ import pathlib
 
 import hydra
 import numpy as np
-from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
+
+from clarity.recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
 

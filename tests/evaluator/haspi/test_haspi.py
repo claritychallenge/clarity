@@ -40,10 +40,10 @@ def test_haspi_v2_better_ear() -> None:
         reference_right=ref_right,
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
-        fs_signal=sample_rate,
+        sample_freq=sample_rate,
         audiogram_left=hl_left,
         audiogram_right=hl_right,
-        audiogram_cfs=freqs,
+        audiogram_frequencies=freqs,
         level=100,
     )
 

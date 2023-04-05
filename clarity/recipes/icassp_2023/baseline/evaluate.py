@@ -39,14 +39,14 @@ def set_scene_seed(scene):
 def compute_metric(metric, signal, ref, audiogram, fs_signal):
     """Compute HASPI or HASQI metric"""
     score = metric(
-        xl=ref[:, 0],
-        xr=ref[:, 1],
-        yl=signal[:, 0],
-        yr=signal[:, 1],
-        fs_signal=fs_signal,
-        audiogram_l=audiogram["audiogram_levels_l"],
-        audiogram_r=audiogram["audiogram_levels_r"],
-        audiogram_cfs=audiogram["audiogram_cfs"],
+        reference_left=ref[:, 0],
+        reference_right=ref[:, 1],
+        processed_left=signal[:, 0],
+        processed_right=signal[:, 1],
+        sample_freq=fs_signal,
+        audiogram_left=audiogram["audiogram_levels_l"],
+        audiogram_right=audiogram["audiogram_levels_r"],
+        audiogram_frequencies=audiogram["audiogram_cfs"],
     )
     return score
 
