@@ -1,4 +1,6 @@
 """HAAQI-RMS metric"""
+from __future__ import annotations
+
 import numpy as np
 from scipy.signal import correlate, correlation_lags
 
