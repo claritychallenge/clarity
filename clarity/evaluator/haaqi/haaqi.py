@@ -196,7 +196,7 @@ def compute_haaqi(
         ]
     )
 
-    if len(reference_signal):
+    if len(reference_signal) == 0:
         if len(processed_signal) == 0:
             # No scoring if no music
             return 1.0
