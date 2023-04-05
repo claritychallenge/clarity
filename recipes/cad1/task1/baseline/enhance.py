@@ -218,7 +218,7 @@ def process_stems_for_listener(
     audiogram_right: np.ndarray,
     cfs: np.ndarray,
     apply_compressor: bool = False,
-) -> dict:
+) -> tuple[dict, dict]:
     """Process the stems from sources.
 
     The process for each stem gows as follows:
@@ -241,16 +241,20 @@ def process_stems_for_listener(
         apply_compressor (bool) : Whether to apply the compressor
 
     Returns:
-        processed_sources (dict) : Dictionary of processed stems
+        processed_sources (dict) : Dictionary of processed stems.
+        scale_stems (dict) : Dictionary of scale factors for stems.
+            This can be used to reverse the scaling applied to the stems.
     """
 
     processed_stems = {}
+    scale_stems = {}
 
     for stem_str in stems:
         stem_signal = stems[stem_str]
 
         # Scale to RMS=1
-        stem_signal /= compute_rms(stem_signal)
+        scale_stems[stem_str] = compute_rms(stem_signal)
+        stem_signal /= scale_stems[stem_str]
 
         # Determine the audiogram to use
         audiogram = audiogram_left if stem_str.startswith("l") else audiogram_right
@@ -260,7 +264,32 @@ def process_stems_for_listener(
             enhancer, compressor, stem_signal, audiogram, cfs, apply_compressor
         )
         processed_stems[stem_str] = proc_signal
-    return processed_stems
+    return processed_stems, scale_stems
+
+
+def remix_stems(stems: dict, scale_stems: dict) -> np.ndarray:
+    """Remix the stems into a stereo signal.
+
+    Function assumes that the stems were normalised to RMS=1
+    and that the scale_stems dictionary contains the scale factors.
+
+    Args:
+        stems (dict) : Dictionary of stems
+        scale_stems (dict) : Dictionary of scale factors for stems.
+
+    Returns:
+        remixed_signal (np.ndarray) : Remixed signal
+    """
+    n_samples = stems[list(stems.keys())[0]].shape[0]
+    output_left, output_right = np.zeros(n_samples), np.zeros(n_samples)
+
+    for stem_str, stem_signal in stems.items():
+        if stem_str.startswith("l"):
+            output_left = stem_signal * scale_stems[stem_str]
+        else:
+            output_right = stem_signal * scale_stems[stem_str]
+
+    return np.stack((output_left, output_right), axis=1)
 
 
 @hydra.main(config_path="", config_name="config")
@@ -375,7 +404,7 @@ def enhance(config: DictConfig) -> None:
         # Baseline applies NALR prescription to each stem instead of using the
         # listener's audiograms in the decomposition. This stem can be skipped
         # if the listener's audiograms are used in the decomposition
-        processed_stems = process_stems_for_listener(
+        processed_stems, scale_stems = process_stems_for_listener(
             stems,
             enhancer,
             compressor,
@@ -386,14 +415,7 @@ def enhance(config: DictConfig) -> None:
         )
 
         # save processed stems
-        n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
-        out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
-        for stem_str, item in processed_stems.items():
-            if stem_str.startswith("l"):
-                out_left += item
-            else:
-                out_right += item
-
+        for stem_str, stem_signal in processed_stems.items():
             filename = (
                 enhanced_folder
                 / f"{listener_info['name']}"
@@ -401,9 +423,9 @@ def enhance(config: DictConfig) -> None:
                 / f"{listener_info['name']}_{song_name}_{stem_str}.wav"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
-            wavfile.write(filename, config.nalr.fs, item)
+            wavfile.write(filename, config.nalr.fs, stem_signal)
 
-        enhanced = np.stack([out_left, out_right], axis=1)
+        enhanced = remix_stems(processed_stems, scale_stems)
         filename = (
             enhanced_folder
             / f"{listener_info['name']}"
