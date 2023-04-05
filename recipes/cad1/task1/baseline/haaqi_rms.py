@@ -3,6 +3,7 @@ import numpy as np
 from scipy.signal import correlate, correlation_lags
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.signal_processing import compute_rms
 
 
 def compute_haaqi_rms(
@@ -11,9 +12,14 @@ def compute_haaqi_rms(
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
     sample_rate: int,
-    silence_length: float = 1,
+    silence_length: float = 2.0,
 ) -> float:
     """Compute HAAQI-RMS metric
+
+    Metric is a combination of HAAQI and RMS. Signals are split into
+    non-silence and silence segments based on the reference signal.
+    HAAQI is computed on the non-silence parts and RMS is computed
+    on the silence parts.
 
     Args:
         processed_signal (np.ndarray): Output signal with noise, distortion, HA gain,
@@ -27,7 +33,7 @@ def compute_haaqi_rms(
         silence_length (float): Minimum length of silence in seconds to use
             for RMS calculation.
             Segments of silence shorter than this are included in non_silence segments.
-            Defaults to 1.
+            Defaults to 2.
 
     Returns:
         float: HAAQI-RMS metric
@@ -36,49 +42,49 @@ def compute_haaqi_rms(
     # align signals
     processed_signal = align_signals(processed_signal, reference_signal)
 
-    # find silence
-    silence, music = find_silence(reference_signal, sample_rate, silence_length)
+    # find silence segments
+    silence, non_silence = find_silence_segments(
+        reference_signal, sample_rate, silence_length
+    )
 
+    # join non-silence segments for processed and reference signals
     new_processed_signal = []
     new_reference_signal = []
-    for start, end in music:
+    for start, end in non_silence:
         new_processed_signal.append(processed_signal[start:end])
         new_reference_signal.append(reference_signal[start:end])
-
     new_reference_signal = np.concatenate(new_reference_signal)
     new_processed_signal = np.concatenate(new_processed_signal)
 
+    # join silence segments for processed signal
     silence_processed = []
     for start, end in silence:
         silence_processed.append(processed_signal[start:end])
     silence_processed = np.concatenate(silence_processed)
 
-    haaqi = compute_haaqi(
+    # Compute haaqi on music segments
+    haaqi_score = compute_haaqi(
         processed_signal=new_processed_signal,
         reference_signal=new_reference_signal,
         sample_rate=sample_rate,
         audiogram=audiogram,
         audiogram_frequencies=audiogram_frequencies,
+        equalisation=1,
+        scale_reference=True,
     )
 
-    rms = compute_rms(silence_processed)
+    # Compute rms on silence segments
+    rms_score = compute_rms(silence_processed)
 
-    score = (haaqi * len(new_reference_signal) + rms * len(silence_processed)) / (
-        len(new_reference_signal) + len(silence_processed)
-    )
-
-    return score
-
-
-def compute_rms(signal: np.ndarray) -> float:
-    """Compute RMS of signal"""
-    return np.sqrt(np.mean(np.square(signal)))
+    return (
+        haaqi_score * len(new_reference_signal) - rms_score * len(silence_processed)
+    ) / (len(new_reference_signal) + len(silence_processed))
 
 
 def align_signals(
     processed_signal: np.ndarray, reference_signal: np.ndarray
 ) -> np.ndarray:
-    """Align processed signal to reference signal
+    """Align processed signal to reference signals
 
     Args:
         processed_signal (np.ndarray): Output signal with noise, distortion, HA gain,
@@ -110,10 +116,10 @@ def align_signals(
     return processed_signal
 
 
-def find_silence(
+def find_silence_segments(
     signal: np.ndarray, sample_rate: int, min_silence_length: float = 1
 ) -> tuple[list, list]:
-    """Find silence in signal
+    """Find silence segments in signal
 
     Args:
         signal (np.ndarray): Input signal
@@ -122,13 +128,14 @@ def find_silence(
             seconds classify silence or non_silence segment.
             Defaults to 1.
     Returns:
-        tuple[list, list]: Silence and non_silence segments
+        tuple[list, list]: Silence and non-silence segments
     """
     # Find the start and end of the noiseless reference sequence
     reference_abs = np.abs(signal)
     reference_max = np.max(reference_abs)
     threshold = 0.001 * reference_max
 
+    # Find silence frames
     silence = np.where(np.abs(signal) < threshold)[0]
     silence = np.split(silence, np.where(np.diff(silence) != 1)[0] + 1)
     silence = [
@@ -137,8 +144,9 @@ def find_silence(
         if len(group) > sample_rate * min_silence_length
     ]
 
+    # find silence segments
     non_silence = []
-    for a, b in zip(silence[:-1], silence[1:]):
-        non_silence.append([a[-1] + 1, b[0] - 1])
+    for start, end in zip(silence[:-1], silence[1:]):
+        non_silence.append([start[-1] + 1, end[0] - 1])
 
     return silence, non_silence

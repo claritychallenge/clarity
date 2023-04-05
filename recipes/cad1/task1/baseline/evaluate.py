@@ -1,6 +1,8 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
+# pylint: disable=too-many-locals
+# pylint: disable=import-error
 import csv
 import hashlib
 import itertools
@@ -15,11 +17,7 @@ import pandas as pd
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
-from clarity.evaluator.haaqi import compute_haaqi
-
-# pylint: disable=too-many-locals
-# pylint: disable=import-error
-
+from recipes.cad1.task1.baseline.haaqi_rms import compute_haaqi_rms
 
 logger = logging.getLogger(__name__)
 
@@ -189,19 +187,21 @@ def _evaluate_song_listener(
         )
 
         #  audiogram, audiogram_frequencies, fs_signal
-        per_instrument_score[f"left_{instrument}"] = compute_haaqi(
+        per_instrument_score[f"left_{instrument}"] = compute_haaqi_rms(
             left_enhanced_signal,
             left_reference_signal,
             np.array(listener_audiograms["audiogram_levels_l"]),
             np.array(listener_audiograms["audiogram_cfs"]),
             config.nalr.fs,
+            silence_length=2.0,
         )
-        per_instrument_score[f"right_{instrument}"] = compute_haaqi(
+        per_instrument_score[f"right_{instrument}"] = compute_haaqi_rms(
             right_enhanced_signal,
             right_reference_signal,
             np.array(listener_audiograms["audiogram_levels_r"]),
             np.array(listener_audiograms["audiogram_cfs"]),
             config.nalr.fs,
+            silence_length=2.0,
         )
 
     # Compute the combined score
@@ -212,7 +212,7 @@ def _evaluate_song_listener(
 
 @hydra.main(config_path="", config_name="config")
 def run_calculate_aq(config: DictConfig) -> None:
-    """Evaluate the enhanced signals using the HAAQI metric."""
+    """Evaluate the enhanced signals using the HAAQI-RMS metric."""
     # Load test songs
     with open(config.path.music_valid_file, encoding="utf-8") as fp:
         songs = json.load(fp)

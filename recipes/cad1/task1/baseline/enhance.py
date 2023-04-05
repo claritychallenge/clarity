@@ -1,6 +1,8 @@
 """ Run the dummy enhancement. """
 from __future__ import annotations
 
+# pylint: disable=too-many-locals
+# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
@@ -9,6 +11,7 @@ import hydra
 import numpy as np
 import pandas as pd
 import torch
+from numpy import ndarray
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
@@ -16,12 +19,12 @@ from torchaudio.transforms import Fade
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.utils.signal_processing import denormalize_signals, normalize_signal
+from clarity.utils.signal_processing import (
+    compute_rms,
+    denormalize_signals,
+    normalize_signal,
+)
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
-
-# pylint: disable=too-many-locals
-# pylint: disable=import-error
-
 
 logger = logging.getLogger(__name__)
 
@@ -218,6 +221,16 @@ def process_stems_for_listener(
 ) -> dict:
     """Process the stems from sources.
 
+    The process for each stem gows as follows:
+    1. Normalise STEM to RMS=1
+    2. Apply NAL-R prescription hearing aid
+    3. Apply compressor
+
+    HAAQI User Guide says:
+    'The amplitude of y should be scaled to be RMS=1 prior
+    to the hearing-aid amplification or other signal processing,
+    and compensation for the hearing loss should be provided.'
+
     Args:
         stems (dict) : Dictionary of stems
         enhancer (NALR) : NAL-R prescription hearing aid
@@ -235,6 +248,9 @@ def process_stems_for_listener(
 
     for stem_str in stems:
         stem_signal = stems[stem_str]
+
+        # Scale to RMS=1
+        stem_signal /= compute_rms(stem_signal)
 
         # Determine the audiogram to use
         audiogram = audiogram_left if stem_str.startswith("l") else audiogram_right
@@ -347,7 +363,7 @@ def enhance(config: DictConfig) -> None:
             mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
             assert smaple_rate == config.nalr.fs
 
-            stems = decompose_signal(
+            stems: dict[str, ndarray] = decompose_signal(
                 separation_model,
                 mixture_signal,
                 smaple_rate,
