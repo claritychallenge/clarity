@@ -21,6 +21,11 @@ def compute_haaqi_rms(
     HAAQI is computed on the non-silence parts and RMS is computed
     on the silence parts.
 
+    The HAAQI part of the metric measure the music quality and the RMS
+    part of the metric punishes bad separations. I.e. if the RMS is high
+    it means that parts that should be silence contains residual or
+    artefact errors.
+
     Args:
         processed_signal (np.ndarray): Output signal with noise, distortion, HA gain,
             and/or processing.
