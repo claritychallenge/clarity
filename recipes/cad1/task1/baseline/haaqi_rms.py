@@ -57,11 +57,17 @@ def compute_haaqi_rms(
     # join non-silence segments for processed and reference signals
     new_processed_signal = []
     new_reference_signal = []
+
     for start, end in non_silence:
         new_processed_signal.append(processed_signal[start:end])
         new_reference_signal.append(reference_signal[start:end])
-    new_reference_signal = np.concatenate(new_reference_signal)
-    new_processed_signal = np.concatenate(new_processed_signal)
+
+    if len(new_processed_signal) > 1:
+        new_reference_signal = np.concatenate(new_reference_signal)
+        new_processed_signal = np.concatenate(new_processed_signal)
+    else:
+        new_reference_signal = new_reference_signal[0]
+        new_processed_signal = new_processed_signal[0]
 
     # join silence segments for processed signal
     silence_processed = []
@@ -151,6 +157,8 @@ def find_silence_segments(
         for group in silence
         if len(group) > sample_rate * min_silence_length
     ]
+    if len(silence) == 0:
+        silence = [[0, 0]]
 
     # find silence segments
     non_silence = []
@@ -158,9 +166,10 @@ def find_silence_segments(
         non_silence.append([start[-1] + 1, end[0] - 1])
 
     # add first and last non-silence segments
-    if silence[0][0] > 0:
-        non_silence.insert(0, [0, silence[0][0] - 1])
-    if silence[-1][-1] < len(signal) - 1:
-        non_silence.append([silence[-1][-1] + 1, len(signal) - 1])
+    if len(silence) > 0:
+        if silence[0][0] > 0:
+            non_silence.insert(0, [0, silence[0][0] - 1])
+        if silence[-1][-1] < len(signal) - 1:
+            non_silence.append([silence[-1][-1] + 1, len(signal) - 1])
 
     return silence, non_silence
