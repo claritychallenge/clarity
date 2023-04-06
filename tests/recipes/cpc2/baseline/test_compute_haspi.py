@@ -1,13 +1,21 @@
 """Tests for the haspi computation functions."""
 
 
+from pathlib import Path
+from unittest.mock import patch
+
+import hydra
 import numpy as np
 import pytest
+from omegaconf import DictConfig
 
+import clarity
 from clarity.recipes.cpc2.baseline.compute_haspi import (
     parse_cec2_signal_name,
+    run_calculate_haspi,
     set_seed_with_string,
 )
+from clarity.utils.file_io import read_jsonl
 
 
 @pytest.mark.parametrize(
@@ -43,11 +51,55 @@ def test_set_seed_with_string_ok(string_value):
     assert np.random.randint(0, 1000) == x
 
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_compute_haspi_for_signal():
-    """Test compute_haspi_for_signal function."""
+@pytest.fixture()
+def hydra_cfg():
+    """Fixture for hydra config."""
+    hydra.core.global_hydra.GlobalHydra.instance().clear()
+    hydra.initialize(
+        config_path="../../../../clarity/recipes/cpc2/baseline",
+        job_name="test_cpc2",
+    )
+    cfg = hydra.compose(
+        config_name="config",
+        overrides=[
+            "path.clarity_data_dir=tests/test_data/recipes/cpc2",
+            "dataset=CEC1.train.sample",
+        ],
+    )
+    return cfg
 
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_run_calculate_haspi():
-    """Test run_calculate_haspi function."""
+def not_tqdm(iterable):
+    """
+    Replacement for tqdm that just passes back the iterable.
+
+    Useful for silencing `tqdm` in tests.
+    """
+    return iterable
+
+
+@patch("clarity.recipes.cpc2.baseline.compute_haspi.tqdm", not_tqdm)
+def test_run_calculate_haspi(hydra_cfg: DictConfig):
+    # Mocking the slow haspi calculation
+
+    expected_scores = [
+        {"signal": "S08547_L0001_E001", "haspi": 0.8},
+        {"signal": "S08564_L0001_E001", "haspi": 0.8},
+    ]
+    expected_output_file = "CEC1.train.sample.haspi.jsonl"
+
+    with patch.object(
+        clarity.recipes.cpc2.baseline.compute_haspi,
+        "haspi_v2_be",
+        return_value=0.8,
+    ) as mock_haspi:
+        run_calculate_haspi(hydra_cfg)
+        assert mock_haspi.call_count == 2
+
+    # Check that the output scores are correct
+    assert Path(expected_output_file).exists()
+    haspi_scores = read_jsonl(expected_output_file)
+    assert haspi_scores == expected_scores
+
+    # Clean up
+    Path(expected_output_file).unlink()

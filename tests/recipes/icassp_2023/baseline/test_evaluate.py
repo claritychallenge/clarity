@@ -59,7 +59,7 @@ def test_evaluate(hydra_cfg: DictConfig):
     to_file = Path("enhanced_signals/S06001_L0064_enhanced.wav")
     to_file.write_bytes(from_file.read_bytes())
 
-    # Mocking the slow hasqi and haspi caulations
+    # Mocking the slow hasqi and haspi calculations
     with patch.object(
         clarity.recipes.icassp_2023.baseline.evaluate,
         "hasqi_v2_better_ear",
