@@ -153,7 +153,6 @@ def hydra_cfg():
 
 def test_evaluate(hydra_cfg, capsys):
     """Test evaluate function."""
-    np.set_printoptions(precision=5, threshold=1000)
 
     prediction_file = "CEC1.train.sample.predict.csv"
     score_file = "CEC1.train.sample.evaluate.jsonl"
