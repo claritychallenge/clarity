@@ -1,17 +1,23 @@
 """Tests for the CPC2 evaluation functions."""
 
 import math
+import warnings
+from csv import DictWriter
+from pathlib import Path
 
+import hydra
 import numpy as np
 import pytest
 
 from clarity.recipes.cpc2.baseline.evaluate import (
     compute_scores,
+    evaluate,
     kt_score,
     ncc_score,
     rmse_score,
     std_err,
 )
+from clarity.utils.file_io import read_jsonl
 
 
 @pytest.mark.parametrize(
@@ -127,6 +133,60 @@ def test_compute_scores_ok(x, y):
     assert result["Std"] == std_err(x, y)
 
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_evaluate():
+@pytest.fixture()
+def hydra_cfg():
+    """Fixture for hydra config."""
+    hydra.core.global_hydra.GlobalHydra.instance().clear()
+    hydra.initialize(
+        config_path="../../../../clarity/recipes/cpc2/baseline",
+        job_name="test_cpc2",
+    )
+    cfg = hydra.compose(
+        config_name="config",
+        overrides=[
+            "path.clarity_data_dir=tests/test_data/recipes/cpc2",
+            "dataset=CEC1.train.sample",
+        ],
+    )
+    return cfg
+
+
+def test_evaluate(hydra_cfg, capsys):
     """Test evaluate function."""
+
+    prediction_file = "CEC1.train.sample.predict.csv"
+    score_file = "CEC1.train.sample.evaluate.jsonl"
+    expected_output = (
+        "{'RMSE': 30.256228825071368, 'Std': 4.209845712831399, "
+        "'NCC': nan, 'KT': nan}\n"
+    )
+    test_data = [
+        {"signal": "S08547_L0001_E001", "predicted": 0.8},
+        {"signal": "S08564_L0001_E001", "predicted": 0.8},
+        {"signal": "S08564_L0002_E002", "predicted": 0.8},
+        {"signal": "S08564_L0003_E003", "predicted": 0.8},
+    ]
+    dict_keys = test_data[0].keys()
+
+    with open(prediction_file, "w", encoding="utf-8") as fp:
+        dict_writer = DictWriter(fp, fieldnames=dict_keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(test_data)
+
+    # Run evaluate, suppress warnings due to unrealist data
+    warnings.simplefilter("ignore", category=RuntimeWarning)
+    evaluate(hydra_cfg)
+
+    captured = capsys.readouterr()
+    assert captured.out == expected_output
+
+    # Check scores
+    scores = read_jsonl(score_file)
+    assert scores[0]["RMSE"] == pytest.approx(30.256228825071368)
+    assert scores[0]["Std"] == pytest.approx(4.209845712831399)
+    assert np.isnan(scores[0]["NCC"])
+    assert np.isnan(scores[0]["KT"])
+
+    # Clean up
+    Path(prediction_file).unlink()
+    Path(score_file).unlink()
