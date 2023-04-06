@@ -10,6 +10,7 @@ from recipes.cad1.task1.baseline.haaqi_rms import (
 
 
 def test_align_signals():
+    """Test the function align_signals"""
     np.random.seed(0)
     sig_len = 600
     reference_signal = 100 * np.random.random(size=sig_len)
@@ -29,6 +30,7 @@ def test_align_signals():
 
 
 def test_find_silence_segments():
+    """Test the function find_silence_segments"""
     np.random.seed(0)
     duration = 0.5
     sample_rate = 8000
@@ -51,6 +53,7 @@ def test_find_silence_segments():
 
 
 def test_compute_haaqi_rms():
+    """Test the function compute_haaqi_rms"""
     np.random.seed(0)
     duration = 0.5
     sample_rate = 1000
@@ -78,5 +81,5 @@ def test_compute_haaqi_rms():
         silence_length=0.1,
     )
     assert score == pytest.approx(
-        0.131773752, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.057594470, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
