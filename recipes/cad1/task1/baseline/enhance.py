@@ -318,7 +318,7 @@ def enhance(config: DictConfig) -> None:
     if config.separator.model == "demucs":
         separation_model = HDEMUCS_HIGH_MUSDB.get_model()
     else:
-        separation_model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq")
+        separation_model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq", niter=0)
     device, _ = get_device(config.separator.device)
     separation_model.to(device)
 
