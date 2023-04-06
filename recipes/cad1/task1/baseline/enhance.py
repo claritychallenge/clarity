@@ -189,7 +189,7 @@ def decompose_signal(
     if config.separator.model == "demucs":
         sources = denormalize_signals(sources, ref)
 
-    signal_stems = map_to_dict(sources, model.sources)
+    signal_stems = map_to_dict(sources, config.separator.sources)
     return signal_stems
 
 
