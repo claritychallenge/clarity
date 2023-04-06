@@ -1,6 +1,4 @@
 """Tests for the evaluation module"""
-# pylint: disable=import-error
-
 from pathlib import Path
 
 import numpy as np

@@ -1,5 +1,4 @@
 """Test for the haaqi-rms module"""
-# pylint: disable=import-error
 import numpy as np
 import pytest
 
