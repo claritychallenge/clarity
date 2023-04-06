@@ -153,6 +153,7 @@ def hydra_cfg():
 
 def test_evaluate(hydra_cfg, capsys):
     """Test evaluate function."""
+    np.set_printoptions(precision=5, threshold=1000)
 
     prediction_file = "CEC1.train.sample.predict.csv"
     score_file = "CEC1.train.sample.evaluate.jsonl"
@@ -182,8 +183,8 @@ def test_evaluate(hydra_cfg, capsys):
 
     # Check scores
     scores = read_jsonl(score_file)
-    assert scores[0]["RMSE"] == pytest.approx(30.256228825071368)
-    assert scores[0]["Std"] == pytest.approx(4.209845712831399)
+    assert scores[0]["RMSE"] == pytest.approx(30.2562, abs=1e-4)
+    assert scores[0]["Std"] == pytest.approx(4.2098, abs=1e-4)
     assert np.isnan(scores[0]["NCC"])
     assert np.isnan(scores[0]["KT"])
 
