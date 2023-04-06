@@ -1,0 +1,12 @@
+[{
+    "prompt": "i suppose you wouldn't be free for dinner this evening",
+    "scene": "S08510",
+    "n_words": 10,
+    "hits": 1,
+    "listener": "L0239",
+    "system": "E001",
+    "correctness": 10.0,
+    "response": "freeze evening",
+    "volume": 56,
+    "signal": "S08510_L0239_E001"
+}]

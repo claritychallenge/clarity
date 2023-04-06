@@ -1,6 +1,6 @@
 train_path:
   root: ???
-  exp_folder: ${train_path.root}/exps/train/  # folder to store intermediate signals and final results
+  exp_folder: ${train_path.root}/exps/train/ # folder to store intermediate signals and final results
   scenes_file: ${train_path.root}/clarity_CPC1_data/metadata/CPC1.train.json
   listeners_file: ${train_path.root}/clarity_CPC1_data/metadata/listeners.CPC1_train.json
   scenes_folder: ${train_path.root}/clarity_CPC1_data/clarity_data/HA_outputs/train
@@ -16,7 +16,7 @@ test_path:
 
 train_indep_path:
   root: /home/tu/bessfastdata/Clarity_CPC1
-  exp_folder: ${train_path.root}/exps/train_indep/  # folder to store intermediate signals and final results
+  exp_folder: ${train_path.root}/exps/train_indep/ # folder to store intermediate signals and final results
   scenes_file: ${train_path.root}/clarity_CPC1_data/metadata/CPC1.train_indep.json
   listeners_file: ${train_path.root}/clarity_CPC1_data/metadata/listeners.CPC1_train.json
   scenes_folder: ${train_path.root}/clarity_CPC1_data/clarity_data/HA_outputs/train_indep
@@ -36,16 +36,15 @@ fs: 44100
 ahr: 20
 equiv0dBSPL: 100
 
-MSBGEar:   # hyperparameters for MSBG ear
+MSBGEar: # hyperparameters for MSBG ear
   src_pos: ff
-  fs: ${fs}
-  equiv0dBSPL: ${equiv0dBSPL}
+  sample_frequency: ${fs}
+  equiv_0db_spl: ${equiv0dBSPL}
   ahr: ${ahr}
 
 mbstoi:
   fs: ${fs}
   gridcoarseness: 1
-
 
 # disable hydra loggings
 defaults:

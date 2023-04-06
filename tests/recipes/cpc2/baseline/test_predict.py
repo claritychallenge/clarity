@@ -138,9 +138,13 @@ def test_predict(hydra_cfg):
         entry["signal_ID"]: float(entry["intelligibility_score"]) for entry in results
     }
 
-    for signal, expected_score in expected_results:
+    # TODO: Scores are not checked because they can be very different
+    # depending on the machine. This doesn't really matter for now as I believe
+    # it's just a consequence of using just 4 samples in the testing data.
+    # The fitting functions are tested separately.
+    for signal, _expected_score in expected_results:
         assert signal in results_index
-        print(results_index[signal], expected_score)
+        # print(results_index[signal], expected_score)
         # assert results_index[signal] == pytest.approx(expected_score)
 
     # Clean up
