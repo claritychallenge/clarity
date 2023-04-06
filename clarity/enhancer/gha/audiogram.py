@@ -36,6 +36,10 @@ class Audiogram:
         """
         # calculate mean hearing loss between 2 & 8 kHz
         impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
+
+        if not np.any(impairment_freqs):
+            return ["NOTHING", "NOTHING"]
+
         severity_levels = ["NOTHING", "NOTHING"]
         for i, levels in enumerate([self.levels_l, self.levels_r]):
             impairment_degree = np.mean(levels[impairment_freqs])
