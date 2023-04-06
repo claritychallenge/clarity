@@ -156,51 +156,53 @@ def _evaluate_song_listener(
     ]:
         logger.info(f"...evaluating {instrument}")
 
+        # Read instrument reference signal
         sample_rate_reference_signal, reference_signal = wavfile.read(
             Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
         )
-
-        # Read instrument reference signal
         reference_signal = (reference_signal / 32768.0).astype(np.float32)
-        left_reference_signal = reference_signal[:, 0]
-        right_reference_signal = reference_signal[:, 1]
 
-        # Read instrument enhanced
+        # Load enhanced instrument signals
+        # Load left channel
         sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
             / f"{listener}_{song}_left_{instrument}.wav"
         )
+        left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
+
+        # Load right channel
         sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
             / f"{listener}_{song}_right_{instrument}.wav"
         )
+        right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
 
         assert (
             sample_rate_reference_signal
             == sample_rate_left_enhanced_signal
             == sample_rate_right_enhanced_signal
-            == config.nalr.fs
+            == config.sample_rate
         )
 
         #  audiogram, audiogram_frequencies, fs_signal
         per_instrument_score[f"left_{instrument}"] = compute_haaqi_rms(
             left_enhanced_signal,
-            left_reference_signal,
+            reference_signal[:, 0],
             np.array(listener_audiograms["audiogram_levels_l"]),
             np.array(listener_audiograms["audiogram_cfs"]),
-            config.nalr.fs,
+            config.sample_rate,
             silence_length=2.0,
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi_rms(
             right_enhanced_signal,
-            right_reference_signal,
+            reference_signal[:, 1],
             np.array(listener_audiograms["audiogram_levels_r"]),
             np.array(listener_audiograms["audiogram_cfs"]),
-            config.nalr.fs,
+            config.sample_rate,
             silence_length=2.0,
         )
 
