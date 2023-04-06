@@ -6,6 +6,7 @@ import warnings
 import numpy as np
 import pytest
 
+# pylint: disable=import-error, no-name-in-module
 from recipes.cpc2.baseline.evaluate import (
     compute_scores,
     kt_score,
@@ -32,8 +33,9 @@ def test_rmse_score_error(x, y, expected):
     """Test the function rmse_score for invalid inputs"""
     with pytest.raises(expected):
         np.seterr(all="ignore")
-        warnings.simplefilter("ignore")  # <--- suppress mean of empty slice warning
-        result = rmse_score(np.array(x), np.array(y))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")  # <--- suppress mean of empty slice warning
+            result = rmse_score(np.array(x), np.array(y))
         if np.isnan(result):
             raise ValueError
 
