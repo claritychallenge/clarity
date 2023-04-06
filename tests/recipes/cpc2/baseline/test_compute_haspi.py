@@ -85,6 +85,8 @@ def test_run_calculate_haspi(hydra_cfg: DictConfig):
     expected_scores = [
         {"signal": "S08547_L0001_E001", "haspi": 0.8},
         {"signal": "S08564_L0001_E001", "haspi": 0.8},
+        {"signal": "S08564_L0002_E002", "haspi": 0.8},
+        {"signal": "S08564_L0003_E003", "haspi": 0.8},
     ]
     expected_output_file = "CEC1.train.sample.haspi.jsonl"
 
@@ -94,7 +96,7 @@ def test_run_calculate_haspi(hydra_cfg: DictConfig):
         return_value=0.8,
     ) as mock_haspi:
         run_calculate_haspi(hydra_cfg)
-        assert mock_haspi.call_count == 2
+        assert mock_haspi.call_count == 4
 
     # Check that the output scores are correct
     assert Path(expected_output_file).exists()

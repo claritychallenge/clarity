@@ -1,10 +1,20 @@
 """Tests for the CPC2 predict functions."""
 
+import warnings
+from csv import DictReader
+from pathlib import Path
+
+import hydra
 import numpy as np
 import pandas as pd
 import pytest
 
-from clarity.recipes.cpc2.baseline.predict import LogisticModel, make_disjoint_train_set
+from clarity.recipes.cpc2.baseline.predict import (
+    LogisticModel,
+    make_disjoint_train_set,
+    predict,
+)
+from clarity.utils.file_io import write_jsonl
 
 
 # pylint: disable=redefined-outer-name
@@ -77,6 +87,60 @@ def test_make_disjoint_train_set_empty(data_1, data_2, expected):
     )
 
 
-@pytest.mark.skip(reason="Not implemented yet")
-def test_predict():
+@pytest.fixture()
+def hydra_cfg():
+    """Fixture for hydra config."""
+    hydra.core.global_hydra.GlobalHydra.instance().clear()
+    hydra.initialize(
+        config_path="../../../../clarity/recipes/cpc2/baseline",
+        job_name="test_cpc2",
+    )
+    cfg = hydra.compose(
+        config_name="config",
+        overrides=[
+            "path.clarity_data_dir=tests/test_data/recipes/cpc2",
+            "dataset=CEC1.train.sample",
+        ],
+    )
+    return cfg
+
+
+def test_predict(hydra_cfg):
     """Test predict function."""
+
+    expected_results = [
+        ("S08547_L0001_E001", 0.0),
+        ("S08564_L0001_E001", 0.0),
+        ("S08564_L0002_E002", 31.481621447245452),
+        ("S08564_L0003_E003", 31.481621447245452),
+    ]
+    haspi_scores = [
+        {"signal": "S08547_L0001_E001", "haspi": 0.8},
+        {"signal": "S08564_L0001_E001", "haspi": 0.8},
+        {"signal": "S08564_L0002_E002", "haspi": 0.8},
+        {"signal": "S08564_L0003_E003", "haspi": 0.8},
+    ]
+    haspi_score_file = "CEC1.train.sample.haspi.jsonl"
+
+    write_jsonl(haspi_score_file, haspi_scores)
+
+    # Run predict, ignoring warning due to unreal data
+    warnings.simplefilter("ignore", category=RuntimeWarning)
+    predict(hydra_cfg)
+
+    # Check output
+    expected_output_file = "CEC1.train.sample.predict.csv"
+
+    with open(expected_output_file, encoding="utf-8") as f:
+        results = list(DictReader(f))
+
+    results_index = {
+        entry["signal_ID"]: float(entry["intelligibility_score"]) for entry in results
+    }
+
+    for signal, expected_score in expected_results:
+        assert results_index[signal] == pytest.approx(expected_score)
+
+    # Clean up
+    Path(expected_output_file).unlink()
+    Path(haspi_score_file).unlink()
