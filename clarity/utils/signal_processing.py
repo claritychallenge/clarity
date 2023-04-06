@@ -12,6 +12,8 @@ def compute_rms(signal: np.ndarray) -> float:
     Returns:
         float: RMS of the signal.
     """
+    if len(signal) == 0:
+        return 0
     return np.sqrt(np.mean(np.square(signal)))
 
 
