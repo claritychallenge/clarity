@@ -58,10 +58,14 @@ def test_run(hydra_cfg):
     with open("results.json", encoding="utf-8") as f:
         results = json.load(f)
 
+    # TODO: Find out what is causing results to be rounded to 4 dp
+    # Need the abs=1e-4 because sometimes the results are being
+    # printed rounded to 4 decimal places, and sometimes not.
+    # Depends on the order the tests are run in.
     for test_set in ["closed_set scores:", "open_set scores:"]:
         for metric in ["RMSE", "Std", "NCC", "KT"]:
             assert results[test_set][metric] == pytest.approx(
-                expected_results[test_set][metric]
+                expected_results[test_set][metric], abs=1e-4
             )
 
     # Clean up
