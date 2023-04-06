@@ -77,6 +77,7 @@ def compute_haaqi_rms(
         audiogram=audiogram,
         audiogram_frequencies=audiogram_frequencies,
         equalisation=1,
+        level1=65 - 20 * np.log10(compute_rms(new_reference_signal)),
         scale_reference=True,
     )
 
