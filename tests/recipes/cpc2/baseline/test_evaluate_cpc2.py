@@ -36,7 +36,10 @@ def test_rmse_score_ok(x, y, expected):
 def test_rmse_score_error(x, y, expected):
     """Test the function rmse_score for invalid inputs"""
     with pytest.raises(expected):
-        result = rmse_score(np.array(x), np.array(y))
+        np.seterr(all="ignore")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")  # <--- suppress mean of empty slice warning
+            result = rmse_score(np.array(x), np.array(y))
         if np.isnan(result):
             raise ValueError
 
@@ -105,6 +108,7 @@ def test_std_err_ok(x, y, expected):
 def test_std_err_error(x, y, expected):
     """Test the function std_err for invalid inputs"""
     with pytest.raises(expected):
+        warnings.simplefilter("ignore")
         result = std_err(np.array(x), np.array(y))
         if np.isnan(result):
             raise ValueError
@@ -117,6 +121,7 @@ def test_std_err_error(x, y, expected):
 def test_compute_scores_error(x, y, expected):
     """Test the function compute_scores for invalid inputs"""
     with pytest.raises(expected):
+        warnings.simplefilter("ignore")  # <--- suppress mean of empty slice warning
         compute_scores(np.array(x), np.array(y))
 
 

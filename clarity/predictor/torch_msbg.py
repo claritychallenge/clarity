@@ -100,6 +100,7 @@ class MSBGHearingModel(nn.Module):
         corrn_forward = 10 ** (0.05 * corrn_used)
         corrn_backward = 10 ** (0.05 * -1 * corrn_used)
         n_wdw = int(2 * np.floor((sr / 16e3) * 368 / 2))
+
         cochlea_filter_forward = firwin2(
             n_wdw + 1, hz_used / nyquist, corrn_forward, window=("kaiser", 4)
         )
