@@ -1,6 +1,4 @@
 """Tests for eb module"""
-# pylint: disable=import-error
-
 import numpy as np
 import pytest
 
