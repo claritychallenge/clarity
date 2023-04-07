@@ -10,7 +10,7 @@ import pytest
 from omegaconf import DictConfig
 
 from clarity.evaluator.msbg.msbg_utils import read_signal
-from clarity.recipes.cec2.baseline.enhance import enhance
+from recipes.cec2.baseline.enhance import enhance
 
 
 @pytest.fixture()
@@ -33,7 +33,7 @@ def not_tqdm(iterable):
     return iterable
 
 
-@patch("clarity.recipes.cec2.baseline.enhance.tqdm", not_tqdm)
+@patch("recipes.cec2.baseline.enhance.tqdm", not_tqdm)
 def test_enhance(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     """Test run_HL_processing function."""
     np.random.seed(0)

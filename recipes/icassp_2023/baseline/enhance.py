@@ -9,7 +9,7 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
 
-from clarity.recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
+from recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
 

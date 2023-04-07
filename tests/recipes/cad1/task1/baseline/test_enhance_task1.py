@@ -10,7 +10,7 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.recipes.cad1.task1.baseline.enhance import (  # enhance
+from recipes.cad1.task1.baseline.enhance import (  # enhance
     apply_baseline_ha,
     decompose_signal,
     get_device,

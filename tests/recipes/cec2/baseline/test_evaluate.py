@@ -10,8 +10,8 @@ import pytest
 from omegaconf import DictConfig
 from scipy.io.wavfile import read
 
-import clarity
-from clarity.recipes.cec2.baseline.evaluate import read_csv_scores, run_calculate_SI
+import recipes
+from recipes.cec2.baseline.evaluate import read_csv_scores, run_calculate_SI
 
 
 def truncated_read_signal(
@@ -57,7 +57,7 @@ def not_tqdm(iterable):
     return iterable
 
 
-@patch("clarity.recipes.cec2.baseline.evaluate.tqdm", not_tqdm)
+@patch("recipes.cec2.baseline.evaluate.tqdm", not_tqdm)
 def test_calulate_SI(tmp_path: Path, hydra_cfg: DictConfig):
     """Test evaluate function."""
 
@@ -78,7 +78,7 @@ def test_calulate_SI(tmp_path: Path, hydra_cfg: DictConfig):
         to_file.write_bytes(from_file.read_bytes())
 
     with patch.object(
-        clarity.recipes.cec2.baseline.evaluate.wavfile,
+        recipes.cec2.baseline.evaluate.wavfile,
         "read",
         side_effect=truncated_read_signal,
     ) as mock_read_signal:

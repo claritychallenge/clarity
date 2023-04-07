@@ -6,7 +6,7 @@ import hydra
 import pandas as pd
 from omegaconf import DictConfig
 
-from clarity.recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
+from recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
 

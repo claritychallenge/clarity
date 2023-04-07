@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from scipy.io import wavfile
 
-from clarity.recipes.cad1.task2.baseline.audio_manager import AudioManager
+from recipes.cad1.task2.baseline.audio_manager import AudioManager
 
 
 def test_save_audios(tmp_path):

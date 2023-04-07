@@ -10,9 +10,9 @@ import numpy as np
 import pytest
 from omegaconf import DictConfig
 
-import clarity
+import recipes
 from clarity.evaluator.msbg.msbg_utils import read_signal
-from clarity.recipes.icassp_2023.baseline.evaluate import run_calculate_si
+from recipes.icassp_2023.baseline.evaluate import run_calculate_si
 
 
 @pytest.fixture()
@@ -20,7 +20,7 @@ def hydra_cfg(tmp_path: Path):
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/icassp_2023/baseline",
+        config_path="../../../../recipes/icassp_2023/baseline",
         job_name="test_icassp_2023",
     )
     cfg = hydra.compose(
@@ -45,7 +45,7 @@ def not_tqdm(iterable):
     return iterable
 
 
-@patch("clarity.recipes.icassp_2023.baseline.evaluate.tqdm", not_tqdm)
+@patch("recipes.icassp_2023.baseline.evaluate.tqdm", not_tqdm)
 def test_evaluate(hydra_cfg: DictConfig):
     """Test evaluate function."""
     np.random.seed(0)
@@ -61,12 +61,12 @@ def test_evaluate(hydra_cfg: DictConfig):
 
     # Mocking the slow hasqi and haspi calculations
     with patch.object(
-        clarity.recipes.icassp_2023.baseline.evaluate,
+        recipes.icassp_2023.baseline.evaluate,
         "hasqi_v2_better_ear",
         return_value=0.5,
     ) as mock_hasqi:
         with patch.object(
-            clarity.recipes.icassp_2023.baseline.evaluate,
+            recipes.icassp_2023.baseline.evaluate,
             "haspi_v2_be",
             return_value=0.8,
         ) as mock_haspi:

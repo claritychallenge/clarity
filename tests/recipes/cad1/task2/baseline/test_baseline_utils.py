@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from omegaconf import OmegaConf
 
-from clarity.recipes.cad1.task2.baseline.baseline_utils import (
+from recipes.cad1.task2.baseline.baseline_utils import (
     load_listeners_and_scenes,
     read_mp3,
 )

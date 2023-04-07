@@ -9,12 +9,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from clarity.recipes.cpc2.baseline.predict import (
+from clarity.utils.file_io import write_jsonl
+from recipes.cpc2.baseline.predict import (
     LogisticModel,
     make_disjoint_train_set,
     predict,
 )
-from clarity.utils.file_io import write_jsonl
 
 
 # pylint: disable=redefined-outer-name
@@ -92,7 +92,7 @@ def hydra_cfg():
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cpc2/baseline",
+        config_path="../../../../recipes/cpc2/baseline",
         job_name="test_cpc2",
     )
     cfg = hydra.compose(

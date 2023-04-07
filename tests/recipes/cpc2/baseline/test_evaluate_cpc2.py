@@ -9,7 +9,8 @@ import hydra
 import numpy as np
 import pytest
 
-from clarity.recipes.cpc2.baseline.evaluate import (
+from clarity.utils.file_io import read_jsonl
+from recipes.cpc2.baseline.evaluate import (
     compute_scores,
     evaluate,
     kt_score,
@@ -17,7 +18,6 @@ from clarity.recipes.cpc2.baseline.evaluate import (
     rmse_score,
     std_err,
 )
-from clarity.utils.file_io import read_jsonl
 
 
 @pytest.mark.parametrize(
@@ -143,7 +143,7 @@ def hydra_cfg():
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cpc2/baseline",
+        config_path="../../../../recipes/cpc2/baseline",
         job_name="test_cpc2",
     )
     cfg = hydra.compose(

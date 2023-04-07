@@ -10,7 +10,7 @@ import pytest
 from omegaconf import DictConfig
 
 from clarity.evaluator.msbg.msbg_utils import read_signal
-from clarity.recipes.icassp_2023.baseline.enhance import enhance
+from recipes.icassp_2023.baseline.enhance import enhance
 
 
 @pytest.fixture()
@@ -18,7 +18,7 @@ def hydra_cfg(tmp_path: Path):
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/icassp_2023/baseline",
+        config_path="../../../../recipes/icassp_2023/baseline",
         job_name="test_icassp_2023",
     )
     cfg = hydra.compose(
@@ -43,7 +43,7 @@ def not_tqdm(iterable):
     return iterable
 
 
-@patch("clarity.recipes.icassp_2023.baseline.enhance.tqdm", not_tqdm)
+@patch("recipes.icassp_2023.baseline.enhance.tqdm", not_tqdm)
 def test_enhance(hydra_cfg: DictConfig) -> None:
     """Test run_HL_processing function."""
     np.random.seed(0)

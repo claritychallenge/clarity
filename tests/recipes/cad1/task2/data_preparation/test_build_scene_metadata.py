@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 # get_random_snr,; run,
-from clarity.recipes.cad1.task2.data_preparation.build_scene_metadata import (
+from recipes.cad1.task2.data_preparation.build_scene_metadata import (
     get_random_car_params,
     get_random_head_rotation,
     read_json,

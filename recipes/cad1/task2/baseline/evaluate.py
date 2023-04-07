@@ -15,14 +15,14 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.recipes.cad1.task2.baseline.audio_manager import AudioManager
-from clarity.recipes.cad1.task2.baseline.baseline_utils import (
+from recipes.cad1.task2.baseline.audio_manager import AudioManager
+from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,
     load_listeners_and_scenes,
     make_scene_listener_list,
     read_mp3,
 )
-from clarity.recipes.cad1.task2.baseline.car_scene_acoustics import CarSceneAcoustics
+from recipes.cad1.task2.baseline.car_scene_acoustics import CarSceneAcoustics
 
 logger = logging.getLogger(__name__)
 

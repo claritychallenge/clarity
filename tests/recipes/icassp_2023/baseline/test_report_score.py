@@ -8,7 +8,7 @@ import hydra
 import pytest
 from omegaconf import DictConfig
 
-from clarity.recipes.icassp_2023.baseline.report_score import report_score
+from recipes.icassp_2023.baseline.report_score import report_score
 
 
 @pytest.fixture()
@@ -16,7 +16,7 @@ def hydra_cfg(tmp_path: Path):
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/icassp_2023/baseline",
+        config_path="../../../../recipes/icassp_2023/baseline",
         job_name="test_icassp_2023",
     )
     cfg = hydra.compose(

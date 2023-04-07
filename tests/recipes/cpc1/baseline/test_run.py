@@ -11,16 +11,11 @@ import numpy as np
 import pytest
 from scipy.io.wavfile import read
 
-import clarity
+import recipes
 from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import read_signal
-from clarity.recipes.cpc1.baseline.run import (
-    listen,
-    run,
-    run_calculate_SI,
-    run_HL_processing,
-)
+from recipes.cpc1.baseline.run import listen, run, run_calculate_SI, run_HL_processing
 
 
 def truncated_read_signal(
@@ -48,7 +43,7 @@ def hydra_cfg():
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cpc1/baseline/", job_name="test_cpc1"
+        config_path="../../../../recipes/cpc1/baseline/", job_name="test_cpc1"
     )
     cfg = hydra.compose(
         config_name="config", overrides=["train_path.root=tests/test_data/recipes/cpc1"]
@@ -73,7 +68,7 @@ def test_listen(hydra_cfg):
     assert processed.shape == (2240, 2)
 
 
-@patch("clarity.recipes.cpc1.baseline.run.tqdm", not_tqdm)
+@patch("recipes.cpc1.baseline.run.tqdm", not_tqdm)
 def test_run_HL_processing(hydra_cfg, tmp_path):
     """Test run_HL_processing function."""
     np.random.seed(0)
@@ -81,7 +76,7 @@ def test_run_HL_processing(hydra_cfg, tmp_path):
     # Test the MSBG hearing loss stage
     # Use just 2 seconds of the signal to speed up the test
     with patch.object(
-        clarity.recipes.cpc1.baseline.run,
+        recipes.cpc1.baseline.run,
         "read_signal",
         side_effect=truncated_read_signal,
     ) as mock_read_signal:
@@ -99,7 +94,7 @@ def test_run_HL_processing(hydra_cfg, tmp_path):
         assert np.sum(np.abs(signal)) == pytest.approx(expected_value)
 
 
-@patch("clarity.recipes.cpc1.baseline.run.tqdm", not_tqdm)
+@patch("recipes.cpc1.baseline.run.tqdm", not_tqdm)
 def test_calculate_SI(hydra_cfg, tmp_path):
     """Test calculate_SI function."""
     np.random.seed(0)
@@ -121,8 +116,8 @@ def test_calculate_SI(hydra_cfg, tmp_path):
         )
 
 
-@patch("clarity.recipes.cpc1.baseline.run.run_HL_processing")
-@patch("clarity.recipes.cpc1.baseline.run.run_calculate_SI")
+@patch("recipes.cpc1.baseline.run.run_HL_processing")
+@patch("recipes.cpc1.baseline.run.run_calculate_SI")
 def test_run(mock_calculate_SI, mock_run_HL_processing, hydra_cfg):
     """Test run function."""
     run(hydra_cfg)

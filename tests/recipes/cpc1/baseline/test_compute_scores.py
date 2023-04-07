@@ -6,7 +6,7 @@ from pathlib import Path
 import hydra
 import pytest
 
-from clarity.recipes.cpc1.baseline.compute_scores import run
+from recipes.cpc1.baseline.compute_scores import run
 
 
 @pytest.fixture()
@@ -14,7 +14,7 @@ def hydra_cfg():
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cpc1/baseline/", job_name="test_cpc1"
+        config_path="../../../../recipes/cpc1/baseline/", job_name="test_cpc1"
     )
     cfg = hydra.compose(
         config_name="config",

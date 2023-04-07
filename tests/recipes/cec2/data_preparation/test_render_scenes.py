@@ -5,10 +5,10 @@ from unittest.mock import MagicMock, patch
 
 import hydra
 
-from clarity.recipes.cec2.data_preparation.render_scenes import run
+from recipes.cec2.data_preparation.render_scenes import run
 
 
-@patch("clarity.recipes.cec2.data_preparation.render_scenes.SceneRenderer")
+@patch("recipes.cec2.data_preparation.render_scenes.SceneRenderer")
 def test_render_scenes(mock_sr, tmp_path):
     """Test render_scenes function."""
 
@@ -21,7 +21,7 @@ def test_render_scenes(mock_sr, tmp_path):
     # just the paths to the scene data and the output directory
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cec2/data_preparation/",
+        config_path="../../../../recipes/cec2/data_preparation/",
         job_name="test_cec2",
     )
     hydra_cfg = hydra.compose(

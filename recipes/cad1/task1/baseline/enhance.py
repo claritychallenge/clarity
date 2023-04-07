@@ -16,8 +16,8 @@ from torchaudio.transforms import Fade
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
+from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
 # pylint: disable=too-many-locals
 # pylint: disable=import-error

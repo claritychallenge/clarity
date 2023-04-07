@@ -9,13 +9,13 @@ import numpy as np
 import pytest
 from omegaconf import DictConfig
 
-import clarity
-from clarity.recipes.cpc2.baseline.compute_haspi import (
+import recipes
+from clarity.utils.file_io import read_jsonl
+from recipes.cpc2.baseline.compute_haspi import (
     parse_cec2_signal_name,
     run_calculate_haspi,
     set_seed_with_string,
 )
-from clarity.utils.file_io import read_jsonl
 
 
 @pytest.mark.parametrize(
@@ -56,7 +56,7 @@ def hydra_cfg():
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cpc2/baseline",
+        config_path="../../../../recipes/cpc2/baseline",
         job_name="test_cpc2",
     )
     cfg = hydra.compose(
@@ -78,7 +78,7 @@ def not_tqdm(iterable):
     return iterable
 
 
-@patch("clarity.recipes.cpc2.baseline.compute_haspi.tqdm", not_tqdm)
+@patch("recipes.cpc2.baseline.compute_haspi.tqdm", not_tqdm)
 def test_run_calculate_haspi(hydra_cfg: DictConfig):
     # Mocking the slow haspi calculation
 
@@ -91,7 +91,7 @@ def test_run_calculate_haspi(hydra_cfg: DictConfig):
     expected_output_file = "CEC1.train.sample.haspi.jsonl"
 
     with patch.object(
-        clarity.recipes.cpc2.baseline.compute_haspi,
+        recipes.cpc2.baseline.compute_haspi,
         "haspi_v2_be",
         return_value=0.8,
     ) as mock_haspi:

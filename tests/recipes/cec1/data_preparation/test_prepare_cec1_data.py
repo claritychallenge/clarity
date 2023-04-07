@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.msbg.msbg_utils import read_signal
-from clarity.recipes.cec1.data_preparation import prepare_cec1_data
+from recipes.cec1.data_preparation import prepare_cec1_data
 
 
 def not_tqdm(iterable):
@@ -19,7 +19,7 @@ def not_tqdm(iterable):
     return iterable
 
 
-@patch("clarity.recipes.cec1.data_preparation.prepare_cec1_data.tqdm", not_tqdm)
+@patch("recipes.cec1.data_preparation.prepare_cec1_data.tqdm", not_tqdm)
 def test_prepare_data(tmp_path):
     """Test prepare_data function."""
 

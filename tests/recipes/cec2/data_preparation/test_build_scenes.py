@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import hydra
 
-from clarity.recipes.cec2.data_preparation.build_scenes import (
+from recipes.cec2.data_preparation.build_scenes import (
     build_rooms_from_rpf,
     instantiate_scenes,
 )
@@ -29,7 +29,7 @@ def test_instantiate_scenes(tmp_path):
 
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cec2/data_preparation/",
+        config_path="../../../../recipes/cec2/data_preparation/",
         job_name="test_cec2",
     )
     hydra_cfg = hydra.compose(
@@ -79,7 +79,7 @@ def test_build_rooms_from_rpf(tmp_path):
     """Test build_rooms_from_rpf function."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../clarity/recipes/cec2/data_preparation/",
+        config_path="../../../../recipes/cec2/data_preparation/",
         job_name="test_cec2",
     )
     hydra_cfg = hydra.compose(

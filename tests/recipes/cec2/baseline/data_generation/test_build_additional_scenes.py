@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import hydra
 
-from clarity.recipes.cec2.baseline.data_generation.build_additional_scenes import (
+from recipes.cec2.baseline.data_generation.build_additional_scenes import (
     instantiate_scenes,
 )
 
@@ -28,7 +28,7 @@ def test_instantiate_scenes(tmp_path):
 
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
-        config_path="../../../../../clarity/recipes/cec2/baseline/data_generation/",
+        config_path="../../../../../recipes/cec2/baseline/data_generation/",
         job_name="test_cec2",
     )
     hydra_cfg = hydra.compose(

@@ -15,10 +15,10 @@ from scipy.signal import lfilter
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.recipes.cad1.task2.baseline.audio_manager import AudioManager
 from clarity.utils.car_noise_simulator.carnoise_signal_generator import (
     CarNoiseSignalGenerator,
 )
+from recipes.cad1.task2.baseline.audio_manager import AudioManager
 
 logger = logging.getLogger(__name__)
 
