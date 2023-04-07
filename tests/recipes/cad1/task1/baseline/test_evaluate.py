@@ -8,7 +8,7 @@ import pytest
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
-from clarity.recipes.cad1.task1.baseline.evaluate import (
+from clarity.recipes.cad1.task1.baseline.evaluate import (  # run_calculate_aq,
     ResultsFile,
     _evaluate_song_listener,
     make_song_listener_list,
@@ -183,3 +183,9 @@ def test_evaluate_song_listener(
             rel=pytest.rel_tolerance,
             abs=pytest.abs_tolerance,
         )
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_run_calculate_aq():
+    """test run_calculate_aq function"""
+    # run_calculate_aq()

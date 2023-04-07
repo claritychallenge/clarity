@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+# get_random_snr,; run,
 from clarity.recipes.cad1.task2.data_preparation.build_scene_metadata import (
     get_random_car_params,
     get_random_head_rotation,
@@ -68,3 +69,15 @@ def test_read_json(json_file, expected):
     output = read_json(json_file.as_posix())
 
     assert output == expected
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_get_random_snr():
+    """Test get_random_snr"""
+    # get_random_snr()
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_run():
+    """Test run"""
+    # run()

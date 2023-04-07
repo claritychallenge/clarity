@@ -33,3 +33,18 @@ def test_save_audios(tmp_path):
     assert sample_rate == pytest.approx(
         audio_manager.sample_rate, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_clip_audio():
+    """Test clip_audio method."""
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_get_lufs_level():
+    """Test get_lufs_level method."""
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_scale_to_lufs():
+    """Test scale_to_lufs method."""

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import pyloudnorm as pyln
+import pytest
 from omegaconf import DictConfig
 
 from clarity.recipes.cad1.task2.baseline.enhance import enhance_song
@@ -54,3 +55,8 @@ def test_enhance_song():
 
     out_loudness = meter.integrated_loudness(np.array([out_left, out_right]).T)
     assert np.isclose(out_loudness, -14, atol=0.1)
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_enhance():
+    """Test enhance function."""
