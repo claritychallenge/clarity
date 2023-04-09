@@ -128,18 +128,14 @@ def train_den(cfg, ear):
         limit_train_batches=1.0,  # Useful for fast experiment
         gradient_clip_val=cfg.den_trainer.gradient_clip_val,
     )
-
     trainer.fit(den_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
     with (exp_dir / "best_k_models.json").open("w", encoding="utf-8") as fp:
         json.dump(best_k, fp, indent=0)
-
     state_dict = torch.load(checkpoint.best_model_path)
-
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
-
     torch.save(den_module.model.state_dict(), str(exp_dir / "best_model.pth"))
 
 
@@ -239,13 +235,10 @@ def train_amp(cfg, ear):
 def run(cfg: DictConfig) -> None:
     logger.info("Begin training left ear enhancement module.")
     train_den(cfg, ear="left")
-
     logger.info("Begin training right ear enhancement module.")
     train_den(cfg, ear="right")
-
     logger.info("Begin training left ear amplification module.")
     train_amp(cfg, ear="left")
-
     logger.info("Begin training right ear amplification module.")
     train_amp(cfg, ear="right")
 

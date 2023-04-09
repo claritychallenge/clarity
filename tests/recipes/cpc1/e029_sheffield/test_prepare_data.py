@@ -1,6 +1,7 @@
 """Tests for cpc1 e029_sheffield prepare_data module."""
 
 # pylint: disable=all
+# This file was causing pylint to crash, so I disabled it for now. !!
 
 from pathlib import Path
 from unittest.mock import patch
