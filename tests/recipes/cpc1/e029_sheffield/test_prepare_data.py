@@ -1,17 +1,27 @@
 """Tests for cpc1 e029_sheffield prepare_data module."""
 
+# pylint: disable=all
+
 from pathlib import Path
+from unittest.mock import patch
 
 import hydra
-import numpy as np
 
 from recipes.cpc1.e029_sheffield.prepare_data import run
 
 
+def not_tqdm(iterable):
+    """
+    Replacement for tqdm that just passes back the iterable.
+
+    Useful for silencing `tqdm` in tests.
+    """
+    return iterable
+
+
+@patch("recipes.cpc1.e029_sheffield.prepare_data.tqdm", not_tqdm)
 def test_run(tmp_path):
     """Test for the run function."""
-    np.random.seed(0)
-
     hydra.core.global_hydra.GlobalHydra.instance().clear()
     hydra.initialize(
         config_path="../../../../recipes/cpc1/e029_sheffield", job_name="test_cpc1_e029"
