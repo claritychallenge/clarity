@@ -17,9 +17,20 @@ from recipes.cec2.baseline.enhance import enhance
 def hydra_cfg(tmp_path: Path):
     """Fixture for hydra config."""
     hydra.core.global_hydra.GlobalHydra.instance().clear()
-    hydra.initialize(config_path=".", job_name="test_cec2")
+    hydra.initialize(
+        config_path=".../../../../../../recipes/cec2/baseline", job_name="test_cec2"
+    )
     cfg = hydra.compose(
-        config_name="config", overrides=["path.root=.", f"path.exp_folder={tmp_path}"]
+        config_name="config",
+        overrides=[
+            "path.root=.",
+            f"path.exp_folder={tmp_path}",
+            "path.metadata_dir=tests/test_data/metadata",
+            "path.scenes_listeners_file="
+            "tests/test_data/metadata/scenes_listeners.1.json",
+            "path.listeners_file=tests/test_data/metadata/listeners.json",
+            "path.scenes_folder=tests/test_data/scenes",
+        ],
     )
     return cfg
 

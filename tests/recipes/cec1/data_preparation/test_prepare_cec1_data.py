@@ -24,11 +24,23 @@ def test_prepare_data(tmp_path):
     """Test prepare_data function."""
 
     hydra.core.global_hydra.GlobalHydra.instance().clear()
-    hydra.initialize(config_path=".", job_name="test_cec1")
+    hydra.initialize(
+        config_path=".../../../../../../recipes/cec1/data_preparation",
+        job_name="test_cec1",
+    )
     cfg = hydra.compose(
         config_name="data_config",
-        overrides=["root=.", f"datasets.test.scene_folder={tmp_path}"],
+        overrides=[
+            "root=.",
+            "input_path=tests/test_data",
+            "+datasets.test.metafile_path="
+            "tests/test_data/metadata/scenes.cec1.test.json",
+            f"+datasets.test.scene_folder={tmp_path}",
+        ],
     )
+
+    del cfg.datasets.train
+    del cfg.datasets.dev
 
     prepare_cec1_data.run(cfg)
 
