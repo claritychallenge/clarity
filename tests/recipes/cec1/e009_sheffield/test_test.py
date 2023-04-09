@@ -12,7 +12,7 @@ from clarity.evaluator.msbg.msbg_utils import read_signal
 from recipes.cec1.e009_sheffield.test import run
 
 
-def not_tqdm(iterable, _desc):
+def not_tqdm(iterable, desc):  # pylint: disable=unused-argument
     """
     Replacement for tqdm that just passes back the iterable.
 
@@ -22,7 +22,6 @@ def not_tqdm(iterable, _desc):
 
 
 @patch("recipes.cec1.e009_sheffield.test.tqdm", not_tqdm)
-# @patch("recipes.cec1.e009_sheffield.test.ConvTasNet.load_state_dict")
 def test_run(tmp_path):
     """Test for the run function."""
     np.random.seed(0)
