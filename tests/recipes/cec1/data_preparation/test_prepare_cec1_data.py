@@ -30,12 +30,7 @@ def test_prepare_data(tmp_path):
         overrides=["root=.", f"datasets.test.scene_folder={tmp_path}"],
     )
 
-    prepare_cec1_data.prepare_data(
-        cfg.input_path,
-        cfg.datasets.test.metafile_path,
-        cfg.datasets.test.scene_folder,
-        cfg.num_channels,
-    )
+    prepare_cec1_data.run(cfg)
 
     expected_files = [
         ("interferer", 28371.805869146872),

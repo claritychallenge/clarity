@@ -70,6 +70,7 @@ tests = [
   "pytest-mock",
   "pytest-mpl",
   "pytest-regtest",
+  "pytest-skip-slow",
   "pytest-xdist",
   "yamllint",
 ]
