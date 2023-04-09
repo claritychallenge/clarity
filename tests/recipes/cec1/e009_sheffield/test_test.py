@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 import hydra
 import numpy as np
+import pytest
 import torch
 
 from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
@@ -60,4 +61,4 @@ def test_run(tmp_path):
     assert (tmp_path / expected_output_file).exists()
     signal = read_signal(tmp_path / expected_output_file)
     assert signal.shape == (259200, 2)
-    assert np.sum(np.abs(signal)) == 4331.347137451172
+    assert np.sum(np.abs(signal)) == pytest.approx(4331.347137451172)
