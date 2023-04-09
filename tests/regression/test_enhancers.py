@@ -69,6 +69,7 @@ def test_GHA_inputs(regtest):
 
 
 def test_GHA_config(regtest):
+    np.set_printoptions(threshold=1000)
     enhancer = gha(**gha_params)
     with open("tests/test_data/metadata/listeners.json", encoding="utf-8") as fp:
         listeners = json.load(fp)

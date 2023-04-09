@@ -97,6 +97,8 @@ repos:
         files: \.py$
         exclude: clarity/_version.py # 3rd party code that doesn't conform
 
+exclude: ^(tests/regression/_regtest_outputs/) # We don't want these being 'fixed'
+
 ci:
   autofix_prs: true
   autofix_commit_msg: "[pre-commit.ci] Fixing issues with pre-commit"
