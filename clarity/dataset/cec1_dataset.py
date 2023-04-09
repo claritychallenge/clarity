@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 
 import librosa
@@ -7,6 +8,8 @@ import torch
 from scipy.signal import firwin, lfilter
 from soundfile import read
 from torch.utils import data
+
+logger = logging.getLogger(__name__)
 
 
 def read_wavfile(path):
@@ -73,7 +76,7 @@ class CEC1Dataset(data.Dataset):
         y = y[:, silence_len:]
 
         wav_len = x.shape[1]
-        sample_len = self.wav_sample_len * self.sr
+        sample_len = int(self.wav_sample_len * self.sr)
         if wav_len > sample_len:
             start = np.random.randint(wav_len - sample_len)
             end = start + sample_len
@@ -112,6 +115,20 @@ class CEC1Dataset(data.Dataset):
             target = read_wavfile(
                 scenes_folder / (self.scene_list[item] + self.target_suffix)
             )
+            if target.shape[1] > mixed.shape[1]:
+                logging.warning(
+                    "Target length is longer than mixed length. Truncating target."
+                )
+                target = target[:, : mixed.shape[1]]
+            elif target.shape[1] < mixed.shape[1]:
+                logging.warning(
+                    "Target length is shorter than mixed length. Padding target."
+                )
+                target = np.pad(
+                    target,
+                    ((0, 0), (0, mixed.shape[1] - target.shape[1])),
+                    mode="constant",
+                )
 
         if self.sr != 44100:
             mixed_resampled, target_resampled = [], []

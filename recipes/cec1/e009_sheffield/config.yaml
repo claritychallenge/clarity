@@ -1,6 +1,6 @@
 path:
   cec1_root: ???
-  exp_folder: ???  # folder to store intermediate signals and final results
+  exp_folder: ??? # folder to store intermediate signals and final results
 
 sr: 44100
 downsample_factor: 2
@@ -23,8 +23,8 @@ mc_conv_tasnet:
   P: 3
   X: 6
   R: 4
-  C: 1  # num_speakers
-  num_channels: 6  # should be consistent with dataloader num_channels
+  C: 1 # num_speakers
+  num_channels: 6 # should be consistent with dataloader num_channels
   norm_type: cLN
   causal: True
   mask_nonlinear: relu
@@ -47,6 +47,7 @@ amp_trainer:
   stoilevel_loss:
     sr: ${sr}
     alpha: 1e-4
+  num_sanity_val_steps: 2
 
 train_dataset:
   scenes_folder: ${path.cec1_root}/clarity_CEC1_data/clarity_data/train/scenes

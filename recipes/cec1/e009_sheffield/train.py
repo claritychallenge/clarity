@@ -77,7 +77,7 @@ class AmpModule(System):
 
 
 def train_den(cfg, ear):
-    exp_dir = Path(cfg.path.exp_folder) / "{ear}_den"
+    exp_dir = Path(cfg.path.exp_folder) / f"{ear}_den"
     if (exp_dir / "best_model.pth").exists():
         logger.info("Enhancement module exist")
         return
@@ -128,19 +128,24 @@ def train_den(cfg, ear):
         limit_train_batches=1.0,  # Useful for fast experiment
         gradient_clip_val=cfg.den_trainer.gradient_clip_val,
     )
+
     trainer.fit(den_module)
 
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
     with (exp_dir / "best_k_models.json").open("w", encoding="utf-8") as fp:
         json.dump(best_k, fp, indent=0)
+
     state_dict = torch.load(checkpoint.best_model_path)
+
     den_module.load_state_dict(state_dict=state_dict["state_dict"])
     den_module.cpu()
+
     torch.save(den_module.model.state_dict(), str(exp_dir / "best_model.pth"))
 
 
 def train_amp(cfg, ear):
-    exp_dir = Path(cfg.path.exp_folder) / "{ear}_amp"
+    exp_dir = Path(cfg.path.exp_folder) / f"{ear}_amp"
+    Path.mkdir(exp_dir, parents=True, exist_ok=True)
     if (exp_dir / "best_model.pth").exists():
         logger.info("Amplification module exist")
         return
@@ -152,8 +157,7 @@ def train_amp(cfg, ear):
 
     # load denoising module
     den_model = ConvTasNet(**cfg.mc_conv_tasnet)
-    den_model_path = exp_dir / "{ear}_den/best_model.pth"
-
+    den_model_path = exp_dir / ".." / f"{ear}_den/best_model.pth"
     den_model.load_state_dict(torch.load(den_model_path))
 
     # amplification module
@@ -218,6 +222,7 @@ def train_amp(cfg, ear):
         gpus=gpus,
         limit_train_batches=1.0,  # Useful for fast experiment
         gradient_clip_val=cfg.amp_trainer.gradient_clip_val,
+        num_sanity_val_steps=cfg.amp_trainer.num_sanity_val_steps,
     )
     trainer.fit(amp_module)
 
@@ -234,10 +239,13 @@ def train_amp(cfg, ear):
 def run(cfg: DictConfig) -> None:
     logger.info("Begin training left ear enhancement module.")
     train_den(cfg, ear="left")
+
     logger.info("Begin training right ear enhancement module.")
     train_den(cfg, ear="right")
+
     logger.info("Begin training left ear amplification module.")
     train_amp(cfg, ear="left")
+
     logger.info("Begin training right ear amplification module.")
     train_amp(cfg, ear="right")
 
