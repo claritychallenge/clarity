@@ -71,6 +71,7 @@ tests = [
   "pytest-mock",
   "pytest-mpl",
   "pytest-regtest",
+  "pytest-slow",
   "pytest-xdist",
   "yamllint",
 ]

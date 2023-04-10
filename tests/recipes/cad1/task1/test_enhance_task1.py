@@ -9,6 +9,8 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+
+# pylint: disable=import-error, no-name-in-module
 from recipes.cad1.task1.baseline.enhance import (
     apply_baseline_ha,
     decompose_signal,
@@ -38,7 +40,13 @@ def test_map_to_dict():
     assert output == expected_output
 
 
-@pytest.mark.parametrize("separation_model", ["demucs", "openunmix"])
+@pytest.mark.parametrize(
+    "separation_model",
+    [
+        pytest.param("demucs"),
+        pytest.param("openunmix", marks=pytest.mark.slow),
+    ],
+)
 def test_decompose_signal(separation_model):
     """Takes a signal and decomposes it into VDBO sources using the HDEMUCS model"""
     np.random.seed(123456789)
