@@ -1,4 +1,5 @@
 """Module for HASPI, HASQI, HAAQI EBs"""
+# pylint: disable=import-error
 import logging
 
 import numpy as np
@@ -115,12 +116,10 @@ def ear_model(
         attn_ihc_x,
     ] = loss_parameters(hearing_loss_x, _center_freq)
 
-    # Parameters for the control filter bank
-    hl_max = [100, 100, 100, 100, 100, 100]
     # Compute center frequencies for the control
     _center_freq_control = center_frequency(nchan, shift)
     # Maximum BW for the control
-    _, bandwidth_1, _, _, _ = loss_parameters(hl_max, _center_freq_control)
+    _, bandwidth_1, _, _, _ = loss_parameters(np.full(6, 100), _center_freq_control)
 
     # Input signal adjustments
     # Convert the signals to 24 kHz sampling rate.
@@ -143,9 +142,9 @@ def ear_model(
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, freq_sample)
-        aud = [250, 500, 1000, 2000, 4000, 6000]
+        aud = np.array([250, 500, 1000, 2000, 4000, 6000])
         nalr_fir, _ = enhancer.build(hearing_loss, aud)
-        reference_24hz = convolve(reference_24hz, nalr_fir)  # Apply the NAL-R filter
+        reference_24hz = enhancer.apply(nalr_fir, reference_24hz)
         reference_24hz = reference_24hz[nfir : nfir + nsamp]
 
     # Cochlear model
@@ -876,9 +875,6 @@ def env_compress_basilar_membrane(
     Two-tone suppression added 22 August 2008.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    # Initialize the compression parameters
-    threshold_high = 100
-
     # Convert the control envelope to dB SPL
     logenv = np.maximum(control, small)
     logenv = level1 + 20 * np.log10(logenv)
@@ -1341,10 +1337,8 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
     nbasis = 6  # Number of cepstral coefficients to be used
     freq = np.arange(nbasis)
     k = np.arange(nbands)
-    mel_cepstral = np.zeros((nbands, nbasis))
-    for n in range(nbasis):
-        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
-        mel_cepstral[:, n] = basis / np.linalg.norm(basis)
+    basis = np.cos(np.outer(k, freq) * np.pi / float(nbands - 1))
+    mel_cepstral = basis / np.linalg.norm(basis, axis=0)
 
     # Find the segments that lie sufficiently above the quiescent rate
     reference_linear = 10 ** (
@@ -1374,32 +1368,27 @@ def mel_cepstrum_correlation(reference, distorted, threshold, addnoise):
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
-    reference_cep = np.zeros((nbasis, nsamp))  # Input
-    processed_cep = np.zeros((nbasis, nsamp))  # Output
-    for n in range(nsamp):
-        for k in range(nbasis):
-            reference_cep[k, n] = np.sum(ref[:, n] * mel_cepstral[:, k])
-            processed_cep[k, n] = np.sum(proc[:, n] * mel_cepstral[:, k])
+
+    reference_cep = np.dot(mel_cepstral.T, ref)
+    processed_cep = np.dot(mel_cepstral.T, proc)
 
     # Remove the average value from the cepstral coefficients. The
     # cross-correlation thus becomes a cross-covariance, and there
     # is no effect of the absolute signal level in dB.
-    for k in range(nbasis):
-        reference_cep[k, :] = reference_cep[k, :] - np.mean(reference_cep[k, :], axis=0)
-        processed_cep[k, :] = processed_cep[k, :] - np.mean(processed_cep[k, :], axis=0)
+    reference_cep -= np.mean(reference_cep, axis=1, keepdims=True)
+    processed_cep -= np.mean(processed_cep, axis=1, keepdims=True)
 
     # Normalized cross-correlations between the time-varying cepstral coeff
-    individual_cepstral_correlations = np.zeros(nbasis)  # Input vs output
+    # individual_cepstral_correlations = np.zeros(nbasis)  # Input vs output
     small = 1.0e-30
-    for k in range(nbasis):
-        xsum = np.sum(reference_cep[k, :] ** 2)
-        ysum = np.sum(processed_cep[k, :] ** 2)
-        if (xsum < small) or (ysum < small):
-            individual_cepstral_correlations[k] = 0.0
-        else:
-            individual_cepstral_correlations[k] = np.abs(
-                np.sum(reference_cep[k, :] * processed_cep[k, :]) / np.sqrt(xsum * ysum)
-            )
+    xsum = np.sum(reference_cep**2, axis=1)
+    ysum = np.sum(processed_cep**2, axis=1)
+    mask = (xsum < small) | (ysum < small)
+    individual_cepstral_correlations = np.zeros(nbasis)
+    individual_cepstral_correlations[~mask] = np.abs(
+        np.sum(reference_cep[~mask] * processed_cep[~mask], axis=1)
+        / np.sqrt(xsum[~mask] * ysum[~mask])
+    )
 
     # Figure of merit is the average of the cepstral correlations, ignoring
     # the first (average spectrum level).
@@ -1459,10 +1448,8 @@ def melcor9(
     # Mel cepstrum basis functions (mel cepstrum because of auditory bands)
     freq = np.arange(n_cepstral_coef)
     k = np.arange(nbands)
-    cepm = np.zeros((nbands, n_cepstral_coef))
-    for n in range(n_cepstral_coef):
-        basis = np.cos(k * float(freq[n]) * np.pi / float(nbands - 1))
-        cepm[:, n] = basis / np.linalg.norm(basis)
+    basis = np.cos(np.outer(k, freq) * np.pi / (nbands - 1))
+    cepm = basis / np.linalg.norm(basis, axis=0, keepdims=True)
 
     # Find the segments that lie sufficiently above the quiescent rate
     # Convert envelope dB to linear (specific loudness)
@@ -1502,24 +1489,16 @@ def melcor9(
     _distorted = distorted[:, index]
 
     # Add the low-level noise to the envelopes
-    _reference = _reference + add_noise * np.random.standard_normal(_reference.shape)
-    _distorted = _distorted + add_noise * np.random.standard_normal(_distorted.shape)
+    _reference += add_noise * np.random.standard_normal(_reference.shape)
+    _distorted += add_noise * np.random.standard_normal(_distorted.shape)
 
     # Compute the mel cepstrum coefficients using only those segments
     # above threshold
-    reference_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Input
-    distorted_cep = np.zeros((n_cepstral_coef, segments_above_threshold))  # Output
-    for n in range(segments_above_threshold):
-        for k in range(n_cepstral_coef):
-            reference_cep[k, n] = np.sum(_reference[:, n] * cepm[:, k])
-            distorted_cep[k, n] = np.sum(_distorted[:, n] * cepm[:, k])
+    reference_cep = np.dot(cepm.T, _reference[:, :segments_above_threshold])
+    distorted_cep = np.dot(cepm.T, _distorted[:, :segments_above_threshold])
 
-    # Remove the average value from the cepstral coefficients. The
-    # cross-correlation thus becomes a cross-covariance, and there
-    # is no effect of the absolute signal level in dB.
-    for k in range(n_cepstral_coef):
-        reference_cep[k, :] = reference_cep[k, :] - np.mean(reference_cep[k, :], axis=0)
-        distorted_cep[k, :] = distorted_cep[k, :] - np.mean(distorted_cep[k, :], axis=0)
+    reference_cep -= np.mean(reference_cep, axis=1, keepdims=True)
+    distorted_cep -= np.mean(distorted_cep, axis=1, keepdims=True)
 
     # Envelope sampling parameters
     sampling_freq = 1000.0 / (0.5 * segment_size)  # Envelope sampling frequency in Hz
@@ -1562,36 +1541,16 @@ def melcor9(
         distorted_cep,
     )
 
-    # Average over the  modulation filters and basis functions 2 - 6
-    for m in range(n_modulation_filter_bands):
-        for j in range(1, n_cepstral_coef):
-            mel_cepstral_average += mel_cepstral_cross_covar[m, j]
+    mel_cepstral_average = np.sum(mel_cepstral_cross_covar[:, 1:], axis=(0, 1))
+    mel_cepstral_average /= n_modulation_filter_bands * (n_cepstral_coef - 1)
 
-    mel_cepstral_average = mel_cepstral_average / (
-        n_modulation_filter_bands * (n_cepstral_coef - 1)
-    )
+    mel_cepstral_low = np.sum(mel_cepstral_cross_covar[:4, 1:])
+    mel_cepstral_low /= 4 * (n_cepstral_coef - 1)
 
-    # Average over the four lower modulation filters
-    for m in range(4):
-        for j in range(1, n_cepstral_coef):
-            mel_cepstral_low += mel_cepstral_cross_covar[m, j]
+    mel_cepstral_high = np.sum(mel_cepstral_cross_covar[4:8, 1:])
+    mel_cepstral_high /= 4 * (n_cepstral_coef - 1)
 
-    mel_cepstral_low = mel_cepstral_low / (4 * (n_cepstral_coef - 1))
-
-    #  Average over the four upper modulation filters
-    for m in range(4, 8):
-        for j in range(1, n_cepstral_coef):
-            mel_cepstral_high += mel_cepstral_cross_covar[m, j]
-
-    mel_cepstral_high = mel_cepstral_high / (4 * (n_cepstral_coef - 1))
-
-    # Average each modulation frequency over the basis functions
-    for m in range(n_modulation_filter_bands):
-        ave = 0
-        for j in range(1, n_cepstral_coef):
-            ave += mel_cepstral_cross_covar[m, j]
-
-        mel_cepstral_modulation[m] = ave / (n_cepstral_coef - 1)
+    mel_cepstral_modulation = np.mean(mel_cepstral_cross_covar[:, 1:], axis=1)
 
     return (
         mel_cepstral_average,
@@ -1631,25 +1590,24 @@ def melcor9_crosscovmatrix(b, nmod, nbasis, nsamp, nfir, reference_cep, processe
 
     # Compute the cross-covariance matrix
     cross_covariance_matrix = np.zeros((nmod, nbasis))
+
     for m in range(nmod):
-        for j in range(nbasis):
-            #  Index j gives the input reference band
-            x_j = reference[m, j]  # Input freq band j, modulation freq m
-            x_j = x_j - np.mean(x_j)
-            reference_sum = np.sum(x_j**2)
+        # Input freq band j, modulation freq m
+        x_j = reference[m]
+        x_j -= np.mean(x_j, axis=1, keepdims=True)
+        reference_sum = np.sum(x_j**2, axis=1)
 
-            # Processed signal band
-            y_j = processed[m, j]  # Input freq band j, modulation freq m
-            y_j = y_j - np.mean(y_j)
-            processed_sum = np.sum(y_j**2)
+        # Processed signal band
+        y_j = processed[m]
+        y_j -= np.mean(y_j, axis=1, keepdims=True)
+        processed_sum = np.sum(y_j**2, axis=1)
 
-            # Cross-correlate the reference and processed signals
-            if (reference_sum < small) or (processed_sum < small):
-                cross_covariance_matrix[m, j] = 0
-            else:
-                cross_covariance_matrix[m, j] = np.abs(np.sum(x_j * y_j)) / np.sqrt(
-                    reference_sum * processed_sum
-                )
+        xy = np.sum(x_j * y_j, axis=1)
+        mask = (reference_sum < small) | (processed_sum < small)
+        cross_covariance_matrix[m, ~mask] = np.abs(xy[~mask]) / np.sqrt(
+            reference_sum[~mask] * processed_sum[~mask]
+        )
+
     return cross_covariance_matrix
 
 
@@ -1986,11 +1944,14 @@ def ave_covary2(
     # Default cutoff frequencies in Hz
     if freq_cutoff is None:
         freq_cutoff = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
-    fsync = np.zeros((6, n_channels))  # Array of filter freq resp vs band center freq
-    for n in range(6):
-        fc2p = freq_cutoff[n] ** (2 * lp_filter_order[n])
-        freq2p = _center_freq ** (2 * lp_filter_order[n])
-        fsync[n, :] = np.sqrt(fc2p / (fc2p + freq2p))
+
+    fc2p = (
+        np.atleast_2d(freq_cutoff ** (2 * lp_filter_order)).repeat(n_channels, axis=0).T
+    )
+    freq2p = _center_freq ** (
+        2 * np.atleast_2d(lp_filter_order).repeat(n_channels, axis=0).T
+    )
+    fsync = np.sqrt(fc2p / (fc2p + freq2p))
 
     # Find the segments that lie sufficiently above the threshold.
     # Convert squared amplitude to dB envelope
