@@ -1,7 +1,7 @@
 """Supplied dataclass to represent a monaural audiogram"""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -38,7 +38,7 @@ class Audiogram:
     """
 
     levels: np.ndarray
-    cfs: np.ndarray = np.array(DEFAULT_CLARITY_CFS)
+    cfs: np.ndarray = field(default_factory=lambda: np.array(DEFAULT_CLARITY_CFS))
 
     @property
     def severity(self) -> str:
