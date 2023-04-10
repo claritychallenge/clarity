@@ -275,7 +275,7 @@ def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray
 
     if soft_clip:
         signal = np.tanh(signal)
-    n_clipped = np.sum(np.abs(signal) > 1.0)[0]
+    n_clipped = np.sum(np.abs(signal) > 1.0)
     np.clip(signal, -1.0, 1.0, out=signal)
     return (32768.0 * signal).astype(np.int16), n_clipped
 
