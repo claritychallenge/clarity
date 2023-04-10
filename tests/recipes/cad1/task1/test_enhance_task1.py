@@ -1,10 +1,10 @@
 """Tests for the enhance module"""
-# pylint: disable=import-error
-
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
+from omegaconf import DictConfig
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
@@ -38,20 +38,37 @@ def test_map_to_dict():
     assert output == expected_output
 
 
-def test_decompose_signal():
+@pytest.mark.parametrize("separation_model", ["demucs", "openunmix"])
+def test_decompose_signal(separation_model):
     """Takes a signal and decomposes it into VDBO sources using the HDEMUCS model"""
     np.random.seed(123456789)
     # Load Separation Model
-    model = HDEMUCS_HIGH_MUSDB.get_model().double()
+    if separation_model == "demucs":
+        model = HDEMUCS_HIGH_MUSDB.get_model().double()
+    elif separation_model == "openunmix":
+        model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq").double()
+
     device = torch.device("cpu")
     model.to(device)
 
     # Create a mock signal to decompose
-    sample_rate = 8000
-    duration = 1
-    signal = np.random.uniform(size=(1, 2, sample_rate * duration))
+    sample_rate = 44100
+    duration = 0.5
+    signal = np.random.uniform(size=(1, 2, int(sample_rate * duration)))
+
+    # config
+    config = DictConfig(
+        {
+            "sample_rate": sample_rate,
+            "separator": {
+                "model": "demucs",
+                "sources": ["drums", "bass", "other", "vocals"],
+            },
+        }
+    )
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(
+        config,
         model,
         signal,
         sample_rate,
@@ -59,9 +76,8 @@ def test_decompose_signal():
         left_audiogram=np.ones(9),
         right_audiogram=np.ones(9),
     )
-
     expected_results = np.load(
-        RESOURCES / "test_enhance.test_decompose_signal.npy",
+        RESOURCES / f"test_enhance.test_decompose_signal_{separation_model}.npy",
         allow_pickle=True,
     )[()]
 
@@ -112,7 +128,7 @@ def test_process_stems_for_listener():
     )
 
     # Call the process_stems_for_listener function and check output is as expected
-    output = process_stems_for_listener(
+    output_stems = process_stems_for_listener(
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
     expected_results = np.load(
@@ -120,7 +136,7 @@ def test_process_stems_for_listener():
         allow_pickle=True,
     )[()]
 
-    for key, item in output.items():
+    for key, item in output_stems.items():
         np.testing.assert_array_almost_equal(item, expected_results[key])
 
 
