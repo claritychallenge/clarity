@@ -277,7 +277,11 @@ def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray
         signal = np.tanh(signal)
     n_clipped = np.sum(np.abs(signal) > 1.0)
     np.clip(signal, -1.0, 1.0, out=signal)
-    return (32768.0 * signal).astype(np.int16), n_clipped
+    return signal, int(n_clipped)
+
+
+def to_16bit(signal: np.ndarray) -> np.ndarray:
+    return (32768.0 * signal).astype(np.int16)
 
 
 @hydra.main(config_path="", config_name="config")
@@ -427,7 +431,7 @@ def enhance(config: DictConfig) -> None:
             clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
             if n_clipped > 0:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            wavfile.write(filename, config.sample_rate, clipped_signal)
+            wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
 
         enhanced = np.stack([output_left, output_right], axis=1)
         filename = (
@@ -441,7 +445,7 @@ def enhance(config: DictConfig) -> None:
         clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
         if n_clipped > 0:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-        wavfile.write(filename, config.sample_rate, clipped_signal)
+        wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
 
 
 # pylint: disable = no-value-for-parameter
