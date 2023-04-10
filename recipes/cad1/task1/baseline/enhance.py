@@ -261,23 +261,23 @@ def process_stems_for_listener(
     return processed_stems
 
 
-def clip_and_save(signal: np.ndarray, filename: Path | str, config: DictConfig) -> None:
+def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
     """Clip and save the processed stems.
 
     Args:
         signal (np.ndarray): Signal to be clipped and saved.
-        filename (Path | str): Filename to save the signal to.
-        config (DictConfig): Configuration object.
+        soft_clip (bool): Whether to use soft clipping.
+
+    Returns:
+        signal (np.ndarray): Clipped signal.
+        n_clipped (int): Number of samples clipped.
     """
 
-    if config.soft_clip:
+    if soft_clip:
         signal = np.tanh(signal)
-    n_clipped = np.sum(np.abs(signal) > 1.0)
-    if n_clipped > 0:
-        logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+    n_clipped = np.sum(np.abs(signal) > 1.0)[0]
     np.clip(signal, -1.0, 1.0, out=signal)
-    signal_16 = (32768.0 * signal).astype(np.int16)
-    wavfile.write(filename, config.sample_rate, signal_16)
+    return (32768.0 * signal).astype(np.int16), n_clipped
 
 
 @hydra.main(config_path="", config_name="config")
@@ -423,7 +423,10 @@ def enhance(config: DictConfig) -> None:
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
             # wavfile.write(filename, config.nalr.fs, item)
-            clip_and_save(stem_signal, filename, config)
+            clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
+            if n_clipped > 0:
+                logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+            wavfile.write(filename, config.sample_rate, clipped_signal)
 
         enhanced = np.stack([output_left, output_right], axis=1)
         filename = (
@@ -433,7 +436,10 @@ def enhance(config: DictConfig) -> None:
             / f"{listener_info['name']}_{song_name}_remix.wav"
         )
 
-        clip_and_save(enhanced, filename, config)
+        clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
+        if n_clipped > 0:
+            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+        wavfile.write(filename, config.sample_rate, clipped_signal)
 
 
 # pylint: disable = no-value-for-parameter
