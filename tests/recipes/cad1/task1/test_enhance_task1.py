@@ -11,11 +11,13 @@ from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from recipes.cad1.task1.baseline.enhance import (
     apply_baseline_ha,
+    clip_signal,
     decompose_signal,
     get_device,
     map_to_dict,
     process_stems_for_listener,
     separate_sources,
+    to_16bit,
 )
 
 BASE_DIR = Path.cwd()
@@ -193,3 +195,27 @@ def test_get_device():
         else torch.device("cpu")
     )
     assert device_type == "cuda" if torch.cuda.is_available() else "cpu"
+
+
+def test_to_16bit():
+    # Generate a random signal
+    signal = np.random.uniform(low=-1.0, high=1.0, size=50)
+    signal_16bit = to_16bit(signal)
+
+    assert np.all(np.abs(signal_16bit) <= 32768)
+
+
+def test_clip_signal():
+    # Generate a random signal
+    np.random.seed(0)
+    signal = np.random.uniform(low=-2.0, high=2.0, size=50)
+
+    # Test with soft clipping
+    clipped_signal, n_clipped = clip_signal(signal, soft_clip=True)
+    assert max(np.abs(clipped_signal)) <= 1.0
+    assert n_clipped == 0
+
+    # Test without soft clipping
+    clipped_signal, n_clipped = clip_signal(signal, soft_clip=False)
+    assert max(np.abs(clipped_signal)) <= 1.0
+    assert n_clipped == 22
