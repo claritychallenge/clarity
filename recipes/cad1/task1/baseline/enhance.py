@@ -422,7 +422,8 @@ def enhance(config: DictConfig) -> None:
                 / f"{listener_info['name']}_{song_name}_{stem_str}.wav"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
-            # wavfile.write(filename, config.nalr.fs, item)
+
+            # Clip and save stem signals
             clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
             if n_clipped > 0:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
@@ -436,6 +437,7 @@ def enhance(config: DictConfig) -> None:
             / f"{listener_info['name']}_{song_name}_remix.wav"
         )
 
+        # clip and save enhanced signal
         clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
         if n_clipped > 0:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
