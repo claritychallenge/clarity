@@ -18,31 +18,31 @@ from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 class GHAHearingAid:
     def __init__(
         self,
-        fs=44100,
+        sample_frequency=44100,
         ahr=20,
         audf=None,
         cfg_file="prerelease_combination4_smooth",
-        noisegatelevels=None,
-        noisegateslope=0,
+        noise_gate_levels=None,
+        noise_gate_slope=0,
         cr_level=0,
         max_output_level=100,
-        equiv0dBSPL=100,
+        equiv_0db_spl=100,
         test_nbits=16,
     ):
         if audf is None:
             audf = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
-        if noisegatelevels is None:
-            noisegatelevels = [38, 38, 36, 37, 32, 26, 23, 22, 8]
+        if noise_gate_levels is None:
+            noise_gate_levels = [38, 38, 36, 37, 32, 26, 23, 22, 8]
 
-        self.fs = fs
+        self.sample_frequency = sample_frequency
         self.ahr = ahr
         self.audf = audf
         self.cfg_file = cfg_file
-        self.noisegatelevels = noisegatelevels
-        self.noisegateslope = noisegateslope
+        self.noise_gate_levels = noise_gate_levels
+        self.noise_gate_slope = noise_gate_slope
         self.cr_level = cr_level
         self.max_output_level = max_output_level
-        self.equiv0dBSPL = equiv0dBSPL
+        self.equiv_0db_spl = equiv_0db_spl
         self.test_nbits = test_nbits
 
     def create_configured_cfgfile(
@@ -64,7 +64,7 @@ class GHAHearingAid:
             cfg_filename (str): cfg filename
         """
 
-        if self.fs != 44100:
+        if self.sample_frequency != 44100:
             logging.error("Current GHA configuration requires 44.1kHz sampling rate.")
             raise ValueError(
                 "Current GHA configuration requires 44.1kHz sampling rate."
@@ -77,8 +77,8 @@ class GHAHearingAid:
         # Update peaklevel out by adding headroom
         logging.info("Adding %s dB headroom", self.ahr)
 
-        peaklevel_in = int(self.equiv0dBSPL)
-        peaklevel_out = int(self.equiv0dBSPL + self.ahr)
+        peaklevel_in = int(self.equiv_0db_spl)
+        peaklevel_out = int(self.equiv_0db_spl + self.ahr)
 
         # Render jinja2 template
         file_loader = FileSystemLoader(cfg_template_file.parent)
@@ -113,8 +113,8 @@ class GHAHearingAid:
         # Get gain table with noisegate correction
         gaintable = get_gaintable(
             audiogram,
-            self.noisegatelevels,
-            self.noisegateslope,
+            self.noise_gate_levels,
+            self.noise_gate_slope,
             self.cr_level,
             self.max_output_level,
         )
@@ -208,8 +208,10 @@ class GHAHearingAid:
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
-        if wave_file.samplerate != self.fs:
-            raise ValueError(f"Sampling rate is not {self.fs} for filename {filename}.")
+        if wave_file.samplerate != self.sample_frequency:
+            raise ValueError(
+                f"Sampling rate is not {self.sample_frequency} for filename {filename}."
+            )
 
         if not offset_is_samples:  # Default behaviour
             offset = int(offset * wave_file.samplerate)
@@ -238,7 +240,7 @@ class GHAHearingAid:
         else:
             subtype = "FLOAT"
 
-        soundfile.write(filename, x, self.fs, subtype=subtype)
+        soundfile.write(filename, x, self.sample_frequency, subtype=subtype)
 
     def create_HA_inputs(self, infile_names: list[str], merged_filename: str) -> None:
         """Create input signal for baseline hearing aids.

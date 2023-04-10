@@ -32,19 +32,19 @@ test_indep_path:
 
 # experimental parameters
 num_channels: 3
-fs: 44100
+sample_frequency: 44100
 ahr: 20
-equiv0dBSPL: 100
+equiv_0db_spl: 100
 
 MSBGEar: # hyperparameters for MSBG ear
   src_pos: ff
-  sample_frequency: ${fs}
-  equiv_0db_spl: ${equiv0dBSPL}
+  sample_frequency: ${sample_frequency}
+  equiv_0db_spl: ${equiv_0db_spl}
   ahr: ${ahr}
 
 mbstoi:
-  fs: ${fs}
-  gridcoarseness: 1
+  sample_frequency: ${sample_frequency}
+  grid_coarseness: 1
 
 # disable hydra loggings
 defaults:

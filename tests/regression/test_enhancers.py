@@ -10,15 +10,15 @@ from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
-    "fs": 44100,
+    "sample_frequency": 44100,
     "ahr": 20,
     "audf": None,
     "cfg_file": "prerelease_combination3_smooth",
-    "noisegatelevels": None,
-    "noisegateslope": 0,
+    "noise_gate_levels": None,
+    "noise_gate_slope": 0,
     "cr_level": 0,
     "max_output_level": 100,
-    "equiv0dBSPL": 100,
+    "equiv_0db_spl": 100,
     "test_nbits": 16,
 }
 
@@ -83,8 +83,8 @@ def test_GHA_config(regtest):
 
     gaintable = get_gaintable(
         audiogram,
-        enhancer.noisegatelevels,
-        enhancer.noisegateslope,
+        enhancer.noise_gate_levels,
+        enhancer.noise_gate_slope,
         enhancer.cr_level,
         enhancer.max_output_level,
     )

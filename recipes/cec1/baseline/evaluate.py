@@ -48,12 +48,7 @@ def run_HL_processing(cfg: DictConfig) -> None:
     enhanced_folder = Path(cfg.path.enhanced_signals)
 
     # initialize ear
-    ear = Ear(
-        src_pos=cfg.MSBGEar.src_pos,
-        sample_frequency=cfg.MSBGEar.fs,
-        equiv_0db_spl=cfg.MSBGEar.equiv0dBSPL,
-        ahr=cfg.MSBGEar.ahr,
-    )
+    ear = Ear(**cfg.MSBGEar)
 
     for scene in tqdm(scenes_listeners):
         for listener in scenes_listeners[scene]:
@@ -159,8 +154,8 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 clean_pad[:, 1],
                 proc_pad[:, 0],
                 proc_pad[:, 1],
-                cfg.mbstoi.fs,
-                cfg.mbstoi.gridcoarseness,
+                cfg.mbstoi.sample_frequency,
+                cfg.mbstoi.grid_coarseness,
             )
             csv_lines.append([scene, listener, sii])  # type: ignore
 

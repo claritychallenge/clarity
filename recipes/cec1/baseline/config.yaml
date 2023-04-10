@@ -8,31 +8,31 @@ path:
 
 # experimental parameters
 num_channels: 3
-fs: 44100
+sample_frequency: 44100
 ahr: 20
-equiv0dBSPL: 100
+equiv_0db_spl: 100
 
 GHAHearingAid: # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
-  fs: ${fs}
+  sample_frequency: ${sample_frequency}
   ahr: ${ahr}
   audf: null
   cfg_file: prerelease_combination4_smooth
-  noisegatelevels: null
-  noisegateslope: 0
+  noise_gate_levels: null
+  noise_gate_slope: 0
   cr_level: 0
   max_output_level: 100
-  equiv0dBSPL: ${equiv0dBSPL}
+  equiv_0db_spl: ${equiv_0db_spl}
   test_nbits: 16
 
 MSBGEar: # hyperparameters for MSBG ear
   src_pos: ff
-  fs: ${fs}
-  equiv0dBSPL: ${equiv0dBSPL}
+  sample_frequency: ${sample_frequency}
+  equiv_0db_spl: ${equiv_0db_spl}
   ahr: ${ahr}
 
 mbstoi:
-  fs: ${fs}
-  gridcoarseness: 1
+  sample_frequency: ${sample_frequency}
+  grid_coarseness: 1
 
 # disable hydra loggings
 defaults:

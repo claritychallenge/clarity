@@ -41,7 +41,7 @@ def test_gha_hearing_aid_init():
     """test the the gha hearing aid is initialized correctly"""
     gha_hearing_aid = GHAHearingAid()
     assert len(gha_hearing_aid.audf) == 8
-    assert len(gha_hearing_aid.noisegatelevels) == 9
+    assert len(gha_hearing_aid.noise_gate_levels) == 9
 
 
 def test_create_configured_cfgfile():
@@ -67,7 +67,7 @@ def test_create_configured_cfgfile():
 def test_create_configured_cfgfile_error():
     """Check gives error if sampling rate is not 44.1kHz"""
     gha_hearing_aid = GHAHearingAid()
-    gha_hearing_aid.fs = 16000  # <-- any value other than 44100
+    gha_hearing_aid.sample_frequency = 16000  # <-- any value other than 44100
     with pytest.raises(ValueError):
         arbitrary_data = np.array([1, 2, 3])
         gha_hearing_aid.create_configured_cfgfile(
