@@ -84,8 +84,8 @@ class CarNoiseParametersGenerator:
             np.random.seed(random_seed)
 
         # .. randomization range for frequency multiplier
-        self.randomisationrange_freqmultiplier = (
-            np.arange(0.9, 1.1, 0.001) if self.random_flag else [1]
+        self.randomisation_range_freq_multiplier = (
+            np.arange(0.9, 1.1, 0.001) if self.random_flag else np.array([1.0])
         )
 
         # primray filter .. fix at 6 dB per octave and a
@@ -103,15 +103,15 @@ class CarNoiseParametersGenerator:
         }
 
         # bump
-        self.bump_lowerlimitforrandomization_db = 0 if self.random_flag else 6
-        self.bump_upperlimitforrandomization_db = 6
+        self.bump_lower_limit_for_randomization_db = 0 if self.random_flag else 6
+        self.bump_upper_limit_for_randomization_db = 6
 
-    def set_new_randomisationrange_freqmultiplier(self):
-        """Set a new freqeuncy multiplier use in the
+    def set_new_randomisation_range_freq_multiplier(self):
+        """Set a new frequency multiplier use in the
         primary and secondary filters
         """
-        self.randomisationrange_freqmultiplier = (
-            np.arange(0.9, 1.1, 0.001) if self.random_flag else [1]
+        self.randomisation_range_freq_multiplier = (
+            np.arange(0.9, 1.1, 0.001) if self.random_flag else np.array([1.0])
         )
 
     def gen_parameters(self, speed_kph: float) -> dict:
@@ -135,9 +135,9 @@ class CarNoiseParametersGenerator:
         gear = self._get_gear(speed_kph)
         rpm = self._get_rpm(gear, speed_kph)
 
-        referencelevel_db = self.REFERENCE_CONSTANT_DB
+        reference_level_db = self.REFERENCE_CONSTANT_DB
         if self.random_flag:
-            referencelevel_db += np.random.choice(np.arange(0, 3.1, 0.1))
+            reference_level_db += np.random.choice(np.arange(0, 3.1, 0.1))
 
         engine_num_harmonics = (
             25 if not self.random_flag else np.random.choice(np.arange(10, 41))
@@ -151,7 +151,7 @@ class CarNoiseParametersGenerator:
         return {
             "speed": float(speed_kph),
             "gear": int(gear),
-            "reference_level_db": float(referencelevel_db),
+            "reference_level_db": float(reference_level_db),
             "engine_num_harmonics": int(engine_num_harmonics),
             "rpm": float(rpm),
             "primary_filter": primary_filter,
@@ -183,7 +183,7 @@ class CarNoiseParametersGenerator:
                 self.primary_filter["speeddependence_cutoff_hzperkph"] * speed_kph
                 + self.primary_filter["constant_hz"]
             )
-            * np.random.choice(self.randomisationrange_freqmultiplier),
+            * np.random.choice(self.randomisation_range_freq_multiplier),
         }
 
     def _generate_secondary_filter(self, speed_kph: float) -> dict:
@@ -194,43 +194,43 @@ class CarNoiseParametersGenerator:
                 self.secondary_filter["speeddependence_cutoff_hzperkph"] * speed_kph
                 + self.secondary_filter["constant_hz"]
             )
-            * np.random.choice(self.randomisationrange_freqmultiplier),
+            * np.random.choice(self.randomisation_range_freq_multiplier),
         }
 
     def _generate_bump_filter(self) -> dict:
-        bumpfilter_order = 1 if not self.random_flag else np.random.choice([1, 2])
-        bumpfilter_f1_hz = (
+        bump_filter_order = 1 if not self.random_flag else np.random.choice([1, 2])
+        bump_filter_f1_hz = (
             30 if not self.random_flag else np.random.randint(20, 101, size=1)[0]
         )
-        bumpfilter_f2_hz = (
+        bump_filter_f2_hz = (
             60
             if not self.random_flag
-            else bumpfilter_f1_hz * np.random.choice(np.arange(1.25, 2.01, 0.01))
+            else bump_filter_f1_hz * np.random.choice(np.arange(1.25, 2.01, 0.01))
         )
         filter_dict = {
-            "order": int(bumpfilter_order),
+            "order": int(bump_filter_order),
             "btype": "bandpass",
-            "cutoff_hz": [int(bumpfilter_f1_hz), int(bumpfilter_f2_hz)],
+            "cutoff_hz": [int(bump_filter_f1_hz), int(bump_filter_f2_hz)],
         }
         return filter_dict
 
     def _generate_dip_filter(self) -> tuple[dict, dict]:
-        dipfilter_order = 2 if not self.random_flag else np.random.choice([1, 2])
-        dipfilter_f1_hz = (
+        dip_filter_order = 2 if not self.random_flag else np.random.choice([1, 2])
+        dip_filter_f1_hz = (
             200 if not self.random_flag else np.random.choice(range(30, 201, 10))
         )
-        dipfilter_f2_hz = (
-            300 if not self.random_flag else dipfilter_f1_hz * np.random.uniform(2, 3)
+        dip_filter_f2_hz = (
+            300 if not self.random_flag else dip_filter_f1_hz * np.random.uniform(2, 3)
         )
         filter_dict_low = {
-            "order": int(dipfilter_order),
+            "order": int(dip_filter_order),
             "btype": "lowpass",
-            "cutoff_hz": int(dipfilter_f1_hz),
+            "cutoff_hz": int(dip_filter_f1_hz),
         }
         filter_dict_high = {
-            "order": int(dipfilter_order),
+            "order": int(dip_filter_order),
             "btype": "highpass",
-            "cutoff_hz": int(dipfilter_f2_hz),
+            "cutoff_hz": int(dip_filter_f2_hz),
         }
 
         return filter_dict_low, filter_dict_high
