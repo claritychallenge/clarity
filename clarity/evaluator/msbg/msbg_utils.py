@@ -5,6 +5,7 @@ import json
 import logging
 import math
 from pathlib import Path
+from typing import TypedDict
 
 import numpy as np
 import scipy
@@ -96,7 +97,27 @@ EMPHASIS = np.array(
 ) * (7.5 / 9)
 
 
-def read_gtf_file(gtf_file: str) -> dict[str, str | ndarray | int | float]:
+class GTFParamDict(TypedDict):
+    Fs: int
+    BROADEN: float
+    SPACING: float
+    NGAMMA: int
+    GTnDelays: list[int]
+    GTn_denoms: list[list[float]]
+    GTn_nums: list[list[float]]
+    GTn_CentFrq: list[float]
+    ERBn_CentFrq: list[float]
+    HP_denoms: list[list[float]]
+    HP_nums: list[list[float]]
+    HP_FCorner: list[float]
+    HP_Delays: list[int]
+    NChans: int
+    Start2PoleHP: int
+    Recombination_dB: float
+    DateCreated: str
+
+
+def read_gtf_file(gtf_file: str) -> GTFParamDict:
     """Read a gammatone filterbank file.
 
     List data is converted into numpy arrays.
@@ -165,7 +186,7 @@ def fir2(
 ) -> tuple[ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
-    Translation of MATLAB fir2.
+    Partial implementation of MATLAB fir2.
 
     Args:
         filter_length (int): Order

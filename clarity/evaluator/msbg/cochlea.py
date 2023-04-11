@@ -240,11 +240,11 @@ class Cochlea:
 
         # Compute severity level and set parameters accordingly
         severity_level = self.audiogram.severity
-        self.gtfbank_params: dict[str, Any] = read_gtf_file(
+        self.gtfbank_params = read_gtf_file(
             f"msbg_hparams/{HL_PARAMS[severity_level]['gtfbank_file']}.json"
         )
         self.cf_expansion, self.eq_loud_db_catch_up = compute_recruitment_parameters(
-            self.gtfbank_params["GTn_CentFrq"], audiogram, catch_up_level
+            np.array(self.gtfbank_params["GTn_CentFrq"]), audiogram, catch_up_level
         )
 
         # Set-up the smearer
@@ -274,12 +274,14 @@ class Cochlea:
             coch_sig,
             self.gtfbank_params["NGAMMA"],
             FilterBank(
-                self.gtfbank_params["GTn_nums"], self.gtfbank_params["GTn_denoms"]
+                np.array(self.gtfbank_params["GTn_nums"]),
+                np.array(self.gtfbank_params["GTn_denoms"]),
             ),
-            self.gtfbank_params["GTnDelays"],
+            np.array(self.gtfbank_params["GTnDelays"]),
             self.gtfbank_params["Start2PoleHP"],
             FilterBank(
-                self.gtfbank_params["HP_nums"], self.gtfbank_params["HP_denoms"]
+                np.array(self.gtfbank_params["HP_nums"]),
+                np.array(self.gtfbank_params["HP_denoms"]),
             ),
         )
 
