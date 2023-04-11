@@ -45,7 +45,7 @@ dependencies = [
   "pyloudnorm>=0.1.0",
   "pytorch_lightning>=2",
   "pystoi",
-  "pytorch-lightning<2.0",
+  "pytorch-lightning",
   "resampy",
   "scikit-learn>=1.0.2",
   "scipy>=1.7.3",
