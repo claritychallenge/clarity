@@ -27,7 +27,7 @@ def mbstoi(
     right_ear_clean: np.ndarray,
     left_ear_noisy: np.ndarray,
     right_ear_noisy: np.ndarray,
-    fs_signal: float,
+    sr_signal: float,
     gridcoarseness: int = 1,
     sample_rate: int = 10000,
     n_frame: int = 256,
@@ -98,23 +98,23 @@ def mbstoi(
     right_ear_noisy = right_ear_noisy.flatten()
 
     # Resample signals to 10 kHz
-    if fs_signal != sample_rate:
+    if sr_signal != sample_rate:
         logging.debug(
             "Resampling signals with sr=%s for MBSTOI calculation.", sample_rate
         )
         # Assumes fs_signal is 44.1 kHz
         length_left_ear_clean = len(left_ear_clean)
         left_ear_clean = resample(
-            left_ear_clean, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            left_ear_clean, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
         right_ear_clean = resample(
-            right_ear_clean, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            right_ear_clean, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
         left_ear_noisy = resample(
-            left_ear_noisy, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            left_ear_noisy, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
         right_ear_noisy = resample(
-            right_ear_noisy, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            right_ear_noisy, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
 
     # Remove silent frames

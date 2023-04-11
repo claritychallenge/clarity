@@ -10,7 +10,7 @@ EPS = 1e-8
 
 class AudiometricFIR(nn.Module):
     def __init__(
-        self, sr: int = 44100, nfir: int = 220, device: str | None = None
+        self, sample_rate: int = 44100, nfir: int = 220, device: str | None = None
     ) -> None:
         super().__init__()
         # if device is not None: <-- this line was previously wrong!
@@ -23,9 +23,11 @@ class AudiometricFIR(nn.Module):
         self.padding = nfir // 2
 
         aud = np.array([250, 500, 1000, 2000, 4000, 6000])
-        aud_fv = np.append(np.append(0, aud), sr // 2)  # Audiometric frequency vector
+        aud_fv = np.append(
+            np.append(0, aud), sample_rate // 2
+        )  # Audiometric frequency vector
         linear_fv = (
-            np.linspace(0, nfir, nfir + 1) / nfir * sr // 2
+            np.linspace(0, nfir, nfir + 1) / nfir * sample_rate // 2
         )  # linear frequency vector
         interval_freq = np.zeros([len(linear_fv), 2])
         interval_idx = np.zeros([len(linear_fv), 2], dtype=int)

@@ -50,7 +50,7 @@ def test_src_to_cochlea_filter():
     signal = Ear.src_to_cochlea_filt(
         ip_sig=ip_sig,
         src_correction=Ear.get_src_correction("ff"),
-        sample_frequency=16000,
+        sample_rate=16000,
         backward=False,
     )
     assert signal.shape == (1000,)
@@ -135,6 +135,6 @@ def test_ear_process_error():
 
     # Try processing with invalid sample frequency
     ear.set_audiogram(audiogram=AUDIOGRAM_MODERATE_SEVERE)
-    ear.sample_frequency = 16000
+    ear.sample_rate = 16000
     with pytest.raises(ValueError):
         ear.process(signal)

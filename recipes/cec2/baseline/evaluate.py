@@ -101,10 +101,10 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 reference_right=ref[:, 1],
                 processed_left=proc[:, 0],
                 processed_right=proc[:, 1],
-                fs_signal=fs_ref_anechoic,
+                sample_rate=fs_ref_anechoic,
                 audiogram_left=audiogram_left,
                 audiogram_right=audiogram_right,
-                audiogram_cfs=cfs,
+                audiogram_frequencies=cfs,
             )
             logger.info(f"The HASPI score is {si}")
             csv_lines.append([scene, listener, str(si)])
@@ -125,10 +125,10 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                     reference_right=ref[:, 1],
                     processed_left=unproc[:, 0],
                     processed_right=unproc[:, 1],
-                    fs_signal=fs_ref_anechoic,
+                    sample_rate=fs_ref_anechoic,
                     audiogram_left=audiogram_left,
                     audiogram_right=audiogram_right,
-                    audiogram_cfs=cfs,
+                    audiogram_frequencies=cfs,
                 )
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
                 unproc_csv_lines.append([scene, listener, str(si_unproc)])

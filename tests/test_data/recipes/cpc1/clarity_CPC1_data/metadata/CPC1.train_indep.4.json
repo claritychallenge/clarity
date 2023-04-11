@@ -1,0 +1,49 @@
+[{
+        "prompt": "i suppose you wouldn't be free for dinner this evening",
+        "scene": "S08510",
+        "n_words": 10,
+        "hits": 1,
+        "listener": "L0239",
+        "system": "E001",
+        "correctness": 10.0,
+        "response": "freeze evening",
+        "volume": 56,
+        "signal": "S08510_L0239_E001"
+    },
+    {
+        "prompt": "i think he confirmed this on saturday",
+        "scene": "S08529",
+        "n_words": 7,
+        "hits": 5,
+        "listener": "L0216",
+        "system": "E001",
+        "correctness": 71.4285714286,
+        "response": "i think you confirm this on saturday",
+        "volume": 99,
+        "signal": "S08529_L0216_E001"
+    },
+    {
+        "prompt": "the term mixed race is also inaccurate",
+        "scene": "S08532",
+        "n_words": 7,
+        "hits": 0,
+        "listener": "L0242",
+        "system": "E001",
+        "correctness": 0.0,
+        "response": "",
+        "volume": 75,
+        "signal": "S08532_L0242_E001"
+    },
+    {
+        "prompt": "it will remain off the song sheet",
+        "scene": "S08537",
+        "n_words": 7,
+        "hits": 0,
+        "listener": "L0229",
+        "system": "E001",
+        "correctness": 0.0,
+        "response": "",
+        "volume": 100,
+        "signal": "S08537_L0229_E001"
+    }
+]

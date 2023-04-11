@@ -43,6 +43,7 @@ dependencies = [
   "pandas>=1.3.5",
   "pyloudnorm>=0.1.0",
   "pystoi",
+  "pytorch-lightning<2.0",
   "resampy",
   "scikit-learn>=1.0.2",
   "scipy>=1.7.3",
@@ -69,6 +70,7 @@ tests = [
   "pytest-mock",
   "pytest-mpl",
   "pytest-regtest",
+  "pytest-skip-slow",
   "pytest-xdist",
   "yamllint",
 ]

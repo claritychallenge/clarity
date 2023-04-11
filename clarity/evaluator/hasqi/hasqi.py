@@ -3,9 +3,9 @@ from clarity.evaluator.haspi import eb
 
 def hasqi_v2(
     reference,
-    reference_freq,
+    reference_sample_rate,
     processed,
-    processed_freq,
+    processed_sample_rate,
     hearing_loss,
     equalisation=1,
     level1=65,
@@ -24,10 +24,10 @@ def hasqi_v2(
     Arguments:
         reference (np.ndarray): Clear input reference speech signal with no noise or
             distortion. If a hearing loss is specified, NAL-R equalization is optional
-        reference_freq (int): Sampling rate in Hz for reference signal.
+        reference_sample_Rate (int): Sampling rate in Hz for reference signal.
         processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or
             processing.
-        processed_freq (int): Sampling rate in Hz for processed signal.
+        processed_sample_rate (int): Sampling rate in Hz for processed signal.
         hearing_loss (np.ndarray): vector of hearing loss at the 6 audiometric
             frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
         equalisation (int): Mode to use when equalising the reference signal:
@@ -62,12 +62,12 @@ def hasqi_v2(
         processed_basilar_membrane,
         reference_sl,
         processed_sl,
-        freq_sample,
+        sample_rate,
     ) = eb.ear_model(
         reference,
-        reference_freq,
+        reference_sample_rate,
         processed,
-        processed_freq,
+        processed_sample_rate,
         hearing_loss,
         equalisation,
         level1,
@@ -75,8 +75,8 @@ def hasqi_v2(
 
     # Envelope and long-term average spectral features
     # Smooth the envelope outputs: 125 Hz sub-sampling rate
-    reference_smooth = eb.env_smooth(reference_db, segment_covariance, freq_sample)
-    processed_smooth = eb.env_smooth(processed_db, segment_covariance, freq_sample)
+    reference_smooth = eb.env_smooth(reference_db, segment_covariance, sample_rate)
+    processed_smooth = eb.env_smooth(processed_db, segment_covariance, sample_rate)
 
     # Mel cepstrum correlation using smoothed envelopes
     (
@@ -102,7 +102,7 @@ def hasqi_v2(
         reference_basilar_membrane,
         processed_basilar_membrane,
         segment_covariance,
-        freq_sample,
+        sample_rate,
     )
 
     # Average signal segment cross-covariance
@@ -150,7 +150,7 @@ def hasqi_v2_better_ear(
     reference_right,
     processed_left,
     processed_right,
-    sample_freq,
+    sample_rate,
     audiogram_left,
     audiogram_right,
     audiogram_frequencies,
@@ -166,7 +166,7 @@ def hasqi_v2_better_ear(
         reference_right (np.ndarray): right channel of reference signal
         reference_left (np.ndarray): left channel of processed signal
         reference_right (np.ndarray): right channel of processed signal
-        sample_freq: sampling rate for both signal
+        sample_rate: sampling rate for both signal
         audiogram_l: left ear audiogram
         audiogram_r: right ear audiogram
         audiogram_cfs: audiogram frequencies
@@ -196,18 +196,18 @@ def hasqi_v2_better_ear(
 
     score_left, _, _, _ = hasqi_v2(
         reference_left,
-        sample_freq,
+        sample_rate,
         processed_left,
-        sample_freq,
+        sample_rate,
         adjusted_left,
         equalisation=1,
         level1=level,
     )
     score_right, _, _, _ = hasqi_v2(
         reference_right,
-        sample_freq,
+        sample_rate,
         processed_right,
-        sample_freq,
+        sample_rate,
         adjusted_right,
         equalisation=1,
         level1=level,

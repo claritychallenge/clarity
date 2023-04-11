@@ -226,8 +226,9 @@ class Renderer:
             interferer_fn, offset=offset, nsamples=len(target), offset_is_samples=True
         )
 
-        if len(target) != len(interferer):
-            logging.debug("Target and interferer have different lengths")
+        if len(interferer_signal) != len(target):
+            logging.error("Interferer signal too short")
+            raise ValueError(f"Interferer signal too short: {interferer_fn}")
 
         # Apply 500ms half-cosine ramp
         interferer_signal = self.apply_ramp(

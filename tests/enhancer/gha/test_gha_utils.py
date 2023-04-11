@@ -15,6 +15,7 @@ from clarity.enhancer.gha.gha_utils import (
 @pytest.fixture
 def gaintable():
     """fixture for gaintable"""
+    np.set_printoptions(threshold=1000)
     np.random.seed(0)
     levels_l = np.array([45, 45, 35, 45, 60, 65])
     levels_r = np.array([45, 45, 35, 45, 60, 65])
