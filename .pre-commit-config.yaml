@@ -17,15 +17,16 @@ repos:
       - id: debug-statements
       - id: check-byte-order-marker
       # - id: check-yaml
+      - id: check-toml
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.1
     hooks:
       - id: pyupgrade
-        args: [--py37-plus]
+        args: [--py38-plus]
 
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
         types: [python]
@@ -40,7 +41,7 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
-        additional_dependencies: [flake8-print]
+        additional_dependencies: [flake8-print, Flake8-pyproject]
         types: [python]
 
   - repo: https://github.com/pycqa/isort
@@ -51,7 +52,7 @@ repos:
         args: ["--profile", "black"]
 
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.6.4
+    rev: 1.7.0
     hooks:
       - id: nbqa-black
       - id: nbqa-flake8
@@ -64,19 +65,19 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.1.1
+    rev: v1.2.0
     hooks:
       - id: mypy
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.0.257"
+    rev: "v0.0.261"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v2.17.0
+    rev: v3.0.0a6
     hooks:
       - id: pylint
         args:
@@ -93,6 +94,7 @@ repos:
         language: system
         files: \.py$
         exclude: clarity/_version.py # 3rd party code that doesn't conform
+
 ci:
   autofix_prs: true
   autofix_commit_msg: "[pre-commit.ci] Fixing issues with pre-commit"

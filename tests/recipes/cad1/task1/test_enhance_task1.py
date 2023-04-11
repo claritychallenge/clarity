@@ -1,21 +1,23 @@
 """Tests for the enhance module"""
-# pylint: disable=import-error
-
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
+from omegaconf import DictConfig
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from recipes.cad1.task1.baseline.enhance import (
     apply_baseline_ha,
+    clip_signal,
     decompose_signal,
     get_device,
     map_to_dict,
     process_stems_for_listener,
     separate_sources,
+    to_16bit,
 )
 
 BASE_DIR = Path.cwd()
@@ -38,20 +40,37 @@ def test_map_to_dict():
     assert output == expected_output
 
 
-def test_decompose_signal():
+@pytest.mark.parametrize("separation_model", ["demucs", "openunmix"])
+def test_decompose_signal(separation_model):
     """Takes a signal and decomposes it into VDBO sources using the HDEMUCS model"""
     np.random.seed(123456789)
     # Load Separation Model
-    model = HDEMUCS_HIGH_MUSDB.get_model().double()
+    if separation_model == "demucs":
+        model = HDEMUCS_HIGH_MUSDB.get_model().double()
+    elif separation_model == "openunmix":
+        model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq").double()
+
     device = torch.device("cpu")
     model.to(device)
 
     # Create a mock signal to decompose
-    sample_rate = 8000
-    duration = 1
-    signal = np.random.uniform(size=(1, 2, sample_rate * duration))
+    sample_rate = 44100
+    duration = 0.5
+    signal = np.random.uniform(size=(1, 2, int(sample_rate * duration)))
+
+    # config
+    config = DictConfig(
+        {
+            "sample_rate": sample_rate,
+            "separator": {
+                "model": "demucs",
+                "sources": ["drums", "bass", "other", "vocals"],
+            },
+        }
+    )
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(
+        config,
         model,
         signal,
         sample_rate,
@@ -59,9 +78,8 @@ def test_decompose_signal():
         left_audiogram=np.ones(9),
         right_audiogram=np.ones(9),
     )
-
     expected_results = np.load(
-        RESOURCES / "test_enhance.test_decompose_signal.npy",
+        RESOURCES / f"test_enhance.test_decompose_signal_{separation_model}.npy",
         allow_pickle=True,
     )[()]
 
@@ -112,7 +130,7 @@ def test_process_stems_for_listener():
     )
 
     # Call the process_stems_for_listener function and check output is as expected
-    output = process_stems_for_listener(
+    output_stems = process_stems_for_listener(
         stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
     expected_results = np.load(
@@ -120,7 +138,7 @@ def test_process_stems_for_listener():
         allow_pickle=True,
     )[()]
 
-    for key, item in output.items():
+    for key, item in output_stems.items():
         np.testing.assert_array_almost_equal(item, expected_results[key])
 
 
@@ -177,3 +195,27 @@ def test_get_device():
         else torch.device("cpu")
     )
     assert device_type == "cuda" if torch.cuda.is_available() else "cpu"
+
+
+def test_to_16bit():
+    # Generate a random signal
+    signal = np.random.uniform(low=-1.0, high=1.0, size=50)
+    signal_16bit = to_16bit(signal)
+
+    assert np.all(np.abs(signal_16bit) <= 32768)
+
+
+def test_clip_signal():
+    # Generate a random signal
+    np.random.seed(0)
+    signal = np.random.uniform(low=-2.0, high=2.0, size=50)
+
+    # Test with soft clipping
+    clipped_signal, n_clipped = clip_signal(signal, soft_clip=True)
+    assert max(np.abs(clipped_signal)) <= 1.0
+    assert n_clipped == 0
+
+    # Test without soft clipping
+    clipped_signal, n_clipped = clip_signal(signal, soft_clip=False)
+    assert max(np.abs(clipped_signal)) <= 1.0
+    assert n_clipped == 22

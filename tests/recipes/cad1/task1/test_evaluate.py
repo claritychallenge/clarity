@@ -1,6 +1,4 @@
 """Tests for the evaluation module"""
-# pylint: disable=import-error
-
 from pathlib import Path
 
 import numpy as np
@@ -90,6 +88,7 @@ def test_make_song_listener_list():
             {
                 "evaluate": {"set_random_seed": True},
                 "path": {"music_dir": None},
+                "sample_rate": 44100,
                 "nalr": {"fs": 44100},
             },
             "test",
@@ -101,14 +100,14 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.149880148,
-                "right_drums": 0.143182857,
-                "left_bass": 0.140449345,
-                "right_bass": 0.181374074,
-                "left_other": 0.132401105,
-                "right_other": 0.164211137,
-                "left_vocals": 0.121260627,
-                "right_vocals": 0.126605279,
+                "left_drums": 0.140304064,
+                "right_drums": 0.127870857,
+                "left_bass": 0.149049349,
+                "right_bass": 0.132706378,
+                "left_other": 0.140922507,
+                "right_other": 0.162374351,
+                "left_vocals": 0.119106033,
+                "right_vocals": 0.123879321,
             },
         )
     ],
@@ -170,7 +169,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.144920571533222, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.137026607, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
     # Per instrument score

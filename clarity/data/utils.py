@@ -1,14 +1,8 @@
 """Utilities for data generation."""
 from __future__ import annotations
 
-# pylint: disable=wrong-import-position
-import sys
 from pathlib import Path
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+from typing import Literal
 
 import numpy as np
 import scipy

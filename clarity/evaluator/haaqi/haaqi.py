@@ -1,10 +1,15 @@
 """Matlab's haaqi version 1 to python version."""
+import logging
+
 import numpy as np
 
 from clarity.evaluator.haspi import eb
+from clarity.utils.signal_processing import compute_rms
 
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
+
+logger = logging.getLogger(__name__)
 
 
 def haaqi_v1(
@@ -14,7 +19,7 @@ def haaqi_v1(
     processed_freq: int,
     hearing_loss: np.ndarray,
     equalisation: int,
-    level1: int = 65,
+    level1: float = 65.0,
     silence_threshold: float = 2.5,
     add_noise: float = 0.0,
     segment_covariance: int = 16,
@@ -159,8 +164,28 @@ def compute_haaqi(
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
     sample_rate: int,
+    equalisation: int = 1,
+    level1: float = 65.0,
+    scale_reference: bool = True,
 ) -> float:
-    """Compute HAAQI metric"""
+    """Compute HAAQI metric
+
+    Args:
+        processed_signal (np.ndarray): Output signal with noise, distortion, HA gain,
+            and/or processing.
+        reference_signal (np.ndarray): Input reference speech signal with no noise
+            or distortion. If a hearing loss is specified, NAL-R equalization
+            is optional
+        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
+        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        sample_rate (int): Sample rate in Hz.
+        equalisation (int): hearing loss equalization mode for reference signal:
+            1 = no EQ has been provided, the function will add NAL-R
+            2 = NAL-R EQ has already been added to the reference signal
+            Defaults to 1.
+        level1 (float): Reference level in dB SPL. Defaults to 65.0.
+        scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
+    """
 
     haaqi_audiogram_frequencies = [250, 500, 1000, 2000, 4000, 6000]
     audiogram_adjusted = np.array(
@@ -170,12 +195,24 @@ def compute_haaqi(
             if audiogram_frequencies[i] in haaqi_audiogram_frequencies
         ]
     )
+
+    if len(reference_signal) == 0:
+        if len(processed_signal) == 0:
+            # No scoring if no music
+            return 1.0
+        logger.error("If `Reference` is empty, `Processed` must be empty as well")
+        return 0.0
+
+    if scale_reference:
+        reference_signal /= compute_rms(reference_signal)
+
     score, _, _, _ = haaqi_v1(
         reference=reference_signal,
         reference_freq=sample_rate,
         processed=processed_signal,
         processed_freq=sample_rate,
         hearing_loss=audiogram_adjusted,
-        equalisation=1,
+        equalisation=equalisation,
+        level1=level1,
     )
     return score

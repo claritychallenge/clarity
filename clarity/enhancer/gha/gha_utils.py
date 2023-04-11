@@ -1,16 +1,28 @@
+from __future__ import annotations
+
 import copy
 import logging
 import re
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy.interpolate import interp1d
 
 from clarity.enhancer.gha.gainrule_camfit import gainrule_camfit_compr
 
+if TYPE_CHECKING:
+    from numpy import ndarray
+
+    from clarity.enhancer.gha.audiogram import Audiogram
+
 
 def get_gaintable(
-    audiogram, noisegatelevels, noisegateslope, cr_level, max_output_level
-):
+    audiogram: Audiogram,
+    noisegatelevels: list[int],
+    noisegateslope: int,
+    cr_level: int,
+    max_output_level: int,
+) -> dict[str, Any]:
     """Compute a gaintable for a given audiogram.
 
     Replaces MATLAB GUI interface of original OpenMHA software for
@@ -31,7 +43,7 @@ def get_gaintable(
     """
     # Initialise parameters
     num_channels = 2  # only configured for two channels
-    sFitmodel = {}
+    sFitmodel: dict[str, Any] = {}
 
     # Fixed centre frequencies for amplification bands
     sFitmodel["frequencies"] = [
@@ -96,7 +108,10 @@ def get_gaintable(
     return sGt
 
 
-def format_gaintable(gaintable, noisegate_corr=True):
+def format_gaintable(
+    gaintable: dict[str, Any],
+    noisegate_corr: bool = True,
+) -> str:
     """
     Format gaintable for insertion into cfg file as long string.
 
@@ -135,8 +150,12 @@ def format_gaintable(gaintable, noisegate_corr=True):
 
 
 def multifit_apply_noisegate(
-    sGt, sFit_model_frequencies, sFit_model_levels, noisegate_level, noisegate_slope
-):
+    sGt: ndarray,
+    sFit_model_frequencies: list[float | int],
+    sFit_model_levels: ndarray,
+    noisegate_level: ndarray,
+    noisegate_slope: ndarray,
+) -> dict[str, ndarray]:
     """Apply noisegate.
 
     Based on OpenMHA subfunction of libmultifit.m.
@@ -149,7 +168,7 @@ def multifit_apply_noisegate(
         noisegate_slope (ndarray): determines slope below compression threshold
 
     Returns:
-        ndarray: Noise signal
+        dict: Noise signal
 
     """
 
@@ -165,7 +184,7 @@ def multifit_apply_noisegate(
                 sFit_model_levels[idx] - noisegate_level[kf, i]
             ) * noisegate_slope[kf, i] + gain_noisegate
 
-    output = {}
+    output: dict[str, Any] = {}
     output["sGt"] = {}
     output["sGt"] = sGt
     output["noisegatelevel"] = noisegate_level

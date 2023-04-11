@@ -17,7 +17,7 @@ class Compressor:
         rms_buffer_size: float = 0.2,
         makeup_gain: int = 1,
         **_kwargs,
-    ):
+    ) -> None:
         """Instantiate the Compressor Class.
 
         Args:
@@ -68,7 +68,7 @@ class Compressor:
         reciprocal_time = 1 / t_sec
         self.release = reciprocal_time / self.fs
 
-    def process(self, signal: np.ndarray) -> tuple[Any, np.ndarray, list[Any]]:
+    def process(self, signal: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[Any]]:
         """DESCRIPTION
 
         Args:
@@ -82,7 +82,7 @@ class Compressor:
             np.convolve(padded_signal**2, self.window, mode="valid") / self.win_len
             + self.eps
         )
-        comp_ratios: list = []
+        comp_ratios: list[float] = []
         curr_comp: float = 1.0
         for rms_i in rms:
             if rms_i > self.threshold:
