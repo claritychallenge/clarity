@@ -161,7 +161,7 @@ def fir2(
     filter_length: int,
     frequencies: list[float] | ndarray,
     filter_gains: list[int | float] | ndarray,
-    n_interpolate: ndarray | None = None,
+    window_shape: ndarray | None = None,
 ) -> tuple[ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
@@ -172,8 +172,8 @@ def fir2(
         frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where
             1 is Nyquist rate. First and last elements must be 0 and 1 respectively.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
-        n_interpolate (int, optional): Number of points for freq response interpolation
-            (default: max(smallest power of 2 greater than nn, 512))
+        window_shape (ndarray, optional): window to apply.
+            (default: hamming window)
 
     Returns:
         np.ndarray: nn + 1 filter coefficients, 1
@@ -182,12 +182,11 @@ def fir2(
     # Work with filter length instead of filter order
     filter_length += 1
 
-    if n_interpolate is None:
-        wind = scipy.signal.hamming(filter_length)
-    else:
-        wind = n_interpolate
+    if window_shape is None:
+        window_shape = scipy.signal.hamming(filter_length)
+
     n_interpolate = (
-        2 ** np.ceil(math.log(filter_length) / math.log(2))
+        2 ** np.ceil(math.log(filter_length) / math.log(2.0))
         if filter_length >= 1024
         else 512
     )
@@ -226,7 +225,7 @@ def fir2(
     H = np.concatenate((H, H[n_interpolate - 2 : 0 : -1].conj()))
     ht = np.real(np.fft.ifft(H))
 
-    b = ht[0:filter_length] * wind
+    b = ht[0:filter_length] * window_shape
 
     return b, 1
 
