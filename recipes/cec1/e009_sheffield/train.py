@@ -104,8 +104,8 @@ def train_den(cfg, ear):
     den_module.ear_idx = 0 if ear == "left" else 1
     if cfg.downsample_factor != 1:
         den_module.down_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.sr,
-            new_freq=cfg.sr // cfg.downsample_factor,
+            orig_freq=cfg.sample_rate,
+            new_freq=cfg.sample_rate // cfg.downsample_factor,
             resampling_method="sinc_interpolation",
         )
 

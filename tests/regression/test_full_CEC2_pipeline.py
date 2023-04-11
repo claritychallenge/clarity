@@ -129,7 +129,7 @@ def test_full_cec2_pipeline(
     # The purpose of the test is not to see if the haspi score is reasonable
     # but just to check that the results do not change unexpectedly across releases.
 
-    nalr_cfg = {"nfir": 220, "fs": 44100}
+    nalr_cfg = {"nfir": 220, "sample_rate": 44100}
     compressor_cfg = {
         "threshold": 0.35,
         "attenuation": 0.1,
@@ -142,7 +142,7 @@ def test_full_cec2_pipeline(
     audiogram_r = [45, 45, 60, 70, 60, 60, 80, 80]
     audiogram_cfs = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
 
-    fs = 44100
+    sample_rate = 44100
 
     enhancer = NALR(**nalr_cfg)
     compressor = Compressor(**compressor_cfg)  # type: ignore
@@ -165,7 +165,7 @@ def test_full_cec2_pipeline(
         reference_right=reference[:, 1],
         processed_left=enhanced_audio[:, 0],
         processed_right=enhanced_audio[:, 1],
-        sample_freq=fs,
+        sample_rate=sample_rate,
         audiogram_left=audiogram_l,
         audiogram_right=audiogram_r,
         audiogram_frequencies=audiogram_cfs,

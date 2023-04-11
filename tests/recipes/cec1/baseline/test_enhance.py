@@ -61,7 +61,7 @@ def test_enhance(tmp_path: Path, hydra_cfg: DictConfig, mocker) -> None:
     write_signal(
         filename=outfile_name,
         signal=np.array([[-0.1, 0.1, -0.1, 0.1], [-0.2, 0.2, -0.2, 0.2]]).T,
-        sample_frequency=44100,
+        sample_rate=44100,
         floating_point=False,
     )
 

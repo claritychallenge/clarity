@@ -21,9 +21,9 @@ def truncated_read_signal(
 
     Returns first 1 second of the signal
     """
-    fs, signal = read(filename)
+    sample_rate, signal = read(filename)
     # Take 2 second sample from the start of the signal
-    return fs, signal[0:88200, :]
+    return sample_rate, signal[0:88200, :]
 
 
 @pytest.fixture()

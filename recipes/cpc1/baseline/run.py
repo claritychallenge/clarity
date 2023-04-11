@@ -144,7 +144,7 @@ def run_calculate_SI(cfg, path) -> None:
             cleanpad[:, 1],
             procpad[:, 0],
             procpad[:, 1],
-            cfg["mbstoi"]["sample_frequency"],
+            cfg["mbstoi"]["sample_rate"],
             cfg["mbstoi"]["grid_coarseness"],
         )
         csv_lines.append([f"{scene}_{listener}_{system}", sii])  # type: ignore

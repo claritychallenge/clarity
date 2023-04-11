@@ -89,7 +89,7 @@ def test_make_song_listener_list():
                 "evaluate": {"set_random_seed": True},
                 "path": {"music_dir": None},
                 "sample_rate": 44100,
-                "nalr": {"fs": 44100},
+                "nalr": {"sample_rate": 44100},
             },
             "test",
             {

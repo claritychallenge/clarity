@@ -67,7 +67,7 @@ def test_create_configured_cfgfile():
 def test_create_configured_cfgfile_error():
     """Check gives error if sampling rate is not 44.1kHz"""
     gha_hearing_aid = GHAHearingAid()
-    gha_hearing_aid.sample_frequency = 16000  # <-- any value other than 44100
+    gha_hearing_aid.sample_rate = 16000  # <-- any value other than 44100
     with pytest.raises(ValueError):
         arbitrary_data = np.array([1, 2, 3])
         gha_hearing_aid.create_configured_cfgfile(

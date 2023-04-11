@@ -22,7 +22,7 @@ class CEC1Dataset(data.Dataset):
         self,
         scenes_folder,
         scenes_file,
-        sr,
+        sample_rate,
         downsample_factor,
         wav_sample_len=None,
         wav_silence_len=2,
@@ -31,7 +31,7 @@ class CEC1Dataset(data.Dataset):
         testing=False,
     ):
         self.scenes_folder = scenes_folder
-        self.sr = sr
+        self.sample_rate = sample_rate
         self.downsample_factor = downsample_factor
         self.wav_sample_len = wav_sample_len
         self.wav_silence_len = wav_silence_len
@@ -60,9 +60,9 @@ class CEC1Dataset(data.Dataset):
 
         self.lowpass_filter = firwin(
             1025,
-            self.sr // (2 * self.downsample_factor),
+            self.sample_rate // (2 * self.downsample_factor),
             pass_zero="lowpass",
-            fs=self.sr,
+            fs=self.sample_rate,
         )
 
     def wav_sample(self, x, y):
@@ -71,12 +71,12 @@ class CEC1Dataset(data.Dataset):
         Get rid of the silence segment in the beginning & sample a
         constant wav length for training.
         """
-        silence_len = int(self.wav_silence_len * self.sr)
+        silence_len = int(self.wav_silence_len * self.sample_rate)
         x = x[:, silence_len:]
         y = y[:, silence_len:]
 
         wav_len = x.shape[1]
-        sample_len = int(self.wav_sample_len * self.sr)
+        sample_len = int(self.wav_sample_len * self.sample_rate)
         if wav_len > sample_len:
             start = np.random.randint(wav_len - sample_len)
             end = start + sample_len
@@ -130,17 +130,21 @@ class CEC1Dataset(data.Dataset):
                     mode="constant",
                 )
 
-        if self.sr != 44100:
+        if self.sample_rate != 44100:
             mixed_resampled, target_resampled = [], []
             for i in range(mixed.shape[0]):
                 mixed_resampled.append(
-                    librosa.resample(mixed[i], target_sr=44100, orig_sr=self.sr)
+                    librosa.resample(
+                        mixed[i], target_sr=44100, orig_sr=self.sample_rate
+                    )
                 )
             mixed = np.array(mixed_resampled)
             if target is not None:
                 for i in range(target.shape[0]):
                     target_resampled.append(
-                        librosa.resample(target[i], target_sr=44100, orig_sr=self.sr)
+                        librosa.resample(
+                            target[i], target_sr=44100, orig_sr=self.sample_rate
+                        )
                     )
                 target = np.array(target_resampled)
 

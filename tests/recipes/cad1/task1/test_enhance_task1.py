@@ -104,7 +104,7 @@ def test_apply_baseline_ha():
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
 
     # Create mock objects for enhancer and compressor
-    enhancer = NALR(nfir=220, fs=44100)
+    enhancer = NALR(nfir=220, sample_rate=44100)
     compressor = Compressor(
         threshold=0.35, attenuation=0.1, attack=50, release=1000, rms_buffer_size=0.064
     )
@@ -132,7 +132,7 @@ def test_process_stems_for_listener():
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
 
     # Create mock objects for enhancer and compressor
-    enhancer = NALR(nfir=220, fs=16000)
+    enhancer = NALR(nfir=220, sample_rate=16000)
     compressor = Compressor(
         threshold=0.35, attenuation=0.1, attack=50, release=1000, rms_buffer_size=0.064
     )

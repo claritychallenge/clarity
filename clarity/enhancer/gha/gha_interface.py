@@ -18,7 +18,7 @@ from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 class GHAHearingAid:
     def __init__(
         self,
-        sample_frequency=44100,
+        sample_rate=44100,
         ahr=20,
         audf=None,
         cfg_file="prerelease_combination4_smooth",
@@ -34,7 +34,7 @@ class GHAHearingAid:
         if noise_gate_levels is None:
             noise_gate_levels = [38, 38, 36, 37, 32, 26, 23, 22, 8]
 
-        self.sample_frequency = sample_frequency
+        self.sample_rate = sample_rate
         self.ahr = ahr
         self.audf = audf
         self.cfg_file = cfg_file
@@ -64,7 +64,7 @@ class GHAHearingAid:
             cfg_filename (str): cfg filename
         """
 
-        if self.sample_frequency != 44100:
+        if self.sample_rate != 44100:
             logging.error("Current GHA configuration requires 44.1kHz sampling rate.")
             raise ValueError(
                 "Current GHA configuration requires 44.1kHz sampling rate."
@@ -208,9 +208,9 @@ class GHAHearingAid:
                 f"Wav file ({filename}) was expected to have {nchannels} channels."
             )
 
-        if wave_file.samplerate != self.sample_frequency:
+        if wave_file.samplerate != self.sample_rate:
             raise ValueError(
-                f"Sampling rate is not {self.sample_frequency} for filename {filename}."
+                f"Sampling rate is not {self.sample_rate} for filename {filename}."
             )
 
         if not offset_is_samples:  # Default behaviour
@@ -240,7 +240,7 @@ class GHAHearingAid:
         else:
             subtype = "FLOAT"
 
-        soundfile.write(filename, x, self.sample_frequency, subtype=subtype)
+        soundfile.write(filename, x, self.sample_rate, subtype=subtype)
 
     def create_HA_inputs(self, infile_names: list[str], merged_filename: str) -> None:
         """Create input signal for baseline hearing aids.

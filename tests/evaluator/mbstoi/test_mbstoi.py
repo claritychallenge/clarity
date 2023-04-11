@@ -12,7 +12,7 @@ def test_mbstoi() -> None:
     """Test for mbstoi function"""
     np.random.seed(0)
     sig_len = 8000
-    sample_freq = 10000
+    sample_rate = 10000
 
     left_clean = 100 * np.random.random(size=sig_len)
     right_clean = left_clean.copy()
@@ -25,7 +25,7 @@ def test_mbstoi() -> None:
         right_ear_clean=right_clean,
         left_ear_noisy=left_noisy,
         right_ear_noisy=right_noisy,
-        fs_signal=sample_freq,  # signal sample rate
+        sr_signal=sample_rate,  # signal sample rate
         sample_rate=9000,  # operating sample rate
         fft_size_in_samples=64,
         n_third_octave_bands=5,

@@ -10,7 +10,7 @@ from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
-    "sample_frequency": 44100,
+    "sample_rate": 44100,
     "ahr": 20,
     "audf": None,
     "cfg_file": "prerelease_combination3_smooth",
@@ -24,7 +24,7 @@ gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making chan
 
 
 def test_dsp_filter(regtest):
-    amfir = filter.AudiometricFIR(sr=44100, nfir=220, device="cpu")
+    amfir = filter.AudiometricFIR(sample_rate=44100, nfir=220, device="cpu")
     torch.manual_seed(0)
     signal = torch.rand(10, dtype=torch.float)
     signal = torch.reshape(signal, (1, 1, -1))

@@ -35,7 +35,7 @@ class Ear:
     def __init__(
         self,
         src_pos: str = "ff",
-        sample_frequency: int | float = 44100.0,
+        sample_rate: int | float = 44100.0,
         equiv_0db_spl: int = 100,
         ahr: int = 20,
     ) -> None:
@@ -43,11 +43,11 @@ class Ear:
         Constructor for the Ear class.
         Args:
             src_pos (str): Position of the source.
-            sample_frequency (float): sample frequency.
+            sample_rate (float): sample frequency.
             equiv_0db_spl (): ???
             ahr (): ???
         """
-        self.sample_frequency = sample_frequency
+        self.sample_rate = sample_rate
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv_0db_spl = equiv_0db_spl
         self.ahr = ahr
@@ -88,7 +88,7 @@ class Ear:
     def src_to_cochlea_filt(
         ip_sig: ndarray,
         src_correction: ndarray,
-        sample_frequency: int,
+        sample_rate: int,
         backward: bool = False,
     ) -> ndarray:
         """Simulate middle and outer ear transfer functions.
@@ -105,7 +105,7 @@ class Ear:
             src_correction (np.ndarray): correction to make for src position as an array
                 returned by get_src_correction(src_pos) where src_pos is one of ff, df
                 or ITU
-            sample_frequency (int): sampling frequency
+            sample_rate (int): sampling frequency
             backward (bool, optional): if true then cochlea to src (default: False)
 
         Returns:
@@ -115,7 +115,7 @@ class Ear:
         logging.info("performing outer/middle ear corrections")
 
         # make sure that response goes only up to sample_frequency/2
-        nyquist = int(sample_frequency / 2)
+        nyquist = int(sample_rate / 2)
         ixf_useful = np.nonzero(HZ < nyquist)
 
         hz_used = HZ[ixf_useful]
@@ -134,7 +134,7 @@ class Ear:
         correction_used = correction_used.flatten()
         # Create filter with 23 msec window to do reasonable job down to about 100 Hz
         # Scales with fs, fails with longer windows in fir2 in original MATLAB version
-        n_wdw = 2 * math.floor((sample_frequency / 16e3) * 368 / 2)
+        n_wdw = 2 * math.floor((sample_rate / 16e3) * 368 / 2)
         hz_used = hz_used / nyquist
 
         b = firwin2(n_wdw + 1, hz_used.flatten(), correction_used, window=("kaiser", 4))
@@ -159,15 +159,15 @@ class Ear:
         # For testing, ref_rms_dB must be equal to -31.2
 
         noise_burst = gen_eh2008_speech_noise(
-            duration=2, sample_frequency=self.sample_frequency, level=ref_rms_db
+            duration=2, sample_rate=self.sample_rate, level=ref_rms_db
         )
         tone_burst = gen_tone(
             freq=520,
             duration=0.5,
-            sample_frequency=self.sample_frequency,
+            sample_rate=self.sample_rate,
             level=ref_rms_db,
         )
-        silence = np.zeros(int(0.05 * self.sample_frequency))  # 50 ms duration
+        silence = np.zeros(int(0.05 * self.sample_rate))  # 50 ms duration
         return (
             np.concatenate((silence, tone_burst, silence, noise_burst, silence)),
             silence,
@@ -200,8 +200,8 @@ class Ear:
 
         """
 
-        sample_frequency = 44100  # This is the only sampling frequency that can be used
-        if sample_frequency != self.sample_frequency:
+        sample_rate = 44100  # This is the only sampling frequency that can be used
+        if sample_rate != self.sample_rate:
             logging.error(
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
@@ -214,18 +214,18 @@ class Ear:
 
         # Need to know file RMS, and then call that a certain level in SPL:
         # needs some form of pre-measuring.
-        level_resample_frequency = 10 * np.log10(np.mean(np.array(signal) ** 2))
+        signal_rms_level_db = 10 * np.log10(np.mean(np.array(signal) ** 2))
 
         equiv_0db_spl = self.equiv_0db_spl + self.ahr
 
-        level_db_spl = equiv_0db_spl + level_resample_frequency
+        level_db_spl = equiv_0db_spl + signal_rms_level_db
         calib_db_spl = level_db_spl
         target_spl = level_db_spl
         ref_rms_db = calib_db_spl - equiv_0db_spl
 
         # Measure RMS where 3rd arg is dB_rel_rms (how far below)
         calculated_rms, idx, _rel_db_thresh, _active = measure_rms(
-            signal[0], sample_frequency, -12
+            signal[0], sample_rate, -12
         )
 
         # Rescale input data and check level after rescaling
@@ -259,15 +259,12 @@ class Ear:
 
         # Transform from src pos to cochlea, simulate cochlea, transform back to src pos
         signal = [
-            Ear.src_to_cochlea_filt(x, self.src_correction, sample_frequency)
-            for x in signal
+            Ear.src_to_cochlea_filt(x, self.src_correction, sample_rate) for x in signal
         ]
         if self.cochlea is not None:
             signal = [self.cochlea.simulate(x, equiv_0db_spl) for x in signal]
         signal = [
-            Ear.src_to_cochlea_filt(
-                x, self.src_correction, sample_frequency, backward=True
-            )
+            Ear.src_to_cochlea_filt(x, self.src_correction, sample_rate, backward=True)
             for x in signal
         ]
 
@@ -275,9 +272,9 @@ class Ear:
         # tails below -80 dB. Suitable lpf for signals later converted to MP3, flat to
         # 15 kHz. Small window to design low-pass FIR, to cut off high freq processing
         # noise low-pass to something sensible, prevents exaggeration of > 15 kHz
-        winlen = 2 * math.floor(0.0015 * sample_frequency) + 1
+        winlen = 2 * math.floor(0.0015 * sample_rate) + 1
         lpf44d1 = firwin(
-            winlen, UPPER_CUTOFF_HZ / int(sample_frequency / 2), window=("kaiser", 8)
+            winlen, UPPER_CUTOFF_HZ / int(sample_rate / 2), window=("kaiser", 8)
         )
         signal = [lfilter(lpf44d1, 1, x) for x in signal]
 

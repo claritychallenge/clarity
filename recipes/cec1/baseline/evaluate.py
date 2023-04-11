@@ -154,7 +154,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 clean_pad[:, 1],
                 proc_pad[:, 0],
                 proc_pad[:, 1],
-                cfg.mbstoi.sample_frequency,
+                cfg.mbstoi.sample_rate,
                 cfg.mbstoi.grid_coarseness,
             )
             csv_lines.append([scene, listener, sii])  # type: ignore

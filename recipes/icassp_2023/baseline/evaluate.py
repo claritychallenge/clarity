@@ -36,14 +36,14 @@ def set_scene_seed(scene):
     np.random.seed(scene_md5)
 
 
-def compute_metric(metric, signal, ref, audiogram, fs_signal):
+def compute_metric(metric, signal, ref, audiogram, sample_rate):
     """Compute HASPI or HASQI metric"""
     score = metric(
         reference_left=ref[:, 0],
         reference_right=ref[:, 1],
         processed_left=signal[:, 0],
         processed_right=signal[:, 1],
-        sample_freq=fs_signal,
+        sample_rate=sample_rate,
         audiogram_left=audiogram["audiogram_levels_l"],
         audiogram_right=audiogram["audiogram_levels_r"],
         audiogram_frequencies=audiogram["audiogram_cfs"],
@@ -127,19 +127,19 @@ def run_calculate_si(cfg: DictConfig) -> None:
 
         # Read signals
 
-        fs_signal, signal = wavfile.read(
+        sr_signal, signal = wavfile.read(
             enhanced_folder / f"{scene}_{listener}_enhanced.wav"
         )
-        fs_ref_anechoic, ref_anechoic = wavfile.read(
+        sr_ref_anechoic, ref_anechoic = wavfile.read(
             scenes_folder / f"{scene}_target_anechoic_CH1.wav"
         )
-        fs_ref_target, ref_target = wavfile.read(
+        sr_ref_target, ref_target = wavfile.read(
             scenes_folder / f"{scene}_target_CH1.wav"
         )
         ref_anechoic = ref_anechoic / 32768.0
         ref_target = ref_target / 32768.0
 
-        assert fs_ref_anechoic == fs_ref_target == fs_signal == cfg.nalr.fs
+        assert sr_ref_anechoic == sr_ref_target == sr_signal == cfg.nalr.sample_rate
 
         # amplify left and right ear signals
         audiogram = listener_audiograms[listener]
@@ -153,7 +153,7 @@ def run_calculate_si(cfg: DictConfig) -> None:
 
         wavfile.write(
             amplified_folder / f"{scene}_{listener}_HA-output.wav",
-            fs_signal,
+            sr_signal,
             amplified.astype(np.float32),
         )
 
@@ -163,9 +163,9 @@ def run_calculate_si(cfg: DictConfig) -> None:
         rms_anechoic = np.mean(ref_anechoic**2, axis=0) ** 0.5
         ref = ref_anechoic * rms_target / rms_anechoic
 
-        haspi_score = compute_metric(haspi_v2_be, amplified, ref, audiogram, fs_signal)
+        haspi_score = compute_metric(haspi_v2_be, amplified, ref, audiogram, sr_signal)
         hasqi_score = compute_metric(
-            hasqi_v2_better_ear, amplified, ref, audiogram, fs_signal
+            hasqi_v2_better_ear, amplified, ref, audiogram, sr_signal
         )
         score = 0.5 * (hasqi_score + haspi_score)
 

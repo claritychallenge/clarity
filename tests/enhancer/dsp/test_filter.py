@@ -20,14 +20,14 @@ def use_torch():
 
 def test_audiometric_filter_init():
     """test construction of audiomatric filter"""
-    fir_filter = AudiometricFIR(sr=SAMPLE_RATE, nfir=NFIR)
+    fir_filter = AudiometricFIR(sample_rate=SAMPLE_RATE, nfir=NFIR)
     assert fir_filter.padding == NFIR // 2
     assert fir_filter.window_size == NFIR + 1
 
 
 def test_audiometric_filter_forward():
     """test that the filter can be applied"""
-    fir_filter = AudiometricFIR(sr=SAMPLE_RATE, nfir=NFIR, device="cpu")
+    fir_filter = AudiometricFIR(sample_rate=SAMPLE_RATE, nfir=NFIR, device="cpu")
     audio = torch.randn(1, 1, 4410)
     filtered_audio = fir_filter(audio)
     assert filtered_audio.shape == audio.shape
@@ -38,7 +38,7 @@ def test_audiometric_filter_forward():
 
 def test_audiometric_filter_forward_error():
     """test that the filter throws error with invalid signal shapes"""
-    fir_filter = AudiometricFIR(sr=SAMPLE_RATE, nfir=NFIR)
+    fir_filter = AudiometricFIR(sample_rate=SAMPLE_RATE, nfir=NFIR)
     with pytest.raises(RuntimeError):
         fir_filter(torch.randn(2, 44100))
     with pytest.raises(RuntimeError):

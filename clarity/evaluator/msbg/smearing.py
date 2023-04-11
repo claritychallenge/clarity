@@ -14,7 +14,7 @@ SHIFT = 64
 def audfilt(
     rl: int | float,
     ru: int | float,
-    sampfreq: int | float,
+    sample_rate: int | float,
     asize: int = 256,
 ) -> ndarray:
     """Calculate an auditory filter array.
@@ -22,7 +22,7 @@ def audfilt(
     Args:
         rl (float): broadening factor on the lower side
         ru (float): broadening factor on the upper side
-        sampfreq (float): signal sampling frequency
+        sample_rate (float): signal sampling frequency
         asize (int, optional): number of taps in filter (default: {256})
 
     Returns:
@@ -38,7 +38,7 @@ def audfilt(
 
     g = np.zeros(asize)
     for i in np.linspace(1, asize - 1, asize - 1, dtype=int):
-        f_hz = i * np.divide(sampfreq, (2 * asize))
+        f_hz = i * np.divide(sample_rate, (2 * asize))
         f_erb = 24.7 * ((f_hz * 0.00437) + 1.0)
         # For lower side of the filter
         jj = np.arange(0, i)
@@ -53,13 +53,13 @@ def audfilt(
     return aud_filter
 
 
-def make_smear_mat3(rl: float, ru: float, fs: int | float) -> ndarray:
+def make_smear_mat3(rl: float, ru: float, sample_rate: int | float) -> ndarray:
     """Make the smearing filter matrix.
 
     Args:
         rl (float): filter broadening factor on the lower side
         ru (float): filter broadening factor on the upper side
-        fs (float): sampling frequency
+        sample_rate (float): sampling frequency
 
 
     Returns:
@@ -71,8 +71,8 @@ def make_smear_mat3(rl: float, ru: float, fs: int | float) -> ndarray:
     nyquist = int(FFT_SIZE / 2)
     half_nyquist = int(FFT_SIZE / 4)
 
-    f_normal = audfilt(1, 1, fs, nyquist)
-    f_wide = audfilt(rl, ru, fs, nyquist)
+    f_normal = audfilt(1, 1, sample_rate, nyquist)
+    f_wide = audfilt(rl, ru, sample_rate, nyquist)
     # Extend the normal matrix so that the left-divide works better
     f_next = np.concatenate((f_normal, np.zeros((nyquist, half_nyquist))), axis=1)
 
@@ -163,11 +163,11 @@ def smear3(f_smear: ndarray, inbuffer: ndarray) -> ndarray:
 class Smearer:
     """Class to hold the re-usable smearing filter."""
 
-    def __init__(self, rl: float, ru: float, fs: int | float) -> None:
+    def __init__(self, rl: float, ru: float, sample_rate: int | float) -> None:
         self.rl = rl
         self.ru = ru
-        self.fs = fs
-        self.f_smear = make_smear_mat3(rl, ru, fs)
+        self.sample_rate = sample_rate
+        self.f_smear = make_smear_mat3(rl, ru, sample_rate)
 
     def smear(self, input_signal: ndarray) -> ndarray:
         """Smear a given input signal."""
