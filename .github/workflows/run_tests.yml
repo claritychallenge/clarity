@@ -37,7 +37,7 @@ jobs:
           python -m cpuinfo --json
       - name: Run pytest
         run: |
-          pytest --durations 10 --cov=clarity .
+          pytest --cov=clarity --durations 10 .
       - name: Determine coverage
         run: |
           coverage xml

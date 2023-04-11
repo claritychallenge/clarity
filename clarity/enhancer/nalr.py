@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class NALR:
-    def __init__(self, nfir: int, fs: int) -> None:
+    def __init__(self, nfir: int, sample_rate: int) -> None:
         """
         Args:
             nfir: Order of the NAL-R EQ filter and the matching delay
@@ -21,7 +21,7 @@ class NALR:
         """
         self.nfir = nfir
         # Processing parameters
-        self.fmax = 0.5 * fs
+        self.fmax = 0.5 * sample_rate
 
         # Audiometric frequencies
         self.aud = np.array([250, 500, 1000, 2000, 4000, 6000])

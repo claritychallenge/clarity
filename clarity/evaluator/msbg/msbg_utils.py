@@ -234,7 +234,7 @@ def fir2(
 def gen_tone(
     freq: int,
     duration: float,
-    sample_frequency: float = 44100.0,
+    sample_rate: float = 44100.0,
     level: int | float | float64 = 0.0,
 ) -> ndarray:
     """Generate a pure tone.
@@ -242,7 +242,7 @@ def gen_tone(
     Args:
         freq (float): Frequency of tone in Hz.
         duration (float): Duration of tone in seconds.
-        sample_frequency (float, optional): Sample rate of generated tone in Hz.
+        sample_rate (float, optional): Sample rate of generated tone in Hz.
             Default is 44100.
         level (float, optional): Level of tone in dB SPL. Default is 0.
 
@@ -253,18 +253,14 @@ def gen_tone(
         1.4142
         * np.power(10, (0.05 * level))
         * np.sin(
-            2
-            * np.pi
-            * freq
-            * np.arange(1, duration * sample_frequency + 1)
-            / sample_frequency
+            2 * np.pi * freq * np.arange(1, duration * sample_rate + 1) / sample_rate
         )
     )
 
 
 def gen_eh2008_speech_noise(
     duration: int | float,
-    sample_frequency: float = 44100.0,
+    sample_rate: float = 44100.0,
     level: int | float | float64 | None = None,
     supplied_b: None = None,
 ) -> ndarray:
@@ -277,7 +273,7 @@ def gen_eh2008_speech_noise(
 
     Args:
         duration (float): Duration of signal in seconds
-        sample_frequency (float): Sampling rate
+        sample_rate (float): Sampling rate
         level (float, optional): Normalise to level dB if present
         supplied_b (ndarray, optional): High-pass filter. Default uses built-in
             pre-emphasis filter
@@ -286,25 +282,25 @@ def gen_eh2008_speech_noise(
         ndarray: Noise signal
 
     """
-    sample_frequency = int(sample_frequency)
-    n_samples = int(duration * sample_frequency)
+    sample_rate = int(sample_rate)
+    n_samples = int(duration * sample_rate)
 
     # this rescales so that we get -7.5 dB/oct up to 8kHz, and -13 dB/oct above that
-    norm_freq = GEN_NOISE_HZ / (sample_frequency / 2)
-    last_f_idx = np.max(np.where(norm_freq < 1))
-    norm_freq = np.append(norm_freq[0 : last_f_idx + 1], 1)
+    norm_rate = GEN_NOISE_HZ / (sample_rate / 2)
+    last_f_idx = np.max(np.where(norm_rate < 1))
+    norm_rate = np.append(norm_rate[0 : last_f_idx + 1], 1)
 
     # -9 dB/oct constant slope
-    emph_nyq = EMPHASIS[last_f_idx] + 9 * np.log10(norm_freq[last_f_idx]) / np.log10(2)
+    emph_nyq = EMPHASIS[last_f_idx] + 9 * np.log10(norm_rate[last_f_idx]) / np.log10(2)
     norm_emph = np.append(EMPHASIS[0 : last_f_idx + 1], emph_nyq)
     m = np.exp(np.log(10) * norm_emph / 20)
 
     # Create type II filter with 10 msec window and even number of taps
-    n_taps = int(2 * np.ceil(10 * (sample_frequency / 2000))) + 1
+    n_taps = int(2 * np.ceil(10 * (sample_rate / 2000))) + 1
     b = (
         supplied_b
         if supplied_b is not None
-        else firwin2(n_taps, norm_freq, m, window="hamming", antisymmetric=False)
+        else firwin2(n_taps, norm_rate, m, window="hamming", antisymmetric=False)
     )
 
     # white noise, 0 DC
@@ -314,9 +310,7 @@ def gen_eh2008_speech_noise(
     eh2008_nse = scipy.signal.lfilter(b, 1, n_burst)
 
     # high-pass filter to remove low freqs (will be 2-pass with filtfilt)
-    high_pass_filter = scipy.signal.ellip(
-        3, 0.1, 50, 100 / (sample_frequency / 2), "high"
-    )
+    high_pass_filter = scipy.signal.ellip(3, 0.1, 50, 100 / (sample_rate / 2), "high")
     padlen = 3 * (max(len(high_pass_filter[1]), len(high_pass_filter[0])) - 1)
     eh2008_nse = scipy.signal.filtfilt(
         *high_pass_filter, eh2008_nse, padlen=padlen
@@ -450,7 +444,7 @@ def generate_key_percent(
 
 def measure_rms(
     signal: ndarray,
-    sample_frequency: int,
+    sample_rate: int,
     db_rel_rms: int | float,
     percent_to_track: float | None = None,
 ) -> tuple[float64, ndarray, float64, float]:
@@ -464,7 +458,7 @@ def measure_rms(
 
     Args:
         signal (ndarray): the signal of which to measure the Root Mean Square.
-        sample_frequency (float): sampling frequency.
+        sample_rate (float): sampling frequency.
         db_rel_rms (float): threshold for frames to track.
         percent_to_track (float, optional): track percentage of frames,
             rather than threshold (default: {None})
@@ -475,7 +469,7 @@ def measure_rms(
         - rel_db_thresh (float): fixed threshold value of -12 dB
         - active (float): proportion of values used in rms calculation
     """
-    sample_frequency = int(sample_frequency)
+    sample_rate = int(sample_rate)
     # first RMS is of all signal.
     first_stage_rms = np.sqrt(np.sum(np.power(signal, 2) / len(signal)))
     # use this RMS to generate key threshold to get more accurate RMS
@@ -485,7 +479,7 @@ def measure_rms(
     key, used_thr_db = generate_key_percent(
         signal,
         key_thr_db,
-        round(WIN_SECS * sample_frequency),
+        round(WIN_SECS * sample_rate),
         percent_to_track=percent_to_track,
     )
 
@@ -557,7 +551,7 @@ def read_signal(
 def write_signal(
     filename: str | Path,
     signal: ndarray,
-    sample_frequency: int,
+    sample_rate: int,
     floating_point: bool = True,
     strict: bool = False,
 ) -> None:
@@ -570,15 +564,15 @@ def write_signal(
     Args:
         filename (str|Path): name of file in to write to.
         signal (ndarray): signal to write.
-        sample_frequency (float): sampling frequency.
+        sample_rate (float): sampling frequency.
         floating_point (bool): write as floating point else an ints (default: True).
         strict (bool): raise error if signal out of range for int16 (default: False).
     """
 
-    if sample_frequency != MSBG_FS:
+    if sample_rate != MSBG_FS:
         logging.warning(
             f"Sampling rate mismatch: {filename} with "
-            f"sample frequency = {sample_frequency}."
+            f"sample frequency = {sample_rate}."
         )
         # raise ValueError("Sampling rate mismatch")
 
@@ -593,4 +587,4 @@ def write_signal(
     else:
         subtype = "FLOAT"
 
-    soundfile.write(filename, signal, sample_frequency, subtype=subtype)
+    soundfile.write(filename, signal, sample_rate, subtype=subtype)

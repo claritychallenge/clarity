@@ -13,7 +13,7 @@ repos:
         types: [python]
         args: [--fix=no]
       - id: check-added-large-files
-        args: [--maxkb=1024]
+        args: [--maxkb=2048]
       - id: debug-statements
       - id: check-byte-order-marker
       # - id: check-yaml
@@ -65,13 +65,15 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.1.1
+    rev: v1.2.0
     hooks:
       - id: mypy
+        args:
+          - --explicit-package-bases
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.0.260"
+    rev: "v0.0.261"
     hooks:
       - id: ruff
 
@@ -94,6 +96,8 @@ repos:
         language: system
         files: \.py$
         exclude: clarity/_version.py # 3rd party code that doesn't conform
+
+exclude: ^(tests/regression/_regtest_outputs/) # We don't want these being 'fixed'
 
 ci:
   autofix_prs: true

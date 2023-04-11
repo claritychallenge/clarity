@@ -6,10 +6,9 @@ path:
   scenes_folder: ${path.root}/clarity_data/dev/scenes
   exp_folder: ./exp # folder to store enhanced signals and final results
 
-
 nalr:
   nfir: 220
-  fs: 44100
+  sample_rate: 44100
 
 compressor:
   threshold: 0.35

@@ -532,9 +532,9 @@ def resample_24khz(reference_signal, reference_freq, freq_sample_hz=24000):
     reference_b, reference_a = cheby2(order, attenuation, reference_freq_cut)
     reference_filter = lfilter(reference_b, reference_a, reference_signal, axis=0)
 
-    # Reduce the resampled signal bandwisth to 21 kHz (-10.5 to +10.5 kHz)
-    resample_freq_cut = 21 / sample_rate_target_khz
-    target_b, target_a = cheby2(order, attenuation, resample_freq_cut)
+    # Reduce the resampled signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)
+    resample_rate_cut = 21 / sample_rate_target_khz
+    target_b, target_a = cheby2(order, attenuation, resample_rate_cut)
     target_filter = lfilter(target_b, target_a, resample_signal, axis=0)
 
     # Compute the input and output RMS levels within the 21 kHz bandwidth and
@@ -1704,7 +1704,7 @@ def spectrum_diff(reference_sl, processed_sl):
 
 
 def bm_covary(
-    reference_basilar_membrane, processed_basilar_membrane, segment_size, freq_sample
+    reference_basilar_membrane, processed_basilar_membrane, segment_size, sample_rate
 ):
     """
     Compute the cross-covariance (normalized cross-correlation) between  the reference
@@ -1734,10 +1734,10 @@ def bm_covary(
 
     # Lag for computing the cross-covariance
     lagsize = 1.0  # Lag (+/-) in msec
-    maxlag = np.around(lagsize * (0.001 * freq_sample))  # Lag in samples
+    maxlag = np.around(lagsize * (0.001 * sample_rate))  # Lag in samples
 
     # Compute the segment size in samples
-    nwin = int(np.around(segment_size * (0.001 * freq_sample)))
+    nwin = int(np.around(segment_size * (0.001 * sample_rate)))
 
     nwin += nwin % 2 == 1  # Force window length to be even
     window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window

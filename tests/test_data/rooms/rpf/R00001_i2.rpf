@@ -1,0 +1,203 @@
+# Raven-Config =
+
+#----------------------------------------------------------------------------------------------- =
+[Global]
+ProjectName = CuboidRoom_6.9933x3x3
+ProjectPath_Input = ..\RavenInput
+ProjectPath_Output = ..\RavenOutput
+ProjectPath_DirectivityDB = ..\RavenDatabase\DirectivityDatabase
+ProjectPath_MaterialDB = ..\RavenDatabase\MaterialDatabase
+ProjectPath_PortalDB = ..\RavenDatabase\PortalDatabase
+ProjectPath_SoundDB = ..\RavenDatabase\SoundDatabase
+ProjectPath_HRTFDB = e:/OneDrive - Cardiff University/clarity/Rhoddy files/HOA_IR_Round2/ClarityHRTF_database/Round2/VP_N1-BTE_fr_RAVEN_HOA.daff
+# ApplicationMode =
+# 0: No GUI, start as network service and start to listen, simulation settings described by project file only =
+# 1: GUI, possibilty to change simulation settings and perform off-line simulations, switch to Net Mode possible =
+ApplicationMode = 1
+# SimulationType: if both types are 1, all simulations are performed =
+simulationTypeIS = 1
+simulationTypeRT = 1
+
+# ImpulseResponses (if both 1, calulate both impulse responses) (generateRIR/BRIR) =
+generateRIR = 0
+generateBRIR = 0
+
+# export Filter ( 1 yes 0 no) =
+exportFilter = 1
+
+# Log Energy Histograms ( 1 yes 0 no) =
+exportHistogram = 1
+
+# Acceleration Technique (0 = BSP, 1=HASHMAP)
+AccelerationType = 0
+
+# log Performance =
+logPerformance = 0
+
+# export wall hit logs (significantly increase computation time) =
+exportWallHitList = 0
+
+# export plane wave lists =
+exportPlaneWaveList = 1
+
+
+# flag indicating if output files should be deleted or not =
+keepOutputFiles = 0
+
+
+
+#----------------------------------------------------------------------------------------------- =
+generateISHOA = 1
+generateRTHOA = 1
+[Rooms]
+# file list of rooms =
+Model = e:/OneDrive - Cardiff University/clarity/Rhoddy files/HOA_IR_Round2/HOA_Information/Round2/R00001.ac
+
+#Room Temperature [°C] =
+#list of room temperature values, same order as file list of rooms =
+Temperature = 20
+
+#Room Humidity [%] =
+#list of room humidity values, same order as file list of rooms =
+Humidity = 50
+
+#Room Pressure [Pa] =
+#list of room humidity values, same order as file list of rooms =
+Pressure = 101325
+
+#Room Volume [m^3] =
+#list of room volume values, same order as file list of rooms =
+Volume = 297.71
+
+#Room Surface [m^2] =
+#list of room surface values, same order as file list of rooms =
+Surface = 332.082
+
+#----------------------------------------------------------------------------------------------- =
+[Portals]
+# material (hier wird die art des portals bestimmt, spaeter sowas wie metaltuer, usw =
+portalType =
+
+#portal status (opened = 1/closed = 0)
+portalStatus =
+
+#----------------------------------------------------------------------------------------------- =
+[PrimarySources]
+
+#number of sources =
+numberSources = 1
+
+#source names =
+sourceNames = Interferer
+
+# SOUND_MUTE = 0, SOUND_ACTIVE = 1
+sourceSoundStates = 1
+
+#sources positions =
+sourcePositions = 0.400,3.100,1.200
+
+#viewVectors =
+sourceViewVectors = -0.232, 0.973, 0.000
+
+#upVectors =
+sourceUpVectors = 0.000,0.000,1.000
+
+#----------------------------------------------------------------------------------------------- =
+sourceDirectivity = Omnidirectional.daff
+sourceDirectivityDFT =
+sourceSoundModes = -1
+sourceSoundTypes = 0
+sourceSoundLevels = 100
+[Receiver]
+
+#number of receivers =
+numberReceivers = 1
+
+#receiver names =
+receiverNames = Listener
+
+#receiver rooms =
+receiverRooms = 0
+
+# RECEIVER_MUTE = 0, RECEIVER_ACTIVE = 1
+receiverStates = 1
+
+#positions (x,y,z) =
+receiverPositions = -0.100, 5.200, 1.200
+
+#viewVectors (x,y,z) =
+receiverViewVectors = -0.071,-0.997, 0.000
+
+#upVectors (x,y,z) =
+receiverUpVectors = 0.000,0.000,1.000
+
+
+#----------------------------------------------------------------------------------------------- =
+[ImageSources]
+# IS Order =
+ISOrder_PS = 2
+ISOrder_SS = 2
+
+# updateThreshold_IS =
+# this is for dynamic simulation. the value defines the maximum displacement of the primary source =
+# moves the source above this threshhold, a new simulation will be performed =
+# in [meter] =
+updateThreshold_IS = 0.1
+
+#----------------------------------------------------------------------------------------------- =
+ISSkipImageSourcesPS = 1
+ISSkipImageSourcesSS = 1
+ISSkipDirectSound = 0
+[RayTracing]
+# Number of Particles/Frequency Band =
+numberOfParticles_DetectionSphere = 20000
+numberOfParticles_Portal = 10000
+
+# Same sequence of reflections (including scattering) beginning from the moment when the project was loaded? [0/1] =
+fixReflectionPattern = 1
+
+#Allowed loss of Energy/Particle [dB] =
+energyLoss_DetectionSphere = 70
+energyLoss_Portal = 63
+
+# scatter model =
+# define DIFFUSERAIN 0 =
+# define HITORIENTED 1 =
+scatterModel_DetectionSphere = 0
+scatterModel_Portal = 0
+
+# filterLength [ms] =
+filterLength_DetectionSphere = 500
+filterLength_Portal = 500
+
+# [0, Interval A] Resolution [ms] =
+timeResolution_DetectionSphere = 6
+timeResolution_Portal = 6
+
+# resolution azimuth =
+resolutionAzimuth_DetectionSphere = 10
+
+# resolution elevation =
+resolutionElevation_DetectionSphere = 10
+
+# Detection Sphere Radius [m] =
+radius_DetectionSphere = 0.5
+
+
+#----------------------------------------------------------------------------------------------- =
+[Filter]
+
+#Sampling Frequency =
+samplingFrequency = 44100
+
+# FilterResolution =
+# define THIRD_OCTAVE 0 =
+# define OCTAVE 1 =
+filterResolution = 1
+
+setFixPoissonSequence = 1
+poissonSequenceNumber = 6667
+
+# ambisonics order =
+ambisonicsOrder = 7
+

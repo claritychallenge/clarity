@@ -1,8 +1,8 @@
 path:
   cec1_root: ???
-  exp_folder: ???  # folder to store intermediate signals and final results
+  exp_folder: ??? # folder to store intermediate signals and final results
 
-sr: 44100
+sample_rate: 44100
 downsample_factor: 2
 num_channels: 6
 level_norm: False
@@ -23,14 +23,14 @@ mc_conv_tasnet:
   P: 3
   X: 6
   R: 4
-  C: 1  # num_speakers
-  num_channels: 6  # should be consistent with dataloader num_channels
+  C: 1 # num_speakers
+  num_channels: 6 # should be consistent with dataloader num_channels
   norm_type: cLN
   causal: True
   mask_nonlinear: relu
 
 fir:
-  sr: ${sr}
+  sample_rate: ${sample_rate}
   nfir: 220
 
 den_trainer:
@@ -45,13 +45,14 @@ amp_trainer:
   epochs: 100
   gradient_clip_val: 5.0
   stoilevel_loss:
-    sr: ${sr}
+    sample_rate: ${sample_rate}
     alpha: 1e-4
+  num_sanity_val_steps: 2
 
 train_dataset:
   scenes_folder: ${path.cec1_root}/clarity_CEC1_data/clarity_data/train/scenes
   scenes_file: ${path.cec1_root}/clarity_CEC1_data/clarity_data/metadata/scenes.train.json
-  sr: ${sr}
+  sample_rate: ${sample_rate}
   downsample_factor: ${downsample_factor}
   wav_sample_len: 2
   wav_silence_len: ${wav_silence_len}
@@ -68,7 +69,7 @@ train_loader:
 dev_dataset:
   scenes_folder: ${path.cec1_root}/clarity_CEC1_data/clarity_data/dev/scenes
   scenes_file: ${path.cec1_root}/clarity_CEC1_data/clarity_data/metadata/scenes.dev.json
-  sr: ${sr}
+  sample_rate: ${sample_rate}
   downsample_factor: ${downsample_factor}
   wav_sample_len: null
   wav_silence_len: ${wav_silence_len}
@@ -83,7 +84,7 @@ dev_loader:
 test_dataset:
   scenes_folder: ${path.cec1_root}/clarity_CEC1_data_eval/clarity_data/eval/scenes
   scenes_file: ${path.cec1_root}/clarity_CEC1_data_eval/clarity_data/metadata/scenes_listeners.eval.json
-  sr: ${sr}
+  sample_rate: ${sample_rate}
   downsample_factor: ${downsample_factor}
   wav_sample_len: null
   wav_silence_len: 0

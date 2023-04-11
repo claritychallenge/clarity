@@ -44,7 +44,7 @@ def test_convtasnet(regtest):
     cfg["test_dataset"] = {
         "scenes_folder": "tests/test_data/scenes",
         "scenes_file": "tests/test_data/metadata/scenes.test.json",
-        "sr": 44100,
+        "sample_rate": 44100,
         "downsample_factor": 20,
         "wav_sample_len": None,
         "wav_silence_len": 0,
@@ -65,13 +65,15 @@ def test_convtasnet(regtest):
 
     if cfg.test_dataset.downsample_factor != 1:
         down_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.test_dataset["sr"],
-            new_freq=cfg.test_dataset["sr"] // cfg.test_dataset.downsample_factor,
+            orig_freq=cfg.test_dataset["sample_rate"],
+            new_freq=cfg.test_dataset["sample_rate"]
+            // cfg.test_dataset.downsample_factor,
             resampling_method="sinc_interp_hann",
         )
         up_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.test_dataset["sr"] // cfg.test_dataset.downsample_factor,
-            new_freq=cfg.test_dataset["sr"],
+            orig_freq=cfg.test_dataset["sample_rate"]
+            // cfg.test_dataset.downsample_factor,
+            new_freq=cfg.test_dataset["sample_rate"],
             resampling_method="sinc_interp_hann",
         )
 

@@ -26,13 +26,13 @@ def run(cfg: DictConfig) -> None:
     down_sample = up_sample = None
     if cfg.downsample_factor != 1:
         down_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.sr,
-            new_freq=cfg.sr // cfg.downsample_factor,
+            orig_freq=cfg.sample_rate,
+            new_freq=cfg.sample_rate // cfg.downsample_factor,
             resampling_method="sinc_interp_hann",
         )
         up_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.sr // cfg.downsample_factor,
-            new_freq=cfg.sr,
+            orig_freq=cfg.sample_rate // cfg.downsample_factor,
+            new_freq=cfg.sample_rate,
             resampling_method="sinc_interp_hann",
         )
 
@@ -78,7 +78,7 @@ def run(cfg: DictConfig) -> None:
             write(
                 output_folder / f"{scene[0]}_{cfg.listener.id}_HA-output.wav",
                 out,
-                cfg.sr,
+                cfg.sample_rate,
             )
 
 

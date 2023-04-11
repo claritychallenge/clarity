@@ -52,9 +52,9 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
         audiogram = listener_audiograms[listener]
 
     # Retrieve signals and convert to float32 between -1 and 1
-    fs_proc, proc = wavfile.read(Path(path["signal_dir"]) / f"{signal_name}.wav")
-    fs_ref, ref = wavfile.read(Path(path["scene_dir"]) / f"{scene}_target_ref.wav")
-    assert fs_ref == fs_proc
+    sr_proc, proc = wavfile.read(Path(path["signal_dir"]) / f"{signal_name}.wav")
+    sr_ref, ref = wavfile.read(Path(path["scene_dir"]) / f"{scene}_target_ref.wav")
+    assert sr_ref == sr_proc
 
     proc = proc / 32768.0
     ref = ref / 32768.0
@@ -65,10 +65,10 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
         reference_right=ref[:, 1],
         processed_left=proc[:, 0],
         processed_right=proc[:, 1],
-        fs_signal=fs_proc,
+        sample_rate=sr_proc,
         audiogram_left=audiogram["audiogram_levels_l"],
         audiogram_right=audiogram["audiogram_levels_r"],
-        audiogram_cfs=audiogram["audiogram_cfs"],
+        audiogram_frequencies=audiogram["audiogram_cfs"],
     )
 
     return haspi_score

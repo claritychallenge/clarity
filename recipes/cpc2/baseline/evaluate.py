@@ -63,7 +63,7 @@ def evaluate(cfg: DictConfig) -> None:
     # Compute and report the scores
     scores = compute_scores(df["predicted"], df["correctness"])
 
-    with open(f"{cfg.dataset}.evaluate.csv", "a", encoding="utf-8") as fp:
+    with open(f"{cfg.dataset}.evaluate.jsonl", "a", encoding="utf-8") as fp:
         fp.write(json.dumps(scores) + "\n")
 
     # Output the scores to the console

@@ -471,14 +471,14 @@ def test_env_smooth():
     sig_len = 600
     segment_size = 1  # ms
     envelopes = np.random.random(size=(4, sig_len))
-    sample_freq = 24000
+    sample_rate = 24000
 
     smooth = env_smooth(
-        envelopes=envelopes, segment_size=segment_size, freq_sample=sample_freq
+        envelopes=envelopes, segment_size=segment_size, freq_sample=sample_rate
     )
 
     # check shapes and values
-    expected_length = 2 * sig_len / (sample_freq * segment_size / 1000)
+    expected_length = 2 * sig_len / (sample_rate * segment_size / 1000)
     assert smooth.shape == (4, expected_length)
     assert np.sum(np.abs(smooth)) == pytest.approx(
         100.7397658862719, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
@@ -674,7 +674,7 @@ def test_bm_covary_ok():
 
     np.random.seed(0)
     sig_len = 600
-    sample_freq = 24000
+    sample_rate = 24000
     segment_size = 4
     reference = np.random.random(size=(4, sig_len))
     processed = np.random.random(size=(4, sig_len))
@@ -683,7 +683,7 @@ def test_bm_covary_ok():
         reference_basilar_membrane=reference,
         processed_basilar_membrane=reference + 0.4 * processed,
         segment_size=segment_size,
-        freq_sample=sample_freq,
+        sample_rate=sample_rate,
     )
 
     # Check shapes
@@ -708,7 +708,7 @@ def test_bm_covary_error():
 
     np.random.seed(0)
     sig_len = 600
-    sample_freq = 24000
+    sample_rate = 24000
     segment_size = 2  # needs to be a little over 2 ms
     reference = np.random.random(size=(4, sig_len))
     processed = np.random.random(size=(4, sig_len))
@@ -718,7 +718,7 @@ def test_bm_covary_error():
             reference_basilar_membrane=reference,
             processed_basilar_membrane=reference + 0.4 * processed,
             segment_size=segment_size,
-            freq_sample=sample_freq,
+            sample_rate=sample_rate,
         )
 
 
