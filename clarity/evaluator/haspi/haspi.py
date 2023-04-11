@@ -165,15 +165,19 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
 
     # Adjust listener.audiogram_levels_l and _r to match the frequencies above
     hearing_loss_left = [
-        audiogram_left[i]
-        for i in range(len(audiogram_frequencies))
-        if audiogram_frequencies[i] in aud
+        loss
+        for (freq, loss) in zip(audiogram_frequencies, audiogram_left)
+        if freq in aud
     ]
+
     hearing_loss_right = [
-        audiogram_right[i]
-        for i in range(len(audiogram_frequencies))
-        if audiogram_frequencies[i] in aud
+        loss
+        for (freq, loss) in zip(audiogram_frequencies, audiogram_right)
+        if freq in aud
     ]
+
+    if len(hearing_loss_left) != len(aud) or len(hearing_loss_right) != len(aud):
+        raise ValueError("Audiogram does not have all measurements needed by HASPI.")
 
     score_left, _ = haspi_v2(
         reference_left,
