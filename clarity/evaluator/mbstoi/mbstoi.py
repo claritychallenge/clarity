@@ -173,11 +173,11 @@ def mbstoi(
     ).transpose()
 
     # Take single sided spectrum of signals
-    idx = int(fft_size_in_samples / 2 + 1)
-    left_ear_clean_hat = left_ear_clean_hat[0:idx, :]
-    right_ear_clean_hat = right_ear_clean_hat[0:idx, :]
-    left_ear_noisy_hat = left_ear_noisy_hat[0:idx, :]
-    right_ear_noisy_hat = right_ear_noisy_hat[0:idx, :]
+    idx_upper = int(fft_size_in_samples / 2 + 1)
+    left_ear_clean_hat = left_ear_clean_hat[0:idx_upper, :]
+    right_ear_clean_hat = right_ear_clean_hat[0:idx_upper, :]
+    left_ear_noisy_hat = left_ear_noisy_hat[0:idx_upper, :]
+    right_ear_noisy_hat = right_ear_noisy_hat[0:idx_upper, :]
 
     # Compute intermediate correlation via EC search
     logging.info("Starting EC evaluation")
@@ -307,22 +307,20 @@ def mbstoi(
             ) / (np.linalg.norm(right_ear_clean_n) * np.linalg.norm(right_ear_noisy_n))
 
     # Get the better ear intermediate coefficients
-    idx = np.isfinite(dl_interm)
-    dl_interm[~idx] = 0
-    idx = np.isfinite(dr_interm)
-    dr_interm[~idx] = 0
+    dl_interm[~np.isfinite(dl_interm)] = 0
+    dr_interm[~np.isfinite(dr_interm)] = 0
     p_be_max = np.maximum(left_improved, right_improved)
     dbe_interm = np.zeros(np.shape(dl_interm))
 
-    idx = left_improved > right_improved
-    dbe_interm[idx] = dl_interm[idx]
-    dbe_interm[~idx] = dr_interm[~idx]
+    idx_left_better = left_improved > right_improved
+    dbe_interm[idx_left_better] = dl_interm[idx_left_better]
+    dbe_interm[~idx_left_better] = dr_interm[~idx_left_better]
 
     # Compute STOI measure
     # Whenever a single ear provides a higher correlation than the corresponding EC
     # processed alternative,the better-ear correlation is used.
-    idx = p_be_max > p_ec_max
-    updated_intermediate_intelligibility_measure[idx] = dbe_interm[idx]
+    idx_use_be = p_be_max > p_ec_max
+    updated_intermediate_intelligibility_measure[idx_use_be] = dbe_interm[idx_use_be]
     sii = np.mean(updated_intermediate_intelligibility_measure)
 
     logging.info("MBSTOI processing complete")
