@@ -1,4 +1,5 @@
 """Supplied dataclass to represent a monaural audiogram"""
+from __future__ import annotations
 
 from dataclasses import dataclass
 
@@ -40,7 +41,7 @@ class Audiogram:
     cfs: np.ndarray = np.array(DEFAULT_CLARITY_CFS)
 
     @property
-    def severity(self):
+    def severity(self) -> str:
         """Categorise HL severity level for the audiogram.
 
         Note that this categorisation is different from that of the British
@@ -55,21 +56,22 @@ class Audiogram:
             str -- severity level, one of SEVERE, MODERATE, MILD, NOTHING
 
         """
-        # calculate mean hearing loss between 2 & 8 kHz
-        impairment_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
-        tmp = self.levels[impairment_freqs]
+        # calculate mean hearing loss between critical frequencies of 2 & 8 kHz
+        critical_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
+        critical_levels = self.levels[critical_freqs]
+        # Remove any None values
+        critical_levels = [x for x in critical_levels if x is not None]
         # Ignore any None values
-        impairment_degree = np.mean(tmp[tmp is not None])
+        impairment_degree = np.mean(critical_levels) if len(critical_levels) > 0 else 0
 
         if impairment_degree > 56:
-            severity_level = "SEVERE"
-        elif impairment_degree > 35:
-            severity_level = "MODERATE"
-        elif impairment_degree > 15:
-            severity_level = "MILD"
-        else:
-            severity_level = "NOTHING"
-        return severity_level
+            return "SEVERE"
+        if impairment_degree > 35:
+            return "MODERATE"
+        if impairment_degree > 15:
+            return "MILD"
+
+        return "NOTHING"
 
 
 # Reference processing: use to check levels between original and processed,
@@ -96,14 +98,3 @@ AUDIOGRAM_MODERATE_SEVERE = Audiogram(
     cfs=FULL_STANDARD_CFS,
     levels=np.array([19, 19, 28, 35, 40, 47, 52, 56, 58, 58, 63, 70, 75, 80, 80]),
 )
-
-if __name__ == "__main__":
-    # test code
-    audiogram = Audiogram(
-        cfs=np.array([1000, 3000, 10000]), levels=np.array([10, 50, 80])
-    )
-    print(audiogram, audiogram.severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([10])).severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([20])).severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([40])).severity)
-    print(Audiogram(cfs=np.array([3000]), levels=np.array([90])).severity)

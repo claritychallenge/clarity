@@ -24,7 +24,11 @@ def test_haaqi_v1() -> None:
     )
 
 
-def test_compute_haaqi():
+@pytest.mark.parametrize(
+    "scale_reference,expected_result",
+    [(False, 0.113759275), (True, 0.114157435)],
+)
+def test_compute_haaqi(scale_reference, expected_result):
     """Test for compute_haaqi function"""
     np.random.seed(42)
 
@@ -42,9 +46,10 @@ def test_compute_haaqi():
         audiogram=audiogram,
         audiogram_frequencies=audiogram_frequencies,
         sample_rate=sample_rate,
+        scale_reference=scale_reference,
     )
 
     # Check that the score is a float between 0 and 1
     assert score == pytest.approx(
-        0.113759275, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected_result, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )

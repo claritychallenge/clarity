@@ -1,6 +1,4 @@
 """Test for baseline_utils.py"""
-# pylint: disable=import-error
-
 from pathlib import Path
 
 import librosa

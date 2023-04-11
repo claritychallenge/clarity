@@ -63,7 +63,9 @@ def test_GHA_inputs(regtest):
 
     signal = enhancer.read_signal(merged_filename)
     np.set_printoptions(threshold=100)
-    regtest.write(f"signal output: \n{signal[:,0]}\n")
+
+    # outputting a segment not at start to avoid it being all zeros
+    regtest.write(f"signal output: \n{signal[1000:1010,:]}\n")
 
 
 def test_GHA_config(regtest):

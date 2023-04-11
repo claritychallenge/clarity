@@ -8,9 +8,12 @@ path:
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
   exp_folder: ./exp # folder to store enhanced signals and final results
 
+
+sample_rate: 44100
+
 nalr:
   nfir: 220
-  fs: 44100
+  fs: ${sample_rate}
 
 apply_compressor: False
 compressor:
@@ -23,6 +26,8 @@ compressor:
 soft_clip: True
 
 separator:
+  model: demucs   # demucs or openunmix
+  sources: [drums, bass, other, vocals]
   device: ~
 
 evaluate:

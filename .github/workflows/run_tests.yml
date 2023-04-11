@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10']
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -31,10 +31,7 @@ jobs:
           sudo apt-get install -yq libsndfile1-dev ffmpeg
       - name: Install package, including extras
         run: |
-          pip install -e .
-          pip install -e .[tests]
-          pip install -e .[docs]
-          pip install -e .[dev]
+          pip install -e .[tests,docs,dev]
       - name: CPU information
         run: |
           python -m cpuinfo --json
