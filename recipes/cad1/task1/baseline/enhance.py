@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 def separate_sources(
     model: torch.nn.Module,
-    mix: torch.Tensor | np.ndarray,
+    mix: torch.Tensor,
     sample_rate: int,
     segment: float = 10.0,
     overlap: float = 0.1,

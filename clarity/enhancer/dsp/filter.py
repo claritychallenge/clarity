@@ -64,7 +64,7 @@ class AudiometricFIR(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         amp = torch.pow(10, torch.abs(self.amp) / 20.0)
         amp = torch.cat((torch.cat((amp[:1], amp)), amp[-1:]))
-        y = amp[self.interval_idx]
+        y = amp[self.interval_idx.tolist()]
         y2_minus_y1 = y[:, 1] - y[:, 0]
         y1 = y[:, 0]
         gain = y2_minus_y1 * self.x_minus_x1 / self.x2_minus_x1 + y1
