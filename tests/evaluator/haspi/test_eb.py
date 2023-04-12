@@ -348,7 +348,7 @@ def test_envelope_sl():
     reference, basilar_membrane = envelope_sl(
         reference=ref,
         basilar_membrane=bm,
-        attnenuated_ihc=40.0,
+        attenuated_ihc=40.0,
         level1=120,
         small=1e-30,
     )
@@ -448,10 +448,10 @@ def test_convert_rms_to_sl():
     ref_db = convert_rms_to_sl(
         reference=reference,
         control=control,
-        attnenuated_ohc=0.1,
+        attenuated_ohc=0.1,
         threshold_low=40,
         compression_ratio=10,
-        attnenuated_ihc=0.1,
+        attenuated_ihc=0.1,
         level1=120,
         threshold_high=100,
         small=1e-30,

@@ -163,7 +163,7 @@ def firwin2(
     if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
-        window_type = window
+        window_type, window_param = window, None
 
     order = n_taps - 1
 
