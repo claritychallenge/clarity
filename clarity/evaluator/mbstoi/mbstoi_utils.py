@@ -481,7 +481,7 @@ def remove_silent_frames(
 
 
 def thirdoct(
-    frequency_sampling: int,
+    sample_rate: float,
     nfft: int,
     num_bands: int,
     min_freq: int,
@@ -490,7 +490,7 @@ def thirdoct(
     based on mpariente/pystoi.
 
     Args:
-        fs (int) : Frequency sampling rate.
+        sample_rate (float) : Frequency sampling rate.
         n_fft (int) : Number of FFT. FFT == ???
         num_bands (int) : Number of one-third octave bands.
         min_freq (int) : Center frequencey of the lowest one-third octave band.
@@ -503,7 +503,7 @@ def thirdoct(
         freq_high (float) : Highest frequency
     """
     # pylint: disable=invalid-name
-    f = np.linspace(0, frequency_sampling, nfft + 1)
+    f = np.linspace(0, sample_rate, nfft + 1)
     f = f[: int(nfft / 2) + 1]
     k = np.array(range(num_bands)).astype(float)
     # pylint: enable=invalid-name

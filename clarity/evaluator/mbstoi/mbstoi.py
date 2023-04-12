@@ -5,6 +5,7 @@ import math
 
 import numpy as np
 import yaml  # type: ignore
+from numpy import ndarray
 from scipy.signal import resample
 
 from clarity.evaluator.mbstoi.mbstoi_utils import (
@@ -23,13 +24,13 @@ basic_stoi_parameters = yaml.safe_load(params_file.read())
 
 
 def mbstoi(
-    left_ear_clean: np.ndarray,
-    right_ear_clean: np.ndarray,
-    left_ear_noisy: np.ndarray,
-    right_ear_noisy: np.ndarray,
+    left_ear_clean: ndarray,
+    right_ear_clean: ndarray,
+    left_ear_noisy: ndarray,
+    right_ear_noisy: ndarray,
     sr_signal: float,
     gridcoarseness: int = 1,
-    sample_rate: int = 10000,
+    sample_rate: float = 10000.0,
     n_frame: int = 256,
     fft_size_in_samples: int = 512,
     n_third_octave_bands: int = 15,
@@ -49,10 +50,10 @@ def mbstoi(
     """The Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.
 
     Args:
-        left_ear_clean (np.ndarray): Clean speech signal from left ear.
-        right_ear_clean (np.ndarray): Clean speech signal from right ear.
-        left_ear_noisy (np.ndarray) : Noisy/processed speech signal from left ear.
-        right_ear_noisy (np.ndarray) : Noisy/processed speech signal from right ear.
+        left_ear_clean (ndarray): Clean speech signal from left ear.
+        right_ear_clean (ndarray): Clean speech signal from right ear.
+        left_ear_noisy (ndarray) : Noisy/processed speech signal from left ear.
+        right_ear_noisy (ndarray) : Noisy/processed speech signal from right ear.
         fs_signal (int) : Frequency sample rate of signal.
         gridcoarseness (int) : Grid coarseness as denominator of ntaus and ngammas.
             Defaults to 1.

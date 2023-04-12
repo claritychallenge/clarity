@@ -217,7 +217,7 @@ def test_thirdoct() -> None:
         frequency_band_edges_indices,
         freq_low,
         freq_high,
-    ) = thirdoct(frequency_sampling=8000, nfft=512, num_bands=3, min_freq=100)
+    ) = thirdoct(sample_rate=8000, nfft=512, num_bands=3, min_freq=100)
 
     assert freq_low == pytest.approx(
         [93.75, 109.375, 140.625], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
