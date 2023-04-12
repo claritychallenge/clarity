@@ -47,8 +47,8 @@ EQUIV_0_DB_SPL: Final = 100 + AHR
 class MSBGHearingModel(nn.Module):
     def __init__(
         self,
-        audiogram: list[int],
-        audiometric: list[int],
+        audiogram: np.ndarray,
+        audiometric: np.ndarray,
         sr: int = 44100,
         spl_cali: bool = True,
         src_position: str = "ff",
@@ -66,9 +66,6 @@ class MSBGHearingModel(nn.Module):
             self.device = device
         # settings for audiogram
 
-        audiogram = np.array(audiogram)
-        # audiometric = np.array([250, 500, 1000, 2000, 4000, 6000])
-        audiometric = np.array(audiometric)
         audiogram = np.append(audiogram, audiogram[-1])
         audiometric = np.append(audiometric, 16000)
         audiogram = np.append(audiogram[0], audiogram)
@@ -452,7 +449,7 @@ class MSBGHearingModel(nn.Module):
             envelope_out = torch.flip(envelope_out, dims=[-1])
 
             envelope_out = torch.clamp(
-                envelope_out, min=EPS, max=self.envelope_max[ixch]
+                envelope_out, min=EPS, max=float(self.envelope_max[ixch])
             )
             gain = (envelope_out / self.envelope_max[ixch]) ** self.expansion_m1[ixch]
             outputs.append(gain * pass_n_cali)
