@@ -5,6 +5,8 @@ These are 2 separated class to keep the logic separated
 """
 from __future__ import annotations
 
+from typing import Final
+
 import numpy as np
 
 
@@ -44,9 +46,9 @@ class CarNoiseParametersGenerator:
     }
     """
 
-    GEAR_LOOKUP = {110: [6], 100: [5, 6], 85: [5], 75: [4, 5], 60: [4], 50: [3]}
-    RPM_LOOKUP = {6: 0.28, 5: 0.34, 4: 0.45, 3: 0.60}
-    REFERENCE_CONSTANT_DB = 30
+    GEAR_LOOKUP: Final = {110: [6], 100: [5, 6], 85: [5], 75: [4, 5], 60: [4], 50: [3]}
+    RPM_LOOKUP: Final = {6: 0.28, 5: 0.34, 4: 0.45, 3: 0.60}
+    REFERENCE_CONSTANT_DB: Final = 30
 
     def __init__(
         self,

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Final
+
 import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn
 
-EPS = 1e-8
+EPS: Final = 1e-8
 
 
 class AudiometricFIR(nn.Module):

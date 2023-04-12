@@ -3,6 +3,8 @@ Class to generate the car noise signal.
 """
 from __future__ import annotations
 
+from typing import Final
+
 import numpy as np
 from scipy.signal import butter, lfilter
 
@@ -50,8 +52,8 @@ class CarNoiseSignalGenerator:
         >>> car_noise_signal = car_noise.generate_car_noise(parameters, 3, 0.5)
     """
 
-    REFERENCE_CONSTANT_DB = 30
-    FINAl_MULTIPLIER = 1 / 2000
+    REFERENCE_CONSTANT_DB: Final = 30
+    FINAl_MULTIPLIER: Final = 1 / 2000
 
     def __init__(
         self,

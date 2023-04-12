@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 import math
+from typing import Final
 
 import torch
 import torch.nn.functional as F
 from torch import nn
 
-EPS = 1e-8
+EPS: Final = 1e-8
 
 
 def overlap_and_add(signal, frame_step, device):

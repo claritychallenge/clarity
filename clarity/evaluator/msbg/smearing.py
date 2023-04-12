@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import math
+from typing import Final
 
 import numpy as np
 from numpy import ndarray
 
-FFT_SIZE = 512
-FRAME_SIZE = 256
-SHIFT = 64
+FFT_SIZE: Final = 512
+FRAME_SIZE: Final = 256
+SHIFT: Final = 64
 
 
 def audfilt(

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import math
+from typing import Final
 
 import numpy as np
 import scipy
@@ -26,7 +27,7 @@ from clarity.evaluator.msbg.msbg_utils import (
 
 # Cut off frequency of low-pass filter at end of simulations:
 # prevents possible excessive processing noise at high frequencies.
-UPPER_CUTOFF_HZ = 18000
+UPPER_CUTOFF_HZ: Final = 18000
 
 
 class Ear:

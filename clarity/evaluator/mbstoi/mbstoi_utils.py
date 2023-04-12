@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import logging
+from typing import Final
 
 import numpy as np
 from scipy.signal import find_peaks
 
-EPS = np.finfo("float").eps
+EPS: Final = np.finfo("float").eps
 
 
 def equalisation_cancellation(
