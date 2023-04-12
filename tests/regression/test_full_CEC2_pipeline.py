@@ -2,6 +2,8 @@
 # pylint: disable=too-many-locals invalid-name
 from __future__ import annotations
 
+from typing import Final
+
 import numpy as np
 from cpuinfo import get_cpu_info
 from omegaconf import OmegaConf
@@ -16,7 +18,7 @@ from clarity.evaluator.haspi import haspi_v2_be
 # scene_renderer, enhancer, compressor, haspi
 
 
-CPUINFO = get_cpu_info()
+CPUINFO: Final = get_cpu_info()
 
 np.random.seed(0)
 
@@ -25,7 +27,7 @@ np.random.seed(0)
 # - Using three maskers - one from each noise type
 # - Using a short target with reduce pre and post silence
 # - Only generating 2 hearing aid channels
-SCENE = {
+SCENE: Final = {
     "dataset": "train",
     "room": "R06001",
     "scene": "S06001",
@@ -67,7 +69,7 @@ SCENE = {
     },
 }
 
-TEST_PATHS = OmegaConf.create(
+TEST_PATHS: Final = OmegaConf.create(
     {
         "hoairs": "tests/test_data/rooms/HOA_IRs",
         "hrirs": "tests/test_data/hrir/HRIRs_MAT",
@@ -77,7 +79,7 @@ TEST_PATHS = OmegaConf.create(
     }
 )
 
-TEST_METADATA = OmegaConf.create(
+TEST_METADATA: Final = OmegaConf.create(
     {
         "room_definitions": "tests/test_data/metadata/rooms.train.json",
         "scene_definitions": "",  # Scene definition file not needed for test
@@ -85,7 +87,7 @@ TEST_METADATA = OmegaConf.create(
     }
 )
 
-SCENE_RENDERER = SceneRenderer(
+SCENE_RENDERER: Final = SceneRenderer(
     TEST_PATHS,
     TEST_METADATA,
     ambisonic_order=6,
@@ -99,8 +101,6 @@ def test_full_cec2_pipeline(
     regtest,
     tmp_path,
     scene: dict | None = None,
-    _test_paths: OmegaConf = TEST_PATHS,
-    _test_metadata: OmegaConf = TEST_METADATA,
     scene_renderer: SceneRenderer = SCENE_RENDERER,
 ) -> None:
     """Test full CEC2 pipeline"""
@@ -138,9 +138,9 @@ def test_full_cec2_pipeline(
         "rms_buffer_size": 0.064,
     }
 
-    audiogram_l = [45, 50, 60, 65, 60, 65, 70, 80]
-    audiogram_r = [45, 45, 60, 70, 60, 60, 80, 80]
-    audiogram_cfs = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
+    audiogram_l = np.array([45, 50, 60, 65, 60, 65, 70, 80])
+    audiogram_r = np.array([45, 45, 60, 70, 60, 60, 80, 80])
+    audiogram_cfs = np.array([250, 500, 1000, 2000, 3000, 4000, 6000, 8000])
 
     sample_rate = 44100
 
