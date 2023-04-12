@@ -1,10 +1,16 @@
 """Matlab's haaqi version 1 to python version."""
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from clarity.evaluator.haspi import eb
 from clarity.utils.signal_processing import compute_rms
+
+if TYPE_CHECKING:
+    from numpy import ndarray
 
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
@@ -13,17 +19,17 @@ logger = logging.getLogger(__name__)
 
 
 def haaqi_v1(
-    reference: np.ndarray,
+    reference: ndarray,
     reference_freq: float,
-    processed: np.ndarray,
+    processed: ndarray,
     processed_freq: float,
-    hearing_loss: np.ndarray,
+    hearing_loss: ndarray,
     equalisation: int,
     level1: float = 65.0,
     silence_threshold: float = 2.5,
     add_noise: float = 0.0,
     segment_covariance: int = 16,
-):
+) -> tuple[float, float, float, list[float]]:
     """
     Compute the HAAQI music quality index using the auditory model followed by
     computing the envelope cepstral correlation and Basilar Membrane vibration
@@ -103,7 +109,7 @@ def haaqi_v1(
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    dloud_vector, dnorm_vector, _ = eb.spectrum_diff(reference_sl, processed_sl)
+    dloud_stats, dnorm_stats, _ = eb.spectrum_diff(reference_sl, processed_sl)
 
     # Temporal fine structure (TFS) correlation measurements
     # Compute the time-frequency segment covariances
@@ -126,13 +132,13 @@ def haaqi_v1(
 
     # Extract and normalize the spectral features
     # Dloud:std
-    d_loud = dloud_vector[1] / 2.5  # Loudness difference std
+    d_loud = dloud_stats[1] / 2.5  # Loudness difference std
     d_loud = 1.0 - d_loud  # 1=perfect, 0=bad
     d_loud = min(d_loud, 1)
     d_loud = max(d_loud, 0)
 
     # Dnorm:std
-    d_norm = dnorm_vector[1] / 25  # Slope difference std
+    d_norm = dnorm_stats[1] / 25  # Slope difference std
     d_norm = 1.0 - d_norm  # 1=perfect, 0=bad
     d_norm = min(d_norm, 1)
     d_norm = max(d_norm, 0)
@@ -159,10 +165,10 @@ def haaqi_v1(
 
 
 def compute_haaqi(
-    processed_signal: np.ndarray,
-    reference_signal: np.ndarray,
-    audiogram: np.ndarray,
-    audiogram_frequencies: np.ndarray,
+    processed_signal: ndarray,
+    reference_signal: ndarray,
+    audiogram: ndarray,
+    audiogram_frequencies: ndarray,
     sample_rate: float,
     equalisation: int = 1,
     level1: float = 65.0,
