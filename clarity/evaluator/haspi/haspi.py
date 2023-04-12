@@ -65,7 +65,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
               through a modulation filterbank followed by an ensemble of
               neural networks.
         raw: vector of 10 cep corr modulation filterbank outputs, averaged
-              over basis funct 2-6.
+              over basis functions 2-6.
 
     Updates:
         James M. Kates, 5 August 2013.

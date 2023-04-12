@@ -75,7 +75,7 @@ def mbstoi(
         level_shift_deviation (float) : ???
 
     Returns:
-        float : mbtsoi index d.
+        float : mbstoi index d.
 
     Notes:
         All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the
@@ -182,7 +182,7 @@ def mbstoi(
 
     # Compute intermediate correlation via EC search
     logging.info("Starting EC evaluation")
-    # Here intermeduiate correlation coefficients are evaluated for a discrete set of
+    # Here intermediate correlation coefficients are evaluated for a discrete set of
     # gamma and tau values (a "grid") and the highest value is chosen.
     intermediate_intelligibility_measure_grid = np.zeros(
         (n_third_octave_bands, np.shape(left_ear_clean_hat)[1] - n_frames + 1)

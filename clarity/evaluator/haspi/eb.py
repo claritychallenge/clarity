@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from numba import jit
+from numba import njit
 from scipy.signal import (
     butter,
     cheby2,
@@ -461,12 +461,12 @@ def loss_parameters(
 
     # Reduce the CR towards 1:1 in proportion to the OHC loss.
     attenuated_ohc = 0.8 * np.copy(loss)
-    attnenuated_ihc = 0.2 * np.copy(loss)
+    attenuated_ihc = 0.2 * np.copy(loss)
 
     attenuated_ohc[loss >= theoretical_ohc] = (
         0.8 * theoretical_ohc[loss >= theoretical_ohc]
     )
-    attnenuated_ihc[loss >= theoretical_ohc] = 0.2 * theoretical_ohc[
+    attenuated_ihc[loss >= theoretical_ohc] = 0.2 * theoretical_ohc[
         loss >= theoretical_ohc
     ] + (loss[loss >= theoretical_ohc] - theoretical_ohc[loss >= theoretical_ohc])
 
@@ -482,7 +482,7 @@ def loss_parameters(
         upamp + attenuated_ohc - low_knee
     )  # OHC loss Compression ratio
 
-    return attenuated_ohc, bandwidth, low_knee, compression_ratio, attnenuated_ihc
+    return attenuated_ohc, bandwidth, low_knee, compression_ratio, attenuated_ihc
 
 
 def resample_24khz(
@@ -704,7 +704,7 @@ def gammatone_basilar_membrane(
     References:
     .. [1] Ma N, Green P, Barker J, Coy A (2007) Exploiting correlogram
            structure for robust speech recognition with multiple speech
-           sources. Speech Communication, 49 (12): 874-891. Availab at
+           sources. Speech Communication, 49 (12): 874-891. Available at
            <https://doi.org/10.1016/j.specom.2007.05.003>
            <https://staffwww.dcs.shef.ac.uk/people/N.Ma/resources/gammatone/>
     .. [2] Cooke, M. (1993) Modelling auditory processing and organisation.
@@ -783,7 +783,7 @@ def gammatone_basilar_membrane(
     )
 
 
-@jit(nopython=True)
+@njit
 def gammatone_bandwidth_demodulation(
     npts, tpt, center_freq, center_freq_cos, center_freq_sin
 ):
@@ -1003,7 +1003,7 @@ def envelope_sl(
     return _reference, _basilar_membrane
 
 
-@jit(nopython=True)
+@njit
 def inner_hair_cell_adaptation(
     reference_db, reference_basilar_membrane, delta, freq_sample
 ):

@@ -46,7 +46,7 @@ def hasqi_v2(
               signal RMS = 1. Default is 65 dB SPL if argument not provided.
         silence_threshold (float): Silence threshold sum across bands, dB above audio
             threshold. Default: 2.5
-        add_noise (float): Additive noise in dB SL to conditiona cross-covariance.
+        add_noise (float): Additive noise in dB SL to conditional cross-covariance.
             Default is 0.0
         segment_covariance (int): Segment size for the covariance calculation.
             Default is 16

@@ -19,7 +19,7 @@ from clarity.evaluator.msbg.smearing import Smearer
 
 @dataclass
 class FilterBank:
-    """Holds the numerators and demoninators of an IIR filter bank."""
+    """Holds the numerators and denominators of an IIR filter bank."""
 
     nums: np.ndarray
     denoms: np.ndarray

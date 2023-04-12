@@ -105,10 +105,10 @@ def test_loss_parameters():
 
     (
         attenuated_ohc,
-        bandwith,
+        bandwidth,
         low_knee,
         compression_ratio,
-        annenuated_ihc,
+        attenuated_ihc,
     ) = loss_parameters(
         hearing_loss=np.array([45, 45, 50, 60, 70, 80]),
         center_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
@@ -117,15 +117,15 @@ def test_loss_parameters():
 
     # check shapes
     assert attenuated_ohc.shape == (6,)
-    assert bandwith.shape == (6,)
+    assert bandwidth.shape == (6,)
     assert low_knee.shape == (6,)
     assert compression_ratio.shape == (6,)
-    assert annenuated_ihc.shape == (6,)
+    assert attenuated_ihc.shape == (6,)
     # check values
     assert np.sum(attenuated_ohc) == pytest.approx(
         220.39149328167292, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    assert np.sum(bandwith) == pytest.approx(
+    assert np.sum(bandwidth) == pytest.approx(
         15.041134665207498, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(low_knee) == pytest.approx(
@@ -134,7 +134,7 @@ def test_loss_parameters():
     assert np.sum(compression_ratio) == pytest.approx(
         6.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    assert np.sum(annenuated_ihc) == pytest.approx(
+    assert np.sum(attenuated_ihc) == pytest.approx(
         129.6085067183270, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 

@@ -44,7 +44,7 @@ def env_filter(
     """
     # Check the filter design parameters
     if freq_sub_sample > freq_samp:
-        raise ValueError("ubsampling rate too high.")
+        raise ValueError("upsampling rate too high.")
 
     if filter_cutoff > 0.5 * freq_sub_sample:
         raise ValueError("LP cutoff frequency too high.")
