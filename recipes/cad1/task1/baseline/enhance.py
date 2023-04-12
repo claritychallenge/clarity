@@ -31,7 +31,7 @@ def separate_sources(
     sample_rate: int,
     segment: float = 10.0,
     overlap: float = 0.1,
-    device: torch.device | str = None,
+    device: torch.device | str | None = None,
 ):
     """
     Apply model to a given mixture.

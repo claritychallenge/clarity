@@ -42,7 +42,7 @@ class NALR:
     def build(
         self,
         hl: np.ndarray,
-        cfs: np.ndarray = None,
+        cfs: np.ndarray | None = None,
     ) -> tuple[ndarray, ndarray]:
         """
         Args:
