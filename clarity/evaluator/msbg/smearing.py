@@ -13,9 +13,9 @@ SHIFT: Final = 64
 
 
 def audfilt(
-    rl: int | float,
-    ru: int | float,
-    sample_rate: int | float,
+    rl: float,
+    ru: float,
+    sample_rate: float,
     asize: int = 256,
 ) -> ndarray:
     """Calculate an auditory filter array.
@@ -54,7 +54,7 @@ def audfilt(
     return aud_filter
 
 
-def make_smear_mat3(rl: float, ru: float, sample_rate: int | float) -> ndarray:
+def make_smear_mat3(rl: float, ru: float, sample_rate: float) -> ndarray:
     """Make the smearing filter matrix.
 
     Args:
@@ -164,7 +164,7 @@ def smear3(f_smear: ndarray, inbuffer: ndarray) -> ndarray:
 class Smearer:
     """Class to hold the re-usable smearing filter."""
 
-    def __init__(self, rl: float, ru: float, sample_rate: int | float) -> None:
+    def __init__(self, rl: float, ru: float, sample_rate: float) -> None:
         self.rl = rl
         self.ru = ru
         self.sample_rate = sample_rate

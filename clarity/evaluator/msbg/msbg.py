@@ -7,7 +7,7 @@ from typing import Final
 
 import numpy as np
 import scipy
-from numpy import float64, ndarray
+from numpy import ndarray
 from scipy.signal import firwin, lfilter
 
 from clarity.evaluator.msbg.audiogram import Audiogram
@@ -144,7 +144,7 @@ class Ear:
         return output_signal
 
     def make_calibration_signal(
-        self, ref_rms_db: float64, n_channels: int = 1
+        self, ref_rms_db: float, n_channels: int = 1
     ) -> tuple[ndarray, ndarray]:
         """Add the calibration signal to the start of the signal.
 

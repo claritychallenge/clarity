@@ -137,7 +137,7 @@ def read_gtf_file(gtf_file: str) -> GTFParamDict:
 def firwin2(
     n_taps: int,
     frequencies: list[float] | ndarray,
-    filter_gains: list[int | float] | ndarray,
+    filter_gains: list[float] | ndarray,
     window: tuple[str, int] | str | None = None,
     antisymmetric: bool | None = None,  # pylint: disable=W0613
 ) -> ndarray:  # pylint: disable=W0613
@@ -181,7 +181,7 @@ def firwin2(
 def fir2(
     filter_length: int,
     frequencies: list[float] | ndarray,
-    filter_gains: list[int | float] | ndarray,
+    filter_gains: list[float] | ndarray,
     window_shape: ndarray | None = None,
 ) -> tuple[ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
@@ -255,7 +255,7 @@ def gen_tone(
     freq: int,
     duration: float,
     sample_rate: float = 44100.0,
-    level: int | float | float64 = 0.0,
+    level: float = 0.0,
 ) -> ndarray:
     """Generate a pure tone.
 
@@ -279,9 +279,9 @@ def gen_tone(
 
 
 def gen_eh2008_speech_noise(
-    duration: int | float,
+    duration: float,
     sample_rate: float = 44100.0,
-    level: int | float | float64 | None = None,
+    level: float | None = None,
     supplied_b: None = None,
 ) -> ndarray:
     """Generate speech shaped noise.
@@ -464,10 +464,10 @@ def generate_key_percent(
 
 def measure_rms(
     signal: ndarray,
-    sample_rate: int,
-    db_rel_rms: int | float,
+    sample_rate: float,
+    db_rel_rms: float,
     percent_to_track: float | None = None,
-) -> tuple[float64, ndarray, float64, float]:
+) -> tuple[float, ndarray, float, float]:
     """Measure Root Mean Square.
 
     A sophisticated method of measuring RMS in a file. It splits the signal up into
@@ -571,7 +571,7 @@ def read_signal(
 def write_signal(
     filename: str | Path,
     signal: ndarray,
-    sample_rate: int,
+    sample_rate: float,
     floating_point: bool = True,
     strict: bool = False,
 ) -> None:

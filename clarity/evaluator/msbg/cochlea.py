@@ -137,7 +137,7 @@ def gammatone_filterbank(
     return cochleagram
 
 
-def compute_envelope(coch_sig: ndarray, erbn_cf: ndarray, fs: int | float) -> ndarray:
+def compute_envelope(coch_sig: ndarray, erbn_cf: ndarray, fs: float) -> ndarray:
     """Obtain signal envelope.
 
     Envelope computed using full-wave rectification and low-pass filter
@@ -255,7 +255,7 @@ class Cochlea:
 
         logging.info("Severity level - %s", severity_level)
 
-    def simulate(self, coch_sig: ndarray, equiv_0dB_file_SPL: int | float) -> ndarray:
+    def simulate(self, coch_sig: ndarray, equiv_0dB_file_SPL: float) -> ndarray:
         """Pass a signal through the cochlea.
 
         Args:
