@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class NALR:
-    def __init__(self, nfir: int, sample_rate: int) -> None:
+    def __init__(self, nfir: int, sample_rate: float) -> None:
         """
         Args:
             nfir: Order of the NAL-R EQ filter and the matching delay

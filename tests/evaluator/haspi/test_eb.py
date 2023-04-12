@@ -474,7 +474,7 @@ def test_env_smooth():
     sample_rate = 24000
 
     smooth = env_smooth(
-        envelopes=envelopes, segment_size=segment_size, freq_sample=sample_rate
+        envelopes=envelopes, segment_size=segment_size, sample_rate=sample_rate
     )
 
     # check shapes and values

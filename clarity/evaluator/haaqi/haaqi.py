@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 def haaqi_v1(
     reference: np.ndarray,
-    reference_freq: int,
+    reference_freq: float,
     processed: np.ndarray,
-    processed_freq: int,
+    processed_freq: float,
     hearing_loss: np.ndarray,
     equalisation: int,
     level1: float = 65.0,
@@ -76,7 +76,7 @@ def haaqi_v1(
         processed_basilar_membrane,
         reference_sl,
         processed_sl,
-        freq_sample,
+        sample_rate,
     ) = eb.ear_model(
         reference,
         reference_freq,
@@ -91,8 +91,8 @@ def haaqi_v1(
     # Envelope and long-term average spectral features
     # Smooth the envelope outputs: 250 Hz sub-sampling rate
     segment_size = 8  # Averaging segment size in msec
-    reference_smooth = eb.env_smooth(reference_db, segment_size, freq_sample)
-    processed_smooth = eb.env_smooth(processed_db, segment_size, freq_sample)
+    reference_smooth = eb.env_smooth(reference_db, segment_size, sample_rate)
+    processed_smooth = eb.env_smooth(processed_db, segment_size, sample_rate)
 
     # Mel cepstrum correlation after passing through modulation filterbank
     _, _, mel_cepstral_high, _ = eb.melcor9(
@@ -111,7 +111,7 @@ def haaqi_v1(
         reference_basilar_membrane,
         processed_basilar_membrane,
         segment_covariance,
-        freq_sample,
+        sample_rate,
     )
 
     # Average signal segment cross-covariance
@@ -163,7 +163,7 @@ def compute_haaqi(
     reference_signal: np.ndarray,
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
-    sample_rate: int,
+    sample_rate: float,
     equalisation: int = 1,
     level1: float = 65.0,
     scale_reference: bool = True,
