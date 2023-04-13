@@ -5,7 +5,7 @@ import logging
 from typing import Any
 
 import numpy as np
-from numba import njit
+from numba import njit  # type: ignore # <-- silence mypy no attribute error
 from numba.typed import List as TypedList  # pylint: disable=no-name-in-module
 from numpy import ndarray
 from scipy.signal import convolve

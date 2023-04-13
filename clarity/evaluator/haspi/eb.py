@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from numba import njit
+from numba import njit  # type: ignore # <-- silence mypy no attribute error
 from scipy.signal import (
     butter,
     cheby2,
