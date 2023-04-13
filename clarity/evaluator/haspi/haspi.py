@@ -13,9 +13,9 @@ from clarity.evaluator.haspi.ip import get_neural_net, nn_feed_forward_ensemble
 
 def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     reference: np.ndarray,
-    reference_freq: int,
+    reference_sample_rate: int,
     processed: np.ndarray,
-    processed_freq: int,
+    processed_sample_rate: int,
     hearing_loss,
     level1: int = 65,
     f_lp: int = 320,
@@ -41,10 +41,10 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         reference (np.ndarray): Clear input reference speech signal with no noise or
             distortion. If a hearing loss is specified, no amplification should be
             provided.
-        reference_freq (int): Sampling rate in Hz for signal x
+        reference_sample_rate (int): Sampling rate in Hz for signal x
         processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or
             processing.
-        processed_freq (int): Sampling rate in Hz for signal y.
+        processed_sample_rate (int): Sampling rate in Hz for signal y.
         hearing_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric
             frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
         level1 (int): Optional input specifying level in dB SPL that corresponds to a
@@ -69,9 +69,9 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     # Reference is no processing, normal hearing
     reference_env, _, processed_env, _, _, _, fsamp = ear_model(
         reference,
-        reference_freq,
+        reference_sample_rate,
         processed,
-        processed_freq,
+        processed_sample_rate,
         hearing_loss,
         itype,
         level1,
@@ -132,10 +132,10 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
     reference_right,
     processed_left,
     processed_right,
-    fs_signal,
+    sample_rate,
     audiogram_left,
     audiogram_right,
-    audiogram_cfs,
+    audiogram_frequencies,
     level=100,
 ) -> float:
     """Better ear HASPI.
@@ -147,7 +147,7 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         ref_right (np.ndarray): right channel of reference signal
         proc_left (np.ndarray): left channel of processed signal
         proc_right (np.ndarray): right channel of processed signal
-        fs_signal (int): sampling rate for both signal
+        sample_rate (int): sampling rate for both signal
         audiogram_left (): left ear audiogram
         audiogram_right (): right ear audiogram
         audiogram_cfs: audiogram frequencies
@@ -165,20 +165,33 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
 
     # Adjust listener.audiogram_levels_l and _r to match the frequencies above
     hearing_loss_left = [
-        audiogram_left[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
-    ]
-    hearing_loss_right = [
-        audiogram_right[i] for i in range(len(audiogram_cfs)) if audiogram_cfs[i] in aud
+        loss
+        for (freq, loss) in zip(audiogram_frequencies, audiogram_left)
+        if freq in aud
     ]
 
+    hearing_loss_right = [
+        loss
+        for (freq, loss) in zip(audiogram_frequencies, audiogram_right)
+        if freq in aud
+    ]
+
+    if len(hearing_loss_left) != len(aud) or len(hearing_loss_right) != len(aud):
+        raise ValueError("Audiogram does not have all measurements needed by HASPI.")
+
     score_left, _ = haspi_v2(
-        reference_left, fs_signal, processed_left, fs_signal, hearing_loss_left, level
+        reference_left,
+        sample_rate,
+        processed_left,
+        sample_rate,
+        hearing_loss_left,
+        level,
     )
     score_right, _ = haspi_v2(
         reference_right,
-        fs_signal,
+        sample_rate,
         processed_right,
-        fs_signal,
+        sample_rate,
         hearing_loss_right,
         level,
     )

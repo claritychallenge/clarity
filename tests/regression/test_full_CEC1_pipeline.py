@@ -108,7 +108,7 @@ def test_full_cec1_pipeline(regtest):
     # The purpose of the test is not to see if the haspi score is reasonable
     # but just to check that the results do not change unexpectedly across releases.
 
-    nalr_cfg = {"nfir": 220, "fs": 44100}
+    nalr_cfg = {"nfir": 220, "sample_rate": 44100}
     compressor_cfg = {
         "threshold": 0.35,
         "attenuation": 0.1,
@@ -119,7 +119,7 @@ def test_full_cec1_pipeline(regtest):
 
     msbg_ear_cfg = {
         "src_pos": "ff",
-        "sample_frequency": 44100,
+        "sample_rate": 44100,
         "equiv_0db_spl": 100,
         "ahr": 20,
     }

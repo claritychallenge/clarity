@@ -5,10 +5,11 @@ import pathlib
 
 import hydra
 import numpy as np
-from evaluate import make_scene_listener_list  # pylint: disable=E0401
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
+
+from recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ def enhance(cfg: DictConfig) -> None:
     )
 
     for scene, listener in tqdm(scene_listener_pairs):
-        sample_freq, signal = wavfile.read(
+        sample_rate, signal = wavfile.read(
             pathlib.Path(cfg.path.scenes_folder) / f"{scene}_mix_CH1.wav"
         )
 
@@ -56,7 +57,7 @@ def enhance(cfg: DictConfig) -> None:
         #
 
         wavfile.write(
-            enhanced_folder / f"{scene}_{listener}_enhanced.wav", sample_freq, signal
+            enhanced_folder / f"{scene}_{listener}_enhanced.wav", sample_rate, signal
         )
 
 

@@ -13,7 +13,7 @@ repos:
         types: [python]
         args: [--fix=no]
       - id: check-added-large-files
-        args: [--maxkb=1024]
+        args: [--maxkb=2048]
       - id: debug-statements
       - id: check-byte-order-marker
       # - id: check-yaml
@@ -26,7 +26,7 @@ repos:
         args: [--py38-plus]
 
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
         types: [python]
@@ -52,7 +52,7 @@ repos:
         args: ["--profile", "black"]
 
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.6.4
+    rev: 1.7.0
     hooks:
       - id: nbqa-black
       - id: nbqa-flake8
@@ -65,19 +65,21 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.1.1
+    rev: v1.2.0
     hooks:
       - id: mypy
+        args:
+          - --explicit-package-bases
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.0.259"
+    rev: "v0.0.261"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v2.17.1
+    rev: v3.0.0a6
     hooks:
       - id: pylint
         args:
@@ -94,6 +96,8 @@ repos:
         language: system
         files: \.py$
         exclude: clarity/_version.py # 3rd party code that doesn't conform
+
+exclude: ^(tests/regression/_regtest_outputs/) # We don't want these being 'fixed'
 
 ci:
   autofix_prs: true
