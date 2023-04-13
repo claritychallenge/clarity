@@ -112,7 +112,7 @@ def test_gainrule_camfit_linear():
         "frequencies": [250, 500, 1000, 2000, 4000, 8000],
         "levels": [30, 40, 50, 60, 70, 80],
     }
-    params = gainrule_camfit_linear(
+    sGt, noisegate_level, noisegate_slope, insertion_gains = gainrule_camfit_linear(
         audiogram=audiogram,
         sFitmodel=sFitmodel,
         noisegatelevels=45,
@@ -120,22 +120,15 @@ def test_gainrule_camfit_linear():
         max_output_level=100,
     )
 
-    assert params.keys() == {
-        "sGt",
-        "noisegate_level",
-        "noisegate_slope",
-        "insertion_gains",
-    }
+    assert sGt.shape == (6, 6, 2)
+    assert noisegate_level.shape == (6, 2)
+    assert noisegate_slope.shape == (6, 2)
+    assert insertion_gains.shape == (6, 2)
 
-    assert params["sGt"].shape == (6, 6, 2)
-    assert params["noisegate_level"].shape == (6, 2)
-    assert params["noisegate_slope"].shape == (6, 2)
-    assert params["insertion_gains"].shape == (6, 2)
-
-    assert params["sGt"].sum() == pytest.approx(1589.2)
-    assert params["noisegate_level"].sum() == pytest.approx(540.0)
-    assert params["noisegate_slope"].sum() == pytest.approx(12.0)
-    assert params["insertion_gains"].sum() == pytest.approx(284.8)
+    assert sGt.sum() == pytest.approx(1589.2)
+    assert noisegate_level.sum() == pytest.approx(540.0)
+    assert noisegate_slope.sum() == pytest.approx(12.0)
+    assert insertion_gains.sum() == pytest.approx(284.8)
 
 
 def test_gainrule_camfit_compr():

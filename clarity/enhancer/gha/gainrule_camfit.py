@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 from scipy.interpolate import interp1d
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from numpy import ndarray
 
     from clarity.enhancer.gha.audiogram import Audiogram
+    from clarity.enhancer.gha.gha_utils import FittingParams
 
 
 def compute_proportion_overlap(
@@ -140,7 +141,7 @@ def isothr(vsDesF: list[int] | ndarray) -> ndarray:
     return vIsoThrDB
 
 
-def freq_interp_sh(f_in: ndarray, y_in: ndarray, f: list[float] | ndarray) -> ndarray:
+def freq_interp_sh(f_in: ndarray, y_in: ndarray, f: ndarray) -> ndarray:
     """Linear interpolation on logarithmic frequency scale.
 
     Has samples and hold on edges.
@@ -175,10 +176,10 @@ def freq_interp_sh(f_in: ndarray, y_in: ndarray, f: list[float] | ndarray) -> nd
 
 
 def gains(
-    compr_thr_inputs: list[int] | ndarray,
-    compr_thr_gains: list[int] | ndarray,
-    compression_ratios: list[float] | ndarray,
-    levels: list[float] | ndarray,
+    compr_thr_inputs: ndarray,
+    compr_thr_gains: ndarray,
+    compression_ratios: ndarray,
+    levels: ndarray,
 ) -> ndarray:
     """Based on OpenMHA gains subfunction of gainrule_camfit_compr.
 
@@ -209,11 +210,11 @@ def gains(
 
 def gainrule_camfit_linear(
     audiogram: Audiogram,
-    sFitmodel: dict[str, Any],
-    noisegatelevels: int | list[int] = 45,
-    noisegateslope: int = 1,
-    max_output_level: int = 100,
-) -> dict[str, ndarray]:
+    sFitmodel: FittingParams,
+    noisegatelevels: float | ndarray = 45.0,
+    noisegateslope: float | ndarray = 1.0,
+    max_output_level: float = 100.0,
+) -> tuple[ndarray, ndarray, ndarray, ndarray]:
     """Apply linear Cambridge rule for hearing aid fittings 'CAMFIT'.
 
     Based on OpenMHA gainrule_camfit_linear.m. Applies linear Cambridge rule for
@@ -244,8 +245,8 @@ def gainrule_camfit_linear(
             (default: 1)
 
     Returns:
-        dict: dictionary containing gain table, noise gate, and noise
-            gate expansion slope fields
+        tuple: containing gain table, noise gate, and noise
+            gate expansion slope
 
     """
 
@@ -253,15 +254,10 @@ def gainrule_camfit_linear(
         [125, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000, 5005]
     )
     intercepts = np.array([-11, -10, -8, -6, 0, -1, 1, -1, 0, 1, 1])
-    try:
-        if np.size(sFitmodel["frequencies"][0][0]) > 1:
-            intercepts = freq_interp_sh(
-                intercept_frequencies, intercepts, sFitmodel["frequencies"][0][0]
-            )
-    except TypeError:  # noqa E722
-        intercepts = freq_interp_sh(
-            intercept_frequencies, intercepts, sFitmodel["frequencies"]
-        )
+
+    intercepts = freq_interp_sh(
+        intercept_frequencies, intercepts, sFitmodel["frequencies"]
+    )
 
     sFitmodel_frequencies = sFitmodel["frequencies"]
     sFitmodel_levels = sFitmodel["levels"]
@@ -316,22 +312,16 @@ def gainrule_camfit_linear(
 
     # overall_level = 10 * np.log(np.sum(10 ** (insertion_gains_out / 10), axis=0))
 
-    output = {}
-    output["sGt"] = sGt
-    output["noisegate_level"] = noisegate_level
-    output["noisegate_slope"] = noisegate_slope
-    output["insertion_gains"] = insertion_gains_out
-
-    return output
+    return sGt, noisegate_level, noisegate_slope, insertion_gains_out
 
 
 def gainrule_camfit_compr(
     audiogram: Audiogram,
-    sFitmodel: dict[str, Any],
-    noisegatelevels: int | list[int] = 45,
-    noisegateslope: int = 1,
-    level: int = 0,
-    max_output_level: int = 100,
+    sFitmodel: FittingParams,
+    noisegatelevels: float | ndarray = 45.0,
+    noisegateslope: float | ndarray = 1.0,
+    level: float = 0.0,
+    max_output_level: float = 100.0,
 ) -> tuple[ndarray, ndarray, ndarray]:
     """Applies compressive Cambridge rule for hearing aid fittings 'CAMFIT'.
 
@@ -473,11 +463,9 @@ def gainrule_camfit_compr(
     Lmid = speech_level_65_in_dc_bands
 
     # Calculate gains at centre frequencies
-    Gmid = gainrule_camfit_linear(
+    gmid_sgt, _, _, insertion_gains = gainrule_camfit_linear(
         audiogram, sFitmodel, noisegatelevels, noisegateslope, max_output_level
     )
-    insertion_gains = Gmid["insertion_gains"]
-    gmid_sgt = Gmid["sGt"]
 
     # Calculate compression ratios
     compression_ratio = np.zeros((np.size(frequencies), 2))

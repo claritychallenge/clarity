@@ -21,14 +21,14 @@ def gaintable():
     levels_r = np.array([45, 45, 35, 45, 60, 65])
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
     audiogram = Audiogram(levels_l=levels_l, levels_r=levels_r, cfs=cfs)
-    noisegatelevels = np.array([38, 38, 36, 37, 32, 26, 23, 22, 8])
-    noisegateslope = 0.0
+    noisegate_levels = np.array([38, 38, 36, 37, 32, 26, 23, 22, 8])
+    noisegate_slope = 0.0
     cr_level = 0.0
     max_output_level = 100.0
     this_gaintable = get_gaintable(
         audiogram=audiogram,
-        noisegatelevels=noisegatelevels,
-        noisegateslope=noisegateslope,
+        noisegate_levels=noisegate_levels,
+        noisegate_slope=noisegate_slope,
         cr_level=cr_level,
         max_output_level=max_output_level,
     )
