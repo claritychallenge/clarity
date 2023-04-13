@@ -332,7 +332,7 @@ def gainrule_camfit_compr(
     noisegateslope: int = 1,
     level: int = 0,
     max_output_level: int = 100,
-) -> dict[str, ndarray]:
+) -> tuple[ndarray, ndarray, ndarray]:
     """Applies compressive Cambridge rule for hearing aid fittings 'CAMFIT'.
 
     Translation of OpenMHA gainrule_camfit_compr.m.
@@ -361,8 +361,8 @@ def gainrule_camfit_compr(
         max_output_level (int): maximum output level in dB
 
     Returns:
-        dict: dictionary containing gain table, noise gate, and noise
-            gate expansion slope fields
+        tuple: containing gain table, noise gate, and noise
+            gate expansion slope
 
     """
 
@@ -524,9 +524,4 @@ def gainrule_camfit_compr(
 
     logging.info("Noisegate levels are %s", noisegate_level)
 
-    output = {}
-    output["sGt"] = sGt
-    output["noisegatelevel"] = noisegate_level
-    output["noisegateslope"] = noisegate_slope
-
-    return output
+    return sGt, noisegate_level, noisegate_slope
