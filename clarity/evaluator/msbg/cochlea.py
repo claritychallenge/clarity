@@ -19,7 +19,7 @@ from clarity.evaluator.msbg.smearing import Smearer
 
 @dataclass
 class FilterBank:
-    """Holds the numerators and demoninators of an IIR filter bank."""
+    """Holds the numerators and denominators of an IIR filter bank."""
 
     nums: np.ndarray
     denoms: np.ndarray
@@ -137,7 +137,7 @@ def gammatone_filterbank(
     return cochleagram
 
 
-def compute_envelope(coch_sig: ndarray, erbn_cf: ndarray, fs: int | float) -> ndarray:
+def compute_envelope(coch_sig: ndarray, erbn_cf: ndarray, fs: float) -> ndarray:
     """Obtain signal envelope.
 
     Envelope computed using full-wave rectification and low-pass filter
@@ -240,11 +240,11 @@ class Cochlea:
 
         # Compute severity level and set parameters accordingly
         severity_level = self.audiogram.severity
-        self.gtfbank_params: dict[str, Any] = read_gtf_file(
+        self.gtfbank_params = read_gtf_file(
             f"msbg_hparams/{HL_PARAMS[severity_level]['gtfbank_file']}.json"
         )
         self.cf_expansion, self.eq_loud_db_catch_up = compute_recruitment_parameters(
-            self.gtfbank_params["GTn_CentFrq"], audiogram, catch_up_level
+            np.array(self.gtfbank_params["GTn_CentFrq"]), audiogram, catch_up_level
         )
 
         # Set-up the smearer
@@ -255,7 +255,7 @@ class Cochlea:
 
         logging.info("Severity level - %s", severity_level)
 
-    def simulate(self, coch_sig: ndarray, equiv_0dB_file_SPL: int | float) -> ndarray:
+    def simulate(self, coch_sig: ndarray, equiv_0dB_file_SPL: float) -> ndarray:
         """Pass a signal through the cochlea.
 
         Args:
@@ -274,12 +274,14 @@ class Cochlea:
             coch_sig,
             self.gtfbank_params["NGAMMA"],
             FilterBank(
-                self.gtfbank_params["GTn_nums"], self.gtfbank_params["GTn_denoms"]
+                np.array(self.gtfbank_params["GTn_nums"]),
+                np.array(self.gtfbank_params["GTn_denoms"]),
             ),
-            self.gtfbank_params["GTnDelays"],
+            np.array(self.gtfbank_params["GTnDelays"]),
             self.gtfbank_params["Start2PoleHP"],
             FilterBank(
-                self.gtfbank_params["HP_nums"], self.gtfbank_params["HP_denoms"]
+                np.array(self.gtfbank_params["HP_nums"]),
+                np.array(self.gtfbank_params["HP_denoms"]),
             ),
         )
 

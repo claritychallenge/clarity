@@ -2,17 +2,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Final, Literal
 
 import numpy as np
 import scipy
 import scipy.io
 
-SPEECH_FILTER = scipy.io.loadmat(
-    Path(__file__).parent / "params/speech_weight.mat",
-    squeeze_me=True,
+SPEECH_FILTER: Final = np.array(
+    scipy.io.loadmat(
+        Path(__file__).parent / "params/speech_weight.mat",
+        squeeze_me=True,
+    )["filt"]
 )
-SPEECH_FILTER = np.array(SPEECH_FILTER["filt"])
 
 
 def better_ear_speechweighted_snr(target: np.ndarray, noise: np.ndarray) -> float:

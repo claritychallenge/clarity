@@ -77,7 +77,9 @@ def test_better_ear_speechweighted_snr_noise_wrong_shape_index_error() -> None:
         ),
     ],
 )
-def test_speechweighted_snr(target: np.array, noise: np.array, expected: float) -> None:
+def test_speechweighted_snr(
+    target: np.ndarray, noise: np.ndarray, expected: float
+) -> None:
     """Test of speechweighted_snr()."""
     signal_noise_ratio = speechweighted_snr(target, noise)
     assert isinstance(signal_noise_ratio, float)

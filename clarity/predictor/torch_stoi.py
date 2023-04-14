@@ -3,6 +3,8 @@ This implementation is from https://github.com/mpariente/pytorch_stoi, please ci
 and star the repo. The pip version of torch_stoi does not include EPS in line 127 & 128,
 hence could lead to sqrt(0)
 """
+from typing import Final
+
 import numpy as np
 import torch
 import torchaudio
@@ -11,7 +13,7 @@ from pystoi.utils import thirdoct
 from torch import nn
 from torch.nn.functional import pad, unfold
 
-EPS = 1e-8
+EPS: Final = 1e-8
 
 
 class NegSTOILoss(nn.Module):

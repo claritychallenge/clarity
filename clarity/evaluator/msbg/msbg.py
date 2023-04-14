@@ -3,10 +3,11 @@ from __future__ import annotations
 
 import logging
 import math
+from typing import Final
 
 import numpy as np
 import scipy
-from numpy import float64, ndarray
+from numpy import ndarray
 from scipy.signal import firwin, lfilter
 
 from clarity.evaluator.msbg.audiogram import Audiogram
@@ -26,7 +27,7 @@ from clarity.evaluator.msbg.msbg_utils import (
 
 # Cut off frequency of low-pass filter at end of simulations:
 # prevents possible excessive processing noise at high frequencies.
-UPPER_CUTOFF_HZ = 18000
+UPPER_CUTOFF_HZ: Final = 18000
 
 
 class Ear:
@@ -35,19 +36,19 @@ class Ear:
     def __init__(
         self,
         src_pos: str = "ff",
-        sample_frequency: int | float = 44100.0,
-        equiv_0db_spl: int = 100,
-        ahr: int = 20,
+        sample_rate: float = 44100.0,
+        equiv_0db_spl: float = 100.0,
+        ahr: float = 20.0,
     ) -> None:
         """
         Constructor for the Ear class.
         Args:
             src_pos (str): Position of the source.
-            sample_frequency (float): sample frequency.
+            sample_rate (float): sample frequency.
             equiv_0db_spl (): ???
             ahr (): ???
         """
-        self.sample_frequency = sample_frequency
+        self.sample_rate = sample_rate
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv_0db_spl = equiv_0db_spl
         self.ahr = ahr
@@ -86,9 +87,9 @@ class Ear:
 
     @staticmethod
     def src_to_cochlea_filt(
-        ip_sig: ndarray,
+        input_signal: ndarray,
         src_correction: ndarray,
-        sample_frequency: int,
+        sample_rate: float,
         backward: bool = False,
     ) -> ndarray:
         """Simulate middle and outer ear transfer functions.
@@ -101,11 +102,11 @@ class Ear:
         eardrum and then via middle ear: use same length FIR 5-12-97.
 
         Args:
-            ip_sig (ndarray): signal to process
+            input_signal (ndarray): signal to process
             src_correction (np.ndarray): correction to make for src position as an array
                 returned by get_src_correction(src_pos) where src_pos is one of ff, df
                 or ITU
-            sample_frequency (int): sampling frequency
+            sample_rate (int): sampling frequency
             backward (bool, optional): if true then cochlea to src (default: False)
 
         Returns:
@@ -115,7 +116,7 @@ class Ear:
         logging.info("performing outer/middle ear corrections")
 
         # make sure that response goes only up to sample_frequency/2
-        nyquist = int(sample_frequency / 2)
+        nyquist = int(sample_rate / 2.0)
         ixf_useful = np.nonzero(HZ < nyquist)
 
         hz_used = HZ[ixf_useful]
@@ -134,16 +135,16 @@ class Ear:
         correction_used = correction_used.flatten()
         # Create filter with 23 msec window to do reasonable job down to about 100 Hz
         # Scales with fs, fails with longer windows in fir2 in original MATLAB version
-        n_wdw = 2 * math.floor((sample_frequency / 16e3) * 368 / 2)
+        n_wdw = 2 * math.floor((sample_rate / 16e3) * 368 / 2)
         hz_used = hz_used / nyquist
 
         b = firwin2(n_wdw + 1, hz_used.flatten(), correction_used, window=("kaiser", 4))
-        op_sig = scipy.signal.lfilter(b, 1, ip_sig)
+        output_signal = scipy.signal.lfilter(b, 1, input_signal)
 
-        return op_sig
+        return output_signal
 
     def make_calibration_signal(
-        self, ref_rms_db: int | float64
+        self, ref_rms_db: float, n_channels: int = 1
     ) -> tuple[ndarray, ndarray]:
         """Add the calibration signal to the start of the signal.
 
@@ -151,7 +152,7 @@ class Ear:
             ref_rms_db (float): reference rms level in dB
 
         Returns:
-            ndarray: the processed signal
+            tuple[ndarray, ndarray] - pre and post calibration signals
 
         """
         # Calibration noise and tone with same RMS as original speech,
@@ -159,33 +160,25 @@ class Ear:
         # For testing, ref_rms_dB must be equal to -31.2
 
         noise_burst = gen_eh2008_speech_noise(
-            duration=2, sample_frequency=self.sample_frequency, level=ref_rms_db
+            duration=2, sample_rate=self.sample_rate, level=ref_rms_db
         )
         tone_burst = gen_tone(
             freq=520,
             duration=0.5,
-            sample_frequency=self.sample_frequency,
+            sample_rate=self.sample_rate,
             level=ref_rms_db,
         )
-        silence = np.zeros(int(0.05 * self.sample_frequency))  # 50 ms duration
-        return (
-            np.concatenate((silence, tone_burst, silence, noise_burst, silence)),
-            silence,
+        silence = np.zeros(int(0.05 * self.sample_rate))  # 50 ms duration
+
+        pre_calibration = np.concatenate(
+            (silence, tone_burst, silence, noise_burst, silence)
         )
 
-    @staticmethod
-    def array_to_list(chans: ndarray) -> list[ndarray]:
-        """Convert signal into a list of 1-D arrays.
+        # Repeat signals for the desired number of channels
+        post_calibration = np.tile(silence[np.newaxis, ...], (n_channels, 1))
+        pre_calibration = np.tile(pre_calibration[np.newaxis, ...], (n_channels, 1))
 
-        Args:
-            signal (np.ndarray) Signal to be converted, can be 1-D already.
-
-        Returns:
-            np.ndarray: A list of 1-D arrays.
-        """
-        if len(chans.shape) == 1:
-            chans = chans[..., np.newaxis]
-        return [chans[:, i] for i in range(chans.shape[1])]
+        return (pre_calibration, post_calibration)
 
     def process(self, signal: ndarray, add_calibration: bool = False) -> list[ndarray]:
         """Run the hearing loss simulation.
@@ -200,8 +193,11 @@ class Ear:
 
         """
 
-        sample_frequency = 44100  # This is the only sampling frequency that can be used
-        if sample_frequency != self.sample_frequency:
+        signal = signal.T  # signals as rows
+        if len(signal.shape) == 1:
+            signal = signal[np.newaxis, ...]
+        sample_rate = 44100  # This is the only sampling frequency that can be used
+        if sample_rate != self.sample_rate:
             logging.error(
                 "Warning: only a sampling frequency of 44.1kHz can be used by MSBG."
             )
@@ -209,29 +205,26 @@ class Ear:
 
         logging.info("Processing {len(chans)} samples")
 
-        # Get single channel array and convert to list
-        signal = Ear.array_to_list(signal)
-
         # Need to know file RMS, and then call that a certain level in SPL:
         # needs some form of pre-measuring.
-        level_resample_frequency = 10 * np.log10(np.mean(np.array(signal) ** 2))
+        signal_rms_level_db = 10 * np.log10(np.mean(np.array(signal) ** 2))
 
         equiv_0db_spl = self.equiv_0db_spl + self.ahr
 
-        level_db_spl = equiv_0db_spl + level_resample_frequency
+        level_db_spl = equiv_0db_spl + signal_rms_level_db
         calib_db_spl = level_db_spl
         target_spl = level_db_spl
         ref_rms_db = calib_db_spl - equiv_0db_spl
 
         # Measure RMS where 3rd arg is dB_rel_rms (how far below)
         calculated_rms, idx, _rel_db_thresh, _active = measure_rms(
-            signal[0], sample_frequency, -12
+            signal[0], sample_rate, -12
         )
 
         # Rescale input data and check level after rescaling
         # This is to ensure that the following processing steps are applied correctly
         change_db = target_spl - (equiv_0db_spl + 20 * np.log10(calculated_rms))
-        signal = [x * np.power(10, 0.05 * change_db) for x in signal]
+        signal = signal * np.power(10, 0.05 * change_db)
         new_rms_db = equiv_0db_spl + 10 * np.log10(
             np.mean(np.power(signal[0][idx], 2.0))
         )
@@ -243,42 +236,31 @@ class Ear:
 
         # Add calibration signal at target SPL dB
         if add_calibration is True:
-            # if self.calibration_signal is None:
-            #     self.calibration_signal = self.make_calibration_signal(ref_rms_db)
+            pre_calibration, post_calibration = self.make_calibration_signal(
+                ref_rms_db, n_channels=signal.shape[0]
+            )
             # signal = [
-            #     np.concatenate(
-            #         (self.calibration_signal[0], x, self.calibration_signal[1])
-            #     )
-            #     for x in signal
+            #    np.concatenate((calibration_signal[0], x, #calibration_signal[1]))
+            #    for x in signal
             # ]
-            calibration_signal = self.make_calibration_signal(ref_rms_db)
-            signal = [
-                np.concatenate((calibration_signal[0], x, calibration_signal[1]))
-                for x in signal
-            ]
+            signal = np.concatenate((pre_calibration, signal, post_calibration), axis=1)
 
         # Transform from src pos to cochlea, simulate cochlea, transform back to src pos
-        signal = [
-            Ear.src_to_cochlea_filt(x, self.src_correction, sample_frequency)
-            for x in signal
-        ]
+        signal = Ear.src_to_cochlea_filt(signal, self.src_correction, sample_rate)
         if self.cochlea is not None:
-            signal = [self.cochlea.simulate(x, equiv_0db_spl) for x in signal]
-        signal = [
-            Ear.src_to_cochlea_filt(
-                x, self.src_correction, sample_frequency, backward=True
-            )
-            for x in signal
-        ]
+            signal = np.array([self.cochlea.simulate(x, equiv_0db_spl) for x in signal])
+        signal = Ear.src_to_cochlea_filt(
+            signal, self.src_correction, sample_rate, backward=True
+        )
 
         # Implement low-pass filter at top end of audio range: flat to Cutoff freq,
         # tails below -80 dB. Suitable lpf for signals later converted to MP3, flat to
         # 15 kHz. Small window to design low-pass FIR, to cut off high freq processing
         # noise low-pass to something sensible, prevents exaggeration of > 15 kHz
-        winlen = 2 * math.floor(0.0015 * sample_frequency) + 1
+        winlen = 2 * math.floor(0.0015 * sample_rate) + 1
         lpf44d1 = firwin(
-            winlen, UPPER_CUTOFF_HZ / int(sample_frequency / 2), window=("kaiser", 8)
+            winlen, UPPER_CUTOFF_HZ / int(sample_rate / 2), window=("kaiser", 8)
         )
-        signal = [lfilter(lpf44d1, 1, x) for x in signal]
+        signal_list = [lfilter(lpf44d1, 1, x) for x in signal]
 
-        return signal
+        return signal_list

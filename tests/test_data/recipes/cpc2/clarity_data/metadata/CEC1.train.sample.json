@@ -1,0 +1,49 @@
+[{
+        "prompt": "i don't want us to apportion blame she said",
+        "scene": "S08547",
+        "n_words": 9,
+        "hits": 4,
+        "listener": "L0001",
+        "system": "E001",
+        "correctness": 44.4444444444,
+        "response": "i don't want to have to report he said",
+        "volume": 56,
+        "signal": "S08547_L0001_E001"
+    },
+    {
+        "prompt": "at home indoors i didn't ask my mum",
+        "scene": "S08564",
+        "n_words": 8,
+        "hits": 2,
+        "listener": "L0001",
+        "system": "E001",
+        "correctness": 25.0,
+        "response": "at home",
+        "volume": 50,
+        "signal": "S08564_L0001_E001"
+    },
+    {
+        "prompt": "at home indoors i didn't ask my mum",
+        "scene": "S08564",
+        "n_words": 8,
+        "hits": 2,
+        "listener": "L0002",
+        "system": "E002",
+        "correctness": 25.0,
+        "response": "at home",
+        "volume": 50,
+        "signal": "S08564_L0002_E002"
+    },
+    {
+        "prompt": "at home indoors i didn't ask my mum",
+        "scene": "S08564",
+        "n_words": 8,
+        "hits": 2,
+        "listener": "L0003",
+        "system": "E003",
+        "correctness": 25.0,
+        "response": "at home",
+        "volume": 50,
+        "signal": "S08564_L0003_E003"
+    }
+]

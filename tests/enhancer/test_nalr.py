@@ -4,7 +4,7 @@ import pytest
 
 from clarity.enhancer.nalr import NALR
 
-cfg_nalr = {"nfir": 220, "fs": 44100}
+cfg_nalr = {"nfir": 220, "sample_rate": 44100}
 
 
 STANDARD_CFS = np.array([250, 500, 1000, 2000, 4000, 6000])

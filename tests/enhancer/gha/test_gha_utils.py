@@ -15,19 +15,20 @@ from clarity.enhancer.gha.gha_utils import (
 @pytest.fixture
 def gaintable():
     """fixture for gaintable"""
+    np.set_printoptions(threshold=1000)
     np.random.seed(0)
     levels_l = np.array([45, 45, 35, 45, 60, 65])
     levels_r = np.array([45, 45, 35, 45, 60, 65])
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
     audiogram = Audiogram(levels_l=levels_l, levels_r=levels_r, cfs=cfs)
-    noisegatelevels = np.array([38, 38, 36, 37, 32, 26, 23, 22, 8])
-    noisegateslope = 0.0
+    noisegate_levels = np.array([38, 38, 36, 37, 32, 26, 23, 22, 8])
+    noisegate_slope = 0.0
     cr_level = 0.0
     max_output_level = 100.0
     this_gaintable = get_gaintable(
         audiogram=audiogram,
-        noisegatelevels=noisegatelevels,
-        noisegateslope=noisegateslope,
+        noisegate_levels=noisegate_levels,
+        noisegate_slope=noisegate_slope,
         cr_level=cr_level,
         max_output_level=max_output_level,
     )
@@ -79,13 +80,15 @@ def test_multifit_apply_noisegate(gaintable):
     assert np.sum(sGt) == pytest.approx(INITIAL_SGT_SUM)
     sFit_model_frequencies = gaintable["frequencies"]
     sFit_model_levels = gaintable["levels"]
-    noisegate_level = gaintable["noisegatelevel"]
+    noisegate_levels = gaintable["noisegatelevel"]
     noisegate_slope = gaintable["noisegateslope"]
-    signal = multifit_apply_noisegate(
-        sGt, sFit_model_frequencies, sFit_model_levels, noisegate_level, noisegate_slope
+    corrected_sGt = multifit_apply_noisegate(
+        sGt,
+        sFit_model_frequencies,
+        sFit_model_levels,
+        noisegate_levels,
+        noisegate_slope,
     )
-    # *NB* the returned sGt values equal the sGt variable values...
-    assert np.allclose(signal["sGt"], sGt)
-    # ... but the sGt values have been changed by multifit_apply_noisegate
-    assert np.sum(sGt) != pytest.approx(INITIAL_SGT_SUM)
-    assert np.sum(sGt) == pytest.approx(FINAL_SGT_SUM)
+
+    assert np.sum(sGt) == pytest.approx(INITIAL_SGT_SUM)
+    assert np.sum(corrected_sGt) == pytest.approx(FINAL_SGT_SUM)

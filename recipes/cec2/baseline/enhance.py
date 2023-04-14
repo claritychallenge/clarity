@@ -37,11 +37,11 @@ def enhance(cfg: DictConfig) -> None:
                 listener_audiograms[listener]["audiogram_levels_r"]
             )
 
-            fs, signal = wavfile.read(
+            sample_rate, signal = wavfile.read(
                 Path(cfg.path.scenes_folder) / f"{scene}_mix_CH1.wav"
             )
             signal = signal / 32768.0
-            assert fs == cfg.nalr.fs
+            assert sample_rate == cfg.nalr.sample_rate
             nalr_fir, _ = enhancer.build(audiogram_left, cfs)
             out_l = enhancer.apply(nalr_fir, signal[:, 0])
 
@@ -60,7 +60,7 @@ def enhance(cfg: DictConfig) -> None:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
             np.clip(enhanced, -1.0, 1.0, out=enhanced)
             signal_16 = (32768.0 * enhanced).astype(np.int16)
-            wavfile.write(enhanced_folder / filename, fs, signal_16)
+            wavfile.write(enhanced_folder / filename, sample_rate, signal_16)
 
 
 # pylint: disable=no-value-for-parameter

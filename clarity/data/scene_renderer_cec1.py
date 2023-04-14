@@ -201,9 +201,9 @@ class Renderer:
 
     def render(
         self,
-        target: str,
+        target_id: str,
         noise_type: str,
-        interferer: str,
+        interferer_id: str,
         room: str,
         scene: str,
         offset,
@@ -214,9 +214,9 @@ class Renderer:
     ):
         brir_stem = f"{self.input_path}/{dataset}/rooms/brir/brir_{room}"
         anechoic_brir_stem = f"{self.input_path}/{dataset}/rooms/brir/anech_brir_{room}"
-        target_fn = f"{self.input_path}/{dataset}/targets/{target}.wav"
+        target_fn = f"{self.input_path}/{dataset}/targets/{target_id}.wav"
         interferer_fn = (
-            f"{self.input_path}/{dataset}/interferers/{noise_type}/{interferer}.wav"
+            f"{self.input_path}/{dataset}/interferers/{noise_type}/{interferer_id}.wav"
         )
 
         target = self.read_signal(target_fn)
@@ -226,8 +226,9 @@ class Renderer:
             interferer_fn, offset=offset, nsamples=len(target), offset_is_samples=True
         )
 
-        if len(target) != len(interferer):
-            logging.debug("Target and interferer have different lengths")
+        if len(interferer_signal) != len(target):
+            logging.error("Interferer signal too short")
+            raise ValueError(f"Interferer signal too short: {interferer_fn}")
 
         # Apply 500ms half-cosine ramp
         interferer_signal = self.apply_ramp(
