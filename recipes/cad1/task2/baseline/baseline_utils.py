@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 def read_mp3(
-    file_path: str | Path, sample_rate: int | None = None
-) -> tuple[np.ndarray, int | None]:
+    file_path: str | Path, sample_rate: float | None = None
+) -> tuple[np.ndarray, float]:
     """Read a MP3 file and return its signal.
 
     Args:
@@ -34,7 +34,7 @@ def read_mp3(
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            signal, sample_rate = librosa.load(
+            signal, returned_sample_rate = librosa.load(
                 str(file_path),
                 sr=sample_rate,
                 mono=False,
@@ -53,7 +53,7 @@ def read_mp3(
     if np.max(np.abs(signal)) > 1:
         signal = signal / np.max(np.abs(signal))
 
-    return signal, sample_rate
+    return signal, returned_sample_rate
 
 
 def load_hrtf(config: DictConfig) -> dict:

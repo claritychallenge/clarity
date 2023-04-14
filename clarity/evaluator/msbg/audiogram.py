@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Final
 
 import numpy as np
 
-DEFAULT_CLARITY_CFS = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000]
+DEFAULT_CLARITY_CFS: Final = (250, 500, 1000, 2000, 3000, 4000, 6000, 8000)
 
-FULL_STANDARD_CFS = np.array(
+FULL_STANDARD_CFS: Final = np.array(
     [
         125,
         250,

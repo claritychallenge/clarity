@@ -48,7 +48,7 @@ def test_src_to_cochlea_filter():
     np.random.seed(0)
     ip_sig = np.random.rand(1000)
     signal = Ear.src_to_cochlea_filt(
-        ip_sig=ip_sig,
+        input_signal=ip_sig,
         src_correction=Ear.get_src_correction("ff"),
         sample_rate=16000,
         backward=False,
@@ -57,30 +57,22 @@ def test_src_to_cochlea_filter():
     assert np.sum(np.abs(signal)) == pytest.approx(285.70213562623803)
 
 
-def test_make_calibration_signal():
+@pytest.mark.parametrize("n_channels", [1, 2])
+def test_make_calibration_signal(n_channels):
     """Test Ear.make_calibration_signal"""
     np.random.seed(0)
     ear = Ear()
-    signal, silence = ear.make_calibration_signal(ref_rms_db=60)
-    assert signal.shape == (44100 * 2.65,)  # 2.65 s signal
-    assert silence.shape == (44100 * 0.05,)  # 50 ms silence
+    signal, silence = ear.make_calibration_signal(ref_rms_db=60, n_channels=n_channels)
+    assert signal.shape == (
+        n_channels,
+        44100 * 2.65,
+    )  # 2.65 s signal
+    assert silence.shape == (
+        n_channels,
+        44100 * 0.05,
+    )  # 50 ms silence
     assert np.sum(np.abs(silence)) == pytest.approx(0.0)
-    assert np.sum(np.abs(signal)) == pytest.approx(90853246.9096005)
-
-
-@pytest.mark.parametrize("signal_shape", [((100, 4)), ((100, 2)), ((100,))])
-def test_array_to_list(signal_shape):
-    """Test Ear.array_to_list"""
-    array_of_signals = np.random.random(signal_shape)
-    list_of_signals = Ear.array_to_list(array_of_signals)
-    if len(signal_shape) > 1:
-        # Check signals in list match the columns in the orignal array
-        assert len(list_of_signals) == signal_shape[1]
-        for i, signal in enumerate(list_of_signals):
-            assert np.all(array_of_signals[:, i] == signal)
-    else:
-        # Special case for 1-D array
-        assert np.all(array_of_signals == list_of_signals[0])
+    assert np.sum(np.abs(signal)) == pytest.approx(90853246.9096005 * n_channels)
 
 
 def test_ear_process():

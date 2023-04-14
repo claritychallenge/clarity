@@ -4,6 +4,7 @@ import logging
 import math
 import warnings
 from pathlib import Path
+from typing import Final
 
 import librosa
 import numpy as np
@@ -20,8 +21,8 @@ from clarity.data.utils import SPEECH_FILTER, better_ear_speechweighted_snr
 
 logger = logging.getLogger(__name__)
 
-SPEED_SOUND = 344  # in m/s at 21 degrees C
-SAMPLE_RATE = 44100
+SPEED_SOUND: Final = 344  # in m/s at 21 degrees C
+SAMPLE_RATE: Final = 44100
 
 
 def two_point_rotation(rotation: dict, origin: np.ndarray, duration: int) -> np.ndarray:
