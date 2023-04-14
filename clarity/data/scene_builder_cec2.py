@@ -8,6 +8,7 @@ import math
 import random
 import re
 from enum import Enum
+from typing import Final
 
 import numpy as np
 from tqdm import tqdm
@@ -30,8 +31,8 @@ json.encoder.float = RoundingFloat  # type: ignore
 
 # rpf file Handling
 
-N_SCENES = 10000  # Number of scenes to expect
-N_INTERFERERS = 3  # Default number of interferers to expect
+N_SCENES: Final = 10000  # Number of scenes to expect
+N_INTERFERERS: Final = 3  # Default number of interferers to expect
 
 
 def set_random_seed(random_seed):

@@ -5,6 +5,7 @@ import math
 
 import numpy as np
 import yaml  # type: ignore
+from numpy import ndarray
 from scipy.signal import resample
 
 from clarity.evaluator.mbstoi.mbstoi_utils import (
@@ -23,13 +24,13 @@ basic_stoi_parameters = yaml.safe_load(params_file.read())
 
 
 def mbstoi(
-    left_ear_clean: np.ndarray,
-    right_ear_clean: np.ndarray,
-    left_ear_noisy: np.ndarray,
-    right_ear_noisy: np.ndarray,
-    fs_signal: float,
+    left_ear_clean: ndarray,
+    right_ear_clean: ndarray,
+    left_ear_noisy: ndarray,
+    right_ear_noisy: ndarray,
+    sr_signal: float,
     gridcoarseness: int = 1,
-    sample_rate: int = 10000,
+    sample_rate: float = 10000.0,
     n_frame: int = 256,
     fft_size_in_samples: int = 512,
     n_third_octave_bands: int = 15,
@@ -49,10 +50,10 @@ def mbstoi(
     """The Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.
 
     Args:
-        left_ear_clean (np.ndarray): Clean speech signal from left ear.
-        right_ear_clean (np.ndarray): Clean speech signal from right ear.
-        left_ear_noisy (np.ndarray) : Noisy/processed speech signal from left ear.
-        right_ear_noisy (np.ndarray) : Noisy/processed speech signal from right ear.
+        left_ear_clean (ndarray): Clean speech signal from left ear.
+        right_ear_clean (ndarray): Clean speech signal from right ear.
+        left_ear_noisy (ndarray) : Noisy/processed speech signal from left ear.
+        right_ear_noisy (ndarray) : Noisy/processed speech signal from right ear.
         fs_signal (int) : Frequency sample rate of signal.
         gridcoarseness (int) : Grid coarseness as denominator of ntaus and ngammas.
             Defaults to 1.
@@ -74,7 +75,7 @@ def mbstoi(
         level_shift_deviation (float) : ???
 
     Returns:
-        float : mbtsoi index d.
+        float : mbstoi index d.
 
     Notes:
         All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the
@@ -98,23 +99,23 @@ def mbstoi(
     right_ear_noisy = right_ear_noisy.flatten()
 
     # Resample signals to 10 kHz
-    if fs_signal != sample_rate:
+    if sr_signal != sample_rate:
         logging.debug(
             "Resampling signals with sr=%s for MBSTOI calculation.", sample_rate
         )
         # Assumes fs_signal is 44.1 kHz
         length_left_ear_clean = len(left_ear_clean)
         left_ear_clean = resample(
-            left_ear_clean, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            left_ear_clean, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
         right_ear_clean = resample(
-            right_ear_clean, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            right_ear_clean, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
         left_ear_noisy = resample(
-            left_ear_noisy, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            left_ear_noisy, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
         right_ear_noisy = resample(
-            right_ear_noisy, int(length_left_ear_clean * (sample_rate / fs_signal) + 1)
+            right_ear_noisy, int(length_left_ear_clean * (sample_rate / sr_signal) + 1)
         )
 
     # Remove silent frames
@@ -173,15 +174,15 @@ def mbstoi(
     ).transpose()
 
     # Take single sided spectrum of signals
-    idx = int(fft_size_in_samples / 2 + 1)
-    left_ear_clean_hat = left_ear_clean_hat[0:idx, :]
-    right_ear_clean_hat = right_ear_clean_hat[0:idx, :]
-    left_ear_noisy_hat = left_ear_noisy_hat[0:idx, :]
-    right_ear_noisy_hat = right_ear_noisy_hat[0:idx, :]
+    idx_upper = int(fft_size_in_samples / 2 + 1)
+    left_ear_clean_hat = left_ear_clean_hat[0:idx_upper, :]
+    right_ear_clean_hat = right_ear_clean_hat[0:idx_upper, :]
+    left_ear_noisy_hat = left_ear_noisy_hat[0:idx_upper, :]
+    right_ear_noisy_hat = right_ear_noisy_hat[0:idx_upper, :]
 
     # Compute intermediate correlation via EC search
     logging.info("Starting EC evaluation")
-    # Here intermeduiate correlation coefficients are evaluated for a discrete set of
+    # Here intermediate correlation coefficients are evaluated for a discrete set of
     # gamma and tau values (a "grid") and the highest value is chosen.
     intermediate_intelligibility_measure_grid = np.zeros(
         (n_third_octave_bands, np.shape(left_ear_clean_hat)[1] - n_frames + 1)
@@ -307,22 +308,20 @@ def mbstoi(
             ) / (np.linalg.norm(right_ear_clean_n) * np.linalg.norm(right_ear_noisy_n))
 
     # Get the better ear intermediate coefficients
-    idx = np.isfinite(dl_interm)
-    dl_interm[~idx] = 0
-    idx = np.isfinite(dr_interm)
-    dr_interm[~idx] = 0
+    dl_interm[~np.isfinite(dl_interm)] = 0
+    dr_interm[~np.isfinite(dr_interm)] = 0
     p_be_max = np.maximum(left_improved, right_improved)
     dbe_interm = np.zeros(np.shape(dl_interm))
 
-    idx = left_improved > right_improved
-    dbe_interm[idx] = dl_interm[idx]
-    dbe_interm[~idx] = dr_interm[~idx]
+    idx_left_better = left_improved > right_improved
+    dbe_interm[idx_left_better] = dl_interm[idx_left_better]
+    dbe_interm[~idx_left_better] = dr_interm[~idx_left_better]
 
     # Compute STOI measure
     # Whenever a single ear provides a higher correlation than the corresponding EC
     # processed alternative,the better-ear correlation is used.
-    idx = p_be_max > p_ec_max
-    updated_intermediate_intelligibility_measure[idx] = dbe_interm[idx]
+    idx_use_be = p_be_max > p_ec_max
+    updated_intermediate_intelligibility_measure[idx_use_be] = dbe_interm[idx_use_be]
     sii = np.mean(updated_intermediate_intelligibility_measure)
 
     logging.info("MBSTOI processing complete")

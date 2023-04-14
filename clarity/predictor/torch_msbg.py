@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Final
 
 import numpy as np
 import torch
@@ -29,26 +30,25 @@ EPS = 1e-8
 # old msbg matlab
 # set RMS so that peak of output file so that no clipping occurs, set so that
 # equiv0dBfileSPL > 100dB for LOUD input files
-REF_RMS_DB = -31.2
+REF_RMS_DB: Final = -31.2
 
 # what RMS of INPUT speech file translates to in real world (unweighted)
-CALIB_DB_SPL = 65
+CALIB_DB_SPL: Final = 65
 
 # what 0dB file signal would translate to in dB SPL:
 # constant for cochlea_simulate function
-EQUIV_0_DB_FILE_SPL = CALIB_DB_SPL - REF_RMS_DB
+EQUIV_0_DB_FILE_SPL: Final = CALIB_DB_SPL - REF_RMS_DB
 
 # clarity msbg
-EQUIV_0_DB_SPL = 100
-AHR = 20
-EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
+AHR: Final = 20
+EQUIV_0_DB_SPL: Final = 100 + AHR
 
 
 class MSBGHearingModel(nn.Module):
     def __init__(
         self,
-        audiogram: list[int],
-        audiometric: list[int],
+        audiogram: np.ndarray,
+        audiometric: np.ndarray,
         sr: int = 44100,
         spl_cali: bool = True,
         src_position: str = "ff",
@@ -66,9 +66,6 @@ class MSBGHearingModel(nn.Module):
             self.device = device
         # settings for audiogram
 
-        audiogram = np.array(audiogram)
-        # audiometric = np.array([250, 500, 1000, 2000, 4000, 6000])
-        audiometric = np.array(audiometric)
         audiogram = np.append(audiogram, audiogram[-1])
         audiometric = np.append(audiometric, 16000)
         audiogram = np.append(audiogram[0], audiogram)
@@ -360,10 +357,10 @@ class MSBGHearingModel(nn.Module):
 
     def calibrate_spl(self, x: torch.Tensor) -> torch.Tensor:
         if self.spl_cali:
-            level_re_fs = 10 * torch.log10(
+            level_re_sample_rate = 10 * torch.log10(
                 torch.mean(x**2, dim=1, keepdim=True) + EPS
             )
-            level_db_spl = EQUIV_0_DB_SPL + level_re_fs
+            level_db_spl = EQUIV_0_DB_SPL + level_re_sample_rate
             rms = self.measure_rms(x)
             change_db = level_db_spl - (EQUIV_0_DB_SPL + 20 * torch.log10(rms + EPS))
             x = x * 10 ** (0.05 * change_db)
@@ -452,7 +449,7 @@ class MSBGHearingModel(nn.Module):
             envelope_out = torch.flip(envelope_out, dims=[-1])
 
             envelope_out = torch.clamp(
-                envelope_out, min=EPS, max=self.envelope_max[ixch]
+                envelope_out, min=EPS, max=float(self.envelope_max[ixch])
             )
             gain = (envelope_out / self.envelope_max[ixch]) ** self.expansion_m1[ixch]
             outputs.append(gain * pass_n_cali)
@@ -508,7 +505,7 @@ class MSBGHearingModel(nn.Module):
 class torchloudnorm(nn.Module):
     def __init__(
         self,
-        sr: int = 44100,
+        sample_rate: int = 44100,
         norm_lufs: int = -36,
         kernel_size: int = 1025,
         block_size: float = 0.4,
@@ -516,7 +513,7 @@ class torchloudnorm(nn.Module):
         gamma_a: int = -70,
     ) -> None:
         super().__init__()
-        self.sr = sr
+        self.sample_rate = sample_rate
         self.norm_lufs = norm_lufs
         self.kernel_size = kernel_size
         self.padding = kernel_size // 2
@@ -528,14 +525,20 @@ class torchloudnorm(nn.Module):
         pyln_high_shelf_a = np.array([1.0, -1.66375011, 0.71265753])
 
         # fir high_shelf
-        w_high_shelf, h_high_shelf = freqz(pyln_high_shelf_b, pyln_high_shelf_a, fs=sr)
-        freq_high_shelf = np.append(w_high_shelf, sr / 2)
+        w_high_shelf, h_high_shelf = freqz(
+            pyln_high_shelf_b, pyln_high_shelf_a, fs=sample_rate
+        )
+        freq_high_shelf = np.append(w_high_shelf, sample_rate / 2)
         gain_high_shelf = np.append(np.abs(h_high_shelf), np.abs(h_high_shelf)[-1])
-        fir_high_shelf = firwin2(kernel_size, freq_high_shelf, gain_high_shelf, fs=sr)
+        fir_high_shelf = firwin2(
+            kernel_size, freq_high_shelf, gain_high_shelf, fs=sample_rate
+        )
 
         # fir high_pass
         fc_high_pass = 38.0
-        fir_high_pass = firwin(kernel_size, fc_high_pass, pass_zero="highpass", fs=sr)
+        fir_high_pass = firwin(
+            kernel_size, fc_high_pass, pass_zero="highpass", fs=sample_rate
+        )
 
         self.high_shelf = (
             torch.tensor(fir_high_shelf, dtype=torch.float32, device=self.device)
@@ -549,8 +552,8 @@ class torchloudnorm(nn.Module):
         )
 
         "rms measurement"
-        self.frame_size = int(block_size * sr)
-        self.frame_shift = int(block_size * sr * (1 - overlap))
+        self.frame_size = int(block_size * sample_rate)
+        self.frame_shift = int(block_size * sample_rate * (1 - overlap))
         self.unfold = torch.nn.Unfold(
             (1, self.frame_size), stride=(1, self.frame_shift)
         )

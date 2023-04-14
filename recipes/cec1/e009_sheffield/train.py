@@ -77,7 +77,7 @@ class AmpModule(System):
 
 
 def train_den(cfg, ear):
-    exp_dir = Path(cfg.path.exp_folder) / "{ear}_den"
+    exp_dir = Path(cfg.path.exp_folder) / f"{ear}_den"
     if (exp_dir / "best_model.pth").exists():
         logger.info("Enhancement module exist")
         return
@@ -104,8 +104,8 @@ def train_den(cfg, ear):
     den_module.ear_idx = 0 if ear == "left" else 1
     if cfg.downsample_factor != 1:
         den_module.down_sample = torchaudio.transforms.Resample(
-            orig_freq=cfg.sr,
-            new_freq=cfg.sr // cfg.downsample_factor,
+            orig_freq=cfg.sample_rate,
+            new_freq=cfg.sample_rate // cfg.downsample_factor,
             resampling_method="sinc_interpolation",
         )
 
@@ -140,7 +140,8 @@ def train_den(cfg, ear):
 
 
 def train_amp(cfg, ear):
-    exp_dir = Path(cfg.path.exp_folder) / "{ear}_amp"
+    exp_dir = Path(cfg.path.exp_folder) / f"{ear}_amp"
+    Path.mkdir(exp_dir, parents=True, exist_ok=True)
     if (exp_dir / "best_model.pth").exists():
         logger.info("Amplification module exist")
         return
@@ -152,8 +153,7 @@ def train_amp(cfg, ear):
 
     # load denoising module
     den_model = ConvTasNet(**cfg.mc_conv_tasnet)
-    den_model_path = exp_dir / "{ear}_den/best_model.pth"
-
+    den_model_path = exp_dir / ".." / f"{ear}_den/best_model.pth"
     den_model.load_state_dict(torch.load(den_model_path))
 
     # amplification module
@@ -218,6 +218,7 @@ def train_amp(cfg, ear):
         gpus=gpus,
         limit_train_batches=1.0,  # Useful for fast experiment
         gradient_clip_val=cfg.amp_trainer.gradient_clip_val,
+        num_sanity_val_steps=cfg.amp_trainer.num_sanity_val_steps,
     )
     trainer.fit(amp_module)
 

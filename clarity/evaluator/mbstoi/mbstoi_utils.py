@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import logging
+from typing import Final
 
 import numpy as np
 from scipy.signal import find_peaks
 
-EPS = np.finfo("float").eps
+EPS: Final = np.finfo("float").eps
 
 
 def equalisation_cancellation(
@@ -480,7 +481,7 @@ def remove_silent_frames(
 
 
 def thirdoct(
-    frequency_sampling: int,
+    sample_rate: float,
     nfft: int,
     num_bands: int,
     min_freq: int,
@@ -489,7 +490,7 @@ def thirdoct(
     based on mpariente/pystoi.
 
     Args:
-        fs (int) : Frequency sampling rate.
+        sample_rate (float) : Frequency sampling rate.
         n_fft (int) : Number of FFT. FFT == ???
         num_bands (int) : Number of one-third octave bands.
         min_freq (int) : Center frequencey of the lowest one-third octave band.
@@ -502,7 +503,7 @@ def thirdoct(
         freq_high (float) : Highest frequency
     """
     # pylint: disable=invalid-name
-    f = np.linspace(0, frequency_sampling, nfft + 1)
+    f = np.linspace(0, sample_rate, nfft + 1)
     f = f[: int(nfft / 2) + 1]
     k = np.array(range(num_bands)).astype(float)
     # pylint: enable=invalid-name

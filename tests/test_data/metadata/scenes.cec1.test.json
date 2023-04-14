@@ -1,0 +1,52 @@
+[{
+    "room": {
+        "name": "R00001",
+        "dimensions": "5.9x3.4186x2.9"
+    },
+    "hrirfilename": "VP_N5-ED",
+    "target": {
+        "Positions": [
+            -0.5,
+            3.4,
+            1.2
+        ],
+        "ViewVectors": [
+            0.291,
+            -0.957,
+            0
+        ],
+        "name": "T010_G0N_02468",
+        "nsamples": 109809
+    },
+    "listener": {
+        "Positions": [
+            0.2,
+            1.1,
+            1.2
+        ],
+        "ViewVectors": [
+            -0.414,
+            0.91,
+            0
+        ]
+    },
+    "interferer": {
+        "Positions": [
+            0.4,
+            3.2,
+            1.2
+        ],
+        "name": "CIN_fan_014",
+        "nsamples": 383670,
+        "duration": 27,
+        "type": "noise",
+        "offset": 82115
+    },
+    "azimuth_target_listener": -7.54,
+    "azimuth_interferer_listener": -29.9,
+    "scene": "S06001",
+    "dataset": "test",
+    "pre_samples": 88200,
+    "post_samples": 44100,
+    "SNR": 0.976
+}]

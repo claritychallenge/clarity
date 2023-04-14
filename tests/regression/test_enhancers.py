@@ -10,21 +10,21 @@ from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
-    "fs": 44100,
+    "sample_rate": 44100,
     "ahr": 20,
     "audf": None,
     "cfg_file": "prerelease_combination3_smooth",
-    "noisegatelevels": None,
-    "noisegateslope": 0,
+    "noise_gate_levels": None,
+    "noise_gate_slope": 0,
     "cr_level": 0,
     "max_output_level": 100,
-    "equiv0dBSPL": 100,
+    "equiv_0db_spl": 100,
     "test_nbits": 16,
 }
 
 
 def test_dsp_filter(regtest):
-    amfir = filter.AudiometricFIR(sr=44100, nfir=220, device="cpu")
+    amfir = filter.AudiometricFIR(sample_rate=44100, nfir=220, device="cpu")
     torch.manual_seed(0)
     signal = torch.rand(10, dtype=torch.float)
     signal = torch.reshape(signal, (1, 1, -1))
@@ -69,6 +69,7 @@ def test_GHA_inputs(regtest):
 
 
 def test_GHA_config(regtest):
+    np.set_printoptions(threshold=1000)
     enhancer = gha(**gha_params)
     with open("tests/test_data/metadata/listeners.json", encoding="utf-8") as fp:
         listeners = json.load(fp)
@@ -82,8 +83,8 @@ def test_GHA_config(regtest):
 
     gaintable = get_gaintable(
         audiogram,
-        enhancer.noisegatelevels,
-        enhancer.noisegateslope,
+        enhancer.noise_gate_levels,
+        enhancer.noise_gate_slope,
         enhancer.cr_level,
         enhancer.max_output_level,
     )

@@ -1,11 +1,23 @@
 """HASPI EBM module"""
+from __future__ import annotations
+
 from math import floor
+from typing import TYPE_CHECKING
 
 import numpy as np
 from scipy.signal import convolve, convolve2d
 
+if TYPE_CHECKING:
+    from numpy import ndarray
 
-def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_samp):
+
+def env_filter(
+    reference_db: ndarray,
+    processed_db: ndarray,
+    filter_cutoff: float,
+    freq_sub_sample: float,
+    freq_samp: float,
+) -> tuple[ndarray, ndarray]:
     """
     Lowpass filter and subsample the envelope in dB SL produced by the model
     of the auditory periphery. The LP filter uses a von Hann raised cosine
@@ -32,7 +44,7 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
     """
     # Check the filter design parameters
     if freq_sub_sample > freq_samp:
-        raise ValueError("ubsampling rate too high.")
+        raise ValueError("upsampling rate too high.")
 
     if filter_cutoff > 0.5 * freq_sub_sample:
         raise ValueError("LP cutoff frequency too high.")
@@ -76,8 +88,12 @@ def env_filter(reference_db, processed_db, filter_cutoff, freq_sub_sample, freq_
 
 
 def cepstral_correlation_coef(
-    reference_db, processed_db, thresh_cep, thresh_nerve, nbasis
-):
+    reference_db: ndarray,
+    processed_db: ndarray,
+    thresh_cep: float,
+    thresh_nerve: float,
+    nbasis: int,
+) -> tuple[ndarray, ndarray]:
     """
     Compute the cepstral correlation coefficients between the reference signal
     and the distorted signal log envelopes. The silence portions of the
@@ -157,7 +173,7 @@ def cepstral_correlation_coef(
     return reference_cep, processed_cep
 
 
-def add_noise(reference_db, thresh_db):
+def add_noise(reference_db: ndarray, thresh_db: float) -> ndarray:
     """
     Add independent random Gaussian noise to the subsampled signal envelope
     in each auditory frequency band.
@@ -182,11 +198,11 @@ def add_noise(reference_db, thresh_db):
 
 
 def fir_modulation_filter(
-    reference_envelope,
-    processed_envelope,
-    freq_sub_sampling,
-    center_frequencies=None,
-):
+    reference_envelope: ndarray,
+    processed_envelope: ndarray,
+    freq_sub_sampling: float,
+    center_frequencies: ndarray | None = None,
+) -> tuple[ndarray, ndarray, ndarray]:
     """
     Apply a FIR modulation filterbank to the reference envelope signals
     contained in matrix reference_envelope and the processed signal envelope
@@ -344,7 +360,9 @@ def fir_modulation_filter(
     return reference_modulation, processed_modulation, center_frequencies
 
 
-def modulation_cross_correlation(reference_modulation, processed_modulation):
+def modulation_cross_correlation(
+    reference_modulation: ndarray, processed_modulation: ndarray
+) -> ndarray:
     """
     Compute the cross-correlations between the input signal time-frequency
     envelope and the distortion time-frequency envelope. The cepstral

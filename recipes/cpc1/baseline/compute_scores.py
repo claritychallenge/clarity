@@ -90,7 +90,7 @@ def run(cfg: DictConfig) -> None:
     )
     data_eval = read_data(
         pred_csv=Path(cfg.test_path.exp_folder) / "sii.csv",
-        label_json=Path("../test_listener_responses/CPC1.test.json"),
+        label_json=Path(cfg.test_path.scenes_file),
     )
     logger.info("Apply logistic fitting.")
     model = Model()
@@ -105,7 +105,7 @@ def run(cfg: DictConfig) -> None:
     )
     data_eval = read_data(
         pred_csv=Path(cfg.test_indep_path.exp_folder) / "sii.csv",
-        label_json=Path("../test_listener_responses/CPC1.test_indep.json"),
+        label_json=Path(cfg.test_indep_path.scenes_file),
     )
     logger.info("Apply logistic fitting.")
     model = Model()
