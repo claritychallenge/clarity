@@ -1,4 +1,4 @@
-"""Supplied dataclass to represent a monaural audiogram"""
+"""Dataclass to represent a monaural audiogram"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -9,15 +9,17 @@ import numpy as np
 if TYPE_CHECKING:
     from numpy import ndarray
 
-DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES: Final = (
-    250,
-    500,
-    1000,
-    2000,
-    3000,
-    4000,
-    6000,
-    8000,
+DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES: Final = np.array(
+    [
+        250,
+        500,
+        1000,
+        2000,
+        3000,
+        4000,
+        6000,
+        8000,
+    ]
 )
 
 FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
@@ -68,8 +70,9 @@ class Audiogram:
     """Dataclass to represent an audiogram.
 
     Attributes:
-        levels (ndarray): The levels for the left and right ear
+        levels (ndarray): The audiometric levels in dB HL
         frequencies (ndarray): The frequencies at which the levels are measured
+
     """
 
     levels: np.ndarray
@@ -109,17 +112,19 @@ class Audiogram:
         # Ignore any None values
         impairment_degree = np.mean(critical_levels) if len(critical_levels) > 0 else 0
 
-        if impairment_degree > 56:
+        if impairment_degree > 56.0:
             return "SEVERE"
-        if impairment_degree > 35:
+        if impairment_degree > 35.0:
             return "MODERATE"
-        if impairment_degree > 15:
+        if impairment_degree > 15.0:
             return "MILD"
 
         return "NOTHING"
 
     def resample(self, new_frequencies: ndarray) -> Audiogram:
         """Resample the audiogram to a new set of frequencies.
+
+        Interpolates linearly on a log frequency axis.
 
         Args:
             new_frequencies (ndarray): The new frequencies to resample to
@@ -134,27 +139,32 @@ class Audiogram:
         )
 
 
-# Reference processing: use to check levels between original and processed,
-AUDIOGRAM_REF = Audiogram(
+# Reference audiograms originally defined in the Cambridge group
+# MSBG model MATLAB code.
+
+# No loss
+AUDIOGRAM_REF: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
 )
 
-# mild age-related hearing loss, slightly reduced from CF, first-time aid wearers group
-# (used in Stafa talk by MAS)
-AUDIOGRAM_MILD = Audiogram(
+# Mild age-related hearing loss, slightly reduced from CF, first-time aid
+# wearers group (used in Stafa talk by MAS).
+AUDIOGRAM_MILD: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([5, 10, 15, 18, 19, 22, 25, 28, 31, 35, 38, 40, 40, 45, 50]),
 )
 
-# mod hearing loss based on mild N2 flat/mod sloping from Bisgaard et al. 2020
-AUDIOGRAM_MODERATE = Audiogram(
+# Moderate hearing loss based on mild N2 flat/mod sloping
+# from Bisgaard et al. 2020
+AUDIOGRAM_MODERATE: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([15, 20, 20, 22.5, 25, 30, 35, 40, 45, 50, 55, 55, 60, 65, 65]),
 )
 
-# (mod-)severe age-related hearing loss, average of MAS/KA summer proj 2011, elderly HI
-AUDIOGRAM_MODERATE_SEVERE = Audiogram(
+# Moderate-severe age-related hearing loss, average of MAS/KA summer proj 2011,
+# elderly HI
+AUDIOGRAM_MODERATE_SEVERE: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([19, 19, 28, 35, 40, 47, 52, 56, 58, 58, 63, 70, 75, 80, 80]),
 )
