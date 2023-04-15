@@ -9,6 +9,7 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 # pylint: disable=import-error, no-name-in-module
 from recipes.cad1.task1.baseline.enhance import (
@@ -77,14 +78,15 @@ def test_decompose_signal(separation_model):
         }
     )
     # Call the decompose_signal function and check that the output has the expected keys
+    cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
     output = decompose_signal(
         config,
         model,
         signal,
         sample_rate,
         device,
-        left_audiogram=np.ones(9),
-        right_audiogram=np.ones(9),
+        left_audiogram=Audiogram(levels=np.ones(9), frequencies=cfs),
+        right_audiogram=Audiogram(levels=np.ones(9), frequencies=cfs),
     )
     expected_results = np.load(
         RESOURCES / f"test_enhance.test_decompose_signal_{separation_model}.npy",
@@ -100,8 +102,10 @@ def test_apply_baseline_ha():
     np.random.seed(987654321)
     # Create mock inputs
     signal = np.random.normal(size=44100)
-    listener_audiogram = np.ones(9)
-    cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
+    listener_audiogram = Audiogram(
+        levels=np.ones(9),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000]),
+    )
 
     # Create mock objects for enhancer and compressor
     enhancer = NALR(nfir=220, sample_rate=44100)
@@ -110,7 +114,7 @@ def test_apply_baseline_ha():
     )
 
     # Call the apply_nalr function and check that the output is as expected
-    output = apply_baseline_ha(enhancer, compressor, signal, listener_audiogram, cfs)
+    output = apply_baseline_ha(enhancer, compressor, signal, listener_audiogram)
 
     expected_results = np.load(
         RESOURCES / "test_enhance.test_apply_baseline_ha.npy",
@@ -127,10 +131,11 @@ def test_process_stems_for_listener():
         "l_source1": np.random.normal(size=16000),
         "r_source1": np.random.normal(size=16000),
     }
-    audiogram_left = np.ones(9)
-    audiogram_right = np.ones(9)
-    cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
 
+    audiogram = Audiogram(
+        levels=np.ones(9),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000]),
+    )
     # Create mock objects for enhancer and compressor
     enhancer = NALR(nfir=220, sample_rate=16000)
     compressor = Compressor(
@@ -139,7 +144,7 @@ def test_process_stems_for_listener():
 
     # Call the process_stems_for_listener function and check output is as expected
     output_stems = process_stems_for_listener(
-        stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
+        stems, enhancer, compressor, audiogram_left=audiogram, audiogram_right=audiogram
     )
     expected_results = np.load(
         RESOURCES / "test_enhance.test_process_stems_for_listener.npy",
