@@ -53,6 +53,14 @@ class Audiogram:
     levels: np.ndarray
     frequencies: np.ndarray = np.array(DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES)
 
+    def __post_init__(self) -> None:
+        """Check that dimensions of levels and frequencies match."""
+        if len(self.levels) != len(self.frequencies):
+            raise ValueError(
+                f"Levels ({len(self.levels)}) and frequencies ({len(self.frequencies)})"
+                " must have the same length"
+            )
+
     @property
     def severity(self) -> str:
         """Categorise HL severity level for the audiogram.

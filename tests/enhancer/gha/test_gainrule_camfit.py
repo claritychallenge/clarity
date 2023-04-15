@@ -2,7 +2,6 @@
 import numpy as np
 import pytest
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gainrule_camfit import (
     compute_proportion_overlap,
     freq_interp_sh,
@@ -11,6 +10,7 @@ from clarity.enhancer.gha.gainrule_camfit import (
     gains,
     isothr,
 )
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 
 @pytest.mark.parametrize(
@@ -103,9 +103,8 @@ def test_gains():
 def test_gainrule_camfit_linear():
     """test that the linear gain rule runs correctly"""
     audiogram = Audiogram(
-        levels_l=np.array([30, 40, 50, 60, 70, 80]),
-        levels_r=np.array([30, 40, 50, 60, 70, 80]),
-        cfs=np.array([250, 500, 1000, 2000, 4000, 8000]),
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
     )
 
     sFitmodel = {
@@ -113,7 +112,8 @@ def test_gainrule_camfit_linear():
         "levels": [30, 40, 50, 60, 70, 80],
     }
     sGt, noisegate_level, noisegate_slope, insertion_gains = gainrule_camfit_linear(
-        audiogram=audiogram,
+        audiogram_left=audiogram,
+        audiogram_right=audiogram,
         sFitmodel=sFitmodel,
         noisegatelevels=45,
         noisegateslope=1,
@@ -133,10 +133,13 @@ def test_gainrule_camfit_linear():
 
 def test_gainrule_camfit_compr():
     """test that the compr gain rule runs correctly"""
-    audiogram = Audiogram(
-        levels_l=np.array([30, 40, 50, 60, 70, 80]),
-        levels_r=np.array([30, 40, 50, 60, 70, 80]),
-        cfs=np.array([250, 500, 1000, 2000, 4000, 8000]),
+    audiogram_left = Audiogram(
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
+    )
+    audiogram_right = Audiogram(
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
     )
 
     sFitmodel = {
@@ -145,7 +148,8 @@ def test_gainrule_camfit_compr():
         "edge_frequencies": [250, 8000],
     }
     sGt, noisegate_levels, noisegate_slope = gainrule_camfit_compr(
-        audiogram=audiogram,
+        audiogram_left=audiogram_left,
+        audiogram_right=audiogram_right,
         sFitmodel=sFitmodel,
         noisegatelevels=45,
         noisegateslope=1,
@@ -178,9 +182,8 @@ def test_gainrule_camfit_compr_varying_params(
 ):
     """test that the compr gain rule runs correctly for different parameters"""
     audiogram = Audiogram(
-        levels_l=np.array([30, 40, 50, 60, 70, 80]),
-        levels_r=np.array([30, 40, 50, 60, 70, 80]),
-        cfs=np.array([250, 500, 1000, 2000, 4000, 8000]),
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
     )
 
     sFitmodel = {
@@ -189,7 +192,8 @@ def test_gainrule_camfit_compr_varying_params(
         "edge_frequencies": [250, 8000],
     }
     sGt, noisegate_levels, noisegate_slope = gainrule_camfit_compr(
-        audiogram=audiogram,
+        audiogram_left=audiogram,
+        audiogram_right=audiogram,
         sFitmodel=sFitmodel,
         noisegatelevels=ng_levels,
         noisegateslope=ng_slope,

@@ -10,8 +10,8 @@ from scipy.interpolate import interp1d
 if TYPE_CHECKING:
     from numpy import ndarray
 
-    from clarity.enhancer.gha.audiogram import Audiogram
     from clarity.enhancer.gha.gha_utils import FittingParams
+    from clarity.evaluator.msbg.audiogram import Audiogram
 
 
 def compute_proportion_overlap(
@@ -209,7 +209,8 @@ def gains(
 
 
 def gainrule_camfit_linear(
-    audiogram: Audiogram,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
     sFitmodel: FittingParams,
     noisegatelevels: float | ndarray = 45.0,
     noisegateslope: float | ndarray = 1.0,
@@ -276,8 +277,11 @@ def gainrule_camfit_linear(
     noisegate_slope = np.zeros((np.size(sFitmodel_frequencies), 2))
     insertion_gains_out = np.zeros((np.size(sFitmodel_frequencies), 2))
 
-    for i, levels in enumerate([audiogram.levels_l, audiogram.levels_r]):
-        htlside = freq_interp_sh(audiogram.cfs, levels, sFitmodel_frequencies)
+    # TODO: REFACTOR THIS so freq_interp_sh an audiogram method
+    for i, levels in enumerate([audiogram_left.levels, audiogram_right.levels]):
+        htlside = freq_interp_sh(
+            audiogram_left.frequencies, levels, sFitmodel_frequencies
+        )
 
         insertion_gains = htlside * 0.48 + intercepts
 
@@ -316,7 +320,8 @@ def gainrule_camfit_linear(
 
 
 def gainrule_camfit_compr(
-    audiogram: Audiogram,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
     sFitmodel: FittingParams,
     noisegatelevels: float | ndarray = 45.0,
     noisegateslope: float | ndarray = 1.0,
@@ -340,7 +345,8 @@ def gainrule_camfit_compr(
     openMHA is free software: see licencing conditions at http://www.openmha.org/
 
     Args:
-        audiogram (Audiogram): the audiogram for which to make the fit
+        audiogram_left (Audiogram): the audiogram for the left ear
+        audiogram_right (Audiogram): the audiogram for the right ear
         sFitmodel (dict): contains the center frequencies for the amplification
             bands and input levels in SPL for which to compute the gains
         noisegatelevels (ndarray): compression threshold levels for each frequency
@@ -455,8 +461,9 @@ def gainrule_camfit_compr(
     htl = np.zeros((np.size(frequencies), 2))
     Gmin = np.zeros(np.shape(htl))
 
-    for i, levels in enumerate([audiogram.levels_l, audiogram.levels_r]):
-        htl[:, i] = freq_interp_sh(audiogram.cfs, levels, frequencies)
+    # TODO: REFACTOR THIS
+    for i, levels in enumerate([audiogram_left.levels, audiogram_right.levels]):
+        htl[:, i] = freq_interp_sh(audiogram_left.frequencies, levels, frequencies)
         Gmin[:, i] = htl[:, i] + Conv - Lmin
 
     # Get input levels
@@ -464,7 +471,12 @@ def gainrule_camfit_compr(
 
     # Calculate gains at centre frequencies
     gmid_sgt, _, _, insertion_gains = gainrule_camfit_linear(
-        audiogram, sFitmodel, noisegatelevels, noisegateslope, max_output_level
+        audiogram_left,
+        audiogram_right,
+        sFitmodel,
+        noisegatelevels,
+        noisegateslope,
+        max_output_level,
     )
 
     # Calculate compression ratios
@@ -478,7 +490,7 @@ def gainrule_camfit_compr(
     if level != 0:
         cr_idx = [i for (i, val) in enumerate(sFitmodel_levels) if val == level]
 
-    for i, levels in enumerate([audiogram.levels_l, audiogram.levels_r]):
+    for i, levels in enumerate([audiogram_left.levels, audiogram_right.levels]):
         if level != 0:
             tmp = Lmid + gmid_sgt[cr_idx, :, i].flatten() - Lmin - Gmin[:, i]
         else:

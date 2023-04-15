@@ -5,9 +5,9 @@ import numpy as np
 import torch
 
 from clarity.enhancer.dsp import filter  # pylint: disable=redefined-builtin
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
     "sample_rate": 44100,
@@ -34,19 +34,23 @@ def test_dsp_filter(regtest):
 
 
 def test_gha_audiogram(regtest):
-    cfs = np.array([250, 500, 1000, 2000, 4000, 8000])
+    frequencies = np.array([250, 500, 1000, 2000, 4000, 8000])
     for i in [1, 10, 30, 40]:
         np.random.seed(0)
         levels_l = np.round(np.log10(np.random.rand(6) / 20) * (-i), 0)
         levels_r = np.round(np.log10(np.random.rand(6) / 20) * (-i), 0)
-        ag = Audiogram(levels_l, levels_r, cfs)
+        ag_left = Audiogram(levels=levels_l, frequencies=frequencies)
+        ag_right = Audiogram(levels=levels_r, frequencies=frequencies)
         regtest.write(
             "Audiogram original: \n"
-            f"{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
+            f"{ag_left.frequencies}\n{ag_left.levels}\n{ag_right.levels}\n"
+            f"['{ag_left.severity}', '{ag_right.severity}']\n"
         )
-        ag = ag.select_subset_of_cfs(np.array([500, 1000, 2000]))
+        ag_left = ag_left.select_subset_of_cfs(np.array([500, 1000, 2000]))
+        ag_right = ag_right.select_subset_of_cfs(np.array([500, 1000, 2000]))
         regtest.write(
-            f"Audiogram new: \n{ag.cfs}\n{ag.levels_l}\n{ag.levels_r}\n{ag.severity}\n"
+            f"Audiogram new: \n{ag_left.frequencies}\n{ag_left.levels}\n"
+            f"{ag_right.levels}\n['{ag_left.severity}', '{ag_right.severity}']\n"
         )
 
 
@@ -74,15 +78,17 @@ def test_GHA_config(regtest):
     with open("tests/test_data/metadata/listeners.json", encoding="utf-8") as fp:
         listeners = json.load(fp)
     listener = listeners["L0001"]
-    cfs = np.array(listener["audiogram_cfs"], dtype="int")
-    audiogram_left = np.array(listener["audiogram_levels_l"])
-    audiogram_right = np.array(listener["audiogram_levels_r"])
-    audiogram = Audiogram(cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right)
+    frequencies = np.array(listener["audiogram_cfs"], dtype="int")
+    audiogram_left_levels = np.array(listener["audiogram_levels_l"])
+    audiogram_right_levels = np.array(listener["audiogram_levels_r"])
+    audiogram_left = Audiogram(frequencies=frequencies, levels=audiogram_left_levels)
+    audiogram_right = Audiogram(frequencies=frequencies, levels=audiogram_right_levels)
 
     cfg_template = f"tests/test_data/openMHA/{enhancer.cfg_file}_template.cfg"
 
     gaintable = get_gaintable(
-        audiogram,
+        audiogram_left,
+        audiogram_right,
         enhancer.noise_gate_levels,
         enhancer.noise_gate_slope,
         enhancer.cr_level,

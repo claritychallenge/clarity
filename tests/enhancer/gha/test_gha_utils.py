@@ -4,12 +4,12 @@ import hashlib
 import numpy as np
 import pytest
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_utils import (
     format_gaintable,
     get_gaintable,
     multifit_apply_noisegate,
 )
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 
 @pytest.fixture
@@ -17,16 +17,16 @@ def gaintable():
     """fixture for gaintable"""
     np.set_printoptions(threshold=1000)
     np.random.seed(0)
-    levels_l = np.array([45, 45, 35, 45, 60, 65])
-    levels_r = np.array([45, 45, 35, 45, 60, 65])
-    cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
-    audiogram = Audiogram(levels_l=levels_l, levels_r=levels_r, cfs=cfs)
+    levels = np.array([45, 45, 35, 45, 60, 65])
+    frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=levels, frequencies=frequencies)
     noisegate_levels = np.array([38, 38, 36, 37, 32, 26, 23, 22, 8])
     noisegate_slope = 0.0
     cr_level = 0.0
     max_output_level = 100.0
     this_gaintable = get_gaintable(
-        audiogram=audiogram,
+        audiogram_left=audiogram,
+        audiogram_right=audiogram,
         noisegate_levels=noisegate_levels,
         noisegate_slope=noisegate_slope,
         cr_level=cr_level,

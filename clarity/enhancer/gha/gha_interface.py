@@ -96,7 +96,9 @@ class GHAHearingAid:
 
         return output
 
-    def process_files(self, infile_names, outfile_name, audiogram, listener=None):
+    def process_files(
+        self, infile_names, outfile_name, audiogram_left, audiogram_right, listener=None
+    ):
         """Process a set of input signals and generate an output.
 
         Args:
@@ -107,12 +109,18 @@ class GHAHearingAid:
         """
         logging.info("Processing %s with listener %s", outfile_name, listener)
 
-        logging.info("Audiogram severity is %s", audiogram.severity)
-        audiogram = audiogram.select_subset_of_cfs(self.audf)
+        logging.info(
+            "Audiogram severity is %s (left) and %s (right)",
+            audiogram_left.severity,
+            audiogram_right.severity,
+        )
+        audiogram_left = audiogram_left.select_subset_of_cfs(self.audf)
+        audiogram_right = audiogram_right.select_subset_of_cfs(self.audf)
 
         # Get gain table with noisegate correction
         gaintable = get_gaintable(
-            audiogram,
+            audiogram_left,
+            audiogram_right,
             self.noise_gate_levels,
             self.noise_gate_slope,
             self.cr_level,
