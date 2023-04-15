@@ -130,8 +130,8 @@ def test_full_cec1_pipeline(regtest):
 
     ear = Ear(**msbg_ear_cfg)
 
-    left_audiogram = Audiogram(cfs=audiogram_cfs, levels=audiogram_l)
-    right_audiogram = Audiogram(cfs=audiogram_cfs, levels=audiogram_r)
+    left_audiogram = Audiogram(frequencies=audiogram_cfs, levels=audiogram_l)
+    right_audiogram = Audiogram(frequencies=audiogram_cfs, levels=audiogram_r)
 
     enhancer = NALR(**nalr_cfg)
     compressor = Compressor(**compressor_cfg)

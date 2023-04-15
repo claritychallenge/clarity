@@ -2,13 +2,25 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
-DEFAULT_CLARITY_CFS: Final = (250, 500, 1000, 2000, 3000, 4000, 6000, 8000)
+if TYPE_CHECKING:
+    from numpy import ndarray
 
-FULL_STANDARD_CFS: Final = np.array(
+DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES: Final = (
+    250,
+    500,
+    1000,
+    2000,
+    3000,
+    4000,
+    6000,
+    8000,
+)
+
+FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
     [
         125,
         250,
@@ -35,11 +47,11 @@ class Audiogram:
 
     Attributes:
         levels (ndarray): The levels for the left and right ear
-        cfs (ndarray): The centre-frequencies at which the levels are measured
+        frequencies (ndarray): The frequencies at which the levels are measured
     """
 
     levels: np.ndarray
-    cfs: np.ndarray = np.array(DEFAULT_CLARITY_CFS)
+    frequencies: np.ndarray = np.array(DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES)
 
     @property
     def severity(self) -> str:
@@ -58,7 +70,9 @@ class Audiogram:
 
         """
         # calculate mean hearing loss between critical frequencies of 2 & 8 kHz
-        critical_freqs = np.logical_and(2000 <= self.cfs, self.cfs <= 8000)
+        critical_freqs = np.logical_and(
+            2000 <= self.frequencies, self.frequencies <= 8000
+        )
         critical_levels = self.levels[critical_freqs]
         # Remove any None values
         critical_levels = [x for x in critical_levels if x is not None]
@@ -74,28 +88,49 @@ class Audiogram:
 
         return "NOTHING"
 
+    def select_subset_of_cfs(self, selected_frequencies: ndarray) -> Audiogram:
+        """Make a new audiogram using a given subset of centre freqs.
+
+        Note, any selected_cfs that do not exist in the original audiogram
+        are simply ignored
+
+        Args:
+            selected_cfs (list): List of centre frequencies to include
+
+        Returns:
+            Audiogram: New audiogram with reduced set of frequencies
+
+        """
+        indices = [
+            i for i, freq in enumerate(self.frequencies) if freq in selected_frequencies
+        ]
+        return Audiogram(
+            levels=self.levels[indices],
+            frequencies=self.frequencies[indices],
+        )
+
 
 # Reference processing: use to check levels between original and processed,
 AUDIOGRAM_REF = Audiogram(
-    cfs=FULL_STANDARD_CFS,
+    frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
 )
 
 # mild age-related hearing loss, slightly reduced from CF, first-time aid wearers group
 # (used in Stafa talk by MAS)
 AUDIOGRAM_MILD = Audiogram(
-    cfs=FULL_STANDARD_CFS,
+    frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([5, 10, 15, 18, 19, 22, 25, 28, 31, 35, 38, 40, 40, 45, 50]),
 )
 
 # mod hearing loss based on mild N2 flat/mod sloping from Bisgaard et al. 2020
 AUDIOGRAM_MODERATE = Audiogram(
-    cfs=FULL_STANDARD_CFS,
+    frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([15, 20, 20, 22.5, 25, 30, 35, 40, 45, 50, 55, 55, 60, 65, 65]),
 )
 
 # (mod-)severe age-related hearing loss, average of MAS/KA summer proj 2011, elderly HI
 AUDIOGRAM_MODERATE_SEVERE = Audiogram(
-    cfs=FULL_STANDARD_CFS,
+    frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([19, 19, 28, 35, 40, 47, 52, 56, 58, 58, 63, 70, 75, 80, 80]),
 )

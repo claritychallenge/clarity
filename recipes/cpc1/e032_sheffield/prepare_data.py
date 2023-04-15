@@ -115,11 +115,11 @@ def run_msbg_simulation(cfg, track):
             audiogram_left = np.array(
                 listener_audiograms[listener]["audiogram_levels_l"]
             )
-            left_audiogram = Audiogram(cfs=cfs, levels=audiogram_left)
+            left_audiogram = Audiogram(frequencies=cfs, levels=audiogram_left)
             audiogram_right = np.array(
                 listener_audiograms[listener]["audiogram_levels_r"]
             )
-            right_audiogram = Audiogram(cfs=cfs, levels=audiogram_right)
+            right_audiogram = Audiogram(frequencies=cfs, levels=audiogram_right)
 
             signals_to_write = [
                 listen(ear, signal, left_audiogram, right_audiogram),

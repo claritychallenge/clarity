@@ -46,7 +46,7 @@ def test_compute_recruitment_parameters(center_freqs, cf_expansion_expected):
     levels = np.array([60, 70, 80])
     n_channels = len(levels)
     catch_up = 1.5
-    audiogram = Audiogram(levels=levels, cfs=audiogram_cfs)
+    audiogram = Audiogram(levels=levels, frequencies=audiogram_cfs)
     cf_expansion, eq_loud_db_catch_up = compute_recruitment_parameters(
         gtn_cf=center_freqs,
         audiogram=audiogram,
@@ -65,7 +65,7 @@ def test_gammatone_filterbank():
     signal = np.random.random(1000)
     levels = np.array([30, 40, 40])
     audiogram_cfs = np.array([250, 500, 2000])
-    audiogram = Audiogram(levels=levels, cfs=audiogram_cfs)
+    audiogram = Audiogram(levels=levels, frequencies=audiogram_cfs)
 
     cochlea = Cochlea(audiogram=audiogram)
 
@@ -133,7 +133,7 @@ def test_recruitment():
 def test_cochlea(levels, severity, has_smearer):
     """Test Cochlea class"""
     audiogram_cfs = np.array([250, 500, 2000])
-    audiogram = Audiogram(levels=levels, cfs=audiogram_cfs)
+    audiogram = Audiogram(levels=levels, frequencies=audiogram_cfs)
     assert audiogram.severity == severity
 
     cochlea = Cochlea(audiogram=audiogram)
@@ -152,7 +152,7 @@ def test_cochlea_simulate(levels, expected, n_samples_out):
     np.random.seed(0)
     signal = np.random.random(1000)
     audiogram_cfs = np.array([250, 500, 2000])
-    audiogram = Audiogram(levels=levels, cfs=audiogram_cfs)
+    audiogram = Audiogram(levels=levels, frequencies=audiogram_cfs)
 
     cochlea = Cochlea(audiogram=audiogram)
     result = cochlea.simulate(coch_sig=signal, equiv_0dB_file_SPL=100.0)

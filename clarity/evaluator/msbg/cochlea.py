@@ -67,16 +67,16 @@ def compute_recruitment_parameters(
     cf_expansion = np.zeros(gtn_cf.shape)  # expansion ratios
 
     for ix_cf in np.arange(0, gtn_cf.shape[0]):
-        if gtn_cf[ix_cf] < audiogram.cfs[0]:
+        if gtn_cf[ix_cf] < audiogram.frequencies[0]:
             # Extend audiogram, flat below lowest freq measured
             cf_expansion[ix_cf] = catch_up / (catch_up - audiogram.levels[0])
-        elif gtn_cf[ix_cf] > audiogram.cfs[-1]:
+        elif gtn_cf[ix_cf] > audiogram.frequencies[-1]:
             # Extend audiogram, flat above highest freq measured
             cf_expansion[ix_cf] = catch_up / (catch_up - audiogram.levels[-1])
         else:
             # In the sensible region
             cf_to_level_fn = scipy.interpolate.interp1d(
-                audiogram.cfs, audiogram.levels, kind="linear"
+                audiogram.frequencies, audiogram.levels, kind="linear"
             )
             # Assumes catch-up at catch_up dB (typ 100-105)
             cf_expansion[ix_cf] = catch_up / (catch_up - cf_to_level_fn(gtn_cf[ix_cf]))

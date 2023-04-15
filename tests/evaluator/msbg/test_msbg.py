@@ -22,7 +22,7 @@ def test_set_audiogram():
     assert ear.cochlea is not None
 
     # Bad audiogram - will log a warning
-    audiogram_bad = Audiogram(levels=np.array([150]), cfs=np.array([4000]))
+    audiogram_bad = Audiogram(levels=np.array([150]), frequencies=np.array([4000]))
     ear.set_audiogram(audiogram=audiogram_bad)
     assert ear.cochlea is not None
 

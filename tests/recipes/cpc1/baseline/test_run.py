@@ -59,8 +59,8 @@ def test_listen(hydra_cfg):
     levels_1 = np.array([5, 5, 5, 5, 5, 5])
     levels_2 = np.array([10, 25, 80, 80, 80, 85])
     signal = np.random.rand(2000, 2)
-    audiogram_mild = Audiogram(cfs=cfs, levels=levels_1)
-    audiogram_severe = Audiogram(cfs=cfs, levels=levels_2)
+    audiogram_mild = Audiogram(frequencies=cfs, levels=levels_1)
+    audiogram_severe = Audiogram(frequencies=cfs, levels=levels_2)
     # Test asymmetric hearing loss in both orientations
     processed = listen(ear, signal, audiogram_mild, audiogram_severe)
     assert processed.shape == (2240, 2)

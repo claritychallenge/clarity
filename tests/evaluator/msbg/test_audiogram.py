@@ -16,9 +16,9 @@ def test_audiogram():
     """Test Audiogram class"""
     levels = np.array([60, 70, 80])
     cfs = np.array([250, 500, 1000])
-    audiogram = Audiogram(levels=levels, cfs=cfs)
+    audiogram = Audiogram(levels=levels, frequencies=cfs)
     assert np.all(audiogram.levels == levels)
-    assert np.all(audiogram.cfs == cfs)
+    assert np.all(audiogram.frequencies == cfs)
 
 
 @pytest.mark.parametrize(
@@ -34,7 +34,7 @@ def test_audiogram():
 )
 def test_audiogram_severity(cfs, levels, severity):
     """Test Audiogram severity calculation"""
-    assert Audiogram(levels=levels, cfs=cfs).severity == severity
+    assert Audiogram(levels=levels, frequencies=cfs).severity == severity
 
 
 def test_standard_audiograms_are_correct_severity():

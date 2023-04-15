@@ -80,11 +80,11 @@ def run_HL_processing(cfg: DictConfig) -> None:
             audiogram_left = np.array(
                 listener_audiograms[listener]["audiogram_levels_l"]
             )
-            left_audiogram = Audiogram(cfs=cfs, levels=audiogram_left)
+            left_audiogram = Audiogram(frequencies=cfs, levels=audiogram_left)
             audiogram_right = np.array(
                 listener_audiograms[listener]["audiogram_levels_r"]
             )
-            right_audiogram = Audiogram(cfs=cfs, levels=audiogram_right)
+            right_audiogram = Audiogram(frequencies=cfs, levels=audiogram_right)
 
             # Create discrete delta function (DDF) signal for time alignment
             ddf_signal = np.zeros(np.shape(signal))
@@ -92,7 +92,9 @@ def run_HL_processing(cfg: DictConfig) -> None:
             ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
 
             # Get flat-0dB ear audiograms
-            flat0dB_audiogram = Audiogram(cfs=cfs, levels=np.zeros(np.shape(cfs)))
+            flat0dB_audiogram = Audiogram(
+                frequencies=cfs, levels=np.zeros(np.shape(cfs))
+            )
 
             signals_to_write = [
                 listen(ear, ddf_signal, flat0dB_audiogram, flat0dB_audiogram),

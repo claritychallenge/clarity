@@ -25,7 +25,7 @@ def msbg_model():
     """MSBG model fixture"""
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
-        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.frequencies.tolist(),
     )
     return model
 
@@ -35,7 +35,7 @@ def msbg_model_quick():
     """MSBG model fixture with smaller kernel for quick testing"""
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
-        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.frequencies.tolist(),
         kernel_size=129,
     )
     return model
@@ -48,22 +48,22 @@ def test_msbg_hearing_model_init(use_torch):
     """Test the MSBGHearingModel class init function"""
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MILD.levels.tolist(),
-        audiometric=AUDIOGRAM_MILD.cfs.tolist(),
+        audiometric=AUDIOGRAM_MILD.frequencies.tolist(),
     )
     assert model.win_len == 441
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
-        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.frequencies.tolist(),
     )
     assert model.win_len == 441
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE_SEVERE.levels.tolist(),
-        audiometric=AUDIOGRAM_MODERATE_SEVERE.cfs.tolist(),
+        audiometric=AUDIOGRAM_MODERATE_SEVERE.frequencies.tolist(),
     )
     assert model.win_len == 441
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
-        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.frequencies.tolist(),
     )
     assert model.win_len == 441
 
@@ -93,7 +93,7 @@ def test_msbg_hearing_model_calibrate_spl_null(use_torch):
     """Test the calibrate_spl function does nothing is calibration is disabled"""
     this_msbg_model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
-        audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        audiometric=AUDIOGRAM_MODERATE.frequencies.tolist(),
         spl_cali=False,  # <--- Disable calibration
     )
     x = torch.randn(2, 20000)
