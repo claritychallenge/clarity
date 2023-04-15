@@ -8,7 +8,7 @@ from clarity.enhancer.gha.gainrule_camfit import (
     gainrule_camfit_linear,
     gains,
     isothr,
-    logx_interp1d,
+    logx_interp,
 )
 from clarity.evaluator.msbg.audiogram import Audiogram
 
@@ -59,11 +59,9 @@ def test_isothr():
         ([10.0, 40], [10.0, 20.0], [20.0], [15.0]),
     ],
 )
-def test_logx_interp1d(x_in, y_in, x_out, expected_y_out):
+def test_logx_interp(x_in, y_in, x_out, expected_y_out):
     """test that the freq_inter_sh interpolates and extrapolates correctly"""
-    y_out = logx_interp1d(
-        x_in=np.array(x_in), y_in=np.array(y_in), x_out=np.array(x_out)
-    )
+    y_out = logx_interp(x_in=np.array(x_in), y_in=np.array(y_in), x_out=np.array(x_out))
     assert y_out.shape == np.array(x_out).shape
     assert np.allclose(y_out, np.array(expected_y_out))
 
@@ -76,10 +74,10 @@ def test_logx_interp1d(x_in, y_in, x_out, expected_y_out):
         ([], [], [15.0], IndexError),
     ],
 )
-def test_logx_inter1d_error(x_in, y_in, x_out, error_type):
+def test_logx_inter_error(x_in, y_in, x_out, error_type):
     """test that the freq_inter_sh fails with invalid inputs"""
     with pytest.raises(error_type):
-        logx_interp1d(x_in=np.array(x_in), y_in=np.array(y_in), x_out=np.array(x_out))
+        logx_interp(x_in=np.array(x_in), y_in=np.array(y_in), x_out=np.array(x_out))
 
 
 def test_gains():

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from scipy.interpolate import interp1d
 
-from clarity.evaluator.msbg.audiogram import logx_interp1d
+from clarity.evaluator.msbg.audiogram import logx_interp
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -224,7 +224,7 @@ def gainrule_camfit_linear(
     )
     intercepts = np.array([-11, -10, -8, -6, 0, -1, 1, -1, 0, 1, 1])
 
-    intercepts = logx_interp1d(
+    intercepts = logx_interp(
         intercept_frequencies, intercepts, sFitmodel["frequencies"]
     )
 

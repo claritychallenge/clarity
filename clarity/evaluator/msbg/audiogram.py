@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
-from scipy.interpolate import interp1d
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -42,7 +41,7 @@ FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
 )
 
 
-def logx_interp1d(x_in: ndarray, y_in: ndarray, x_out: ndarray) -> ndarray:
+def logx_interp(x_in: ndarray, y_in: ndarray, x_out: ndarray) -> ndarray:
     """Linear interpolation on logarithmic x-axis.
 
     Interpolates linearly on a logarithmic x-axis, e.g. suitable for
@@ -60,9 +59,8 @@ def logx_interp1d(x_in: ndarray, y_in: ndarray, x_out: ndarray) -> ndarray:
         ndarray: interpolated y-values
 
     """
-    return interp1d(
-        np.log(x_in), y_in, bounds_error=False, fill_value=(y_in[0], y_in[-1])
-    )(np.log(x_out))
+
+    return np.interp(np.log(x_out), np.log(x_in), y_in, left=y_in[0], right=y_in[-1])
 
 
 @dataclass
@@ -131,7 +129,7 @@ class Audiogram:
 
         """
         return Audiogram(
-            levels=logx_interp1d(self.frequencies, self.levels, new_frequencies),
+            levels=logx_interp(self.frequencies, self.levels, new_frequencies),
             frequencies=new_frequencies,
         )
 
