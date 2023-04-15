@@ -46,8 +46,8 @@ def test_gha_audiogram(regtest):
             f"{ag_left.frequencies}\n{ag_left.levels}\n{ag_right.levels}\n"
             f"['{ag_left.severity}', '{ag_right.severity}']\n"
         )
-        ag_left = ag_left.select_subset_of_cfs(np.array([500, 1000, 2000]))
-        ag_right = ag_right.select_subset_of_cfs(np.array([500, 1000, 2000]))
+        ag_left = ag_left.resample(np.array([500, 1000, 2000]))
+        ag_right = ag_right.resample(np.array([500, 1000, 2000]))
         regtest.write(
             f"Audiogram new: \n{ag_left.frequencies}\n{ag_left.levels}\n"
             f"{ag_right.levels}\n['{ag_left.severity}', '{ag_right.severity}']\n"

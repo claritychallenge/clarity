@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 from scipy.interpolate import interp1d
 
+from clarity.evaluator.msbg.audiogram import logx_interp1d
+
 if TYPE_CHECKING:
     from numpy import ndarray
 
@@ -141,40 +143,6 @@ def isothr(vsDesF: list[int] | ndarray) -> ndarray:
     return vIsoThrDB
 
 
-def freq_interp_sh(f_in: ndarray, y_in: ndarray, f: ndarray) -> ndarray:
-    """Linear interpolation on logarithmic frequency scale.
-
-    Has samples and hold on edges.
-
-    Args:
-        f_in (ndarray): audiogram frequencies (Hz)
-        y_in (ndarray): audiogram levels
-        f (list): FFT filterbank frequencies
-
-    Returns:
-        ndarray: interpolated levels corresponding to filterbank frequencies
-
-    """
-
-    # Checks
-    if np.size(f[0]) > 1:
-        f = f[0]
-    if np.size(f_in[0]) > 1:
-        f_in = f_in[0]
-    if np.size(y_in[0]) > 1:
-        y_in = y_in[0]
-
-    vals = np.pad(
-        f_in.astype(float), 1, constant_values=((0.5 * f_in[0], 2 * f_in[-1]))
-    )
-    yvals = np.pad(y_in, 1, constant_values=((y_in[0], y_in[-1])))
-
-    y = interp1d(np.log(vals), yvals, fill_value="extrapolate")(np.log(f))
-    y = np.expand_dims(y, 0)
-
-    return y
-
-
 def gains(
     compr_thr_inputs: ndarray,
     compr_thr_gains: ndarray,
@@ -256,7 +224,7 @@ def gainrule_camfit_linear(
     )
     intercepts = np.array([-11, -10, -8, -6, 0, -1, 1, -1, 0, 1, 1])
 
-    intercepts = freq_interp_sh(
+    intercepts = logx_interp1d(
         intercept_frequencies, intercepts, sFitmodel["frequencies"]
     )
 
@@ -277,12 +245,8 @@ def gainrule_camfit_linear(
     noisegate_slope = np.zeros((np.size(sFitmodel_frequencies), 2))
     insertion_gains_out = np.zeros((np.size(sFitmodel_frequencies), 2))
 
-    # TODO: REFACTOR THIS so freq_interp_sh an audiogram method
-    for i, levels in enumerate([audiogram_left.levels, audiogram_right.levels]):
-        htlside = freq_interp_sh(
-            audiogram_left.frequencies, levels, sFitmodel_frequencies
-        )
-
+    for i, audiogram in enumerate([audiogram_left, audiogram_right]):
+        htlside = audiogram.resample(sFitmodel_frequencies).levels
         insertion_gains = htlside * 0.48 + intercepts
 
         # According to B. Moore (1998), "Use of a loudness model for hearing-aid
@@ -292,12 +256,9 @@ def gainrule_camfit_linear(
         insertion_gains[insertion_gains < 0] = 0
 
         # Set all gains to 0 for 0dB HL flat audiogram
-        insertion_gains = insertion_gains * htlside.any()  # any(htlside)
+        insertion_gains = insertion_gains * htlside.any()
 
         sGt[:, :, i] = np.tile(insertion_gains, (len(sFitmodel_levels), 1))
-
-        if np.size(insertion_gains[0]) == np.size(htlside):
-            insertion_gains = insertion_gains[0]
 
         insertion_gains_out[:, i] = insertion_gains
         output_levels = np.tile(sFitmodel_levels, (np.size(insertion_gains), 1))
@@ -443,8 +404,7 @@ def gainrule_camfit_compr(
             for (ltass_a, ltass_b) in zip(LTASS_edge_freq[:-1], LTASS_edge_freq[1:])
         ]
         intensity_sum = np.inner(LTASS_intensity, portion)  # weighted sum
-        speech_level_70_in_dc_band = 10 * np.log10(intensity_sum)
-        speech_level_65_in_dc_bands[band] = speech_level_70_in_dc_band - 5
+        speech_level_65_in_dc_bands[band] = 10 * np.log10(intensity_sum) - 5
 
     # minima in lowest level speech that needs to be understood is 38 dB below
     # speech_level_65_in_dc_bands
@@ -461,9 +421,8 @@ def gainrule_camfit_compr(
     htl = np.zeros((np.size(frequencies), 2))
     Gmin = np.zeros(np.shape(htl))
 
-    # TODO: REFACTOR THIS
-    for i, levels in enumerate([audiogram_left.levels, audiogram_right.levels]):
-        htl[:, i] = freq_interp_sh(audiogram_left.frequencies, levels, frequencies)
+    for i, audiogram in enumerate([audiogram_left, audiogram_right]):
+        htl[:, i] = audiogram.resample(frequencies).levels
         Gmin[:, i] = htl[:, i] + Conv - Lmin
 
     # Get input levels

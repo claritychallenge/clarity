@@ -114,8 +114,8 @@ class GHAHearingAid:
             audiogram_left.severity,
             audiogram_right.severity,
         )
-        audiogram_left = audiogram_left.select_subset_of_cfs(self.audf)
-        audiogram_right = audiogram_right.select_subset_of_cfs(self.audf)
+        audiogram_left = audiogram_left.resample(self.audf)
+        audiogram_right = audiogram_right.resample(self.audf)
 
         # Get gain table with noisegate correction
         gaintable = get_gaintable(

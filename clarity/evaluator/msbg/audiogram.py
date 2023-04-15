@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
+from scipy.interpolate import interp1d
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -39,6 +40,29 @@ FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
         16000,
     ]
 )
+
+
+def logx_interp1d(x_in: ndarray, y_in: ndarray, x_out: ndarray) -> ndarray:
+    """Linear interpolation on logarithmic x-axis.
+
+    Interpolates linearly on a logarithmic x-axis, e.g. suitable for
+    interpolating audiogram levels at arbitrary frequencies.
+
+    Note, for x below the minimum of x_in, the first value of y_in is used,
+    and for x above the maximum of x_in, the last value of y_in is used.
+
+    Args:
+        x_in (ndarray): x-axis values, e.g. audiogram frequencies (Hz)
+        y_in (ndarray): y-axis values, e.g., audiogram levels
+        x_out (ndarray): x-axis value at which y-value are required
+
+    Returns:
+        ndarray: interpolated y-values
+
+    """
+    return interp1d(
+        np.log(x_in), y_in, bounds_error=False, fill_value=(y_in[0], y_in[-1])
+    )(np.log(x_out))
 
 
 @dataclass
@@ -96,25 +120,19 @@ class Audiogram:
 
         return "NOTHING"
 
-    def select_subset_of_cfs(self, selected_frequencies: ndarray) -> Audiogram:
-        """Make a new audiogram using a given subset of centre freqs.
-
-        Note, any selected_cfs that do not exist in the original audiogram
-        are simply ignored
+    def resample(self, new_frequencies: ndarray) -> Audiogram:
+        """Resample the audiogram to a new set of frequencies.
 
         Args:
-            selected_cfs (list): List of centre frequencies to include
+            new_frequencies (ndarray): The new frequencies to resample to
 
         Returns:
-            Audiogram: New audiogram with reduced set of frequencies
+            Audiogram: New audiogram with resampled frequencies
 
         """
-        indices = [
-            i for i, freq in enumerate(self.frequencies) if freq in selected_frequencies
-        ]
         return Audiogram(
-            levels=self.levels[indices],
-            frequencies=self.frequencies[indices],
+            levels=logx_interp1d(self.frequencies, self.levels, new_frequencies),
+            frequencies=new_frequencies,
         )
 
 

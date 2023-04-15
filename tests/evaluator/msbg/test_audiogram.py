@@ -86,25 +86,20 @@ def test_severity(levels, frequencies, expected):
     assert audiogram.severity == expected
 
 
-def test_select_subset_of_cfs():
+@pytest.mark.parametrize(
+    "requested_frequencies, expected_levels",
+    [
+        (np.array([250, 1000.0, 6000.0]), np.array([1.0, 3.0, 6.0])),
+        (np.array([260.0, 1000.0, 8000.0]), np.array([1.05658353, 3.0, 6.0])),
+    ],
+)
+def test_resample(requested_frequencies, expected_levels):
     """test that a subset of cfs can be chosen"""
     levels = np.array([1, 2, 3, 4, 5, 6])
     frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
     audiogram = Audiogram(levels=levels, frequencies=frequencies)
 
-    # Select a subset of cfs
-    subset_audiogram = audiogram.select_subset_of_cfs(np.array([250, 1000, 6000]))
-    assert np.all(subset_audiogram.levels == np.array([1, 3, 6]))
-    assert np.all(subset_audiogram.frequencies == np.array([250, 1000, 6000]))
-
     # Include cfs that don't exist in the requested subset
-    subset_audiogram = audiogram.select_subset_of_cfs(np.array([251, 1000, 6001]))
-    assert np.all(subset_audiogram.levels == np.array([3]))
-    assert np.all(subset_audiogram.frequencies == np.array([1000]))
-
-    # Include only a cf that doesn't exist in the requested subset
-    subset_audiogram = audiogram.select_subset_of_cfs(np.array([999]))
-    assert np.all(subset_audiogram.levels == np.array([]))
-    assert np.all(subset_audiogram.frequencies == np.array([]))
-    # Severity of an 'empty' audiogram should be NOTHING
-    assert subset_audiogram.severity == "NOTHING"
+    subset_audiogram = audiogram.resample(requested_frequencies)
+    assert np.allclose(subset_audiogram.frequencies, requested_frequencies)
+    assert np.allclose(subset_audiogram.levels, expected_levels)
