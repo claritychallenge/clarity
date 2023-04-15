@@ -11,6 +11,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 logger = logging.getLogger(__name__)
 
@@ -65,12 +66,18 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 np.random.seed(scene_md5)
 
             # retrieve audiograms
-            cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-            audiogram_left = np.array(
-                listener_audiograms[listener]["audiogram_levels_l"]
+            audiogram_frequencies = np.array(
+                listener_audiograms[listener]["audiogram_cfs"]
             )
-            audiogram_right = np.array(
-                listener_audiograms[listener]["audiogram_levels_r"]
+
+            audiogram_left = Audiogram(
+                levels=listener_audiograms[listener]["audiogram_levels_l"],
+                frequencies=audiogram_frequencies,
+            )
+
+            audiogram_right = Audiogram(
+                levels=listener_audiograms[listener]["audiogram_levels_r"],
+                frequencies=audiogram_frequencies,
             )
 
             # retrieve signals
@@ -104,7 +111,6 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 sample_rate=fs_ref_anechoic,
                 audiogram_left=audiogram_left,
                 audiogram_right=audiogram_right,
-                audiogram_frequencies=cfs,
             )
             logger.info(f"The HASPI score is {si}")
             csv_lines.append([scene, listener, str(si)])
@@ -128,7 +134,6 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                     sample_rate=fs_ref_anechoic,
                     audiogram_left=audiogram_left,
                     audiogram_right=audiogram_right,
-                    audiogram_frequencies=cfs,
                 )
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
                 unproc_csv_lines.append([scene, listener, str(si_unproc)])

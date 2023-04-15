@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.hasqi import hasqi_v2, hasqi_v2_better_ear
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 
 def test_hasqi_v2() -> None:
@@ -29,10 +30,15 @@ def test_hasqi_v2_better_ear() -> None:
 
     np.random.seed(0)
     sample_rate = 16000
-    hl_left = np.array([25, 25, 25, 25, 40, 65])
-    hl_right = np.array([45, 45, 35, 45, 60, 65])
 
     freqs = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram_left = Audiogram(
+        levels=np.array([25, 25, 25, 25, 40, 65]), frequencies=freqs
+    )
+    audiogram_right = Audiogram(
+        levels=np.array([45, 45, 35, 45, 60, 65]), frequencies=freqs
+    )
+
     ref_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     ref_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
     proc_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
@@ -44,11 +50,9 @@ def test_hasqi_v2_better_ear() -> None:
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
         sample_rate=sample_rate,
-        audiogram_left=hl_left,
-        audiogram_right=hl_right,
-        audiogram_frequencies=freqs,
+        audiogram_left=audiogram_left,
+        audiogram_right=audiogram_right,
         level=100,
-        audiogram_freq=None,
     )
 
     assert score == pytest.approx(

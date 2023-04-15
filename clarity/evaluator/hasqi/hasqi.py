@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
 from clarity.evaluator.haspi import eb
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray
+
+
+# HASQI assumes the following audiogram frequencies:
+HASQI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
 
 
 def hasqi_v2(
@@ -160,11 +165,9 @@ def hasqi_v2_better_ear(
     processed_left: ndarray,
     processed_right: ndarray,
     sample_rate: float,
-    audiogram_left: ndarray,
-    audiogram_right: ndarray,
-    audiogram_frequencies: ndarray,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
     level: float = 100.0,
-    audiogram_freq: None | ndarray = None,
 ) -> float:
     """Better ear HASQI.
 
@@ -178,7 +181,6 @@ def hasqi_v2_better_ear(
         sample_rate: sampling rate for both signal
         audiogram_l: left ear audiogram
         audiogram_r: right ear audiogram
-        audiogram_cfs: audiogram frequencies
         level: level in dB SPL corresponding to RMS=1
         audiogram_freq: selected frequencies to use for audiogram
 
@@ -188,40 +190,15 @@ def hasqi_v2_better_ear(
     Gerardo Roa Dabike, November 2022
     """
 
-    # Default frequencies
-    if audiogram_freq is None:
-        audiogram_freq = np.array([250, 500, 1000, 2000, 4000, 6000])
-
-    # TODO: This logic for selecting a subset of an audiogram should be moved
-    # into the audiogram class
-
-    n_freq = len(audiogram_freq)
-    # Select levels at standard frequencies
-    selected_left = np.array(
-        [
-            audiogram_left[i]
-            for i in range(len(audiogram_frequencies))
-            if audiogram_frequencies[i] in audiogram_freq
-        ]
-    )
-
-    selected_right = np.array(
-        [
-            audiogram_right[i]
-            for i in range(len(audiogram_frequencies))
-            if audiogram_frequencies[i] in audiogram_freq
-        ]
-    )
-
-    if len(selected_left) != n_freq or len(selected_right) != n_freq:
-        raise ValueError("Some requested frequencies not available in audiogram.")
+    audiogram_left = audiogram_left.resample(HASQI_AUDIOGRAM_FREQUENCIES)
+    audiogram_right = audiogram_right.resample(HASQI_AUDIOGRAM_FREQUENCIES)
 
     score_left, _, _, _ = hasqi_v2(
         reference_left,
         sample_rate,
         processed_left,
         sample_rate,
-        selected_left,
+        audiogram_left.levels,
         equalisation=1,
         level1=level,
     )
@@ -230,7 +207,7 @@ def hasqi_v2_better_ear(
         sample_rate,
         processed_right,
         sample_rate,
-        selected_right,
+        audiogram_right.levels,
         equalisation=1,
         level1=level,
     )

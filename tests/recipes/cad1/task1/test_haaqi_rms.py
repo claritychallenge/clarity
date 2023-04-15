@@ -2,6 +2,7 @@
 import numpy as np
 import pytest
 
+from clarity.evaluator.msbg.audiogram import Audiogram
 from recipes.cad1.task1.baseline.haaqi_rms import (
     align_signals,
     compute_haaqi_rms,
@@ -72,11 +73,14 @@ def test_compute_haaqi_rms():
 
     processed_signal = align_signals(reference_signal, processed_signal)
 
+    audiogram = Audiogram(
+        levels=np.array([45, 45, 35, 45, 60, 65]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
+    )
     score = compute_haaqi_rms(
         processed_signal,
         reference_signal,
-        audiogram=np.array([45, 45, 35, 45, 60, 65]),
-        audiogram_frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
+        audiogram=audiogram,
         sample_rate=sample_rate,
         silence_length=0.1,
     )

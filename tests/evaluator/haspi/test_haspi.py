@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haspi import haspi_v2, haspi_v2_be
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 
 def test_haspi_v2() -> None:
@@ -55,9 +56,8 @@ def test_haspi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
         sample_rate=sample_rate,
-        audiogram_left=hl_left,
-        audiogram_right=hl_right,
-        audiogram_frequencies=freqs,
+        audiogram_left=Audiogram(levels=hl_left, frequencies=freqs),
+        audiogram_right=Audiogram(levels=hl_right, frequencies=freqs),
         level=100,
     )
 
@@ -65,22 +65,26 @@ def test_haspi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
 
 
 @pytest.mark.parametrize(
-    "hl_left, hl_right, freqs",
+    "hl_left, hl_right, freqs, expected_score",
     [
         (
             np.array([25, 25, 25, 40, 65]),
             np.array([45, 35, 45, 60, 65]),
             np.array([250, 1000, 2000, 4000, 6000]),
+            0.839975335323691,
         ),
         (
             np.array([25, 25, 21, 25, 25, 65]),
             np.array([45, 45, 21, 35, 45, 65]),
             np.array([250, 500, 700, 1000, 2000, 6000]),
+            0.8380310721987008,
         ),
     ],
 )
-def test_haspi_v2_better_ear_error(hl_left, hl_right, freqs) -> None:
-    """Test that haspi throws error if a needed frequency is missing"""
+def test_haspi_v2_better_ear_non_standard(
+    hl_left, hl_right, freqs, expected_score
+) -> None:
+    """Test that haspi works with non standard audiogram frequencies"""
 
     sample_rate = 16000
 
@@ -90,15 +94,14 @@ def test_haspi_v2_better_ear_error(hl_left, hl_right, freqs) -> None:
     proc_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     proc_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
-    with pytest.raises(ValueError):
-        haspi_v2_be(
-            reference_left=ref_left,
-            reference_right=ref_right,
-            processed_left=proc_left + ref_left,
-            processed_right=proc_right,
-            sample_rate=sample_rate,
-            audiogram_left=hl_left,
-            audiogram_right=hl_right,
-            audiogram_frequencies=freqs,
-            level=100,
-        )
+    score = haspi_v2_be(
+        reference_left=ref_left,
+        reference_right=ref_right,
+        processed_left=proc_left + ref_left,
+        processed_right=proc_right,
+        sample_rate=sample_rate,
+        audiogram_left=Audiogram(levels=hl_left, frequencies=freqs),
+        audiogram_right=Audiogram(levels=hl_right, frequencies=freqs),
+        level=100,
+    )
+    assert score == pytest.approx(expected_score)

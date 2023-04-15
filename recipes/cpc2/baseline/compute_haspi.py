@@ -13,6 +13,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
+from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.utils.file_io import read_jsonl, write_jsonl
 
 logger = logging.getLogger(__name__)
@@ -59,6 +60,12 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
     proc = proc / 32768.0
     ref = ref / 32768.0
 
+    audiogram_left = Audiogram(
+        levels=audiogram["audiogram_levels_l"], frequencies=audiogram["audiogram_cfs"]
+    )
+    audiogram_right = Audiogram(
+        levels=audiogram["audiogram_levels_r"], frequencies=audiogram["audiogram_cfs"]
+    )
     # Compute haspi score using library code
     haspi_score = haspi_v2_be(
         reference_left=ref[:, 0],
@@ -66,9 +73,8 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
         processed_left=proc[:, 0],
         processed_right=proc[:, 1],
         sample_rate=sr_proc,
-        audiogram_left=audiogram["audiogram_levels_l"],
-        audiogram_right=audiogram["audiogram_levels_r"],
-        audiogram_frequencies=audiogram["audiogram_cfs"],
+        audiogram_left=audiogram_left,
+        audiogram_right=audiogram_right,
     )
 
     return haspi_score

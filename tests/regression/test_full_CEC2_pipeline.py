@@ -13,6 +13,7 @@ from clarity.data.scene_renderer_cec2 import SceneRenderer
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 # Pass some random data through code and compare with reference output
 # scene_renderer, enhancer, compressor, haspi
@@ -166,9 +167,8 @@ def test_full_cec2_pipeline(
         processed_left=enhanced_audio[:, 0],
         processed_right=enhanced_audio[:, 1],
         sample_rate=sample_rate,
-        audiogram_left=audiogram_l,
-        audiogram_right=audiogram_r,
-        audiogram_frequencies=audiogram_cfs,
+        audiogram_left=Audiogram(levels=audiogram_l, frequencies=audiogram_cfs),
+        audiogram_right=Audiogram(levels=audiogram_r, frequencies=audiogram_cfs),
     )
 
     regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")

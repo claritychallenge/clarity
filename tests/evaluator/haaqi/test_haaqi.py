@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haaqi import compute_haaqi, haaqi_v1
+from clarity.evaluator.msbg.audiogram import Audiogram
 
 
 def test_haaqi_v1() -> None:
@@ -36,15 +37,16 @@ def test_compute_haaqi(scale_reference, expected_result):
     enh_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
     ref_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
-    audiogram = np.array([10, 20, 30, 40, 50, 60])
-    audiogram_frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(
+        levels=np.array([10, 20, 30, 40, 50, 60]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
+    )
 
     # Compute HAAQI score
     score = compute_haaqi(
         processed_signal=enh_signal,
         reference_signal=ref_signal,
         audiogram=audiogram,
-        audiogram_frequencies=audiogram_frequencies,
         sample_rate=sample_rate,
         scale_reference=scale_reference,
     )
