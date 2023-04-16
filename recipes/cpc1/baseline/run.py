@@ -11,9 +11,9 @@ from tqdm import tqdm
 
 from clarity.evaluator.mbstoi.mbstoi import mbstoi
 from clarity.evaluator.mbstoi.mbstoi_utils import find_delay_impulse
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal, write_signal
+from clarity.utils.audiogram import Audiogram
 
 logger = logging.getLogger(__name__)
 

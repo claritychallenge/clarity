@@ -10,7 +10,6 @@ import scipy
 from numpy import ndarray
 from scipy.signal import firwin, lfilter
 
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.cochlea import Cochlea
 from clarity.evaluator.msbg.msbg_utils import (
     DF_ED,
@@ -24,6 +23,7 @@ from clarity.evaluator.msbg.msbg_utils import (
     gen_tone,
     measure_rms,
 )
+from clarity.utils.audiogram import Audiogram
 
 # Cut off frequency of low-pass filter at end of simulations:
 # prevents possible excessive processing noise at high frequencies.

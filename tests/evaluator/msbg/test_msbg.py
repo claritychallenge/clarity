@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.msbg.audiogram import AUDIOGRAM_MODERATE_SEVERE, Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import DF_ED, FF_ED
+from clarity.utils.audiogram import AUDIOGRAM_MODERATE_SEVERE, Audiogram
 
 
 def test_ear():

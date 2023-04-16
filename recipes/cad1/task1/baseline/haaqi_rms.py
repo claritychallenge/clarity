@@ -5,7 +5,7 @@ import numpy as np
 from scipy.signal import correlate, correlation_lags
 
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 from clarity.utils.signal_processing import compute_rms
 
 

@@ -7,7 +7,7 @@ from omegaconf import DictConfig
 from tqdm import tqdm
 
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 @hydra.main(config_path=".", config_name="config")

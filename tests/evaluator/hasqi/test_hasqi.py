@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.hasqi import hasqi_v2, hasqi_v2_better_ear
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 def test_hasqi_v2() -> None:

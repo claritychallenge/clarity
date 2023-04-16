@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 import numpy as np
 from scipy.interpolate import interp1d
 
-from clarity.evaluator.msbg.audiogram import logx_interp
+from clarity.utils.audiogram import logx_interp
 
 if TYPE_CHECKING:
     from numpy import ndarray
 
     from clarity.enhancer.gha.gha_utils import FittingParams
-    from clarity.evaluator.msbg.audiogram import Audiogram
+    from clarity.utils.audiogram import Audiogram
 
 
 def compute_proportion_overlap(

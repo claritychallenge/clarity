@@ -12,9 +12,9 @@ import pytest
 from scipy.io.wavfile import read
 
 import recipes
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.audiogram import Audiogram
 from recipes.cpc1.baseline.run import listen, run, run_calculate_SI, run_HL_processing
 
 

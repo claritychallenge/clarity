@@ -15,7 +15,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,

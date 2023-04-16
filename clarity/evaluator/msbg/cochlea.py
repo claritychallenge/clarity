@@ -10,9 +10,9 @@ import scipy
 from numpy import ndarray
 from scipy import signal
 
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg_utils import read_gtf_file
 from clarity.evaluator.msbg.smearing import Smearer
+from clarity.utils.audiogram import Audiogram
 
 # TODO: Fix power overflow error when (expansion_ratios[ixch] - 1) < 0
 

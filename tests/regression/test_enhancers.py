@@ -7,7 +7,7 @@ import torch
 from clarity.enhancer.dsp import filter  # pylint: disable=redefined-builtin
 from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
     "sample_rate": 44100,

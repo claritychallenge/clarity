@@ -11,7 +11,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 logger = logging.getLogger(__name__)
 

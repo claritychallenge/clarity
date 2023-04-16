@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 def setup_ha_and_data(root_path):

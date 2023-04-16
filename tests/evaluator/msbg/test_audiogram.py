@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.msbg.audiogram import (
+from clarity.utils.audiogram import (
     AUDIOGRAM_MILD,
     AUDIOGRAM_MODERATE,
     AUDIOGRAM_MODERATE_SEVERE,

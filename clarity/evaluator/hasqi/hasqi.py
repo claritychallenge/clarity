@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Final
 import numpy as np
 
 from clarity.evaluator.haspi import eb
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray

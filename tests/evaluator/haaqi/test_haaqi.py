@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haaqi import compute_haaqi, haaqi_v1
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 def test_haaqi_v1() -> None:

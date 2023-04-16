@@ -16,9 +16,9 @@ from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.mbstoi.mbstoi import mbstoi
 from clarity.evaluator.mbstoi.mbstoi_utils import find_delay_impulse
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad
+from clarity.utils.audiogram import Audiogram
 
 
 def listen(ear, signal, audiogram_l, audiogram_r):

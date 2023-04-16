@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 from recipes.cad1.task1.baseline.haaqi_rms import (
     align_signals,
     compute_haaqi_rms,

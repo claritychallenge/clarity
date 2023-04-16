@@ -3,7 +3,6 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.cochlea import (
     Cochlea,
     FilterBank,
@@ -12,6 +11,7 @@ from clarity.evaluator.msbg.cochlea import (
     gammatone_filterbank,
     recruitment,
 )
+from clarity.utils.audiogram import Audiogram
 
 
 def test_filterbank():

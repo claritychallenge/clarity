@@ -10,7 +10,7 @@ from clarity.enhancer.gha.gainrule_camfit import (
     isothr,
     logx_interp,
 )
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 @pytest.mark.parametrize(

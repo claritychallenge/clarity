@@ -13,7 +13,7 @@ from clarity.evaluator.haspi.ebm import (
     modulation_cross_correlation,
 )
 from clarity.evaluator.haspi.ip import get_neural_net, nn_feed_forward_ensemble
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray

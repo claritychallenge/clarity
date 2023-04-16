@@ -19,7 +19,7 @@ from torchaudio.transforms import Fade, Resample
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 

@@ -3,12 +3,12 @@ import numpy as np
 import pytest
 import torch
 
-from clarity.evaluator.msbg.audiogram import (
+from clarity.predictor.torch_msbg import MSBGHearingModel, torchloudnorm
+from clarity.utils.audiogram import (
     AUDIOGRAM_MILD,
     AUDIOGRAM_MODERATE,
     AUDIOGRAM_MODERATE_SEVERE,
 )
-from clarity.predictor.torch_msbg import MSBGHearingModel, torchloudnorm
 
 
 @pytest.fixture

@@ -9,7 +9,7 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 # pylint: disable=import-error, no-name-in-module
 from recipes.cad1.task1.baseline.enhance import (

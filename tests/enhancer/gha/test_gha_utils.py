@@ -9,7 +9,7 @@ from clarity.enhancer.gha.gha_utils import (
     get_gaintable,
     multifit_apply_noisegate,
 )
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 @pytest.fixture

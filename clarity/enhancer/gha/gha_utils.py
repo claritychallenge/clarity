@@ -12,7 +12,7 @@ from clarity.enhancer.gha.gainrule_camfit import gainrule_camfit_compr
 if TYPE_CHECKING:
     from numpy import ndarray
 
-    from clarity.evaluator.msbg.audiogram import Audiogram
+    from clarity.utils.audiogram import Audiogram
 
 
 class Gaintable(TypedDict):

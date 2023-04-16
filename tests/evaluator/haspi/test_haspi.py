@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haspi import haspi_v2, haspi_v2_be
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 
 
 def test_haspi_v2() -> None:

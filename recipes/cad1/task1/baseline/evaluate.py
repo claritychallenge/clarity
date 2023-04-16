@@ -17,7 +17,7 @@ import pandas as pd
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
-from clarity.evaluator.msbg.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram
 from recipes.cad1.task1.baseline.haaqi_rms import compute_haaqi_rms
 
 logger = logging.getLogger(__name__)
