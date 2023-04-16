@@ -43,28 +43,6 @@ FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
 )
 
 
-def logx_interp(x_in: ndarray, y_in: ndarray, x_out: ndarray) -> ndarray:
-    """Linear interpolation on logarithmic x-axis.
-
-    Interpolates linearly on a logarithmic x-axis, e.g. suitable for
-    interpolating audiogram levels at arbitrary frequencies.
-
-    Note, for x below the minimum of x_in, the first value of y_in is used,
-    and for x above the maximum of x_in, the last value of y_in is used.
-
-    Args:
-        x_in (ndarray): x-axis values, e.g. audiogram frequencies (Hz)
-        y_in (ndarray): y-axis values, e.g., audiogram levels
-        x_out (ndarray): x-axis value at which y-value are required
-
-    Returns:
-        ndarray: interpolated y-values
-
-    """
-
-    return np.interp(np.log(x_out), np.log(x_in), y_in, left=y_in[0], right=y_in[-1])
-
-
 @dataclass
 class Audiogram:
     """Dataclass to represent an audiogram.
@@ -133,8 +111,15 @@ class Audiogram:
             Audiogram: New audiogram with resampled frequencies
 
         """
+
         return Audiogram(
-            levels=logx_interp(self.frequencies, self.levels, new_frequencies),
+            levels=np.interp(
+                np.log(new_frequencies),
+                np.log(self.frequencies),
+                self.levels,
+                left=self.levels[0],
+                right=self.levels[-1],
+            ),
             frequencies=new_frequencies,
         )
 

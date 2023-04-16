@@ -7,13 +7,12 @@ from typing import TYPE_CHECKING
 import numpy as np
 from scipy.interpolate import interp1d
 
-from clarity.utils.audiogram import logx_interp
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray
 
     from clarity.enhancer.gha.gha_utils import FittingParams
-    from clarity.utils.audiogram import Audiogram
 
 
 def compute_proportion_overlap(
@@ -219,14 +218,13 @@ def gainrule_camfit_linear(
 
     """
 
-    intercept_frequencies = np.array(
-        [125, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000, 5005]
+    intercepts_levels_freqs = Audiogram(
+        levels=np.array([-11, -10, -8, -6, 0, -1, 1, -1, 0, 1, 1]),
+        frequencies=np.array(
+            [125, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000, 5005]
+        ),
     )
-    intercepts = np.array([-11, -10, -8, -6, 0, -1, 1, -1, 0, 1, 1])
-
-    intercepts = logx_interp(
-        intercept_frequencies, intercepts, sFitmodel["frequencies"]
-    )
+    intercepts = intercepts_levels_freqs.resample(sFitmodel["frequencies"]).levels
 
     sFitmodel_frequencies = sFitmodel["frequencies"]
     sFitmodel_levels = sFitmodel["levels"]
