@@ -6,7 +6,7 @@ import pytest
 
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
 from clarity.utils.audiogram import Audiogram
-from clarity.utils.file_io import write_signal
+from clarity.utils.file_io import read_signal, write_signal
 
 
 def setup_ha_and_data(root_path):
@@ -111,44 +111,6 @@ def test_process_files(mocker, tmp_path):
     m.assert_called_once()
 
 
-# TODO: Testing functions that are marked for deduplication
-# Remove this test when the functions are removed
-@pytest.mark.parametrize(
-    "signal, floating_point, strict",
-    [
-        (np.array([1.1, -2.0, 0.0, 44.0, -54.0]), True, True),  # float32
-        (np.array([0.1, -0.2, 0.1, -0.5, 0.99]), False, True),  # int16
-        (np.array([0.1, -0.2, 0.1, -1.00, 0.99]), False, True),  # int16
-        (np.array([0.1, -0.2, 0.1, -1.00, 1.99]), False, False),  # int16
-        (np.array([0.1, -0.2, 0.1, -1.00, 0.99]), False, True),  # int16
-    ],
-)
-def test_write_read_loop(tmp_path, signal, floating_point, strict):
-    """Test write_signal and read_signal"""
-    tmp_filename = tmp_path / "test.wav"
-
-    gha_hearing_aid = GHAHearingAid()
-
-    write_signal(
-        tmp_filename,
-        signal,
-        gha_hearing_aid.sample_rate,
-        floating_point=floating_point,
-        strict=strict,
-    )
-    result = gha_hearing_aid.read_signal(tmp_filename)
-
-    # Some precision is lost as convert to int16 and back again
-    assert result.shape == signal.shape
-    # The test where strict is False has overflow which is not caught and hence
-    # reading back the signal has changed
-    if strict:
-        assert result == pytest.approx(signal, abs=1.0 / 16384)
-    else:
-        # Deliberate fail: shows why strict is True is needed
-        assert result != pytest.approx(signal, abs=1.0 / 16384)
-
-
 def test_create_ha_inputs(tmp_path):
     """test that the hearing aid inputs can be created correctly"""
 
@@ -158,7 +120,7 @@ def test_create_ha_inputs(tmp_path):
     gha_hearing_aid.create_HA_inputs(tmp_filenames, str(output_filename))
 
     # Read the output file and check it is correct
-    result = gha_hearing_aid.read_signal(output_filename)
+    result = read_signal(output_filename, sample_rate=gha_hearing_aid.sample_rate)
     assert result.shape == (stereo_signal.shape[0], 4)
     assert np.sum(result) == pytest.approx(np.sum(stereo_signal) * 2.0)
 

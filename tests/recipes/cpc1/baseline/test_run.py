@@ -13,8 +13,8 @@ from scipy.io.wavfile import read
 
 import recipes
 from clarity.evaluator.msbg.msbg import Ear
-from clarity.evaluator.msbg.msbg_utils import read_signal
 from clarity.utils.audiogram import Audiogram
+from clarity.utils.file_io import read_signal
 from recipes.cpc1.baseline.run import listen, run, run_calculate_SI, run_HL_processing
 
 

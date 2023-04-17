@@ -9,7 +9,7 @@ import torch
 
 from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
 from clarity.enhancer.dsp.filter import AudiometricFIR
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 from recipes.cec1.e009_sheffield.test import run
 
 

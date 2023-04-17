@@ -5,8 +5,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+import scipy.signal
 import soundfile
 from numpy import ndarray
+from soundfile import SoundFile
 
 
 def read_jsonl(filename: str) -> list:
@@ -56,3 +58,54 @@ def write_signal(
         subtype = "FLOAT"
 
     soundfile.write(filename, signal, sample_rate, subtype=subtype)
+
+
+def read_signal(
+    filename: str | Path,
+    sample_rate: float = 0,
+    offset: int | float = 0,  # offset can be in samples or seconds
+    n_samples: int = -1,
+    n_channels: int = 0,
+    offset_is_samples: bool = False,
+    allow_resample: bool = True,
+) -> ndarray:
+    """Read a wavefile and return as numpy array of floats.
+
+    Args:
+        filename (str|Path): Name of file to read
+        offset (int, optional): Offset in samples or seconds (from start). Default is 0.
+        nsamples (int): Number of samples.
+        nchannels (int): expected number of channel (default: 0 = any number OK)
+        offset_is_samples (bool): measurement units for offset (default: False)
+
+    Returns:
+        np.ndarray: audio signal
+    """
+
+    wave_file = SoundFile(filename)
+
+    if n_channels not in (0, wave_file.channels):
+        raise ValueError(
+            f"Wav file ({filename}) was expected to have {n_channels} channels."
+        )
+
+    if not offset_is_samples:  # Default behaviour
+        offset = np.rint(offset * wave_file.samplerate).astype(int)
+
+    if offset != 0:
+        wave_file.seek(offset)
+
+    signal = wave_file.read(frames=n_samples)
+
+    if sample_rate not in (0, wave_file.samplerate):
+        if allow_resample:
+            signal = scipy.signal.resample(
+                signal, int(sample_rate * signal.shape[0] / wave_file.samplerate)
+            )
+        else:
+            raise ValueError(
+                f"Sample rate of {wave_file.samplerate} "
+                "does not match expected {sample_rate}"
+            )
+
+    return signal

@@ -13,13 +13,13 @@ from omegaconf import DictConfig
 from tqdm import tqdm
 
 from clarity.evaluator.msbg.msbg import Ear
-from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal
+from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad
 from clarity.utils.audiogram import Audiogram
-from clarity.utils.file_io import write_signal
+from clarity.utils.file_io import read_signal, write_signal
 
 logger = logging.getLogger(__name__)
 
-targ_fs = 16000
+target_sample_rate = 16000
 
 
 def run_data_split(cfg, track):
@@ -193,13 +193,17 @@ def generate_data_split(
 
             utt, orig_fs = sf.read(wav_file)
             utt_16k = resample(
-                np.array(utt).transpose(), orig_sr=orig_fs, target_sr=targ_fs
+                np.array(utt).transpose(), orig_sr=orig_fs, target_sr=target_sample_rate
             ).transpose()
             duration = (
-                len(utt_16k[2 * targ_fs :, 0]) / targ_fs
+                len(utt_16k[2 * target_sample_rate :, 0]) / target_sample_rate
             )  # Get rid of the first two seconds, as there is no speech
-            sf.write(wav_file_left, utt_16k[2 * targ_fs :, 0], targ_fs)
-            sf.write(wav_file_right, utt_16k[2 * targ_fs :, 1], targ_fs)
+            sf.write(
+                wav_file_left, utt_16k[2 * target_sample_rate :, 0], target_sample_rate
+            )
+            sf.write(
+                wav_file_right, utt_16k[2 * target_sample_rate :, 1], target_sample_rate
+            )
 
             csv_lines_left.append(
                 [snt_id, str(duration), str(wav_file_left), spk_id, wrds]

@@ -524,7 +524,7 @@ def pad(signal: ndarray, length: int) -> ndarray:
     )
 
 
-def read_signal(
+def read_signal_x(
     filename: str | Path,
     offset: int = 0,
     nsamples: int = -1,
