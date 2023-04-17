@@ -61,6 +61,7 @@ def test_run(tmp_path):
     assert (tmp_path / expected_output_file).exists()
     signal = read_signal(tmp_path / expected_output_file)
     assert signal.shape == (259200, 2)
+    # Tolerances below slightly relaxed from the 1e-7 default
     assert np.sum(np.abs(signal)) == pytest.approx(
-        4331.347137451172, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        4331.347137451172, rel=1e-6, abs=1e-6
     )

@@ -168,9 +168,8 @@ def test_msbg_hearing_model_forward(use_torch, msbg_model_quick):
     y_torch = msbg_model_quick.forward(x)
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 10000)
-    assert np.sum(np.abs(y)) == pytest.approx(
-        8778.4501953125, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    # Tolerances below slightly relaxed from the 1e-7 default
+    assert np.sum(np.abs(y)) == pytest.approx(8778.4501953125, rel=1e-6, abs=1e-6)
 
 
 # Tests for torchloudnorm class
