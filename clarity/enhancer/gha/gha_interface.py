@@ -8,11 +8,11 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import soundfile
 from jinja2 import Environment, FileSystemLoader
 from soundfile import SoundFile
 
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
+from clarity.utils.file_io import write_signal
 
 
 class GHAHearingAid:
@@ -183,7 +183,7 @@ class GHAHearingAid:
             raise ValueError("Channel empty.")
 
         # Rewriting as floating point
-        self.write_signal(outfile_name, sig, floating_point=True)
+        write_signal(outfile_name, sig, self.sample_rate, floating_point=True)
 
         logging.info("OpenMHA processing complete")
 
@@ -231,25 +231,6 @@ class GHAHearingAid:
 
         return x
 
-    # TODO: MARKED FOR DEDUPLICATION
-    # Mirrors functionality that already exists in msbg_utils
-    def write_signal(
-        self, filename: str | Path, x, floating_point: bool = True, strict: bool = False
-    ) -> None:
-        """Write a signal as fixed or floating point wav file."""
-
-        if floating_point is False:
-            subtype = "PCM_16"
-            # If signal is float and we want int16
-            x = x * 32768
-            if strict and (np.max(x) > 32767 or np.min(x) < -32768):
-                raise ValueError("Signal out of range -1.0 to 1.0")
-            x = x.astype(np.dtype("int16"))
-        else:
-            subtype = "FLOAT"
-
-        soundfile.write(filename, x, self.sample_rate, subtype=subtype)
-
     def create_HA_inputs(self, infile_names: list[str], merged_filename: str) -> None:
         """Create input signal for baseline hearing aids.
 
@@ -281,6 +262,10 @@ class GHAHearingAid:
         # channel index 3 = rear microphone on the right hearing aid
         merged_signal[:, 3] = signal_CH3[:, 1]
 
-        self.write_signal(
-            merged_filename, merged_signal, floating_point=True, strict=True
+        write_signal(
+            merged_filename,
+            merged_signal,
+            self.sample_rate,
+            floating_point=True,
+            strict=True,
         )

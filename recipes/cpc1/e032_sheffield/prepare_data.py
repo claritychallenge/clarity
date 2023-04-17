@@ -13,8 +13,9 @@ from omegaconf import DictConfig
 from tqdm import tqdm
 
 from clarity.evaluator.msbg.msbg import Ear
-from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal, write_signal
+from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal
 from clarity.utils.audiogram import Audiogram
+from clarity.utils.file_io import write_signal
 
 logger = logging.getLogger(__name__)
 

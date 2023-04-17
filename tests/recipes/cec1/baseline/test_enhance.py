@@ -8,7 +8,8 @@ import numpy as np
 import pytest
 from omegaconf import DictConfig
 
-from clarity.evaluator.msbg.msbg_utils import read_signal, write_signal
+from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import write_signal
 
 # pylint: disable=import-error, no-name-in-module, no-member
 from recipes.cec1.baseline.enhance import enhance

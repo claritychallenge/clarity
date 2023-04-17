@@ -6,6 +6,7 @@ import pytest
 
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
 from clarity.utils.audiogram import Audiogram
+from clarity.utils.file_io import write_signal
 
 
 def setup_ha_and_data(root_path):
@@ -29,9 +30,10 @@ def setup_ha_and_data(root_path):
     ).T  # <- signals are store with channels as columns
 
     for filename in tmp_filenames:
-        gha_hearing_aid.write_signal(
+        write_signal(
             filename,
-            stereo_signal,  # <- signals are store with channels as columns
+            stereo_signal,  # <- signals are stored with channels as columns
+            gha_hearing_aid.sample_rate,
             floating_point=True,
         )
     return gha_hearing_aid, stereo_signal, tmp_filenames
@@ -91,9 +93,10 @@ def test_process_files(mocker, tmp_path):
     # despite that the fact that the file generation is mocked out
     outfile_name = tmp_path / "output.wav"
 
-    gha_hearing_aid.write_signal(
+    write_signal(
         outfile_name,
         np.array([[-0.1, 0.1], [-0.2, 0.2]]),
+        sample_rate=gha_hearing_aid.sample_rate,
         floating_point=True,
     )
 
@@ -126,8 +129,12 @@ def test_write_read_loop(tmp_path, signal, floating_point, strict):
 
     gha_hearing_aid = GHAHearingAid()
 
-    gha_hearing_aid.write_signal(
-        tmp_filename, signal, floating_point=floating_point, strict=strict
+    write_signal(
+        tmp_filename,
+        signal,
+        gha_hearing_aid.sample_rate,
+        floating_point=floating_point,
+        strict=strict,
     )
     result = gha_hearing_aid.read_signal(tmp_filename)
 

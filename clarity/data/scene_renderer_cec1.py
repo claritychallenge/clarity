@@ -4,11 +4,11 @@ import math
 from pathlib import Path
 
 import numpy as np
-import soundfile
 from scipy.signal import convolve
 from soundfile import SoundFile
 
 from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
+from clarity.utils.file_io import write_signal
 
 
 class Renderer:
@@ -82,45 +82,6 @@ class Renderer:
 
         x = wave_file.read(frames=nsamples)
         return x
-
-    def write_signal(
-        self,
-        filename: str,
-        signal: np.ndarray,
-        sample_rate: int,
-        floating_point: bool = True,
-    ) -> None:
-        """Write a signal as fixed or floating point wav file.
-
-        Args:
-            filename (string): Name of file to write to.
-            signal (np.ndarray): Array to write.
-            sample_rate (int): Sample Rate
-            floating_point (bool): Whether to write as subtype of floating point
-
-        Returns:
-            None: Does not return anything, writes signal to given filename.
-        """
-
-        if sample_rate != self.sample_rate:
-            logging.warning(
-                f"Sampling rate mismatch: {filename} with sample rate={sample_rate}."
-            )
-            # raise ValueError("Sampling rate mismatch")
-
-        if floating_point is False:
-            if self.test_nbits == 16:
-                subtype = "PCM_16"
-                # If signal is float and we want int16
-                signal *= 32768
-                signal = signal.astype(np.dtype("int16"))
-                assert np.max(signal) <= 32767 and np.min(signal) >= -32768
-            elif self.test_nbits == 24:
-                subtype = "PCM_24"
-        else:
-            subtype = "FLOAT"
-
-        soundfile.write(filename, signal, sample_rate, subtype=subtype)
 
     def apply_ramp(self, signal, ramp_duration):
         """Apply half cosine ramp into and out of signal.
@@ -298,7 +259,7 @@ class Renderer:
 
         # Write all output files
         for filename, signal in outputs:
-            self.write_signal(filename, signal, self.sample_rate)
+            write_signal(filename, signal, self.sample_rate, strict=True)
 
 
 def check_scene_exists(scene: dict, output_path: str, num_channels: int) -> bool:
