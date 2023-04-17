@@ -33,7 +33,7 @@ requires-python = ">=3.8"
 dependencies = [
   "audioread>=2.1.9",
   "gdown",
-  "hydra-core==1.1.1",
+  "hydra-core>=1.1.1",
   "hydra-submitit-launcher>=1.1.6",
   "importlib-metadata",
   "librosa>=0.8.1",
