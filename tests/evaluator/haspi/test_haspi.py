@@ -38,10 +38,10 @@ def test_haspi_v2() -> None:
             0.839975335323691,
         ),
         (
-            np.array([25, 25, 25, 40, 65]),
-            np.array([45, 45, 45, 60, 65]),
-            np.array([250, 500, 2000, 4000, 6000]),  # <-- missing cf, need interp
-            0.839975335323691,  # TODO - why is this not different?
+            np.array([25, 25, 25, 65]),
+            np.array([45, 45, 45, 65]),
+            np.array([250, 500, 2000, 6000]),  # <-- missing cfs, need interp
+            0.8380310721987008,  # <-- note different score, as expected
         ),
     ],
 )
