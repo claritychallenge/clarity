@@ -196,6 +196,12 @@ def compute_haaqi(
         scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
     """
 
+    if not audiogram.has_frequencies(HAAQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HAAQI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
     audiogram = audiogram.resample(HAAQI_AUDIOGRAM_FREQUENCIES)
 
     if len(reference_signal) == 0:

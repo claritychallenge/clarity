@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
@@ -189,6 +190,14 @@ def hasqi_v2_better_ear(
 
     Gerardo Roa Dabike, November 2022
     """
+
+    if not audiogram_left.has_frequencies(
+        HASQI_AUDIOGRAM_FREQUENCIES
+    ) or not audiogram_right.has_frequencies(HASQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HASQI frequency measurements"
+            "Measurements will be interpolated"
+        )
 
     audiogram_left = audiogram_left.resample(HASQI_AUDIOGRAM_FREQUENCIES)
     audiogram_right = audiogram_right.resample(HASQI_AUDIOGRAM_FREQUENCIES)

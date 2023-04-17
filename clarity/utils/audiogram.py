@@ -64,6 +64,12 @@ class Audiogram:
                 " must have the same length"
             )
 
+        if len(self.frequencies) != len(np.unique(self.frequencies)):
+            raise ValueError("Frequencies must be unique")
+
+        if not np.all(np.diff(self.frequencies) > 0):
+            raise ValueError("Frequencies must be in ascending order")
+
     @property
     def severity(self) -> str:
         """Categorise HL severity level for the audiogram.
@@ -98,6 +104,18 @@ class Audiogram:
             return "MILD"
 
         return "NOTHING"
+
+    def has_frequencies(self, frequencies: ndarray) -> bool:
+        """Check if the audiogram has the given frequencies.
+
+        Args:
+            frequencies (ndarray): The frequencies to check
+
+        Returns:
+            bool: True if the audiogram has the given frequencies
+
+        """
+        return np.all(np.isin(frequencies, self.frequencies, assume_unique=True))
 
     def resample(self, new_frequencies: ndarray) -> Audiogram:
         """Resample the audiogram to a new set of frequencies.

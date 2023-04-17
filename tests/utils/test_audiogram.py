@@ -67,6 +67,38 @@ def test_audiogram_init_error():
 
 
 @pytest.mark.parametrize(
+    "test_freqs, result",
+    [
+        (np.array([]), True),
+        (np.array([250, 1000]), True),
+        (np.array([250, 500, 1000]), True),
+        (np.array([250, 500, 1000, 2000]), False),
+        (np.array([2000]), False),
+    ],
+)
+def test_has_frquencies(test_freqs, result):
+    """test that frequencies are correctly identified"""
+    audiogram = Audiogram(
+        levels=np.array([45, 45, 35]), frequencies=np.array([250, 500, 1000])
+    )
+    assert audiogram.has_frequencies(test_freqs) == result
+
+
+@pytest.mark.parametrize(
+    "frequencies, levels",
+    [
+        (np.array([250.0, 250.0, 500.0]), np.array([45, 45, 35])),  # duplicate freqs
+        (np.array([250.0, 500.0]), np.array([45, 45, 35])),  # different lengths
+        (np.array([250.0, 500.0, 10.0]), np.array([45, 45, 35])),  # freqs not ordered
+    ],
+)
+def test_audiogram_invalid(frequencies, levels):
+    """test that invalid audiograms raise ValueError"""
+    with pytest.raises(ValueError):
+        Audiogram(levels=levels, frequencies=frequencies)
+
+
+@pytest.mark.parametrize(
     "levels, frequencies, expected",
     [
         ([45], [250], "NOTHING"),

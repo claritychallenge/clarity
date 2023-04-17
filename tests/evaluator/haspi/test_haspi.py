@@ -37,6 +37,12 @@ def test_haspi_v2() -> None:
             np.array([250, 500, 700, 1000, 2000, 4000, 6000]),  # <-- extra cf added
             0.839975335323691,
         ),
+        (
+            np.array([25, 25, 25, 40, 65]),
+            np.array([45, 45, 45, 60, 65]),
+            np.array([250, 500, 2000, 4000, 6000]),  # <-- missing cf, need interp
+            0.839975335323691,  # TODO - why is this not different?
+        ),
     ],
 )
 def test_haspi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:

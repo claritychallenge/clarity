@@ -26,10 +26,29 @@ def test_haaqi_v1() -> None:
 
 
 @pytest.mark.parametrize(
-    "scale_reference,expected_result",
-    [(False, 0.113759275), (True, 0.114157435)],
+    "levels,freqs,scale_reference,expected_result",
+    [
+        (
+            np.array([10, 20, 30, 40, 50, 60]),
+            np.array([250, 500, 1000, 2000, 4000, 6000]),
+            False,
+            0.113759275,
+        ),
+        (
+            np.array([10, 20, 30, 40, 50, 60]),
+            np.array([250, 500, 1000, 2000, 4000, 6000]),
+            True,
+            0.114157435,
+        ),
+        (
+            np.array([10, 20, 40, 50, 60]),
+            np.array([250, 500, 2000, 4000, 6000]),  # missing cfs, requires interp
+            True,
+            0.114157435,
+        ),
+    ],
 )
-def test_compute_haaqi(scale_reference, expected_result):
+def test_compute_haaqi(levels, freqs, scale_reference, expected_result):
     """Test for compute_haaqi function"""
     np.random.seed(42)
 
@@ -37,10 +56,7 @@ def test_compute_haaqi(scale_reference, expected_result):
     enh_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
     ref_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
-    audiogram = Audiogram(
-        levels=np.array([10, 20, 30, 40, 50, 60]),
-        frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
-    )
+    audiogram = Audiogram(levels=levels, frequencies=freqs)
 
     # Compute HAAQI score
     score = compute_haaqi(

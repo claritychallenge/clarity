@@ -25,19 +25,31 @@ def test_hasqi_v2() -> None:
     )
 
 
-def test_hasqi_v2_better_ear() -> None:
+@pytest.mark.parametrize(
+    "hl_left, hl_right, freqs, expected_score",
+    [
+        (
+            np.array([25, 25, 25, 25, 40, 65]),
+            np.array([45, 45, 35, 45, 60, 65]),
+            np.array([250, 500, 1000, 2000, 4000, 6000]),
+            0.1256893032667640,
+        ),
+        (
+            np.array([25, 25, 25, 40, 65]),
+            np.array([45, 45, 45, 60, 65]),
+            np.array([250, 500, 2000, 4000, 6000]),  # missing cf, needs interpolation
+            0.1256893032667640,
+        ),
+    ],
+)
+def test_hasqi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
     """Test for hasqi_v2_better_ear index"""
 
     np.random.seed(0)
     sample_rate = 16000
 
-    freqs = np.array([250, 500, 1000, 2000, 4000, 6000])
-    audiogram_left = Audiogram(
-        levels=np.array([25, 25, 25, 25, 40, 65]), frequencies=freqs
-    )
-    audiogram_right = Audiogram(
-        levels=np.array([45, 45, 35, 45, 60, 65]), frequencies=freqs
-    )
+    audiogram_left = Audiogram(levels=hl_left, frequencies=freqs)
+    audiogram_right = Audiogram(levels=hl_right, frequencies=freqs)
 
     ref_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     ref_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
@@ -56,5 +68,5 @@ def test_hasqi_v2_better_ear() -> None:
     )
 
     assert score == pytest.approx(
-        0.1256893032667640, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected_score, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )

@@ -1,6 +1,7 @@
 """HASPI intelligibility Index"""
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
@@ -170,7 +171,15 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         Zuzanna Podwinska, March 2022
     """
 
-    # Adjust listener.audiogram_levels_l and _r to match the frequencies above
+    if not audiogram_left.has_frequencies(
+        HASPI_AUDIOGRAM_FREQUENCIES
+    ) or not audiogram_right.has_frequencies(HASPI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HASPI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    # Adjust listener.audiogram_levels_l and _r to match the standard frequencies
     audiogram_left = audiogram_left.resample(HASPI_AUDIOGRAM_FREQUENCIES)
     audiogram_right = audiogram_right.resample(HASPI_AUDIOGRAM_FREQUENCIES)
 
