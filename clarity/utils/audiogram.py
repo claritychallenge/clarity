@@ -1,7 +1,7 @@
 """Dataclass to represent a monaural audiogram"""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
@@ -54,7 +54,9 @@ class Audiogram:
     """
 
     levels: np.ndarray
-    frequencies: np.ndarray = np.array(DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES)
+    frequencies: np.ndarray = field(
+        default_factory=lambda: np.array(DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES)
+    )
 
     def __post_init__(self) -> None:
         """Check that dimensions of levels and frequencies match."""
