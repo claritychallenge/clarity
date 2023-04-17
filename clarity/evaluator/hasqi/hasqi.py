@@ -21,7 +21,7 @@ def hasqi_v2(
     reference_sample_rate: float,
     processed: ndarray,
     processed_sample_rate: float,
-    hearing_loss: ndarray,
+    audiogram: Audiogram,
     equalisation: int = 1,
     level1: float = 65.0,
     silence_threshold: float = 2.5,
@@ -68,6 +68,14 @@ def hasqi_v2(
     Translated from MATLAB to Python by Gerardo Roa Dabike, October 2022.
     """
 
+    if not audiogram.has_frequencies(HASQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HASQI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    audiogram = audiogram.resample(HASQI_AUDIOGRAM_FREQUENCIES)
+
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
     (
@@ -83,7 +91,7 @@ def hasqi_v2(
         reference_sample_rate,
         processed,
         processed_sample_rate,
-        hearing_loss,
+        audiogram.levels,
         equalisation,
         level1,
     )
@@ -191,23 +199,12 @@ def hasqi_v2_better_ear(
     Gerardo Roa Dabike, November 2022
     """
 
-    if not audiogram_left.has_frequencies(
-        HASQI_AUDIOGRAM_FREQUENCIES
-    ) or not audiogram_right.has_frequencies(HASQI_AUDIOGRAM_FREQUENCIES):
-        logging.warning(
-            "Audiogram does not have all HASQI frequency measurements"
-            "Measurements will be interpolated"
-        )
-
-    audiogram_left = audiogram_left.resample(HASQI_AUDIOGRAM_FREQUENCIES)
-    audiogram_right = audiogram_right.resample(HASQI_AUDIOGRAM_FREQUENCIES)
-
     score_left, _, _, _ = hasqi_v2(
         reference_left,
         sample_rate,
         processed_left,
         sample_rate,
-        audiogram_left.levels,
+        audiogram_left,
         equalisation=1,
         level1=level,
     )
@@ -216,7 +213,7 @@ def hasqi_v2_better_ear(
         sample_rate,
         processed_right,
         sample_rate,
-        audiogram_right.levels,
+        audiogram_right,
         equalisation=1,
         level1=level,
     )

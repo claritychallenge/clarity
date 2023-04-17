@@ -27,7 +27,7 @@ def haaqi_v1(
     reference_freq: float,
     processed: ndarray,
     processed_freq: float,
-    hearing_loss: ndarray,
+    audiogram: Audiogram,
     equalisation: int,
     level1: float = 65.0,
     silence_threshold: float = 2.5,
@@ -77,6 +77,14 @@ def haaqi_v1(
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
+    if not audiogram.has_frequencies(HAAQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HAAQI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    audiogram = audiogram.resample(HAAQI_AUDIOGRAM_FREQUENCIES)
+
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
     (
@@ -92,7 +100,7 @@ def haaqi_v1(
         reference_freq,
         processed,
         processed_freq,
-        hearing_loss,
+        audiogram.levels,
         equalisation,
         level1,
     )
@@ -196,14 +204,6 @@ def compute_haaqi(
         scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
     """
 
-    if not audiogram.has_frequencies(HAAQI_AUDIOGRAM_FREQUENCIES):
-        logging.warning(
-            "Audiogram does not have all HAAQI frequency measurements"
-            "Measurements will be interpolated"
-        )
-
-    audiogram = audiogram.resample(HAAQI_AUDIOGRAM_FREQUENCIES)
-
     if len(reference_signal) == 0:
         if len(processed_signal) == 0:
             # No scoring if no music
@@ -219,7 +219,7 @@ def compute_haaqi(
         reference_freq=sample_rate,
         processed=processed_signal,
         processed_freq=sample_rate,
-        hearing_loss=audiogram.levels,
+        audiogram=audiogram,
         equalisation=equalisation,
         level1=level1,
     )

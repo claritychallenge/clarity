@@ -14,9 +14,11 @@ def test_haspi_v2() -> None:
     y = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
     hearing_loss = np.array([45, 45, 35, 45, 60, 65])
+    freqs = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=hearing_loss, frequencies=freqs)
     level1 = 65
 
-    score, _ = haspi_v2(x, sample_rate, y + x, sample_rate, hearing_loss, level1)
+    score, _ = haspi_v2(x, sample_rate, y + x, sample_rate, audiogram, level1)
     assert score == pytest.approx(
         0.043808448934532965, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )

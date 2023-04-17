@@ -14,11 +14,14 @@ def test_haaqi_v1() -> None:
     y = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
     hearing_loss = np.array([45, 45, 35, 45, 60, 65])
+    freqs = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=hearing_loss, frequencies=freqs)
+
     equalisation_mode = 1
     level1 = 65
 
     score, _, _, _ = haaqi_v1(
-        x, sample_rate, y, sample_rate, hearing_loss, equalisation_mode, level1
+        x, sample_rate, y, sample_rate, audiogram, equalisation_mode, level1
     )
     assert score == pytest.approx(
         0.111290948, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance

@@ -29,7 +29,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     reference_sample_rate: float,
     processed: ndarray,
     processed_sample_rate: float,
-    hearing_loss: ndarray,
+    audiogram: Audiogram,
     level1: float = 65.0,
     f_lp: float = 320.0,
     itype: int = 0,
@@ -78,6 +78,15 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
+    if not audiogram.has_frequencies(HASPI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HASPI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    # Adjust audiogram to match the standard frequencies
+    audiogram = audiogram.resample(HASPI_AUDIOGRAM_FREQUENCIES)
+
     # Auditory model for intelligibility
     # Reference is no processing, normal hearing
     reference_env, _, processed_env, _, _, _, fsamp = ear_model(
@@ -85,7 +94,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         reference_sample_rate,
         processed,
         processed_sample_rate,
-        hearing_loss,
+        audiogram.levels,
         itype,
         level1,
         # shift=0.02 # See comment in docstring
@@ -171,24 +180,12 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         Zuzanna Podwinska, March 2022
     """
 
-    if not audiogram_left.has_frequencies(
-        HASPI_AUDIOGRAM_FREQUENCIES
-    ) or not audiogram_right.has_frequencies(HASPI_AUDIOGRAM_FREQUENCIES):
-        logging.warning(
-            "Audiogram does not have all HASPI frequency measurements"
-            "Measurements will be interpolated"
-        )
-
-    # Adjust listener.audiogram_levels_l and _r to match the standard frequencies
-    audiogram_left = audiogram_left.resample(HASPI_AUDIOGRAM_FREQUENCIES)
-    audiogram_right = audiogram_right.resample(HASPI_AUDIOGRAM_FREQUENCIES)
-
     score_left, _ = haspi_v2(
         reference_left,
         sample_rate,
         processed_left,
         sample_rate,
-        audiogram_left.levels,
+        audiogram_left,
         level,
     )
     score_right, _ = haspi_v2(
@@ -196,7 +193,7 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         sample_rate,
         processed_right,
         sample_rate,
-        audiogram_right.levels,
+        audiogram_right,
         level,
     )
 
