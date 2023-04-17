@@ -5,14 +5,14 @@ import numpy as np
 from scipy.signal import correlate, correlation_lags
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.audiogram import Audiogram
 from clarity.utils.signal_processing import compute_rms
 
 
 def compute_haaqi_rms(
     processed_signal: np.ndarray,
     reference_signal: np.ndarray,
-    audiogram: np.ndarray,
-    audiogram_frequencies: np.ndarray,
+    audiogram: Audiogram,
     sample_rate: int,
     silence_length: float = 2.0,
 ) -> float:
@@ -34,8 +34,7 @@ def compute_haaqi_rms(
         reference_signal (np.ndarray): Input reference speech signal with no
             noise or distortion. If a hearing loss is specified, NAL-R
             equalization is optional.
-        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
-        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        audiogram (np.ndarray): The listener's audiogram
         sample_rate (int): Sample rate in Hz.
         silence_length (float): Minimum length of silence in seconds to use
             for RMS calculation.
@@ -81,7 +80,6 @@ def compute_haaqi_rms(
         reference_signal=new_reference_signal,
         sample_rate=sample_rate,
         audiogram=audiogram,
-        audiogram_frequencies=audiogram_frequencies,
         equalisation=1,
         level1=65 - 20 * np.log10(compute_rms(new_reference_signal)),
         scale_reference=True,

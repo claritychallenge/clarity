@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
 from clarity.evaluator.haspi import eb
+from clarity.utils.audiogram import Audiogram
 from clarity.utils.signal_processing import compute_rms
 
 if TYPE_CHECKING:
@@ -17,13 +18,16 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# HAAQI assumes the following audiogram frequencies:
+HAAQI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
+
 
 def haaqi_v1(
     reference: ndarray,
     reference_freq: float,
     processed: ndarray,
     processed_freq: float,
-    hearing_loss: ndarray,
+    audiogram: Audiogram,
     equalisation: int,
     level1: float = 65.0,
     silence_threshold: float = 2.5,
@@ -73,6 +77,14 @@ def haaqi_v1(
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
+    if not audiogram.has_frequencies(HAAQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HAAQI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    audiogram = audiogram.resample(HAAQI_AUDIOGRAM_FREQUENCIES)
+
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
     (
@@ -88,7 +100,7 @@ def haaqi_v1(
         reference_freq,
         processed,
         processed_freq,
-        hearing_loss,
+        audiogram.levels,
         equalisation,
         level1,
     )
@@ -167,8 +179,7 @@ def haaqi_v1(
 def compute_haaqi(
     processed_signal: ndarray,
     reference_signal: ndarray,
-    audiogram: ndarray,
-    audiogram_frequencies: ndarray,
+    audiogram: Audiogram,
     sample_rate: float,
     equalisation: int = 1,
     level1: float = 65.0,
@@ -193,15 +204,6 @@ def compute_haaqi(
         scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
     """
 
-    haaqi_audiogram_frequencies = [250, 500, 1000, 2000, 4000, 6000]
-    audiogram_adjusted = np.array(
-        [
-            audiogram[i]
-            for i in range(len(audiogram_frequencies))
-            if audiogram_frequencies[i] in haaqi_audiogram_frequencies
-        ]
-    )
-
     if len(reference_signal) == 0:
         if len(processed_signal) == 0:
             # No scoring if no music
@@ -217,7 +219,7 @@ def compute_haaqi(
         reference_freq=sample_rate,
         processed=processed_signal,
         processed_freq=sample_rate,
-        hearing_loss=audiogram_adjusted,
+        audiogram=audiogram,
         equalisation=equalisation,
         level1=level1,
     )

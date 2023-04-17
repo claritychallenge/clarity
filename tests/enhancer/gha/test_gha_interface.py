@@ -4,8 +4,8 @@ import hashlib
 import numpy as np
 import pytest
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
+from clarity.utils.audiogram import Audiogram
 
 
 def setup_ha_and_data(root_path):
@@ -80,10 +80,9 @@ def test_process_files(mocker, tmp_path):
 
     gha_hearing_aid, _stereo_signal, infile_names = setup_ha_and_data(tmp_path)
 
-    levels_l = np.array([45, 45, 35, 45, 60, 65])
-    levels_r = np.array([45, 45, 35, 45, 60, 65])
-    cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
-    audiogram = Audiogram(levels_l=levels_l, levels_r=levels_r, cfs=cfs)
+    levels = np.array([45, 45, 35, 45, 60, 65])
+    frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=levels, frequencies=frequencies)
 
     # Mock the subprocess.run function as OpenMHA is not installed
     m = mocker.patch("clarity.enhancer.gha.gha_interface.subprocess.run")
@@ -101,7 +100,8 @@ def test_process_files(mocker, tmp_path):
     gha_hearing_aid.process_files(
         infile_names=infile_names,
         outfile_name=outfile_name,
-        audiogram=audiogram,
+        audiogram_left=audiogram,
+        audiogram_right=audiogram,
         listener=None,
     )
     # Check that the subprocess.run function was called

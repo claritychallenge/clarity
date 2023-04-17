@@ -1,7 +1,8 @@
 """HASPI intelligibility Index"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import logging
+from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
@@ -13,9 +14,14 @@ from clarity.evaluator.haspi.ebm import (
     modulation_cross_correlation,
 )
 from clarity.evaluator.haspi.ip import get_neural_net, nn_feed_forward_ensemble
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray
+
+
+# HASPI assumes the following audiogram frequencies:
+HASPI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
 
 
 def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
@@ -23,7 +29,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
     reference_sample_rate: float,
     processed: ndarray,
     processed_sample_rate: float,
-    hearing_loss: ndarray,
+    audiogram: Audiogram,
     level1: float = 65.0,
     f_lp: float = 320.0,
     itype: int = 0,
@@ -72,6 +78,15 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
+    if not audiogram.has_frequencies(HASPI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HASPI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    # Adjust audiogram to match the standard frequencies
+    audiogram = audiogram.resample(HASPI_AUDIOGRAM_FREQUENCIES)
+
     # Auditory model for intelligibility
     # Reference is no processing, normal hearing
     reference_env, _, processed_env, _, _, _, fsamp = ear_model(
@@ -79,7 +94,7 @@ def haspi_v2(  # pylint: disable=too-many-arguments too-many-locals
         reference_sample_rate,
         processed,
         processed_sample_rate,
-        hearing_loss,
+        audiogram.levels,
         itype,
         level1,
         # shift=0.02 # See comment in docstring
@@ -140,9 +155,8 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
     processed_left: ndarray,
     processed_right: ndarray,
     sample_rate: float,
-    audiogram_left: ndarray,
-    audiogram_right: ndarray,
-    audiogram_frequencies: ndarray,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
     level: float = 100.0,
 ) -> float:
     """Better ear HASPI.
@@ -157,7 +171,6 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         sample_rate (int): sampling rate for both signal
         audiogram_left (): left ear audiogram
         audiogram_right (): right ear audiogram
-        audiogram_cfs: audiogram frequencies
         level: level in dB SPL corresponding to RMS=1
 
     Returns:
@@ -167,35 +180,12 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         Zuzanna Podwinska, March 2022
     """
 
-    # HASPI assumes the following audiogram frequencies:
-    aud = [250, 500, 1000, 2000, 4000, 6000]
-
-    # Adjust listener.audiogram_levels_l and _r to match the frequencies above
-    hearing_loss_left = np.array(
-        [
-            loss
-            for (freq, loss) in zip(audiogram_frequencies, audiogram_left)
-            if freq in aud
-        ]
-    )
-
-    hearing_loss_right = np.array(
-        [
-            loss
-            for (freq, loss) in zip(audiogram_frequencies, audiogram_right)
-            if freq in aud
-        ]
-    )
-
-    if len(hearing_loss_left) != len(aud) or len(hearing_loss_right) != len(aud):
-        raise ValueError("Audiogram does not have all measurements needed by HASPI.")
-
     score_left, _ = haspi_v2(
         reference_left,
         sample_rate,
         processed_left,
         sample_rate,
-        hearing_loss_left,
+        audiogram_left,
         level,
     )
     score_right, _ = haspi_v2(
@@ -203,7 +193,7 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         sample_rate,
         processed_right,
         sample_rate,
-        hearing_loss_right,
+        audiogram_right,
         level,
     )
 

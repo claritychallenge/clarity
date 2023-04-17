@@ -15,6 +15,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.audiogram import Audiogram
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,
@@ -193,19 +194,18 @@ def evaluate_scene(
 
     audio_manager.save_audios()
 
+    freqs = np.array(listener_audiogram["audiogram_cfs"])
     # Compute HAAQI scores
     aq_score_l = compute_haaqi(
         processed_signal[0, :],
         ref_signal[0, :],
-        np.array(listener_audiogram["audiogram_levels_l"]),
-        np.array(listener_audiogram["audiogram_cfs"]),
+        Audiogram(levels=listener_audiogram["audiogram_levels_l"], frequencies=freqs),
         sample_rate,
     )
     aq_score_r = compute_haaqi(
         processed_signal[1, :],
         ref_signal[1, :],
-        np.array(listener_audiogram["audiogram_levels_r"]),
-        np.array(listener_audiogram["audiogram_cfs"]),
+        Audiogram(levels=listener_audiogram["audiogram_levels_r"], frequencies=freqs),
         sample_rate,
     )
     return aq_score_l, aq_score_r

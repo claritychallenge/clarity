@@ -6,8 +6,8 @@ import numpy as np
 from omegaconf import DictConfig
 from tqdm import tqdm
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
+from clarity.utils.audiogram import Audiogram
 
 
 @hydra.main(config_path=".", config_name="config")
@@ -24,15 +24,20 @@ def enhance(cfg: DictConfig) -> None:
     for scene in tqdm(scenes_listeners):
         for listener in scenes_listeners[scene]:
             # retrieve audiograms
-            cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-            audiogram_left = np.array(
+            frequencies = np.array(listener_audiograms[listener]["audiogram_cfs"])
+            audiogram_left_levels = np.array(
                 listener_audiograms[listener]["audiogram_levels_l"]
             )
-            audiogram_right = np.array(
+            audiogram_right_levels = np.array(
                 listener_audiograms[listener]["audiogram_levels_r"]
             )
-            audiogram = Audiogram(
-                cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right
+            audiogram_left = Audiogram(
+                frequencies=frequencies, levels=audiogram_left_levels
+            )
+
+            audiogram_right = Audiogram(
+                frequencies=frequencies,
+                levels=audiogram_right_levels,
             )
 
             infile_names = [
@@ -43,7 +48,8 @@ def enhance(cfg: DictConfig) -> None:
             enhancer.process_files(
                 infile_names=infile_names,
                 outfile_name=f"{enhanced_folder}/{scene}_{listener}_HA-output.wav",
-                audiogram=audiogram,
+                audiogram_left=audiogram_left,
+                audiogram_right=audiogram_right,
                 listener=listener,
             )
 
