@@ -101,5 +101,9 @@ def test_resample(requested_frequencies, expected_levels):
 
     # Include cfs that don't exist in the requested subset
     subset_audiogram = audiogram.resample(requested_frequencies)
-    assert np.allclose(subset_audiogram.frequencies, requested_frequencies)
-    assert np.allclose(subset_audiogram.levels, expected_levels)
+    assert subset_audiogram.frequencies == pytest.approx(
+        requested_frequencies, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert subset_audiogram.levels == pytest.approx(
+        expected_levels, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

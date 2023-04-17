@@ -54,8 +54,14 @@ def test_compute_recruitment_parameters(center_freqs, cf_expansion_expected):
     )
     assert cf_expansion.shape == (n_channels,)
     assert eq_loud_db_catch_up.shape == (n_channels,)
-    assert cf_expansion == pytest.approx(cf_expansion_expected)
-    assert eq_loud_db_catch_up == pytest.approx(np.array([catch_up] * n_channels))
+    assert cf_expansion == pytest.approx(
+        cf_expansion_expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert eq_loud_db_catch_up == pytest.approx(
+        np.array([catch_up] * n_channels),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
 
 
 def test_gammatone_filterbank():
@@ -82,7 +88,9 @@ def test_gammatone_filterbank():
         ),
     )
     assert coch_sig_out.shape == (28, len(signal))
-    assert np.sum(np.abs(coch_sig_out)) == pytest.approx(1327.2811434076052)
+    assert np.sum(np.abs(coch_sig_out)) == pytest.approx(
+        1327.2811434076052, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_compute_envelope():
@@ -95,7 +103,9 @@ def test_compute_envelope():
     signal = np.random.random((n_channels, 1000))
     result = compute_envelope(coch_sig=signal, erbn_cf=erbn_cf, fs=sample_rate)
     assert result.shape == (n_channels, 1000)
-    assert np.sum(np.abs(result)) == pytest.approx(1444.2528021105204)
+    assert np.sum(np.abs(result)) == pytest.approx(
+        1444.2528021105204, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_recruitment():
@@ -118,7 +128,9 @@ def test_recruitment():
         eq_loud_db=eq_loud_db,
     )
     assert result.shape == (n_channels, 1000)
-    assert np.sum(np.abs(result)) == pytest.approx(1512.7196632453372)
+    assert np.sum(np.abs(result)) == pytest.approx(
+        1512.7196632453372, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -157,4 +169,6 @@ def test_cochlea_simulate(levels, expected, n_samples_out):
     cochlea = Cochlea(audiogram=audiogram)
     result = cochlea.simulate(coch_sig=signal, equiv_0dB_file_SPL=100.0)
     assert result.shape == (n_samples_out,)
-    assert np.sum(np.abs(result)) == pytest.approx(expected)
+    assert np.sum(np.abs(result)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

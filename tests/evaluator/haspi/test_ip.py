@@ -93,8 +93,12 @@ def test_nn_feed_forward() -> None:
     # Note, it adds a constant 1 to the start of the output and hidden layers
     assert hidden.shape == (neural_net_params["hidden_layer"] + 1,)
     assert output.shape == (neural_net_params["output_layer"] + 1,)
-    assert hidden[0] == pytest.approx(1.0)
-    assert output[0] == pytest.approx(1.0)
+    assert hidden[0] == pytest.approx(
+        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert output[0] == pytest.approx(
+        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
     # Check that the mean of the hidden and output layers are correct
     assert np.mean(hidden) == pytest.approx(
         0.599999906437356, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance

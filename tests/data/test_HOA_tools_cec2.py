@@ -36,7 +36,9 @@ def test_convert_a_to_b_format() -> None:
         signal[0, :], signal[1, :], signal[2, :], signal[3, :]
     )
     assert result.shape == (4, 100)
-    assert np.sum(np.abs(signal)) == pytest.approx(208.78666127520782)
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        208.78666127520782, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_convert_a_to_b_format_index_error() -> None:
@@ -52,7 +54,9 @@ def test_compute_rotation_matrix() -> None:
 
     # Test for identity matrix
     rot_mat = compute_rotation_matrix(order, np.eye(3))
-    assert rot_mat == pytest.approx(np.eye(rot_mat_dim))
+    assert rot_mat == pytest.approx(
+        np.eye(rot_mat_dim), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     # Test for 90 degree rotation about x-axis
     rot_mat = compute_rotation_matrix(
@@ -92,7 +96,9 @@ def test_hoa_rotate_no_rotation() -> None:
     hoa_rotator = HOARotator(1, 90)
     result = hoa_rotator.rotate(signal, rotations)
     assert result.shape == (100, 4)
-    assert result == pytest.approx(signal)
+    assert result == pytest.approx(
+        signal, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -112,7 +118,9 @@ def test_hoa_rotate(seed: int, expected: float) -> None:
     rotations = np.random.random(20)
     hoa_rotator = HOARotator(1, 90)
     result = hoa_rotator.rotate(signal, rotations)
-    assert np.sum(np.abs(result)) == pytest.approx(expected)
+    assert np.sum(np.abs(result)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -128,7 +136,9 @@ def test_centred_element(
 ) -> None:
     """Test for centered_element() function."""
     random_matrix = make_random_matrix(seed)
-    assert centred_element(random_matrix, row, col) == pytest.approx(expected)
+    assert centred_element(random_matrix, row, col) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_centred_element_index_error(make_random_matrix) -> None:
@@ -162,7 +172,7 @@ def test_P(
         b,
         order,
         rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
-    ) == pytest.approx(expected)
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 def test_P_index_error(make_random_matrix) -> None:
@@ -197,7 +207,7 @@ def test_U(
         n,
         order,
         rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
-    ) == pytest.approx(expected)
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 @pytest.mark.parametrize(
@@ -221,7 +231,7 @@ def test_V(
         n,
         order,
         rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
-    ) == pytest.approx(expected)
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 @pytest.mark.parametrize(
@@ -245,7 +255,7 @@ def test_W(
         n,
         order,
         rotation_matrices=TypedList([r1_matrix, r2_matrix, r3_matrix]),
-    ) == pytest.approx(expected)
+    ) == pytest.approx(expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance)
 
 
 @pytest.mark.parametrize(
@@ -282,9 +292,13 @@ def test_compute_band_rotation() -> None:
     new_output, new_rotation_matrices = compute_band_rotation(order, rot_mats, output)
     # output and rotation matrices should be unchanged
     assert new_output.shape == (9, 9)
-    assert new_output == pytest.approx(np.eye(9))
+    assert new_output == pytest.approx(
+        np.eye(9), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
     for new_rot_mat, expected_rot_mat in zip(new_rotation_matrices, rot_mats):
-        assert new_rot_mat == pytest.approx(expected_rot_mat)
+        assert new_rot_mat == pytest.approx(
+            expected_rot_mat, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )
 
 
 @pytest.mark.parametrize(
@@ -305,7 +319,9 @@ def test_compute_band_rotation() -> None:
 def test_dot(A: np.ndarray, B: np.ndarray, expected: np.ndarray) -> None:
     """Test for dot() function."""
     result = dot(A, B)
-    assert result == pytest.approx(expected)
+    assert result == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 # TODO : need examples of hrir_metadata dictionary to be able to write a tests for this
@@ -323,7 +339,9 @@ def test_binaural_mixdown() -> None:
 
     result = binaural_mixdown(signals, hrir, hrir_metadata)
     assert result.shape == (199, 2)
-    assert np.sum(np.abs(result)) == pytest.approx(19647.32682819124)
+    assert np.sum(np.abs(result)) == pytest.approx(
+        19647.32682819124, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_ambisonic_convolve() -> None:
@@ -335,7 +353,9 @@ def test_ambisonic_convolve() -> None:
     result = ambisonic_convolve(signal, hoa_irs, order=order)
     # channel
     assert result.shape == (199, (order + 1) ** 2)
-    assert np.sum(np.abs(result)) == pytest.approx(3359.04412270433)
+    assert np.sum(np.abs(result)) == pytest.approx(
+        3359.04412270433, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_ambisonic_convolve_error() -> None:
@@ -373,7 +393,9 @@ def test_ambisonic_convolve_error() -> None:
 def test_compute_rms(array: np.ndarray, axis: int, expected: float) -> None:
     """Test for compute_rms() function along both axes."""
     result = compute_rms(input_signal=array, axis=axis)
-    assert result == pytest.approx(expected)
+    assert result == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_equalise_rms_levels() -> None:
@@ -387,8 +409,12 @@ def test_equalise_rms_levels() -> None:
     rms_1 = compute_rms(results[0], axis=0)
     rms_2 = compute_rms(results[1], axis=0)
     rms_3 = compute_rms(results[2], axis=0)
-    assert rms_1[0] == pytest.approx(rms_3[0])
-    assert rms_2[0] == pytest.approx(rms_3[0])
+    assert rms_1[0] == pytest.approx(
+        rms_3[0], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert rms_2[0] == pytest.approx(
+        rms_3[0], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -397,7 +423,9 @@ def test_equalise_rms_levels() -> None:
 def test_dB_to_gain(db: float, gain: float) -> None:
     """Test for test_dB_to_gain function."""
     result = dB_to_gain(db)
-    assert result == pytest.approx(gain)
+    assert result == pytest.approx(
+        gain, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -438,7 +466,9 @@ def test_smoothstep(
 ) -> None:
     """Test for smoothstep() function."""
     result = smoothstep(x, x_min, x_max, N)
-    assert result == pytest.approx(expected)
+    assert result == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -459,7 +489,9 @@ def test_rotation_control_vector(
     """Test for rotation_control_vector() function."""
 
     result = rotation_control_vector(array_length, start_idx, end_idx)
-    assert result == pytest.approx(expected)
+    assert result == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(

@@ -29,7 +29,9 @@ def test_nalr(audiogram: np.ndarray, cfs: np.ndarray, expected: float) -> None:
     """Test that the NALR filter is built correctly."""
     enhancer = NALR(**cfg_nalr)
     nalr_fir, _ = enhancer.build(audiogram, cfs)
-    assert np.sum(np.abs(nalr_fir)) == pytest.approx(expected)
+    assert np.sum(np.abs(nalr_fir)) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_nalr_default_cfs() -> None:
@@ -37,4 +39,6 @@ def test_nalr_default_cfs() -> None:
     enhancer = NALR(**cfg_nalr)
     nalr_fir1, _ = enhancer.build(np.array([45, 45, 35, 45, 60, 65]))
     nalr_fir2, _ = enhancer.build(np.array([45, 45, 35, 45, 60, 65]), STANDARD_CFS)
-    assert np.allclose(nalr_fir1, nalr_fir2)
+    assert nalr_fir1 == pytest.approx(
+        nalr_fir2, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

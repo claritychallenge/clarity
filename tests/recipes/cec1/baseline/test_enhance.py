@@ -70,6 +70,8 @@ def test_enhance(tmp_path: Path, hydra_cfg: DictConfig, mocker) -> None:
 
     # Check that the output signal is correct
     signal = read_signal(outfile_name)
-    assert np.sum(np.abs(signal)) == pytest.approx(1.1998291015625)
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        1.1998291015625, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     assert m.call_count == 1

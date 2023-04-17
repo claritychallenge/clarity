@@ -64,18 +64,22 @@ def test_firwin2():
     #    window=None,  # ("kaiser", 4)
     # )
     assert params.shape == (128,)
-    assert np.sum(np.abs(params)) == pytest.approx(2.5662415502127844)
+    assert np.sum(np.abs(params)) == pytest.approx(
+        2.5662415502127844, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     # TODO: check why the test below fails
     # I thought this was meant to give something like the scipy version, but it doesn't
-    # assert np.allclose(params, params_scipy)
+    # assert params == pytest.approx(params_scipy)
 
 
 def test_gen_tone():
     """Test gen_tone"""
     signal = gen_tone(500, 0.1, 44100.0, 20.0)
     assert signal.shape == (4410,)
-    assert np.sum(np.abs(signal)) == pytest.approx(39703.40087188665)
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        39703.40087188665, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_gen_eh2008_speech_noise():
@@ -83,7 +87,9 @@ def test_gen_eh2008_speech_noise():
     np.random.seed(0)
     signal = gen_eh2008_speech_noise(0.1, 44100.0, 0.0)
     assert signal.shape == (4410,)
-    assert np.sum(np.abs(signal)) == pytest.approx(3544.690935132768)
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        3544.690935132768, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_measure_rms():
@@ -92,11 +98,19 @@ def test_measure_rms():
     signal = gen_tone(500, 0.05, 44100.0, 20.0)
     noise = gen_eh2008_speech_noise(0.05, 44100.0, 0.0)
     rms, idx, rel_dB_thresh, active = measure_rms(signal + noise, 44100, 0.0, 10.0)
-    assert rms == pytest.approx(10.723997044548266)
+    assert rms == pytest.approx(
+        10.723997044548266, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
     assert idx.shape == (441,)
-    assert np.sum(idx) == pytest.approx(97020)
-    assert rel_dB_thresh == pytest.approx(-0.0008828901826447577)
-    assert active == pytest.approx(20.0)
+    assert np.sum(idx) == pytest.approx(
+        97020, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert rel_dB_thresh == pytest.approx(
+        -0.0008828901826447577, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert active == pytest.approx(
+        20.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -110,7 +124,9 @@ def test_pad(initial, desired_length):
     """Test pad function"""
     result = pad(initial, desired_length)
     assert result.shape == (desired_length,)
-    assert np.sum(np.abs(result)) == pytest.approx(np.sum(np.abs(initial)))
+    assert np.sum(np.abs(result)) == pytest.approx(
+        np.sum(np.abs(initial)), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_pad_error():

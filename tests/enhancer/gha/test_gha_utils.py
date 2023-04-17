@@ -50,9 +50,11 @@ def test_get_gaintable(gaintable):
     }
     # check that the gaintable has the expected values
     assert np.sum(np.array(gaintable["sGt_uncorr"])) == pytest.approx(
-        52476.611733926344
+        52476.611733926344, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    assert np.sum(np.array(gaintable["sGt"])) == pytest.approx(45866.4547337617)
+    assert np.sum(np.array(gaintable["sGt"])) == pytest.approx(
+        45866.4547337617, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_format_gaintable(gaintable):
@@ -77,7 +79,9 @@ def test_multifit_apply_noisegate(gaintable):
     INITIAL_SGT_SUM = 52476.611733926344
     FINAL_SGT_SUM = 45866.4547337617
     sGt = gaintable["sGt_uncorr"]
-    assert np.sum(sGt) == pytest.approx(INITIAL_SGT_SUM)
+    assert np.sum(sGt) == pytest.approx(
+        INITIAL_SGT_SUM, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
     sFit_model_frequencies = gaintable["frequencies"]
     sFit_model_levels = gaintable["levels"]
     noisegate_levels = gaintable["noisegatelevel"]
@@ -90,5 +94,9 @@ def test_multifit_apply_noisegate(gaintable):
         noisegate_slope,
     )
 
-    assert np.sum(sGt) == pytest.approx(INITIAL_SGT_SUM)
-    assert np.sum(corrected_sGt) == pytest.approx(FINAL_SGT_SUM)
+    assert np.sum(sGt) == pytest.approx(
+        INITIAL_SGT_SUM, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(corrected_sGt) == pytest.approx(
+        FINAL_SGT_SUM, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

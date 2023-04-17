@@ -61,7 +61,9 @@ def test_haspi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
         level=100,
     )
 
-    assert score == pytest.approx(expected_score)
+    assert score == pytest.approx(
+        expected_score, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -104,4 +106,6 @@ def test_haspi_v2_better_ear_non_standard(
         audiogram_right=Audiogram(levels=hl_right, frequencies=freqs),
         level=100,
     )
-    assert score == pytest.approx(expected_score)
+    assert score == pytest.approx(
+        expected_score, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

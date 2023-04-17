@@ -91,7 +91,9 @@ def test_run_HL_processing(hydra_cfg, tmp_path):
     ]
     for signal, expected_value in expected_signals:
         _fs, signal = read(tmp_path / "exps/train/eval_signals" / signal)
-        assert np.sum(np.abs(signal)) == pytest.approx(expected_value)
+        assert np.sum(np.abs(signal)) == pytest.approx(
+            expected_value, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )
 
 
 @patch("recipes.cpc1.baseline.run.tqdm", not_tqdm)
