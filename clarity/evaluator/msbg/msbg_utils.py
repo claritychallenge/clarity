@@ -5,6 +5,7 @@ import json
 import logging
 import math
 from pathlib import Path
+from typing import Final, TypedDict
 
 import numpy as np
 import scipy
@@ -14,13 +15,13 @@ from numpy import float64, ndarray
 from soundfile import SoundFile
 
 # measure rms parameters
-WIN_SECS = 0.01
+WIN_SECS: Final = 0.01
 
 # read & write signal parameters
-MSBG_FS = 44100
+MSBG_FS: Final = 44100
 
 # fmt: off
-HZ = np.array(
+HZ: Final = np.array(
     [
         0.0, 20.0, 25.0, 31.5, 40.0, 50.0, 63.0, 80.0, 100.0, 125.0, 160.0, 200.0,
         250.0, 315.0, 400.0, 500.0, 630.0, 750.0, 800.0, 1000.0, 1250.0, 1500.0,
@@ -30,7 +31,7 @@ HZ = np.array(
     ]
 )
 
-MIDEAR = np.array(
+MIDEAR: Final = np.array(
     [
         50.0, 39.6, 32.0, 25.85, 21.4, 18.5, 15.9, 14.1, 12.4, 11.0, 9.6, 8.3, 7.4,
         6.2, 4.8, 3.8, 3.3, 2.9, 2.6, 2.6, 4.5, 5.4, 6.1, 8.5, 10.4, 7.3, 7.0, 6.6,
@@ -41,7 +42,7 @@ MIDEAR = np.array(
 # Free field (frontal)FF_ED correction for threshold (was ISO std Table 1 - 4.2 dB)
 # i.e. relative to 0.0 dB at 1000 Hz, Shaw 1974
 
-FF_ED = np.array(
+FF_ED: Final = np.array(
     [
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 0.9, 1.4,
         1.6, 1.7, 2.5, 2.7, 2.6, 2.6, 3.2, 5.2, 6.6, 12.0, 16.8, 15.3, 15.2, 14.2,
@@ -52,7 +53,7 @@ FF_ED = np.array(
 # DIFFUSE field ( relative to 0.0 dB at 1000Hz)
 # from 2008 file [corrections08.m] used in Samsung collaboration
 
-DF_ED = np.array(
+DF_ED: Final = np.array(
     [
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.4, 0.5, 1.0,
         1.6, 1.7, 2.2, 2.7, 2.9, 3.8, 5.3, 6.8, 7.2, 10.2, 14.9, 14.5, 14.4,
@@ -66,7 +67,7 @@ DF_ED = np.array(
 # Freely available. Converts from ear reference point (ERP) to eardrum reference
 # point (DRP). EXCEPT extra 2 points added for 20k & 48k by MAS, MAr 2012
 
-ITU_HZ = np.array(
+ITU_HZ: Final = np.array(
     [
         0, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
         2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 20000, 48000,
@@ -75,7 +76,7 @@ ITU_HZ = np.array(
 # Ear Reference Point to Drum Reference Point (ERP-DRP) transfer function,
 # Table 14A/P.58, sect 6.2. NB negative of table since defined other way round.
 
-ITU_ERP_DRP = np.array(
+ITU_ERP_DRP: Final = np.array(
     [
         0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.5, 0.6, 0.7, 1.1, 1.7, 2.6, 4.2,
         6.5, 9.4, 10.3, 6.6, 3.2, 3.3, 16, 14.4, 14.4, 14.4
@@ -88,15 +89,35 @@ ITU_ERP_DRP = np.array(
 # (Moore et al 2008 E&H paper suggests that shape would be better as -7.5
 # dB/oct, at least up to 8, and -13 dB/oct above there.)
 
-GEN_NOISE_HZ = np.array(
+GEN_NOISE_HZ: Final = np.array(
     [0, 100, 200, 450, 550, 707, 1000, 1414, 2000, 2828, 4000, 5656, 8000, 16e3, 32e3]
 )
-EMPHASIS = np.array(
+EMPHASIS: Final = np.array(
     [0, 0.0, 0.0, 0, -0.5, -4.5, -9.0, -13.5, -18, -22.5, -27, -31.5, -36.0, -51, -66]
 ) * (7.5 / 9)
 
 
-def read_gtf_file(gtf_file: str) -> dict[str, str | ndarray | int | float]:
+class GTFParamDict(TypedDict):
+    Fs: int
+    BROADEN: float
+    SPACING: float
+    NGAMMA: int
+    GTnDelays: list[int]
+    GTn_denoms: list[list[float]]
+    GTn_nums: list[list[float]]
+    GTn_CentFrq: list[float]
+    ERBn_CentFrq: list[float]
+    HP_denoms: list[list[float]]
+    HP_nums: list[list[float]]
+    HP_FCorner: list[float]
+    HP_Delays: list[int]
+    NChans: int
+    Start2PoleHP: int
+    Recombination_dB: float
+    DateCreated: str
+
+
+def read_gtf_file(gtf_file: str) -> GTFParamDict:
     """Read a gammatone filterbank file.
 
     List data is converted into numpy arrays.
@@ -116,7 +137,7 @@ def read_gtf_file(gtf_file: str) -> dict[str, str | ndarray | int | float]:
 def firwin2(
     n_taps: int,
     frequencies: list[float] | ndarray,
-    filter_gains: list[int | float] | ndarray,
+    filter_gains: list[float] | ndarray,
     window: tuple[str, int] | str | None = None,
     antisymmetric: bool | None = None,  # pylint: disable=W0613
 ) -> ndarray:  # pylint: disable=W0613
@@ -142,7 +163,7 @@ def firwin2(
     if isinstance(window, tuple):
         window_type, window_param = window if window is not None else (None, 0)
     else:
-        window_type = window
+        window_type, window_param = window, None
 
     order = n_taps - 1
 
@@ -160,20 +181,20 @@ def firwin2(
 def fir2(
     filter_length: int,
     frequencies: list[float] | ndarray,
-    filter_gains: list[int | float] | ndarray,
-    n_interpolate: ndarray | None = None,
+    filter_gains: list[float] | ndarray,
+    window_shape: ndarray | None = None,
 ) -> tuple[ndarray, int]:
     """FIR arbitrary shape filter design using the frequency sampling method.
 
-    Translation of MATLAB fir2.
+    Partial implementation of MATLAB fir2.
 
     Args:
         filter_length (int): Order
         frequencies (ndarray): The frequency sampling points (0 < frequencies < 1) where
             1 is Nyquist rate. First and last elements must be 0 and 1 respectively.
         filter_gains (ndarray): The filter gains at the frequency sampling points.
-        n_interpolate (int, optional): Number of points for freq response interpolation
-            (default: max(smallest power of 2 greater than nn, 512))
+        window_shape (ndarray, optional): window to apply.
+            (default: hamming window)
 
     Returns:
         np.ndarray: nn + 1 filter coefficients, 1
@@ -182,12 +203,11 @@ def fir2(
     # Work with filter length instead of filter order
     filter_length += 1
 
-    if n_interpolate is None:
-        wind = scipy.signal.hamming(filter_length)
-    else:
-        wind = n_interpolate
+    if window_shape is None:
+        window_shape = scipy.signal.hamming(filter_length)
+
     n_interpolate = (
-        2 ** np.ceil(math.log(filter_length) / math.log(2))
+        2 ** np.ceil(math.log(filter_length) / math.log(2.0))
         if filter_length >= 1024
         else 512
     )
@@ -226,7 +246,7 @@ def fir2(
     H = np.concatenate((H, H[n_interpolate - 2 : 0 : -1].conj()))
     ht = np.real(np.fft.ifft(H))
 
-    b = ht[0:filter_length] * wind
+    b = ht[0:filter_length] * window_shape
 
     return b, 1
 
@@ -235,7 +255,7 @@ def gen_tone(
     freq: int,
     duration: float,
     sample_rate: float = 44100.0,
-    level: int | float | float64 = 0.0,
+    level: float = 0.0,
 ) -> ndarray:
     """Generate a pure tone.
 
@@ -259,9 +279,9 @@ def gen_tone(
 
 
 def gen_eh2008_speech_noise(
-    duration: int | float,
+    duration: float,
     sample_rate: float = 44100.0,
-    level: int | float | float64 | None = None,
+    level: float | None = None,
     supplied_b: None = None,
 ) -> ndarray:
     """Generate speech shaped noise.
@@ -444,10 +464,10 @@ def generate_key_percent(
 
 def measure_rms(
     signal: ndarray,
-    sample_rate: int,
-    db_rel_rms: int | float,
+    sample_rate: float,
+    db_rel_rms: float,
     percent_to_track: float | None = None,
-) -> tuple[float64, ndarray, float64, float]:
+) -> tuple[float, ndarray, float, float]:
     """Measure Root Mean Square.
 
     A sophisticated method of measuring RMS in a file. It splits the signal up into
@@ -551,7 +571,7 @@ def read_signal(
 def write_signal(
     filename: str | Path,
     signal: ndarray,
-    sample_rate: int,
+    sample_rate: float,
     floating_point: bool = True,
     strict: bool = False,
 ) -> None:

@@ -16,9 +16,9 @@ from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.mbstoi.mbstoi import mbstoi
 from clarity.evaluator.mbstoi.mbstoi_utils import find_delay_impulse
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad
+from clarity.utils.audiogram import Audiogram
 
 
 def listen(ear, signal, audiogram_l, audiogram_r):
@@ -84,9 +84,9 @@ def test_full_cec1_pipeline(regtest):
             pre_samples=scene["pre_samples"],
             post_samples=scene["post_samples"],
             dataset=scene["dataset"],
-            target=scene["target"]["name"],
+            target_id=scene["target"]["name"],
             noise_type=scene["interferer"]["type"],
-            interferer=scene["interferer"]["name"],
+            interferer_id=scene["interferer"]["name"],
             room=scene["room"]["name"],
             scene=scene["scene"],
             offset=scene["interferer"]["offset"],
@@ -130,8 +130,8 @@ def test_full_cec1_pipeline(regtest):
 
     ear = Ear(**msbg_ear_cfg)
 
-    left_audiogram = Audiogram(cfs=audiogram_cfs, levels=audiogram_l)
-    right_audiogram = Audiogram(cfs=audiogram_cfs, levels=audiogram_r)
+    left_audiogram = Audiogram(frequencies=audiogram_cfs, levels=audiogram_l)
+    right_audiogram = Audiogram(frequencies=audiogram_cfs, levels=audiogram_r)
 
     enhancer = NALR(**nalr_cfg)
     compressor = Compressor(**compressor_cfg)

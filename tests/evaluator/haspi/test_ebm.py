@@ -126,7 +126,9 @@ def test_add_noise() -> None:
     # Add 0 dB noise should not change the signal
     reference = 100 * np.random.normal(size=(100, 4))
     noisy_reference = add_noise(reference, 0)
-    assert np.allclose(noisy_reference, reference)
+    assert noisy_reference == pytest.approx(
+        reference, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_fir_modulation_filter() -> None:
@@ -148,7 +150,9 @@ def test_fir_modulation_filter() -> None:
     assert proc_mod.shape == (4, len(in_center_freqs), 100)
     assert out_center_freqs.shape == in_center_freqs.shape
     # Check return value have expected values
-    assert np.allclose(in_center_freqs, out_center_freqs)
+    assert in_center_freqs == pytest.approx(
+        out_center_freqs, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
     assert np.mean(np.abs(ref_mod)) == pytest.approx(
         14.477262943878237, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
@@ -173,7 +177,9 @@ def test_modulation_cross_correlation() -> None:
         reference_modulation=ref_mod, processed_modulation=ref_mod
     )
     assert cross_corr.shape == (n_mod_filters,)
-    assert cross_corr == pytest.approx(1.0)
+    assert cross_corr == pytest.approx(
+        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     # Check an expected value for a pair of random signals
     cross_corr = modulation_cross_correlation(

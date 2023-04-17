@@ -19,6 +19,7 @@ from torchaudio.transforms import Fade, Resample
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.utils.audiogram import Audiogram
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
@@ -27,11 +28,11 @@ logger = logging.getLogger(__name__)
 
 def separate_sources(
     model: torch.nn.Module,
-    mix: torch.Tensor | np.ndarray,
+    mix: torch.Tensor,
     sample_rate: int,
     segment: float = 10.0,
     overlap: float = 0.1,
-    device: torch.device | str = None,
+    device: torch.device | str | None = None,
 ):
     """
     Apply model to a given mixture.
@@ -146,8 +147,8 @@ def decompose_signal(
     signal: np.ndarray,
     sample_rate: int,
     device: torch.device,
-    left_audiogram: np.ndarray,
-    right_audiogram: np.ndarray,
+    left_audiogram: Audiogram,
+    right_audiogram: Audiogram,
 ) -> dict[str, np.ndarray]:
     """
     Decompose signal into 8 stems.
@@ -163,8 +164,8 @@ def decompose_signal(
         signal (np.ndarray): Signal to be decomposed.
         sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
-        left_audiogram (np.ndarray): Left ear audiogram.
-        right_audiogram (np.ndarray): Right ear audiogram.
+        left_audiogram (Audiogram): Left ear audiogram.
+        right_audiogram (Audiogram): Right ear audiogram.
 
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
@@ -197,8 +198,7 @@ def apply_baseline_ha(
     enhancer: NALR,
     compressor: Compressor,
     signal: np.ndarray,
-    listener_audiogram: np.ndarray,
-    cfs: np.ndarray,
+    audiogram: Audiogram,
     apply_compressor: bool = False,
 ) -> np.ndarray:
     """
@@ -215,7 +215,7 @@ def apply_baseline_ha(
     Returns:
         An ndarray representing the processed signal.
     """
-    nalr_fir, _ = enhancer.build(listener_audiogram, cfs)
+    nalr_fir, _ = enhancer.build(audiogram.levels, audiogram.frequencies)
     proc_signal = enhancer.apply(nalr_fir, signal)
     if apply_compressor:
         proc_signal, _, _ = compressor.process(proc_signal)
@@ -226,9 +226,8 @@ def process_stems_for_listener(
     stems: dict,
     enhancer: NALR,
     compressor: Compressor,
-    audiogram_left: np.ndarray,
-    audiogram_right: np.ndarray,
-    cfs: np.ndarray,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
     apply_compressor: bool = False,
 ) -> dict:
     """Process the stems from sources.
@@ -255,7 +254,7 @@ def process_stems_for_listener(
 
         # Apply NALR prescription to stem_signal
         proc_signal = apply_baseline_ha(
-            enhancer, compressor, stem_signal, audiogram, cfs, apply_compressor
+            enhancer, compressor, stem_signal, audiogram, apply_compressor
         )
         processed_stems[stem_str] = proc_signal
     return processed_stems
@@ -368,8 +367,14 @@ def enhance(config: DictConfig) -> None:
         )
 
         critical_frequencies = np.array(listener_info["audiogram_cfs"])
-        audiogram_left = np.array(listener_info["audiogram_levels_l"])
-        audiogram_right = np.array(listener_info["audiogram_levels_r"])
+        audiogram_left = Audiogram(
+            levels=np.array(listener_info["audiogram_levels_l"]),
+            frequencies=critical_frequencies,
+        )
+        audiogram_right = Audiogram(
+            levels=np.array(listener_info["audiogram_levels_r"]),
+            frequencies=critical_frequencies,
+        )
 
         # Read the mixture signal
         # Convert to 32-bit floating point and transpose
@@ -406,7 +411,6 @@ def enhance(config: DictConfig) -> None:
             compressor,
             audiogram_left,
             audiogram_right,
-            critical_frequencies,
             config.apply_compressor,
         )
 

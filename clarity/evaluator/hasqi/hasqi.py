@@ -1,18 +1,33 @@
+from __future__ import annotations
+
+import logging
+from typing import TYPE_CHECKING, Final
+
+import numpy as np
+
 from clarity.evaluator.haspi import eb
+from clarity.utils.audiogram import Audiogram
+
+if TYPE_CHECKING:
+    from numpy import ndarray
+
+
+# HASQI assumes the following audiogram frequencies:
+HASQI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
 
 
 def hasqi_v2(
-    reference,
-    reference_sample_rate,
-    processed,
-    processed_sample_rate,
-    hearing_loss,
-    equalisation=1,
-    level1=65,
-    silence_threshold=2.5,
-    add_noise=0.0,
-    segment_covariance=16,
-):
+    reference: ndarray,
+    reference_sample_rate: float,
+    processed: ndarray,
+    processed_sample_rate: float,
+    audiogram: Audiogram,
+    equalisation: int = 1,
+    level1: float = 65.0,
+    silence_threshold: float = 2.5,
+    add_noise: float = 0.0,
+    segment_covariance: int = 16,
+) -> tuple[float, float, float, list[float]]:
     """
     Function to compute the HASQI version 2 quality index using the
     auditory model followed by computing the envelope cepstral
@@ -37,7 +52,7 @@ def hasqi_v2(
               signal RMS = 1. Default is 65 dB SPL if argument not provided.
         silence_threshold (float): Silence threshold sum across bands, dB above audio
             threshold. Default: 2.5
-        add_noise (float): Additive noise in dB SL to conditiona cross-covariance.
+        add_noise (float): Additive noise in dB SL to conditional cross-covariance.
             Default is 0.0
         segment_covariance (int): Segment size for the covariance calculation.
             Default is 16
@@ -52,6 +67,14 @@ def hasqi_v2(
     James M. Kates, 5 August 2013.
     Translated from MATLAB to Python by Gerardo Roa Dabike, October 2022.
     """
+
+    if not audiogram.has_frequencies(HASQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HASQI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    audiogram = audiogram.resample(HASQI_AUDIOGRAM_FREQUENCIES)
 
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
@@ -68,7 +91,7 @@ def hasqi_v2(
         reference_sample_rate,
         processed,
         processed_sample_rate,
-        hearing_loss,
+        audiogram.levels,
         equalisation,
         level1,
     )
@@ -90,7 +113,9 @@ def hasqi_v2(
     # dloud  vector: [sum abs diff, std dev diff, max diff] spectra
     # dnorm  vector: [sum abs diff, std dev diff, max diff] norm spectra
     # dslope vector: [sum abs diff, std dev diff, max diff] slope
-    d_loud, _d_norm, d_slope = eb.spectrum_diff(reference_sl, processed_sl)
+    d_loud_stats, _d_norm_stats, d_slope_stats = eb.spectrum_diff(
+        reference_sl, processed_sl
+    )
 
     # Temporal fine structure correlation measurements
     # Compute the time-frequency segment covariances
@@ -118,16 +143,14 @@ def hasqi_v2(
 
     # Extract and normalize the spectral features
     # Dloud:std
-    d_loud = d_loud[1] / 2.5  # Loudness difference std
+    d_loud = d_loud_stats[1] / 2.5  # Loudness difference std
     d_loud = 1.0 - d_loud  # 1=perfect, 0=bad
-    d_loud = min(d_loud, 1)
-    d_loud = max(d_loud, 0)
+    d_loud = max(min(d_loud, 1.0), 0.0)
 
     # Dslope:std
-    d_slope = d_slope[1]  # Slope difference std
+    d_slope = d_slope_stats[1]  # Slope difference std
     d_slope = 1.0 - d_slope
-    d_slope = min(d_slope, 1)
-    d_slope = max(d_slope, 0)
+    d_slope = max(min(d_slope, 1.0), 0.0)
 
     # Construct the models
     # Nonlinear model
@@ -146,16 +169,14 @@ def hasqi_v2(
 
 
 def hasqi_v2_better_ear(
-    reference_left,
-    reference_right,
-    processed_left,
-    processed_right,
-    sample_rate,
-    audiogram_left,
-    audiogram_right,
-    audiogram_frequencies,
-    level=100,
-    audiogram_freq=None,
+    reference_left: ndarray,
+    reference_right: ndarray,
+    processed_left: ndarray,
+    processed_right: ndarray,
+    sample_rate: float,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
+    level: float = 100.0,
 ) -> float:
     """Better ear HASQI.
 
@@ -169,7 +190,6 @@ def hasqi_v2_better_ear(
         sample_rate: sampling rate for both signal
         audiogram_l: left ear audiogram
         audiogram_r: right ear audiogram
-        audiogram_cfs: audiogram frequencies
         level: level in dB SPL corresponding to RMS=1
         audiogram_freq: selected frequencies to use for audiogram
 
@@ -178,28 +198,13 @@ def hasqi_v2_better_ear(
 
     Gerardo Roa Dabike, November 2022
     """
-    # Default frequencies
-    if audiogram_freq is None:
-        audiogram_freq = [250, 500, 1000, 2000, 4000, 6000]
-
-    # Adjust to match the frequencies
-    adjusted_left = [
-        audiogram_left[i]
-        for i in range(len(audiogram_frequencies))
-        if audiogram_frequencies[i] in audiogram_freq
-    ]
-    adjusted_right = [
-        audiogram_right[i]
-        for i in range(len(audiogram_frequencies))
-        if audiogram_frequencies[i] in audiogram_freq
-    ]
 
     score_left, _, _, _ = hasqi_v2(
         reference_left,
         sample_rate,
         processed_left,
         sample_rate,
-        adjusted_left,
+        audiogram_left,
         equalisation=1,
         level1=level,
     )
@@ -208,7 +213,7 @@ def hasqi_v2_better_ear(
         sample_rate,
         processed_right,
         sample_rate,
-        adjusted_right,
+        audiogram_right,
         equalisation=1,
         level1=level,
     )

@@ -90,7 +90,9 @@ def test_run_HL_processing(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     for filename, sig_sum in expected_files:
         assert (pathlib.Path(f"{tmp_path}/eval_signals/{filename}")).exists()
         x = read_signal(f"{tmp_path}/eval_signals/{filename}")
-        assert np.sum(np.abs(x)) == pytest.approx(sig_sum)
+        assert np.sum(np.abs(x)) == pytest.approx(
+            sig_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )
 
 
 @patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)

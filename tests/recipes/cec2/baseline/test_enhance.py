@@ -56,4 +56,6 @@ def test_enhance(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     filename = tmp_path / "enhanced_signals" / "S06001_L0064_HA-output.wav"
     assert filename.exists()
     signal = read_signal(filename)
-    assert np.sum(np.abs(signal)) == pytest.approx(78939.73132324219)
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        78939.73132324219, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

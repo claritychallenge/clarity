@@ -67,4 +67,6 @@ def test_prepare_data(tmp_path):
         assert filename.exists()
         # Check that the output signal is correct
         signal = read_signal(filename)
-        assert np.sum(np.abs(signal)) == pytest.approx(expected_sum)
+        assert np.sum(np.abs(signal)) == pytest.approx(
+            expected_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )

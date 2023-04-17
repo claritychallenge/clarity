@@ -5,14 +5,14 @@ import numpy as np
 from scipy.signal import correlate, correlation_lags
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.audiogram import Audiogram
 from clarity.utils.signal_processing import compute_rms
 
 
 def compute_haaqi_rms(
     processed_signal: np.ndarray,
     reference_signal: np.ndarray,
-    audiogram: np.ndarray,
-    audiogram_frequencies: np.ndarray,
+    audiogram: Audiogram,
     sample_rate: int,
     silence_length: float = 2.0,
 ) -> float:
@@ -34,8 +34,7 @@ def compute_haaqi_rms(
         reference_signal (np.ndarray): Input reference speech signal with no
             noise or distortion. If a hearing loss is specified, NAL-R
             equalization is optional.
-        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
-        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        audiogram (np.ndarray): The listener's audiogram
         sample_rate (int): Sample rate in Hz.
         silence_length (float): Minimum length of silence in seconds to use
             for RMS calculation.
@@ -55,25 +54,25 @@ def compute_haaqi_rms(
     )
 
     # join non-silence segments for processed and reference signals
-    new_processed_signal = []
-    new_reference_signal = []
+    new_processed_signal_list = []
+    new_reference_signal_list = []
 
     for start, end in non_silence:
-        new_processed_signal.append(processed_signal[start:end])
-        new_reference_signal.append(reference_signal[start:end])
+        new_processed_signal_list.append(processed_signal[start:end])
+        new_reference_signal_list.append(reference_signal[start:end])
 
-    if len(new_processed_signal) > 1:
-        new_reference_signal = np.concatenate(new_reference_signal)
-        new_processed_signal = np.concatenate(new_processed_signal)
+    if len(new_processed_signal_list) > 1:
+        new_reference_signal = np.concatenate(new_reference_signal_list)
+        new_processed_signal = np.concatenate(new_processed_signal_list)
     else:
-        new_reference_signal = new_reference_signal[0]
-        new_processed_signal = new_processed_signal[0]
+        new_reference_signal = new_reference_signal_list[0]
+        new_processed_signal = new_processed_signal_list[0]
 
     # join silence segments for processed signal
-    silence_processed = []
+    silence_processed_list = []
     for start, end in silence:
-        silence_processed.append(processed_signal[start:end])
-    silence_processed = np.concatenate(silence_processed)
+        silence_processed_list.append(processed_signal[start:end])
+    silence_processed = np.concatenate(silence_processed_list)
 
     # Compute haaqi on music segments
     haaqi_score = compute_haaqi(
@@ -81,7 +80,6 @@ def compute_haaqi_rms(
         reference_signal=new_reference_signal,
         sample_rate=sample_rate,
         audiogram=audiogram,
-        audiogram_frequencies=audiogram_frequencies,
         equalisation=1,
         level1=65 - 20 * np.log10(compute_rms(new_reference_signal)),
         scale_reference=True,
@@ -150,26 +148,28 @@ def find_silence_segments(
     threshold = 0.001 * reference_max
 
     # Find silence frames
-    silence = np.where(np.abs(signal) < threshold)[0]
-    silence = np.split(silence, np.where(np.diff(silence) != 1)[0] + 1)
-    silence = [
+    silence_frames = np.where(np.abs(signal) < threshold)[0]
+    silence_groups = np.split(
+        silence_frames, np.where(np.diff(silence_frames) != 1)[0] + 1
+    )
+    silence_segments = [
         [group[0], group[-1]]
-        for group in silence
+        for group in silence_groups
         if len(group) > sample_rate * min_silence_length
     ]
-    if len(silence) == 0:
-        silence = [[0, 0]]
+    if len(silence_segments) == 0:
+        silence_segments = [[0, 0]]
 
     # find silence segments
-    non_silence = []
-    for start, end in zip(silence[:-1], silence[1:]):
-        non_silence.append([start[-1] + 1, end[0] - 1])
+    non_silence_segments = []
+    for start, end in zip(silence_segments[:-1], silence_segments[1:]):
+        non_silence_segments.append([start[-1] + 1, end[0] - 1])
 
     # add first and last non-silence segments
-    if len(silence) > 0:
-        if silence[0][0] > 0:
-            non_silence.insert(0, [0, silence[0][0] - 1])
-        if silence[-1][-1] < len(signal) - 1:
-            non_silence.append([silence[-1][-1] + 1, len(signal) - 1])
+    if len(silence_segments) > 0:
+        if silence_segments[0][0] > 0:
+            non_silence_segments.insert(0, [0, silence_segments[0][0] - 1])
+        if silence_segments[-1][-1] < len(signal) - 1:
+            non_silence_segments.append([silence_segments[-1][-1] + 1, len(signal) - 1])
 
-    return silence, non_silence
+    return silence_segments, non_silence_segments

@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haaqi import compute_haaqi, haaqi_v1
+from clarity.utils.audiogram import Audiogram
 
 
 def test_haaqi_v1() -> None:
@@ -13,11 +14,14 @@ def test_haaqi_v1() -> None:
     y = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
     hearing_loss = np.array([45, 45, 35, 45, 60, 65])
+    freqs = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=hearing_loss, frequencies=freqs)
+
     equalisation_mode = 1
     level1 = 65
 
     score, _, _, _ = haaqi_v1(
-        x, sample_rate, y, sample_rate, hearing_loss, equalisation_mode, level1
+        x, sample_rate, y, sample_rate, audiogram, equalisation_mode, level1
     )
     assert score == pytest.approx(
         0.111290948, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
@@ -25,10 +29,29 @@ def test_haaqi_v1() -> None:
 
 
 @pytest.mark.parametrize(
-    "scale_reference,expected_result",
-    [(False, 0.113759275), (True, 0.114157435)],
+    "levels,freqs,scale_reference,expected_result",
+    [
+        (
+            np.array([10, 20, 30, 40, 50, 60]),
+            np.array([250, 500, 1000, 2000, 4000, 6000]),
+            False,
+            0.113759275,
+        ),
+        (
+            np.array([10, 20, 30, 40, 50, 60]),
+            np.array([250, 500, 1000, 2000, 4000, 6000]),
+            True,
+            0.114157435,
+        ),
+        (
+            np.array([10, 20, 40, 50, 60]),
+            np.array([250, 500, 2000, 4000, 6000]),  # missing cfs, requires interp
+            True,
+            0.114157435,
+        ),
+    ],
 )
-def test_compute_haaqi(scale_reference, expected_result):
+def test_compute_haaqi(levels, freqs, scale_reference, expected_result):
     """Test for compute_haaqi function"""
     np.random.seed(42)
 
@@ -36,15 +59,13 @@ def test_compute_haaqi(scale_reference, expected_result):
     enh_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
     ref_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
-    audiogram = np.array([10, 20, 30, 40, 50, 60])
-    audiogram_frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=levels, frequencies=freqs)
 
     # Compute HAAQI score
     score = compute_haaqi(
         processed_signal=enh_signal,
         reference_signal=ref_signal,
         audiogram=audiogram,
-        audiogram_frequencies=audiogram_frequencies,
         sample_rate=sample_rate,
         scale_reference=scale_reference,
     )

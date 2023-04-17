@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import copy
 import logging
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, TypedDict
 
 import numpy as np
 from scipy.interpolate import interp1d
@@ -13,16 +12,39 @@ from clarity.enhancer.gha.gainrule_camfit import gainrule_camfit_compr
 if TYPE_CHECKING:
     from numpy import ndarray
 
-    from clarity.enhancer.gha.audiogram import Audiogram
+    from clarity.utils.audiogram import Audiogram
+
+
+class Gaintable(TypedDict):
+    """Gaintable for a given audiogram."""
+
+    sGt_uncorr: ndarray
+    sGt: ndarray
+    noisegatelevel: ndarray
+    noisegateslope: ndarray
+    frequencies: ndarray
+    levels: ndarray
+    channels: int
+
+
+class FittingParams(TypedDict):
+    """Fitting parameters for gaintable calculation."""
+
+    frequencies: ndarray
+    edge_frequencies: ndarray
+    levels: ndarray
+    channels: int
+    side: str
 
 
 def get_gaintable(
-    audiogram: Audiogram,
-    noisegatelevels: list[int],
-    noisegateslope: int,
-    cr_level: int,
-    max_output_level: int,
-) -> dict[str, Any]:
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
+    noisegate_levels: float | ndarray,
+    noisegate_slope: float | ndarray,
+    cr_level: float,
+    max_output_level: float,
+) -> Gaintable:
     """Compute a gaintable for a given audiogram.
 
     Replaces MATLAB GUI interface of original OpenMHA software for
@@ -30,10 +52,11 @@ def get_gaintable(
     that audiogram frequencies are identical at two ears.
 
     Args:
-        audiogram (Audiogram): the audiogram for which to compute the gain table
+        audiogram_left (Audiogram): the audiogram for the left ear
+        audiogram_right (Audiogram): the audiogram for the right ear
         audf (list): audiogram frequencies for fitting
         noisegatelevels (ndarray): compression threshold levels for each frequency band
-        noisegateslope (int): determines slope of gains below compression threshold
+        noisegateslope (float): determines slope of gains below compression threshold
         cr_level (int): overall input level in dB for calculation of compression ratios
         max_output_level (int): maximum output level in dB
 
@@ -41,75 +64,65 @@ def get_gaintable(
         dict: dim ndarray of gains
 
     """
-    # Initialise parameters
-    num_channels = 2  # only configured for two channels
-    sFitmodel: dict[str, Any] = {}
 
     # Fixed centre frequencies for amplification bands
-    sFitmodel["frequencies"] = [
-        177,
-        297,
-        500,
-        841,
-        1414,
-        2378,
-        4.0000e03,
-        6.7270e03,
-        11314,
-    ]
-    sFitmodel["edge_frequencies"] = [
-        1.0000e-08,
-        229.2793,
-        385.3570,
-        648.4597,
-        1.0905e03,
-        1.8337e03,
-        3.0842e03,
-        5.1873e03,
-        8.7241e03,
-        10000001,
-    ]
-
-    # Input levels in SPL for which to compute the gains
-    sFitmodel["levels"] = np.arange(-10, 110 + 1)
-    sFitmodel["channels"] = num_channels
-    sFitmodel["side"] = "lr"
+    sFitmodel: FittingParams = {
+        "frequencies": np.array(
+            [177, 297, 500, 841, 1414, 2378, 4.0000e03, 6.7270e03, 11314]
+        ),
+        "edge_frequencies": np.array(
+            [
+                1.0000e-08,
+                229.2793,
+                385.3570,
+                648.4597,
+                1.0905e03,
+                1.8337e03,
+                3.0842e03,
+                5.1873e03,
+                8.7241e03,
+                10000001,
+            ]
+        ),
+        "levels": np.arange(-10, 110 + 1),  # Levels SPL at which to compute the gains
+        "channels": 2,
+        "side": "lr",
+    }
 
     # Calculate gains and compression ratios
-    output = gainrule_camfit_compr(
-        audiogram,
+    gain_table, noisegate_levels, noisegate_slope = gainrule_camfit_compr(
+        audiogram_left,
+        audiogram_right,
         sFitmodel,
-        noisegatelevels,
-        noisegateslope,
+        noisegate_levels,
+        noisegate_slope,
         cr_level,
         max_output_level,
     )
 
-    sGt = {}
-    sGt["sGt_uncorr"] = copy.deepcopy(output["sGt"])  # sGt without noisegate correction
-
-    output = multifit_apply_noisegate(
-        output["sGt"],
+    gain_table_corrected = multifit_apply_noisegate(
+        gain_table,
         sFitmodel["frequencies"],
         sFitmodel["levels"],
-        output["noisegatelevel"],
-        output["noisegateslope"],
+        noisegate_levels,
+        noisegate_slope,
     )
 
     # Reshape sGt here to suit cfg file input
-    sGt["sGt"] = np.transpose(np.reshape(output["sGt"], (121, 18), order="F"))
-
-    sGt["noisegatelevel"] = output["noisegatelevel"]
-    sGt["noisegateslope"] = output["noisegateslope"]
-    sGt["frequencies"] = sFitmodel["frequencies"]
-    sGt["levels"] = sFitmodel["levels"]
-    sGt["channels"] = num_channels
-
-    return sGt
+    sGt_data: Gaintable = {
+        "sGt_uncorr": gain_table,  # sGt without noisegate correction
+        "sGt": np.transpose(np.reshape(gain_table_corrected, (121, 18), order="F")),
+        "noisegatelevel": noisegate_levels,
+        "noisegateslope": noisegate_slope,
+        "frequencies": sFitmodel["frequencies"],
+        "levels": sFitmodel["levels"],
+        "channels": sFitmodel["channels"],
+    }
+    return sGt_data
 
 
 def format_gaintable(
-    gaintable: dict[str, Any],
+    gaintable: Gaintable,
     noisegate_corr: bool = True,
 ) -> str:
     """
@@ -150,44 +163,40 @@ def format_gaintable(
 
 
 def multifit_apply_noisegate(
-    sGt: ndarray,
-    sFit_model_frequencies: list[float | int],
+    gain_table: ndarray,
+    sFit_model_frequencies: ndarray,
     sFit_model_levels: ndarray,
     noisegate_level: ndarray,
     noisegate_slope: ndarray,
-) -> dict[str, ndarray]:
-    """Apply noisegate.
+) -> ndarray:
+    """Apply noisegate to the gain table
 
     Based on OpenMHA subfunction of libmultifit.m.
 
     Args:
-        sGt (ndarray): gain array
+        gain_table (ndarray): gain array
         sFit_model_frequencies (list): FFT filterbank frequencies
         sFit_model_levels (ndarray): levels at which to calculate gains
         noisegate_level (ndarray): chosen compression threshold
         noisegate_slope (ndarray): determines slope below compression threshold
 
     Returns:
-        dict: Noise signal
+        ndarray: gain table with noisegate applied
 
     """
-
+    gain_table_corrected = gain_table.copy()
     for i in [0, 1]:
         for kf in range(len(sFit_model_frequencies)):
             gain_noisegate = interp1d(
-                sFit_model_levels, sGt[:, kf, i], fill_value="extrapolate"
+                sFit_model_levels,
+                gain_table_corrected[:, kf, i],
+                fill_value="extrapolate",
             )(noisegate_level[kf, i])
             idx = [
                 i for i, x in enumerate(sFit_model_levels < noisegate_level[kf, i]) if x
             ]
-            sGt[idx, kf, i] = (
+            gain_table_corrected[idx, kf, i] = (
                 sFit_model_levels[idx] - noisegate_level[kf, i]
             ) * noisegate_slope[kf, i] + gain_noisegate
 
-    output: dict[str, Any] = {}
-    output["sGt"] = {}
-    output["sGt"] = sGt
-    output["noisegatelevel"] = noisegate_level
-    output["noisegateslope"] = noisegate_slope
-
-    return output
+    return gain_table_corrected

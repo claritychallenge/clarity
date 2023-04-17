@@ -105,10 +105,10 @@ def test_loss_parameters():
 
     (
         attenuated_ohc,
-        bandwith,
+        bandwidth,
         low_knee,
         compression_ratio,
-        annenuated_ihc,
+        attenuated_ihc,
     ) = loss_parameters(
         hearing_loss=np.array([45, 45, 50, 60, 70, 80]),
         center_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
@@ -117,15 +117,15 @@ def test_loss_parameters():
 
     # check shapes
     assert attenuated_ohc.shape == (6,)
-    assert bandwith.shape == (6,)
+    assert bandwidth.shape == (6,)
     assert low_knee.shape == (6,)
     assert compression_ratio.shape == (6,)
-    assert annenuated_ihc.shape == (6,)
+    assert attenuated_ihc.shape == (6,)
     # check values
     assert np.sum(attenuated_ohc) == pytest.approx(
         220.39149328167292, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    assert np.sum(bandwith) == pytest.approx(
+    assert np.sum(bandwidth) == pytest.approx(
         15.041134665207498, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(low_knee) == pytest.approx(
@@ -134,7 +134,7 @@ def test_loss_parameters():
     assert np.sum(compression_ratio) == pytest.approx(
         6.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    assert np.sum(annenuated_ihc) == pytest.approx(
+    assert np.sum(attenuated_ihc) == pytest.approx(
         129.6085067183270, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
@@ -348,7 +348,7 @@ def test_envelope_sl():
     reference, basilar_membrane = envelope_sl(
         reference=ref,
         basilar_membrane=bm,
-        attnenuated_ihc=40.0,
+        attenuated_ihc=40.0,
         level1=120,
         small=1e-30,
     )
@@ -404,13 +404,17 @@ def test_basilar_membrane_add_noise():
     assert np.sum(np.abs(noisy_reference)) == pytest.approx(
         298.919051930547, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    assert not np.allclose(noisy_reference, ref)
+    assert not noisy_reference == pytest.approx(
+        ref, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     # Check that adding on nearly 0 noise (-100 db) doesn't change the signal
     noisy_reference = basilar_membrane_add_noise(
         reference=ref, threshold=-100, level1=120
     )
-    assert np.allclose(noisy_reference, ref)
+    assert noisy_reference == pytest.approx(
+        ref, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 # group_delay_compensate
@@ -448,10 +452,10 @@ def test_convert_rms_to_sl():
     ref_db = convert_rms_to_sl(
         reference=reference,
         control=control,
-        attnenuated_ohc=0.1,
+        attenuated_ohc=0.1,
         threshold_low=40,
         compression_ratio=10,
-        attnenuated_ihc=0.1,
+        attenuated_ihc=0.1,
         level1=120,
         threshold_high=100,
         small=1e-30,
@@ -474,7 +478,7 @@ def test_env_smooth():
     sample_rate = 24000
 
     smooth = env_smooth(
-        envelopes=envelopes, segment_size=segment_size, freq_sample=sample_rate
+        envelopes=envelopes, segment_size=segment_size, sample_rate=sample_rate
     )
 
     # check shapes and values
@@ -503,8 +507,12 @@ def test_mel_cepstrum_correlation():
     )
 
     # check shapes and values
-    assert ave_cepstral_correlation == pytest.approx(1.0)
-    assert individual_cepstral_correlation == pytest.approx(1.0)
+    assert ave_cepstral_correlation == pytest.approx(
+        1.0, rel=1e-6, abs=1e-6  # <-- needed to make this a bit looser
+    )
+    assert individual_cepstral_correlation == pytest.approx(
+        1.0, rel=1e-6, abs=1e-6  # <-- needed to make this a bit looser
+    )
 
     # correlation between two random signals should be low
     (

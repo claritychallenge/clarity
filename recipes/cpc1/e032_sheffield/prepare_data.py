@@ -12,9 +12,9 @@ from librosa import resample  # pylint: disable=no-name-in-module
 from omegaconf import DictConfig
 from tqdm import tqdm
 
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal, write_signal
+from clarity.utils.audiogram import Audiogram
 
 logger = logging.getLogger(__name__)
 
@@ -115,11 +115,11 @@ def run_msbg_simulation(cfg, track):
             audiogram_left = np.array(
                 listener_audiograms[listener]["audiogram_levels_l"]
             )
-            left_audiogram = Audiogram(cfs=cfs, levels=audiogram_left)
+            left_audiogram = Audiogram(frequencies=cfs, levels=audiogram_left)
             audiogram_right = np.array(
                 listener_audiograms[listener]["audiogram_levels_r"]
             )
-            right_audiogram = Audiogram(cfs=cfs, levels=audiogram_right)
+            right_audiogram = Audiogram(frequencies=cfs, levels=audiogram_right)
 
             signals_to_write = [
                 listen(ear, signal, left_audiogram, right_audiogram),

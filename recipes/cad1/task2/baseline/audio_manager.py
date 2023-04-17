@@ -22,7 +22,7 @@ class AudioManager:
         soft_clip: bool = False,
     ):
         """Initialize the AudioManager instance."""
-        self.audios_to_save: dict[str, np.adarray] = {}
+        self.audios_to_save: dict[str, np.ndarray] = {}
         self.sample_rate = sample_rate
         self.soft_clip = soft_clip
         self.output_audio_path = Path(output_audio_path)

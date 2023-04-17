@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Final
 
 import numpy as np
 import torch
@@ -29,26 +30,25 @@ EPS = 1e-8
 # old msbg matlab
 # set RMS so that peak of output file so that no clipping occurs, set so that
 # equiv0dBfileSPL > 100dB for LOUD input files
-REF_RMS_DB = -31.2
+REF_RMS_DB: Final = -31.2
 
 # what RMS of INPUT speech file translates to in real world (unweighted)
-CALIB_DB_SPL = 65
+CALIB_DB_SPL: Final = 65
 
 # what 0dB file signal would translate to in dB SPL:
 # constant for cochlea_simulate function
-EQUIV_0_DB_FILE_SPL = CALIB_DB_SPL - REF_RMS_DB
+EQUIV_0_DB_FILE_SPL: Final = CALIB_DB_SPL - REF_RMS_DB
 
 # clarity msbg
-EQUIV_0_DB_SPL = 100
-AHR = 20
-EQUIV_0_DB_SPL = EQUIV_0_DB_SPL + AHR
+AHR: Final = 20
+EQUIV_0_DB_SPL: Final = 100 + AHR
 
 
 class MSBGHearingModel(nn.Module):
     def __init__(
         self,
-        audiogram: list[int],
-        audiometric: list[int],
+        audiogram: np.ndarray,
+        audiometric: np.ndarray,
         sr: int = 44100,
         spl_cali: bool = True,
         src_position: str = "ff",
@@ -66,9 +66,6 @@ class MSBGHearingModel(nn.Module):
             self.device = device
         # settings for audiogram
 
-        audiogram = np.array(audiogram)
-        # audiometric = np.array([250, 500, 1000, 2000, 4000, 6000])
-        audiometric = np.array(audiometric)
         audiogram = np.append(audiogram, audiogram[-1])
         audiometric = np.append(audiometric, 16000)
         audiogram = np.append(audiogram[0], audiogram)
@@ -454,7 +451,7 @@ class MSBGHearingModel(nn.Module):
             envelope_out = torch.flip(envelope_out, dims=[-1])
 
             envelope_out = torch.clamp(
-                envelope_out, min=EPS, max=self.envelope_max[ixch]
+                envelope_out, min=EPS, max=float(self.envelope_max[ixch])
             )
             gain = (envelope_out / self.envelope_max[ixch]) ** self.expansion_m1[ixch]
             outputs.append(gain * pass_n_cali)

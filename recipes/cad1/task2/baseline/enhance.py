@@ -6,6 +6,7 @@ from __future__ import annotations
 import logging
 import warnings
 from pathlib import Path
+from typing import Final
 
 import hydra
 import numpy as np
@@ -34,16 +35,16 @@ def compute_average_hearing_loss(listener: dict) -> float:
         average_hearing_loss (float): The average hearing loss of the listener.
 
     """
-    cfs = [500, 1000, 2000, 4000]
+    CFS: Final = (500, 1000, 2000, 4000)
     left_loss = [
         listener["audiogram_levels_l"][i]
         for i in range(len(listener["audiogram_cfs"]))
-        if listener["audiogram_cfs"][i] in cfs
+        if listener["audiogram_cfs"][i] in CFS
     ]
     right_loss = [
         listener["audiogram_levels_r"][i]
         for i in range(len(listener["audiogram_cfs"]))
-        if listener["audiogram_cfs"][i] in cfs
+        if listener["audiogram_cfs"][i] in CFS
     ]
     return max(float(np.mean(left_loss)), float(np.mean(right_loss)))
 
