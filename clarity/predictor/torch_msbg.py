@@ -381,27 +381,29 @@ class MSBGHearingModel(nn.Module):
             hop_length=self.smear_hop_len,
             win_length=self.smear_win_len,
             window=self.smear_window,
+            return_complex=True,
         )
-        power = torch.square(spec[:, : self.smear_nfft // 2, :, 0]) + torch.square(
-            spec[:, : self.smear_nfft // 2, :, 1]
-        )
-        mag = torch.sqrt(power + EPS).unsqueeze(-1)
-        phasor = spec[:, : self.smear_nfft // 2, :, :] / (mag + EPS)
 
+        mag = torch.abs(spec[:, : self.smear_nfft // 2, :])
+        power = torch.square(mag)
+
+        phasor = spec[:, : self.smear_nfft // 2, :] / (mag + EPS)
         smeared_power = (
-            torch.matmul(power.transpose(-1, -2), self.f_smear.transpose(0, 1))
-            .transpose(-1, -2)
-            .unsqueeze(-1)
+            torch.matmul(
+                power.transpose(-1, -2), self.f_smear.transpose(0, 1)
+            ).transpose(-1, -2)
             + EPS
         )
         smeared_power = torch.clamp(smeared_power, min=0)
         smeared_spec_nyquist = torch.sqrt(smeared_power + EPS) * phasor
         smeared_spec_mid = torch.zeros(
-            [smeared_power.shape[0], 1, smeared_power.shape[2], 2],
+            [smeared_power.shape[0], 1, smeared_power.shape[2]],
             dtype=torch.float32,
             device=self.device,
         )
+
         smeared_spec = torch.cat([smeared_spec_nyquist, smeared_spec_mid], dim=1)
+
         smeared_wav = torch.istft(
             smeared_spec,
             n_fft=self.smear_nfft,
