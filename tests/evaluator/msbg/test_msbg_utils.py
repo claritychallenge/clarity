@@ -9,9 +9,8 @@ from clarity.evaluator.msbg.msbg_utils import (
     measure_rms,
     pad,
     read_gtf_file,
-    read_signal,
-    write_signal,
 )
+from clarity.utils.file_io import read_signal, write_signal
 
 # import scipy
 

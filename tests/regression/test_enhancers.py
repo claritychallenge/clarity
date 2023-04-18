@@ -8,6 +8,7 @@ from clarity.enhancer.dsp import filter  # pylint: disable=redefined-builtin
 from clarity.enhancer.gha.gha_interface import GHAHearingAid as gha
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
 from clarity.utils.audiogram import Audiogram
+from clarity.utils.file_io import read_signal
 
 gha_params = {  # hyperparameters for GHA Hearing Aid, BE CAREFUL if making changes
     "sample_rate": 44100,
@@ -65,7 +66,7 @@ def test_GHA_inputs(regtest):
     )
     enhancer.create_HA_inputs(infile_names, merged_filename)
 
-    signal = enhancer.read_signal(merged_filename)
+    signal = read_signal(merged_filename)
     np.set_printoptions(threshold=100)
 
     # outputting a segment not at start to avoid it being all zeros

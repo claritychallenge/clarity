@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import numpy as np
+import scipy
+from numpy import ndarray
 
 
-def compute_rms(signal: np.ndarray) -> float:
+def compute_rms(signal: ndarray) -> float:
     """Compute RMS of signal
 
     Args:
@@ -17,19 +19,19 @@ def compute_rms(signal: np.ndarray) -> float:
     return np.sqrt(np.mean(np.square(signal)))
 
 
-def denormalize_signals(sources: np.ndarray, ref: np.ndarray) -> np.ndarray:
+def denormalize_signals(sources: ndarray, ref: ndarray) -> ndarray:
     """Scale signals back to the original scale.
 
     Args:
-        sources (np.ndarray): Source to be scaled.
-        ref (np.ndarray): Original sources to be used for reverting scaling.
+        sources (ndarray): Source to be scaled.
+        ref (ndarray): Original sources to be used for reverting scaling.
 
     Returns:
-        np.ndarray: Signal rescaled back to its original."""
+        ndarray: Signal rescaled back to its original."""
     return sources * ref.std() + ref.mean()
 
 
-def normalize_signal(signal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def normalize_signal(signal: ndarray) -> tuple[ndarray, ndarray]:
     """Standardize the signal to have zero mean and unit variance.
 
     Args:
@@ -39,3 +41,25 @@ def normalize_signal(signal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
     ref = signal.mean(0)
     return (signal - ref.mean()) / ref.std(), ref
+
+
+def resample(signal: ndarray, sample_rate: float, new_sample_rate: float) -> ndarray:
+    """Resample a signal to a new sample rate.
+
+    This is a sipmle wrapper around scipy.signal.resample. with the resampling
+    expressed in terms of sampling rates rather than desired number of samples.
+    It also ensures that for multichannel signals, resampling is in the time
+    domain, i.e. down the columns.
+
+    Args:
+        signal: The signal to be resampled.
+        sample_rate: The original sample rate.
+        new_sample_rate: The new sample rate.
+    Returns:
+        The resampled signal.
+    """
+    if sample_rate == new_sample_rate:
+        return signal
+    return scipy.signal.resample(
+        signal, int(new_sample_rate * signal.shape[0] / sample_rate)
+    )

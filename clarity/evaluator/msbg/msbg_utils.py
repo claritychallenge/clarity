@@ -10,9 +10,7 @@ from typing import Final, TypedDict
 import numpy as np
 import scipy
 import scipy.signal
-import soundfile
-from numpy import float64, ndarray
-from soundfile import SoundFile
+from numpy import ndarray
 
 # measure rms parameters
 WIN_SECS: Final = 0.01
@@ -356,10 +354,10 @@ def gen_eh2008_speech_noise(
 
 def generate_key_percent(
     signal: ndarray,
-    threshold_db: float64,
+    threshold_db: float,
     window_length: int,
     percent_to_track: float | None = None,
-) -> tuple[ndarray, float64]:
+) -> tuple[ndarray, float]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
@@ -376,7 +374,7 @@ def generate_key_percent(
         ValueError: percent_to_track is set too high.
 
     Returns:
-        (tuple): containig
+        (tuple): containing
         - key (ndarray): The key array of indices of samples used in rms calculation.
         - used_threshold_db (float): Root Mean Squared threshold.
 
@@ -523,88 +521,3 @@ def pad(signal: ndarray, length: int) -> ndarray:
     return np.pad(
         signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
     )
-
-
-def read_signal(
-    filename: str | Path,
-    offset: int = 0,
-    nsamples: int = -1,
-    nchannels: int = 0,
-    offset_is_samples: bool = False,
-) -> ndarray:
-    """Read a wavefile and return as numpy array of floats.
-
-    Args:
-        filename (str|Path): Name of file to read
-        offset (int, optional): Offset in samples or seconds (from start). Default is 0.
-        nsamples (int): Number of samples.
-        nchannels (int): expected number of channel (default: 0 = any number OK)
-        offset_is_samples (bool): measurement units for offset (default: False)
-
-    Returns:
-        np.ndarray: audio signal
-    """
-
-    wave_file = SoundFile(filename)
-
-    if nchannels not in (0, wave_file.channels):
-        raise ValueError(
-            f"Wav file ({filename}) was expected to have {nchannels} channels."
-        )
-
-    if not offset_is_samples:  # Default behaviour
-        offset = int(offset * wave_file.samplerate)
-
-    if offset != 0:
-        wave_file.seek(offset)
-
-    signal = wave_file.read(frames=nsamples)
-
-    if wave_file.samplerate != MSBG_FS:
-        signal = scipy.signal.resample(
-            signal, int(MSBG_FS * signal.shape[0] / wave_file.samplerate)
-        )
-
-    return signal
-
-
-def write_signal(
-    filename: str | Path,
-    signal: ndarray,
-    sample_rate: float,
-    floating_point: bool = True,
-    strict: bool = False,
-) -> None:
-    """Write a signal as fixed or floating point wav file.
-
-    NB: setting 'strict' to True will raise error on overflow. This would be
-    a more natural default but it would break existing code that did not
-    check for overflow.
-
-    Args:
-        filename (str|Path): name of file in to write to.
-        signal (ndarray): signal to write.
-        sample_rate (float): sampling frequency.
-        floating_point (bool): write as floating point else an ints (default: True).
-        strict (bool): raise error if signal out of range for int16 (default: False).
-    """
-
-    if sample_rate != MSBG_FS:
-        logging.warning(
-            f"Sampling rate mismatch: {filename} with "
-            f"sample frequency = {sample_rate}."
-        )
-        # raise ValueError("Sampling rate mismatch")
-
-    if floating_point is False:
-        subtype = "PCM_16"
-        # Signal is float and we want to convert to int16
-        # *NB* Not  *= in next line as we need to make a copy
-        signal = signal * 32768
-        if strict and (np.max(signal) > 32767 or np.min(signal) < -32768):
-            raise ValueError("Signal out of range -1.0 to 1.0")
-        signal = signal.astype(np.dtype("int16"))
-    else:
-        subtype = "FLOAT"
-
-    soundfile.write(filename, signal, sample_rate, subtype=subtype)

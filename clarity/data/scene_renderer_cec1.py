@@ -4,11 +4,10 @@ import math
 from pathlib import Path
 
 import numpy as np
-import soundfile
 from scipy.signal import convolve
-from soundfile import SoundFile
 
 from clarity.data.utils import better_ear_speechweighted_snr, pad, sum_signals
+from clarity.utils.file_io import read_signal, write_signal
 
 
 class Renderer:
@@ -46,81 +45,6 @@ class Renderer:
             # ... as above plus N hearing aid input channels plus 'channel 0'
             # (the eardrum signal). e.g. num_channel = 2  => channels [1, 2, 0]
             self.channels = list(range(1, num_channels + 1)) + [0]
-
-    def read_signal(
-        self, filename, offset=0, nsamples=-1, nchannels=0, offset_is_samples=False
-    ):
-        """Read a wavefile and return as numpy array of floats.
-
-        Args:
-            filename (string): Name of file to read
-            offset (int, optional): Offset in samples or seconds from start.
-                Defaults to 0.
-            nchannels: expected number of channel (default: 0 = any number OK)
-            offset_is_samples (bool): measurement units for offset (default: False)
-
-        Returns:
-            np.ndarray: audio signal
-        """
-        wave_file = SoundFile(filename)
-
-        if nchannels not in (0, wave_file.channels):
-            raise ValueError(
-                f"Wav file ({filename}) was expected to have {nchannels} channels."
-            )
-
-        if wave_file.samplerate != self.sample_rate:
-            raise ValueError(
-                f"Sampling rate is not {self.sample_rate} for filename {filename}."
-            )
-
-        if not offset_is_samples:  # Default behaviour
-            offset = int(offset * wave_file.samplerate)
-
-        if offset != 0:
-            wave_file.seek(offset)
-
-        x = wave_file.read(frames=nsamples)
-        return x
-
-    def write_signal(
-        self,
-        filename: str,
-        signal: np.ndarray,
-        sample_rate: int,
-        floating_point: bool = True,
-    ) -> None:
-        """Write a signal as fixed or floating point wav file.
-
-        Args:
-            filename (string): Name of file to write to.
-            signal (np.ndarray): Array to write.
-            sample_rate (int): Sample Rate
-            floating_point (bool): Whether to write as subtype of floating point
-
-        Returns:
-            None: Does not return anything, writes signal to given filename.
-        """
-
-        if sample_rate != self.sample_rate:
-            logging.warning(
-                f"Sampling rate mismatch: {filename} with sample rate={sample_rate}."
-            )
-            # raise ValueError("Sampling rate mismatch")
-
-        if floating_point is False:
-            if self.test_nbits == 16:
-                subtype = "PCM_16"
-                # If signal is float and we want int16
-                signal *= 32768
-                signal = signal.astype(np.dtype("int16"))
-                assert np.max(signal) <= 32767 and np.min(signal) >= -32768
-            elif self.test_nbits == 24:
-                subtype = "PCM_24"
-        else:
-            subtype = "FLOAT"
-
-        soundfile.write(filename, signal, sample_rate, subtype=subtype)
 
     def apply_ramp(self, signal, ramp_duration):
         """Apply half cosine ramp into and out of signal.
@@ -219,11 +143,18 @@ class Renderer:
             f"{self.input_path}/{dataset}/interferers/{noise_type}/{interferer_id}.wav"
         )
 
-        target = self.read_signal(target_fn)
+        target = read_signal(
+            target_fn, sample_rate=self.sample_rate, allow_resample=False
+        )
         target = np.pad(target, [(pre_samples, post_samples)])
 
-        interferer_signal = self.read_signal(
-            interferer_fn, offset=offset, nsamples=len(target), offset_is_samples=True
+        interferer_signal = read_signal(
+            interferer_fn,
+            sample_rate=self.sample_rate,
+            offset=offset,
+            n_samples=len(target),
+            offset_is_samples=True,
+            allow_resample=False,
         )
 
         if len(interferer_signal) != len(target):
@@ -246,8 +177,12 @@ class Renderer:
             # Load scene BRIRs
             target_brir_fn = f"{brir_stem}_t_CH{channel}.wav"
             interferer_brir_fn = f"{brir_stem}_i1_CH{channel}.wav"
-            target_brir = self.read_signal(target_brir_fn)
-            interferer_brir = self.read_signal(interferer_brir_fn)
+            target_brir = read_signal(
+                target_brir_fn, sample_rate=self.sample_rate, allow_resample=False
+            )
+            interferer_brir = read_signal(
+                interferer_brir_fn, sample_rate=self.sample_rate, allow_resample=False
+            )
 
             # Apply the BRIRs
             target_at_ear = self.apply_brir(target, target_brir)
@@ -283,13 +218,17 @@ class Renderer:
 
         if self.channels == []:
             target_brir_fn = f"{brir_stem}_t_CH0.wav"
-            target_brir = self.read_signal(target_brir_fn)
+            target_brir = read_signal(
+                target_brir_fn, sample_rate=self.sample_rate, allow_resample=False
+            )
 
         # Construct the anechoic target reference signal
         anechoic_brir_fn = (
             f"{anechoic_brir_stem}_t_CH1.wav"  # CH1 used for the anechoic signal
         )
-        anechoic_brir = self.read_signal(anechoic_brir_fn)
+        anechoic_brir = read_signal(
+            anechoic_brir_fn, sample_rate=self.sample_rate, allow_resample=False
+        )
         # Padding the anechoic brir very inefficient but keeps it simple
         anechoic_brir_pad = pad(anechoic_brir, len(target_brir))
         target_anechoic = self.apply_brir(target, anechoic_brir_pad)
@@ -298,7 +237,7 @@ class Renderer:
 
         # Write all output files
         for filename, signal in outputs:
-            self.write_signal(filename, signal, self.sample_rate)
+            write_signal(filename, signal, self.sample_rate, strict=True)
 
 
 def check_scene_exists(scene: dict, output_path: str, num_channels: int) -> bool:

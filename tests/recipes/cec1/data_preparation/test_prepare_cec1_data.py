@@ -6,7 +6,7 @@ import hydra
 import numpy as np
 import pytest
 
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 from recipes.cec1.data_preparation import prepare_cec1_data
 
 

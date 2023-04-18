@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 from omegaconf import DictConfig
 
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 from recipes.icassp_2023.baseline.enhance import enhance
 
 
