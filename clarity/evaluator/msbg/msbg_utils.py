@@ -10,8 +10,7 @@ from typing import Final, TypedDict
 import numpy as np
 import scipy
 import scipy.signal
-from numpy import float64, ndarray
-from soundfile import SoundFile
+from numpy import ndarray
 
 # measure rms parameters
 WIN_SECS: Final = 0.01
@@ -355,10 +354,10 @@ def gen_eh2008_speech_noise(
 
 def generate_key_percent(
     signal: ndarray,
-    threshold_db: float64,
+    threshold_db: float,
     window_length: int,
     percent_to_track: float | None = None,
-) -> tuple[ndarray, float64]:
+) -> tuple[ndarray, float]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
     of frames. To track a certain percentage of frames in order to get measure
@@ -375,7 +374,7 @@ def generate_key_percent(
         ValueError: percent_to_track is set too high.
 
     Returns:
-        (tuple): containig
+        (tuple): containing
         - key (ndarray): The key array of indices of samples used in rms calculation.
         - used_threshold_db (float): Root Mean Squared threshold.
 
@@ -522,46 +521,3 @@ def pad(signal: ndarray, length: int) -> ndarray:
     return np.pad(
         signal, [(0, length - signal.shape[0])] + [(0, 0)] * (len(signal.shape) - 1)
     )
-
-
-def read_signal_x(
-    filename: str | Path,
-    offset: int = 0,
-    nsamples: int = -1,
-    nchannels: int = 0,
-    offset_is_samples: bool = False,
-) -> ndarray:
-    """Read a wavefile and return as numpy array of floats.
-
-    Args:
-        filename (str|Path): Name of file to read
-        offset (int, optional): Offset in samples or seconds (from start). Default is 0.
-        nsamples (int): Number of samples.
-        nchannels (int): expected number of channel (default: 0 = any number OK)
-        offset_is_samples (bool): measurement units for offset (default: False)
-
-    Returns:
-        np.ndarray: audio signal
-    """
-
-    wave_file = SoundFile(filename)
-
-    if nchannels not in (0, wave_file.channels):
-        raise ValueError(
-            f"Wav file ({filename}) was expected to have {nchannels} channels."
-        )
-
-    if not offset_is_samples:  # Default behaviour
-        offset = int(offset * wave_file.samplerate)
-
-    if offset != 0:
-        wave_file.seek(offset)
-
-    signal = wave_file.read(frames=nsamples)
-
-    if wave_file.samplerate != MSBG_FS:
-        signal = scipy.signal.resample(
-            signal, int(MSBG_FS * signal.shape[0] / wave_file.samplerate)
-        )
-
-    return signal

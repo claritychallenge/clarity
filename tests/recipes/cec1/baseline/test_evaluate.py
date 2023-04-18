@@ -39,15 +39,14 @@ def truncated_read_signal(
 
     Returns first 1 second of the signal
     """
-    signal = read_signal(
+    n_samples = 44100  # <-- take just the first 1 second of the signal
+    return read_signal(
         filename,
         offset=offset,
-        n_samples=n_samples,
         n_channels=n_channels,
+        n_samples=n_samples,
         offset_is_samples=offset_is_samples,
     )
-    # Take 1 second sample from the middle of the signal
-    return signal[0:44100, :]
 
 
 @pytest.fixture()

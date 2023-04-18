@@ -5,10 +5,11 @@ import json
 from pathlib import Path
 
 import numpy as np
-import scipy.signal
 import soundfile
 from numpy import ndarray
 from soundfile import SoundFile
+
+from clarity.utils.signal_processing import resample
 
 # Function for reading and writing jsonl files
 
@@ -143,9 +144,7 @@ def read_signal(
 
     if sample_rate not in (0, wave_file.samplerate):
         if allow_resample:
-            signal = scipy.signal.resample(
-                signal, int(sample_rate * signal.shape[0] / wave_file.samplerate)
-            )
+            signal = resample(signal, wave_file.samplerate, sample_rate)
         else:
             raise ValueError(
                 f"Sample rate of {wave_file.samplerate} "
