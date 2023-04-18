@@ -83,6 +83,24 @@ def test_write_read_loop(tmp_path, signal, floating_point, strict):
         assert result != pytest.approx(signal, abs=1.0 / 16384)
 
 
+def test_write_mono_as_2D_signal(tmp_path):
+    """Test special case of writing signals for shape [N, 1]"""
+    tmp_filename_1d = tmp_path / "test_1d.wav"
+    tmp_filename_2d = tmp_path / "test_2d.wav"
+    signal_1d = np.ones((10,)) * 0.5
+    signal_2d = np.ones((10, 1)) * 0.5
+
+    write_signal(tmp_filename_1d, signal_1d, sample_rate=16000)
+    write_signal(tmp_filename_2d, signal_2d, sample_rate=16000)
+
+    result_1d = read_signal(tmp_filename_1d)
+    result_2d = read_signal(tmp_filename_2d)
+
+    # Both 1 and 2D signals should be read back as 1D
+    assert result_1d.shape == (10,)
+    assert result_2d.shape == (10,)
+
+
 def test_read_write_multichannel(tmp_path):
     """Test write_signal and read_signal"""
     tmp_filename = tmp_path / "test.wav"
@@ -161,7 +179,6 @@ def test_read_write_sample_with_resample(tmp_path):
 
     x = read_signal(tmp_filename, sample_rate=8000, allow_resample=True)
 
-    # TODO: read and write is treating channels as columns
     assert x.shape == (5, 2)
 
 
