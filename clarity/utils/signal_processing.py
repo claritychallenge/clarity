@@ -46,6 +46,11 @@ def normalize_signal(signal: ndarray) -> tuple[ndarray, ndarray]:
 def resample(signal: ndarray, sample_rate: float, new_sample_rate: float) -> ndarray:
     """Resample a signal to a new sample rate.
 
+    This is a sipmle wrapper around scipy.signal.resample. with the resampling
+    expressed in terms of sampling rates rather than desired number of samples.
+    It also ensures that for multichannel signals, resampling is in the time
+    domain, i.e. down the columns.
+
     Args:
         signal: The signal to be resampled.
         sample_rate: The original sample rate.
