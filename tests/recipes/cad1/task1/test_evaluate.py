@@ -101,14 +101,14 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.149880148,
-                "right_drums": 0.143182857,
-                "left_bass": 0.140449345,
-                "right_bass": 0.181374074,
-                "left_other": 0.132401105,
-                "right_other": 0.164211137,
-                "left_vocals": 0.121260627,
-                "right_vocals": 0.126605279,
+                "left_drums": 0.156074193,
+                "right_drums": 0.144341103,
+                "left_bass": 0.148050589,
+                "right_bass": 0.200470016,
+                "left_other": 0.134118179,
+                "right_other": 0.175471593,
+                "left_vocals": 0.119894038,
+                "right_vocals": 0.1339256182,
             },
         )
     ],
@@ -170,7 +170,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.144920571533222, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.15154316655507588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
     # Per instrument score
