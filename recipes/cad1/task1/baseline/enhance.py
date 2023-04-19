@@ -1,6 +1,7 @@
 """ Run the dummy enhancement. """
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
@@ -8,11 +9,12 @@ from pathlib import Path
 import hydra
 import numpy as np
 import pandas as pd
+import scipy
 import torch
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
-from torchaudio.transforms import Fade
+from torchaudio.transforms import Fade, Resample
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
@@ -72,7 +74,7 @@ def separate_sources(
     overlap_frames = overlap * sample_rate
     fade = Fade(fade_in_len=0, fade_out_len=int(overlap_frames), fade_shape="linear")
 
-    final = torch.zeros(batch, len(model.sources), channels, length, device=device)
+    final = torch.zeros(batch, 4, channels, length, device=device)
 
     while start < length - overlap_frames:
         chunk = mix[:, :, start:end]
@@ -142,10 +144,12 @@ def map_to_dict(sources: np.ndarray, sources_list: list[str]) -> dict:
 
 # pylint: disable=unused-argument
 def decompose_signal(
+    model_name: str,
     model: torch.nn.Module,
     signal: np.ndarray,
     sample_rate: int,
     device: torch.device,
+    sources_list: list[str],
     left_audiogram: np.ndarray,
     right_audiogram: np.ndarray,
 ) -> dict[str, np.ndarray]:
@@ -158,10 +162,12 @@ def decompose_signal(
     HDEMUCS model trained on the MUSDB18 dataset.
 
     Args:
+        model_name (str): Name of the model to use. `demucs` or `openunmix`.
         model (torch.nn.Module): Torch model.
         signal (np.ndarray): Signal to be decomposed.
         sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
+        sources_list (list): List of strings used to index dictionary.
         left_audiogram (np.ndarray): Left ear audiogram.
         right_audiogram (np.ndarray): Right ear audiogram.
 
@@ -169,12 +175,25 @@ def decompose_signal(
          Dictionary: Indexed by sources with the associated model as values.
     """
 
-    signal, ref = normalize_signal(signal)
-    sources = separate_sources(model, signal, sample_rate, device=device)
+    if model_name == "demucs":
+        signal, ref = normalize_signal(signal)
+
+    model_sample_rate = model.sample_rate if model_name == "openunmix" else 44100
+
+    # Resample signal to model sample rate
+    if sample_rate != model_sample_rate:
+        resampler = Resample(sample_rate, model_sample_rate)
+        signal = resampler(signal)
+
+    sources = separate_sources(
+        model, torch.from_numpy(signal), sample_rate, device=device
+    )
     # only one element in the batch
     sources = sources[0]
-    sources = denormalize_signals(sources, ref)
-    signal_stems = map_to_dict(sources, model.sources)
+    if model_name == "demucs":
+        sources = denormalize_signals(sources, ref)
+
+    signal_stems = map_to_dict(sources, sources_list)
     return signal_stems
 
 
@@ -247,6 +266,47 @@ def process_stems_for_listener(
     return processed_stems
 
 
+def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
+    """Clip and save the processed stems.
+
+    Args:
+        signal (np.ndarray): Signal to be clipped and saved.
+        soft_clip (bool): Whether to use soft clipping.
+
+    Returns:
+        signal (np.ndarray): Clipped signal.
+        n_clipped (int): Number of samples clipped.
+    """
+
+    if soft_clip:
+        signal = np.tanh(signal)
+    n_clipped = np.sum(np.abs(signal) > 1.0)
+    np.clip(signal, -1.0, 1.0, out=signal)
+    return signal, int(n_clipped)
+
+
+def to_16bit(signal: np.ndarray) -> np.ndarray:
+    return (32768.0 * signal).astype(np.int16)
+
+
+def resample(signal: np.ndarray, sample_rate: int, new_sample_rate: int) -> np.ndarray:
+    """Resample the signal to the desired sample rate.
+
+    Args:
+        signal (np.ndarray): Signal to be resampled.
+        sample_rate (int): Sample rate of the signal.
+        new_sample_rate (int): Desired sample rate.
+
+    Returns:
+        signal (np.ndarray): Resampled signal.
+    """
+    if sample_rate == new_sample_rate:
+        return signal
+    return scipy.signal.resample(
+        signal, int(new_sample_rate * signal.shape[0] / sample_rate)
+    )
+
+
 @hydra.main(config_path="", config_name="config")
 def enhance(config: DictConfig) -> None:
     """
@@ -282,7 +342,10 @@ def enhance(config: DictConfig) -> None:
     #     songs_train['Track Name'], listener_train_audiograms
     # )
 
-    separation_model = HDEMUCS_HIGH_MUSDB.get_model()
+    if config.separator.model == "demucs":
+        separation_model = HDEMUCS_HIGH_MUSDB.get_model()
+    else:
+        separation_model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq", niter=0)
     device, _ = get_device(config.separator.device)
     separation_model.to(device)
 
@@ -338,20 +401,22 @@ def enhance(config: DictConfig) -> None:
             # Decompose song only once
             prev_song_name = song_name
 
-            smaple_rate, mixture_signal = wavfile.read(
+            sample_rate, mixture_signal = wavfile.read(
                 Path(config.path.music_dir)
                 / split_directory
                 / song_name
                 / "mixture.wav"
             )
             mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
-            assert smaple_rate == config.nalr.fs
+            assert sample_rate == config.nalr.fs
 
             stems = decompose_signal(
+                config.separator.model,
                 separation_model,
                 mixture_signal,
-                smaple_rate,
+                sample_rate,
                 device,
+                config.separator.sources,
                 audiogram_left,
                 audiogram_right,
             )
@@ -372,11 +437,11 @@ def enhance(config: DictConfig) -> None:
         # save processed stems
         n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
         out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
-        for stem_str, item in processed_stems.items():
+        for stem_str, stem_signal in processed_stems.items():
             if stem_str.startswith("l"):
-                out_left += item
+                out_left += stem_signal
             else:
-                out_right += item
+                out_right += stem_signal
 
             filename = (
                 enhanced_folder
@@ -385,7 +450,17 @@ def enhance(config: DictConfig) -> None:
                 / f"{listener_info['name']}_{song_name}_{stem_str}.wav"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
-            wavfile.write(filename, config.nalr.fs, item)
+
+            # Resample signal
+            stem_signal = resample(
+                stem_signal, config.sample_rate, config.stem_sample_rate
+            )
+
+            # Clip and save stem signals
+            clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
+            if n_clipped > 0:
+                logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+            wavfile.write(filename, config.stem_sample_rate, to_16bit(clipped_signal))
 
         enhanced = np.stack([out_left, out_right], axis=1)
         filename = (
@@ -395,15 +470,11 @@ def enhance(config: DictConfig) -> None:
             / f"{listener_info['name']}_{song_name}_remix.wav"
         )
 
-        # Clip and save
-        if config.soft_clip:
-            enhanced = np.tanh(enhanced)
-        n_clipped = np.sum(np.abs(enhanced) > 1.0)
+        # clip and save enhanced signal
+        clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
         if n_clipped > 0:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-        np.clip(enhanced, -1.0, 1.0, out=enhanced)
-        signal_16 = (32768.0 * enhanced).astype(np.int16)
-        wavfile.write(filename, config.nalr.fs, signal_16)
+        wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
 
 
 # pylint: disable = no-value-for-parameter
