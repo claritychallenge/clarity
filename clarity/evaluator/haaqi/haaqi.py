@@ -8,7 +8,6 @@ import numpy as np
 
 from clarity.evaluator.haspi import eb
 from clarity.utils.audiogram import Audiogram
-from clarity.utils.signal_processing import compute_rms
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -183,7 +182,6 @@ def compute_haaqi(
     sample_rate: float,
     equalisation: int = 1,
     level1: float = 65.0,
-    scale_reference: bool = True,
 ) -> float:
     """Compute HAAQI metric
 
@@ -193,15 +191,15 @@ def compute_haaqi(
         reference_signal (np.ndarray): Input reference speech signal with no noise
             or distortion. If a hearing loss is specified, NAL-R equalization
             is optional
-        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
-        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        audiogram (Audiogram): Audiogram object.
         sample_rate (int): Sample rate in Hz.
         equalisation (int): hearing loss equalization mode for reference signal:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
             Defaults to 1.
-        level1 (float): Reference level in dB SPL. Defaults to 65.0.
-        scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
+        level1 (float): Optional input specifying level in dB SPL
+            that corresponds to a signal RMS = 1.
+            Default is 65 dB SPL.
     """
 
     if len(reference_signal) == 0:
@@ -210,9 +208,6 @@ def compute_haaqi(
             return 1.0
         logger.error("If `Reference` is empty, `Processed` must be empty as well")
         return 0.0
-
-    if scale_reference:
-        reference_signal /= compute_rms(reference_signal)
 
     score, _, _, _ = haaqi_v1(
         reference=reference_signal,
