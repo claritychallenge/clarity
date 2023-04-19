@@ -1,4 +1,5 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
+# pylint: disable=import-error
 from __future__ import annotations
 
 import csv
@@ -196,7 +197,7 @@ def _evaluate_song_listener(
             np.array(listener_audiograms["audiogram_levels_l"]),
             np.array(listener_audiograms["audiogram_cfs"]),
             config.nalr.fs,
-            65 - 10 * np.log10(compute_rms(left_reference_signal)),
+            65 - 20 * np.log10(compute_rms(left_reference_signal)),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             right_enhanced_signal,
@@ -204,7 +205,7 @@ def _evaluate_song_listener(
             np.array(listener_audiograms["audiogram_levels_r"]),
             np.array(listener_audiograms["audiogram_cfs"]),
             config.nalr.fs,
-            65 - 10 * np.log10(compute_rms(right_reference_signal)),
+            65 - 20 * np.log10(compute_rms(right_reference_signal)),
         )
 
     # Compute the combined score
