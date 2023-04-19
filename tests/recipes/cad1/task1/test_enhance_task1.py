@@ -84,8 +84,14 @@ def test_decompose_signal(separation_model):
         signal,
         sample_rate,
         device,
-        left_audiogram=np.ones(9),
-        right_audiogram=np.ones(9),
+        left_audiogram=Audiogram(
+            levels=np.ones(9),
+            frequencies=np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000]),
+        ),
+        right_audiogram=Audiogram(
+            levels=np.ones(9),
+            frequencies=np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000]),
+        ),
     )
     expected_results = np.load(
         RESOURCES / f"test_enhance.test_decompose_signal_{separation_model}.npy",
