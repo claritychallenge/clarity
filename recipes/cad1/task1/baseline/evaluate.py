@@ -17,8 +17,9 @@ import pandas as pd
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
+from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Audiogram
-from recipes.cad1.task1.baseline.haaqi_rms import compute_haaqi_rms
+from clarity.utils.signal_processing import compute_rms
 
 logger = logging.getLogger(__name__)
 
@@ -199,20 +200,19 @@ def _evaluate_song_listener(
             frequencies=frequencies,
         )
 
-        #  audiogram, audiogram_frequencies, fs_signal
-        per_instrument_score[f"left_{instrument}"] = compute_haaqi_rms(
+        per_instrument_score[f"left_{instrument}"] = compute_haaqi(
             left_enhanced_signal,
             reference_signal[:, 0],
             audiogram_left,
             config.sample_rate,
-            silence_length=2.0,
+            65 - 10 * np.log10(compute_rms(reference_signal[:, 0])),
         )
-        per_instrument_score[f"right_{instrument}"] = compute_haaqi_rms(
+        per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             right_enhanced_signal,
             reference_signal[:, 1],
             audiogram_right,
             config.sample_rate,
-            silence_length=2.0,
+            65 - 10 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
     # Compute the combined score
