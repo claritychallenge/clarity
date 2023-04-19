@@ -205,14 +205,14 @@ def _evaluate_song_listener(
             reference_signal[:, 0],
             audiogram_left,
             config.sample_rate,
-            65 - 10 * np.log10(compute_rms(reference_signal[:, 0])),
+            65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             right_enhanced_signal,
             reference_signal[:, 1],
             audiogram_right,
             config.sample_rate,
-            65 - 10 * np.log10(compute_rms(reference_signal[:, 1])),
+            65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
     # Compute the combined score
