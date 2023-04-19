@@ -1,8 +1,13 @@
 """Test for utils.signal_processing module"""
+# pylint: disable=import-error
 import numpy as np
 import pytest
 
-from clarity.utils.signal_processing import denormalize_signals, normalize_signal
+from clarity.utils.signal_processing import (
+    compute_rms,
+    denormalize_signals,
+    normalize_signal,
+)
 
 
 @pytest.mark.parametrize(
@@ -120,3 +125,14 @@ def test_denormalize_signals(
     assert len(result) == len(expected_result)
     np.testing.assert_array_almost_equal(result[0], expected_result[0])
     np.testing.assert_array_almost_equal(result[1], expected_result[1])
+
+
+def test_compute_rms():
+    """Test the function compute_rms"""
+    np.random.seed(0)
+    sig_len = 600
+    signal = 100 * np.random.random(size=sig_len)
+    rms = compute_rms(signal)
+    assert rms == pytest.approx(
+        57.803515840, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
