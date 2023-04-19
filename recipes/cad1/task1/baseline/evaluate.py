@@ -1,6 +1,7 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import csv
 import hashlib
 import itertools
@@ -16,9 +17,9 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.signal_processing import compute_rms
 
 # pylint: disable=too-many-locals
-# pylint: disable=import-error
 
 
 logger = logging.getLogger(__name__)
@@ -195,6 +196,7 @@ def _evaluate_song_listener(
             np.array(listener_audiograms["audiogram_levels_l"]),
             np.array(listener_audiograms["audiogram_cfs"]),
             config.nalr.fs,
+            65 - 10 * np.log10(compute_rms(left_reference_signal)),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             right_enhanced_signal,
@@ -202,6 +204,7 @@ def _evaluate_song_listener(
             np.array(listener_audiograms["audiogram_levels_r"]),
             np.array(listener_audiograms["audiogram_cfs"]),
             config.nalr.fs,
+            65 - 10 * np.log10(compute_rms(right_reference_signal)),
         )
 
     # Compute the combined score
