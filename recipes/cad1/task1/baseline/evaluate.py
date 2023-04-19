@@ -1,7 +1,6 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
-# pylint: disable=import-error
 import csv
 import hashlib
 import itertools
@@ -20,6 +19,7 @@ from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.signal_processing import compute_rms
 
 # pylint: disable=too-many-locals
+# pylint: disable=import-error
 
 
 logger = logging.getLogger(__name__)
