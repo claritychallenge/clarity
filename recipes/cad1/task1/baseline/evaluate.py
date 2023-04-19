@@ -1,5 +1,4 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
-# pylint: disable=import-error
 from __future__ import annotations
 
 import csv
