@@ -13,7 +13,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_jsonl, write_jsonl
 
 logger = logging.getLogger(__name__)
@@ -45,12 +45,13 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
         float: HASPI score
     """
 
-    scene, listener, _ = parse_cec2_signal_name(signal_name)
+    scene, listener_id, _ = parse_cec2_signal_name(signal_name)
 
-    # Retrieve audiograms
-    with open(Path(path["metadata_dir"]) / "listeners.json", encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
-        audiogram = listener_audiograms[listener]
+    # Retrieve the listeners
+    listener_dict = Listener.read_listener_dict(
+        Path(path["metadata_dir"]) / "listeners.json"
+    )
+    listener = listener_dict[listener_id]
 
     # Retrieve signals and convert to float32 between -1 and 1
     sr_proc, proc = wavfile.read(Path(path["signal_dir"]) / f"{signal_name}.wav")
@@ -60,12 +61,6 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
     proc = proc / 32768.0
     ref = ref / 32768.0
 
-    audiogram_left = Audiogram(
-        levels=audiogram["audiogram_levels_l"], frequencies=audiogram["audiogram_cfs"]
-    )
-    audiogram_right = Audiogram(
-        levels=audiogram["audiogram_levels_r"], frequencies=audiogram["audiogram_cfs"]
-    )
     # Compute haspi score using library code
     haspi_score = haspi_v2_be(
         reference_left=ref[:, 0],
@@ -73,8 +68,7 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
         processed_left=proc[:, 0],
         processed_right=proc[:, 1],
         sample_rate=sr_proc,
-        audiogram_left=audiogram_left,
-        audiogram_right=audiogram_right,
+        listener=listener,
     )
 
     return haspi_score
