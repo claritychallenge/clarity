@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
-from dataclasses_json import dataclass_json
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -46,7 +45,6 @@ FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
 )
 
 
-@dataclass_json
 @dataclass
 class Audiogram:
     """Dataclass to represent an audiogram.
