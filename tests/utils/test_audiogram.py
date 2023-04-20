@@ -154,7 +154,7 @@ def test_listener_read_listener_dict():
     # match the file contents
     assert len(listeners_dict) == 83
     listener = listeners_dict["L0100"]
-    assert list(listener.__dict__.keys()) == ["id", "audiogram_left", "audiogram_right"]
+    assert list(listener.__dict__.keys()) == ["audiogram_left", "audiogram_right", "id"]
     assert listener.id == "L0100"
     assert listener.audiogram_left.frequencies == [
         250,

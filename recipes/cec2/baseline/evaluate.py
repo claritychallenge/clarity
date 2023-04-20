@@ -3,6 +3,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
+from typing import Dict
 
 import hydra
 import numpy as np
@@ -11,12 +12,12 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haspi import haspi_v2_be
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Listener
 
 logger = logging.getLogger(__name__)
 
 
-def read_csv_scores(file: Path):
+def read_csv_scores(file: Path) -> Dict[str, float]:
     score_dict = {}
     with file.open("r", encoding="utf-8") as fp:
         reader = csv.reader(fp)
@@ -30,8 +31,9 @@ def read_csv_scores(file: Path):
 def run_calculate_SI(cfg: DictConfig) -> None:
     with Path(cfg.path.scenes_listeners_file).open("r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    with Path(cfg.path.listeners_file).open("r", encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
+    # with Path(cfg.path.listeners_file).open("r", encoding="utf-8") as fp:
+    #    listener_audiograms = json.load(fp)
+    listener_dict = Listener.read_listener_dict(cfg.path.listeners_file)
     Path(cfg.path.exp_folder).mkdir(parents=True, exist_ok=True)
 
     enhanced_folder = Path(cfg.path.exp_folder) / "enhanced_signals"
@@ -57,32 +59,19 @@ def run_calculate_SI(cfg: DictConfig) -> None:
         return
 
     for scene in tqdm(scenes_listeners):
-        for listener in scenes_listeners[scene]:
-            logger.info(f"Running SI calculation: scene {scene}, listener {listener}")
+        for listener_id in scenes_listeners[scene]:
+            logger.info(
+                f"Running SI calculation: scene {scene}, listener {listener_id}"
+            )
             if cfg.evaluate.set_random_seed:
                 scene_md5 = int(hashlib.md5(scene.encode("utf-8")).hexdigest(), 16) % (
                     10**8
                 )
                 np.random.seed(scene_md5)
-
-            # retrieve audiograms
-            audiogram_frequencies = np.array(
-                listener_audiograms[listener]["audiogram_cfs"]
-            )
-
-            audiogram_left = Audiogram(
-                levels=listener_audiograms[listener]["audiogram_levels_l"],
-                frequencies=audiogram_frequencies,
-            )
-
-            audiogram_right = Audiogram(
-                levels=listener_audiograms[listener]["audiogram_levels_r"],
-                frequencies=audiogram_frequencies,
-            )
-
+            listener = listener_dict[listener_id]
             # retrieve signals
             fs_proc, proc = wavfile.read(
-                enhanced_folder / f"{scene}_{listener}_HA-output.wav"
+                enhanced_folder / f"{scene}_{listener_id}_HA-output.wav"
             )
 
             fs_ref_anechoic, ref_anechoic = wavfile.read(
@@ -109,11 +98,10 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                 processed_left=proc[:, 0],
                 processed_right=proc[:, 1],
                 sample_rate=fs_ref_anechoic,
-                audiogram_left=audiogram_left,
-                audiogram_right=audiogram_right,
+                listener=listener,
             )
             logger.info(f"The HASPI score is {si}")
-            csv_lines.append([scene, listener, str(si)])
+            csv_lines.append([scene, listener_id, str(si)])
 
             if cfg.evaluate.cal_unprocessed_si:
                 if cfg.evaluate.set_random_seed:
@@ -132,11 +120,10 @@ def run_calculate_SI(cfg: DictConfig) -> None:
                     processed_left=unproc[:, 0],
                     processed_right=unproc[:, 1],
                     sample_rate=fs_ref_anechoic,
-                    audiogram_left=audiogram_left,
-                    audiogram_right=audiogram_right,
+                    listener=listener,
                 )
                 logger.info(f"The unprocessed signal HASPI score is {si_unproc}")
-                unproc_csv_lines.append([scene, listener, str(si_unproc)])
+                unproc_csv_lines.append([scene, listener_id, str(si_unproc)])
 
     with si_file.open("w", encoding="utf-8") as csv_f:
         csv_writer = csv.writer(

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import hydra
 import numpy as np
+from numpy import ndarray
 from omegaconf import DictConfig
 from scipy.signal import unit_impulse
 from tqdm import tqdm
@@ -17,7 +18,7 @@ from clarity.utils.audiogram import Audiogram
 from clarity.utils.file_io import read_signal, write_signal
 
 
-def listen(ear, signal, audiogram_l, audiogram_r):
+def listen(ear, signal: ndarray, audiogram_l: Audiogram, audiogram_r: Audiogram):
     """
     Generate MSBG processed signal
     :param ear: MSBG ear

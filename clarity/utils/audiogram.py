@@ -194,9 +194,9 @@ class Listener:
         audiogram_right (Audiogram): The audiogram for the right ear
     """
 
-    id: str
     audiogram_left: Audiogram
     audiogram_right: Audiogram
+    id: str | None = None
 
     @staticmethod
     def from_dict(listener_dict: dict) -> Listener:
