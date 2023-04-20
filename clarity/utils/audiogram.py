@@ -1,10 +1,13 @@
 """Dataclass to represent a monaural audiogram"""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
+from dataclasses_json import dataclass_json
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -43,6 +46,7 @@ FULL_STANDARD_AUDIOGRAM_FREQUENCIES: Final = np.array(
 )
 
 
+@dataclass_json
 @dataclass
 class Audiogram:
     """Dataclass to represent an audiogram.
@@ -173,3 +177,73 @@ AUDIOGRAM_MODERATE_SEVERE: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([19, 19, 28, 35, 40, 47, 52, 56, 58, 58, 63, 70, 75, 80, 80]),
 )
+
+
+@dataclass
+class Listener:
+    """Dataclass to represent a Listener.
+
+    The listener is currently defined by their left and right ear
+    audiogram. In later versions, this may be extended to include
+    further audiometric data.
+
+    The class provides methods for reading metadata files which
+    will also include some basic validation.
+
+    Attributes:
+        id (str): The ID of the listener
+        audiogram_left (Audiogram): The audiogram for the left ear
+        audiogram_right (Audiogram): The audiogram for the right ear
+    """
+
+    id: str
+    audiogram_left: Audiogram
+    audiogram_right: Audiogram
+
+    @staticmethod
+    def from_dict(listener_dict: dict) -> Listener:
+        """Create a Listener from a dict.
+
+        The dict structure and fields are based on those used
+        in the Clarity metadata files.
+
+        Args:
+            listener_dict (dict): The listener dict
+
+        Returns:
+            Listener: The listener
+
+        """
+        return Listener(
+            id=listener_dict["name"],
+            audiogram_left=Audiogram(
+                levels=listener_dict["audiogram_levels_l"],
+                frequencies=listener_dict["audiogram_cfs"],
+            ),
+            audiogram_right=Audiogram(
+                levels=listener_dict["audiogram_levels_r"],
+                frequencies=listener_dict["audiogram_cfs"],
+            ),
+        )
+
+    @staticmethod
+    def read_listener_dict(filename: Path) -> dict[str, Listener]:
+        """Read a Clarity Listener dict file.
+
+        The standard Clarity metadata files presents listeners as a
+        dictionary of listeners, keyed by listener ID.
+
+        Args:
+            filename (Path): The path to the listener dict file
+
+        Returns:
+            dict[str, Listener]: A dict of listeners keyed by id
+
+        """
+        with open(filename, encoding="utf-8") as fp:
+            listeners_raw = json.load(fp)
+
+        listeners = {}
+        for listener_id, listener_dict in listeners_raw.items():
+            listeners[listener_id] = Listener.from_dict(listener_dict)
+        return listeners

@@ -1,5 +1,7 @@
 """Tests for audiogram module"""
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -9,6 +11,7 @@ from clarity.utils.audiogram import (
     AUDIOGRAM_MODERATE_SEVERE,
     AUDIOGRAM_REF,
     Audiogram,
+    Listener,
 )
 
 
@@ -139,3 +142,28 @@ def test_resample(requested_frequencies, expected_levels):
     assert subset_audiogram.levels == pytest.approx(
         expected_levels, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
+
+
+def test_listener_read_listener_dict():
+    """Test reading listener dictionary"""
+    listener_dict_path = Path("tests/test_data/metadata/listeners.json")
+    listeners_dict = Listener.read_listener_dict(listener_dict_path)
+
+    # Check the dataclass and underlying audiogram dataclass have
+    # been constructed correctly and that a sample of values
+    # match the file contents
+    assert len(listeners_dict) == 83
+    listener = listeners_dict["L0100"]
+    assert list(listener.__dict__.keys()) == ["id", "audiogram_left", "audiogram_right"]
+    assert listener.id == "L0100"
+    assert listener.audiogram_left.frequencies == [
+        250,
+        500,
+        1000,
+        2000,
+        3000,
+        4000,
+        6000,
+        8000,
+    ]
+    assert listener.audiogram_right.levels == [20, 40, 55, 40, 20, 15, 5, -5]
