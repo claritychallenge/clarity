@@ -1,6 +1,7 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import csv
 import hashlib
 import itertools
@@ -195,22 +196,22 @@ def _evaluate_song_listener(
 
         #  audiogram, audiogram_frequencies, fs_signal
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
-            left_enhanced_signal,
-            left_reference_signal,
-            config.sample_rate,
-            sample_rate_left_enhanced_signal,
-            np.array(listener_audiograms["audiogram_levels_l"]),
-            np.array(listener_audiograms["audiogram_cfs"]),
-            65 - 20 * np.log10(compute_rms(left_reference_signal)),
+            processed_signal=left_enhanced_signal,
+            reference_signal=left_reference_signal,
+            sample_rate_processed=sample_rate_left_enhanced_signal,
+            sample_rate_reference=config.sample_rate,
+            audiogram=np.array(listener_audiograms["audiogram_levels_l"]),
+            audiogram_frequencies=np.array(listener_audiograms["audiogram_cfs"]),
+            level1=65 - 20 * np.log10(compute_rms(left_reference_signal)),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
-            right_enhanced_signal,
-            right_reference_signal,
-            config.sample_rate,
-            sample_rate_right_enhanced_signal,
-            np.array(listener_audiograms["audiogram_levels_r"]),
-            np.array(listener_audiograms["audiogram_cfs"]),
-            65 - 20 * np.log10(compute_rms(right_reference_signal)),
+            processed_signal=right_enhanced_signal,
+            reference_signal=right_reference_signal,
+            sample_rate_processed=sample_rate_right_enhanced_signal,
+            sample_rate_reference=config.sample_rate,
+            audiogram=np.array(listener_audiograms["audiogram_levels_r"]),
+            audiogram_frequencies=np.array(listener_audiograms["audiogram_cfs"]),
+            level1=65 - 20 * np.log10(compute_rms(right_reference_signal)),
         )
 
     # Compute the combined score

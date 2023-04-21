@@ -156,8 +156,8 @@ def haaqi_v1(
 def compute_haaqi(
     processed_signal: np.ndarray,
     reference_signal: np.ndarray,
-    sample_rate_reference: int,
     sample_rate_processed: int,
+    sample_rate_reference: int,
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
     level1: int = 65,
@@ -167,8 +167,8 @@ def compute_haaqi(
     Args:
         processed_signal (np.ndarray): Processed signal
         reference_signal (np.ndarray): Reference signal
-        sample_rate_reference (int): Sample rate of reference signal
         sample_rate_processed (int): Sample rate of processed signal
+        sample_rate_reference (int): Sample rate of reference signal
         audiogram (np.ndarray): Audiogram levels
         audiogram_frequencies (np.ndarray): Audiogram frequencies
         level1 (int, optional): Optional input specifying level in dB SPL
