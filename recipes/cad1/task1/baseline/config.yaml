@@ -27,7 +27,6 @@ soft_clip: True
 
 separator:
   model: demucs   # demucs or openunmix
-  sources: [ drums, bass, other, vocals ]
   device: ~
 
 evaluate:
