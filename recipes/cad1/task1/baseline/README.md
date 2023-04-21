@@ -178,7 +178,7 @@ As there are random noises generated within HAAQI, but the differences should be
 
 The overall HAAQI score for the baselines are:
 
-* Demucs: **0.2592** 
+* Demucs: **0.2592**
 * Open-Unmix: **0.2592**
 
 ## References
