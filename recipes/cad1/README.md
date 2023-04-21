@@ -21,24 +21,26 @@ The performance of each system on the validation set is reported below.
 
 ### Task 1 - Listening music via headphones
 
-**The overall HAAQI score is 0.3608.**
+The overall HAAQI score is **0.2592**.
 
 #### Average HAAQI score per song
 
-| Song                                            |   HAAQI    |
-|:------------------------------------------------|:----------:|
-| Actions - One Minute Smile                      |   0.3066   |
-| Alexander Ross - Goodbye Bolero                 |   0.4257   |
-| ANiMAL - Rockshow                               |   0.2389   |
-| Clara Berry And Wooldog - Waltz For My Victims  |   0.4202   |
-| Fergessen - Nos Palpitants                      |   0.4554   |
-| James May - On The Line                         |   0.3889   |
-| Johnny Lokke - Promises & Lies                  |   0.3395   |
-| Leaf - Summerghost                              |   0.3595   |
-| Meaxic - Take A Step                            |   0.3470   |
-| Patrick Talbot - A Reason To Leave              |   0.4545   |
-| Skelpolu - Human Mistakes                       |   0.3055   |
-| Triviul - Angelsaint                            |   0.2883   |
+| Song                                           | HAAQI  |
+|:-----------------------------------------------|:------:|
+| Actions - One Minute Smile                     | 0.2485 |
+| Alexander Ross - Goodbye Bolero                | 0.3084 |
+| ANiMAL - Rockshow                              | 0.1843 |
+| Clara Berry And Wooldog - Waltz For My Victims | 0.3094 |
+| Fergessen - Nos Palpitants                     | 0.3542 |
+| James May - On The Line                        | 0.2778 |
+| Johnny Lokke - Promises & Lies                 | 0.2544 |
+| Leaf - Summerghost                             | 0.2513 |
+| Meaxic - Take A Step                           | 0.2455 |
+| Patrick Talbot - A Reason To Leave             | 0.2673 |
+| Skelpolu - Human Mistakes                      | 0.2123 |
+| Traffic Experiment - Sirens                    | 0.2558 |
+| Triviul - Angelsaint                           | 0.2101 |
+| Young Griffo - Pennies                         | 0.2499 |
 
 ### Task 2 - Listening music in a car with presence of noise
 
