@@ -156,9 +156,10 @@ def haaqi_v1(
 def compute_haaqi(
     processed_signal: np.ndarray,
     reference_signal: np.ndarray,
+    sample_rate_reference: int,
+    sample_rate_processed: int,
     audiogram: np.ndarray,
     audiogram_frequencies: np.ndarray,
-    sample_rate: int,
     level1: int = 65,
 ) -> float:
     """Compute HAAQI metric
@@ -166,9 +167,10 @@ def compute_haaqi(
     Args:
         processed_signal (np.ndarray): Processed signal
         reference_signal (np.ndarray): Reference signal
+        sample_rate_reference (int): Sample rate of reference signal
+        sample_rate_processed (int): Sample rate of processed signal
         audiogram (np.ndarray): Audiogram levels
         audiogram_frequencies (np.ndarray): Audiogram frequencies
-        sample_rate (int): Sample rate
         level1 (int, optional): Optional input specifying level in dB SPL
             that corresponds to a signal RMS = 1.
             Default is 65 dB SPL.
@@ -184,9 +186,9 @@ def compute_haaqi(
     )
     score, _, _, _ = haaqi_v1(
         reference=reference_signal,
-        reference_freq=sample_rate,
+        reference_freq=sample_rate_reference,
         processed=processed_signal,
-        processed_freq=sample_rate,
+        processed_freq=sample_rate_processed,
         hearing_loss=audiogram_adjusted,
         equalisation=1,
         level1=level1,
