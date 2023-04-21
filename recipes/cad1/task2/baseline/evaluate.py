@@ -195,18 +195,20 @@ def evaluate_scene(
 
     # Compute HAAQI scores
     aq_score_l = compute_haaqi(
-        processed_signal[0, :],
-        ref_signal[0, :],
-        np.array(listener_audiogram["audiogram_levels_l"]),
-        np.array(listener_audiogram["audiogram_cfs"]),
-        sample_rate,
+        processed_signal=processed_signal[0, :],
+        reference_signal=ref_signal[0, :],
+        sample_rate_processed=sample_rate,
+        sample_rate_reference=sample_rate,
+        audiogram=np.array(listener_audiogram["audiogram_levels_l"]),
+        audiogram_frequencies=np.array(listener_audiogram["audiogram_cfs"]),
     )
     aq_score_r = compute_haaqi(
-        processed_signal[1, :],
-        ref_signal[1, :],
-        np.array(listener_audiogram["audiogram_levels_r"]),
-        np.array(listener_audiogram["audiogram_cfs"]),
-        sample_rate,
+        processed_signal=processed_signal[1, :],
+        reference_signal=ref_signal[1, :],
+        sample_rate_processed=sample_rate,
+        sample_rate_reference=sample_rate,
+        audiogram=np.array(listener_audiogram["audiogram_levels_r"]),
+        audiogram_frequencies=np.array(listener_audiogram["audiogram_cfs"]),
     )
     return aq_score_l, aq_score_r
 
