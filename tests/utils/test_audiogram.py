@@ -156,14 +156,21 @@ def test_listener_read_listener_dict():
     listener = listeners_dict["L0100"]
     assert list(listener.__dict__.keys()) == ["audiogram_left", "audiogram_right", "id"]
     assert listener.id == "L0100"
-    assert listener.audiogram_left.frequencies == [
-        250,
-        500,
-        1000,
-        2000,
-        3000,
-        4000,
-        6000,
-        8000,
-    ]
-    assert listener.audiogram_right.levels == [20, 40, 55, 40, 20, 15, 5, -5]
+    assert np.all(
+        listener.audiogram_left.frequencies
+        == np.array(
+            [
+                250,
+                500,
+                1000,
+                2000,
+                3000,
+                4000,
+                6000,
+                8000,
+            ]
+        )
+    )
+    assert np.all(
+        listener.audiogram_right.levels == np.array([20, 40, 55, 40, 20, 15, 5, -5])
+    )

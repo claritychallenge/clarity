@@ -62,6 +62,11 @@ class Audiogram:
 
     def __post_init__(self) -> None:
         """Check that dimensions of levels and frequencies match."""
+
+        # Ensure that levels and frequencies are numpy arrays
+        self.levels = np.array(self.levels)
+        self.frequencies = np.array(self.frequencies)
+
         if len(self.levels) != len(self.frequencies):
             raise ValueError(
                 f"Levels ({len(self.levels)}) and frequencies ({len(self.frequencies)})"
