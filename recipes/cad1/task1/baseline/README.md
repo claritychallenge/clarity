@@ -176,7 +176,10 @@ Please note: you will not get identical HAAQI scores for the same signals if the
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
 
-The score for the baseline is **0.2592** HAAQI overall.
+The overall HAAQI score for the baselines are:
+
+* Demucs: **0.2592** 
+* Open-Unmix: **0.2592**
 
 ## References
 
