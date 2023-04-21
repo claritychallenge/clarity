@@ -198,17 +198,19 @@ def _evaluate_song_listener(
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
             left_enhanced_signal,
             left_reference_signal,
+            config.sample_rate,
+            sample_rate_left_enhanced_signal,
             np.array(listener_audiograms["audiogram_levels_l"]),
             np.array(listener_audiograms["audiogram_cfs"]),
-            config.nalr.fs,
             65 - 20 * np.log10(compute_rms(left_reference_signal)),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             right_enhanced_signal,
             right_reference_signal,
+            config.sample_rate,
+            sample_rate_right_enhanced_signal,
             np.array(listener_audiograms["audiogram_levels_r"]),
             np.array(listener_audiograms["audiogram_cfs"]),
-            config.nalr.fs,
             65 - 20 * np.log10(compute_rms(right_reference_signal)),
         )
 
