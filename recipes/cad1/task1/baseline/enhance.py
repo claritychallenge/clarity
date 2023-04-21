@@ -1,6 +1,7 @@
 """ Run the dummy enhancement. """
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
@@ -143,7 +144,6 @@ def map_to_dict(sources: np.ndarray, sources_list: list[str]) -> dict:
 
 # pylint: disable=unused-argument
 def decompose_signal(
-    model_name: str,
     model: torch.nn.Module,
     signal: np.ndarray,
     sample_rate: int,
@@ -173,25 +173,11 @@ def decompose_signal(
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
     """
-
-    if model_name == "demucs":
-        signal, ref = normalize_signal(signal)
-
-    model_sample_rate = model.sample_rate if model_name == "openunmix" else 44100
-
-    # Resample signal to model sample rate
-    if sample_rate != model_sample_rate:
-        resampler = Resample(sample_rate, model_sample_rate)
-        signal = resampler(signal)
-
     sources = separate_sources(
         model, torch.from_numpy(signal), sample_rate, device=device
     )
     # only one element in the batch
     sources = sources[0]
-    if model_name == "demucs":
-        sources = denormalize_signals(sources, ref)
-
     signal_stems = map_to_dict(sources, sources_list)
     return signal_stems
 
@@ -320,6 +306,9 @@ def enhance(config: DictConfig) -> None:
         - right channel vocal, drums, bass, and other stems
     """
 
+    if config.separator.model not in ["demucs", "openunmix"]:
+        raise ValueError(f"Separator model {config.separator.model} not supported.")
+
     enhanced_folder = Path("enhanced_signals")
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
@@ -409,16 +398,45 @@ def enhance(config: DictConfig) -> None:
             mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
             assert sample_rate == config.nalr.fs
 
+            # Sample rate for the separation model
+            model_sample_rate = (
+                separation_model.sample_rate
+                if config.separator.model == "openunmix"
+                else 44100
+            )
+
+            # Resample mixture signal to model sample rate
+            if sample_rate != model_sample_rate:
+                resampler = Resample(sample_rate, model_sample_rate)
+                mixture_signal = resampler(mixture_signal)
+
+            # The sources outputs order for mapping the output of the model
+            if config.separator.model == "demucs":
+                sources_order = separation_model.sources
+            if config.separator.model == "openunmix":
+                sources_order = ["vocals", "drums", "bass", "other"]
+
+            # Normalise signal if using the demucs model
+            if config.separator.model == "demucs":
+                mixture_signal, ref_for_normalisation = normalize_signal(mixture_signal)
+
+            # Decompose mixture signal into stems
             stems = decompose_signal(
-                config.separator.model,
                 separation_model,
                 mixture_signal,
                 sample_rate,
                 device,
-                config.separator.sources,
+                sources_order,
                 audiogram_left,
                 audiogram_right,
             )
+
+            # Denormalize stems if using the demucs model
+            if config.separator.model == "demucs":
+                for stem_name, stem_signal in stems.items():
+                    stems[stem_name] = denormalize_signals(
+                        stem_signal, ref_for_normalisation
+                    )
 
         # Baseline applies NALR prescription to each stem instead of using the
         # listener's audiograms in the decomposition. This stem can be skipped
