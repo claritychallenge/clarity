@@ -56,6 +56,7 @@ def test_decompose_signal():
     duration = 1
     signal = np.random.uniform(size=(1, 2, sample_rate * duration))
 
+    # Normalise using demucs procedure
     signal, ref = normalize_signal(signal)
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(
