@@ -1,6 +1,7 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import csv
 import hashlib
 import itertools
@@ -182,12 +183,16 @@ def _evaluate_song_listener(
             / f"{listener}_{song}_right_{instrument}.wav"
         )
 
-        assert (
-            sample_rate_reference_signal
-            == sample_rate_left_enhanced_signal
-            == sample_rate_right_enhanced_signal
-            == config.nalr.fs
-        )
+        if sample_rate_left_enhanced_signal != sample_rate_right_enhanced_signal:
+            raise ValueError(
+                "The sample rates of the left and right enhanced signals are not "
+                "the same"
+            )
+
+        if sample_rate_reference_signal != config.sample_rate:
+            raise ValueError(
+                f"The sample rate of the reference signal is not {config.sample_rate}"
+            )
 
         #  audiogram, audiogram_frequencies, fs_signal
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
