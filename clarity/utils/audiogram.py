@@ -160,6 +160,12 @@ AUDIOGRAM_REF: Final = Audiogram(
     levels=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
 )
 
+# No loss
+AUDIOGRAM_REF_CLARITY: Final = Audiogram(
+    frequencies=DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES,
+    levels=np.array([0, 0, 0, 0, 0, 0, 0, 0]),
+)
+
 # Mild age-related hearing loss, slightly reduced from CF, first-time aid
 # wearers group (used in Stafa talk by MAS).
 AUDIOGRAM_MILD: Final = Audiogram(
