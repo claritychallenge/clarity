@@ -1,9 +1,9 @@
 import numpy as np
 
 from clarity.evaluator.ha_metric.ear_model import EarModel, GammatoneFilter
-
 from clarity.evaluator.haspi.eb import (
     bandwidth_adjust,
+    basilar_membrane_add_noise,
     center_frequency,
     convert_rms_to_sl,
     env_compress_basilar_membrane,
@@ -11,13 +11,12 @@ from clarity.evaluator.haspi.eb import (
     envelope_sl,
     gammatone_bandwidth_demodulation,
     gammatone_basilar_membrane,
+    group_delay_compensate,
     inner_hair_cell_adaptation,
     input_align,
     loss_parameters,
     middle_ear,
     resample_24khz,
-    basilar_membrane_add_noise,
-    group_delay_compensate,
 )
 
 
