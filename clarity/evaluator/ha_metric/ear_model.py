@@ -1,373 +1,303 @@
-"""A torch implementation of the HAAQI, HASQI and HASPI ear model."""
+"""Ear model for hearing aid HASPI, HASQI, HAAQI metrics."""
 from __future__ import annotations
 
-import json
-import torch
+import logging
+from typing import TYPE_CHECKING
 
-from torchaudio.functional import lfilter
-from torchaudio.transforms import Resample
+import numpy as np
+from scipy.signal import lfilter, group_delay, resample_poly
 
-from clarity.evaluator.ha_metric.interp1d import interp1d
-from clarity.evaluator.ha_metric.utils import full_correlation
+if TYPE_CHECKING:
+    from numpy import ndarray
+
+logger = logging.getLogger(__name__)
 
 
-class EarModel(torch.nn.Module):
-    """
-    Class that implements a cochlear model that includes the middle ear,
+class EarModel:
+    """Ear model for hearing aid metrics.
+
+    Class implements a cochlear model that includes the middle ear,
     auditory filter bank, Outer Hair Cell (OHC) dynamic-range compression,
     and Inner Hair Cell (IHC) attenuation.
 
-    The inputs are the reference and processed signals that are to be
-    compared. The reference is at the reference intensity (e.g. 65 dB SPL
-    or with NAL-R amplification) and has no other processing. The processed
-    signal is the hearing-aid output, and is assumed to have the same or
-    greater group delay compared to the reference.
-
-    The function outputs the envelopes of the signals after OHC compression
-    and IHC loss attenuation.
-
     """
+
+    # Basilar Membrane filter coefficients
+    COMPRESS_BASILAR_MEMBRANE_COEFS = {
+        "24000": {
+            "b": [0.09510798340249643, 0.09510798340249643],
+            "a": [1.0, -0.8097840331950071],
+        }
+    }
+    # Middle ear filter coefficients
+    MIDDLE_EAR_COEF = {
+        "24000": {
+            "butterworth_low_pass": [0.4341737512063021, 0.4341737512063021],
+            "low_pass": [1.0, -0.13165249758739583],
+            "butterworth_high_pass": [
+                0.9372603902698923,
+                -1.8745207805397845,
+                0.9372603902698923,
+            ],
+            "high_pass": [1.0, -1.8705806407352794, 0.8784609203442912],
+        }
+    }
+    # Resample filter coefficients
+    RESAMPLE_COEFS = {
+        "1000": {
+            "a": [
+                7.304486430753721e-06,
+                -3.652243189942665e-05,
+                6.57403771137576e-05,
+                -3.652243164508467e-05,
+                -3.6522431645084686e-05,
+                6.57403771137576e-05,
+                -3.652243189942664e-05,
+                7.304486430753717e-06,
+            ],
+            "b": [
+                1.0,
+                -6.999701654296145,
+                20.998209970175072,
+                -34.99552503642888,
+                34.9940335298877,
+                -20.995525258398366,
+                6.998210147750661,
+                -0.9997016986900424,
+            ],
+        },
+        "4000": {
+            "a": [
+                1.8263259094457514e-06,
+                -9.13162954325422e-06,
+                1.6436933173088156e-05,
+                -9.131629539279679e-06,
+                -9.131629539279682e-06,
+                1.6436933173088152e-05,
+                -9.131629543254222e-06,
+                1.8263259094457518e-06,
+            ],
+            "b": [
+                1.0,
+                -6.999925413554031,
+                20.999552484099084,
+                -34.99888121718487,
+                34.998508298829314,
+                -20.99888123105902,
+                6.999552495198395,
+                -0.9999254163288592,
+            ],
+        },
+        "8000": {
+            "a": [
+                9.131799818887095e-07,
+                -4.565899908946721e-06,
+                8.218619835507907e-06,
+                -4.5658999084498955e-06,
+                -4.565899908449898e-06,
+                8.218619835507905e-06,
+                -4.565899908946719e-06,
+                9.131799818887092e-07,
+            ],
+            "b": [
+                1.0,
+                -6.999962706775348,
+                20.99977624134581,
+                -34.99944060509882,
+                34.99925414244415,
+                -20.999440608567404,
+                6.999776244120671,
+                -0.999962707469063,
+            ],
+        },
+        "12000": {
+            "a": [
+                6.087904384925872e-07,
+                -3.043952192315727e-06,
+                5.479113945991657e-06,
+                -3.043952192168517e-06,
+                -3.043952192168517e-06,
+                5.479113945991657e-06,
+                -3.043952192315727e-06,
+                6.087904384925871e-07,
+            ],
+            "b": [
+                1.0,
+                -6.999975137849862,
+                20.999850827407492,
+                -34.99962706928954,
+                34.999502760080446,
+                -20.99962707083113,
+                6.99985082864077,
+                -0.9999751381581813,
+            ],
+        },
+        "16000": {
+            "a": [
+                4.5659424784400506e-07,
+                -2.282971239157921e-06,
+                4.109348230409734e-06,
+                -2.282971239095819e-06,
+                -2.282971239095817e-06,
+                4.109348230409735e-06,
+                -2.282971239157922e-06,
+                4.5659424784400506e-07,
+            ],
+            "b": [
+                1.0,
+                -6.999981353387257,
+                20.999888120496976,
+                -34.99972030167602,
+                34.99962706947945,
+                -20.999720302543164,
+                6.999888121190696,
+                -0.9999813535606874,
+            ],
+        },
+        "22050": {
+            "a": [
+                3.3131640152343904e-07,
+                -1.6565820075934677e-06,
+                2.9818476136397693e-06,
+                -1.6565820075697404e-06,
+                -1.6565820075697404e-06,
+                2.9818476136397684e-06,
+                -1.6565820075934683e-06,
+                3.313164015234392e-07,
+            ],
+            "b": [
+                1.0,
+                -6.999986469577973,
+                20.999918817559152,
+                -34.99979704412617,
+                34.99972939247261,
+                -20.99979704458275,
+                6.9999188179244145,
+                -0.9999864696692883,
+            ],
+        },
+        "24000": {
+            "a": [
+                3.0439711121772204e-07,
+                -1.521985556070209e-06,
+                2.739574000904294e-06,
+                -1.5219855560518085e-06,
+                -1.5219855560518085e-06,
+                2.739574000904294e-06,
+                -1.5219855560702088e-06,
+                3.04397111217722e-07,
+            ],
+            "b": [
+                1.0,
+                -6.9999875689247455,
+                20.999925413625554,
+                -34.99981353425659,
+                34.99975137926572,
+                -20.99981353464199,
+                6.999925413933876,
+                -0.9999875690018258,
+            ],
+        },
+        "44100": {
+            "a": [
+                1.6565876111669459e-07,
+                -8.28293805580507e-07,
+                1.4909288500413535e-06,
+                -8.282938055775411e-07,
+                -8.282938055775413e-07,
+                1.4909288500413532e-06,
+                -8.282938055805069e-07,
+                1.6565876111669456e-07,
+            ],
+            "b": [
+                1.0,
+                -6.9999932347889295,
+                20.999959408756414,
+                -34.999898521948104,
+                34.99986469600691,
+                -20.999898522062253,
+                6.99995940884773,
+                -0.99999323481176,
+            ],
+        },
+    }
 
     def __init__(
         self,
+        reference: ndarray,
+        reference_freq: float,
+        processed: ndarray,
+        processed_freq: float,
+        hearing_loss: ndarray,
         itype: int,
+        level1: float,
         nchan: int = 32,
         m_delay: int = 1,
         shift: float | None = None,
-        audiometric_freq: list | None = None,
-        target_sample_rate: int = 24000,
-        small: float = 1e-30,
     ):
         """
+        Constructor takes the reference and processed signals that are to be
+        compared. The reference is at the reference intensity (e.g. 65 dB SPL
+        or with NAL-R amplification) and has no other processing. The processed
+        signal is the hearing-aid output, and is assumed to have the same or
+        greater group delay compared to the reference.
+
         Arguments:
-            itype (int): purpose for the calculation:
-                0=intelligibility: reference is normal hearing and must not
-                    include NAL-R EQ
-                1=quality: reference does not include NAL-R EQ
-                2=quality: reference already has NAL-R EQ applied
+        reference (np.ndarray): reference signal: should be adjusted to 65 dB SPL
+            (itype=0 or 1) or to 65 dB SPL plus NAL-R gain (itype=2)
+        reference_freq (int): sampling rate for the reference signal, Hz
+        processed (np.ndarray): processed signal (e.g. hearing-aid output) includes
+            HA gain
+        processed_freq (int): sampling rate for the processed signal, Hz
+        hearing_loss (np.ndarray): audiogram giving the hearing loss in dB at 6
+            audiometric frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz
+        itype (int): purpose for the calculation:
+             0=intelligibility: reference is normal hearing and must not
+               include NAL-R EQ
+             1=quality: reference does not include NAL-R EQ
+             2=quality: reference already has NAL-R EQ applied
+        level1:   level calibration: signal RMS=1 corresponds to Level1 dB SPL
+        nchan (int): auditory frequency bands
+        m_delay (int): Compensate for the gammatone group delay.
+        shift (float): Basal shift of the basilar membrane length
 
-            nchan (int): auditory frequency bands.
-            m_delay (int): Compensate for the gammatone group delay.
-            shift (float): optional frequency shift of the filter bank specified as a fractional
-                shift in distance along the BM. A positive shift is an increase in frequency
-                (basal shift), and negative is a decrease in frequency (apical shift). The
-                total length of the BM is normalized to 1. The frequency-to-distance map is
-                from D.D. Greenwood[3].
-            audiometric_freq (list): optional audiometric frequencies to use for the
-                hearing loss. If not specified, the default values are used.
-            target_sample_rate (int): target sample rate for the resampling of the signal.
-            small (float): small value to avoid division by zero.
         """
-        super().__init__()
-        if not itype in [0, 1, 2]:
-            raise ValueError("itype must be 0, 1 or 2")
-
-        self.audiometric_freq = audiometric_freq
-        if self.audiometric_freq is None:
-            self.audiometric_freq = torch.tensor([250, 500, 1000, 2000, 4000, 6000])
-
+        self.reference = reference
+        self.reference_freq = reference_freq
+        self.processed = processed
+        self.processed_freq = processed_freq
+        self.hearing_loss = hearing_loss
         self.itype = itype
+        self.level1 = level1
         self.nchan = nchan
         self.m_delay = m_delay
-        self.target_sample_rate = target_sample_rate
-        self.small = small
+        self.shift = shift
 
-        # General Precomputed parameters
-        # -------------------------------
-        self._center_freq = self.center_frequency()
-        self._center_freq_control = self.center_frequency(shift=shift)
+    def apply(self):
+        """
+        Apply the model to the signals.
 
-        # Loss parameters precomputed
-        # ----------------------------
-        self.nfilt = len(self._center_freq)
-        self.compression_ratio = 1.25 + 2.25 * torch.arange(self.nfilt) / (
-            self.nfilt - 1
-        )
-        # HC loss that results in 1:1 compression
-        self.max_ohc = 70 * (1 - (1 / self.compression_ratio))
-        # Loss threshold for adjusting the OHC parameters
-        self.theoretical_ohc = 1.25 * self.max_ohc
-        # Output level for an input of 100 dB SPL
-        self.upamp = 30 + (70 / self.compression_ratio)
+        The method returns the envelopes of the signals after OHC compression
+        and IHC loss attenuation.
 
-        # for equalisation = 0
-        [
-            self.attn_ohc_x,
-            self.bandwidth_min_x,
-            self.low_knee_x,
-            self.compression_ratio_x,
-            self.attn_ihc_x,
-        ] = self.loss_parameters(
-            torch.zeros(self.audiometric_freq.size()), self._center_freq
-        )
 
-        hl_max = torch.ones(self.audiometric_freq.size()) * 100
+        Returns:
+        reference_db (): envelope for the reference in each band
+        reference_basilar_membrane (): BM motion for the reference in each band
+        processed_db (): envelope for the processed signal in each band
+        processed_basilar_membrane (): BM motion for the processed signal in each band
+        reference_sl (): compressed RMS average reference in each band converted
+            to dB SL
+        processed_sl (): compressed RMS average output in each band converted to dB SL
+        freq_sample (): sampling rate in Hz for the model outputs
+        """
+        # Center frequencies on an ERB scale
+        cfreq = self.center_frequencies()
 
-        # Maximum BW for the control
-        _, bandwidth_1, _, _, _ = self.loss_parameters(
-            hl_max, self._center_freq_control
-        )
-
-        # Resample Precomputed parameters
-        # -------------------------------
-        self.cheby2_coefs = json.load(open("precomputed/cheby2_coefs.json"))
-
-        # Middle ear precomputed parameters
-        # ---------------------------------
-
-        self.middle_ear_coefs = json.load(open("precomputed/middle_ear_coefs.json"))
-        self.middle_ear_coefs = self.middle_ear_coefs[str(self.target_sample_rate)]
-
-        # Compress Basilar Membrane precomputed parameters
-        # ------------------------------------------------
-
-        self.compress_basilar_membrane_coefs = json.load(
-            open("precomputed/compress_basilar_membrane_coefs.json")
-        )
-
-    def forward(
-        self,
-        reference,
-        reference_freq,
-        processed,
-        processed_freq,
-        hearing_loss,
-        equalisation,
-        level1,
-    ):
-        (
-            attn_ohc_y,
-            bandwidth_min_y,
-            low_knee_y,
-            compression_ratio_y,
-            attn_ihc_y,
-        ) = self.loss_parameters(hearing_loss, self._center_freq)
-
-        if equalisation == 0:
-            attn_ohc_x = self.attn_ohc_x
-            bandwidth_min_x = self.bandwidth_min_x
-            low_knee_x = self.low_knee_x
-            compression_ratio_x = self.compression_ratio_x
-            attn_ihc_x = self.attn_ihc_x
-        else:
-            attn_ohc_x = attn_ohc_y
-            bandwidth_min_x = bandwidth_min_y
-            low_knee_x = low_knee_y
-            compression_ratio_x = compression_ratio_y
-            attn_ihc_x = attn_ihc_y
-
-        # Input signal adjustments
-        # Convert the signals to 24 kHz sampling rate.
-        # Using 24 kHz guarantees that all of the cochlear filters have the same shape
-        # independent of the incoming signal sampling rates
-        reference_24hz, _ = self.resample(reference, reference_freq)
-        processed_24hz, freq_sample = self.resample(processed, processed_freq)
-
-        # Check file sizes
-        min_signal_length = min(len(reference_24hz), len(processed_24hz))
-        reference_24hz = reference_24hz[:min_signal_length]
-        processed_24hz = processed_24hz[:min_signal_length]
-
-        # Bulk broadband signal alignment
-        reference_24hz, processed_24hz = self.input_align(
-            reference_24hz, processed_24hz
-        )
-        nsamp = len(reference_24hz)
-
-        # For HASQI, here add NAL-R equalization if the quality reference doesn't
-        # already have it.
-        # TODO - NARL equalization is not implemented yet in torch
-        # if itype == 1:
-        #     nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
-        #     enhancer = NALR(nfir, freq_sample)
-        #     aud = [250, 500, 1000, 2000, 4000, 6000]
-        #     nalr_fir, _ = enhancer.build(hearing_loss, aud)
-        #     reference_24hz = convolve(reference_24hz, nalr_fir)  # Apply the NAL-R filter
-        #     reference_24hz = reference_24hz[nfir: nfir + nsamp]
-
-        reference_mid = self.middle_ear(reference_24hz)
-        processed_mid = self.middle_ear(processed_24hz)
-
-        reference_db = torch.zeros((self.nchan, nsamp))
-        processed_db = torch.zeros((self.nchan, nsamp))
-
-        # Reference and processed average spectral values
-        reference_average = torch.zeros(self.nchan)
-        processed_average = torch.zeros(self.nchan)
-        reference_control_average = torch.zeros(self.nchan)
-        processed_control_average = torch.zeros(self.nchan)
-
-        # Filter bandwidths adjusted for intensity
-        reference_bandwidth = torch.zeros(self.nchan)
-        processed_bandwidth = torch.zeros(self.nchan)
-
-        reference_b = torch.zeros((self.nchan, nsamp))
-        processed_b = torch.zeros((self.nchan, nsamp))
-
-        # Loop over each filter in the auditory filter bank
-        for n in range(self.nchan):
-            # Control signal envelopes for the reference and processed signals
-            (
-                reference_control,
-                _,
-                processed_control,
-                _,
-            ) = self.gammatone_basilar_membrane(
-                reference_mid,
-                self.bandwidth_1[n],
-                processed_mid,
-                self.bandwidth_1[n],
-                freq_sample,
-                self._center_freq_control[n],
-            )
-
-            # Adjust the auditory filter bandwidths for the average signal level
-            reference_bandwidth[n] = self.bandwidth_adjust(
-                reference_control, bandwidth_min_x[n], self.bandwidth_1[n], level1
-            )
-            processed_bandwidth[n] = self.bandwidth_adjust(
-                processed_control, bandwidth_min_y[n], self.bandwidth_1[n], level1
-            )
-
-            # Envelopes and BM motion of the reference and processed signals
-            xenv, xbm, yenv, ybm = self.gammatone_basilar_membrane(
-                reference_mid,
-                reference_bandwidth[n],
-                processed_mid,
-                processed_bandwidth[n],
-                freq_sample,
-                self._center_freq[n],
-            )
-
-            # RMS levels of the ref and output envelopes for linear metric
-            reference_average[n] = torch.sqrt(torch.mean(xenv**2))
-            processed_average[n] = torch.sqrt(torch.mean(yenv**2))
-            reference_control_average[n] = torch.sqrt(
-                torch.mean(reference_control**2)
-            )
-            processed_control_average[n] = torch.sqrt(
-                torch.mean(processed_control**2)
-            )
-
-            # Cochlear compression for the signal envelopes and BM motion
-            (
-                reference_cochlear_compression,
-                reference_b[n],
-            ) = self.env_compress_basilar_membrane(
-                xenv,
-                xbm,
-                reference_control,
-                attn_ohc_x[n],
-                low_knee_x[n],
-                compression_ratio_x[n],
-                freq_sample,
-                level1,
-            )
-            (
-                processed_cochlear_compression,
-                processed_b[n],
-            ) = self.env_compress_basilar_membrane(
-                yenv,
-                ybm,
-                processed_control,
-                attn_ohc_y[n],
-                low_knee_y[n],
-                compression_ratio_y[n],
-                freq_sample,
-                level1,
-            )
-
-            # Correct for the delay between the reference and output
-            processed_cochlear_compression = self.envelope_align(
-                reference_cochlear_compression, processed_cochlear_compression
-            )  # Align processed envelope to reference
-            processed_b[n] = self.envelope_align(
-                reference_b[n], processed_b[n]
-            )  # Align processed BM motion to reference
-
-            # Convert the compressed envelopes and BM vibration envelopes to dB SPL
-            reference_cochlear_compression, reference_b[n] = self.envelope_sl(
-                reference_cochlear_compression, reference_b[n], attn_ihc_x[n], level1
-            )
-            processed_cochlear_compression, processed_b[n] = self.envelope_sl(
-                processed_cochlear_compression, processed_b[n], attn_ihc_y[n], level1
-            )
-
-            # Apply the IHC rapid and short-term adaptation
-            delta = 2  # Amount of overshoot
-            reference_db[n], reference_b[n] = self.inner_hair_cell_adaptation(
-                reference_cochlear_compression, reference_b[n], delta, freq_sample
-            )
-            processed_db[n], processed_b[n] = self.inner_hair_cell_adaptation(
-                processed_cochlear_compression, processed_b[n], delta, freq_sample
-            )
-
-        # Additive noise level to give the auditory threshold
-        ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
-        reference_basilar_membrane = self.basilar_membrane_add_noise(
-            reference_b, ihc_threshold, level1
-        )
-        processed_basilar_membrane = self.basilar_membrane_add_noise(
-            processed_b, ihc_threshold, level1
-        )
-
-        # Correct for the gammatone filterbank interchannel group delay.
-        if self.m_delay > 0:
-            reference_db = self.group_delay_compensate(
-                reference_db, reference_bandwidth, self._center_freq, freq_sample
-            )
-
-            processed_db = self.group_delay_compensate(
-                processed_db, reference_bandwidth, self._center_freq, freq_sample
-            )
-            reference_basilar_membrane = self.group_delay_compensate(
-                reference_basilar_membrane,
-                reference_bandwidth,
-                self._center_freq,
-                freq_sample,
-            )
-            processed_basilar_membrane = self.group_delay_compensate(
-                processed_basilar_membrane,
-                reference_bandwidth,
-                self._center_freq,
-                freq_sample,
-            )
-
-        # Convert average gammatone outputs to dB SPL
-        reference_sl = self.convert_rms_to_sl(
-            reference_average,
-            reference_control_average,
-            attn_ohc_x,
-            low_knee_x,
-            compression_ratio_x,
-            attn_ihc_x,
-            level1,
-        )
-        processed_sl = self.convert_rms_to_sl(
-            processed_average,
-            processed_control_average,
-            attn_ohc_y,
-            low_knee_y,
-            compression_ratio_y,
-            attn_ihc_y,
-            level1,
-        )
-
-        return (
-            reference_db,
-            reference_basilar_membrane,
-            processed_db,
-            processed_basilar_membrane,
-            reference_sl,
-            processed_sl,
-            freq_sample,
-        )
-
-    def center_frequency(
+    def center_frequencies(
         self,
         low_freq: int = 80,
         high_freq: int = 8000,
-        shift: float | None = None,
         ear_q: float = 9.26449,
         min_bw: float = 24.7,
     ):
@@ -378,11 +308,6 @@ class EarModel(torch.nn.Module):
         Arguments:
             low_freq (int): Low Frequency level.
             high_freq (int): High Frequency level.
-            shift (float): optional frequency shift of the filter bank specified as a fractional
-                shift in distance along the BM. A positive shift is an increase in frequency
-                (basal shift), and negative is a decrease in frequency (apical shift). The
-                total length of the BM is normalized to 1. The frequency-to-distance map is
-                from D.D. Greenwood[3].
             ear_q (float):
             min_bw (float):
 
@@ -402,107 +327,118 @@ class EarModel(torch.nn.Module):
                several species--29 years later. J Acoust Soc Am 87(6):2592-
                2605. Available at
                <https://doi.o10.1121/1.399052>
-
-        Updates:
-        James M. Kates, 25 January 2007.
-        Frequency shift added 22 August 2008.
-        Lower and upper frequencies fixed at 80 and 8000 Hz, 19 June 2012.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
-        if not isinstance(low_freq, torch.IntTensor):
-            low_freq = torch.tensor(low_freq).int()
-        if not isinstance(high_freq, torch.IntTensor):
-            high_freq = torch.tensor(high_freq).int()
-        if not isinstance(ear_q, torch.FloatTensor):
-            ear_q = torch.tensor(ear_q).float()
-        if not isinstance(min_bw, torch.FloatTensor):
-            min_bw = torch.tensor(min_bw).float()
-
-        if shift is not None:
+        if self.shift is not None:
             k = 1
             A = 165.4  # pylint: disable=invalid-name
             a = 2.1  # shift specified as a fraction of the total length
             # Locations of the low and high frequencies on the BM between 0 and 1
-            x_low = (1 / a) * torch.log10(k + (low_freq / A))
-            x_high = (1 / a) * torch.log10(k + (high_freq / A))
+            x_low = (1 / a) * np.log10(k + (low_freq / A))
+            x_high = (1 / a) * np.log10(k + (high_freq / A))
             # Shift the locations
-            x_low = x_low * (1 + shift)
-            x_high = x_high * (1 + shift)
+            x_low = x_low * (1 + self.shift)
+            x_high = x_high * (1 + self.shift)
             # Compute the new frequency range
-            low_freq = A * (10 ** (a * x_low) - k)
-            high_freq = A * (10 ** (a * x_high) - k)
+            lowFreq = A * (np.power(10, (a * x_low)) - k)
+            highFreq = A * (np.power(10, (a * x_high)) - k)
 
         # All of the following expressions are derived in Apple TR #35,
         # "An Efficient Implementation of the Patterson-Holdsworth Cochlear
         # Filter Bank" by Malcolm Slaney.
         # https://engineering.purdue.edu/~malcolm/apple/tr35/PattersonsEar.pdf
-        _center_freq = -(ear_q * min_bw) + torch.exp(
-            torch.arange(1, self.nchan)
-            * (
-                -torch.log(high_freq + ear_q * min_bw)
-                + torch.log(low_freq + ear_q * min_bw)
-            )
+        _center_freq = -(ear_q * min_bw) + np.exp(
+            np.arange(1, self.nchan)
+            * (-np.log(high_freq + ear_q * min_bw) + np.log(low_freq + ear_q * min_bw))
             / (self.nchan - 1)
         ) * (high_freq + ear_q * min_bw)
 
-        _center_freq = torch.cat((high_freq.unsqueeze(0), _center_freq), dim=0)
-        return torch.flip(_center_freq, dims=(0,))
+        # Last center frequency is set to highFreq
+        _center_freq = np.concatenate((np.array([high_freq]), _center_freq))
+        _center_freq = np.flip(_center_freq)
+        return _center_freq
 
-    def loss_parameters(self, hearing_loss: torch.tensor, center_freq: torch.tensor):
+    def loss_parameters(
+        self,
+        hearing_loss: ndarray,
+        center_freq: ndarray,
+        audiometric_freq: ndarray | None = None,
+    ) -> tuple[ndarray, ndarray, ndarray, ndarray, ndarray]:
         """
-        Compute the loss parameters for the given hearing loss.
+        Apportion the hearing loss to the outer hair cells (OHC) and the inner
+        hair cells (IHC) and to increase the bandwidth of the cochlear filters
+        in proportion to the OHC fraction of the total loss.
 
         Arguments:
-            hearing_loss : torch.tensor
-                Hearing loss in dB.
-            center_freq : torch.tensor
+            hearing_loss (np.ndarray): hearing loss at the 6 audiometric frequencies
+            center_freq (np.ndarray): array containing the center frequencies of the
+                gammatone filters arranged from low to high
+            audiometric_freq (list):
 
         Returns:
-            attenuated_ohc : torch.tensor
-                Attenuated outer hair cell loss in dB.
-            bandwidth : float
-            low_knee : float
-            compression_ratio : float
-            attnenuated_ihc: torch.tensor
+            attenuated_ohc (np.ndarray): attenuation in dB for the OHC gammatone filters
+            bandwidth (np.ndarray): OHC filter bandwidth expressed in terms of normal
+            low_knee (np.ndarray): Lower kneepoint for the low-level linear amplification
+            compression_ratio (np.ndarray): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for
+                normal hearing. Reduced in proportion to the OHC loss to 1:1.
+            attenuated_ihc (np.ndarray): attenuation in dB for the input to the IHC synapse
         """
-        f_v = torch.cat(
-            (
-                center_freq[0].unsqueeze(0),
-                self.audiometric_freq,
-                center_freq[-1].unsqueeze(0),
-            ),
-            dim=0,
-        )
-        loss = interp1d(
-            f_v,
-            torch.cat(
-                (
-                    hearing_loss[0].unsqueeze(0),
-                    hearing_loss,
-                    hearing_loss[-1].unsqueeze(0),
-                ),
-                dim=0,
-            ),
+        # Audiometric frequencies in Hz
+        if audiometric_freq is None:
+            audiometric_freq = np.array([250, 500, 1000, 2000, 4000, 6000])
+
+        # Interpolation to give the loss at the gammatone center frequencies
+        # Use linear interpolation in dB. The interpolation assumes that
+        # cfreq[0] < aud[0] and cfreq[nfilt -1] > aud[5]
+        nfilt = len(center_freq)
+        f_v = np.zeros(nfilt + 2)
+        f_v[1:-1] = center_freq
+        f_v[0] = audiometric_freq[0]
+        f_v[-1] = audiometric_freq[-1]
+
+        fv_interp = np.zeros(len(hearing_loss) + 2)
+        fv_interp[1:-1] = hearing_loss
+        fv_interp[0] = hearing_loss[0]
+        fv_interp[-1] = hearing_loss[-1]
+
+        # Interpolated gain in dB
+        loss = np.interp(
             center_freq,
+            f_v,
+            fv_interp,
         )
-        loss = torch.maximum(loss, torch.zeros(loss.size())).squeeze(0)
+
+        # Make sure there are no negative losses
+        loss = np.maximum(loss, 0)
+
+        # Compression ratio changes linearly with ERB rate from 1.25:1 in the 80-Hz
+        # frequency band to 3.5:1 in the 8-kHz frequency band
+        compression_ratio = 1.25 + 2.25 * np.arange(nfilt) / (nfilt - 1)
+
+        # Maximum OHC sensitivity loss depends on the compression ratio. The compression
+        # I/O curves assume linear below 30 and above 100 dB SPL in normal ears.
+
+        # HC loss that results in 1:1 compression
+        max_ohc = 70 * (1 - (1 / compression_ratio))
+
+        # Loss threshold for adjusting the OHC parameters
+        theoretical_ohc = 1.25 * max_ohc
 
         # Apportion the loss in dB to the outer and inner hair cells based on the data of
         # Moore et al (1999), JASA 106, 2761-2778.
 
         # Reduce the CR towards 1:1 in proportion to the OHC loss.
-        attenuated_ohc = 0.8 * torch.clone(loss)
-        attnenuated_ihc = 0.2 * torch.clone(loss)
+        attenuated_ohc = 0.8 * np.copy(loss)
+        attenuated_ihc = 0.2 * np.copy(loss)
 
-        # create a boolean mask where loss >= theoretical_ohc
-        mask = loss >= self.theoretical_ohc
-        attenuated_ohc[mask] = 0.8 * self.theoretical_ohc[mask]
-        attnenuated_ihc[mask] = (
-            0.2 * self.theoretical_ohc[mask] + loss[mask] - self.theoretical_ohc[mask]
+        attenuated_ohc[loss >= theoretical_ohc] = (
+            0.8 * theoretical_ohc[loss >= theoretical_ohc]
         )
+        attenuated_ihc[loss >= theoretical_ohc] = 0.2 * theoretical_ohc[
+            loss >= theoretical_ohc
+        ] + (loss[loss >= theoretical_ohc] - theoretical_ohc[loss >= theoretical_ohc])
 
         # Adjust the OHC bandwidth in proportion to the OHC loss
-        bandwidth = torch.ones(self.nfilt)
+        bandwidth = np.ones(nfilt)
         bandwidth = (
             bandwidth + (attenuated_ohc / 50.0) + 2.0 * (attenuated_ohc / 50.0) ** 6
         )
@@ -510,782 +446,75 @@ class EarModel(torch.nn.Module):
         # Compute the compression lower kneepoint and compression ratio
         low_knee = attenuated_ohc + 30
 
-        compression_ratio = (100 - low_knee) / (
-            self.upamp + attenuated_ohc - low_knee
-        )  # OHC loss Compression ratio
+        # Output level for an input of 100 dB SPL
+        upamp = 30 + (70 / compression_ratio)
 
-        return attenuated_ohc, bandwidth, low_knee, compression_ratio, attnenuated_ihc
+        # OHC loss Compression ratio
+        compression_ratio = (100 - low_knee) / (upamp + attenuated_ohc - low_knee)
 
-    def resample(self, signal, sample_rate):
+        return attenuated_ohc, bandwidth, low_knee, compression_ratio, attenuated_ihc
+
+    def resample(
+        self,
+        reference_signal: ndarray,
+        reference_sample_rate: float,
+        target_sample_rate: float = 24000.0,
+    ) -> tuple[ndarray, float]:
         """
-        Resample the signal to 24 kHz.
+        Resample the input signal at `target_sample_rate`.
+        The input sampling rate is rounded to the nearest kHz
+        to compute the sampling rate conversion ratio.
 
-        Returns
-        -------
-        resampled_signal : torch.FloatTensor
-            Resampled signal.
+        Arguments:
+        reference_signal (np.ndarray): input signal
+        reference_sample_rate (int): sampling rate for the input in Hz
+        freq_sample_hz (int): Frequency sample in Hz
 
+        Returns:
+        reference_signal_24         signal resampled at kHz (default 24Khz)
+        freq_sample_hz     output sampling rate in Hz
+
+        Updates
+        James M. Kates, 20 June 2011.
+        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
 
-        sampler = Resample(sample_rate, self.target_sample_rate)
+        # Sampling rate information
+        target_freq_khz = np.round(target_sample_rate / 1000)
+        # output rate to nearest kHz
+        reference_freq_khz = np.round(reference_sample_rate / 1000)
 
         # Resample the signal
-        if sample_rate == self.target_sample_rate:
+        if reference_freq_khz == target_freq_khz:
             # No resampling performed if the rates match
-            return signal, sample_rate
+            return reference_signal, target_sample_rate
 
-        if sample_rate < self.target_sample_rate:
-            # Resample for the input rate lower than the output
+        # Resample for the input to output sample rate
+        resample_signal = resample_poly(
+            reference_signal, target_freq_khz, reference_freq_khz
+        )
 
-            resample_signal = sampler(signal)
-
+        if reference_freq_khz < target_freq_khz:
             # Match the RMS level of the resampled signal to that of the input
-            reference_rms = torch.sqrt(torch.mean(signal**2))
-            resample_rms = torch.sqrt(torch.mean(resample_signal**2))
-            resample_signal = (reference_rms / resample_rms) * resample_signal
+            reference_rms = np.sqrt(np.mean(reference_signal**2))
+            resample_rms = np.sqrt(np.mean(resample_signal**2))
 
-            return resample_signal, self.target_sample_rate
+        else:
+            # Reduce the input signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)
+            # The power equalization is designed to match the signal intensities
+            # over the frequency range spanned by the gammatone filter bank.
+            # Chebyshev Type 2 LP
+            reference_b, reference_a = self.RESAMPLE_COEFS[reference_sample_rate]
+            target_b, target_a = self.RESAMPLE_COEFS[target_sample_rate]
 
-        resample_signal = sampler(signal)
+            reference_filter = lfilter(
+                reference_b, reference_a, reference_signal, axis=0
+            )
+            target_filter = lfilter(target_b, target_a, resample_signal, axis=0)
 
-        coef_reference = self.cheby2_coefs[str(sample_rate)]
-        coef_target = self.cheby2_coefs[str(self.target_sample_rate)]
+            reference_rms = np.sqrt(np.mean(reference_filter**2))
+            resample_rms = np.sqrt(np.mean(target_filter**2))
 
-        # Reduce the input signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)
-        # The power equalization is designed to match the signal intensities
-        # over the frequency range spanned by the gammatone filter bank.
-        # Chebyshev Type 2 LP
-        reference_filter = lfilter(
-            signal,
-            torch.tensor(coef_reference["a"]),
-            torch.tensor(coef_reference["b"]),
-        )
-
-        target_filter = lfilter(
-            signal,
-            torch.tensor(coef_target["a"]),
-            torch.tensor(coef_target["b"]),
-        )
-
-        # Compute the input and output RMS levels within the 21 kHz bandwidth and
-        # match the output to the input
-        reference_rms = torch.sqrt(torch.mean(reference_filter**2))
-        resample_rms = torch.sqrt(torch.mean(target_filter**2))
         resample_signal = (reference_rms / resample_rms) * resample_signal
 
-        return resample_signal, self.target_sample_rate
-
-    def input_align(self, reference, processed):
-        # Match the length of the processed output to the reference for the purposes
-        # of computing the cross-covariance
-        reference_n = len(reference)
-        processed_n = len(processed)
-        min_sample_length = min(reference_n, processed_n)
-
-        # Determine the delay of the output relative to the reference
-        reference_processed_correlation = full_correlation(
-            reference[:min_sample_length] - torch.mean(reference[:min_sample_length]),
-            processed[:min_sample_length] - torch.mean(processed[:min_sample_length]),
-        )
-        index = torch.argmax(torch.abs(reference_processed_correlation))
-        delay = min_sample_length - index - 1
-
-        # Back up 2 msec to allow for dispersion
-        delay = torch.round(
-            delay - 2 * self.target_sample_rate / 1000
-        ).int()  # Back up 2 ms
-
-        # Align the output with the reference allowing for the dispersion
-        if delay > 0:
-            # Output delayed relative to the reference
-            processed = torch.cat((processed[delay:processed_n], torch.zeros(delay)))
-        else:
-            # Output advanced relative to the reference
-            processed = torch.cat(
-                (torch.zeros(-delay), processed[: processed_n + delay])
-            )
-
-        # Find the start and end of the noiseless reference sequence
-        reference_abs = torch.abs(reference)
-        reference_max = torch.max(reference_abs)
-        reference_threshold = 0.001 * reference_max  # Zero detection threshold
-
-        above_threshold = torch.where(reference_abs > reference_threshold)[0]
-        reference_n_above_threshold = above_threshold[0]
-        reference_n_below_threshold = above_threshold[-1]
-
-        # Prune the sequences to remove the leading and trailing zeros
-        reference_n_below_threshold = min(reference_n_below_threshold, processed_n)
-
-        return (
-            reference[reference_n_above_threshold : reference_n_below_threshold + 1],
-            processed[reference_n_above_threshold : reference_n_below_threshold + 1],
-        )
-
-    def middle_ear(self, reference):
-        """
-        Design the middle ear filters and process the input through the
-        cascade of filters. The middle ear model is a 2-pole HP filter
-        at 350 Hz in series with a 1-pole LP filter at 5000 Hz. The
-        result is a rough approximation to the equal-loudness contour
-        at threshold.
-
-        Arguments:
-        reference (np.ndarray):	input signal
-        freq_sample (int): sampling rate in Hz
-
-        Returns:
-        xout (): filtered output
-
-        Updates:
-        James M. Kates, 18 January 2007.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-
-        # Design the 1-pole Butterworth LP using the bilinear transformation
-        butterworth_low_pass = torch.tensor(
-            self.middle_ear_coefs["butterworth_low_pass"]
-        )
-        low_pass = torch.tensor(self.middle_ear_coefs["low_pass"])
-
-        # LP filter the input
-        y = lfilter(reference, low_pass, butterworth_low_pass, clamp=False)
-
-        # Design the 2-pole Butterworth HP using the bilinear transformation
-        butterworth_high_pass = torch.tensor(
-            self.middle_ear_coefs["butterworth_high_pass"]
-        )
-        high_pass = torch.tensor(self.middle_ear_coefs["high_pass"])
-
-        # HP fitler the signal
-        return lfilter(y, high_pass, butterworth_high_pass, clamp=False)
-
-    def gammatone_basilar_membrane(
-        self,
-        reference,
-        reference_bandwidth,
-        processed,
-        processed_bandwidth,
-        center_freq,
-        ear_q=9.26449,
-        min_bandwidth=24.7,
-    ):
-        """
-        4th-order gammatone auditory filter. This implementation is based on the c program
-        published on-line by Ning Ma, U. Sheffield, UK[1]_ that gives an implementation of
-        the Martin Cooke filters[2]_: an impulse-invariant transformation of the gammatone
-        filter. The signal is demodulated down to baseband using a complex exponential,
-        and then passed through a cascade of four one-pole low-pass filters.
-
-        This version filters two signals that have the same sampling rate and the same
-        gammatone filter center frequencies. The lengths of the two signals should match;
-        if they don't, the signals are truncated to the shorter of the two lengths.
-
-        Arguments:
-            reference (): first sequence to be filtered
-            reference_bandwidth: bandwidth for x relative to that of a normal ear
-            processed (): second sequence to be filtered
-            processed_bandwidth (): bandwidth for x relative to that of a normal ear
-            freq_sample (): sampling rate in Hz
-            center_frequency (int): filter center frequency in Hz
-            ear_q: (float): ???
-            min_bandwidth (float): ???
-
-        Returns:
-            reference_envelope (): filter envelope output (modulated down to baseband)
-                1st signal
-            reference_basilar_membrane (): Basilar Membrane for the first signal
-            processed_envelope (): filter envelope output (modulated down to baseband)
-                2nd signal
-            processed_basilar_membrane (): Basilar Membrane for the second signal
-
-        References:
-        .. [1] Ma N, Green P, Barker J, Coy A (2007) Exploiting correlogram
-               structure for robust speech recognition with multiple speech
-               sources. Speech Communication, 49 (12): 874-891. Availab at
-               <https://doi.org/10.1016/j.specom.2007.05.003>
-               <https://staffwww.dcs.shef.ac.uk/people/N.Ma/resources/gammatone/>
-        .. [2] Cooke, M. (1993) Modelling auditory processing and organisation.
-               Cambridge University Press
-
-        Updates:
-        James M. Kates, 8 Jan 2007.
-        Vectorized version for efficient MATLAB execution, 4 February 2007.
-        Cosine and sine generation, 29 June 2011.
-        Output sine and cosine sequences, 19 June 2012.
-        Cosine/sine loop speed increased, 9 August 2013.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-        # Filter Equivalent Rectangular Bandwidth from Moore and Glasberg (1983)
-        # doi: 10.1121/1.389861
-        erb = min_bandwidth + (center_freq / ear_q)
-
-        # Check the lengths of the two signals and trim to shortest
-        min_sample = min(len(reference), len(processed))
-        x = reference[:min_sample]
-        y = processed[:min_sample]
-
-        # Filter the first signal
-        # Initialize the filter coefficients
-        tpt = 2 * torch.pi / self.target_sample_rate
-        tpt_bw = torch.tensor(reference_bandwidth * tpt * erb * 1.019)
-        a = torch.exp(-tpt_bw)
-        a_1 = 4.0 * a
-        a_2 = -6.0 * a * a
-        a_3 = 4.0 * a * a * a
-        a_4 = -a * a * a * a
-        a_5 = 4.0 * a * a
-        gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
-
-        # Initialize the complex demodulation
-        npts = len(x)
-        sincf, coscf = self.gammatone_bandwidth_demodulation(npts, tpt, center_freq)
-
-        # Filter the real and imaginary parts of the signal
-        ureal = lfilter(
-            x * coscf,
-            torch.tensor([1.0, -a_1, -a_2, -a_3, -a_4]).double(),
-            torch.tensor([1.0, a_1, a_5, 0, 0]).double(),
-            clamp=False,
-        )
-        uimag = lfilter(
-            x * sincf,
-            torch.tensor([1.0, -a_1, -a_2, -a_3, -a_4]).float().double(),
-            torch.tensor([1.0, a_1, a_5, 0, 0]).float().double(),
-            clamp=False,
-        )
-
-        # Extract the BM velocity and the envelope
-        reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-        reference_envelope = gain * torch.sqrt(ureal * ureal + uimag * uimag)
-
-        # Filter the second signal using the existing cosine and sine sequences
-        tpt_bw = torch.tensor(processed_bandwidth * tpt * erb * 1.019)
-        a = torch.exp(-tpt_bw)
-        a_1 = 4.0 * a
-        a_2 = -6.0 * a * a
-        a_3 = 4.0 * a * a * a
-        a_4 = -a * a * a * a
-        a_5 = 4.0 * a * a
-        gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
-
-        # Filter the real and imaginary parts of the signal
-        ureal = lfilter(
-            y * coscf,
-            torch.tensor([1, -a_1, -a_2, -a_3, -a_4]).double(),
-            torch.tensor([1, a_1, a_5, 0, 0]).double(),
-            clamp=False,
-        )
-        uimag = lfilter(
-            y * sincf,
-            torch.tensor([1, -a_1, -a_2, -a_3, -a_4]).double(),
-            torch.tensor([1, a_1, a_5, 0, 0]).double(),
-            clamp=False,
-        )
-
-        # Extract the BM velocity and the envelope
-        processed_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-        processed_envelope = gain * torch.sqrt(ureal * ureal + uimag * uimag)
-
-        return (
-            reference_envelope,
-            reference_basilar_membrane,
-            processed_envelope,
-            processed_basilar_membrane,
-        )
-
-    def gammatone_bandwidth_demodulation(
-        self,
-        npts,
-        tpt,
-        center_freq,
-    ):
-        """Gamma tone bandwidth demodulation
-
-        Arguments:
-            npts (): ???
-            tpt (): ???
-            center_freq (): ???
-            center_freq_cos (): ???
-            sincf (): ???
-
-        Returns:
-            sincf (): ???
-            coscf (): ???
-        """
-        center_freq_cos = torch.zeros(npts)
-        center_freq_sin = torch.zeros(npts)
-
-        tpt = torch.tensor(tpt)
-
-        cos_n = torch.cos(tpt * center_freq)
-        sin_n = torch.sin(tpt * center_freq)
-        cold = 1.0
-        sold = 0.0
-        center_freq_cos[0] = cold
-        center_freq_sin[0] = sold
-        for n in range(1, npts):
-            arg = cold * cos_n + sold * sin_n
-            sold = sold * cos_n - cold * sin_n
-            cold = arg
-            center_freq_cos[n] = cold
-            center_freq_sin[n] = sold
-
-        return center_freq_sin, center_freq_cos
-
-    def bandwidth_adjust(
-        self,
-        control: torch.tensor,
-        bandwidth_min: float,
-        bandwidth_max: float,
-        level1: float,
-    ) -> torch.tensor:
-        """
-        Compute the increase in auditory filter bandwidth in response to high signal levels.
-
-        Arguments:
-            control (): envelope output in the control filter band
-            bandwidth_min (): auditory filter bandwidth computed for the loss (or NH)
-            bandwidth_max (): auditory filter bandwidth at maximum OHC damage
-            level1 ():     RMS=1 corresponds to Level1 dB SPL
-
-        Returns:
-            bandwidth (): filter bandwidth increased for high signal levels
-
-        Updates:
-        James M. Kates, 21 June 2011.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-
-        # Compute the control signal level
-        control_rms = torch.sqrt(torch.mean(control**2))
-        control_db = 20 * torch.log10(control_rms) + level1
-
-        # Adjust the auditory filter bandwidth
-        if control_db < 50:
-            # No BW adjustment for a signal below 50 dB SPL
-            return torch.tensor(bandwidth_min)
-        if control_db > 100:
-            # Maximum BW if signal is above 100 dB SPL
-            return torch.tensor(bandwidth_max)
-
-        return bandwidth_min + ((control_db - 50) / 50) * (
-            bandwidth_max - bandwidth_min
-        )
-
-    def env_compress_basilar_membrane(
-        self,
-        envsig: torch.tensor,
-        bm: torch.tensor,  # pylint: disable=invalid-name
-        control: torch.tensor,
-        attn_ohc: float,
-        threshold_low: float,
-        compression_ratio: float,
-        level1: float,
-        threshold_high: int = 100,
-    ) -> tuple[torch.tensor, torch.tensor]:
-        """
-        Compute the cochlear compression in one auditory filter band. The gain is linear
-        below the lower threshold, compressive with a compression ratio of CR:1 between the
-        lower and upper thresholds, and reverts to linear above the upper threshold. The
-        compressor assumes that auditory threshold is 0 dB SPL.
-
-        Arguments:
-            envsig (): analytic signal envelope (magnitude) returned by the
-                    gammatone filter bank
-            bm (): BM motion output by the filter bank
-            control (): analytic control envelope returned by the wide control
-                    path filter bank
-            attn_ohc (): OHC attenuation at the input to the compressor
-            threshold_Low (): kneepoint for the low-level linear amplification
-            compression_ratio (): compression ratio
-            fsamp (): sampling rate in Hz
-            level1 (): dB reference level: a signal having an RMS value of 1 is
-                    assigned to Level1 dB SPL.
-            threshold_high: kneepoint for the high-level linear amplification
-
-        Returns:
-            compressed_signal (): compressed version of the signal envelope
-            compressed_basilar_membrane (): compressed version of the BM motion
-
-        Updates:
-        James M. Kates, 19 January 2007.
-        LP filter added 15 Feb 2007 (Ref: Zhang et al., 2001)
-        Version to compress the envelope, 20 Feb 2007.
-        Change in the OHC I/O function, 9 March 2007.
-        Two-tone suppression added 22 August 2008.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-        # Convert the control envelope to dB SPL
-        logenv = torch.maximum(control, torch.tensor(self.small))
-
-        logenv = level1 + 20 * torch.log10(logenv)
-        # Clip signal levels above the upper threshold
-        logenv = torch.minimum(logenv, torch.tensor(threshold_high))
-        # Clip signal at the lower threshold
-        logenv = torch.maximum(logenv, torch.tensor(threshold_low))
-
-        # Compute the compression gain in dB
-        gain = -torch.tensor(attn_ohc) - (logenv - torch.tensor(threshold_low)) * (
-            1 - (1 / torch.tensor(compression_ratio))
-        )
-
-        # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
-        gain = torch.pow(10, gain / 20)
-        coefs = self.compress_basilar_membrane_coefs[str(self.target_sample_rate)]
-
-        gain = lfilter(
-            gain.double(),
-            torch.tensor(coefs["a"], dtype=torch.double),
-            torch.tensor(coefs["b"], dtype=torch.double),
-            clamp=False,
-        )
-
-        # Apply the gain to the signals
-        compressed_signal = gain * envsig
-        compressed_basilar_membrane = gain * bm
-
-        return compressed_signal, compressed_basilar_membrane
-
-    def envelope_align(
-        self,
-        reference: torch.tensor,
-        output: torch.tensor,
-        corr_range: int = 100,
-    ) -> torch.tensor:
-        """
-        Align the envelope of the processed signal to that of the reference signal.
-
-        Arguments:
-            reference (): envelope or BM motion of the reference signal
-            output (): envelope or BM motion of the output signal
-            freq_sample (int): Frequency sample rate in Hz
-            corr_range (int): range in msec for the correlation
-
-        Returns:
-            y (): shifted output envelope to match the input
-
-        Updates:
-        James M. Kates, 28 October 2011.
-        Absolute value of the cross-correlation peak removed, 22 June 2012.
-        Cross-correlation range reduced, 13 August 2013.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-
-        # The MATLAB code limits the range of lags to search (to 100 ms) to save computation
-        # time - no such option exists in numpy, but the code below limits the delay to the
-        # same range as in Matlab, for consistent results
-        lags = torch.round(
-            0.001 * torch.tensor(corr_range) * self.target_sample_rate
-        ).int()
-
-        # Range in samples
-        npts = torch.tensor(reference.size())
-        lags = torch.min(lags, npts)
-
-        ref_out_correlation = full_correlation(reference, output)
-        location = torch.argmax(
-            ref_out_correlation[npts - lags : npts + lags]
-        )  # Limit the range in which
-        delay = lags - location - 1
-
-        # Time shift the output sequence
-        if delay > 0:
-            # Output delayed relative to the reference
-            return torch.concatenate((output[delay:npts], torch.zeros(delay)))
-        return torch.concatenate((torch.zeros(-delay), output[: npts + delay]))
-
-    def convert_rms_to_sl(
-        self,
-        reference,
-        control,
-        attnenuated_ohc,
-        threshold_low,
-        compression_ratio,
-        attnenuated_ihc,
-        level1,
-        threshold_high=100,
-    ):
-        """
-        Covert the Root Mean Square average output of the gammatone filter bank
-        into dB SL. The gain is linear below the lower threshold, compressive
-        with a compression ratio of CR:1 between the lower and upper thresholds,
-        and reverts to linear above the upper threshold. The compressor
-        assumes that auditory thresold is 0 dB SPL.
-
-        Arguments:
-            reference (): analytic signal envelope (magnitude) returned by the
-            gammatone filter bank, RMS average level
-            control (): control signal envelope
-            attenuated_ohc (): OHC attenuation at the input to the compressor
-            threshold_low (): kneepoint for the low-level linear amplification
-            compression_ratio (): compression ratio
-            attenuated_ihc (): IHC attenuation at the input to the synapse
-            level1 (): dB reference level: a signal having an RMS value of 1 is
-                    assigned to Level1 dB SPL.
-            threshold_high (int):
-
-
-        Returns:
-            reference_db (): compressed output in dB above the impaired threshold
-
-        Updates:
-            James M. Kates, 6 August 2007.
-            Version for two-tone suppression, 29 August 2008.
-            Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-
-        # Convert the control to dB SPL
-        control_db_spl = torch.maximum(control, torch.ones(control.size()) * self.small)
-        control_db_spl = level1 + 20 * torch.log10(control_db_spl)
-        control_db_spl = torch.minimum(
-            control_db_spl, torch.ones(control_db_spl.size()) * threshold_high
-        )
-        control_db_spl = torch.maximum(
-            control_db_spl, torch.ones(control_db_spl.size()) * threshold_low
-        )
-
-        # Compute compression gain in dB
-        gain = -attnenuated_ohc - (control_db_spl - threshold_low) * (
-            1 - (1 / compression_ratio)
-        )
-
-        # Convert the signal envelope to dB SPL
-        control_db_spl = torch.maximum(
-            reference, torch.ones(control.size()) * self.small
-        )
-        control_db_spl = level1 + 20 * torch.log10(control_db_spl)
-        control_db_spl = torch.maximum(
-            control_db_spl, torch.zeros(control_db_spl.size())
-        )
-        reference_db = control_db_spl + gain - attnenuated_ihc
-        reference_db = torch.maximum(reference_db, torch.zeros(reference_db.size()))
-
-        return reference_db
-
-    def envelope_sl(
-        self,
-        reference: torch.tensor,
-        basilar_membrane: torch.tensor,
-        attenuated_ihc: float,
-        level1: float,
-    ) -> tuple[torch.tensor, torch.tensor]:
-        """
-        Convert the compressed envelope returned by cochlear_envcomp to dB SL.
-
-        Arguments:
-            reference (): linear envelope after compression
-            basilar_membrane (): linear Basilar Membrane vibration after compression
-            attenuated_ihc (): IHC attenuation at the input to the synapse
-            level1 (): level in dB SPL corresponding to 1 RMS
-            small (float): ???
-
-        Returns:
-            _reference (): reference envelope in dB SL
-            _basilar_membrane (): Basilar Membrane vibration with envelope converted to
-                dB SL
-
-        Updates:
-        James M. Kates, 20 Feb 07.
-        IHC attenuation added 9 March 2007.
-        Basilar membrane vibration conversion added 2 October 2012.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-        # Convert the envelope to dB SL
-        _reference = level1 - attenuated_ihc + 20 * torch.log10(reference + self.small)
-        _reference = torch.maximum(_reference, torch.zeros(1))
-
-        # Convert the linear BM motion to have a dB SL envelope
-        gain = (_reference + self.small) / (reference + self.small)
-        _basilar_membrane = gain * basilar_membrane
-
-        return _reference, _basilar_membrane
-
-    def inner_hair_cell_adaptation(
-        self, reference_db, reference_basilar_membrane, delta
-    ):
-        """
-        Provide inner hair cell (IHC) adaptation. The adaptation is based on an
-        equivalent RC circuit model, and the derivatives are mapped into
-        1st-order backward differences. Rapid and short-term adaptation are
-        provided. The input is the signal envelope in dB SL, with IHC attenuation
-        already applied to the envelope. The outputs are the envelope in dB SL
-        with adaptation providing overshoot of the long-term output level, and
-        the BM motion is multiplied by a gain vs. time function that reproduces
-        the adaptation. IHC attenuation and additive noise for the equivalent
-        auditory threshold are provided by a subsequent call to eb_BMatten.
-
-        Arguments:
-            reference_db (np.ndarray): signal envelope in one frequency band in dB SL
-                 contains OHC compression and IHC attenuation
-            reference_basilar_membrane (): basilar membrane vibration with OHC compression
-                but no IHC attenuation
-            delta (): overshoot factor = delta x steady-state
-            freq_sample (int): sampling rate in Hz
-
-        Returns:
-            output_db (): envelope in dB SL with IHC adaptation
-            output_basilar_membrane (): Basilar Membrane multiplied by the IHC adaptation
-                gain function
-
-        Updates:
-        James M. Kates, 1 October 2012.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-        # Test the amount of overshoot
-        dsmall = 1.0001
-        delta = max(delta, dsmall)
-
-        # Initialize adaptation time constants
-        tau1 = 2  # Rapid adaptation in msec
-        tau2 = 60  # Short-term adaptation in msec
-        tau1 = 0.001 * tau1  # Convert to seconds
-        tau2 = 0.001 * tau2
-
-        # Equivalent circuit parameters
-        freq_sample_inverse = 1 / self.target_sample_rate
-        r_1 = 1 / delta
-        r_2 = 0.5 * (1 - r_1)
-        r_3 = r_2
-        c_1 = tau1 * (r_1 + r_2) / (r_1 * r_2)
-        c_2 = tau2 / ((r_1 + r_2) * r_3)
-
-        # Intermediate values used for the voltage update matrix inversion
-        a11 = r_1 + r_2 + r_1 * r_2 * (c_1 / freq_sample_inverse)
-        a12 = -r_1
-        a21 = -r_3
-        a22 = r_2 + r_3 + r_2 * r_3 * (c_2 / freq_sample_inverse)
-        denom = 1 / ((a11 * a22) - (a21 * a12))
-
-        # Additional intermediate values
-        r_1_inv = 1 / r_1
-        product_r1_r2_c1 = r_1 * r_2 * (c_1 / freq_sample_inverse)
-        product_r2_r3_c2 = r_2 * r_3 * (c_2 / freq_sample_inverse)
-
-        # Initialize the outputs and state of the equivalent circuit
-        nsamp = len(reference_db)
-        gain = torch.ones_like(
-            reference_db
-        )  # Gain vector to apply to the BM motion, default is 1
-        output_db = torch.zeros_like(reference_db)
-        v_1 = 0
-        v_2 = 0
-        small = 1e-30
-
-        # Loop to process the envelope signal
-        # The gain asymptote is 1 for an input envelope of 0 dB SPL
-        for n in range(nsamp):
-            v_0 = reference_db[n]
-            b_1 = v_0 * r_2 + product_r1_r2_c1 * v_1
-            b_2 = product_r2_r3_c2 * v_2
-            v_1 = denom * (a22 * b_1 - a12 * b_2)
-            v_2 = denom * (-a21 * b_1 + a11 * b_2)
-            out = (v_0 - v_1) * r_1_inv
-            output_db[n] = out
-
-        output_db = torch.maximum(output_db, torch.zeros(1))
-        gain = (output_db + small) / (reference_db + small)
-
-        output_basilar_membrane = gain * reference_basilar_membrane
-
-        return output_db, output_basilar_membrane
-
-    def basilar_membrane_add_noise(
-        self, reference: torch.tensor, threshold: int, level1: float
-    ) -> torch.tensor:
-        """
-        Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise to
-        give the auditory threshold.
-
-        Arguments:
-            reference (): BM motion to be attenuated
-            threshold (): additive noise level in dB re:auditory threshold
-            level1 (): an input having RMS=1 corresponds to Level1 dB SPL
-
-        Returns:
-            Attenuated signal with threshold noise added
-
-        Updates:
-            James M. Kates, 19 June 2012.
-            Just additive noise, 2 Oct 2012.
-            Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-        gain = 10 ** ((threshold - level1) / 20)  # Linear gain for the noise
-
-        # rng = np.random.default_rng()
-        noise = gain * torch.randn(reference.shape)  # Gaussian RMS=1, then attenuated
-        return reference + noise
-
-    def group_delay_compensate(
-        self,
-        reference: torch.tensor,
-        bandwidths: torch.tensor,
-        center_freq: torch.tensor,
-        ear_q: float = 9.26449,
-        min_bandwidth: float = 24.7,
-    ) -> torch.tensor:
-        """
-        Compensate for the group delay of the gammatone filter bank. The group
-        delay is computed for each filter at its center frequency. The firing
-        rate output of the IHC model is then adjusted so that all outputs have
-        the same group delay.
-
-        Arguments:
-            xenv (np.ndarray): matrix of signal envelopes or BM motion
-            bandwidths (): gammatone filter bandwidths adjusted for loss
-            center_freq (): center frequencies of the bands
-            freq_sample (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
-            ear_q (float):
-            min_bandwidth (float) :
-
-        Returns:
-            processed (): envelopes or BM motion compensated for the group delay.
-
-        Updates:
-            James M. Kates, 28 October 2011.
-            Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
-        """
-        # Processing parameters
-        nchan = len(bandwidths)
-
-        # Filter ERB from Moore and Glasberg (1983)
-        erb = min_bandwidth + (center_freq / ear_q)
-
-        # Initialize the gammatone filter coefficients
-        tpt = 2 * torch.pi / self.target_sample_rate
-        tpt_bandwidth = tpt * 1.019 * bandwidths * erb
-        a = torch.exp(torch.tensor(-tpt_bandwidth))
-        a_1 = 4.0 * a
-        a_2 = -6.0 * a * a
-        a_3 = 4.0 * a * a * a
-        a_4 = -a * a * a * a
-        a_5 = 4.0 * a * a
-
-        # Compute the group delay in samples at fsamp for each filter
-        _group_delay = torch.zeros(nchan)
-        for n in range(nchan):
-            _, _group_delay[n] = group_delay(
-                ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
-            )
-        _group_delay = torch.round(_group_delay).int()  # convert to integer samples
-
-        # Compute the delay correlation
-        group_delay_min = torch.min(_group_delay)
-        _group_delay = (
-            _group_delay - group_delay_min
-        )  # Remove the minimum delay from all the over values
-        group_delay_max = torch.max(_group_delay)
-        correct = (
-            group_delay_max - _group_delay
-        )  # Samples delay needed to add to give alignment
-
-        # Add delay correction to each frequency band
-        processed = torch.zeros(reference.shape)
-        for n in range(nchan):
-            ref = reference[n]
-            npts = len(ref)
-            processed[n] = torch.concatenate(
-                (torch.zeros(correct[n]), ref[: npts - correct[n]])
-            )
-
-        return processed
+        return resample_signal, target_sample_rate
