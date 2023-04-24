@@ -1,7 +1,6 @@
 """ Run the dummy enhancement. """
 from __future__ import annotations
 
-# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
