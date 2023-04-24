@@ -1,6 +1,7 @@
 """ Run the dummy enhancement. """
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
@@ -13,10 +14,11 @@ import torch
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
-from torchaudio.transforms import Fade, Resample
+from torchaudio.transforms import Fade
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.evaluator.haspi.eb import resample_24khz
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
@@ -150,6 +152,7 @@ def decompose_signal(
     sources_list: list[str],
     left_audiogram: np.ndarray,
     right_audiogram: np.ndarray,
+    normalise: bool = True,
 ) -> dict[str, np.ndarray]:
     """
     Decompose signal into 8 stems.
@@ -168,15 +171,23 @@ def decompose_signal(
         sources_list (list): List of strings used to index dictionary.
         left_audiogram (np.ndarray): Left ear audiogram.
         right_audiogram (np.ndarray): Right ear audiogram.
+        normalise (bool): Whether to normalise the signal.
 
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
     """
+    if normalise:
+        signal, ref = normalize_signal(signal)
+
     sources = separate_sources(
         model, torch.from_numpy(signal), sample_rate, device=device
     )
     # only one element in the batch
     sources = sources[0]
+
+    if normalise:
+        sources = denormalize_signals(sources, ref)
+
     signal_stems = map_to_dict(sources, sources_list)
     return signal_stems
 
@@ -251,7 +262,7 @@ def process_stems_for_listener(
 
 
 def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
-    """Clip and save the processed stems.
+    """Clip the signal.
 
     Args:
         signal (np.ndarray): Signal to be clipped and saved.
@@ -395,29 +406,27 @@ def enhance(config: DictConfig) -> None:
                 / "mixture.wav"
             )
             mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
-            assert sample_rate == config.nalr.fs
+            assert sample_rate == config.sample_rate
 
-            # Sample rate for the separation model
-            model_sample_rate = (
-                separation_model.sample_rate
-                if config.separator.model == "openunmix"
-                else 44100
-            )
+            # Model dependant params
+            if config.separator.model == "demucs":
+                model_sample_rate = 44100
+                sources_order = separation_model.sources
+                normalise = True
+            elif config.separator.model == "openunmix":
+                model_sample_rate = separation_model.sample_rate
+                sources_order = ["vocals", "drums", "bass", "other"]
+                normalise = False
+            else:
+                raise ValueError(
+                    f"Separator model {config.separator.model} not supported."
+                )
 
             # Resample mixture signal to model sample rate
             if sample_rate != model_sample_rate:
-                resampler = Resample(sample_rate, model_sample_rate)
-                mixture_signal = resampler(mixture_signal)
-
-            # The sources outputs order for mapping the output of the model
-            if config.separator.model == "demucs":
-                sources_order = separation_model.sources
-            if config.separator.model == "openunmix":
-                sources_order = ["vocals", "drums", "bass", "other"]
-
-            # Normalise signal if using the demucs model
-            if config.separator.model == "demucs":
-                mixture_signal, ref_for_normalisation = normalize_signal(mixture_signal)
+                mixture_signal = resample(
+                    mixture_signal, sample_rate, model_sample_rate
+                )
 
             # Decompose mixture signal into stems
             stems = decompose_signal(
@@ -428,14 +437,8 @@ def enhance(config: DictConfig) -> None:
                 sources_order,
                 audiogram_left,
                 audiogram_right,
+                normalise,
             )
-
-            # Denormalize stems if using the demucs model
-            if config.separator.model == "demucs":
-                for stem_name, stem_signal in stems.items():
-                    stems[stem_name] = denormalize_signals(
-                        stem_signal, ref_for_normalisation
-                    )
 
         # Baseline applies NALR prescription to each stem instead of using the
         # listener's audiograms in the decomposition. This stem can be skipped
@@ -468,7 +471,7 @@ def enhance(config: DictConfig) -> None:
             filename.parent.mkdir(parents=True, exist_ok=True)
 
             # Resample signal
-            stem_signal = resample(
+            stem_signal = resample_24khz(
                 stem_signal, config.sample_rate, config.stem_sample_rate
             )
 
