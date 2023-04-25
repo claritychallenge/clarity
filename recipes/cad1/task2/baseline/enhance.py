@@ -56,7 +56,7 @@ def enhance_song(
 
     Args:
         waveform (np.ndarray): The waveform of the song.
-        listener_audiograms (dict): The audiograms of the listener.
+        listener_dict (dict): The audiograms of the listener.
         config (dict): Dictionary of configuration options for enhancing music.
 
     Returns:
@@ -102,7 +102,7 @@ def enhance(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals") / config.evaluate.split
 
     # Load scenes and listeners depending on config.evaluate.split
-    scenes, listener_audiograms, scenes_listeners = load_listeners_and_scenes(config)
+    scenes, listener_dict, scenes_listeners = load_listeners_and_scenes(config)
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, config.evaluate.small_test
     )
@@ -112,7 +112,7 @@ def enhance(config: DictConfig) -> None:
 
     for scene_id, listener_id in tqdm(scene_listener_pairs):
         current_scene = scenes[scene_id]
-        listener = listener_audiograms[listener_id]
+        listener = listener_dict[listener_id]
 
         song_path = Path(config.path.music_dir) / f"{current_scene['song_path']}"
 
