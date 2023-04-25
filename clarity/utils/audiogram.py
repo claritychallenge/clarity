@@ -126,10 +126,14 @@ class Audiogram:
         """
         return np.all(np.isin(frequencies, self.frequencies, assume_unique=True))
 
-    def resample(self, new_frequencies: ndarray) -> Audiogram:
+    def resample(
+        self, new_frequencies: ndarray, linear_frequency: bool = False
+    ) -> Audiogram:
         """Resample the audiogram to a new set of frequencies.
 
-        Interpolates linearly on a log frequency axis.
+        Interpolates linearly on a (by default) log frequency axis. If
+        linear_frequencies is set True then interpolation is done on a linear
+        frequency axis.
 
         Args:
             new_frequencies (ndarray): The new frequencies to resample to
@@ -139,10 +143,13 @@ class Audiogram:
 
         """
 
+        # Either log frequency scaling or linear frequency scaling
+        axis_fn = np.log if not linear_frequency else lambda x: x
+
         return Audiogram(
             levels=np.interp(
-                np.log(new_frequencies),
-                np.log(self.frequencies),
+                axis_fn(new_frequencies),
+                axis_fn(self.frequencies),
                 self.levels,
                 left=self.levels[0],
                 right=self.levels[-1],

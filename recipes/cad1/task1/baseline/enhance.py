@@ -213,7 +213,8 @@ def apply_baseline_ha(
     Returns:
         An ndarray representing the processed signal.
     """
-    nalr_fir, _ = enhancer.build(audiogram.levels, audiogram.frequencies)
+    print("XXX", audiogram)
+    nalr_fir, _ = enhancer.build(audiogram)
     proc_signal = enhancer.apply(nalr_fir, signal)
     if apply_compressor:
         proc_signal, _, _ = compressor.process(proc_signal)

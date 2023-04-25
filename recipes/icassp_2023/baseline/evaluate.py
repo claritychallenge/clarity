@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 def amplify_signal(signal, audiogram: Audiogram, enhancer, compressor):
     """Amplify signal for a given audiogram"""
-    nalr_fir, _ = enhancer.build(audiogram.levels, audiogram.frequencies)
+    nalr_fir, _ = enhancer.build(audiogram)
     out = enhancer.apply(nalr_fir, signal)
     out, _, _ = compressor.process(out)
     return out

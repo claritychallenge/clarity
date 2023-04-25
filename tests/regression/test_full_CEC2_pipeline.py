@@ -143,15 +143,18 @@ def test_full_cec2_pipeline(
     audiogram_r = np.array([45, 45, 60, 70, 60, 60, 80, 80])
     audiogram_cfs = np.array([250, 500, 1000, 2000, 3000, 4000, 6000, 8000])
 
+    audiogram_left = Audiogram(levels=audiogram_l, frequencies=audiogram_cfs)
+    audiogram_right = Audiogram(levels=audiogram_r, frequencies=audiogram_cfs)
+
     sample_rate = 44100
 
     enhancer = NALR(**nalr_cfg)
     compressor = Compressor(**compressor_cfg)  # type: ignore
 
-    nalr_fir, _ = enhancer.build(audiogram_l, audiogram_cfs)
+    nalr_fir, _ = enhancer.build(audiogram_left)
     out_l = enhancer.apply(nalr_fir, signal[:, 0])
 
-    nalr_fir, _ = enhancer.build(audiogram_r, audiogram_cfs)
+    nalr_fir, _ = enhancer.build(audiogram_right)
     out_r = enhancer.apply(nalr_fir, signal[:, 1])
 
     out_l, _, _ = compressor.process(out_l)
@@ -160,8 +163,6 @@ def test_full_cec2_pipeline(
     enhanced_audio = np.stack([out_l, out_r], axis=1)
 
     enhanced_audio = np.tanh(enhanced_audio)
-    audiogram_left = Audiogram(levels=audiogram_l, frequencies=audiogram_cfs)
-    audiogram_right = Audiogram(levels=audiogram_r, frequencies=audiogram_cfs)
     listener = Listener(audiogram_left=audiogram_left, audiogram_right=audiogram_right)
 
     sii_enhanced = haspi_v2_be(

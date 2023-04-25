@@ -35,14 +35,10 @@ def enhance(cfg: DictConfig) -> None:
             )
             signal = signal / 32768.0
             assert sample_rate == cfg.nalr.sample_rate
-            nalr_fir, _ = enhancer.build(
-                listener.audiogram_left.levels, listener.audiogram_left.frequencies
-            )
+            nalr_fir, _ = enhancer.build(listener.audiogram_left)
             out_l = enhancer.apply(nalr_fir, signal[:, 0])
 
-            nalr_fir, _ = enhancer.build(
-                listener.audiogram_right.levels, listener.audiogram_right.frequencies
-            )
+            nalr_fir, _ = enhancer.build(listener.audiogram_right)
             out_r = enhancer.apply(nalr_fir, signal[:, 1])
 
             out_l, _, _ = compressor.process(out_l)
