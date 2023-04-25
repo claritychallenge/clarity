@@ -173,7 +173,7 @@ def _evaluate_song_listener(
             / f"{song}"
             / f"{listener}_{song}_left_{instrument}.wav"
         )
-        # left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
+        left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
 
         # Read right instrument enhanced
         sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
@@ -182,7 +182,7 @@ def _evaluate_song_listener(
             / f"{song}"
             / f"{listener}_{song}_right_{instrument}.wav"
         )
-        # right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
+        right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
 
         if sample_rate_left_enhanced_signal != sample_rate_right_enhanced_signal:
             raise ValueError(

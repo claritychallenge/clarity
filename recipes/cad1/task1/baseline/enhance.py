@@ -477,11 +477,10 @@ def enhance(config: DictConfig) -> None:
             # )
 
             # Clip and save stem signals
-            # clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
-            # if n_clipped > 0:
-            #     logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            # wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
-            wavfile.write(filename, config.sample_rate, stem_signal)
+            clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
+            if n_clipped > 0:
+                logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+            wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
 
         enhanced = np.stack([out_left, out_right], axis=1)
         filename = (
