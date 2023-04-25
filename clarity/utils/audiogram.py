@@ -207,7 +207,7 @@ class Listener:
 
     audiogram_left: Audiogram
     audiogram_right: Audiogram
-    id: str | None = None
+    id: str = ""
 
     @staticmethod
     def from_dict(listener_dict: dict) -> Listener:
