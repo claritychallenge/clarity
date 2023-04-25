@@ -470,7 +470,7 @@ def enhance(config: DictConfig) -> None:
             filename.parent.mkdir(parents=True, exist_ok=True)
 
             # Resample signal
-            stem_signal = resample_24khz(
+            stem_signal, _ = resample_24khz(
                 stem_signal, config.sample_rate, config.stem_sample_rate
             )
 
