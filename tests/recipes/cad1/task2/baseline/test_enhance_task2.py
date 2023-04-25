@@ -6,6 +6,7 @@ import pyloudnorm as pyln
 import pytest
 from omegaconf import DictConfig
 
+from clarity.utils.audiogram import Audiogram, Listener
 from recipes.cad1.task2.baseline.enhance import enhance_song
 
 BASE_DIR = Path.cwd()
@@ -25,12 +26,12 @@ def test_enhance_song():
             "enhance": {"min_level": -11, "max_level": -19, "average_level": -14},
         }
     )
-    listener = {
-        "audiogram_levels_l": [20, 30, 35, 45, 50, 60, 65, 60],
-        "audiogram_levels_r": [20, 30, 35, 45, 50, 60, 65, 60],
-        "audiogram_cfs": [250, 500, 1000, 2000, 3000, 4000, 6000, 8000],
-    }
 
+    levels = np.array([20, 30, 35, 45, 50, 60, 65, 60])
+    frequencies = np.array([250, 500, 1000, 2000, 3000, 4000, 6000, 8000])
+    audiogram = Audiogram(levels=levels, frequencies=frequencies)
+
+    listener = Listener(audiogram, audiogram)
     # Create a sample waveform
     waveform = np.random.rand(2, int(config.sample_rate * duration))
 

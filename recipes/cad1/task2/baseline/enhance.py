@@ -15,6 +15,7 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
 
+from clarity.utils.audiogram import Listener
 from recipes.cad1.task2.baseline.baseline_utils import (
     make_scene_listener_list,
     read_mp3,
@@ -24,7 +25,7 @@ from recipes.cad1.task2.baseline.evaluate import load_listeners_and_scenes
 logger = logging.getLogger(__name__)
 
 
-def compute_average_hearing_loss(listener: dict) -> float:
+def compute_average_hearing_loss(listener: Listener) -> float:
     """
     Compute the average hearing loss of a listener.
 
@@ -35,23 +36,15 @@ def compute_average_hearing_loss(listener: dict) -> float:
         average_hearing_loss (float): The average hearing loss of the listener.
 
     """
-    CFS: Final = (500, 1000, 2000, 4000)
-    left_loss = [
-        listener["audiogram_levels_l"][i]
-        for i in range(len(listener["audiogram_cfs"]))
-        if listener["audiogram_cfs"][i] in CFS
-    ]
-    right_loss = [
-        listener["audiogram_levels_r"][i]
-        for i in range(len(listener["audiogram_cfs"]))
-        if listener["audiogram_cfs"][i] in CFS
-    ]
-    return max(float(np.mean(left_loss)), float(np.mean(right_loss)))
+    CFS: Final = np.array([500, 1000, 2000, 4000])
+    left_levels = listener.audiogram_left.resample(CFS).levels
+    right_levels = listener.audiogram_right.resample(CFS).levels
+    return max(float(np.mean(left_levels)), float(np.mean(right_levels)))
 
 
 def enhance_song(
     waveform: np.ndarray,
-    listener_audiograms: dict,
+    listener: Listener,
     config: DictConfig,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
@@ -74,7 +67,7 @@ def enhance_song(
     meter = pyln.Meter(config.sample_rate)
     original_loudness = meter.integrated_loudness(waveform.T)
 
-    average_hearing_loss = compute_average_hearing_loss(listener_audiograms)
+    average_hearing_loss = compute_average_hearing_loss(listener)
 
     extra_reduction = (
         (average_hearing_loss - 50) / 5 if (average_hearing_loss - 50) / 5 > 0 else 0
@@ -126,13 +119,13 @@ def enhance(config: DictConfig) -> None:
         # Read song
         song_waveform, _ = read_mp3(song_path, config.sample_rate)
         out_l, out_r = enhance_song(
-            waveform=song_waveform, listener_audiograms=listener, config=config
+            waveform=song_waveform, listener=listener, config=config
         )
 
         enhanced = np.stack([out_l, out_r], axis=1)
-        filename = f"{scene_id}_{listener['name']}_{current_scene['song']}.wav"
+        filename = f"{scene_id}_{listener.id}_{current_scene['song']}.wav"
 
-        enhanced_folder_listener = enhanced_folder / f"{listener['name']}"
+        enhanced_folder_listener = enhanced_folder / f"{listener.id}"
         enhanced_folder_listener.mkdir(parents=True, exist_ok=True)
 
         # Clip and save

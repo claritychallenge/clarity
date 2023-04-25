@@ -15,7 +15,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Listener
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,
@@ -120,7 +120,7 @@ def evaluate_scene(
     sample_rate: int,
     scene_id: str,
     current_scene: dict,
-    listener_audiogram: dict,
+    listener: Listener,
     car_scene_acoustic: CarSceneAcoustics,
     hrtf: dict,
     config: DictConfig,
@@ -137,9 +137,7 @@ def evaluate_scene(
         current_scene (dict): A dictionary containing information about the scene being
             evaluated, including the song ID, the listener ID, the car noise type, and
             the split.
-        listener_audiogram (dict): A dictionary containing the listener's audiogram
-            data, including the center frequencies (cfs) and the hearing levels for both
-            ears (audiogram_levels_l and audiogram_levels_r).
+        listener (Listener): the listener to use
         car_scene_acoustic (CarSceneAcoustics): An instance of the CarSceneAcoustics
             class, which is used to generate car noise and add binaural room impulse
             responses (BRIRs) to the enhanced signal.
@@ -157,7 +155,7 @@ def evaluate_scene(
     """
     audio_manager = AudioManager(
         output_audio_path=Path("evaluation_signals")
-        / f"{listener_audiogram['name']}"
+        / f"{listener.id}"
         / f"{current_scene['song']}",
         sample_rate=sample_rate,
         soft_clip=config.soft_clip,
@@ -171,7 +169,7 @@ def evaluate_scene(
     processed_signal = car_scene_acoustic.apply_car_acoustics_to_signal(
         enh_signal,
         current_scene,
-        listener_audiogram,
+        listener,
         hrtf,
         audio_manager,
         config,
@@ -194,18 +192,17 @@ def evaluate_scene(
 
     audio_manager.save_audios()
 
-    freqs = np.array(listener_audiogram["audiogram_cfs"])
     # Compute HAAQI scores
     aq_score_l = compute_haaqi(
         processed_signal[0, :],
         ref_signal[0, :],
-        Audiogram(levels=listener_audiogram["audiogram_levels_l"], frequencies=freqs),
+        listener.audiogram_left,
         sample_rate,
     )
     aq_score_r = compute_haaqi(
         processed_signal[1, :],
         ref_signal[1, :],
-        Audiogram(levels=listener_audiogram["audiogram_levels_r"], frequencies=freqs),
+        listener.audiogram_right,
         sample_rate,
     )
     return aq_score_l, aq_score_r
@@ -216,7 +213,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
 
     # Load scenes and listeners depending on config.evaluate.split
-    scenes, listener_audiograms, scenes_listeners = load_listeners_and_scenes(config)
+    scenes, listener_dict, scenes_listeners = load_listeners_and_scenes(config)
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, config.evaluate.small_test
     )
@@ -249,7 +246,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         current_scene = scenes[scene_id]
 
         # Retrieve audiograms
-        listener = listener_audiograms[listener_id]
+        listener = listener_dict[listener_id]
 
         # Retrieve HRTF according to the listener's head orientation
         hrtf_scene = hrtfs[str(current_scene["hr"])]
@@ -265,9 +262,9 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
 
         # Load enhanced signal
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
-        enhanced_song_id = f"{scene_id}_{listener['name']}_{current_scene['song']}"
+        enhanced_song_id = f"{scene_id}_{listener.id}_{current_scene['song']}"
         enhanced_song_path = (
-            enhanced_folder / f"{listener['name']}" / f"{enhanced_song_id}.wav"
+            enhanced_folder / f"{listener.id}" / f"{enhanced_song_id}.wav"
         )
 
         # Read WAV enhanced signal using scipy.io.wavfile
@@ -294,7 +291,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
             scene_id,
             current_scene["song"],
             current_scene["song_path"].split("/")[-2],
-            listener_id,
+            listener.id,
             score=float(score),
             haaqi_left=aq_score_l,
             haaqi_right=aq_score_r,
