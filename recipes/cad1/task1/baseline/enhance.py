@@ -1,6 +1,7 @@
 """ Run the dummy enhancement. """
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
@@ -17,7 +18,8 @@ from torchaudio.transforms import Fade
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.evaluator.haspi.eb import resample_24khz
+
+# from clarity.evaluator.haspi.eb import resample_24khz
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
@@ -275,7 +277,7 @@ def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray
     if soft_clip:
         signal = np.tanh(signal)
     n_clipped = np.sum(np.abs(signal) > 1.0)
-    np.clip(signal, -1.0, 1.0, out=signal)
+    signal = np.clip(signal, -1.0, 1.0)
     return signal, int(n_clipped)
 
 
@@ -409,7 +411,7 @@ def enhance(config: DictConfig) -> None:
 
             # Model dependant params
             if config.separator.model == "demucs":
-                model_sample_rate = 44100
+                model_sample_rate = HDEMUCS_HIGH_MUSDB.sample_rate
                 sources_order = separation_model.sources
                 normalise = True
             elif config.separator.model == "openunmix":
@@ -470,15 +472,16 @@ def enhance(config: DictConfig) -> None:
             filename.parent.mkdir(parents=True, exist_ok=True)
 
             # Resample signal
-            stem_signal, _ = resample_24khz(
-                stem_signal, config.sample_rate, config.stem_sample_rate
-            )
+            # stem_signal, _ = resample_24khz(
+            #     stem_signal, config.sample_rate, config.stem_sample_rate
+            # )
 
             # Clip and save stem signals
             clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
             if n_clipped > 0:
                 logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            wavfile.write(filename, config.stem_sample_rate, to_16bit(clipped_signal))
+            wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
+            wavfile.write(filename, config.sample_rate, clipped_signal)
 
         enhanced = np.stack([out_left, out_right], axis=1)
         filename = (
