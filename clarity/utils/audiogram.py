@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Callable, Final
 
 import numpy as np
 
@@ -144,7 +144,7 @@ class Audiogram:
         """
 
         # Either log frequency scaling or linear frequency scaling
-        axis_fn = np.log if not linear_frequency else lambda x: x
+        axis_fn: Callable = (lambda x: x) if linear_frequency else np.log
 
         return Audiogram(
             levels=np.interp(

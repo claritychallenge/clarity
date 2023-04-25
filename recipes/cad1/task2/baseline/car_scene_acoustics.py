@@ -119,7 +119,7 @@ class CarSceneAcoustics:
         Returns:
             np.ndarray: The enhanced audio signal.
         """
-        nalr_fir, _ = self.enhancer.build(audiogram.levels, audiogram.frequencies)
+        nalr_fir, _ = self.enhancer.build(audiogram)
         signal = self.enhancer.apply(nalr_fir, signal)
         signal, _, _ = self.compressor.process(signal)
         return signal
