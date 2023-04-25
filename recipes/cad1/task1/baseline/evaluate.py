@@ -1,6 +1,7 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import csv
 import hashlib
 import itertools
@@ -159,28 +160,29 @@ def _evaluate_song_listener(
     ]:
         logger.info(f"...evaluating {instrument}")
 
+        # Read instrument reference
         sample_rate_reference_signal, reference_signal = wavfile.read(
             Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
         )
-
-        # Read instrument reference signal
         reference_signal = (reference_signal / 32768.0).astype(np.float32)
-        left_reference_signal = reference_signal[:, 0]
-        right_reference_signal = reference_signal[:, 1]
 
-        # Read instrument enhanced
+        # Read left instrument enhanced
         sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
             / f"{listener}_{song}_left_{instrument}.wav"
         )
+        left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
+
+        # Read right instrument enhanced
         sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
             / f"{listener}_{song}_right_{instrument}.wav"
         )
+        right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
 
         if sample_rate_left_enhanced_signal != sample_rate_right_enhanced_signal:
             raise ValueError(
@@ -193,24 +195,24 @@ def _evaluate_song_listener(
                 f"The sample rate of the reference signal is not {config.sample_rate}"
             )
 
-        #  audiogram, audiogram_frequencies, fs_signal
+        #  Compute left and right scores
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
             processed_signal=left_enhanced_signal,
-            reference_signal=left_reference_signal,
+            reference_signal=reference_signal[:, 0],
             sample_rate_processed=sample_rate_left_enhanced_signal,
-            sample_rate_reference=config.sample_rate,
+            sample_rate_reference=sample_rate_reference_signal,
             audiogram=np.array(listener_audiograms["audiogram_levels_l"]),
             audiogram_frequencies=np.array(listener_audiograms["audiogram_cfs"]),
-            level1=65 - 20 * np.log10(compute_rms(left_reference_signal)),
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             processed_signal=right_enhanced_signal,
-            reference_signal=right_reference_signal,
+            reference_signal=reference_signal[:, 1],
             sample_rate_processed=sample_rate_right_enhanced_signal,
-            sample_rate_reference=config.sample_rate,
+            sample_rate_reference=sample_rate_reference_signal,
             audiogram=np.array(listener_audiograms["audiogram_levels_r"]),
             audiogram_frequencies=np.array(listener_audiograms["audiogram_cfs"]),
-            level1=65 - 20 * np.log10(compute_rms(right_reference_signal)),
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
     # Compute the combined score
