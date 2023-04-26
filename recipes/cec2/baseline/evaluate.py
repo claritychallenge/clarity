@@ -32,7 +32,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
     with Path(cfg.path.scenes_listeners_file).open("r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
-    listener_dict = Listener.read_listener_dict(cfg.path.listeners_file)
+    listener_dict = Listener.load_listener_dict(cfg.path.listeners_file)
     Path(cfg.path.exp_folder).mkdir(parents=True, exist_ok=True)
 
     enhanced_folder = Path(cfg.path.exp_folder) / "enhanced_signals"

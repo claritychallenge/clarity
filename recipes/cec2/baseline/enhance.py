@@ -21,7 +21,7 @@ def enhance(cfg: DictConfig) -> None:
     enhanced_folder.mkdir(parents=True, exist_ok=True)
     with Path(cfg.path.scenes_listeners_file).open("r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    listener_dict = Listener.read_listener_dict(cfg.path.listeners_file)
+    listener_dict = Listener.load_listener_dict(cfg.path.listeners_file)
 
     enhancer = NALR(**cfg.nalr)
     compressor = Compressor(**cfg.compressor)

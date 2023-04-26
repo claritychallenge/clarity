@@ -46,7 +46,7 @@ def run_HL_processing(cfg: DictConfig) -> None:
     output_path.mkdir(parents=True, exist_ok=True)
     with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    listener_dict = Listener.read_listener_dict(cfg.path.listeners_file)
+    listener_dict = Listener.load_listener_dict(cfg.path.listeners_file)
     enhanced_folder = Path(cfg.path.enhanced_signals)
 
     # initialize ear

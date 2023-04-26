@@ -101,7 +101,7 @@ def run_calculate_si(cfg: DictConfig) -> None:
     with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
-    listeners_dict = Listener.read_listener_dict(cfg.path.listeners_file)
+    listeners_dict = Listener.load_listener_dict(cfg.path.listeners_file)
     enhancer = NALR(**cfg.nalr)
     compressor = Compressor(**cfg.compressor)
 

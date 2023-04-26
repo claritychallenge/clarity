@@ -48,7 +48,7 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
     scene, listener_id, _ = parse_cec2_signal_name(signal_name)
 
     # Retrieve the listeners
-    listener_dict = Listener.read_listener_dict(
+    listener_dict = Listener.load_listener_dict(
         Path(path["metadata_dir"]) / "listeners.json"
     )
     listener = listener_dict[listener_id]

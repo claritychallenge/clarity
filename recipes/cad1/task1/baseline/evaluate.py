@@ -217,7 +217,7 @@ def run_calculate_aq(config: DictConfig) -> None:
     songs = pd.DataFrame.from_dict(songs)
 
     # Load listener data
-    listener_dict = Listener.read_listener_dict(config.path.listeners_valid_file)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_valid_file)
 
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")

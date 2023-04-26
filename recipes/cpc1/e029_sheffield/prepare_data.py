@@ -88,7 +88,7 @@ def run_msbg_simulation(cfg, track):
             file_path = Path(dataset_folder) / "metadata/listeners.CPC1_train.json"
         else:
             file_path = Path(dataset_folder) / "metadata/listeners.CPC1_all.json"
-        listener_dict = Listener.read_listener_dict(file_path)
+        listener_dict = Listener.load_listener_dict(file_path)
 
         # initialize ear
         ear = Ear(**cfg["MSBGEar"])

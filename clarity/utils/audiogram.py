@@ -243,7 +243,7 @@ class Listener:
         )
 
     @staticmethod
-    def read_listener_dict(filename: Path) -> dict[str, Listener]:
+    def load_listener_dict(filename: Path) -> dict[str, Listener]:
         """Read a Clarity Listener dict file.
 
         The standard Clarity metadata files presents listeners as a

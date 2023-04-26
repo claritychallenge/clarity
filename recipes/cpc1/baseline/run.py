@@ -47,7 +47,7 @@ def run_HL_processing(cfg, path):
     output_path.mkdir(parents=True, exist_ok=True)
     with open(path.scenes_file, encoding="utf-8") as fp:
         scenes = json.load(fp)
-    listener_dict = Listener.read_listener_dict(path.listeners_file)
+    listener_dict = Listener.load_listener_dict(path.listeners_file)
 
     enhanced_folder = Path(path.scenes_folder)
 

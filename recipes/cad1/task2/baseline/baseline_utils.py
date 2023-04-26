@@ -96,10 +96,10 @@ def load_listeners_and_scenes(
 
     # Load audiograms and scene data for the corresponding split
     if config.evaluate.split == "train":
-        listeners = Listener.read_listener_dict(config.path.listeners_train_file)
+        listeners = Listener.load_listener_dict(config.path.listeners_train_file)
         scenes = df_scenes[df_scenes["split"] == "train"].to_dict("index")
     elif config.evaluate.split == "valid":
-        listeners = Listener.read_listener_dict(config.path.listeners_valid_file)
+        listeners = Listener.load_listener_dict(config.path.listeners_valid_file)
         scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
     else:
         raise ValueError(f"Unknown split {config.evaluate.split}")

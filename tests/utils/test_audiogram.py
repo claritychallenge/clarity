@@ -147,7 +147,7 @@ def test_resample(requested_frequencies, expected_levels):
 def test_listener_read_listener_dict():
     """Test reading listener dictionary"""
     listener_dict_path = Path("tests/test_data/metadata/listeners.json")
-    listeners_dict = Listener.read_listener_dict(listener_dict_path)
+    listeners_dict = Listener.load_listener_dict(listener_dict_path)
 
     # Check the dataclass and underlying audiogram dataclass have
     # been constructed correctly and that a sample of values
