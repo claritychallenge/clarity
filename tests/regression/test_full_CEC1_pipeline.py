@@ -130,16 +130,16 @@ def test_full_cec1_pipeline(regtest):
 
     ear = Ear(**msbg_ear_cfg)
 
-    left_audiogram = Audiogram(frequencies=audiogram_cfs, levels=audiogram_l)
-    right_audiogram = Audiogram(frequencies=audiogram_cfs, levels=audiogram_r)
+    audiogram_left = Audiogram(frequencies=audiogram_cfs, levels=audiogram_l)
+    audiogram_right = Audiogram(frequencies=audiogram_cfs, levels=audiogram_r)
 
     enhancer = NALR(**nalr_cfg)
     compressor = Compressor(**compressor_cfg)
 
-    nalr_fir, _ = enhancer.build(audiogram_l, audiogram_cfs)
+    nalr_fir, _ = enhancer.build(audiogram_left)
     out_l = enhancer.apply(nalr_fir, signal[:, 0])
 
-    nalr_fir, _ = enhancer.build(audiogram_r, audiogram_cfs)
+    nalr_fir, _ = enhancer.build(audiogram_right)
     out_r = enhancer.apply(nalr_fir, signal[:, 1])
 
     out_l, _, _ = compressor.process(out_l)
@@ -156,8 +156,8 @@ def test_full_cec1_pipeline(regtest):
     ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
 
     # Pass through MSBG hearing loss model
-    reference_processed = listen(ear, reference, left_audiogram, right_audiogram)
-    signal_processed = listen(ear, enhanced_audio, left_audiogram, right_audiogram)
+    reference_processed = listen(ear, reference, audiogram_left, audiogram_right)
+    signal_processed = listen(ear, enhanced_audio, audiogram_left, audiogram_right)
 
     # Calculate channel-specific unit impulse delay due to HL model and audiograms
     delay = find_delay_impulse(ddf_signal, initial_value=int(MSBG_FS / 2))

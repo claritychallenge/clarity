@@ -1,5 +1,5 @@
-import csv
-import json
+import csv  # pylint: disable=ungrouped-imports
+import json  # pylint: disable=ungrouped-imports
 import logging
 from pathlib import Path
 
@@ -13,24 +13,26 @@ from clarity.evaluator.mbstoi.mbstoi import mbstoi
 from clarity.evaluator.mbstoi.mbstoi_utils import find_delay_impulse
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import AUDIOGRAM_REF_CLARITY, Listener
 from clarity.utils.file_io import read_signal, write_signal
 
 logger = logging.getLogger(__name__)
 
 
-def listen(ear, signal, audiogram_l, audiogram_r):
+def listen(ear, signal, listener: Listener):
     """
     Generate MSBG processed signal
     :param ear: MSBG ear
-    :param wav: binaural signal
+    :param signal: binaural signal
+    :param listener: listener - the listener characteristics to simulate
     :return: binaural signal
     """
-    ear.set_audiogram(audiogram_l)
+    ear.set_audiogram(listener.audiogram_left)
     out_l = ear.process(signal[:, 0])
 
-    ear.set_audiogram(audiogram_r)
+    ear.set_audiogram(listener.audiogram_right)
     out_r = ear.process(signal[:, 1])
+
     if len(out_l[0]) != len(out_r[0]):
         diff = len(out_l[0]) - len(out_r[0])
         if diff > 0:
@@ -45,8 +47,8 @@ def run_HL_processing(cfg, path):
     output_path.mkdir(parents=True, exist_ok=True)
     with open(path.scenes_file, encoding="utf-8") as fp:
         scenes = json.load(fp)
-    with open(path.listeners_file, encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
+    listener_dict = Listener.load_listener_dict(path.listeners_file)
+
     enhanced_folder = Path(path.scenes_folder)
 
     # initialize ear
@@ -54,12 +56,12 @@ def run_HL_processing(cfg, path):
 
     for scene_dict in tqdm(scenes):
         scene = scene_dict["scene"]
-        listener = scene_dict["listener"]
+        listener_id = scene_dict["listener"]
         system = scene_dict["system"]
-        signal_file = enhanced_folder / f"{scene}_{listener}_{system}.wav"
+        signal_file = enhanced_folder / f"{scene}_{listener_id}_{system}.wav"
 
         # signals to write
-        outfile_stem = f"{output_path}/{scene}_{listener}_{system}"
+        outfile_stem = f"{output_path}/{scene}_{listener_id}_{system}"
         signal_files_to_write = [
             f"{output_path}/{scene}_flat0dB_HL-output.wav",
             f"{outfile_stem}_HL-output.wav",
@@ -74,25 +76,18 @@ def run_HL_processing(cfg, path):
         mixture_signal = read_signal(Path(path.ref_folder) / f"{scene}_mixed_CH0.wav")
 
         # retrieve audiograms
-        cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-        audiogram_left = np.array(listener_audiograms[listener]["audiogram_levels_l"])
-        left_audiogram = Audiogram(frequencies=cfs, levels=audiogram_left)
-        audiogram_right = np.array(listener_audiograms[listener]["audiogram_levels_r"])
-        right_audiogram = Audiogram(frequencies=cfs, levels=audiogram_right)
+        listener = listener_dict[listener_id]
 
         # Create discrete delta function (DDF) signal for time alignment
         ddf_signal = np.zeros(np.shape(signal))
         ddf_signal[:, 0] = unit_impulse(len(signal), int(MSBG_FS / 2))
         ddf_signal[:, 1] = unit_impulse(len(signal), int(MSBG_FS / 2))
-
-        # Get flat-0dB ear audiograms
-        flat0dB_audiogram = Audiogram(frequencies=cfs, levels=np.zeros(np.shape(cfs)))
-
+        reference_listener = Listener(AUDIOGRAM_REF_CLARITY, AUDIOGRAM_REF_CLARITY)
         signals_to_write = [
-            listen(ear, ddf_signal, flat0dB_audiogram, flat0dB_audiogram),
-            listen(ear, signal, left_audiogram, right_audiogram),
-            listen(ear, ddf_signal, left_audiogram, right_audiogram),
-            listen(ear, mixture_signal, left_audiogram, right_audiogram),
+            listen(ear, ddf_signal, reference_listener),
+            listen(ear, signal, listener),
+            listen(ear, ddf_signal, listener),
+            listen(ear, mixture_signal, listener),
         ]
         for signal, signal_file in zip(signals_to_write, signal_files_to_write):
             write_signal(

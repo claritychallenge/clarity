@@ -9,7 +9,6 @@ import itertools
 import json
 import logging
 from pathlib import Path
-from typing import Any
 
 import hydra
 import numpy as np
@@ -18,7 +17,7 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Listener
 from clarity.utils.signal_processing import compute_rms
 
 logger = logging.getLogger(__name__)
@@ -63,7 +62,7 @@ class ResultsFile:
 
     def add_result(
         self,
-        listener: str,
+        listener_id: str,
         song: str,
         score: float,
         instruments_scores: dict[str, float],
@@ -71,7 +70,7 @@ class ResultsFile:
         """Add a result to the CSV file.
 
         Args:
-            listener (str): The name of the listener who submitted the result.
+            listener_id (str): The name of the listener who submitted the result.
             song (str): The name of the song that the result is for.
             score (float): The combined score for the result.
             instruments_scores (dict): A dictionary of scores for each instrument
@@ -86,7 +85,7 @@ class ResultsFile:
             csv_writer.writerow(
                 [
                     song,
-                    listener,
+                    listener_id,
                     str(score),
                     str(instruments_scores["left_bass"]),
                     str(instruments_scores["right_bass"]),
@@ -108,7 +107,7 @@ def set_song_seed(song: str) -> None:
 
 
 def make_song_listener_list(
-    songs: list[str], listeners: dict[str, Any], small_test: bool = False
+    songs: list[str], listeners: dict[str, Listener], small_test: bool = False
 ) -> list[tuple[str, str]]:
     """Make the list of scene-listener pairing to process"""
     song_listener_pairs = list(itertools.product(songs, listeners.keys()))
@@ -121,10 +120,9 @@ def make_song_listener_list(
 
 def _evaluate_song_listener(
     song: str,
-    listener: str,
+    listener: Listener,
     config: DictConfig,
     split_dir: str,
-    listener_audiograms: dict,
     enhanced_folder: Path,
 ) -> tuple[float, dict]:
     """Evaluate a single song-listener pair
@@ -134,7 +132,6 @@ def _evaluate_song_listener(
         listener (str): The name of the listener to evaluate.
         config (DictConfig): The configuration object.
         split_dir (str): The name of the split directory.
-        listener_audiograms (dict): A dictionary of audiograms for each listener.
         enhanced_folder (Path): The path to the folder containing the enhanced signals.
 
     Returns:
@@ -144,7 +141,7 @@ def _evaluate_song_listener(
 
     """
 
-    logger.info(f"Evaluating {song} for {listener}")
+    logger.info(f"Evaluating {song} for {listener.id}")
 
     if config.evaluate.set_random_seed:
         set_song_seed(song)
@@ -168,18 +165,18 @@ def _evaluate_song_listener(
         # Load left channel
         sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
             enhanced_folder
-            / f"{listener}"
+            / f"{listener.id}"
             / f"{song}"
-            / f"{listener}_{song}_left_{instrument}.wav"
+            / f"{listener.id}_{song}_left_{instrument}.wav"
         )
         left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
 
         # Load right channel
         sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
             enhanced_folder
-            / f"{listener}"
+            / f"{listener.id}"
             / f"{song}"
-            / f"{listener}_{song}_right_{instrument}.wav"
+            / f"{listener.id}_{song}_right_{instrument}.wav"
         )
         right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
 
@@ -190,27 +187,17 @@ def _evaluate_song_listener(
             == config.sample_rate
         )
 
-        frequencies = np.array(listener_audiograms["audiogram_cfs"])
-        audiogram_left = Audiogram(
-            levels=np.array(listener_audiograms["audiogram_levels_l"]),
-            frequencies=frequencies,
-        )
-        audiogram_right = Audiogram(
-            levels=np.array(listener_audiograms["audiogram_levels_l"]),
-            frequencies=frequencies,
-        )
-
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
             left_enhanced_signal,
             reference_signal[:, 0],
-            audiogram_left,
+            listener.audiogram_left,
             config.sample_rate,
             65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             right_enhanced_signal,
             reference_signal[:, 1],
-            audiogram_right,
+            listener.audiogram_right,
             config.sample_rate,
             65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
@@ -230,8 +217,7 @@ def run_calculate_aq(config: DictConfig) -> None:
     songs = pd.DataFrame.from_dict(songs)
 
     # Load listener data
-    with open(config.path.listeners_valid_file, encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_valid_file)
 
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
@@ -242,28 +228,27 @@ def run_calculate_aq(config: DictConfig) -> None:
     results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
-        songs["Track Name"].tolist(), listener_audiograms, config.evaluate.small_test
+        songs["Track Name"].tolist(), listener_dict, config.evaluate.small_test
     )
 
     song_listener_pair = song_listener_pair[
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
-    for song, listener in song_listener_pair:
+    for song, listener_id in song_listener_pair:
         split_dir = "train"
         if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
             split_dir = "test"
-
+        listener = listener_dict[listener_id]
         combined_score, per_instrument_score = _evaluate_song_listener(
             song,
             listener,
             config,
             split_dir,
-            listener_audiograms[listener],
             enhanced_folder,
         )
         results_file.add_result(
-            listener,
+            listener.id,
             song,
             score=combined_score,
             instruments_scores=per_instrument_score,

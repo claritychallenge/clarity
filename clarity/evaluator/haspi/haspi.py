@@ -14,7 +14,7 @@ from clarity.evaluator.haspi.ebm import (
     modulation_cross_correlation,
 )
 from clarity.evaluator.haspi.ip import get_neural_net, nn_feed_forward_ensemble
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram, Listener
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -155,8 +155,7 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
     processed_left: ndarray,
     processed_right: ndarray,
     sample_rate: float,
-    audiogram_left: Audiogram,
-    audiogram_right: Audiogram,
+    listener: Listener,
     level: float = 100.0,
 ) -> float:
     """Better ear HASPI.
@@ -185,7 +184,7 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         sample_rate,
         processed_left,
         sample_rate,
-        audiogram_left,
+        listener.audiogram_left,
         level,
     )
     score_right, _ = haspi_v2(
@@ -193,7 +192,7 @@ def haspi_v2_be(  # pylint: disable=too-many-arguments
         sample_rate,
         processed_right,
         sample_rate,
-        audiogram_right,
+        listener.audiogram_right,
         level,
     )
 

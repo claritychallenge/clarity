@@ -1,8 +1,10 @@
 """Dataclass to represent a monaural audiogram"""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from pathlib import Path
+from typing import TYPE_CHECKING, Callable, Final
 
 import numpy as np
 
@@ -60,6 +62,11 @@ class Audiogram:
 
     def __post_init__(self) -> None:
         """Check that dimensions of levels and frequencies match."""
+
+        # Ensure that levels and frequencies are numpy arrays
+        self.levels = np.array(self.levels)
+        self.frequencies = np.array(self.frequencies)
+
         if len(self.levels) != len(self.frequencies):
             raise ValueError(
                 f"Levels ({len(self.levels)}) and frequencies ({len(self.frequencies)})"
@@ -119,10 +126,14 @@ class Audiogram:
         """
         return np.all(np.isin(frequencies, self.frequencies, assume_unique=True))
 
-    def resample(self, new_frequencies: ndarray) -> Audiogram:
+    def resample(
+        self, new_frequencies: ndarray, linear_frequency: bool = False
+    ) -> Audiogram:
         """Resample the audiogram to a new set of frequencies.
 
-        Interpolates linearly on a log frequency axis.
+        Interpolates linearly on a (by default) log frequency axis. If
+        linear_frequencies is set True then interpolation is done on a linear
+        frequency axis.
 
         Args:
             new_frequencies (ndarray): The new frequencies to resample to
@@ -132,10 +143,13 @@ class Audiogram:
 
         """
 
+        # Either log frequency scaling or linear frequency scaling
+        axis_fn: Callable = (lambda x: x) if linear_frequency else np.log
+
         return Audiogram(
             levels=np.interp(
-                np.log(new_frequencies),
-                np.log(self.frequencies),
+                axis_fn(new_frequencies),
+                axis_fn(self.frequencies),
                 self.levels,
                 left=self.levels[0],
                 right=self.levels[-1],
@@ -151,6 +165,12 @@ class Audiogram:
 AUDIOGRAM_REF: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+)
+
+# No loss
+AUDIOGRAM_REF_CLARITY: Final = Audiogram(
+    frequencies=DEFAULT_CLARITY_AUDIOGRAM_FREQUENCIES,
+    levels=np.array([0, 0, 0, 0, 0, 0, 0, 0]),
 )
 
 # Mild age-related hearing loss, slightly reduced from CF, first-time aid
@@ -173,3 +193,73 @@ AUDIOGRAM_MODERATE_SEVERE: Final = Audiogram(
     frequencies=FULL_STANDARD_AUDIOGRAM_FREQUENCIES,
     levels=np.array([19, 19, 28, 35, 40, 47, 52, 56, 58, 58, 63, 70, 75, 80, 80]),
 )
+
+
+@dataclass
+class Listener:
+    """Dataclass to represent a Listener.
+
+    The listener is currently defined by their left and right ear
+    audiogram. In later versions, this may be extended to include
+    further audiometric data.
+
+    The class provides methods for reading metadata files which
+    will also include some basic validation.
+
+    Attributes:
+        id (str): The ID of the listener
+        audiogram_left (Audiogram): The audiogram for the left ear
+        audiogram_right (Audiogram): The audiogram for the right ear
+    """
+
+    audiogram_left: Audiogram
+    audiogram_right: Audiogram
+    id: str = ""
+
+    @staticmethod
+    def from_dict(listener_dict: dict) -> Listener:
+        """Create a Listener from a dict.
+
+        The dict structure and fields are based on those used
+        in the Clarity metadata files.
+
+        Args:
+            listener_dict (dict): The listener dict
+
+        Returns:
+            Listener: The listener
+
+        """
+        return Listener(
+            id=listener_dict["name"],
+            audiogram_left=Audiogram(
+                levels=listener_dict["audiogram_levels_l"],
+                frequencies=listener_dict["audiogram_cfs"],
+            ),
+            audiogram_right=Audiogram(
+                levels=listener_dict["audiogram_levels_r"],
+                frequencies=listener_dict["audiogram_cfs"],
+            ),
+        )
+
+    @staticmethod
+    def load_listener_dict(filename: Path) -> dict[str, Listener]:
+        """Read a Clarity Listener dict file.
+
+        The standard Clarity metadata files presents listeners as a
+        dictionary of listeners, keyed by listener ID.
+
+        Args:
+            filename (Path): The path to the listener dict file
+
+        Returns:
+            dict[str, Listener]: A dict of listeners keyed by id
+
+        """
+        with open(filename, encoding="utf-8") as fp:
+            listeners_raw = json.load(fp)
+
+        listeners = {}
+        for listener_id, listener_dict in listeners_raw.items():
+            listeners[listener_id] = Listener.from_dict(listener_dict)
+        return listeners
