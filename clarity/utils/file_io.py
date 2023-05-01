@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
 import numpy as np
@@ -58,7 +59,8 @@ def write_signal(
 
     Signals are floating point in the range [-1.0 to 1.0) but can be written
     as wav file with either 16 bit integers or floating point. In the former,
-    the signals are scaled to map to the range -32768 to 32767.
+    the signals are scaled to map to the range -32768 to 32767 and clipped
+    if necessary.
 
     NB: setting 'strict' to True will raise error on overflow. This would be
     a more natural default but it would break existing code that did not
@@ -76,9 +78,14 @@ def write_signal(
         subtype = "PCM_16"
         # Signal is float and we want to convert to int16
         # *NB* Not  *= in next line as we need to make a copy
-        signal = signal * 32768
-        if strict and (np.max(signal) > 32767 or np.min(signal) < -32768):
-            raise ValueError("Signal out of range -1.0 to 1.0")
+        signal = signal * 32768.0
+        if np.max(signal) > 32767.0 or np.min(signal) < -32768.0:
+            if strict:
+                raise ValueError("Signal out of range [-1.0, 1.0)")
+            logging.warning(
+                f"Writing {filename}. Signal out of range [-1.0, 1.0) - clipping."
+            )
+            signal = np.clip(signal, -32768.0, 32767.0)
         signal = signal.astype(np.dtype("int16"))
     else:
         subtype = "FLOAT"
