@@ -121,7 +121,7 @@ class FlacEncoder:
                 varies from 0 (fastest) to 8 (slowest). The default setting
                 is 5, see https://en.wikipedia.org/wiki/FLAC for more details.
         """
-        self._compression_level = compression_level
+        self.compression_level = compression_level
 
     def encode(
         self,
@@ -143,7 +143,7 @@ class FlacEncoder:
         wav_encoder = WavEncoder(
             signal=signal,
             sample_rate=sample_rate,
-            compression_level=self._compression_level,
+            compression_level=self.compression_level,
             output_file=output_file,
         )
         return wav_encoder.process()
