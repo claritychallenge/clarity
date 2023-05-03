@@ -167,6 +167,8 @@ class FlacEncoder:
         )
         decoder = pyflac.FileDecoder(input_filename)
         signal, sample_rate = decoder.process()
+        signal = (signal * 32768).astype(np.int16)
+
         if mono:
             signal = signal.mean(1)
         return signal, float(sample_rate)
