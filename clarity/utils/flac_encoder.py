@@ -156,7 +156,7 @@ class FlacEncoder:
         Decompress the audio data.
 
         Args:
-            input_filename (pathlib.Path): Path to the input FLAC file.
+            input_filename (pathlib.Path | str): Path to the input FLAC file.
             mono (bool): Whether to return the audio data as mono or stereo.
 
         Returns:
