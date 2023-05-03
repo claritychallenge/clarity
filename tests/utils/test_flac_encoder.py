@@ -1,5 +1,4 @@
 """Tests for the FlacEncoder class."""
-# pylint: disable=import-error
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
