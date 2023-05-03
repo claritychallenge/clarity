@@ -9,7 +9,6 @@ from pathlib import Path
 import hydra
 import numpy as np
 import pandas as pd
-import soxr
 import torch
 from omegaconf import DictConfig
 from scipy.io import wavfile
@@ -20,7 +19,7 @@ from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.utils.flac_encoder import FlacEncoder
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
-from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
+from recipes.cad1.task1.baseline.evaluate import make_song_listener_list, resample
 
 # pylint: disable=too-many-locals
 
@@ -289,22 +288,6 @@ def to_16bit(signal: np.ndarray) -> np.ndarray:
         signal (np.ndarray): Converted signal.
     """
     return (32767.0 * signal).astype(np.int16)
-
-
-def resample(signal: np.ndarray, sample_rate: int, new_sample_rate: int) -> np.ndarray:
-    """Resample the signal to the desired sample rate.
-
-    Args:
-        signal (np.ndarray): Signal to be resampled.
-        sample_rate (int): Sample rate of the signal.
-        new_sample_rate (int): Desired sample rate.
-
-    Returns:
-        signal (np.ndarray): Resampled signal.
-    """
-    if sample_rate == new_sample_rate:
-        return signal
-    return soxr.resample(signal, sample_rate, new_sample_rate, quality="HQ")
 
 
 @hydra.main(config_path="", config_name="config")
