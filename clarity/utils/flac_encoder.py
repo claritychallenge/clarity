@@ -149,7 +149,9 @@ class FlacEncoder:
         return wav_encoder.process()
 
     @staticmethod
-    def decode(input_filename: Path, mono: bool = True) -> tuple[np.ndarray, float]:
+    def decode(
+        input_filename: Path | str, mono: bool = True
+    ) -> tuple[np.ndarray, float]:
         """
         Decompress the audio data.
 
@@ -160,7 +162,10 @@ class FlacEncoder:
         Returns:
             (np.ndarray): The raw audio data.
         """
-        decoder = pyflac.FileDecoder(Path(input_filename))
+        input_filename = (
+            Path(input_filename) if isinstance(input_filename, str) else input_filename
+        )
+        decoder = pyflac.FileDecoder(input_filename)
         signal, sample_rate = decoder.process()
         if mono:
             signal = signal.mean(1)
