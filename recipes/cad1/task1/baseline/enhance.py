@@ -9,7 +9,7 @@ from pathlib import Path
 import hydra
 import numpy as np
 import pandas as pd
-import scipy
+import soxr
 import torch
 from omegaconf import DictConfig
 from scipy.io import wavfile
@@ -18,13 +18,11 @@ from torchaudio.transforms import Fade
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-
-# from clarity.evaluator.haspi.eb import resample_24khz
+from clarity.utils.flac_encoder import FlacEncoder
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
 # pylint: disable=too-many-locals
-# pylint: disable=import-error
 
 
 logger = logging.getLogger(__name__)
@@ -282,7 +280,15 @@ def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray
 
 
 def to_16bit(signal: np.ndarray) -> np.ndarray:
-    return (32768.0 * signal).astype(np.int16)
+    """Convert the signal to 16 bit.
+
+    Args:
+        signal (np.ndarray): Signal to be converted.
+
+    Returns:
+        signal (np.ndarray): Converted signal.
+    """
+    return (32767.0 * signal).astype(np.int16)
 
 
 def resample(signal: np.ndarray, sample_rate: int, new_sample_rate: int) -> np.ndarray:
@@ -298,9 +304,7 @@ def resample(signal: np.ndarray, sample_rate: int, new_sample_rate: int) -> np.n
     """
     if sample_rate == new_sample_rate:
         return signal
-    return scipy.signal.resample(
-        signal, int(new_sample_rate * signal.shape[0] / sample_rate)
-    )
+    return soxr.resample(signal, sample_rate, new_sample_rate, quality="HQ")
 
 
 @hydra.main(config_path="", config_name="config")
@@ -365,8 +369,12 @@ def enhance(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
+    # Create hearing aid objects
     enhancer = NALR(**config.nalr)
     compressor = Compressor(**config.compressor)
+
+    # Create flac encoder object for saving the processed stems
+    flac_encoder = FlacEncoder()
 
     # Decompose each song into left and right vocal, drums, bass, and other stems
     # and process each stem for the listener
@@ -467,34 +475,47 @@ def enhance(config: DictConfig) -> None:
                 enhanced_folder
                 / f"{listener_info['name']}"
                 / f"{song_name}"
-                / f"{listener_info['name']}_{song_name}_{stem_str}.wav"
+                / f"{listener_info['name']}_{song_name}_{stem_str}.flac"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
 
-            # Resample signal
-            # stem_signal, _ = resample_24khz(
-            #     stem_signal, config.sample_rate, config.stem_sample_rate
-            # )
+            # Save processed stem
+            # Resample to stem sample rate.
+            stem_signal = resample(
+                stem_signal, config.sample_rate, config.stem_sample_rate
+            )
+            # Scale stem signal
+            max_value = np.max(np.abs(stem_signal))
+            stem_signal = stem_signal / max_value
 
-            # Clip and save stem signals
-            clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
-            if n_clipped > 0:
-                logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
+            # Transform signal to 16-bit integer
+            # and save compressed signal using flac
+            flac_encoder.encode(
+                to_16bit(stem_signal),
+                config.stem_sample_rate,
+            )
+
+            # Save scale factor
+            with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
+                file.write(f"{max_value}")
 
         enhanced = np.stack([out_left, out_right], axis=1)
         filename = (
             enhanced_folder
             / f"{listener_info['name']}"
             / f"{song_name}"
-            / f"{listener_info['name']}_{song_name}_remix.wav"
+            / f"{listener_info['name']}_{song_name}_remix.flac"
         )
 
+        # Resample enhanced signal to expected output sample rate
+        enhanced = resample(enhanced, config.sample_rate, config.remix_sample_rate)
         # clip and save enhanced signal
         clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
         if n_clipped > 0:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-        wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
+        flac_encoder.encode(
+            to_16bit(clipped_signal), config.remix_sample_rate, filename
+        )
 
 
 # pylint: disable = no-value-for-parameter
