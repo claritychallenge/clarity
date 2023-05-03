@@ -229,7 +229,7 @@ def _evaluate_song_listener(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
-            / f"{listener}_{song}_right_{instrument}.wav"
+            / f"{listener}_{song}_right_{instrument}.flac"
         )
         right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
 
