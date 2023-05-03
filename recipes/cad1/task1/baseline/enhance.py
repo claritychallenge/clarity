@@ -23,7 +23,6 @@ from recipes.cad1.task1.baseline.evaluate import make_song_listener_list, resamp
 
 # pylint: disable=too-many-locals
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -476,6 +475,7 @@ def enhance(config: DictConfig) -> None:
             flac_encoder.encode(
                 to_16bit(stem_signal),
                 config.stem_sample_rate,
+                filename,
             )
 
             # Save scale factor
