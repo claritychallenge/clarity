@@ -13,14 +13,15 @@ from typing import Any
 import hydra
 import numpy as np
 import pandas as pd
+import soxr
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.flac_encoder import FlacEncoder
 from clarity.utils.signal_processing import compute_rms
 
 # pylint: disable=too-many-locals
-# pylint: disable=import-error
 
 
 logger = logging.getLogger(__name__)
@@ -102,6 +103,22 @@ class ResultsFile:
             )
 
 
+def resample(signal: np.ndarray, sample_rate: int, new_sample_rate: int) -> np.ndarray:
+    """Resample the signal to the desired sample rate.
+
+    Args:
+        signal (np.ndarray): Signal to be resampled.
+        sample_rate (int): Sample rate of the signal.
+        new_sample_rate (int): Desired sample rate.
+
+    Returns:
+        signal (np.ndarray): Resampled signal.
+    """
+    if sample_rate == new_sample_rate:
+        return signal
+    return soxr.resample(signal, sample_rate, new_sample_rate, quality="HQ")
+
+
 def set_song_seed(song: str) -> None:
     """Set a seed that is unique for the given song"""
     song_encoded = hashlib.md5(song.encode("utf-8")).hexdigest()
@@ -119,6 +136,34 @@ def make_song_listener_list(
         song_listener_pairs = song_listener_pairs[::15]
 
     return song_listener_pairs
+
+
+def read_flac_signal(filename: Path) -> tuple[np.ndarray, float]:
+    """Read a FLAC signal and return it as a numpy array
+
+    Args:
+        filename (Path): The path to the FLAC file to read.
+
+    Returns:
+        signal (np.ndarray): The decoded signal.
+        sample_rate (float): The sample rate of the signal.
+    """
+    # Create encoder object
+    flac_encoder = FlacEncoder()
+
+    # Decode FLAC file
+    signal, sample_rate = flac_encoder.decode(
+        filename,
+        mono=True,
+    )
+
+    # Load scale factor
+    with open(filename.with_suffix(".txt"), encoding="utf-8") as fp:
+        max_value = float(fp.read())
+
+    # Scale signal
+    signal *= max_value
+    return signal, sample_rate
 
 
 def _evaluate_song_listener(
@@ -165,18 +210,22 @@ def _evaluate_song_listener(
             Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
         )
         reference_signal = (reference_signal / 32768.0).astype(np.float32)
+        reference_signal = resample(
+            reference_signal, sample_rate_reference_signal, config.stem_sample_rate
+        )
 
         # Read left instrument enhanced
-        sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
+        left_enhanced_signal, sample_rate_left_enhanced_signal = read_flac_signal(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
-            / f"{listener}_{song}_left_{instrument}.wav"
+            / f"{listener}_{song}_left_{instrument}.flac"
         )
+
         left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
 
         # Read right instrument enhanced
-        sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
+        right_enhanced_signal, sample_rate_right_enhanced_signal = read_flac_signal(
             enhanced_folder
             / f"{listener}"
             / f"{song}"
@@ -199,8 +248,8 @@ def _evaluate_song_listener(
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
             processed_signal=left_enhanced_signal,
             reference_signal=reference_signal[:, 0],
-            sample_rate_processed=sample_rate_left_enhanced_signal,
-            sample_rate_reference=config.sample_rate,
+            sample_rate_processed=int(sample_rate_left_enhanced_signal),
+            sample_rate_reference=config.stem_sample_rate,
             audiogram=np.array(listener_audiograms["audiogram_levels_l"]),
             audiogram_frequencies=np.array(listener_audiograms["audiogram_cfs"]),
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
@@ -208,8 +257,8 @@ def _evaluate_song_listener(
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
             processed_signal=right_enhanced_signal,
             reference_signal=reference_signal[:, 1],
-            sample_rate_processed=sample_rate_right_enhanced_signal,
-            sample_rate_reference=config.sample_rate,
+            sample_rate_processed=int(sample_rate_right_enhanced_signal),
+            sample_rate_reference=config.stem_sample_rate,
             audiogram=np.array(listener_audiograms["audiogram_levels_r"]),
             audiogram_frequencies=np.array(listener_audiograms["audiogram_cfs"]),
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
