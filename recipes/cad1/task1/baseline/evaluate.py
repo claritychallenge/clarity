@@ -154,13 +154,13 @@ def read_flac_signal(filename: Path) -> tuple[np.ndarray, float]:
     # Decode FLAC file
     signal, sample_rate = flac_encoder.decode(
         filename,
-        mono=True,
     )
 
     # Load scale factor
     with open(filename.with_suffix(".txt"), encoding="utf-8") as fp:
         max_value = float(fp.read())
 
+    signal = (signal / 32768.0).astype(np.float32)
     # Scale signal
     signal *= max_value
     return signal, sample_rate
@@ -222,8 +222,6 @@ def _evaluate_song_listener(
             / f"{listener}_{song}_left_{instrument}.flac"
         )
 
-        left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
-
         # Read right instrument enhanced
         right_enhanced_signal, sample_rate_right_enhanced_signal = read_flac_signal(
             enhanced_folder
@@ -231,7 +229,6 @@ def _evaluate_song_listener(
             / f"{song}"
             / f"{listener}_{song}_right_{instrument}.flac"
         )
-        right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
 
         if sample_rate_left_enhanced_signal != sample_rate_right_enhanced_signal:
             raise ValueError(
