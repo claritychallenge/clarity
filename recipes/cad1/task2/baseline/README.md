@@ -82,8 +82,6 @@ If you have an Anaconda or Miniconda environment, you can install them as:
 * conda install -c conda-forge ffmpeg
 * conda install -c conda-forge libsndfile
 
-```bash
-
 ### 2.1 Enhancement
 
 The objective of the enhancement stage is takes a song and optimise it to a listener hearing characteristics

@@ -119,7 +119,8 @@ class EarModel:
 
     def __init__(
         self,
-        itype: int,
+        equalisation: int,
+        target_freq: float = 24000.0,
         nchan: int = 32,
         m_delay: int = 1,
         small: float = 1e-30,
@@ -133,18 +134,22 @@ class EarModel:
         greater group delay compared to the reference.
 
         Arguments:
-        itype (int): purpose for the calculation:
+        equalisation (int): purpose for the calculation:
              0=intelligibility: reference is normal hearing and must not
                include NAL-R EQ
              1=quality: reference does not include NAL-R EQ
              2=quality: reference already has NAL-R EQ applied
+        target_freq (int): sampling rate for resampling the signals, Hz.
+            Both, reference and processed signals are resampled to this rate.
+            Default is 24000 Hz.
         nchan (int): auditory frequency bands
         m_delay (int): Compensate for the gammatone group delay.
         small (float): small number to avoid division by zero
         ear_q (float): quality factor of the gammatone filter
 
         """
-        self.itype = itype
+        self.equalisation = equalisation
+        self.target_freq = target_freq
         self.nchan = nchan
         self.m_delay = m_delay
         self.small = small
@@ -168,7 +173,7 @@ class EarModel:
 
         Arguments:
             reference (ndarray): reference signal: should be adjusted to 65 dB SPL
-            (itype=0 or 1) or to 65 dB SPL plus NAL-R gain (itype=2)
+            (equalisation=0 or 1) or to 65 dB SPL plus NAL-R gain (equalisation=2)
             reference_freq (int): sampling rate for the reference signal, Hz
             processed (ndarray): processed signal (e.g. hearing-aid output) includes
                 HA gain
@@ -215,7 +220,7 @@ class EarModel:
         compression_ratio_x = compression_ratio_y.copy()
         attn_ihc_x = attn_ihc_y.copy()
 
-        if self.itype == 0:
+        if self.equalisation == 0:
             [
                 attn_ohc_x,
                 bandwidth_min_x,
@@ -231,8 +236,10 @@ class EarModel:
             np.full(6, 100), _center_freq_control
         )
 
-        reference_24hz, _ = self.resample(reference, reference_freq, 24000)
-        processed_24hz, freq_sample = self.resample(processed, processed_freq, 24000)
+        reference_24hz, _ = self.resample(reference, reference_freq, self.target_freq)
+        processed_24hz, freq_sample = self.resample(
+            processed, processed_freq, self.target_freq
+        )
 
         # Check file sizes
         min_signal_length = min(len(reference_24hz), len(processed_24hz))
@@ -246,7 +253,7 @@ class EarModel:
 
         # For HASQI, here add NAL-R equalization if the quality reference doesn't
         # already have it.
-        if self.itype == 1:
+        if self.equalisation == 1:
             nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
             enhancer = NALR(nfir, freq_sample)
             aud = np.array([250, 500, 1000, 2000, 4000, 6000])

@@ -33,7 +33,7 @@ def compare_center_frequency():
         min_bw=24.7,
     )
 
-    ear_model = EarModel(itype=1, nchan=10)
+    ear_model = EarModel(equalisation=1, nchan=10)
     new_center_freq = ear_model.center_frequencies(
         shift=None,
         low_freq=80,
@@ -77,7 +77,7 @@ def compare_loss_parameters():
         "annenuated_ihc": np.sum(annenuated_ihc),
     }
 
-    ear_model = EarModel(itype=1, nchan=10)
+    ear_model = EarModel(equalisation=1, nchan=10)
     center_freq = ear_model.center_frequencies(
         shift=None,
         low_freq=80,
@@ -121,7 +121,7 @@ def compare_resample():
         )
         eb_resample = np.sum(np.abs(ref_signal_24))
 
-        ear_model = EarModel(itype=1, nchan=10)
+        ear_model = EarModel(equalisation=1, nchan=10)
 
         ref_signal_24, freq_sample_hz = ear_model.resample(
             reference_signal, reference_freq, 24000.0
@@ -149,7 +149,7 @@ def compare_input_align():
     eb_align_proc = np.sum(np.abs(proc))
 
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     torch_ref, torch_proc = ear_model.input_align(reference_signal, processed_signal)
@@ -167,7 +167,7 @@ def compare_middle_ear():
     eb_middle_ear = np.sum(np.abs(filtered_signal))
 
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     torch_filtered_signal = ear_model.middle_ear(reference_signal, 24000)
@@ -282,7 +282,7 @@ def compare_bandwidth_adjust():
         level1=1,
     )
 
-    ear_model = EarModel(itype=1, nchan=10)
+    ear_model = EarModel(equalisation=1, nchan=10)
     bw_adjusted_torch = ear_model.bandwidth_adjust(
         control=scale * np.array([1, -1, 1]),
         bandwidth_min=bw_min,
@@ -318,7 +318,7 @@ def compare_env_compress_basilar_membrane():
     eb_compressed_basilar_membrane = np.mean(np.abs(compressed_basilar_membrane))
 
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     (
@@ -367,7 +367,7 @@ def compare_envelope_align():
     eb_envelope_align = np.sum(np.abs(aligned_output))
 
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     aligned_output = ear_model.envelope_align(
@@ -396,7 +396,7 @@ def compare_inner_hair_cell_adaptation():
     eb_output_basilar_membrane = np.sum(np.abs(output_basilar_membrane))
 
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     output_db, output_basilar_membrane = ear_model.inner_hair_cell_adaptation(
@@ -434,7 +434,7 @@ def compare_basilar_membrane_add_noise():
     np.random.seed(0)
     ref = np.random.random(size=sig_len)
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     noisy_reference = ear_model.basilar_membrane_add_noise(
@@ -472,7 +472,7 @@ def compare_group_delay_compensate():
     np.random.seed(0)
     reference = np.random.random(size=(4, sig_len))
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     processed = ear_model.group_delay_compensate(
@@ -517,7 +517,7 @@ def compare_convert_rms_to_sl():
     reference = np.random.random(size=sig_len)
     control = np.random.random(size=sig_len)
     ear_model = EarModel(
-        itype=1,
+        equalisation=1,
         nchan=10,
     )
     ref_db = ear_model.convert_rms_to_sl(
