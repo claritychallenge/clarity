@@ -286,7 +286,9 @@ def to_16bit(signal: np.ndarray) -> np.ndarray:
     Returns:
         signal (np.ndarray): Converted signal.
     """
-    return (32767.0 * signal).astype(np.int16)
+    signal = signal * 32768.0
+    signal = np.clip(signal, -32768.0, 32767.0)
+    return signal.astype(np.dtype("int16"))
 
 
 @hydra.main(config_path="", config_name="config")

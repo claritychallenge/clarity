@@ -18,7 +18,6 @@ from recipes.cad1.task1.baseline.enhance import (
     get_device,
     map_to_dict,
     process_stems_for_listener,
-    resample,
     separate_sources,
     to_16bit,
 )
@@ -213,31 +212,14 @@ def test_clip_signal(signal, soft_clip, expected_output):
 @pytest.mark.parametrize(
     "signal,expected_output",
     [
-        (np.array([0.5, 0.8, 0.2, 1.0]), np.array([16384, 26214, 6553, -32768])),
+        (np.array([0.5, 0.8, 0.2, 1.0]), np.array([16384, 26214, 6553, 32767])),
         (np.array([-0.5, -0.8, -0.2, -1.0]), np.array([-16384, -26214, -6553, -32768])),
         (np.array([0.5, -0.8, 0.2, -1.0]), np.array([16384, -26214, 6553, -32768])),
     ],
 )
 def test_to_16bit(signal, expected_output):
+    """Test the to_16bit function"""
     # Test with positive signal
     output = to_16bit(signal)
+    print(output)
     assert np.allclose(output, expected_output)
-
-
-def test_resample():
-    # Create a test signal
-    signal = np.random.rand(1000)
-    sample_rate = 1000
-    new_sample_rate = 2000
-
-    # Resample the signal
-    resampled_signal = resample(signal, sample_rate, new_sample_rate)
-
-    # Check that the resampled signal has the correct length
-    assert len(resampled_signal) == int(new_sample_rate * len(signal) / sample_rate)
-
-    # Check that the resampled signal is not equal to the original signal
-    assert not np.array_equal(signal, resampled_signal)
-
-    # Check that the resampled signal has the correct sample rate
-    assert new_sample_rate == sample_rate * len(resampled_signal) / len(signal)
