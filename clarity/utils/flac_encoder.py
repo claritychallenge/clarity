@@ -1,5 +1,10 @@
-"""Class for compressing and decompressing flac files."""
+"""
+Class for encoding and decoding audio signals
+    using flac compression.
+"""
 from __future__ import annotations
+
+import logging
 
 # pylint: disable=import-error, protected-access
 import tempfile
@@ -8,14 +13,14 @@ from pathlib import Path
 import numpy as np
 import pyflac
 
+logger = logging.getLogger(__name__)
+
 
 class WavEncoder(pyflac.encoder._Encoder):
     """
     Class offers an adaptation of the pyflac.encoder.FileEncoder
     to work directly with WAV signals as input.
 
-    Raises:
-        ValueError: If any invalid values are passed in to the constructor.
     """
 
     def __init__(
@@ -110,7 +115,12 @@ class WavEncoder(pyflac.encoder._Encoder):
 
 
 class FlacEncoder:
-    """Class for compressing and decompressing flac files."""
+    """
+    Class for encoding and decoding audio signals using FLAC
+
+    It uses the pyflac library to encode and decode the audio data.
+    And offers convenient methods for encoding and decoding audio data.
+    """
 
     def __init__(self, compression_level: int = 5) -> None:
         """
@@ -130,16 +140,33 @@ class FlacEncoder:
         output_file: str | Path | None = None,
     ) -> bytes:
         """
-        Compress the audio data.
+        Method to encode the audio data using FLAC compressor.
+
+        It creates a WavEncoder object and uses it to encode the audio data.
 
         Args:
             signal (np.ndarray): The raw audio data to be compressed.
             sample_rate (int): The sample rate of the audio data.
-            output_file (str | Path): Path to the output FLAC file.
+            output_file (str | Path): Path to where to
+                save the output FLAC file. If not specified, a temporary file
+                will be created.
 
         Returns:
-            (bytes): The FLAC encoded bytes.
+            (bytes): The FLAC encoded audio signal.
+
+        Raises:
+            ValueError: If the audio signal is not in `np.int16` format.
         """
+        if signal.dtype != np.int16:
+            logger.error(
+                f"FLAC encoder only supports 16-bit integer signals, "
+                f"but got {signal.dtype}"
+            )
+            raise ValueError(
+                f"FLAC encoder only supports 16-bit integer signals, "
+                f"but got {signal.dtype}"
+            )
+
         wav_encoder = WavEncoder(
             signal=signal,
             sample_rate=sample_rate,
@@ -153,7 +180,9 @@ class FlacEncoder:
         input_filename: Path | str, mono: bool = True
     ) -> tuple[np.ndarray, float]:
         """
-        Decompress the audio data.
+        Method to decode a flac file to wav audio data.
+
+        It uses the pyflac library to decode the flac file.
 
         Args:
             input_filename (pathlib.Path | str): Path to the input FLAC file.
@@ -161,13 +190,20 @@ class FlacEncoder:
 
         Returns:
             (np.ndarray): The raw audio data.
+
+        Raises:
+            FileNotFoundError: If the flac file to decode does not exist.
         """
         input_filename = (
             Path(input_filename) if isinstance(input_filename, str) else input_filename
         )
+
+        if not input_filename.exists():
+            logger.error(f"File {input_filename} not found.")
+            raise FileNotFoundError(f"File {input_filename} not found.")
+
         decoder = pyflac.FileDecoder(input_filename)
         signal, sample_rate = decoder.process()
-        signal = (signal * 32768).astype(np.int16)
 
         if mono:
             signal = signal.mean(1)
