@@ -11,12 +11,13 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import pyflac
+import pyflac as pf
+import soundfile as sf
 
 logger = logging.getLogger(__name__)
 
 
-class WavEncoder(pyflac.encoder._Encoder):
+class WavEncoder(pf.encoder.FileEncoder):
     """
     Class offers an adaptation of the pyflac.encoder.FileEncoder
     to work directly with WAV signals as input.
@@ -57,61 +58,59 @@ class WavEncoder(pyflac.encoder._Encoder):
                 `EncoderProcessException`.  Note that this will slow the
                 encoding process by the extra time required for decoding and comparison.
         """
-        super().__init__()
+        self.__sample_rate = sample_rate
 
-        self.__raw_audio = signal
-        self._sample_rate = sample_rate
+        with tempfile.NamedTemporaryFile(suffix=".wav") as ofile:
+            dummy_signal = np.random.randint(
+                -32768, 32767, int(self.__sample_rate * 0.1)
+            ).astype(np.int16)
+            dummy_path = ofile.name
+            sf.write(ofile.name, dummy_signal, self.__sample_rate)
 
+        super().__init__(
+            input_file=Path(dummy_path),
+            output_file=output_file,
+            compression_level=compression_level,
+            blocksize=blocksize,
+            streamable_subset=streamable_subset,
+            verify=verify,
+        )
+        self._FileEncoder__raw_audio = signal
         if output_file:
-            self.__output_file = (
+            self._FileEncoder__output_file = (
                 Path(output_file) if isinstance(output_file, str) else output_file
             )
         else:
             with tempfile.NamedTemporaryFile(suffix=".flac") as ofile:
-                self.__output_file = Path(ofile.name)
+                self._FileEncoder__output_file = Path(ofile.name)
 
-        self._blocksize = blocksize
-        self._compression_level = compression_level
-        self._streamable_subset = streamable_subset
-        self._verify = verify
-        self._initialised = False
 
-    def _init(self):
+class FileDecoder(pf.decoder.FileDecoder):
+    def process(self) -> tuple[np.ndarray, int]:
         """
-        Initialise the encoder to write to a file.
+        Overwritten version of the process method from the pyflac decoder.
+        Original process returns stereo signals in float64 format.
 
-        Raises:
-            EncoderInitException: if initialisation fails.
-        """
-        c_output_filename = pyflac.encoder._ffi.new(
-            "char[]", str(self.__output_file).encode("utf-8")
-        )
-        rc = pyflac.encoder._lib.FLAC__stream_encoder_init_file(
-            self._encoder,
-            c_output_filename,
-            pyflac.encoder._lib._progress_callback,
-            self._encoder_handle,
-        )
-        pyflac.encoder._ffi.release(c_output_filename)
-        if rc != pyflac.encoder._lib.FLAC__STREAM_ENCODER_INIT_STATUS_OK:
-            raise pyflac.EncoderInitException(rc)
-
-        self._initialised = True
-
-    def process(self) -> bytes:
-        """
-        Process the audio data from the WAV file.
+        In this version, the data is returned using the original number
+        of channels and in in16 format.
 
         Returns:
-            (bytes): The FLAC encoded bytes.
+            (tuple): A tuple of the decoded numpy audio array, and the sample rate
+                of the audio data.
 
         Raises:
-            EncoderProcessException: if an error occurs when processing the samples
+            DecoderProcessException: if any fatal read, write, or memory allocation
+                error occurred (meaning decoding must stop)
         """
-        super().process(self.__raw_audio)
+        result = pf.decoder._lib.FLAC__stream_decoder_process_until_end_of_stream(
+            self._decoder
+        )
+        if self.state != pf.decoder.DecoderState.END_OF_STREAM and not result:
+            raise pf.DecoderProcessException(str(self.state))
+
         self.finish()
-        with open(self.__output_file, "rb") as f:
-            return f.read()
+        self.__output.close()
+        return sf.read(str(self.__output_file), always_2d=False, dtype="int16")
 
 
 class FlacEncoder:
@@ -176,9 +175,7 @@ class FlacEncoder:
         return wav_encoder.process()
 
     @staticmethod
-    def decode(
-        input_filename: Path | str, mono: bool = True
-    ) -> tuple[np.ndarray, float]:
+    def decode(input_filename: Path | str) -> tuple[np.ndarray, float]:
         """
         Method to decode a flac file to wav audio data.
 
@@ -186,7 +183,6 @@ class FlacEncoder:
 
         Args:
             input_filename (pathlib.Path | str): Path to the input FLAC file.
-            mono (bool): Whether to return the audio data as mono or stereo.
 
         Returns:
             (np.ndarray): The raw audio data.
@@ -202,9 +198,7 @@ class FlacEncoder:
             logger.error(f"File {input_filename} not found.")
             raise FileNotFoundError(f"File {input_filename} not found.")
 
-        decoder = pyflac.FileDecoder(input_filename)
+        decoder = FileDecoder(input_filename)
         signal, sample_rate = decoder.process()
 
-        if mono:
-            signal = signal.mean(1)
         return signal, float(sample_rate)

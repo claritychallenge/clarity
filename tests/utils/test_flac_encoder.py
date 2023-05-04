@@ -1,4 +1,5 @@
 """Tests for the FlacEncoder class."""
+# pylint: disable=import-error
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -14,22 +15,22 @@ def test_encode_decode():
     np.random.seed(0)
 
     sample_rate = 8000
-    signal = np.random.randint(-32768, 32767, int(0.5 * sample_rate)).astype(np.int16)
-
-    # encode the signal to FLAC
-    encoder = FlacEncoder()
-    encoded_bytes = encoder.encode(signal, sample_rate=sample_rate, output_file=None)
+    signal = np.random.uniform(-1, 1, int(0.5 * sample_rate))
+    signal_int16 = signal * 32768.0
+    signal_int16 = np.clip(signal_int16, -32768, 32767).astype(np.int16)
 
     # write the encoded bytes to a temporary file
     with NamedTemporaryFile(suffix=".flac", delete=False) as tmpfile:
-        tmpfile.write(encoded_bytes)
-        tmpfile.flush()
-
-        # decode the FLAC file
-        decoded_signal, decoded_sr = FlacEncoder.decode(Path(tmpfile.name))
+        encoder = FlacEncoder()
+        # encode
+        _ = encoder.encode(
+            signal_int16, sample_rate=sample_rate, output_file=tmpfile.name
+        )
+        # decode
+        decoded_signal, decoded_sr = encoder.decode(Path(tmpfile.name))
 
     # check that the decoded signal matches the original signal
-    assert np.sum(signal / 32768.0) == pytest.approx(
+    assert np.sum(signal_int16) == pytest.approx(
         np.sum(decoded_signal),
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
