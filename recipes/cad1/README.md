@@ -47,16 +47,16 @@ The overall HAAQI score is:
 
 ### Task 2 - Listening music in a car with presence of noise
 
-**The overall HAAQI score is 0.1248.**
+**The overall HAAQI score is 0.1146.**
 
 #### Average HAAQI score per genre
 
-| Genre          |   HAAQI    |
-|:---------------|:----------:|
-| Classical      |   0.1240   |
-| Hip-Hop        |   0.1271   |
-| Instrumental   |   0.1250   |
-| International  |   0.1267   |
-| Orchestral     |   0.1121   |
-| Pop            |   0.1339   |
-| Rock           |   0.1252   |
+| Genre          | HAAQI  |
+|:---------------|:------:|
+| Classical      | 0.1065 |
+| Hip-Hop        | 0.1196 |
+| Instrumental   | 0.1132 |
+| International  | 0.1112 |
+| Orchestral     | 0.1129 |
+| Pop            | 0.1184 |
+| Rock           | 0.1204 |
