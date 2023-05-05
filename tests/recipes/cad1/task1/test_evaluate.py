@@ -14,7 +14,6 @@ from recipes.cad1.task1.baseline.evaluate import (
     _evaluate_song_listener,
     make_song_listener_list,
     read_flac_signal,
-    resample,
     set_song_seed,
 )
 
@@ -188,26 +187,6 @@ def test_evaluate_song_listener(
             rel=pytest.rel_tolerance,
             abs=pytest.abs_tolerance,
         )
-
-
-def test_resample():
-    """Test the resample function"""
-    # Create a test signal
-    signal = np.random.rand(1000)
-    sample_rate = 1000
-    new_sample_rate = 2000
-
-    # Resample the signal
-    resampled_signal = resample(signal, sample_rate, new_sample_rate)
-
-    # Check that the resampled signal has the correct length
-    assert len(resampled_signal) == int(new_sample_rate * len(signal) / sample_rate)
-
-    # Check that the resampled signal is not equal to the original signal
-    assert not np.array_equal(signal, resampled_signal)
-
-    # Check that the resampled signal has the correct sample rate
-    assert new_sample_rate == sample_rate * len(resampled_signal) / len(signal)
 
 
 def test_read_flac_signal(tmp_path):
