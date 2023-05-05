@@ -1,6 +1,7 @@
 """Utility functions for the baseline model."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 import warnings
@@ -11,24 +12,21 @@ import numpy as np
 import pandas as pd
 from omegaconf import DictConfig
 
-# pylint: disable=import-error
-
-
 logger = logging.getLogger(__name__)
 
 
 def read_mp3(
     file_path: str | Path, sample_rate: int | None = None
-) -> tuple[np.ndarray, int | None]:
+) -> tuple[np.ndarray, float | None]:
     """Read a MP3 file and return its signal.
 
     Args:
         file_path (str, Path): The path to the mp3 file.
-        sample_rate (int): The sampling frequency of the mp3 file.
+        sample_rate (int | None): The sampling frequency of the mp3 file.
 
     Returns:
         signal (np.ndarray): The signal of the mp3 file.
-        sample_rate (int): The sampling frequency of the mp3 file.
+        sample_rate (float): The sampling frequency of the mp3 file.
     """
 
     try:
@@ -38,7 +36,7 @@ def read_mp3(
                 str(file_path),
                 sr=sample_rate,
                 mono=False,
-                res_type="kaiser_best",
+                res_type="soxr_hq",
                 dtype=np.float32,
             )
     except Exception as error:
