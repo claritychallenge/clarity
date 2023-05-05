@@ -15,6 +15,7 @@ from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.signal_processing import compute_rms, resample
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,
@@ -194,21 +195,28 @@ def evaluate_scene(
     audio_manager.save_audios()
 
     # Compute HAAQI scores
+    # resample signals to 24000 Hz befor haaqi
+    left_processed = resample(processed_signal[0, :], sample_rate, 24000)
+    left_reference = resample(ref_signal[0, :], sample_rate, 24000)
     aq_score_l = compute_haaqi(
-        processed_signal=processed_signal[0, :],
-        reference_signal=ref_signal[0, :],
-        sample_rate_processed=sample_rate,
-        sample_rate_reference=sample_rate,
+        processed_signal=left_processed,
+        reference_signal=left_reference,
+        sample_rate_processed=24000,
+        sample_rate_reference=24000,
         audiogram=np.array(listener_audiogram["audiogram_levels_l"]),
         audiogram_frequencies=np.array(listener_audiogram["audiogram_cfs"]),
+        level1=65 - 20 * np.log10(compute_rms(left_reference)),
     )
+    right_processed = resample(processed_signal[1, :], sample_rate, 24000)
+    right_reference = resample(ref_signal[1, :], sample_rate, 24000)
     aq_score_r = compute_haaqi(
-        processed_signal=processed_signal[1, :],
-        reference_signal=ref_signal[1, :],
-        sample_rate_processed=sample_rate,
-        sample_rate_reference=sample_rate,
+        processed_signal=right_processed,
+        reference_signal=right_reference,
+        sample_rate_processed=24000,
+        sample_rate_reference=24000,
         audiogram=np.array(listener_audiogram["audiogram_levels_r"]),
         audiogram_frequencies=np.array(listener_audiogram["audiogram_cfs"]),
+        level1=65 - 20 * np.log10(compute_rms(right_reference)),
     )
     return aq_score_l, aq_score_r
 

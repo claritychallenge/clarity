@@ -12,6 +12,7 @@ path:
   exp_folder: ./exp # folder to store enhanced signals and final results
 
 sample_rate: 44100
+enhanced_sample_rate: 32000 # sample rate for enhanced signals
 
 nalr:
   nfir: 220
