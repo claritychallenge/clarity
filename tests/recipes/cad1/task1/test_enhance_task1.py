@@ -1,8 +1,8 @@
 """Tests for the enhance module"""
 from pathlib import Path
 
+# pylint: disable=import-error
 import numpy as np
-import pytest
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
@@ -11,13 +11,11 @@ from clarity.enhancer.nalr import NALR
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.enhance import (
     apply_baseline_ha,
-    clip_signal,
     decompose_signal,
     get_device,
     map_to_dict,
     process_stems_for_listener,
     separate_sources,
-    to_16bit,
 )
 
 BASE_DIR = Path.cwd()
@@ -186,38 +184,3 @@ def test_get_device():
         else torch.device("cpu")
     )
     assert device_type == "cuda" if torch.cuda.is_available() else "cpu"
-
-
-@pytest.mark.parametrize(
-    "signal,soft_clip,expected_output",
-    [
-        (
-            np.array([0.5, 2.0, -1.5, 0.8]),
-            True,
-            (np.array([0.46211716, 0.96402758, -0.90514825, 0.66403677]), 0),
-        ),
-        (np.array([0.5, 2.0, -1.5, 0.8]), False, (np.array([0.5, 1.0, -1.0, 0.8]), 2)),
-    ],
-)
-def test_clip_signal(signal, soft_clip, expected_output):
-    """Test the clip_signal function"""
-    # Test with soft clip
-    output = clip_signal(signal, soft_clip=soft_clip)
-    assert np.allclose(output[0], expected_output[0])
-    assert output[1] == expected_output[1]
-
-
-@pytest.mark.parametrize(
-    "signal,expected_output",
-    [
-        (np.array([0.5, 0.8, 0.2, 1.0]), np.array([16384, 26214, 6553, 32767])),
-        (np.array([-0.5, -0.8, -0.2, -1.0]), np.array([-16384, -26214, -6553, -32768])),
-        (np.array([0.5, -0.8, 0.2, -1.0]), np.array([16384, -26214, 6553, -32768])),
-    ],
-)
-def test_to_16bit(signal, expected_output):
-    """Test the to_16bit function"""
-    # Test with positive signal
-    output = to_16bit(signal)
-    print(output)
-    assert np.allclose(output, expected_output)

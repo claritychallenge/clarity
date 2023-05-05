@@ -18,7 +18,12 @@ from torchaudio.transforms import Fade
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.utils.flac_encoder import FlacEncoder
-from clarity.utils.signal_processing import denormalize_signals, normalize_signal
+from clarity.utils.signal_processing import (
+    clip_signal,
+    denormalize_signals,
+    normalize_signal,
+    to_16bit,
+)
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list, resample
 
 # pylint: disable=too-many-locals
@@ -256,39 +261,6 @@ def process_stems_for_listener(
         )
         processed_stems[stem_str] = proc_signal
     return processed_stems
-
-
-def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
-    """Clip the signal.
-
-    Args:
-        signal (np.ndarray): Signal to be clipped and saved.
-        soft_clip (bool): Whether to use soft clipping.
-
-    Returns:
-        signal (np.ndarray): Clipped signal.
-        n_clipped (int): Number of samples clipped.
-    """
-
-    if soft_clip:
-        signal = np.tanh(signal)
-    n_clipped = np.sum(np.abs(signal) > 1.0)
-    signal = np.clip(signal, -1.0, 1.0)
-    return signal, int(n_clipped)
-
-
-def to_16bit(signal: np.ndarray) -> np.ndarray:
-    """Convert the signal to 16 bit.
-
-    Args:
-        signal (np.ndarray): Signal to be converted.
-
-    Returns:
-        signal (np.ndarray): Converted signal.
-    """
-    signal = signal * 32768.0
-    signal = np.clip(signal, -32768.0, 32767.0)
-    return signal.astype(np.dtype("int16"))
 
 
 @hydra.main(config_path="", config_name="config")
