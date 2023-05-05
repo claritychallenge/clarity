@@ -1,5 +1,4 @@
 """Test for utils.signal_processing module"""
-# pylint: disable=import-error
 import numpy as np
 import pytest
 

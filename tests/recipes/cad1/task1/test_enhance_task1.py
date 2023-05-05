@@ -1,7 +1,6 @@
 """Tests for the enhance module"""
 from pathlib import Path
 
-# pylint: disable=import-error
 import numpy as np
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
