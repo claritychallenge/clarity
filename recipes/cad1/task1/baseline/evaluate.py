@@ -13,13 +13,12 @@ from typing import Any
 import hydra
 import numpy as np
 import pandas as pd
-import soxr
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.flac_encoder import FlacEncoder
-from clarity.utils.signal_processing import compute_rms
+from clarity.utils.signal_processing import compute_rms, resample
 
 # pylint: disable=too-many-locals
 
@@ -101,22 +100,6 @@ class ResultsFile:
                     str(instruments_scores["right_vocals"]),
                 ]
             )
-
-
-def resample(signal: np.ndarray, sample_rate: int, new_sample_rate: int) -> np.ndarray:
-    """Resample the signal to the desired sample rate.
-
-    Args:
-        signal (np.ndarray): Signal to be resampled.
-        sample_rate (int): Sample rate of the signal.
-        new_sample_rate (int): Desired sample rate.
-
-    Returns:
-        signal (np.ndarray): Resampled signal.
-    """
-    if sample_rate == new_sample_rate:
-        return signal
-    return soxr.resample(signal, sample_rate, new_sample_rate, quality="HQ")
 
 
 def set_song_seed(song: str) -> None:
