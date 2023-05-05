@@ -134,7 +134,10 @@ def enhance(config: DictConfig) -> None:
         # Save the enhanced song
         enhanced_folder_listener = enhanced_folder / f"{listener['name']}"
         enhanced_folder_listener.mkdir(parents=True, exist_ok=True)
-        filename = f"{scene_id}_{listener['name']}_{current_scene['song']}.flac"
+        filename = (
+            enhanced_folder_listener
+            / f"{scene_id}_{listener['name']}_{current_scene['song']}.flac"
+        )
 
         # Resample to 32 output sample rate
         # Then, clip signal
