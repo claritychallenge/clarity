@@ -15,8 +15,8 @@ To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). 
 Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
 
-If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [4] [5],
-[BACH10](https://labsites.rochester.edu/air/resource.html) [6] and [FMA-small](https://github.com/mdeff/fma) [7].
+If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [[4](#4-references)] [[5](#4-references)],
+[BACH10](https://labsites.rochester.edu/air/resource.html) [[6](#4-references)] and [FMA-small](https://github.com/mdeff/fma) [[7](#4-references)].
 Theses are shared as `cadenza_cad1_task1_augmentation_medleydb.tar.gz`, `cadenza_cad1_task1_augmentation_bach10.tar.gz`
 and `cadenza_cad1_task1_augmentation_fma_small.tar.gz`.
 **Keeping the augmentation data restricted to these datasets will ensure that the evaluation is fair for all participants**.
@@ -56,7 +56,7 @@ cadenza_data
 
 ### 1.2 Additional optional data
 
-* **MedleyDB** contains both MedleyDB versions 1 [[4](#references)] and 2 [[5](#references)] datasets.
+* **MedleyDB** contains both MedleyDB versions 1 [[4](#4-references)] and 2 [[5](#4-references)] datasets.
 
 Tracks from the MedleyDB dataset are not included in the evaluation set.
 However, is your responsibility to exclude any song that may be already contained in the training set.
@@ -70,7 +70,7 @@ cadenza_data
             └───Metadata
 ```
 
-* **BACH10** contains the BACH10 dataset [[6](#references)].
+* **BACH10** contains the BACH10 dataset [[6](#4-references)].
 
 Tracks from the BACH10 dataset are not included in MUSDB18-HQ and can all be used as training augmentation data.
 
@@ -84,7 +84,7 @@ cadenza_data
             ├───...
 ```
 
-* **FMA Small** contains the FMA small subset of the FMA dataset [[7](references)].
+* **FMA Small** contains the FMA small subset of the FMA dataset [[7](#4-references)].
 
 Tracks from the FMA small dataset are not included in the MUSDB18-HQ.
 This dataset does not provide independent stems but only the full mix.
@@ -123,18 +123,26 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 ### 2.1 Enhancement
 
-The baseline enhance simply takes the out-of-the-box [Hybrid Demucs](https://github.com/facebookresearch/demucs) [1]
+We offer two baseline systems:
+
+1. Using the out-of-the-box time-domain [Hybrid Demucs](https://github.com/facebookresearch/demucs) [[1](#4-references)]
 source separation model distributed on [TorchAudio](https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html)
-and applies a simple NAL-R [2] fitting amplification to each VDBO (`vocals`, `drums`, `bass` and `others`) stem.
+2. Using the out-of-the-box spectrogram-based [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch)
+source separation model (version `umxhq`) distributed through [PyTorch Hub](https://pytorch.org/hub/)
 
-The remixing is performed by summing the amplified VDBO stems.
+Both system use the same enhancement strategy; using the music separation model, the baseline system estimates the
+VDBO (`vocals`, `drums`, `bass` and `others`) stems. Then, they apply a simple NAL-R [[2](#4-references)] fitting amplification to each of them.
+These results on eight mono signals (four from the left channel and four from the right channel). Finally, each signal is downsampled to 24000 Hertz, convert to 16bit precision and
+encoded using the lossless FLAC compression. These eight signal are then used for the objective evaluation (HAAQI).
 
-The baseline generates a left and right signal for each VDBO stem and a remixed signal, totalling 9 signals per song-listener.
+The baselines also provide a remixing strategy to generate a stereo signal for each listener. This is done by summing
+the amplified VDBO stems, where each channel (left and right in stereo) is composed of the addition of the corresponding
+four stems. This stereo remixed signal is then used for subjective evaluation (listener panel).
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
 where you have installed the Cadenza data. This parameter defaults to the working directory.
-You can also define your own `path.exp_folder` to store enhanced
-signals and evaluated results.
+You can also define your own `path.exp_folder` to store the enhanced signals and evaluated results and select what
+music separation model you want to employ.
 
 Then run:
 
@@ -158,9 +166,8 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 ### 2.2 Evaluation
 
-The `evaluate.py` simply takes the signals stored in `enhanced_signals` and computes the HAAQI [[3](#references)] score
-for each of the eight left and right VDBO stems.
-The average of these eight scores is computed and returned for each signal.
+The `evaluate.py` script takes the eight VDBO signals stored in `enhanced_signals` and computes the
+HAAQI [[3](#4-references)] score. The final score for the sample is the average of the scores of each stem.
 
 To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
@@ -172,16 +179,19 @@ A csv file containing the eight HAAQI scores and the combined score will be gene
 
 To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
 
-Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined
-(in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
-As there are random noises generated within HAAQI, but the differences should be sufficiently small.
+Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined.
+This is due to the  random noises generated within HAAQI, but the differences should be sufficiently small.
+For reproducibility, in the given recipe, the random seed for each signal is set as the last eight digits
+of the song md5.
 
-The overall HAAQI score for the baselines are:
+## 3. Results
+
+The overall HAAQI score for each baseline is:
 
 * Demucs: **0.2592**
 * Open-Unmix: **0.2273**
 
-## References
+## 4. References
 
 * [1] Défossez, A. "Hybrid Spectrogram and Waveform Source Separation". Proceedings of the ISMIR 2021 Workshop on Music Source Separation. [doi:10.48550/arXiv.2111.03600](https://arxiv.org/abs/2111.03600)
 * [2] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265. [doi:10.1097/00003446-198608000-00007](https://doi.org/10.1097/00003446-198608000-00007)
