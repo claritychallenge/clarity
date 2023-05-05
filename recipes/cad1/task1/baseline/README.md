@@ -137,7 +137,7 @@ encoded using the lossless FLAC compression. These eight signal are then used fo
 
 The baselines also provide a remixing strategy to generate a stereo signal for each listener. This is done by summing
 the amplified VDBO stems, where each channel (left and right in stereo) is composed of the addition of the corresponding
-four stems. This stereo remixed signal is then used for subjective evaluation (listener panel).
+four stems. This stereo remixed signal is then used for subjective evaluation (listening panel).
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
 where you have installed the Cadenza data. This parameter defaults to the working directory.
