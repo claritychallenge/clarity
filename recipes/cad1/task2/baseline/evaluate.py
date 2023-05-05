@@ -11,10 +11,10 @@ from pathlib import Path
 import hydra
 import numpy as np
 from omegaconf import DictConfig
-from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.signal_processing import compute_rms, resample
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
@@ -196,27 +196,23 @@ def evaluate_scene(
 
     # Compute HAAQI scores
     # resample signals to 24000 Hz befor haaqi
-    left_processed = resample(processed_signal[0, :], sample_rate, 24000)
-    left_reference = resample(ref_signal[0, :], sample_rate, 24000)
     aq_score_l = compute_haaqi(
-        processed_signal=left_processed,
-        reference_signal=left_reference,
-        sample_rate_processed=24000,
-        sample_rate_reference=24000,
+        processed_signal=processed_signal[0, :],
+        reference_signal=ref_signal[0, :],
+        sample_rate_processed=sample_rate,
+        sample_rate_reference=sample_rate,
         audiogram=np.array(listener_audiogram["audiogram_levels_l"]),
         audiogram_frequencies=np.array(listener_audiogram["audiogram_cfs"]),
-        level1=65 - 20 * np.log10(compute_rms(left_reference)),
+        level1=65 - 20 * np.log10(compute_rms(ref_signal[0, :])),
     )
-    right_processed = resample(processed_signal[1, :], sample_rate, 24000)
-    right_reference = resample(ref_signal[1, :], sample_rate, 24000)
     aq_score_r = compute_haaqi(
-        processed_signal=right_processed,
-        reference_signal=right_reference,
-        sample_rate_processed=24000,
-        sample_rate_reference=24000,
+        processed_signal=processed_signal[1, :],
+        reference_signal=ref_signal[1, :],
+        sample_rate_processed=sample_rate,
+        sample_rate_reference=sample_rate,
         audiogram=np.array(listener_audiogram["audiogram_levels_r"]),
         audiogram_frequencies=np.array(listener_audiogram["audiogram_cfs"]),
-        level1=65 - 20 * np.log10(compute_rms(right_reference)),
+        level1=65 - 20 * np.log10(compute_rms(ref_signal[1, :])),
     )
     return aq_score_l, aq_score_r
 
@@ -277,19 +273,20 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
         enhanced_song_id = f"{scene_id}_{listener['name']}_{current_scene['song']}"
         enhanced_song_path = (
-            enhanced_folder / f"{listener['name']}" / f"{enhanced_song_id}.wav"
+            enhanced_folder / f"{listener['name']}" / f"{enhanced_song_id}.flac"
         )
 
         # Read WAV enhanced signal using scipy.io.wavfile
-        enhanced_sample_rate, enhanced_signal = wavfile.read(enhanced_song_path)
-        enhanced_signal = enhanced_signal / 32768.0
-        assert enhanced_sample_rate == config.sample_rate
+        enhanced_signal, enhanced_sample_rate = read_flac_signal(enhanced_song_path)
+        assert enhanced_sample_rate == config.enhanced_sample_rate
 
         # Evaluate scene
+        reference_signal_24k = resample(reference_signal.T, config.sample_rate, 24000)
+        enhanced_signal_24k = resample(enhanced_signal, config.sample_rate, 24000)
         aq_score_l, aq_score_r = evaluate_scene(
-            reference_signal,
-            enhanced_signal.T,
-            config.sample_rate,
+            reference_signal_24k.T,
+            enhanced_signal_24k.T,
+            24000,
             scene_id,
             current_scene,
             listener,

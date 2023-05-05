@@ -232,3 +232,31 @@ class FlacEncoder:
         signal, sample_rate = decoder.process()
 
         return signal, float(sample_rate)
+
+
+def read_flac_signal(filename: Path) -> tuple[np.ndarray, float]:
+    """Read a FLAC signal and return it as a numpy array
+
+    Args:
+        filename (Path): The path to the FLAC file to read.
+
+    Returns:
+        signal (np.ndarray): The decoded signal.
+        sample_rate (float): The sample rate of the signal.
+    """
+    # Create encoder object
+    flac_encoder = FlacEncoder()
+
+    # Decode FLAC file
+    signal, sample_rate = flac_encoder.decode(
+        filename,
+    )
+    signal = (signal / 32768.0).astype(np.float32)
+
+    # Load scale factor
+    if filename.with_suffix(".txt").exists():
+        with open(filename.with_suffix(".txt"), encoding="utf-8") as fp:
+            max_value = float(fp.read())
+            # Scale signal
+            signal *= max_value
+    return signal, sample_rate

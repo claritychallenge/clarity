@@ -17,7 +17,7 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.utils.flac_encoder import FlacEncoder
+from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.signal_processing import compute_rms, resample
 
 # pylint: disable=too-many-locals
@@ -119,34 +119,6 @@ def make_song_listener_list(
         song_listener_pairs = song_listener_pairs[::15]
 
     return song_listener_pairs
-
-
-def read_flac_signal(filename: Path) -> tuple[np.ndarray, float]:
-    """Read a FLAC signal and return it as a numpy array
-
-    Args:
-        filename (Path): The path to the FLAC file to read.
-
-    Returns:
-        signal (np.ndarray): The decoded signal.
-        sample_rate (float): The sample rate of the signal.
-    """
-    # Create encoder object
-    flac_encoder = FlacEncoder()
-
-    # Decode FLAC file
-    signal, sample_rate = flac_encoder.decode(
-        filename,
-    )
-
-    # Load scale factor
-    with open(filename.with_suffix(".txt"), encoding="utf-8") as fp:
-        max_value = float(fp.read())
-
-    signal = (signal / 32768.0).astype(np.float32)
-    # Scale signal
-    signal *= max_value
-    return signal, sample_rate
 
 
 def _evaluate_song_listener(
