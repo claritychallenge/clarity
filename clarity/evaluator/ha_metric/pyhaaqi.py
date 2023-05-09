@@ -9,6 +9,7 @@ import numpy as np
 from scipy.signal import convolve, correlate, firwin
 
 from clarity.evaluator.ha_metric.ear_model import EarModel
+from clarity.utils.signal_processing import compute_rms
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -29,7 +30,8 @@ class HAAQI:
 
     def __init__(
         self,
-        sample_rate: float = 24000.0,
+        signal_sample_rate: float = 44100.0,
+        ear_model_sample_rate: float = 24000.0,
         equalisation: int = 1,
         level1: float = 65.0,
         silence_threshold: float = 2.5,
@@ -42,8 +44,13 @@ class HAAQI:
         Constructor
 
         Args:
-            sample_rate (float): Sampling rate in Hz for reference and processed signal.
+            signal_sample_rate (float): Sampling rate in Hz for reference
+                and processed signal. Default: 44100
+            ear_model_sample_rate (float): Sampling rate in Hz for the ear model.
                 Haaqi assumes that both signals have the same sampling rate.
+                This parameter will be used to resample the signal if needed.
+                Note that will override the `target_freq` parameter if passed
+                as part of the `earmodel_kwards` params.
                 Default: 24000
             equalisation (int): hearing loss equalisation mode for reference signal:
                 1 = no EQ has been provided, the function will add NAL-R
@@ -62,16 +69,16 @@ class HAAQI:
             earmodel_kwards (dict | None): kwargs for the EarModel class. See
                 clarity/evaluator/ha_metric/ear_model.py for more information.
         """
-        self.sample_rate = sample_rate
+        self.sample_rate = signal_sample_rate
         self.level1 = level1
         self.silence_threshold = silence_threshold
         self.add_noise = add_noise
         self.segment_covariance = segment_covariance
         self.segment_size = segment_size
         earmodel_kwards = earmodel_kwards or {}
-        self.ear_model = EarModel(
-            equalisation=equalisation, target_freq=sample_rate, **earmodel_kwards
-        )
+        if "target_freq" not in earmodel_kwards.keys():
+            earmodel_kwards["target_freq"] = ear_model_sample_rate
+        self.ear_model = EarModel(equalisation=equalisation, **earmodel_kwards)
         self.n_samples = 0
         self.wsum = 0
         self.window = None
@@ -840,3 +847,72 @@ class HAAQI:
         ihc_sync_covariance = sum_weighted_time_freq / tiles_above_threshold
 
         return average_covariance, ihc_sync_covariance
+
+
+def compute_haaqi(
+    processed_signal: ndarray,
+    reference_signal: ndarray,
+    audiogram: ndarray,
+    audiogram_frequencies: ndarray,
+    sample_rate: float = 24000.0,
+    equalisation: int = 1,
+    level1: float = 65.0,
+    scale_reference: bool = True,
+) -> float:
+    """Compute HAAQI metric
+
+    Args:
+        processed_signal (np.ndarray): Output signal with noise, distortion, HA gain,
+            and/or processing.
+        reference_signal (np.ndarray): Input reference speech signal with no noise
+            or distortion. If a hearing loss is specified, NAL-R equalization
+            is optional
+        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
+        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        sample_rate (int): Sample rate in Hz.
+            Defaults to 24000.0.
+        equalisation (int): hearing loss equalization mode for reference signal:
+            1 = no EQ has been provided, the function will add NAL-R
+            2 = NAL-R EQ has already been added to the reference signal
+            Defaults to 1.
+        level1 (float): Reference level in dB SPL. Defaults to 65.0.
+        scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
+    """
+
+    haaqi_audiogram_frequencies = [250, 500, 1000, 2000, 4000, 6000]
+    audiogram_adjusted = np.array(
+        [
+            audiogram[i]
+            for i in range(len(audiogram_frequencies))
+            if audiogram_frequencies[i] in haaqi_audiogram_frequencies
+        ]
+    )
+
+    if len(reference_signal) == 0:
+        if len(processed_signal) == 0:
+            # No scoring if no music
+            return 1.0
+        logger.error("If `Reference` is empty, `Processed` must be empty as well")
+        return 0.0
+
+    if scale_reference:
+        reference_signal /= compute_rms(reference_signal)
+
+    haaqi_metric = HAAQI(
+        signal_sample_rate=sample_rate,
+        ear_model_sample_rate=24000.0,
+        equalisation=equalisation,
+        level1=level1,
+        silence_threshold=2.5,
+        add_noise=0.0,
+        segment_covariance=16,
+        segment_size=8,
+        earmodel_kwards={"nchan": 32},
+    )
+
+    score, _, _, _ = haaqi_metric.compute(
+        reference=reference_signal,
+        processed=processed_signal,
+        hearing_loss=audiogram_adjusted,
+    )
+    return score
