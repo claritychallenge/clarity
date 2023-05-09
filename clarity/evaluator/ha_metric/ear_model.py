@@ -450,6 +450,7 @@ class EarModel:
         gammatone filterbank. The equation comes from Malcolm Slaney[1].
 
         Arguments:
+            nchan (int | None): Number of channels in the filterbank.
             low_freq (int): Low Frequency level.
             high_freq (int): High Frequency level.
             min_bw (float):

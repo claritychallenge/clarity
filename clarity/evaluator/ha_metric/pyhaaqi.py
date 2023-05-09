@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.signal import firwin, convolve, correlate
+from scipy.signal import convolve, correlate, firwin
 
 from clarity.evaluator.ha_metric.ear_model import EarModel
 
@@ -36,7 +36,7 @@ class HAAQI:
         add_noise: float = 0.0,
         segment_covariance: int = 16,
         segment_size: int = 8,
-        earmodel_kwards: dict = None,
+        earmodel_kwards: dict | None = None,
     ):
         """
         Constructor
@@ -48,8 +48,8 @@ class HAAQI:
             equalisation (int): hearing loss equalisation mode for reference signal:
                 1 = no EQ has been provided, the function will add NAL-R
                 2 = NAL-R EQ has already been added to the reference signal
-            level1 (int): Optional input specifying level in dB SPL that corresponds to a
-                signal RMS = 1. Default is 65 dB SPL if argument not provided.
+            level1 (int): Optional input specifying level in dB SPL that corresponds
+                to a signal RMS = 1. Default is 65 dB SPL if argument not provided.
                 Default: 65
             silence_threshold (float): Silence threshold sum across bands,
                 dB above auditory threshold. Default : 2.5
@@ -59,7 +59,7 @@ class HAAQI:
                 Default: 16
             segment_size (int): Size of the window to smooth the envelope
                 Default: 8
-            earmodel_kwards (dict): kwargs for the EarModel class. See
+            earmodel_kwards (dict | None): kwargs for the EarModel class. See
                 clarity/evaluator/ha_metric/ear_model.py for more information.
         """
         self.sample_rate = sample_rate
@@ -247,15 +247,19 @@ class HAAQI:
         the 8 modulation frequencies.
 
         Args:
-            reference (): subsampled input signal envelope in dB SL in each critical band
+            reference (): subsampled input signal envelope in dB SL in each
+                critical band
             distorted (): subsampled distorted output signal envelope
             n_cepstral_coef (int): Number of cepstral coefficients
 
         Returns:
-            mel_cepstral_average (): average of the modulation correlations across analysis
-                frequency bands and modulation frequency bands, basis functions 2 -6
-            mel_cepstral_low (): average over the four lower mod freq bands, 0 - 20 Hz
-            mel_cepstral_high (): average over the four higher mod freq bands, 20 - 125 Hz
+            mel_cepstral_average (): average of the modulation correlations
+                across analysis frequency bands and modulation frequency bands,
+                basis functions 2 -6
+            mel_cepstral_low (): average over the four lower mod freq bands,
+                0 - 20 Hz
+            mel_cepstral_high (): average over the four higher mod freq bands,
+                20 - 125 Hz
             mel_cepstral_modulation (): vector of cross-correlations by modulation
                 frequency, averaged over analysis frequency band
         """
@@ -382,8 +386,8 @@ class HAAQI:
             mel_cepstral_modulation,
         )
 
+    @staticmethod
     def melcor9_crosscovmatrix(
-        self,
         b: ndarray,
         nmod: int,
         nbasis: int,
@@ -441,8 +445,9 @@ class HAAQI:
 
         return cross_covariance_matrix
 
+    @staticmethod
     def spectrum_diff(
-        self, reference_sl: ndarray, processed_sl: ndarray
+        reference_sl: ndarray, processed_sl: ndarray
     ) -> tuple[ndarray, ndarray, ndarray]:
         """
         Method to compute changes in the long-term spectrum and spectral slope.
@@ -491,7 +496,8 @@ class HAAQI:
         # same loudness. Thus overall level is ignored while differences in
         # spectral shape are measured.
         reference_sum = np.sum(reference_linear_magnitude)
-        reference_linear_magnitude /= reference_sum  # Loudness sum = 1 (arbitrary amplitude, proportional to sones)
+        # Loudness sum = 1 (arbitrary amplitude, proportional to sones)
+        reference_linear_magnitude /= reference_sum
         processed_sum = np.sum(processed_linear_magnitude)
         processed_linear_magnitude /= processed_sum
 
@@ -538,9 +544,9 @@ class HAAQI:
         processed_basilar_membrane: ndarray,
     ) -> tuple[ndarray, ndarray, ndarray]:
         """
-        Compute the cross-covariance (normalized cross-correlation) between  the reference
-        and processed signals in each auditory band. The signals are divided into segments
-        having 50% overlap.
+        Compute the cross-covariance (normalized cross-correlation) between
+        the reference and processed signals in each auditory band.
+        The signals are divided into segments having 50% overlap.
 
         Arguments:
             reference_basilar_membrane (): Basilar Membrane movement, reference signal
@@ -548,9 +554,10 @@ class HAAQI:
 
         Returns:
             signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
-            reference_mean_square (np.array) : [nchan,nseg] of MS input signal energy values
-            processed_mean_square (np.array) : [nchan,nseg] of MS processed signal energy
-                values
+            reference_mean_square (np.array) : [nchan,nseg] of MS input signal
+                energy values
+            processed_mean_square (np.array) : [nchan,nseg] of MS processed signal
+                energy values
 
         Updates:
             James M. Kates, 28 August 2012.
@@ -741,31 +748,12 @@ class HAAQI:
         Returns:
             average_covariance (): cross-covariance in segments averaged over time and
                 frequency
-            ihc_sync_covariance (): cross-covariance array, 6 different weightings for loss
-                of IHC synchronization at high frequencies:
+            ihc_sync_covariance (): cross-covariance array, 6 different weightings
+                for loss of IHC synchronization at high frequencies:
                   LP Filter Order     Cutoff Freq, kHz
                     1              1.5
                     3              2.0
                     5              2.5, 3.0, 3.5, 4.0
-
-        References:
-
-        .. [1] Tan CT, Moore, BCJ, Zacharov N, Mattila VV (2004) Predicting the Perceived
-               Quality of Nonlinearly Distorted Music and Speech Signals. J Audio Eng Soc
-               52(9):900-914. Available at.
-               <http://www.aes.org/e-lib/browse.cfm?elib=13013>.
-
-        .. [2] Johnson DH (1980) The relationship between spike rate and synchrony in
-               responses of auditory‐nerve fibers to single tones J Acoustical Soc of Am
-               68:1115 Available at.
-               <https://doi.org/10.1121/1.384982>
-
-        Updates:
-            James M. Kates, 28 August 2012.
-            Adjusted for BM vibration in dB SL, 30 October 2012.
-            Threshold for including time-freq tile modified, 30 January 2013.
-            Version for different sync loss, 15 February 2013.
-            Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
 
         # Array dimensions
@@ -773,7 +761,7 @@ class HAAQI:
 
         # Initialize the LP filter for loss of IHC synchronization
         # Center frequencies in Hz on an ERB scale
-        _center_freq = self.ear_model.center_frequencies(n_channels)
+        _center_freq = self.ear_model.center_frequency(n_channels)
         # Default LP filter order
         if lp_filter_order is None:
             lp_filter_order = np.array([1, 3, 5, 5, 5, 5])
