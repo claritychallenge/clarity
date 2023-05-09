@@ -200,7 +200,7 @@ class EarModel:
             freq_sample (float): sampling rate in Hz for the model outputs
         """
         # Center frequencies on an ERB scale
-        _center_freq = self.center_frequencies()
+        _center_freq = self.center_frequency()
 
         # Cochlear model parameters for the processed signal
         (
@@ -230,7 +230,7 @@ class EarModel:
             ] = self.loss_parameters(np.zeros(len(hearing_loss)), _center_freq)
 
         # Compute center frequencies for the control
-        _center_freq_control = self.center_frequencies(shift=shift)
+        _center_freq_control = self.center_frequency(shift=shift)
         # Maximum BW for the control
         _, bandwidth_1, _, _, _ = self.loss_parameters(
             np.full(6, 100), _center_freq_control
@@ -438,7 +438,7 @@ class EarModel:
             freq_sample,
         )
 
-    def center_frequencies(
+    def center_frequency(
         self,
         low_freq: int = 80,
         high_freq: int = 8000,
@@ -710,7 +710,7 @@ class EarModel:
             # Output delayed relative to the reference
             processed_out[: processed_n - delay] = processed[delay:processed_n]
         else:
-            processed_out[abs(delay) - 1 :] = processed[: processed_n - abs(delay)]
+            processed_out[abs(delay) :] = processed[: processed_n - abs(delay)]
 
         # Find the start and end of the noiseless reference sequence
         reference_abs = np.abs(reference)
