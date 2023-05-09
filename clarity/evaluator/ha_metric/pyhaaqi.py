@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.signal import firwin, convolve, correlate
+from scipy.signal import convolve, correlate, firwin
 
 from clarity.evaluator.ha_metric.ear_model import EarModel
 
