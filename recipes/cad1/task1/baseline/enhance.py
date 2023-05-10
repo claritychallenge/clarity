@@ -147,8 +147,9 @@ def map_to_dict(sources: np.ndarray, sources_list: list[str]) -> dict:
 # pylint: disable=unused-argument
 def decompose_signal(
     model: torch.nn.Module,
+    model_sample_rate: int,
     signal: np.ndarray,
-    sample_rate: int,
+    signal_sample_rate: int,
     device: torch.device,
     sources_list: list[str],
     left_audiogram: np.ndarray,
@@ -164,10 +165,10 @@ def decompose_signal(
     HDEMUCS model trained on the MUSDB18 dataset.
 
     Args:
-        model_name (str): Name of the model to use. `demucs` or `openunmix`.
         model (torch.nn.Module): Torch model.
+        model_sample_rate (int): Sample rate of the model.
         signal (np.ndarray): Signal to be decomposed.
-        sample_rate (int): Sample frequency.
+        signal_sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
         sources_list (list): List of strings used to index dictionary.
         left_audiogram (np.ndarray): Left ear audiogram.
@@ -177,11 +178,16 @@ def decompose_signal(
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
     """
+
+    # Resample mixture signal to model sample rate
+    if signal_sample_rate != model_sample_rate:
+        signal = resample(signal, signal_sample_rate, model_sample_rate)
+
     if normalise:
         signal, ref = normalize_signal(signal)
 
     sources = separate_sources(
-        model, torch.from_numpy(signal), sample_rate, device=device
+        model, torch.from_numpy(signal), signal_sample_rate, device=device
     )
     # only one element in the batch
     sources = sources[0]
@@ -262,6 +268,87 @@ def process_stems_for_listener(
     return processed_stems
 
 
+def remix_signal(stems: dict) -> np.ndarray:
+    """
+    Function to remix signal. It takes the eight stems
+    and combines them into a stereo signal.
+
+    Args:
+        stems (dict) : Dictionary of stems
+
+    Returns:
+        (np.ndarray) : Remixed signal
+
+    """
+    n_samples = stems[list(stems.keys())[0]].shape[0]
+    out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
+    for stem_str, stem_signal in stems.items():
+        if stem_str.startswith("l"):
+            out_left += stem_signal
+        else:
+            out_right += stem_signal
+
+    return np.stack([out_left, out_right], axis=1)
+
+
+def save_signal(
+    signal: np.ndarray,
+    filename: Path,
+    signal_sample_rate,
+    output_sample_rate,
+    flac_encoder: FlacEncoder,
+    do_clip_signal: bool = False,
+    do_soft_clip: bool = False,
+    do_scale_signal: bool = False,
+) -> None:
+    """
+    Function to save output signals.
+
+    - The output signal will be resample to ``output_sample_rate``
+    - The output signal will be clipped to [-1, 1] if ``do_clip_signal`` is True
+        and use soft clipped if ``do_soft_clip`` is True. Note that if
+        ``do_clip_signal`` is False, ``do_soft_clip`` will be ignored.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be scaled to [-1, 1] if ``do_scale_signal`` is True.
+        If signal is scale, the scale factor will be saved in a TXT file.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be saved as a FLAC file.
+
+    Args:
+        signal (np.ndarray) : Signal to save
+        filename (Path) : Path to save signal
+        signal_sample_rate (int) : Sample rate of the input signal
+        output_sample_rate (int) : Sample rate of the output signal
+        flac_encoder (FlacEncoder) : Object of FlacEncoder class
+        do_clip_signal (bool) : Whether to clip signal
+        do_soft_clip (bool) : Whether to apply soft clipping
+        do_scale_signal (bool) : Whether to scale signal
+    """
+    # Resample signal to expected output sample rate
+    if signal_sample_rate != output_sample_rate:
+        signal = resample(signal, signal_sample_rate, output_sample_rate)
+
+    if do_scale_signal:
+        # Scale stem signal
+        max_value = np.max(np.abs(signal))
+        signal = signal / max_value
+
+        # Save scale factor
+        with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
+            file.write(f"{max_value}")
+
+    elif do_clip_signal:
+        # Clip the signal
+        signal, n_clipped = clip_signal(signal, do_soft_clip)
+        if n_clipped > 0:
+            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+
+    # Convert signal to 16-bit integer
+    signal = to_16bit(signal)
+
+    flac_encoder.encode(signal, output_sample_rate, filename)
+
+
 @hydra.main(config_path="", config_name="config")
 def enhance(config: DictConfig) -> None:
     """
@@ -302,8 +389,17 @@ def enhance(config: DictConfig) -> None:
 
     if config.separator.model == "demucs":
         separation_model = HDEMUCS_HIGH_MUSDB.get_model()
-    else:
+        model_sample_rate = HDEMUCS_HIGH_MUSDB.sample_rate
+        sources_order = separation_model.sources
+        normalise = True
+    elif config.separator.model == "openunmix":
         separation_model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq", niter=0)
+        model_sample_rate = separation_model.sample_rate
+        sources_order = ["vocals", "drums", "bass", "other"]
+        normalise = False
+    else:
+        raise ValueError(f"Separator model {config.separator.model} not supported.")
+
     device, _ = get_device(config.separator.device)
     separation_model.to(device)
 
@@ -356,9 +452,10 @@ def enhance(config: DictConfig) -> None:
         audiogram_left = np.array(listener_info["audiogram_levels_l"])
         audiogram_right = np.array(listener_info["audiogram_levels_r"])
 
-        # Read the mixture signal
-        # Convert to 32-bit floating point and transpose
-        # from [samples, channels] to [channels, samples]
+        # Baseline Steps
+        # 1. Decompose the mixture signal into vocal, drums, bass, and other stems
+        #    We validate if 2 consecutive signals are the same to avoid
+        #    decomposing the same song multiple times
         if prev_song_name != song_name:
             # Decompose song only once
             prev_song_name = song_name
@@ -372,29 +469,10 @@ def enhance(config: DictConfig) -> None:
             mixture_signal = (mixture_signal / 32768.0).astype(np.float32).T
             assert sample_rate == config.sample_rate
 
-            # Model dependant params
-            if config.separator.model == "demucs":
-                model_sample_rate = HDEMUCS_HIGH_MUSDB.sample_rate
-                sources_order = separation_model.sources
-                normalise = True
-            elif config.separator.model == "openunmix":
-                model_sample_rate = separation_model.sample_rate
-                sources_order = ["vocals", "drums", "bass", "other"]
-                normalise = False
-            else:
-                raise ValueError(
-                    f"Separator model {config.separator.model} not supported."
-                )
-
-            # Resample mixture signal to model sample rate
-            if sample_rate != model_sample_rate:
-                mixture_signal = resample(
-                    mixture_signal, sample_rate, model_sample_rate
-                )
-
             # Decompose mixture signal into stems
             stems = decompose_signal(
                 separation_model,
+                model_sample_rate,
                 mixture_signal,
                 sample_rate,
                 device,
@@ -404,9 +482,10 @@ def enhance(config: DictConfig) -> None:
                 normalise,
             )
 
-        # Baseline applies NALR prescription to each stem instead of using the
-        # listener's audiograms in the decomposition. This stem can be skipped
-        # if the listener's audiograms are used in the decomposition
+        # 2. Apply NAL-R prescription to each stem
+        #     Baseline applies NALR prescription to each stem instead of using the
+        #     listener's audiograms in the decomposition. This step can be skipped
+        #     if the listener's audiograms are used in the decomposition
         processed_stems = process_stems_for_listener(
             stems,
             enhancer,
@@ -417,60 +496,42 @@ def enhance(config: DictConfig) -> None:
             config.apply_compressor,
         )
 
-        # save processed stems
-        n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
-        out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
-        for stem_str, stem_signal in processed_stems.items():
-            if stem_str.startswith("l"):
-                out_left += stem_signal
-            else:
-                out_right += stem_signal
+        # 3. Remix Signal
+        enhanced = remix_signal(processed_stems)
 
+        # 4. Save processed stems
+        for stem_str, stem_signal in stems.items():
             filename = (
                 enhanced_folder
-                / f"{listener_info['name']}"
+                / f"{listener_name}"
                 / f"{song_name}"
-                / f"{listener_info['name']}_{song_name}_{stem_str}.flac"
+                / f"{listener_name}_{song_name}_{stem_str}.flac"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
-
-            # Save processed stem
-            # Resample to stem sample rate.
-            stem_signal = resample(
-                stem_signal, config.sample_rate, config.stem_sample_rate
-            )
-            # Scale stem signal
-            max_value = np.max(np.abs(stem_signal))
-            stem_signal = stem_signal / max_value
-
-            # Transform signal to 16-bit integer
-            # and save compressed signal using flac
-            flac_encoder.encode(
-                to_16bit(stem_signal),
-                config.stem_sample_rate,
-                filename,
+            save_signal(
+                signal=stem_signal,
+                filename=filename,
+                signal_sample_rate=config.sample_rate,
+                output_sample_rate=config.stem_sample_rate,
+                flac_encoder=flac_encoder,
+                do_scale_signal=True,
             )
 
-            # Save scale factor
-            with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
-                file.write(f"{max_value}")
-
-        enhanced = np.stack([out_left, out_right], axis=1)
+        # 5. Save enhanced (remixed) signal
         filename = (
             enhanced_folder
             / f"{listener_info['name']}"
             / f"{song_name}"
             / f"{listener_info['name']}_{song_name}_remix.flac"
         )
-
-        # Resample enhanced signal to expected output sample rate
-        enhanced = resample(enhanced, config.sample_rate, config.remix_sample_rate)
-        # clip and save enhanced signal
-        clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
-        if n_clipped > 0:
-            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-        flac_encoder.encode(
-            to_16bit(clipped_signal), config.remix_sample_rate, filename
+        save_signal(
+            signal=enhanced,
+            filename=filename,
+            signal_sample_rate=config.sample_rate,
+            output_sample_rate=config.stem_sample_rate,
+            flac_encoder=flac_encoder,
+            do_clip_signal=True,
+            do_soft_clip=config.soft_clip,
         )
 
 

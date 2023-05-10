@@ -2,6 +2,7 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
@@ -14,11 +15,36 @@ from recipes.cad1.task1.baseline.enhance import (
     get_device,
     map_to_dict,
     process_stems_for_listener,
+    remix_signal,
     separate_sources,
 )
 
 BASE_DIR = Path.cwd()
 RESOURCES = BASE_DIR / "tests" / "resources" / "recipes" / "cad1" / "task1"
+
+
+@pytest.fixture
+def stems():
+    np.random.seed(0)
+    n_samples = 1000
+    stem1 = np.random.rand(n_samples)
+    stem2 = np.random.rand(n_samples)
+    stem3 = np.random.rand(n_samples)
+    stem4 = np.random.rand(n_samples)
+    stem5 = np.random.rand(n_samples)
+    stem6 = np.random.rand(n_samples)
+    stem7 = np.random.rand(n_samples)
+    stem8 = np.random.rand(n_samples)
+    return {
+        "l1": stem1,
+        "l2": stem2,
+        "l3": stem3,
+        "l4": stem4,
+        "r1": stem5,
+        "r2": stem6,
+        "r3": stem7,
+        "r4": stem8,
+    }
 
 
 def test_map_to_dict():
@@ -183,3 +209,20 @@ def test_get_device():
         else torch.device("cpu")
     )
     assert device_type == "cuda" if torch.cuda.is_available() else "cpu"
+
+
+def test_remix_signal(stems):
+    remixed = remix_signal(stems)
+    assert isinstance(remixed, np.ndarray)
+    assert remixed.shape[0] == stems["l1"].shape[0]
+    assert remixed.shape[1] == 2
+    assert np.sum(remixed[:, 0]) == pytest.approx(
+        np.sum(stems["l1"] + stems["l2"] + stems["l3"] + stems["l4"]),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
+    assert np.sum(remixed[:, 1]) == pytest.approx(
+        np.sum(stems["r1"] + stems["r2"] + stems["r3"] + stems["r4"]),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
