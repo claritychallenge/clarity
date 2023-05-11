@@ -8,6 +8,7 @@ import pytest
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
+from clarity.utils.flac_encoder import FlacEncoder
 from recipes.cad1.task1.baseline.evaluate import (
     ResultsFile,
     _evaluate_song_listener,
@@ -88,6 +89,8 @@ def test_make_song_listener_list():
             "punk_is_not_dead",
             "my_music_listener",
             {
+                "stem_sample_rate": 44100,
+                "sample_rate": 44100,
                 "evaluate": {"set_random_seed": True},
                 "path": {"music_dir": None},
                 "nalr": {"fs": 44100},
@@ -101,14 +104,14 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.156074193,
-                "right_drums": 0.144341103,
-                "left_bass": 0.148050589,
-                "right_bass": 0.200470016,
-                "left_other": 0.134118179,
-                "right_other": 0.175471593,
-                "left_vocals": 0.119894038,
-                "right_vocals": 0.1339256182,
+                "left_drums": 0.14229280292204488,
+                "right_drums": 0.15044867874762802,
+                "left_bass": 0.13337685099485902,
+                "right_bass": 0.14541734646032817,
+                "left_other": 0.16310385596493193,
+                "right_other": 0.1542791489799909,
+                "left_vocals": 0.12291878218281638,
+                "right_vocals": 0.13683790592287856,
             },
         )
     ],
@@ -129,22 +132,22 @@ def test_evaluate_song_listener(
     instruments = ["drums", "bass", "other", "vocals"]
 
     # Create reference and enhanced wav samples
+    flac_encoder = FlacEncoder()
     for lr_instrument in list(expected_results.keys()):
         # enhanced signals are mono
         enh_file = (
             enhanced_folder
             / f"{listener}"
             / f"{song}"
-            / f"{listener}_{song}_{lr_instrument}.wav"
+            / f"{listener}_{song}_{lr_instrument}.flac"
         )
         enh_file.parent.mkdir(exist_ok=True, parents=True)
+        with open(Path(enh_file).with_suffix(".txt"), "w", encoding="utf-8") as file:
+            file.write("1.0")
 
         # Using very short 100 ms signals to speed up the test
-        wavfile.write(
-            enh_file,
-            44100,
-            np.random.uniform(-1, 1, 4410).astype(np.float32) * 32768,
-        )
+        enh_signal = np.random.uniform(-1, 1, 4410).astype(np.float32) * 32768
+        flac_encoder.encode(enh_signal.astype(np.int16), config.sample_rate, enh_file)
 
     for instrument in instruments:
         # reference signals are stereo
@@ -152,7 +155,7 @@ def test_evaluate_song_listener(
         ref_file.parent.mkdir(parents=True, exist_ok=True)
         wavfile.write(
             ref_file,
-            44100,
+            config.sample_rate,
             np.random.uniform(-1, 1, (4410, 2)).astype(np.float32) * 32768,
         )
 
@@ -170,7 +173,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.15154316655507588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.14358442152193474, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
     # Per instrument score

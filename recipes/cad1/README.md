@@ -21,39 +21,42 @@ The performance of each system on the validation set is reported below.
 
 ### Task 1 - Listening music via headphones
 
-The overall HAAQI score is **0.2592**.
+The overall HAAQI score is:
+
+- Demucs: **0.2592**
+- Open-Unmix: **0.2273**
 
 #### Average HAAQI score per song
 
-| Song                                           | HAAQI  |
-|:-----------------------------------------------|:------:|
-| Actions - One Minute Smile                     | 0.2485 |
-| Alexander Ross - Goodbye Bolero                | 0.3084 |
-| ANiMAL - Rockshow                              | 0.1843 |
-| Clara Berry And Wooldog - Waltz For My Victims | 0.3094 |
-| Fergessen - Nos Palpitants                     | 0.3542 |
-| James May - On The Line                        | 0.2778 |
-| Johnny Lokke - Promises & Lies                 | 0.2544 |
-| Leaf - Summerghost                             | 0.2513 |
-| Meaxic - Take A Step                           | 0.2455 |
-| Patrick Talbot - A Reason To Leave             | 0.2673 |
-| Skelpolu - Human Mistakes                      | 0.2123 |
-| Traffic Experiment - Sirens                    | 0.2558 |
-| Triviul - Angelsaint                           | 0.2101 |
-| Young Griffo - Pennies                         | 0.2499 |
+| Song                                           | Demucs | Open-UnMix |
+|:-----------------------------------------------|:------:|:----------:|
+| Actions - One Minute Smile                     | 0.2485 |   0.2257   |
+| Alexander Ross - Goodbye Bolero                | 0.3084 |   0.2574   |
+| ANiMAL - Rockshow                              | 0.1843 |   0.1864   |
+| Clara Berry And Wooldog - Waltz For My Victims | 0.3094 |   0.2615   |
+| Fergessen - Nos Palpitants                     | 0.3542 |   0.2592   |
+| James May - On The Line                        | 0.2778 |   0.2398   |
+| Johnny Lokke - Promises & Lies                 | 0.2544 |   0.2261   |
+| Leaf - Summerghost                             | 0.2513 |   0.2105   |
+| Meaxic - Take A Step                           | 0.2455 |   0.2239   |
+| Patrick Talbot - A Reason To Leave             | 0.2673 |   0.2331   |
+| Skelpolu - Human Mistakes                      | 0.2123 |   0.1951   |
+| Traffic Experiment - Sirens                    | 0.2558 |   0.2339   |
+| Triviul - Angelsaint                           | 0.2101 |   0.1955   |
+| Young Griffo - Pennies                         | 0.2499 |   0.2297   |
 
 ### Task 2 - Listening music in a car with presence of noise
 
-**The overall HAAQI score is 0.1248.**
+**The overall HAAQI score is 0.1146.**
 
 #### Average HAAQI score per genre
 
-| Genre          |   HAAQI    |
-|:---------------|:----------:|
-| Classical      |   0.1240   |
-| Hip-Hop        |   0.1271   |
-| Instrumental   |   0.1250   |
-| International  |   0.1267   |
-| Orchestral     |   0.1121   |
-| Pop            |   0.1339   |
-| Rock           |   0.1252   |
+| Genre          | HAAQI  |
+|:---------------|:------:|
+| Classical      | 0.1065 |
+| Hip-Hop        | 0.1196 |
+| Instrumental   | 0.1132 |
+| International  | 0.1112 |
+| Orchestral     | 0.1129 |
+| Pop            | 0.1184 |
+| Rock           | 0.1204 |

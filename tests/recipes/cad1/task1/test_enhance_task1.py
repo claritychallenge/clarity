@@ -1,20 +1,24 @@
 """Tests for the enhance module"""
-# pylint: disable=import-error
-
 from pathlib import Path
 
+# pylint: disable=import-error
 import numpy as np
+import pytest
+import soundfile as sf
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.enhance import (
     apply_baseline_ha,
     decompose_signal,
     get_device,
     map_to_dict,
     process_stems_for_listener,
+    remix_signal,
+    save_flac_signal,
     separate_sources,
 )
 
@@ -50,15 +54,24 @@ def test_decompose_signal():
     sample_rate = 8000
     duration = 1
     signal = np.random.uniform(size=(1, 2, sample_rate * duration))
+
+    # Normalise using demucs procedure
+    signal, ref = normalize_signal(signal)
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(
-        model,
-        signal,
-        sample_rate,
-        device,
+        model=model,
+        model_sample_rate=sample_rate,
+        signal=signal,
+        signal_sample_rate=sample_rate,
+        device=device,
+        sources_list=model.sources,
         left_audiogram=np.ones(9),
         right_audiogram=np.ones(9),
+        normalise=True,
     )
+
+    for key, item in output.items():
+        output[key] = denormalize_signals(item, ref)
 
     expected_results = np.load(
         RESOURCES / "test_enhance.test_decompose_signal.npy",
@@ -97,7 +110,7 @@ def test_process_stems_for_listener():
     """Takes 2 stems and applies the baseline processing using a listeners audiograms"""
     np.random.seed(12357)
     # Create mock inputs
-    stems = {
+    stem_signals = {
         "l_source1": np.random.normal(size=16000),
         "r_source1": np.random.normal(size=16000),
     }
@@ -113,7 +126,7 @@ def test_process_stems_for_listener():
 
     # Call the process_stems_for_listener function and check output is as expected
     output = process_stems_for_listener(
-        stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
+        stem_signals, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
     expected_results = np.load(
         RESOURCES / "test_enhance.test_process_stems_for_listener.npy",
@@ -177,3 +190,50 @@ def test_get_device():
         else torch.device("cpu")
     )
     assert device_type == "cuda" if torch.cuda.is_available() else "cpu"
+
+
+def test_remix_signal():
+    np.random.seed(0)
+    n_samples = 1000
+    stems = {
+        "l1": np.random.rand(n_samples),
+        "l2": np.random.rand(n_samples),
+        "l3": np.random.rand(n_samples),
+        "l4": np.random.rand(n_samples),
+        "r1": np.random.rand(n_samples),
+        "r2": np.random.rand(n_samples),
+        "r3": np.random.rand(n_samples),
+        "r4": np.random.rand(n_samples),
+    }
+
+    remixed = remix_signal(stems)
+    assert isinstance(remixed, np.ndarray)
+    assert remixed.shape[0] == stems["l1"].shape[0]
+    assert remixed.shape[1] == 2
+    assert np.sum(remixed[:, 0]) == pytest.approx(
+        np.sum(stems["l1"] + stems["l2"] + stems["l3"] + stems["l4"]),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
+    assert np.sum(remixed[:, 1]) == pytest.approx(
+        np.sum(stems["r1"] + stems["r2"] + stems["r3"] + stems["r4"]),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
+
+
+def test_save_signal(tmp_path):
+    np.random.seed(0)
+    input_signal = np.random.rand(1600)
+    output_path = Path(tmp_path) / "output.flac"
+
+    save_flac_signal(
+        input_signal, output_path, signal_sample_rate=16000, output_sample_rate=16000
+    )
+    assert output_path.is_file()
+    signal, sr = sf.read(output_path)
+
+    assert sr == 16000
+    assert np.sum(signal) == pytest.approx(
+        807.2321472167969, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

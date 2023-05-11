@@ -26,6 +26,7 @@ def msbg_model():
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        device="cpu",
     )
     return model
 
@@ -37,6 +38,7 @@ def msbg_model_quick():
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
         kernel_size=129,
+        device="cpu",
     )
     return model
 
@@ -49,21 +51,25 @@ def test_msbg_hearing_model_init(use_torch):
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MILD.levels.tolist(),
         audiometric=AUDIOGRAM_MILD.cfs.tolist(),
+        device="cpu",
     )
     assert model.win_len == 441
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        device="cpu",
     )
     assert model.win_len == 441
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE_SEVERE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE_SEVERE.cfs.tolist(),
+        device="cpu",
     )
     assert model.win_len == 441
     model = MSBGHearingModel(
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
+        device="cpu",
     )
     assert model.win_len == 441
 
@@ -95,6 +101,7 @@ def test_msbg_hearing_model_calibrate_spl_null(use_torch):
         audiogram=AUDIOGRAM_MODERATE.levels.tolist(),
         audiometric=AUDIOGRAM_MODERATE.cfs.tolist(),
         spl_cali=False,  # <--- Disable calibration
+        device="cpu",
     )
     x = torch.randn(2, 20000)
     x = x.cpu()
@@ -163,7 +170,9 @@ def test_torchloudnorm_apply_filter(use_torch):
 
     x = torch.randn(2, 1, 40000)
     x = x.cpu()
-    loud_norm = torchloudnorm()
+    loud_norm = torchloudnorm(
+        device="cpu",
+    )
 
     y_torch = loud_norm.apply_filter(x)
     y = y_torch.cpu().detach().numpy()
@@ -177,7 +186,9 @@ def test_torchloudnorm_integrated_loudness(use_torch):
 
     x = torch.randn(2, 1, 20000)
     x = x.cpu()
-    loud_norm = torchloudnorm()
+    loud_norm = torchloudnorm(
+        device="cpu",
+    )
 
     y_torch = loud_norm.integrated_loudness(x)
     y = y_torch.cpu().detach().numpy()
@@ -192,7 +203,9 @@ def test_torchloudnorm_normalise_loudness(use_torch):
     lufs = torch.FloatTensor([[-30.0], [-40.0]]).cpu()
     x = torch.randn(2, 20000)
     x = x.cpu()
-    loud_norm = torchloudnorm()
+    loud_norm = torchloudnorm(
+        device="cpu",
+    )
     y_torch = loud_norm.normalize_loudness(x, lufs=lufs)
     y = y_torch.cpu().detach().numpy()
 
@@ -206,7 +219,9 @@ def test_torchloudnorm_forward(use_torch):
 
     x = torch.randn(2, 20000)
     x = x.cpu()
-    loud_norm = torchloudnorm()
+    loud_norm = torchloudnorm(
+        device="cpu",
+    )
     y_torch = loud_norm.forward(x)  # i.e. sane as `y_torch = loud_norm(x)`
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 20000)
