@@ -139,9 +139,10 @@ def enhance(config: DictConfig) -> None:
             / f"{scene_id}_{listener['name']}_{current_scene['song']}.flac"
         )
 
-        # Resample to 32 output sample rate
-        # Then, clip signal
-        # Lastly, convert to 16bit and encode to flac
+        # - Resample to 32 kHz sample rate
+        # - Clip signal
+        # - Convert to 16bit
+        # - Compress using flac
         enhanced = resample(enhanced, config.sample_rate, config.enhanced_sample_rate)
         clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
         if n_clipped > 0:

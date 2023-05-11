@@ -1,8 +1,10 @@
 """Tests for the enhance module"""
 from pathlib import Path
 
+# pylint: disable=import-error
 import numpy as np
 import pytest
+import soundfile as sf
 import torch
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
@@ -16,35 +18,12 @@ from recipes.cad1.task1.baseline.enhance import (
     map_to_dict,
     process_stems_for_listener,
     remix_signal,
+    save_flac_signal,
     separate_sources,
 )
 
 BASE_DIR = Path.cwd()
 RESOURCES = BASE_DIR / "tests" / "resources" / "recipes" / "cad1" / "task1"
-
-
-@pytest.fixture
-def stems():
-    np.random.seed(0)
-    n_samples = 1000
-    stem1 = np.random.rand(n_samples)
-    stem2 = np.random.rand(n_samples)
-    stem3 = np.random.rand(n_samples)
-    stem4 = np.random.rand(n_samples)
-    stem5 = np.random.rand(n_samples)
-    stem6 = np.random.rand(n_samples)
-    stem7 = np.random.rand(n_samples)
-    stem8 = np.random.rand(n_samples)
-    return {
-        "l1": stem1,
-        "l2": stem2,
-        "l3": stem3,
-        "l4": stem4,
-        "r1": stem5,
-        "r2": stem6,
-        "r3": stem7,
-        "r4": stem8,
-    }
 
 
 def test_map_to_dict():
@@ -80,13 +59,15 @@ def test_decompose_signal():
     signal, ref = normalize_signal(signal)
     # Call the decompose_signal function and check that the output has the expected keys
     output = decompose_signal(
-        model,
-        signal,
-        sample_rate,
-        device,
-        model.sources,
+        model=model,
+        model_sample_rate=sample_rate,
+        signal=signal,
+        signal_sample_rate=sample_rate,
+        device=device,
+        sources_list=model.sources,
         left_audiogram=np.ones(9),
         right_audiogram=np.ones(9),
+        normalise=True,
     )
 
     for key, item in output.items():
@@ -129,7 +110,7 @@ def test_process_stems_for_listener():
     """Takes 2 stems and applies the baseline processing using a listeners audiograms"""
     np.random.seed(12357)
     # Create mock inputs
-    stems = {
+    stem_signals = {
         "l_source1": np.random.normal(size=16000),
         "r_source1": np.random.normal(size=16000),
     }
@@ -145,7 +126,7 @@ def test_process_stems_for_listener():
 
     # Call the process_stems_for_listener function and check output is as expected
     output = process_stems_for_listener(
-        stems, enhancer, compressor, audiogram_left, audiogram_right, cfs
+        stem_signals, enhancer, compressor, audiogram_left, audiogram_right, cfs
     )
     expected_results = np.load(
         RESOURCES / "test_enhance.test_process_stems_for_listener.npy",
@@ -211,7 +192,20 @@ def test_get_device():
     assert device_type == "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def test_remix_signal(stems):
+def test_remix_signal():
+    np.random.seed(0)
+    n_samples = 1000
+    stems = {
+        "l1": np.random.rand(n_samples),
+        "l2": np.random.rand(n_samples),
+        "l3": np.random.rand(n_samples),
+        "l4": np.random.rand(n_samples),
+        "r1": np.random.rand(n_samples),
+        "r2": np.random.rand(n_samples),
+        "r3": np.random.rand(n_samples),
+        "r4": np.random.rand(n_samples),
+    }
+
     remixed = remix_signal(stems)
     assert isinstance(remixed, np.ndarray)
     assert remixed.shape[0] == stems["l1"].shape[0]
@@ -225,4 +219,21 @@ def test_remix_signal(stems):
         np.sum(stems["r1"] + stems["r2"] + stems["r3"] + stems["r4"]),
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
+    )
+
+
+def test_save_signal(tmp_path):
+    np.random.seed(0)
+    input_signal = np.random.rand(1600)
+    output_path = Path(tmp_path) / "output.flac"
+
+    save_flac_signal(
+        input_signal, output_path, signal_sample_rate=16000, output_sample_rate=16000
+    )
+    assert output_path.is_file()
+    signal, sr = sf.read(output_path)
+
+    assert sr == 16000
+    assert np.sum(signal) == pytest.approx(
+        807.2321472167969, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )

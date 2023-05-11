@@ -1,6 +1,7 @@
 """ Run the baseline enhancement. """
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 from pathlib import Path
@@ -291,12 +292,11 @@ def remix_signal(stems: dict) -> np.ndarray:
     return np.stack([out_left, out_right], axis=1)
 
 
-def save_signal(
+def save_flac_signal(
     signal: np.ndarray,
     filename: Path,
     signal_sample_rate,
     output_sample_rate,
-    flac_encoder: FlacEncoder,
     do_clip_signal: bool = False,
     do_soft_clip: bool = False,
     do_scale_signal: bool = False,
@@ -319,7 +319,6 @@ def save_signal(
         filename (Path) : Path to save signal
         signal_sample_rate (int) : Sample rate of the input signal
         output_sample_rate (int) : Sample rate of the output signal
-        flac_encoder (FlacEncoder) : Object of FlacEncoder class
         do_clip_signal (bool) : Whether to clip signal
         do_soft_clip (bool) : Whether to apply soft clipping
         do_scale_signal (bool) : Whether to scale signal
@@ -346,7 +345,8 @@ def save_signal(
     # Convert signal to 16-bit integer
     signal = to_16bit(signal)
 
-    flac_encoder.encode(signal, output_sample_rate, filename)
+    # Create flac encoder object to compress and save the signal
+    FlacEncoder().encode(signal, output_sample_rate, filename)
 
 
 @hydra.main(config_path="", config_name="config")
@@ -424,9 +424,6 @@ def enhance(config: DictConfig) -> None:
     enhancer = NALR(**config.nalr)
     compressor = Compressor(**config.compressor)
 
-    # Create flac encoder object for saving the processed stems
-    flac_encoder = FlacEncoder()
-
     # Decompose each song into left and right vocal, drums, bass, and other stems
     # and process each stem for the listener
     prev_song_name = None
@@ -496,11 +493,8 @@ def enhance(config: DictConfig) -> None:
             config.apply_compressor,
         )
 
-        # 3. Remix Signal
-        enhanced = remix_signal(processed_stems)
-
-        # 4. Save processed stems
-        for stem_str, stem_signal in stems.items():
+        # 3. Save processed stems
+        for stem_str, stem_signal in processed_stems.items():
             filename = (
                 enhanced_folder
                 / f"{listener_name}"
@@ -508,14 +502,16 @@ def enhance(config: DictConfig) -> None:
                 / f"{listener_name}_{song_name}_{stem_str}.flac"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
-            save_signal(
+            save_flac_signal(
                 signal=stem_signal,
                 filename=filename,
                 signal_sample_rate=config.sample_rate,
                 output_sample_rate=config.stem_sample_rate,
-                flac_encoder=flac_encoder,
                 do_scale_signal=True,
             )
+
+        # 3. Remix Signal
+        enhanced = remix_signal(processed_stems)
 
         # 5. Save enhanced (remixed) signal
         filename = (
@@ -524,12 +520,11 @@ def enhance(config: DictConfig) -> None:
             / f"{song_name}"
             / f"{listener_info['name']}_{song_name}_remix.flac"
         )
-        save_signal(
+        save_flac_signal(
             signal=enhanced,
             filename=filename,
             signal_sample_rate=config.sample_rate,
-            output_sample_rate=config.stem_sample_rate,
-            flac_encoder=flac_encoder,
+            output_sample_rate=config.remix_sample_rate,
             do_clip_signal=True,
             do_soft_clip=config.soft_clip,
         )

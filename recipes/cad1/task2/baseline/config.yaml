@@ -11,8 +11,8 @@ path:
   hrtf_file: ${path.metadata_dir}/eBrird_BRIR.json
   exp_folder: ./exp # folder to store enhanced signals and final results
 
-sample_rate: 44100
-enhanced_sample_rate: 32000 # sample rate for enhanced signals
+sample_rate: 44100          # sample rate of the input signal
+enhanced_sample_rate: 32000 # sample rate for the enhanced output signal
 
 nalr:
   nfir: 220
