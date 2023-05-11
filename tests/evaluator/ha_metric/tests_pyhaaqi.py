@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.ha_metric.pyhaaqi import HAAQI
+from clarity.evaluator.ha_metric.pyhaaqi import HAAQI, compute_haaqi
 
 
 def test_env_smooth():
@@ -15,7 +15,11 @@ def test_env_smooth():
     envelopes = np.random.random(size=(4, sig_len))
     sample_rate = 24000
 
-    haaqi = HAAQI(segment_size=segment_size, sample_rate=sample_rate)
+    haaqi = HAAQI(
+        segment_size=segment_size,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
+    )
     smooth = haaqi.env_smooth(envelopes=envelopes)
 
     # check shapes and values
@@ -37,7 +41,11 @@ def test_melcor9_crosscovmatrix():
     processed = np.random.random(size=(n_basis, sig_len))
 
     basilar_membrane = np.random.random(size=(n_modulations, sig_len))
-    haaqi = HAAQI(segment_size=8, sample_rate=24000)
+    haaqi = HAAQI(
+        segment_size=8,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
+    )
     cross_cov_matrix = haaqi.melcor9_crosscovmatrix(
         b=basilar_membrane,
         nmod=n_modulations,  # n modulation channels
@@ -63,7 +71,12 @@ def test_melcor9():
     distorted = 20 * np.random.random(size=(4, sig_len))  # noqa: F841
 
     # TODO: This is always returning 0's :-()
-    haaqi = HAAQI(segment_size=4, sample_rate=24000, silence_threshold=12)
+    haaqi = HAAQI(
+        segment_size=4,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
+        silence_threshold=12,
+    )
     mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = haaqi.melcor9(
         reference=reference,
         distorted=distorted,
@@ -106,7 +119,12 @@ def test_melcor9_equal_input():
     sig_len = 6000
     reference = 20 * np.random.random(size=(4, sig_len))
 
-    haaqi = HAAQI(segment_size=4, sample_rate=24000, silence_threshold=12)
+    haaqi = HAAQI(
+        segment_size=4,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
+        silence_threshold=12,
+    )
     mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = haaqi.melcor9(
         reference=reference,
         distorted=reference,
@@ -139,7 +157,12 @@ def test_spectrum_diff():
     reference = np.random.random(size=(4, sig_len))
     processed = np.random.random(size=(4, sig_len))
 
-    haaqi = HAAQI(segment_size=4, sample_rate=24000, silence_threshold=12)
+    haaqi = HAAQI(
+        segment_size=4,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
+        silence_threshold=12,
+    )
     dloud, dnorm, dslope = haaqi.spectrum_diff(
         reference_sl=reference, processed_sl=processed
     )
@@ -178,7 +201,10 @@ def test_bm_covary_ok():
     processed = np.random.random(size=(4, sig_len))
 
     haaqi = HAAQI(
-        segment_size=segment_size, sample_rate=sample_rate, silence_threshold=12
+        segment_size=segment_size,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
+        silence_threshold=12,
     )
     signal_cross_cov, ref_mean_square, proc_mean_square = haaqi.bm_covary(
         reference_basilar_membrane=reference,
@@ -213,7 +239,10 @@ def test_bm_covary_error():
     processed = np.random.random(size=(4, sig_len))
 
     haaqi = HAAQI(
-        segment_size=segment_size, sample_rate=sample_rate, silence_threshold=12
+        segment_size=segment_size,
+        signal_sample_rate=sample_rate,
+        ear_model_sample_rate=sample_rate,
+        silence_threshold=12,
     )
     with pytest.raises(ValueError):
         _signal_cross_cov, _ref_mean_square, _proc_mean_square = haaqi.bm_covary(
@@ -232,15 +261,17 @@ def test_ave_covary2():
 
     haaqi = HAAQI(
         segment_size=4,
-        sample_rate=24000,
+        signal_sample_rate=24000.0,
+        ear_model_sample_rate=24000.0,
         silence_threshold=0.6,
-        earmodel_kwards={"nchan": 4},
+        ear_model_kwards={"nchan": 4},
     )
+    print(1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0]))
     ave_covariance, ihc_sync_covariance = haaqi.ave_covary2(
         signal_cross_covariance=signal_cross_cov,
         reference_signal_mean_square=ref_mean_square,
         lp_filter_order=np.array([1, 3, 5, 5, 5, 5]),
-        freq_cutoff=1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0]),
+        freq_cutoff=np.array([1500.0, 2000.0, 2500.0, 3000.0, 3500.0, 4000.0]),
     )
 
     assert len(ihc_sync_covariance) == 6
@@ -248,6 +279,7 @@ def test_ave_covary2():
     assert ave_covariance == pytest.approx(
         0.5129961720524688, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
+
     assert np.sum(ihc_sync_covariance) == pytest.approx(
         3.057984614887033, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
@@ -263,4 +295,60 @@ def test_ave_covary2():
         ],
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
+    )
+
+
+def test_haaqi_v1() -> None:
+    """Test for haaqi_v1 index"""
+    np.random.seed(0)
+    sample_rate = 16000.0
+    x = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
+    y = np.random.uniform(-1, 1, int(sample_rate * 0.5))
+
+    hearing_loss = np.array([45, 45, 35, 45, 60, 65])
+    equalisation_mode = 1
+    level1 = 65
+
+    haaqi = HAAQI(
+        signal_sample_rate=sample_rate,
+        ear_model_sample_rate=24000.0,
+        equalisation=equalisation_mode,
+        level1=level1,
+    )
+
+    score, _, _, _ = haaqi.compute(reference=x, processed=y, hearing_loss=hearing_loss)
+
+    assert score == pytest.approx(
+        0.111290948, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+@pytest.mark.parametrize(
+    "scale_reference,expected_result",
+    [(False, 0.113759275), (True, 0.114157435)],
+)
+def test_compute_haaqi(scale_reference, expected_result):
+    """Test for compute_haaqi function"""
+    np.random.seed(42)
+
+    sample_rate = 16000
+    enh_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
+    ref_signal = np.random.uniform(-1, 1, int(sample_rate * 0.5))
+
+    audiogram = np.array([10, 20, 30, 40, 50, 60])
+    audiogram_frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+
+    # Compute HAAQI score
+    score = compute_haaqi(
+        processed_signal=enh_signal,
+        reference_signal=ref_signal,
+        audiogram=audiogram,
+        audiogram_frequencies=audiogram_frequencies,
+        sample_rate=sample_rate,
+        scale_reference=scale_reference,
+    )
+
+    # Check that the score is a float between 0 and 1
+    assert score == pytest.approx(
+        expected_result, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )

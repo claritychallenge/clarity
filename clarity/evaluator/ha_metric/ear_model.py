@@ -119,7 +119,7 @@ class EarModel:
 
     def __init__(
         self,
-        equalisation: int,
+        equalisation: int = 0,
         target_freq: float = 24000.0,
         nchan: int = 32,
         m_delay: int = 1,
@@ -450,7 +450,6 @@ class EarModel:
         gammatone filterbank. The equation comes from Malcolm Slaney[1].
 
         Arguments:
-            nchan (int | None): Number of channels in the filterbank.
             low_freq (int): Low Frequency level.
             high_freq (int): High Frequency level.
             min_bw (float):

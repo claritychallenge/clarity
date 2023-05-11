@@ -38,7 +38,7 @@ class HAAQI:
         add_noise: float = 0.0,
         segment_covariance: int = 16,
         segment_size: int = 8,
-        earmodel_kwards: dict | None = None,
+        ear_model_kwards: dict | None = None,
     ):
         """
         Constructor
@@ -66,19 +66,26 @@ class HAAQI:
                 Default: 16
             segment_size (int): Size of the window to smooth the envelope
                 Default: 8
-            earmodel_kwards (dict | None): kwargs for the EarModel class. See
+            ear_model_kwards (dict | None): kwargs for the EarModel class. See
                 clarity/evaluator/ha_metric/ear_model.py for more information.
         """
+        self.small = 1.0e-30
         self.sample_rate = signal_sample_rate
+        self.ear_model_sample_rate = ear_model_sample_rate
         self.level1 = level1
         self.silence_threshold = silence_threshold
         self.add_noise = add_noise
         self.segment_covariance = segment_covariance
         self.segment_size = segment_size
-        earmodel_kwards = earmodel_kwards or {}
-        if "target_freq" not in earmodel_kwards.keys():
-            earmodel_kwards["target_freq"] = ear_model_sample_rate
-        self.ear_model = EarModel(equalisation=equalisation, **earmodel_kwards)
+
+        # Ear Model object
+        ear_model_kwards = ear_model_kwards or {}
+        self.ear_model = EarModel(
+            target_freq=ear_model_sample_rate,
+            equalisation=equalisation,
+            **ear_model_kwards,
+        )
+
         self.n_samples = 0
         self.wsum = 0
         self.window = None
@@ -93,7 +100,7 @@ class HAAQI:
             processed_basilar_membrane,
             reference_sl,
             processed_sl,
-            self.sample_rate,
+            _,
         ) = self.ear_model.compute(
             reference=reference,
             reference_freq=self.sample_rate,
@@ -180,7 +187,9 @@ class HAAQI:
         """
         # Compute the window
         # Segment size in samples
-        n_samples = int(np.around(self.segment_size * (0.001 * self.sample_rate)))
+        n_samples = int(
+            np.around(self.segment_size * (0.001 * self.ear_model_sample_rate))
+        )
         # 0=even, 1=odd
         n_samples += 1 if n_samples % 2 > 0 else 0
 
@@ -387,14 +396,14 @@ class HAAQI:
         mel_cepstral_modulation = np.mean(mel_cepstral_cross_covar[:, 1:], axis=1)
 
         return (
-            mel_cepstral_average,
-            mel_cepstral_low,
-            mel_cepstral_high,
+            float(mel_cepstral_average),
+            float(mel_cepstral_low),
+            float(mel_cepstral_high),
             mel_cepstral_modulation,
         )
 
-    @staticmethod
     def melcor9_crosscovmatrix(
+        self,
         b: ndarray,
         nmod: int,
         nbasis: int,
@@ -417,7 +426,7 @@ class HAAQI:
         Returns:
             cross_covariance_matrix ():
         """
-        small = 1.0e-30
+
         nfir2 = nfir // 2
         # Convolve the input and output envelopes with the modulation filters
         reference = np.zeros((nmod, nbasis, nsamp))
@@ -445,7 +454,7 @@ class HAAQI:
             processed_sum = np.sum(y_j**2, axis=1)
 
             xy = np.sum(x_j * y_j, axis=1)
-            mask = (reference_sum < small) | (processed_sum < small)
+            mask = (reference_sum < self.small) | (processed_sum < self.small)
             cross_covariance_matrix[m, ~mask] = np.abs(xy[~mask]) / np.sqrt(
                 reference_sum[~mask] * processed_sum[~mask]
             )
@@ -572,15 +581,14 @@ class HAAQI:
             Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
 
-        # Initialize parameters
-        small = 1.0e-30
-
         # Lag for computing the cross-covariance
         lagsize = 1.0  # Lag (+/-) in msec
-        maxlag = np.around(lagsize * (0.001 * self.sample_rate))  # Lag in samples
+        maxlag = np.around(
+            lagsize * (0.001 * self.ear_model_sample_rate)
+        )  # Lag in samples
 
         # Compute the segment size in samples
-        nwin = int(np.around(self.segment_size * (0.001 * self.sample_rate)))
+        nwin = int(np.around(self.segment_size * (0.001 * self.ear_model_sample_rate)))
 
         nwin += nwin % 2 == 1  # Force window length to be even
         window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
@@ -637,7 +645,7 @@ class HAAQI:
                 int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
             ]
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
-            if (ref_mean_square > small) and (proc_mean_squared > small):
+            if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                 # Normalize cross-covariance
                 signal_cross_covariance[k, 0] = unbiased_cross_correlation / np.sqrt(
                     ref_mean_square * proc_mean_squared
@@ -668,7 +676,7 @@ class HAAQI:
                     )
                 ]
                 unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
-                if (ref_mean_square > small) and (proc_mean_squared > small):
+                if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                     # Normalize cross-covariance
                     signal_cross_covariance[
                         k, n
@@ -700,7 +708,7 @@ class HAAQI:
             ]
 
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
-            if (ref_mean_square > small) and (proc_mean_squared > small):
+            if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                 # Normalized cross-covariance
                 signal_cross_covariance[
                     k, nseg - 1
@@ -744,18 +752,16 @@ class HAAQI:
         frequencies Johnson[2]_.
 
         Arguments:
-            signal_cross_covariance (np.array): [nchan,nseg] of cross-covariance values
-            reference_signal_mean_square (np.array): [nchan,nseg] of reference signal MS
+            signal_cross_covariance (ndarray): [nchan,nseg] of cross-covariance values
+            reference_signal_mean_square (ndarray): [nchan,nseg] of reference signal MS
                 values
-            threshold_db (): threshold in dB SL to include segment ave over freq in
-                average
-            lp_filter (list): LP filter order
-            freq_cutoff (list): Cutoff frequencies in Hz
+            lp_filter (ndarray): LP filter order
+            freq_cutoff (ndarray): Cutoff frequencies in Hz
 
         Returns:
-            average_covariance (): cross-covariance in segments averaged over time and
+            average_covariance (ndarray): cross-covariance in segments averaged over time and
                 frequency
-            ihc_sync_covariance (): cross-covariance array, 6 different weightings
+            ihc_sync_covariance (ndarray): cross-covariance array, 6 different weightings
                 for loss of IHC synchronization at high frequencies:
                   LP Filter Order     Cutoff Freq, kHz
                     1              1.5
@@ -768,13 +774,14 @@ class HAAQI:
 
         # Initialize the LP filter for loss of IHC synchronization
         # Center frequencies in Hz on an ERB scale
-        _center_freq = self.ear_model.center_frequency(n_channels)
+        ear_model = EarModel(nchan=n_channels)
+        _center_freq = ear_model.center_frequency()
         # Default LP filter order
         if lp_filter_order is None:
             lp_filter_order = np.array([1, 3, 5, 5, 5, 5])
         # Default cutoff frequencies in Hz
         if freq_cutoff is None:
-            freq_cutoff = 1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
+            freq_cutoff = np.array([1500.0, 2000.0, 2500.0, 3000.0, 3500.0, 4000.0])
 
         fc2p = (
             np.atleast_2d(freq_cutoff ** (2 * lp_filter_order))
@@ -907,7 +914,7 @@ def compute_haaqi(
         add_noise=0.0,
         segment_covariance=16,
         segment_size=8,
-        earmodel_kwards={"nchan": 32},
+        ear_model_kwards={"nchan": 32},
     )
 
     score, _, _, _ = haaqi_metric.compute(
