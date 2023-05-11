@@ -43,7 +43,7 @@ def overlap_and_add(signal, frame_step, device):
     output_size = frame_step * (frames - 1) + frame_length
     output_subframes = output_size // subframe_length
 
-    subframe_signal = signal.view(*outer_dimensions, -1, subframe_length).cpu()
+    subframe_signal = signal.view(*outer_dimensions, -1, subframe_length).to(device)
 
     frame = torch.arange(0, output_subframes).unfold(
         0, subframes_per_frame, subframe_step
