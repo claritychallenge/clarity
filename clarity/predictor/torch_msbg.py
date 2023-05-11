@@ -513,13 +513,17 @@ class torchloudnorm(nn.Module):
         block_size: float = 0.4,
         overlap: float = 0.75,
         gamma_a: int = -70,
+        device: str | None = None,
     ) -> None:
         super().__init__()
         self.sr = sr
         self.norm_lufs = norm_lufs
         self.kernel_size = kernel_size
         self.padding = kernel_size // 2
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
 
         # for frequency weighting filters - account for the acoustic respose
         # of the head and auditory system

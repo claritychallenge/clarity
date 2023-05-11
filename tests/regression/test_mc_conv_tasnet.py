@@ -15,7 +15,7 @@ def test_overlap_add(regtest):
     signal = torch.reshape(signal, (2, -1))
 
     frame_step = 100
-    output = overlap_and_add(signal, frame_step, None)
+    output = overlap_and_add(signal, frame_step, "cpu")
     regtest.write(f"overlap add output: \n{output.detach().numpy()}\n")
 
 
@@ -59,7 +59,8 @@ def test_convtasnet(regtest):
         "num_workers": 0,  # Overhead of multiprocessing not worth it for tiny dataset
     }
     cfg = OmegaConf.create(cfg)
-    device = "cuda" if torch.cuda.is_available() else None
+    # device = "cuda" if torch.cuda.is_available() else None
+    device = "cpu"
     test_set = CEC1Dataset(**cfg.test_dataset)
     test_loader = torch.utils.data.DataLoader(dataset=test_set, **cfg.test_loader)
 
@@ -88,7 +89,7 @@ def test_convtasnet(regtest):
                 den_model.eval()
 
                 noisy = torch.reshape(noisy, (1, 6, -1))
-                noisy = noisy.to(device).cpu()
+                noisy = noisy.cpu()
                 if cfg.test_dataset["downsample_factor"] != 1:
                     proc = down_sample(noisy)
                 enhanced = (den_model(proc)).squeeze(1)
