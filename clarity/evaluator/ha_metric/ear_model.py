@@ -266,11 +266,6 @@ class EarModel:
         reference_mid = self.middle_ear(reference_24hz, freq_sample)
         processed_mid = self.middle_ear(processed_24hz, freq_sample)
 
-        # Check the lengths of the two signals and trim to shortest
-        min_number_sample = min(len(reference_mid), len(processed_mid))
-        reference_mid = reference_mid[:min_number_sample]
-        processed_mid = processed_mid[:min_number_sample]
-
         # Initialize storage
         # Reference and processed envelopes and BM motion
         reference_db = np.zeros((self.nchan, nsamp))
@@ -696,10 +691,10 @@ class EarModel:
         reference_processed_correlation = correlate(
             reference[:min_sample_length] - np.mean(reference[:min_sample_length]),
             processed[:min_sample_length] - np.mean(processed[:min_sample_length]),
-            "full",
+            "same",
         )
         index = np.argmax(np.abs(reference_processed_correlation))
-        delay = min_sample_length - index - 1
+        delay = min_sample_length // 2 - index
 
         # Back up 2 msec to allow for dispersion
         delay = np.rint(delay - 2 * fsamp / 1000.0).astype(int)  # Back up 2 ms
@@ -899,11 +894,11 @@ class EarModel:
         npts = len(reference)
         lags = min(lags, npts)
 
-        ref_out_correlation = correlate(reference, output, "full")
+        ref_out_correlation = correlate(reference, output, "same")
         location = np.argmax(
-            ref_out_correlation[npts - lags : npts + lags]
+            ref_out_correlation[npts // 2 - lags : npts // 2 + lags]
         )  # Limit the range in which
-        delay = lags - location - 1
+        delay = lags - location
 
         # Time shift the output sequence
         if delay > 0:

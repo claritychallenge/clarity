@@ -62,7 +62,8 @@ class HAAQI:
                 dB above auditory threshold. Default : 2.5
             add_noise (float): Additive noise dB SL to condition cross-covariances.
                 Defaults to 0.0
-            segment_covariance (int): Number of segments to compute the covariance
+            segment_covariance (int): Number of segments to compute the covariance.
+                Use by ``self.bm_covary``
                 Default: 16
             segment_size (int): Size of the window to smooth the envelope
                 Default: 8
@@ -565,20 +566,16 @@ class HAAQI:
         The signals are divided into segments having 50% overlap.
 
         Arguments:
-            reference_basilar_membrane (): Basilar Membrane movement, reference signal
-            processed_basilar_membrane (): Basilar Membrane movement, processed signal
+            reference_basilar_membrane (ndarray): Basilar Membrane movement,
+                reference signal
+            processed_basilar_membrane (ndarray): Basilar Membrane movement,
+                processed signal
 
         Returns:
-            signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
-            reference_mean_square (np.array) : [nchan,nseg] of MS input signal
+            reference_mean_square (ndarray) : [nchan,nseg] of MS input signal
                 energy values
-            processed_mean_square (np.array) : [nchan,nseg] of MS processed signal
+            processed_mean_square (ndarray) : [nchan,nseg] of MS processed signal
                 energy values
-
-        Updates:
-            James M. Kates, 28 August 2012.
-            Output amplitude adjustment added, 30 october 2012.
-            Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
 
         # Lag for computing the cross-covariance
@@ -588,15 +585,18 @@ class HAAQI:
         )  # Lag in samples
 
         # Compute the segment size in samples
-        nwin = int(np.around(self.segment_size * (0.001 * self.ear_model_sample_rate)))
+        nwin = int(
+            np.around(self.segment_covariance * (0.001 * self.ear_model_sample_rate))
+        )
 
-        nwin += nwin % 2 == 1  # Force window length to be even
-        window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
+        # Force window length to be even
+        nwin += nwin % 2 == 1
+        # Raised cosine von Hann window
+        window = np.hanning(nwin).conj().transpose()
 
-        # compute inverted Window autocorrelation
-        win_corr = correlate(window, window, "full")
-        start_sample = int(len(window) - 1 - maxlag)
-        end_sample = int(maxlag + len(window))
+        win_corr = correlate(window, window, "same")
+        start_sample = int(len(window) / 2 - maxlag)
+        end_sample = int(maxlag + len(window) / 2 + 1)
         if start_sample < 0:
             raise ValueError("segment size too small")
         win_corr = 1 / win_corr[start_sample:end_sample]
@@ -605,13 +605,14 @@ class HAAQI:
         # The first segment has a half window
         nhalf = int(nwin / 2)
         half_window = window[nhalf:nwin]
-        half_corr = correlate(half_window, half_window, "full")
-        start_sample = int(len(half_window) - 1 - maxlag)
-        end_sample = int(maxlag + len(half_window))
+        half_corr = correlate(half_window, half_window, "same")
+        start_sample = int(len(half_window) / 2 - maxlag)
+        end_sample = int(maxlag + len(half_window) / 2 + 1)
         if start_sample < 0:
             raise ValueError("segment size too small")
         half_corr = 1 / half_corr[start_sample:end_sample]
-        halfsum2 = 1.0 / np.sum(half_window**2)  # MS sum normalization, first segment
+        # MS sum normalization, first segment
+        halfsum2 = 1.0 / np.sum(half_window**2)
 
         # Number of segments
         nchan = reference_basilar_membrane.shape[0]
@@ -640,9 +641,11 @@ class HAAQI:
             ref_mean_square = np.sum(reference_seg**2) * halfsum2
 
             proc_mean_squared = np.sum(processed_seg**2) * halfsum2
-            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlate(reference_seg, processed_seg, "same")
             correlation = correlation[
-                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+                int(len(reference_seg) / 2 - maxlag) : int(
+                    maxlag + len(reference_seg) / 2 + 1
+                )
             ]
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
             if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
@@ -661,18 +664,21 @@ class HAAQI:
             for n in range(1, nseg - 1):
                 nstart = nstart + nhalf
                 nstop = nstart + nwin
-                reference_seg = x[nstart:nstop] * window  # Window the reference
-                processed_seg = y[nstart:nstop] * window  # Window the processed signal
-                reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+                # Window the reference
+                # Window the processed signal
+                reference_seg = x[nstart:nstop] * window
+                processed_seg = y[nstart:nstop] * window
+                # Make 0-mean
+                reference_seg = reference_seg - np.mean(reference_seg)
                 processed_seg = processed_seg - np.mean(processed_seg)
 
                 # Normalize signal MS value by the window
                 ref_mean_square = np.sum(reference_seg**2) * win_sum2
                 proc_mean_squared = np.sum(processed_seg**2) * win_sum2
-                correlation = correlate(reference_seg, processed_seg, "full")
+                correlation = correlate(reference_seg, processed_seg, "same")
                 correlation = correlation[
-                    int(len(reference_seg) - 1 - maxlag) : int(
-                        maxlag + len(reference_seg)
+                    int(len(reference_seg) / 2 - maxlag) : int(
+                        maxlag + len(reference_seg) / 2 + 1
                     )
                 ]
                 unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
@@ -692,19 +698,24 @@ class HAAQI:
             # The last (half) windowed segment
             nstart = nstart + nhalf
             nstop = nstart + nhalf
-            reference_seg = x[nstart:nstop] * window[0:nhalf]  # Window the reference
-            processed_seg = (
-                y[nstart:nstop] * window[0:nhalf]
-            )  # Window the processed signal
-            reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+            # Window the reference
+            reference_seg = x[nstart:nstop] * window[0:nhalf]
+            # Window the processed signal
+            processed_seg = y[nstart:nstop] * window[0:nhalf]
+
+            # Make 0-mean
+            reference_seg = reference_seg - np.mean(reference_seg)
             processed_seg = processed_seg - np.mean(processed_seg)
+
             # Normalize signal MS value by the window
             ref_mean_square = np.sum(reference_seg**2) * halfsum2
             proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlate(reference_seg, processed_seg, "same")
             correlation = correlation[
-                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+                int(len(reference_seg) / 2 - maxlag) : int(
+                    maxlag + len(reference_seg) / 2 + 1
+                )
             ]
 
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
@@ -759,10 +770,10 @@ class HAAQI:
             freq_cutoff (ndarray): Cutoff frequencies in Hz
 
         Returns:
-            average_covariance (ndarray): cross-covariance in segments averaged over time and
-                frequency
-            ihc_sync_covariance (ndarray): cross-covariance array, 6 different weightings
-                for loss of IHC synchronization at high frequencies:
+            average_covariance (ndarray): cross-covariance in segments averaged over
+                time and frequency
+            ihc_sync_covariance (ndarray): cross-covariance array, 6 different
+                weightings for loss of IHC synchronization at high frequencies:
                   LP Filter Order     Cutoff Freq, kHz
                     1              1.5
                     3              2.0
