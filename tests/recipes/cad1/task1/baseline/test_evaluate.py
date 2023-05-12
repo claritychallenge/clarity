@@ -6,6 +6,7 @@ import pytest
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
+from clarity.utils.audiogram import Audiogram, Listener
 from recipes.cad1.task1.baseline.evaluate import (
     ResultsFile,
     _evaluate_song_listener,
@@ -20,7 +21,7 @@ def test_results_file(tmp_path):
     result_file = ResultsFile(results_file.as_posix())
     result_file.write_header()
     result_file.add_result(
-        listener="My listener",
+        listener_id="My listener",
         song="My favorite song",
         score=0.9,
         instruments_scores={
@@ -80,7 +81,7 @@ def test_make_song_listener_list():
 
 
 @pytest.mark.parametrize(
-    "song,listener,config,split_dir,listener_audiograms,expected_results",
+    "song,listener_id,config,split_dir,listener_audiograms,expected_results",
     [
         (
             "punk_is_not_dead",
@@ -100,24 +101,37 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.140304064,
-                "right_drums": 0.127870857,
-                "left_bass": 0.149049349,
-                "right_bass": 0.132706378,
-                "left_other": 0.140922507,
-                "right_other": 0.162374351,
-                "left_vocals": 0.119106033,
-                "right_vocals": 0.123879321,
+                "left_drums": 0.205517835,
+                "right_drums": 0.270553157,
+                "left_bass": 0.207187220,
+                "right_bass": 0.205454381,
+                "left_other": 0.237097711,
+                "right_other": 0.227505708,
+                "left_vocals": 0.227105999,
+                "right_vocals": 0.272616615,
             },
         )
     ],
 )
 def test_evaluate_song_listener(
-    song, listener, config, split_dir, listener_audiograms, expected_results, tmp_path
+    song,
+    listener_id,
+    config,
+    split_dir,
+    listener_audiograms,
+    expected_results,
+    tmp_path,
 ):
     """Test the function _evaluate_song_listener returns correct results given input"""
     np.random.seed(2023)
-
+    listener_data = listener_audiograms[listener_id]
+    audiogram_left = Audiogram(
+        listener_data["audiogram_levels_l"], listener_data["audiogram_cfs"]
+    )
+    audiogram_right = Audiogram(
+        listener_data["audiogram_levels_r"], listener_data["audiogram_cfs"]
+    )
+    listener = Listener(audiogram_left, audiogram_right, id=listener_id)
     # Generate reference and enhanced wav files
     enhanced_folder = tmp_path / "enhanced"
     enhanced_folder.mkdir()
@@ -132,9 +146,9 @@ def test_evaluate_song_listener(
         # enhanced signals are mono
         enh_file = (
             enhanced_folder
-            / f"{listener}"
+            / f"{listener.id}"
             / f"{song}"
-            / f"{listener}_{song}_{lr_instrument}.wav"
+            / f"{listener.id}_{song}_{lr_instrument}.wav"
         )
         enh_file.parent.mkdir(exist_ok=True, parents=True)
 
@@ -161,7 +175,6 @@ def test_evaluate_song_listener(
         listener,
         config,
         split_dir,
-        listener_audiograms[listener],
         enhanced_folder,
     )
 
@@ -169,7 +182,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.137026607, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.231629828, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
     # Per instrument score

@@ -2,15 +2,14 @@
 import numpy as np
 import pytest
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gainrule_camfit import (
     compute_proportion_overlap,
-    freq_interp_sh,
     gainrule_camfit_compr,
     gainrule_camfit_linear,
     gains,
     isothr,
 )
+from clarity.utils.audiogram import Audiogram
 
 
 @pytest.mark.parametrize(
@@ -27,7 +26,9 @@ from clarity.enhancer.gha.gainrule_camfit import (
 )
 def test_compute_proportion_overlap(a1, a2, b1, b2, expected):
     """test that the proportion overlap is computed correctly"""
-    assert compute_proportion_overlap(a1, a2, b1, b2) == pytest.approx(expected)
+    assert compute_proportion_overlap(a1, a2, b1, b2) == pytest.approx(
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_isothr():
@@ -43,41 +44,15 @@ def test_isothr():
     assert np.all(outputs_1 == outputs_2)  # they should be the same
     assert not np.all(outputs_1 == outputs_3)  # they should be the different
 
-    assert np.sum(outputs_1) == pytest.approx(237.52941176470588)
-    assert np.sum(outputs_2) == pytest.approx(237.52941176470588)
-    assert np.sum(outputs_3) == pytest.approx(235.02941176470588)
-
-
-@pytest.mark.parametrize(
-    "f_in, y_in, f_out, expected_y_out",
-    [
-        ([10.0, 20.0], [2.0, 10.0], [10.0, 20.0], [2.0, 10.0]),
-        ([10.0, 20.0], [2.0, 10.0], [5.0, 15.0, 30.0], [2.0, 6.67970001, 10.0]),
-        ([10.0, 20.0], [2.0, 10.0], [15.0], [6.67970001]),
-        ([10.0, 20.0], [2.0, 10.0], [50.0, 1], [10.0, 2.0]),
-        ([10.0], [2.0], [50.0, 1], [2.0, 2.0]),
-    ],
-)
-def test_freq_inter_sh(f_in, y_in, f_out, expected_y_out):
-    """test that the freq_inter_sh interpolates and extrapolates correctly"""
-    y_out = freq_interp_sh(f_in=np.array(f_in), y_in=np.array(y_in), f=np.array(f_out))
-    y_out = np.squeeze(y_out, axis=0)
-    assert y_out.shape == np.array(f_out).shape
-    assert np.allclose(y_out, np.array(expected_y_out))
-
-
-@pytest.mark.parametrize(
-    "f_in, y_in, f_out, error_type",
-    [
-        ([10.0, 20.0], [2.0], [10.0, 20.0], ValueError),
-        ([10.0, 20.0], [2.0, 10.0, 30.0], [5.0, 15.0, 30.0], ValueError),
-        ([], [], [15.0], IndexError),
-    ],
-)
-def test_freq_inter_sh_error(f_in, y_in, f_out, error_type):
-    """test that the freq_inter_sh fails with invalid inputs"""
-    with pytest.raises(error_type):
-        freq_interp_sh(f_in=np.array(f_in), y_in=np.array(y_in), f=np.array(f_out))
+    assert np.sum(outputs_1) == pytest.approx(
+        237.52941176470588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(outputs_2) == pytest.approx(
+        237.52941176470588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(outputs_3) == pytest.approx(
+        235.02941176470588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_gains():
@@ -97,15 +72,16 @@ def test_gains():
         levels=levels,
     )
     assert uncorrected_gains.shape == (n_gains, n_gains)
-    assert np.allclose(uncorrected_gains, expected_outputs)
+    assert uncorrected_gains == pytest.approx(
+        expected_outputs, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_gainrule_camfit_linear():
     """test that the linear gain rule runs correctly"""
     audiogram = Audiogram(
-        levels_l=np.array([30, 40, 50, 60, 70, 80]),
-        levels_r=np.array([30, 40, 50, 60, 70, 80]),
-        cfs=np.array([250, 500, 1000, 2000, 4000, 8000]),
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
     )
 
     sFitmodel = {
@@ -113,7 +89,8 @@ def test_gainrule_camfit_linear():
         "levels": [30, 40, 50, 60, 70, 80],
     }
     sGt, noisegate_level, noisegate_slope, insertion_gains = gainrule_camfit_linear(
-        audiogram=audiogram,
+        audiogram_left=audiogram,
+        audiogram_right=audiogram,
         sFitmodel=sFitmodel,
         noisegatelevels=45,
         noisegateslope=1,
@@ -125,18 +102,29 @@ def test_gainrule_camfit_linear():
     assert noisegate_slope.shape == (6, 2)
     assert insertion_gains.shape == (6, 2)
 
-    assert sGt.sum() == pytest.approx(1589.2)
-    assert noisegate_level.sum() == pytest.approx(540.0)
-    assert noisegate_slope.sum() == pytest.approx(12.0)
-    assert insertion_gains.sum() == pytest.approx(284.8)
+    assert sGt.sum() == pytest.approx(
+        1589.2, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert noisegate_level.sum() == pytest.approx(
+        540.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert noisegate_slope.sum() == pytest.approx(
+        12.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert insertion_gains.sum() == pytest.approx(
+        284.8, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_gainrule_camfit_compr():
     """test that the compr gain rule runs correctly"""
-    audiogram = Audiogram(
-        levels_l=np.array([30, 40, 50, 60, 70, 80]),
-        levels_r=np.array([30, 40, 50, 60, 70, 80]),
-        cfs=np.array([250, 500, 1000, 2000, 4000, 8000]),
+    audiogram_left = Audiogram(
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
+    )
+    audiogram_right = Audiogram(
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
     )
 
     sFitmodel = {
@@ -145,7 +133,8 @@ def test_gainrule_camfit_compr():
         "edge_frequencies": [250, 8000],
     }
     sGt, noisegate_levels, noisegate_slope = gainrule_camfit_compr(
-        audiogram=audiogram,
+        audiogram_left=audiogram_left,
+        audiogram_right=audiogram_right,
         sFitmodel=sFitmodel,
         noisegatelevels=45,
         noisegateslope=1,
@@ -157,9 +146,15 @@ def test_gainrule_camfit_compr():
     assert noisegate_levels.shape == (6, 2)
     assert noisegate_slope.shape == (6, 2)
 
-    assert sGt.sum() == pytest.approx(2140.1762291737905)
-    assert noisegate_levels.sum() == pytest.approx(540.0)
-    assert noisegate_slope.sum() == pytest.approx(12.0)
+    assert sGt.sum() == pytest.approx(
+        2140.1762291737905, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert noisegate_levels.sum() == pytest.approx(
+        540.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert noisegate_slope.sum() == pytest.approx(
+        12.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 @pytest.mark.parametrize(
@@ -178,9 +173,8 @@ def test_gainrule_camfit_compr_varying_params(
 ):
     """test that the compr gain rule runs correctly for different parameters"""
     audiogram = Audiogram(
-        levels_l=np.array([30, 40, 50, 60, 70, 80]),
-        levels_r=np.array([30, 40, 50, 60, 70, 80]),
-        cfs=np.array([250, 500, 1000, 2000, 4000, 8000]),
+        levels=np.array([30, 40, 50, 60, 70, 80]),
+        frequencies=np.array([250, 500, 1000, 2000, 4000, 8000]),
     )
 
     sFitmodel = {
@@ -189,7 +183,8 @@ def test_gainrule_camfit_compr_varying_params(
         "edge_frequencies": [250, 8000],
     }
     sGt, noisegate_levels, noisegate_slope = gainrule_camfit_compr(
-        audiogram=audiogram,
+        audiogram_left=audiogram,
+        audiogram_right=audiogram,
         sFitmodel=sFitmodel,
         noisegatelevels=ng_levels,
         noisegateslope=ng_slope,
@@ -197,6 +192,12 @@ def test_gainrule_camfit_compr_varying_params(
         max_output_level=max_output_level,
     )
 
-    assert sGt.sum() == pytest.approx(out_sgt)
-    assert noisegate_levels.sum() == pytest.approx(out_ng_level)
-    assert noisegate_slope.sum() == pytest.approx(out_ng_slope)
+    assert sGt.sum() == pytest.approx(
+        out_sgt, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert noisegate_levels.sum() == pytest.approx(
+        out_ng_level, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert noisegate_slope.sum() == pytest.approx(
+        out_ng_slope, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

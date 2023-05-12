@@ -106,7 +106,7 @@ def train_den(cfg, ear):
         den_module.down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.sample_rate,
             new_freq=cfg.sample_rate // cfg.downsample_factor,
-            resampling_method="sinc_interpolation",
+            resampling_method="sinc_interp_hann",
         )
 
     # callbacks
@@ -177,12 +177,12 @@ def train_amp(cfg, ear):
         amp_module.down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.sr,
             new_freq=cfg.sr // cfg.downsample_factor,
-            resampling_method="sinc_interpolation",
+            resampling_method="sinc_interp_hann",
         )
         amp_module.up_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.sr // cfg.downsample_factor,
             new_freq=cfg.sr,
-            resampling_method="sinc_interpolation",
+            resampling_method="sinc_interp_hann",
         )
 
     # build normal hearing and hearing loss ears

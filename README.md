@@ -39,7 +39,7 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
   - Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.
   - Evaluation tools and a baseline system are available in the [CAD1 recipes](./recipes/cad1) folder. :new:
 - The 2nd Clarity Prediction Challenge (CPC2) is now open.   :fire::fire:
-  - Join the [Cadenza Challenge Group](https://groups.google.com/g/clarirty-challenge) to keep up-to-date on developments.
+  - Join the [Clarity Challenge Group](https://groups.google.com/g/clarity-challenge) to keep up-to-date on developments.
   - Visit the Clarity Challenge [website](https://claritychallenge.org/) for more details.
   - Evaluation tools and a baseline system will be available shortly.
 - The 4th Clarity Workshop will be held as a satellite event of Interspeech 2023. For details visit the [workshop website](https://claritychallenge.org/clarity2023-workshop/).

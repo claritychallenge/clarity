@@ -6,7 +6,7 @@ import hydra
 import numpy as np
 import pytest
 
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 from recipes.cec1.data_preparation import prepare_cec1_data
 
 
@@ -67,4 +67,6 @@ def test_prepare_data(tmp_path):
         assert filename.exists()
         # Check that the output signal is correct
         signal = read_signal(filename)
-        assert np.sum(np.abs(signal)) == pytest.approx(expected_sum)
+        assert np.sum(np.abs(signal)) == pytest.approx(
+            expected_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )

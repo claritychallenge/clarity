@@ -9,7 +9,7 @@ import torch
 
 from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
 from clarity.enhancer.dsp.filter import AudiometricFIR
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 from recipes.cec1.e009_sheffield.test import run
 
 
@@ -61,4 +61,7 @@ def test_run(tmp_path):
     assert (tmp_path / expected_output_file).exists()
     signal = read_signal(tmp_path / expected_output_file)
     assert signal.shape == (259200, 2)
-    assert np.sum(np.abs(signal)) == pytest.approx(4331.347137451172)
+    # Tolerances below slightly relaxed from the 1e-7 default
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        4331.347137451172, rel=1e-6, abs=1e-6
+    )

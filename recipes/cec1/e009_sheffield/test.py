@@ -28,12 +28,12 @@ def run(cfg: DictConfig) -> None:
         down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.sample_rate,
             new_freq=cfg.sample_rate // cfg.downsample_factor,
-            resampling_method="sinc_interpolation",
+            resampling_method="sinc_interp_hann",
         )
         up_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.sample_rate // cfg.downsample_factor,
             new_freq=cfg.sample_rate,
-            resampling_method="sinc_interpolation",
+            resampling_method="sinc_interp_hann",
         )
 
     device = "cuda" if torch.cuda.is_available() else None

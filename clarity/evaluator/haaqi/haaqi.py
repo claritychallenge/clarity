@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
 from clarity.evaluator.haspi import eb
-from clarity.utils.signal_processing import compute_rms
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -17,13 +17,16 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# HAAQI assumes the following audiogram frequencies:
+HAAQI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
+
 
 def haaqi_v1(
     reference: ndarray,
     reference_freq: float,
     processed: ndarray,
     processed_freq: float,
-    hearing_loss: ndarray,
+    audiogram: Audiogram,
     equalisation: int,
     level1: float = 65.0,
     silence_threshold: float = 2.5,
@@ -73,6 +76,14 @@ def haaqi_v1(
     Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
     """
 
+    if not audiogram.has_frequencies(HAAQI_AUDIOGRAM_FREQUENCIES):
+        logging.warning(
+            "Audiogram does not have all HAAQI frequency measurements"
+            "Measurements will be interpolated"
+        )
+
+    audiogram = audiogram.resample(HAAQI_AUDIOGRAM_FREQUENCIES)
+
     # Auditory model for quality
     # Reference is no processing or NAL-R, impaired hearing
     (
@@ -88,7 +99,7 @@ def haaqi_v1(
         reference_freq,
         processed,
         processed_freq,
-        hearing_loss,
+        audiogram.levels,
         equalisation,
         level1,
     )
@@ -167,12 +178,10 @@ def haaqi_v1(
 def compute_haaqi(
     processed_signal: ndarray,
     reference_signal: ndarray,
-    audiogram: ndarray,
-    audiogram_frequencies: ndarray,
+    audiogram: Audiogram,
     sample_rate: float,
     equalisation: int = 1,
     level1: float = 65.0,
-    scale_reference: bool = True,
 ) -> float:
     """Compute HAAQI metric
 
@@ -182,25 +191,16 @@ def compute_haaqi(
         reference_signal (np.ndarray): Input reference speech signal with no noise
             or distortion. If a hearing loss is specified, NAL-R equalization
             is optional
-        audiogram (np.ndarray): Vector of hearing loss at the audiogram_frequencies
-        audiogram_frequencies (np.ndarray): Audiogram frequencies
+        audiogram (Audiogram): Audiogram object.
         sample_rate (int): Sample rate in Hz.
         equalisation (int): hearing loss equalization mode for reference signal:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
             Defaults to 1.
-        level1 (float): Reference level in dB SPL. Defaults to 65.0.
-        scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
+        level1 (float): Optional input specifying level in dB SPL
+            that corresponds to a signal RMS = 1.
+            Default is 65 dB SPL.
     """
-
-    haaqi_audiogram_frequencies = [250, 500, 1000, 2000, 4000, 6000]
-    audiogram_adjusted = np.array(
-        [
-            audiogram[i]
-            for i in range(len(audiogram_frequencies))
-            if audiogram_frequencies[i] in haaqi_audiogram_frequencies
-        ]
-    )
 
     if len(reference_signal) == 0:
         if len(processed_signal) == 0:
@@ -209,15 +209,12 @@ def compute_haaqi(
         logger.error("If `Reference` is empty, `Processed` must be empty as well")
         return 0.0
 
-    if scale_reference:
-        reference_signal /= compute_rms(reference_signal)
-
     score, _, _, _ = haaqi_v1(
         reference=reference_signal,
         reference_freq=sample_rate,
         processed=processed_signal,
         processed_freq=sample_rate,
-        hearing_loss=audiogram_adjusted,
+        audiogram=audiogram,
         equalisation=equalisation,
         level1=level1,
     )

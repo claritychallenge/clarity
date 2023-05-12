@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 from omegaconf import DictConfig
 
+from clarity.utils.audiogram import Listener
+
 # pylint: disable=import-error
 
 
@@ -72,7 +74,9 @@ def load_hrtf(config: DictConfig) -> dict:
     return hrtf_data[config.evaluate.split]
 
 
-def load_listeners_and_scenes(config: DictConfig) -> tuple[dict, dict, dict]:
+def load_listeners_and_scenes(
+    config: DictConfig,
+) -> tuple[dict, dict[str, Listener], dict]:
     """Load listener and scene data
 
     Args:
@@ -90,16 +94,15 @@ def load_listeners_and_scenes(config: DictConfig) -> tuple[dict, dict, dict]:
     with open(config.path.scenes_file, encoding="utf-8") as fp:
         df_scenes = pd.read_json(fp, orient="index")
 
-    # Load audiograms and scence data for the corresponding split
+    # Load audiograms and scene data for the corresponding split
     if config.evaluate.split == "train":
-        with open(config.path.listeners_train_file, encoding="utf-8") as fp:
-            listener_audiograms = json.load(fp)
+        listeners = Listener.load_listener_dict(config.path.listeners_train_file)
         scenes = df_scenes[df_scenes["split"] == "train"].to_dict("index")
-
     elif config.evaluate.split == "valid":
-        with open(config.path.listeners_valid_file, encoding="utf-8") as fp:
-            listener_audiograms = json.load(fp)
+        listeners = Listener.load_listener_dict(config.path.listeners_valid_file)
         scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
+    else:
+        raise ValueError(f"Unknown split {config.evaluate.split}")
 
     with open(config.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
@@ -107,7 +110,7 @@ def load_listeners_and_scenes(config: DictConfig) -> tuple[dict, dict, dict]:
             k: v for k, v in scenes_listeners.items() if k in scenes.keys()
         }
 
-    return scenes, listener_audiograms, scenes_listeners
+    return scenes, listeners, scenes_listeners
 
 
 def make_scene_listener_list(scenes_listeners, small_test=False):

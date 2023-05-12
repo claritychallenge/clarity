@@ -43,5 +43,7 @@ def test_compressor_process():
 
     assert len(output) == len(signal)
     assert np.all(rms >= 0.0)
-    assert np.sum(rms) == pytest.approx(0.9799197751960967)
+    assert np.sum(rms) == pytest.approx(
+        0.9799197751960967, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
     assert len(comp_ratios) == len(signal)

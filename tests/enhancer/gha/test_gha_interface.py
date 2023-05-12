@@ -4,8 +4,9 @@ import hashlib
 import numpy as np
 import pytest
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
+from clarity.utils.audiogram import Audiogram, Listener
+from clarity.utils.file_io import read_signal, write_signal
 
 
 def setup_ha_and_data(root_path):
@@ -29,9 +30,10 @@ def setup_ha_and_data(root_path):
     ).T  # <- signals are store with channels as columns
 
     for filename in tmp_filenames:
-        gha_hearing_aid.write_signal(
+        write_signal(
             filename,
-            stereo_signal,  # <- signals are store with channels as columns
+            stereo_signal,  # <- signals are stored with channels as columns
+            gha_hearing_aid.sample_rate,
             floating_point=True,
         )
     return gha_hearing_aid, stereo_signal, tmp_filenames
@@ -80,11 +82,10 @@ def test_process_files(mocker, tmp_path):
 
     gha_hearing_aid, _stereo_signal, infile_names = setup_ha_and_data(tmp_path)
 
-    levels_l = np.array([45, 45, 35, 45, 60, 65])
-    levels_r = np.array([45, 45, 35, 45, 60, 65])
-    cfs = np.array([250, 500, 1000, 2000, 4000, 6000])
-    audiogram = Audiogram(levels_l=levels_l, levels_r=levels_r, cfs=cfs)
-
+    levels = np.array([45, 45, 35, 45, 60, 65])
+    frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    audiogram = Audiogram(levels=levels, frequencies=frequencies)
+    listener = Listener(audiogram_left=audiogram, audiogram_right=audiogram)
     # Mock the subprocess.run function as OpenMHA is not installed
     m = mocker.patch("clarity.enhancer.gha.gha_interface.subprocess.run")
 
@@ -92,54 +93,20 @@ def test_process_files(mocker, tmp_path):
     # despite that the fact that the file generation is mocked out
     outfile_name = tmp_path / "output.wav"
 
-    gha_hearing_aid.write_signal(
+    write_signal(
         outfile_name,
         np.array([[-0.1, 0.1], [-0.2, 0.2]]),
+        sample_rate=gha_hearing_aid.sample_rate,
         floating_point=True,
     )
 
     gha_hearing_aid.process_files(
         infile_names=infile_names,
         outfile_name=outfile_name,
-        audiogram=audiogram,
-        listener=None,
+        listener=listener,
     )
     # Check that the subprocess.run function was called
     m.assert_called_once()
-
-
-# TODO: Testing functions that are marked for deduplication
-# Remove this test when the functions are removed
-@pytest.mark.parametrize(
-    "signal, floating_point, strict",
-    [
-        (np.array([1.1, -2.0, 0.0, 44.0, -54.0]), True, True),  # float32
-        (np.array([0.1, -0.2, 0.1, -0.5, 0.99]), False, True),  # int16
-        (np.array([0.1, -0.2, 0.1, -1.00, 0.99]), False, True),  # int16
-        (np.array([0.1, -0.2, 0.1, -1.00, 1.99]), False, False),  # int16
-        (np.array([0.1, -0.2, 0.1, -1.00, 0.99]), False, True),  # int16
-    ],
-)
-def test_write_read_loop(tmp_path, signal, floating_point, strict):
-    """Test write_signal and read_signal"""
-    tmp_filename = tmp_path / "test.wav"
-
-    gha_hearing_aid = GHAHearingAid()
-
-    gha_hearing_aid.write_signal(
-        tmp_filename, signal, floating_point=floating_point, strict=strict
-    )
-    result = gha_hearing_aid.read_signal(tmp_filename)
-
-    # Some precision is lost as convert to int16 and back again
-    assert result.shape == signal.shape
-    # The test where strict is False has overflow which is not caught and hence
-    # reading back the signal has changed
-    if strict:
-        assert result == pytest.approx(signal, abs=1.0 / 16384)
-    else:
-        # Deliberate fail: shows why strict is True is needed
-        assert result != pytest.approx(signal, abs=1.0 / 16384)
 
 
 def test_create_ha_inputs(tmp_path):
@@ -151,7 +118,7 @@ def test_create_ha_inputs(tmp_path):
     gha_hearing_aid.create_HA_inputs(tmp_filenames, str(output_filename))
 
     # Read the output file and check it is correct
-    result = gha_hearing_aid.read_signal(output_filename)
+    result = read_signal(output_filename, sample_rate=gha_hearing_aid.sample_rate)
     assert result.shape == (stereo_signal.shape[0], 4)
     assert np.sum(result) == pytest.approx(np.sum(stereo_signal) * 2.0)
 
