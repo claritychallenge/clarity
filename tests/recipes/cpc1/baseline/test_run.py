@@ -12,9 +12,9 @@ import pytest
 from scipy.io.wavfile import read
 
 import recipes
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.audiogram import Audiogram, Listener
+from clarity.utils.file_io import read_signal
 from recipes.cpc1.baseline.run import listen, run, run_calculate_SI, run_HL_processing
 
 
@@ -59,12 +59,13 @@ def test_listen(hydra_cfg):
     levels_1 = np.array([5, 5, 5, 5, 5, 5])
     levels_2 = np.array([10, 25, 80, 80, 80, 85])
     signal = np.random.rand(2000, 2)
-    audiogram_mild = Audiogram(cfs=cfs, levels=levels_1)
-    audiogram_severe = Audiogram(cfs=cfs, levels=levels_2)
+    audiogram_mild = Audiogram(frequencies=cfs, levels=levels_1)
+    audiogram_severe = Audiogram(frequencies=cfs, levels=levels_2)
+
     # Test asymmetric hearing loss in both orientations
-    processed = listen(ear, signal, audiogram_mild, audiogram_severe)
+    processed = listen(ear, signal, Listener(audiogram_mild, audiogram_severe))
     assert processed.shape == (2240, 2)
-    processed = listen(ear, signal, audiogram_severe, audiogram_mild)
+    processed = listen(ear, signal, Listener(audiogram_severe, audiogram_mild))
     assert processed.shape == (2240, 2)
 
 
@@ -91,7 +92,9 @@ def test_run_HL_processing(hydra_cfg, tmp_path):
     ]
     for signal, expected_value in expected_signals:
         _fs, signal = read(tmp_path / "exps/train/eval_signals" / signal)
-        assert np.sum(np.abs(signal)) == pytest.approx(expected_value)
+        assert np.sum(np.abs(signal)) == pytest.approx(
+            expected_value, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )
 
 
 @patch("recipes.cpc1.baseline.run.tqdm", not_tqdm)

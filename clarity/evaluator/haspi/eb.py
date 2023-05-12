@@ -19,6 +19,7 @@ from scipy.signal import (
 )
 
 from clarity.enhancer.nalr import NALR
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -148,8 +149,11 @@ def ear_model(
     if itype == 1:
         nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         enhancer = NALR(nfir, freq_sample)
-        aud = np.array([250, 500, 1000, 2000, 4000, 6000])
-        nalr_fir, _ = enhancer.build(hearing_loss, aud)
+        audiogram = Audiogram(
+            levels=hearing_loss,
+            frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
+        )
+        nalr_fir, _ = enhancer.build(audiogram)
         reference_24hz = enhancer.apply(nalr_fir, reference_24hz)
         reference_24hz = reference_24hz[nfir : nfir + nsamp]
 

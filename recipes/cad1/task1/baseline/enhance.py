@@ -19,6 +19,7 @@ from torchaudio.transforms import Fade, Resample
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.signal_processing import denormalize_signals, normalize_signal
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
@@ -146,8 +147,7 @@ def decompose_signal(
     signal: np.ndarray,
     sample_rate: int,
     device: torch.device,
-    left_audiogram: np.ndarray,
-    right_audiogram: np.ndarray,
+    listener: Listener,
 ) -> dict[str, np.ndarray]:
     """
     Decompose signal into 8 stems.
@@ -163,8 +163,7 @@ def decompose_signal(
         signal (np.ndarray): Signal to be decomposed.
         sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
-        left_audiogram (np.ndarray): Left ear audiogram.
-        right_audiogram (np.ndarray): Right ear audiogram.
+        listener (Listener).
 
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
@@ -197,8 +196,7 @@ def apply_baseline_ha(
     enhancer: NALR,
     compressor: Compressor,
     signal: np.ndarray,
-    listener_audiogram: np.ndarray,
-    cfs: np.ndarray,
+    audiogram: Audiogram,
     apply_compressor: bool = False,
 ) -> np.ndarray:
     """
@@ -215,7 +213,8 @@ def apply_baseline_ha(
     Returns:
         An ndarray representing the processed signal.
     """
-    nalr_fir, _ = enhancer.build(listener_audiogram, cfs)
+    print("XXX", audiogram)
+    nalr_fir, _ = enhancer.build(audiogram)
     proc_signal = enhancer.apply(nalr_fir, signal)
     if apply_compressor:
         proc_signal, _, _ = compressor.process(proc_signal)
@@ -226,9 +225,7 @@ def process_stems_for_listener(
     stems: dict,
     enhancer: NALR,
     compressor: Compressor,
-    audiogram_left: np.ndarray,
-    audiogram_right: np.ndarray,
-    cfs: np.ndarray,
+    listener: Listener,
     apply_compressor: bool = False,
 ) -> dict:
     """Process the stems from sources.
@@ -237,8 +234,7 @@ def process_stems_for_listener(
         stems (dict) : Dictionary of stems
         enhancer (NALR) : NAL-R prescription hearing aid
         compressor (Compressor) : Compressor
-        audiogram_left (np.ndarray) : Left channel audiogram
-        audiogram_right (np.ndarray) : Right channel audiogram
+        listener: Listener object
         cfs (np.ndarray) : Center frequencies
         apply_compressor (bool) : Whether to apply the compressor
     Returns:
@@ -251,11 +247,15 @@ def process_stems_for_listener(
         stem_signal = stems[stem_str]
 
         # Determine the audiogram to use
-        audiogram = audiogram_left if stem_str.startswith("l") else audiogram_right
+        audiogram = (
+            listener.audiogram_left
+            if stem_str.startswith("l")
+            else listener.audiogram_right
+        )
 
         # Apply NALR prescription to stem_signal
         proc_signal = apply_baseline_ha(
-            enhancer, compressor, stem_signal, audiogram, cfs, apply_compressor
+            enhancer, compressor, stem_signal, audiogram, apply_compressor
         )
         processed_stems[stem_str] = proc_signal
     return processed_stems
@@ -328,15 +328,14 @@ def enhance(config: DictConfig) -> None:
 
     # Processing Validation Set
     # Load listener audiograms and songs
-    with open(config.path.listeners_valid_file, encoding="utf-8") as file:
-        listener_valid_audiograms = json.load(file)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_valid_file)
 
     with open(config.path.music_valid_file, encoding="utf-8") as file:
         song_data = json.load(file)
     songs_valid = pd.DataFrame.from_dict(song_data)
 
     valid_song_listener_pairs = make_song_listener_list(
-        songs_valid["Track Name"], listener_valid_audiograms
+        songs_valid["Track Name"], listener_dict
     )
     # Select a batch to process
     valid_song_listener_pairs = valid_song_listener_pairs[
@@ -357,7 +356,7 @@ def enhance(config: DictConfig) -> None:
             f"Processing {song_name} for {listener_name}..."
         )
         # Get the listener's audiogram
-        listener_info = listener_valid_audiograms[listener_name]
+        listener = listener_dict[listener_name]
 
         # Find the music split directory
         split_directory = (
@@ -366,10 +365,6 @@ def enhance(config: DictConfig) -> None:
             == "test"
             else "train"
         )
-
-        critical_frequencies = np.array(listener_info["audiogram_cfs"])
-        audiogram_left = np.array(listener_info["audiogram_levels_l"])
-        audiogram_right = np.array(listener_info["audiogram_levels_r"])
 
         # Read the mixture signal
         # Convert to 32-bit floating point and transpose
@@ -393,8 +388,7 @@ def enhance(config: DictConfig) -> None:
                 mixture_signal,
                 sample_rate,
                 device,
-                audiogram_left,
-                audiogram_right,
+                listener,
             )
 
         # Baseline applies NALR prescription to each stem instead of using the
@@ -404,9 +398,7 @@ def enhance(config: DictConfig) -> None:
             stems,
             enhancer,
             compressor,
-            audiogram_left,
-            audiogram_right,
-            critical_frequencies,
+            listener,
             config.apply_compressor,
         )
 
@@ -421,9 +413,9 @@ def enhance(config: DictConfig) -> None:
 
             filename = (
                 enhanced_folder
-                / f"{listener_info['name']}"
+                / f"{listener.id}"
                 / f"{song_name}"
-                / f"{listener_info['name']}_{song_name}_{stem_str}.wav"
+                / f"{listener.id}_{song_name}_{stem_str}.wav"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
 
@@ -436,9 +428,9 @@ def enhance(config: DictConfig) -> None:
         enhanced = np.stack([output_left, output_right], axis=1)
         filename = (
             enhanced_folder
-            / f"{listener_info['name']}"
+            / f"{listener.id}"
             / f"{song_name}"
-            / f"{listener_info['name']}_{song_name}_remix.wav"
+            / f"{listener.id}_{song_name}_remix.wav"
         )
 
         # clip and save enhanced signal

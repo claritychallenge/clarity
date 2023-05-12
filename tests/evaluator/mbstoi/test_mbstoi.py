@@ -39,4 +39,6 @@ def test_mbstoi(sr_signal, expected_score) -> None:
         dyn_range=60,
     )
 
-    assert mbstoi_val == pytest.approx(expected_score)
+    assert mbstoi_val == pytest.approx(
+        expected_score, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

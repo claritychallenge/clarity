@@ -11,7 +11,7 @@ from numpy import ndarray
 from omegaconf import DictConfig
 
 import recipes
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 
 # pylint: disable=import-error, no-name-in-module, no-member
 from recipes.cec1.baseline.evaluate import run_calculate_SI, run_HL_processing
@@ -31,17 +31,22 @@ def not_tqdm(iterable):
 def truncated_read_signal(
     filename: str | Path,
     offset: int = 0,
-    nsamples: int = -1,
-    nchannels: int = 0,
+    n_samples: int = -1,
+    n_channels: int = 0,
     offset_is_samples: bool = False,
 ) -> ndarray:
     """Replacement for read signal function.
 
     Returns first 1 second of the signal
     """
-    signal = read_signal(filename, offset, nsamples, nchannels, offset_is_samples)
-    # Take 1 second sample from the middle of the signal
-    return signal[0:44100, :]
+    n_samples = 44100  # <-- take just the first 1 second of the signal
+    return read_signal(
+        filename,
+        offset=offset,
+        n_channels=n_channels,
+        n_samples=n_samples,
+        offset_is_samples=offset_is_samples,
+    )
 
 
 @pytest.fixture()
@@ -90,7 +95,9 @@ def test_run_HL_processing(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     for filename, sig_sum in expected_files:
         assert (pathlib.Path(f"{tmp_path}/eval_signals/{filename}")).exists()
         x = read_signal(f"{tmp_path}/eval_signals/{filename}")
-        assert np.sum(np.abs(x)) == pytest.approx(sig_sum)
+        assert np.sum(np.abs(x)) == pytest.approx(
+            sig_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )
 
 
 @patch("recipes.cec1.baseline.evaluate.tqdm", not_tqdm)

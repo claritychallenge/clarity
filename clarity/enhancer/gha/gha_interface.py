@@ -8,11 +8,11 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import soundfile
 from jinja2 import Environment, FileSystemLoader
-from soundfile import SoundFile
 
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
+from clarity.utils.audiogram import Listener
+from clarity.utils.file_io import read_signal, write_signal
 
 
 class GHAHearingAid:
@@ -96,7 +96,9 @@ class GHAHearingAid:
 
         return output
 
-    def process_files(self, infile_names, outfile_name, audiogram, listener=None):
+    def process_files(
+        self, infile_names: list[str], outfile_name: str, listener: Listener
+    ):
         """Process a set of input signals and generate an output.
 
         Args:
@@ -105,14 +107,20 @@ class GHAHearingAid:
             outfile_name (str): File in which to store output wav files
             dry_run (bool): perform dry run only
         """
-        logging.info("Processing %s with listener %s", outfile_name, listener)
+        logging.info("Processing %s with listener %s", outfile_name, listener.id)
 
-        logging.info("Audiogram severity is %s", audiogram.severity)
-        audiogram = audiogram.select_subset_of_cfs(self.audf)
+        logging.info(
+            "Audiogram severity is %s (left) and %s (right)",
+            listener.audiogram_left.severity,
+            listener.audiogram_right.severity,
+        )
+        audiogram_left = listener.audiogram_left.resample(self.audf)
+        audiogram_right = listener.audiogram_right.resample(self.audf)
 
         # Get gain table with noisegate correction
         gaintable = get_gaintable(
-            audiogram,
+            audiogram_left,
+            audiogram_right,
             self.noise_gate_levels,
             self.noise_gate_slope,
             self.cr_level,
@@ -166,7 +174,9 @@ class GHAHearingAid:
         os.remove(cfg_filename)
 
         # Check output signal has energy in every channel
-        sig = self.read_signal(outfile_name)
+        sig = read_signal(
+            outfile_name, sample_rate=self.sample_rate, allow_resample=False
+        )
 
         if len(np.shape(sig)) == 1:
             sig = np.expand_dims(sig, axis=1)
@@ -175,72 +185,9 @@ class GHAHearingAid:
             raise ValueError("Channel empty.")
 
         # Rewriting as floating point
-        self.write_signal(outfile_name, sig, floating_point=True)
+        write_signal(outfile_name, sig, self.sample_rate, floating_point=True)
 
         logging.info("OpenMHA processing complete")
-
-    # TODO: MARKED FOR DEDUPLICATION
-    # Mirrors functionality that already exists in msbg_utils
-    def read_signal(
-        self,
-        filename: str | Path,
-        offset: int = 0,
-        nsamples: int = -1,
-        nchannels: int = 0,
-        offset_is_samples: bool = False,
-    ):
-        """Read a wavefile and return as numpy array of floats.
-
-        Args:
-            filename (string): Name of file to read
-            offset (int, optional): Offset in samples or seconds (from start).
-                Defaults to 0.
-            nchannels: expected number of channel (default: 0 = any number OK)
-            offset_is_samples (bool): measurement units for offset (default: False)
-        Returns:
-            ndarray: audio signal
-        """
-
-        wave_file = SoundFile(filename)
-
-        if nchannels not in (0, wave_file.channels):
-            raise ValueError(
-                f"Wav file ({filename}) was expected to have {nchannels} channels."
-            )
-
-        if wave_file.samplerate != self.sample_rate:
-            raise ValueError(
-                f"Sampling rate is not {self.sample_rate} for filename {filename}."
-            )
-
-        if not offset_is_samples:  # Default behaviour
-            offset = int(offset * wave_file.samplerate)
-
-        if offset != 0:
-            wave_file.seek(offset)
-
-        x = wave_file.read(frames=nsamples)
-
-        return x
-
-    # TODO: MARKED FOR DEDUPLICATION
-    # Mirrors functionality that already exists in msbg_utils
-    def write_signal(
-        self, filename: str | Path, x, floating_point: bool = True, strict: bool = False
-    ) -> None:
-        """Write a signal as fixed or floating point wav file."""
-
-        if floating_point is False:
-            subtype = "PCM_16"
-            # If signal is float and we want int16
-            x = x * 32768
-            if strict and (np.max(x) > 32767 or np.min(x) < -32768):
-                raise ValueError("Signal out of range -1.0 to 1.0")
-            x = x.astype(np.dtype("int16"))
-        else:
-            subtype = "FLOAT"
-
-        soundfile.write(filename, x, self.sample_rate, subtype=subtype)
 
     def create_HA_inputs(self, infile_names: list[str], merged_filename: str) -> None:
         """Create input signal for baseline hearing aids.
@@ -259,8 +206,12 @@ class GHAHearingAid:
         if (infile_names[0][-5] != "1") or (infile_names[2][-5] != "3"):
             raise ValueError("HA-input signal error: channel mismatch!")
 
-        signal_CH1 = self.read_signal(infile_names[0])
-        signal_CH3 = self.read_signal(infile_names[2])
+        signal_CH1 = read_signal(
+            infile_names[0], sample_rate=self.sample_rate, allow_resample=False
+        )
+        signal_CH3 = read_signal(
+            infile_names[2], sample_rate=self.sample_rate, allow_resample=False
+        )
 
         merged_signal = np.zeros((len(signal_CH1), 4))
 
@@ -273,6 +224,10 @@ class GHAHearingAid:
         # channel index 3 = rear microphone on the right hearing aid
         merged_signal[:, 3] = signal_CH3[:, 1]
 
-        self.write_signal(
-            merged_filename, merged_signal, floating_point=True, strict=True
+        write_signal(
+            merged_filename,
+            merged_signal,
+            self.sample_rate,
+            floating_point=True,
+            strict=True,
         )

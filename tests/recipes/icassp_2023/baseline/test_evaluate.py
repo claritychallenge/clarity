@@ -11,7 +11,7 @@ import pytest
 from omegaconf import DictConfig
 
 import recipes
-from clarity.evaluator.msbg.msbg_utils import read_signal
+from clarity.utils.file_io import read_signal
 from recipes.icassp_2023.baseline.evaluate import run_calculate_si
 
 
@@ -96,7 +96,9 @@ def test_evaluate(hydra_cfg: DictConfig):
         # Check that the output signal is correct
         signal = read_signal(filename)
         Path(filename).unlink()
-        assert np.sum(np.abs(signal)) == pytest.approx(expected_sum)
+        assert np.sum(np.abs(signal)) == pytest.approx(
+            expected_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        )
 
     # Clean up
     Path("scores.csv").unlink()

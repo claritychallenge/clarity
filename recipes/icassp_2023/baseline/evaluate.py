@@ -7,6 +7,7 @@ import pathlib
 
 import hydra
 import numpy as np
+from numpy import ndarray
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
@@ -15,15 +16,14 @@ from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
 from clarity.evaluator.hasqi import hasqi_v2_better_ear
+from clarity.utils.audiogram import Audiogram, Listener
 
 logger = logging.getLogger(__name__)
 
 
-def amplify_signal(signal, bin_audiogram, ear, enhancer, compressor):
-    """Amplify signal for either left (l) or right (r) ear"""
-    cfs = np.array(bin_audiogram["audiogram_cfs"])
-    audiogram = np.array(bin_audiogram[f"audiogram_levels_{ear}"])
-    nalr_fir, _ = enhancer.build(audiogram, cfs)
+def amplify_signal(signal, audiogram: Audiogram, enhancer, compressor):
+    """Amplify signal for a given audiogram"""
+    nalr_fir, _ = enhancer.build(audiogram)
     out = enhancer.apply(nalr_fir, signal)
     out, _, _ = compressor.process(out)
     return out
@@ -36,7 +36,9 @@ def set_scene_seed(scene):
     np.random.seed(scene_md5)
 
 
-def compute_metric(metric, signal, ref, audiogram, sample_rate):
+def compute_metric(
+    metric, signal: ndarray, ref: ndarray, listener: Listener, sample_rate: float
+):
     """Compute HASPI or HASQI metric"""
     score = metric(
         reference_left=ref[:, 0],
@@ -44,9 +46,7 @@ def compute_metric(metric, signal, ref, audiogram, sample_rate):
         processed_left=signal[:, 0],
         processed_right=signal[:, 1],
         sample_rate=sample_rate,
-        audiogram_left=audiogram["audiogram_levels_l"],
-        audiogram_right=audiogram["audiogram_levels_r"],
-        audiogram_frequencies=audiogram["audiogram_cfs"],
+        listener=listener,
     )
     return score
 
@@ -64,7 +64,9 @@ class ResultsFile:
             )
             csv_writer.writerow(["scene", "listener", "combined", "haspi", "hasqi"])
 
-    def add_result(self, scene, listener, score, haspi, hasqi):
+    def add_result(
+        self, scene: str, listener: str, score: float, haspi: float, hasqi: float
+    ):
         """Add a result to the CSV file"""
 
         logger.info(f"The combined score is {score} (haspi {haspi}, hasqi {hasqi})")
@@ -99,9 +101,7 @@ def run_calculate_si(cfg: DictConfig) -> None:
     with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
 
-    with open(cfg.path.listeners_file, encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
-
+    listeners_dict = Listener.load_listener_dict(cfg.path.listeners_file)
     enhancer = NALR(**cfg.nalr)
     compressor = Compressor(**cfg.compressor)
 
@@ -119,8 +119,8 @@ def run_calculate_si(cfg: DictConfig) -> None:
     results_file = ResultsFile("scores.csv")
     results_file.write_header()
 
-    for scene, listener in tqdm(scene_listener_pairs):
-        logger.info(f"Running evaluation: scene {scene}, listener {listener}")
+    for scene, listener_id in tqdm(scene_listener_pairs):
+        logger.info(f"Running evaluation: scene {scene}, listener {listener_id}")
 
         if cfg.evaluate.set_random_seed:
             set_scene_seed(scene)
@@ -128,7 +128,7 @@ def run_calculate_si(cfg: DictConfig) -> None:
         # Read signals
 
         sr_signal, signal = wavfile.read(
-            enhanced_folder / f"{scene}_{listener}_enhanced.wav"
+            enhanced_folder / f"{scene}_{listener_id}_enhanced.wav"
         )
         sr_ref_anechoic, ref_anechoic = wavfile.read(
             scenes_folder / f"{scene}_target_anechoic_CH1.wav"
@@ -142,17 +142,21 @@ def run_calculate_si(cfg: DictConfig) -> None:
         assert sr_ref_anechoic == sr_ref_target == sr_signal == cfg.nalr.sample_rate
 
         # amplify left and right ear signals
-        audiogram = listener_audiograms[listener]
+        listener = listeners_dict[listener_id]
 
-        out_l = amplify_signal(signal[:, 0], audiogram, "l", enhancer, compressor)
-        out_r = amplify_signal(signal[:, 1], audiogram, "r", enhancer, compressor)
+        out_l = amplify_signal(
+            signal[:, 0], listener.audiogram_left, enhancer, compressor
+        )
+        out_r = amplify_signal(
+            signal[:, 1], listener.audiogram_right, enhancer, compressor
+        )
         amplified = np.stack([out_l, out_r], axis=1)
 
         if cfg.soft_clip:
             amplified = np.tanh(amplified)
 
         wavfile.write(
-            amplified_folder / f"{scene}_{listener}_HA-output.wav",
+            amplified_folder / f"{scene}_{listener_id}_HA-output.wav",
             sr_signal,
             amplified.astype(np.float32),
         )
@@ -163,14 +167,14 @@ def run_calculate_si(cfg: DictConfig) -> None:
         rms_anechoic = np.mean(ref_anechoic**2, axis=0) ** 0.5
         ref = ref_anechoic * rms_target / rms_anechoic
 
-        haspi_score = compute_metric(haspi_v2_be, amplified, ref, audiogram, sr_signal)
+        haspi_score = compute_metric(haspi_v2_be, amplified, ref, listener, sr_signal)
         hasqi_score = compute_metric(
-            hasqi_v2_better_ear, amplified, ref, audiogram, sr_signal
+            hasqi_v2_better_ear, amplified, ref, listener, sr_signal
         )
         score = 0.5 * (hasqi_score + haspi_score)
 
         results_file.add_result(
-            scene, listener, score=score, haspi=haspi_score, hasqi=hasqi_score
+            scene, listener_id, score=score, haspi=haspi_score, hasqi=hasqi_score
         )
 
 

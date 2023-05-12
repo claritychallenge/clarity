@@ -12,13 +12,14 @@ from librosa import resample  # pylint: disable=no-name-in-module
 from omegaconf import DictConfig
 from tqdm import tqdm
 
-from clarity.evaluator.msbg.audiogram import Audiogram
 from clarity.evaluator.msbg.msbg import Ear
-from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad, read_signal, write_signal
+from clarity.evaluator.msbg.msbg_utils import MSBG_FS, pad
+from clarity.utils.audiogram import Listener
+from clarity.utils.file_io import read_signal, write_signal
 
 logger = logging.getLogger(__name__)
 
-targ_fs = 16000
+target_sample_rate = 16000
 
 
 def run_data_split(cfg, track):
@@ -53,17 +54,18 @@ def run_data_split(cfg, track):
         json.dump(scene_dev_list, fp)
 
 
-def listen(ear, signal, audiogram_l, audiogram_r):
+def listen(ear, signal, listener: Listener):
     """
     Generate MSBG processed signal
     :param ear: MSBG ear
     :param wav: binaural signal
+    :param listener: listener object
     :return: binaural signal
     """
-    ear.set_audiogram(audiogram_l)
+    ear.set_audiogram(listener.audiogram_left)
     out_l = ear.process(signal[:, 0])
 
-    ear.set_audiogram(audiogram_r)
+    ear.set_audiogram(listener.audiogram_right)
     out_r = ear.process(signal[:, 1])
     if len(out_l[0]) != len(out_r[0]):
         diff = len(out_l[0]) - len(out_r[0])
@@ -84,24 +86,21 @@ def run_msbg_simulation(cfg, track):
             scenes = json.load(fp)
         if split == "train":
             file_path = dataset_folder / "metadata/listeners.CPC1_train.json"
-            with file_path.open("r", encoding="utf-8") as fp:
-                listener_audiograms = json.load(fp)
         else:
             file_path = Path(dataset_folder) / "metadata/listeners.CPC1_all.json"
-            with file_path.open("r", encoding="utf-8") as fp:
-                listener_audiograms = json.load(fp)
+        listener_dict = Listener.load_listener_dict(file_path)
 
         # initialize ear
         ear = Ear(**cfg["MSBGEar"])
 
         for scene_dict in tqdm(scenes):
             scene = scene_dict["scene"]
-            listener = scene_dict["listener"]
+            listener_id = scene_dict["listener"]
             system = scene_dict["system"]
-            signal_file = output_path / f"{scene}_{listener}_{system}.wav"
+            signal_file = output_path / f"{scene}_{listener_id}_{system}.wav"
 
             # signals to write
-            outfile_stem = output_path / f"{scene}_{listener}_{system}"
+            outfile_stem = output_path / f"{scene}_{listener_id}_{system}"
             signal_files_to_write = [
                 Path(f"{outfile_stem}_HL-output.wav"),
             ]
@@ -111,19 +110,9 @@ def run_msbg_simulation(cfg, track):
             signal = read_signal(signal_file)
 
             # retrieve audiograms
-            cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-            audiogram_left = np.array(
-                listener_audiograms[listener]["audiogram_levels_l"]
-            )
-            left_audiogram = Audiogram(cfs=cfs, levels=audiogram_left)
-            audiogram_right = np.array(
-                listener_audiograms[listener]["audiogram_levels_r"]
-            )
-            right_audiogram = Audiogram(cfs=cfs, levels=audiogram_right)
+            listener = listener_dict[listener_id]
 
-            signals_to_write = [
-                listen(ear, signal, left_audiogram, right_audiogram),
-            ]
+            signals_to_write = [listen(ear, signal, listener)]
 
             for signal, signal_file in zip(signals_to_write, signal_files_to_write):
                 write_signal(
@@ -192,13 +181,17 @@ def generate_data_split(
 
             utt, orig_fs = sf.read(wav_file)
             utt_16k = resample(
-                np.array(utt).transpose(), orig_sr=orig_fs, target_sr=targ_fs
+                np.array(utt).transpose(), orig_sr=orig_fs, target_sr=target_sample_rate
             ).transpose()
             duration = (
-                len(utt_16k[2 * targ_fs :, 0]) / targ_fs
+                len(utt_16k[2 * target_sample_rate :, 0]) / target_sample_rate
             )  # Get rid of the first two seconds, as there is no speech
-            sf.write(wav_file_left, utt_16k[2 * targ_fs :, 0], targ_fs)
-            sf.write(wav_file_right, utt_16k[2 * targ_fs :, 1], targ_fs)
+            sf.write(
+                wav_file_left, utt_16k[2 * target_sample_rate :, 0], target_sample_rate
+            )
+            sf.write(
+                wav_file_right, utt_16k[2 * target_sample_rate :, 1], target_sample_rate
+            )
 
             csv_lines_left.append(
                 [snt_id, str(duration), str(wav_file_left), spk_id, wrds]

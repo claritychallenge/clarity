@@ -2,12 +2,11 @@ import json
 from pathlib import Path
 
 import hydra
-import numpy as np
 from omegaconf import DictConfig
 from tqdm import tqdm
 
-from clarity.enhancer.gha.audiogram import Audiogram
 from clarity.enhancer.gha.gha_interface import GHAHearingAid
+from clarity.utils.audiogram import Listener
 
 
 @hydra.main(config_path=".", config_name="config")
@@ -16,24 +15,12 @@ def enhance(cfg: DictConfig) -> None:
     enhanced_folder.mkdir(parents=True, exist_ok=True)
     with open(cfg.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    with open(cfg.path.listeners_file, encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
-
+    listener_dict = Listener.load_listener_dict(cfg.path.listeners_file)
     enhancer = GHAHearingAid(**cfg["GHAHearingAid"])
 
     for scene in tqdm(scenes_listeners):
-        for listener in scenes_listeners[scene]:
-            # retrieve audiograms
-            cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-            audiogram_left = np.array(
-                listener_audiograms[listener]["audiogram_levels_l"]
-            )
-            audiogram_right = np.array(
-                listener_audiograms[listener]["audiogram_levels_r"]
-            )
-            audiogram = Audiogram(
-                cfs=cfs, levels_l=audiogram_left, levels_r=audiogram_right
-            )
+        for listener_id in scenes_listeners[scene]:
+            listener = listener_dict[listener_id]
 
             infile_names = [
                 f"{cfg.path.scenes_folder}/{scene}_mixed_CH{ch}.wav"
@@ -42,8 +29,7 @@ def enhance(cfg: DictConfig) -> None:
 
             enhancer.process_files(
                 infile_names=infile_names,
-                outfile_name=f"{enhanced_folder}/{scene}_{listener}_HA-output.wav",
-                audiogram=audiogram,
+                outfile_name=f"{enhanced_folder}/{scene}_{listener_id}_HA-output.wav",
                 listener=listener,
             )
 

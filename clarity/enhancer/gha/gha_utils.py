@@ -12,7 +12,7 @@ from clarity.enhancer.gha.gainrule_camfit import gainrule_camfit_compr
 if TYPE_CHECKING:
     from numpy import ndarray
 
-    from clarity.enhancer.gha.audiogram import Audiogram
+    from clarity.utils.audiogram import Audiogram
 
 
 class Gaintable(TypedDict):
@@ -38,7 +38,8 @@ class FittingParams(TypedDict):
 
 
 def get_gaintable(
-    audiogram: Audiogram,
+    audiogram_left: Audiogram,
+    audiogram_right: Audiogram,
     noisegate_levels: float | ndarray,
     noisegate_slope: float | ndarray,
     cr_level: float,
@@ -51,7 +52,8 @@ def get_gaintable(
     that audiogram frequencies are identical at two ears.
 
     Args:
-        audiogram (Audiogram): the audiogram for which to compute the gain table
+        audiogram_left (Audiogram): the audiogram for the left ear
+        audiogram_right (Audiogram): the audiogram for the right ear
         audf (list): audiogram frequencies for fitting
         noisegatelevels (ndarray): compression threshold levels for each frequency band
         noisegateslope (float): determines slope of gains below compression threshold
@@ -89,7 +91,8 @@ def get_gaintable(
 
     # Calculate gains and compression ratios
     gain_table, noisegate_levels, noisegate_slope = gainrule_camfit_compr(
-        audiogram,
+        audiogram_left,
+        audiogram_right,
         sFitmodel,
         noisegate_levels,
         noisegate_slope,

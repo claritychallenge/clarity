@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from omegaconf import DictConfig
 
-from clarity.evaluator.msbg.msbg_utils import read_signal, write_signal
+from clarity.utils.file_io import read_signal, write_signal
 
 # pylint: disable=import-error, no-name-in-module, no-member
 from recipes.cec1.baseline.enhance import enhance
@@ -70,6 +70,8 @@ def test_enhance(tmp_path: Path, hydra_cfg: DictConfig, mocker) -> None:
 
     # Check that the output signal is correct
     signal = read_signal(outfile_name)
-    assert np.sum(np.abs(signal)) == pytest.approx(1.1998291015625)
+    assert np.sum(np.abs(signal)) == pytest.approx(
+        1.1998291015625, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
     assert m.call_count == 1
