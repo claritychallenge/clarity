@@ -112,12 +112,15 @@ def test_loss_parameters():
     )
 
 
-def test_resample():
+@pytest.mark.parametrize(
+    "reference_freq,expected,expected_len",
+    [(12000, 604.1522707137393, 1200), (44100, 162.6502502653759, 326)],
+)
+def test_resample(reference_freq, expected, expected_len):
     """Test resample"""
     np.random.seed(0)
     sig_len = 600
     reference_signal = np.random.random(size=sig_len)
-    reference_freq = 12000
     ear_model = EarModel(equalisation=1, nchan=10)
 
     ref_signal_24, freq_sample_hz = ear_model.resample(
@@ -125,10 +128,10 @@ def test_resample():
     )
 
     # check shapes
-    assert len(ref_signal_24) == len(reference_signal) * 24000 / reference_freq
+    assert expected_len == int(len(reference_signal) * 24000 / reference_freq)
     # check values
     assert np.sum(np.abs(ref_signal_24)) == pytest.approx(
-        604.1522707137393, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert freq_sample_hz == 24000
 
