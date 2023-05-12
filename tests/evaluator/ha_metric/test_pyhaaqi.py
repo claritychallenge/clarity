@@ -201,10 +201,9 @@ def test_bm_covary_ok():
     processed = np.random.random(size=(4, sig_len))
 
     haaqi = HAAQI(
-        segment_size=segment_size,
-        signal_sample_rate=24000.0,
-        ear_model_sample_rate=24000.0,
-        silence_threshold=12,
+        segment_covariance=segment_size,
+        signal_sample_rate=sample_rate,
+        ear_model_sample_rate=sample_rate,
     )
     signal_cross_cov, ref_mean_square, proc_mean_square = haaqi.bm_covary(
         reference_basilar_membrane=reference,
@@ -239,7 +238,7 @@ def test_bm_covary_error():
     processed = np.random.random(size=(4, sig_len))
 
     haaqi = HAAQI(
-        segment_size=segment_size,
+        segment_covariance=segment_size,
         signal_sample_rate=sample_rate,
         ear_model_sample_rate=sample_rate,
         silence_threshold=12,
@@ -324,10 +323,10 @@ def test_haaqi_v1() -> None:
 
 
 @pytest.mark.parametrize(
-    "scale_reference,expected_result",
-    [(False, 0.113759275), (True, 0.114157435)],
+    "scale_reference,equalisation,expected_result",
+    [(False, 1, 0.113759275), (True, 1, 0.114157435), (True, 0, 0.098472862)],
 )
-def test_compute_haaqi(scale_reference, expected_result):
+def test_compute_haaqi(scale_reference, equalisation, expected_result):
     """Test for compute_haaqi function"""
     np.random.seed(42)
 
@@ -346,6 +345,7 @@ def test_compute_haaqi(scale_reference, expected_result):
         audiogram_frequencies=audiogram_frequencies,
         sample_rate=sample_rate,
         scale_reference=scale_reference,
+        equalisation=equalisation,
     )
 
     # Check that the score is a float between 0 and 1
