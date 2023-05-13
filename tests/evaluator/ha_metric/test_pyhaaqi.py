@@ -201,6 +201,7 @@ def test_bm_covary_ok():
     processed = np.random.random(size=(4, sig_len))
 
     haaqi = HAAQI(
+        segment_size=segment_size,
         segment_covariance=segment_size,
         signal_sample_rate=sample_rate,
         ear_model_sample_rate=sample_rate,
