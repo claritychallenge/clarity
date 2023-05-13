@@ -6,10 +6,10 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.signal import convolve, correlate, firwin
+from scipy.signal import convolve, firwin
 
 from clarity.evaluator.ha_metric.ear_model import EarModel
-from clarity.utils.signal_processing import compute_rms
+from clarity.utils.signal_processing import compute_rms, crosscorrelation
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -580,9 +580,8 @@ class HAAQI:
 
         # Lag for computing the cross-covariance
         lagsize = 1.0  # Lag (+/-) in msec
-        maxlag = np.around(
-            lagsize * (0.001 * self.ear_model_sample_rate)
-        )  # Lag in samples
+        # Lag in samples
+        maxlag = int(np.around(lagsize * (0.001 * self.ear_model_sample_rate)))
 
         # Compute the segment size in samples
         nwin = int(
@@ -594,26 +593,25 @@ class HAAQI:
         # Raised cosine von Hann window
         window = np.hanning(nwin).conj().transpose()
 
-        # win_corr = correlate(window, window, "same")
-        # start_sample = int(len(window) / 2 - maxlag)
-        # end_sample = int(maxlag + len(window) / 2 + 1)
-        win_corr = correlate(window, window, "full")
-        start_sample = int(len(window) - 1 - maxlag)
-        end_sample = int(maxlag + len(window))
-        if start_sample < 0:
+        # win_corr = correlate(window, window, "full")
+        # start_sample = int(len(window) - 1 - maxlag)
+        # end_sample = int(maxlag + len(window))
+        if int(len(window) / 2 - maxlag) < 0:
             raise ValueError("segment size too small")
-        win_corr = 1 / win_corr[start_sample:end_sample]
+        win_corr = 1 / crosscorrelation(window, window, maxlag, mode="dot")
+        # win_corr = 1 / win_corr[start_sample:end_sample]
         win_sum2 = 1.0 / np.sum(window**2)  # Window power, inverted
 
         # The first segment has a half window
         nhalf = int(nwin / 2)
         half_window = window[nhalf:nwin]
-        half_corr = correlate(half_window, half_window, "full")
-        start_sample = int(len(half_window) - 1 - maxlag)
-        end_sample = int(maxlag + len(half_window))
-        if start_sample < 0:
+        # half_corr = correlate(half_window, half_window, "full")
+        # start_sample = int(len(half_window) - 1 - maxlag)
+        # end_sample = int(maxlag + len(half_window))
+        if int(len(half_window) - 1 - maxlag) < 0:
             raise ValueError("segment size too small")
-        half_corr = 1 / half_corr[start_sample:end_sample]
+        half_corr = 1 / crosscorrelation(half_window, half_window, maxlag, mode="dot")
+        # half_corr = 1 / half_corr  # [start_sample:end_sample]
         # MS sum normalization, first segment
         halfsum2 = 1.0 / np.sum(half_window**2)
 
@@ -644,16 +642,13 @@ class HAAQI:
             ref_mean_square = np.sum(reference_seg**2) * halfsum2
 
             proc_mean_squared = np.sum(processed_seg**2) * halfsum2
-            # correlation = correlate(reference_seg, processed_seg, "same")
+            # correlation = correlate(reference_seg, processed_seg, "full")
             # correlation = correlation[
-            #     int(len(reference_seg) / 2 - maxlag) : int(
-            #         maxlag + len(reference_seg) / 2 + 1
-            #     )
+            #  int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
             # ]
-            correlation = correlate(reference_seg, processed_seg, "full")
-            correlation = correlation[
-                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-            ]
+            correlation = crosscorrelation(
+                reference_seg, processed_seg, maxlag, mode="dot"
+            )
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
             if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                 # Normalize cross-covariance
@@ -682,12 +677,15 @@ class HAAQI:
                 # Normalize signal MS value by the window
                 ref_mean_square = np.sum(reference_seg**2) * win_sum2
                 proc_mean_squared = np.sum(processed_seg**2) * win_sum2
-                correlation = correlate(reference_seg, processed_seg, "same")
-                correlation = correlation[
-                    int(len(reference_seg) / 2 - maxlag) : int(
-                        maxlag + len(reference_seg) / 2 + 1
-                    )
-                ]
+
+                # correlation = correlate(reference_seg, processed_seg, "full")
+                # correlation = correlation[
+                #               int(len(reference_seg) - 1 - maxlag): int(
+                #                   maxlag + len(reference_seg))
+                #               ]
+                correlation = crosscorrelation(
+                    reference_seg, processed_seg, maxlag, mode="dot"
+                )
                 unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
                 if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                     # Normalize cross-covariance
@@ -718,11 +716,13 @@ class HAAQI:
             ref_mean_square = np.sum(reference_seg**2) * halfsum2
             proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-            correlation = correlate(reference_seg, processed_seg, "full")
-            correlation = correlation[
-                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-            ]
-
+            # correlation = correlate(reference_seg, processed_seg, "full")
+            # correlation = correlation[
+            #   int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            # ]
+            correlation = crosscorrelation(
+                reference_seg, processed_seg, maxlag, mode="dot"
+            )
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
             if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                 # Normalized cross-covariance

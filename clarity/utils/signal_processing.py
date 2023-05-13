@@ -1,10 +1,12 @@
 """Signal processing utilities."""
 from __future__ import annotations
 
+# #pylint: disable=import-error
 import numpy as np
 import scipy
 import soxr
 from numpy import ndarray
+from numpy.lib.stride_tricks import as_strided
 
 
 def compute_rms(signal: ndarray) -> float:
@@ -86,3 +88,40 @@ def resample(
         )
 
     raise ValueError(f"Unknown resampling method: {method}")
+
+
+def crosscorrelation(
+    x: ndarray, y: ndarray, maxlag: int | float, mode="dot"
+) -> ndarray:
+    """
+    based on https://stackoverflow.com/questions/30677241/
+            how-to-limit-cross-correlation-window-width-in-numpy
+    Cross correlation with a maximum number of lags.
+    This computes the same result as
+        numpy.correlate(x, y, mode='full')[len(a)-maxlag-1:len(a)+maxlag]
+
+    Args:
+        x (np.ndarray): first signal
+        y (np.ndarray): second signal
+        maxlag (int): maximum number of lags
+        mode (str): 'dot' or 'corr'
+
+    Returns:
+        np.ndarray: cross correlation of x and y with a maximum number of lags.
+                The return value has length 2 * maxlag + 1.
+    """
+    maxlag = int(maxlag)
+    py = np.pad(y.conj(), 2 * maxlag, mode="constant")
+    # pylint: disable=unsubscriptable-object
+    T = as_strided(
+        py[2 * maxlag :],
+        shape=(2 * maxlag + 1, len(y) + 2 * maxlag),
+        strides=(-py.strides[0], py.strides[0]),
+    )
+    px = np.pad(x, maxlag, mode="constant")
+    if mode == "dot":  # get lagged dot product
+        return T.dot(px)
+    # mode "corr" gets Pearson correlation
+    return (T.dot(px) / px.size - (T.mean(axis=1) * px.mean())) / (
+        np.std(T, axis=1) * np.std(px)
+    )
