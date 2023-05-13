@@ -11,6 +11,7 @@ from scipy.signal import correlate, group_delay, lfilter, resample_poly
 
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.ha_metric.gammatone_filter import GammatoneFilter
+from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -214,20 +215,17 @@ class EarModel:
         # The cochlear model parameters for the reference are the same as for
         # the hearing loss if calculating quality, but are for normal hearing
         # if calculating intelligibility.
-        attn_ohc_x = attn_ohc_y.copy()
-        bandwidth_min_x = bandwidth_min_y.copy()
-        low_knee_x = low_knee_y.copy()
-        compression_ratio_x = compression_ratio_y.copy()
-        attn_ihc_x = attn_ihc_y.copy()
-
         if self.equalisation == 0:
-            [
-                attn_ohc_x,
-                bandwidth_min_x,
-                low_knee_x,
-                compression_ratio_x,
-                attn_ihc_x,
-            ] = self.loss_parameters(np.zeros(len(hearing_loss)), _center_freq)
+            hearing_loss_x = np.zeros(len(hearing_loss))
+        else:
+            hearing_loss_x = hearing_loss
+        [
+            attn_ohc_x,
+            bandwidth_min_x,
+            low_knee_x,
+            compression_ratio_x,
+            attn_ihc_x,
+        ] = self.loss_parameters(hearing_loss_x, _center_freq)
 
         # Compute center frequencies for the control
         _center_freq_control = self.center_frequency(shift=shift)
@@ -256,8 +254,11 @@ class EarModel:
         if self.equalisation == 1:
             nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
             enhancer = NALR(nfir, freq_sample)
-            aud = np.array([250, 500, 1000, 2000, 4000, 6000])
-            nalr_fir, _ = enhancer.build(hearing_loss, aud)
+            audiogram = Audiogram(
+                levels=hearing_loss,
+                frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
+            )
+            nalr_fir, _ = enhancer.build(audiogram)
             reference_24hz = enhancer.apply(nalr_fir, reference_24hz)
             reference_24hz = reference_24hz[nfir : nfir + nsamp]
 
@@ -349,11 +350,11 @@ class EarModel:
             processed_cochlear_compression = self.envelope_align(
                 reference_cochlear_compression,
                 processed_cochlear_compression,
-                freq_sample,
             )
             # Align processed BM motion to reference
             processed_b[n] = self.envelope_align(
-                reference_b[n], processed_b[n], freq_sample
+                reference_b[n],
+                processed_b[n],
             )
 
             # Convert the compressed envelopes and BM vibration envelopes to dB SPL
@@ -860,11 +861,10 @@ class EarModel:
 
         return compressed_signal, compressed_basilar_membrane
 
-    @staticmethod
     def envelope_align(
+        self,
         reference: ndarray,
         output: ndarray,
-        freq_sample: float,
         corr_range: int = 100,
     ) -> ndarray:
         """
@@ -873,7 +873,6 @@ class EarModel:
         Arguments:
             reference (): envelope or BM motion of the reference signal
             output (): envelope or BM motion of the output signal
-            freq_sample (float): Frequency sample rate in Hz
             corr_range (int): range in msec for the correlation
 
         Returns:
@@ -890,15 +889,16 @@ class EarModel:
         # to save computation time - no such option exists in numpy,
         # but the code below limits the delay to the same range as in
         # Matlab, for consistent results
-        lags = np.rint(0.001 * corr_range * freq_sample).astype(int)  # Range in samples
+        # Range in samples
+        lags = np.rint(0.001 * corr_range * self.target_freq).astype(int)
         npts = len(reference)
         lags = min(lags, npts)
 
-        ref_out_correlation = correlate(reference, output, "same")
+        ref_out_correlation = correlate(reference, output, "full")
         location = np.argmax(
-            ref_out_correlation[npts // 2 - lags : npts // 2 + lags]
+            ref_out_correlation[npts - lags : npts + lags]
         )  # Limit the range in which
-        delay = lags - location
+        delay = lags - location - 1
 
         # Time shift the output sequence
         if delay > 0:

@@ -15,8 +15,7 @@ def test_ear_model():
 
     ref = np.random.random(size=sig_len)
     proc = np.random.random(size=sig_len)
-    ear_model = EarModel(equalisation=0, nchan=10)
-
+    ear_model = EarModel(equalisation=0, nchan=10, m_delay=1, target_freq=24000.0)
     ref_db, ref_bm, proc_db, proc_bm, ref_sl, proc_sl, freq_sample = ear_model.compute(
         reference=ref,
         reference_freq=samp_freq,
@@ -252,13 +251,8 @@ def test_envelope_align():
     output[0:50] = 0
     output *= scale
 
-    ear_model = EarModel(
-        equalisation=1,
-        nchan=10,
-    )
-    aligned_output = ear_model.envelope_align(
-        reference, output, freq_sample=24000, corr_range=100
-    )
+    ear_model = EarModel(equalisation=1, nchan=10, target_freq=24000.0)
+    aligned_output = ear_model.envelope_align(reference, output, corr_range=100)
 
     # check shapes and values
     assert aligned_output.shape == (600,)
