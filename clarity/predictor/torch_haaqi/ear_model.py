@@ -17,28 +17,47 @@ class EarModel(torch.nn.Module):
     auditory filter bank, Outer Hair Cell (OHC) dynamic-range compression,
     and Inner Hair Cell (IHC) attenuation.
 
-    The inputs are the reference and processed signals that are to be
-    compared. The reference is at the reference intensity (e.g. 65 dB SPL
-    or with NAL-R amplification) and has no other processing. The processed
-    signal is the hearing-aid output, and is assumed to have the same or
-    greater group delay compared to the reference.
-
-    The function outputs the envelopes of the signals after OHC compression
-    and IHC loss attenuation.
-
     """
+
+    # Basilar Membrane filter coefficients
+    COMPRESS_BASILAR_MEMBRANE_COEFS = {
+        "24000": {
+            "b": [0.09510798340249643, 0.09510798340249643],
+            "a": [1.0, -0.8097840331950071],
+        }
+    }
+    # Middle ear filter coefficients
+    MIDDLE_EAR_COEF = {
+        "24000": {
+            "butterworth_low_pass": [0.4341737512063021, 0.4341737512063021],
+            "low_pass": [1.0, -0.13165249758739583],
+            "butterworth_high_pass": [
+                0.9372603902698923,
+                -1.8745207805397845,
+                0.9372603902698923,
+            ],
+            "high_pass": [1.0, -1.8705806407352794, 0.8784609203442912],
+        }
+    }
 
     def __init__(
         self,
-        itype: int,
+        equalisation: int = 0,
         nchan: int = 32,
         m_delay: int = 1,
         shift: float | None = None,
         audiometric_freq: list | None = None,
         target_sample_rate: int = 24000,
         small: float = 1e-30,
+        min_bandwidth: float = 24.7,
     ):
         """
+        Constructor takes the reference and processed signals that are to be
+        compared. The reference is at the reference intensity (e.g. 65 dB SPL
+        or with NAL-R amplification) and has no other processing. The processed
+        signal is the hearing-aid output, and is assumed to have the same or
+        greater group delay compared to the reference.
+
         Arguments:
             itype (int): purpose for the calculation:
                 0=intelligibility: reference is normal hearing and must not
@@ -59,18 +78,19 @@ class EarModel(torch.nn.Module):
             small (float): small value to avoid division by zero.
         """
         super().__init__()
-        if not itype in [0, 1, 2]:
+        if not equalisation in [0, 1, 2]:
             raise ValueError("itype must be 0, 1 or 2")
 
         self.audiometric_freq = audiometric_freq
         if self.audiometric_freq is None:
             self.audiometric_freq = torch.tensor([250, 500, 1000, 2000, 4000, 6000])
 
-        self.itype = itype
+        self.itype = equalisation
         self.nchan = nchan
         self.m_delay = m_delay
         self.target_sample_rate = target_sample_rate
         self.small = small
+        self.min_bandwidth = min_bandwidth
 
         # General Precomputed parameters
         # -------------------------------
@@ -106,23 +126,6 @@ class EarModel(torch.nn.Module):
         # Maximum BW for the control
         _, bandwidth_1, _, _, _ = self.loss_parameters(
             hl_max, self._center_freq_control
-        )
-
-        # Resample Precomputed parameters
-        # -------------------------------
-        self.cheby2_coefs = json.load(open("precomputed/cheby2_coefs.json"))
-
-        # Middle ear precomputed parameters
-        # ---------------------------------
-
-        self.middle_ear_coefs = json.load(open("precomputed/middle_ear_coefs.json"))
-        self.middle_ear_coefs = self.middle_ear_coefs[str(self.target_sample_rate)]
-
-        # Compress Basilar Membrane precomputed parameters
-        # ------------------------------------------------
-
-        self.compress_basilar_membrane_coefs = json.load(
-            open("precomputed/compress_basilar_membrane_coefs.json")
         )
 
     def forward(
@@ -176,7 +179,7 @@ class EarModel(torch.nn.Module):
 
         # For HASQI, here add NAL-R equalization if the quality reference doesn't
         # already have it.
-        # TODO - NARL equalization is not implemented yet in torch
+        # TODO - NALR equalization is not implemented yet in torch
         # if itype == 1:
         #     nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         #     enhancer = NALR(nfir, freq_sample)
@@ -534,46 +537,7 @@ class EarModel(torch.nn.Module):
             # No resampling performed if the rates match
             return signal, sample_rate
 
-        if sample_rate < self.target_sample_rate:
-            # Resample for the input rate lower than the output
-
-            resample_signal = sampler(signal)
-
-            # Match the RMS level of the resampled signal to that of the input
-            reference_rms = torch.sqrt(torch.mean(signal**2))
-            resample_rms = torch.sqrt(torch.mean(resample_signal**2))
-            resample_signal = (reference_rms / resample_rms) * resample_signal
-
-            return resample_signal, self.target_sample_rate
-
-        resample_signal = sampler(signal)
-
-        coef_reference = self.cheby2_coefs[str(sample_rate)]
-        coef_target = self.cheby2_coefs[str(self.target_sample_rate)]
-
-        # Reduce the input signal bandwidth to 21 kHz (-10.5 to +10.5 kHz)
-        # The power equalization is designed to match the signal intensities
-        # over the frequency range spanned by the gammatone filter bank.
-        # Chebyshev Type 2 LP
-        reference_filter = lfilter(
-            signal,
-            torch.tensor(coef_reference["a"]),
-            torch.tensor(coef_reference["b"]),
-        )
-
-        target_filter = lfilter(
-            signal,
-            torch.tensor(coef_target["a"]),
-            torch.tensor(coef_target["b"]),
-        )
-
-        # Compute the input and output RMS levels within the 21 kHz bandwidth and
-        # match the output to the input
-        reference_rms = torch.sqrt(torch.mean(reference_filter**2))
-        resample_rms = torch.sqrt(torch.mean(target_filter**2))
-        resample_signal = (reference_rms / resample_rms) * resample_signal
-
-        return resample_signal, self.target_sample_rate
+        return sampler(signal), self.target_sample_rate
 
     def input_align(self, reference, processed):
         # Match the length of the processed output to the reference for the purposes
@@ -644,18 +608,22 @@ class EarModel(torch.nn.Module):
 
         # Design the 1-pole Butterworth LP using the bilinear transformation
         butterworth_low_pass = torch.tensor(
-            self.middle_ear_coefs["butterworth_low_pass"]
+            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["butterworth_low_pass"]
         )
-        low_pass = torch.tensor(self.middle_ear_coefs["low_pass"])
+        low_pass = torch.tensor(
+            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["low_pass"]
+        )
 
         # LP filter the input
         y = lfilter(reference, low_pass, butterworth_low_pass, clamp=False)
 
         # Design the 2-pole Butterworth HP using the bilinear transformation
         butterworth_high_pass = torch.tensor(
-            self.middle_ear_coefs["butterworth_high_pass"]
+            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["butterworth_high_pass"]
         )
-        high_pass = torch.tensor(self.middle_ear_coefs["high_pass"])
+        high_pass = torch.tensor(
+            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["high_pass"]
+        )
 
         # HP fitler the signal
         return lfilter(y, high_pass, butterworth_high_pass, clamp=False)
@@ -932,7 +900,7 @@ class EarModel(torch.nn.Module):
 
         # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
         gain = torch.pow(10, gain / 20)
-        coefs = self.compress_basilar_membrane_coefs[str(self.target_sample_rate)]
+        coefs = self.COMPRESS_BASILAR_MEMBRANE_COEFS[str(self.target_sample_rate)]
 
         gain = lfilter(
             gain.double(),

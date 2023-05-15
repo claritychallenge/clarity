@@ -37,6 +37,8 @@
 
 
 import torch
+import numpy as np
+import torchaudio
 
 
 def group_delay(b, a, w):
@@ -64,7 +66,8 @@ if __name__ == "__main__":
 
     b, a = signal.iirdesign(0.1, 0.3, 5, 50, ftype="cheby1")
     w, gd = signal.group_delay((b, a))
+    gd = np.rint(gd).astype(int)
 
-    gd_2 = group_delay(torch.tensor(b), torch.tensor(a), torch.tensor(w))
-
-    print(gd - gd_2.numpy())
+    gd_2 = group_delay(torch.tensor(a), torch.tensor(b), torch.tensor(w))
+    gd_2 = np.rint(gd_2.numpy()).astype(int)
+    print((gd[:-1] - gd_2))
