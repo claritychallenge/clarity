@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 import json
-import torch
 
+import torch
 from torchaudio.functional import lfilter
 from torchaudio.transforms import Resample
 
-from clarity.evaluator.ha_metric.interp1d import interp1d
-from clarity.evaluator.ha_metric.utils import full_correlation
+from clarity.predictor.torch_haaqi.interp1d import interp1d
+from clarity.predictor.torch_haaqi.utils import full_correlation
 
 
 class EarModel(torch.nn.Module):
