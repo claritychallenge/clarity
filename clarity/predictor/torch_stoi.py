@@ -81,19 +81,11 @@ class NegSTOILoss(nn.Module):
 
         # Dependant from FS
         if self.do_resample:
-            print(torchaudio.__version__)
-            if torchaudio.__version__[0] == "0":
-                # For versions v0.x.x
-                resampling_method = "sinc_interpolation"
-            else:
-                # for versions v2.x.x
-                resampling_method = "sinc_interp_hann"
-
             sample_rate = FS
             self.resample = torchaudio.transforms.Resample(
                 orig_freq=self.sample_rate,
                 new_freq=FS,
-                resampling_method=resampling_method,
+                resampling_method="sinc_interp_hann",
             )
         self.win_len = (N_FRAME * sample_rate) // FS
         self.nfft = 2 * self.win_len

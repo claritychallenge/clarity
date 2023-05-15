@@ -64,24 +64,17 @@ def test_convtasnet(regtest):
     test_loader = torch.utils.data.DataLoader(dataset=test_set, **cfg.test_loader)
 
     if cfg.test_dataset.downsample_factor != 1:
-        if torchaudio.__version__[0] == "0":
-            # For versions v0.x.x
-            resampling_method = "sinc_interpolation"
-        else:
-            # for versions v2.x.x
-            resampling_method = "sinc_interp_hann"
-
         down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.test_dataset["sample_rate"],
             new_freq=cfg.test_dataset["sample_rate"]
             // cfg.test_dataset.downsample_factor,
-            resampling_method=resampling_method,
+            resampling_method="sinc_interp_hann",
         )
         up_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.test_dataset["sample_rate"]
             // cfg.test_dataset.downsample_factor,
             new_freq=cfg.test_dataset["sample_rate"],
-            resampling_method=resampling_method,
+            resampling_method="sinc_interp_hann",
         )
 
     with torch.no_grad():
