@@ -241,9 +241,10 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     results_file.write_header()
 
     # Initialize acoustic scene model
+    sample_rate_haaqi = 24000
     car_scene_acoustic = CarSceneAcoustics(
         track_duration=30,
-        sample_rate=config.sample_rate,
+        sample_rate=sample_rate_haaqi,
         hrtf_dir=config.path.hrtf_dir,
         config_nalr=config.nalr,
         config_compressor=config.compressor,
@@ -281,12 +282,16 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         assert enhanced_sample_rate == config.enhanced_sample_rate
 
         # Evaluate scene
-        reference_signal_24k = resample(reference_signal.T, config.sample_rate, 24000)
-        enhanced_signal_24k = resample(enhanced_signal, config.sample_rate, 24000)
+        reference_signal_24k = resample(
+            reference_signal.T, config.sample_rate, sample_rate_haaqi
+        )
+        enhanced_signal_24k = resample(
+            enhanced_signal, enhanced_sample_rate, sample_rate_haaqi
+        )
         aq_score_l, aq_score_r = evaluate_scene(
             reference_signal_24k.T,
             enhanced_signal_24k.T,
-            24000,
+            sample_rate_haaqi,
             scene_id,
             current_scene,
             listener,
