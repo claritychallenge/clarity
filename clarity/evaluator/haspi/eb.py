@@ -11,7 +11,6 @@ from scipy.signal import (
     butter,
     cheby2,
     convolve,
-    correlate,
     firwin,
     group_delay,
     lfilter,
@@ -20,6 +19,7 @@ from scipy.signal import (
 
 from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram
+from clarity.utils.signal_processing import correlate
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -1798,23 +1798,27 @@ def bm_covary(
     window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
 
     # compute inverted Window autocorrelation
-    win_corr = correlate(window, window, "full")
-    start_sample = int(len(window) - 1 - maxlag)
-    end_sample = int(maxlag + len(window))
-    if start_sample < 0:
-        raise ValueError("segment size too small")
-    win_corr = 1 / win_corr[start_sample:end_sample]
+    # win_corr = correlate(window, window, "full")
+    # start_sample = int(len(window) - 1 - maxlag)
+    # end_sample = int(maxlag + len(window))
+    # if start_sample < 0:
+    #     raise ValueError("segment size too small")
+    # win_corr = 1 / win_corr[start_sample:end_sample]
+    win_corr = 1.0 / correlate(window, window, method="maxlag", lags=int(maxlag))
     win_sum2 = 1.0 / np.sum(window**2)  # Window power, inverted
 
     # The first segment has a half window
     nhalf = int(nwin / 2)
     half_window = window[nhalf:nwin]
-    half_corr = correlate(half_window, half_window, "full")
-    start_sample = int(len(half_window) - 1 - maxlag)
-    end_sample = int(maxlag + len(half_window))
-    if start_sample < 0:
-        raise ValueError("segment size too small")
-    half_corr = 1 / half_corr[start_sample:end_sample]
+    # half_corr = correlate(half_window, half_window, "full")
+    # start_sample = int(len(half_window) - 1 - maxlag)
+    # end_sample = int(maxlag + len(half_window))
+    # if start_sample < 0:
+    #     raise ValueError("segment size too small")
+    # half_corr = 1 / half_corr[start_sample:end_sample]
+    half_corr = 1.0 / correlate(
+        half_window, half_window, method="maxlag", lags=int(maxlag)
+    )
     halfsum2 = 1.0 / np.sum(half_window**2)  # MS sum normalization, first segment
 
     # Number of segments
@@ -1844,10 +1848,13 @@ def bm_covary(
         ref_mean_square = np.sum(reference_seg**2) * halfsum2
 
         proc_mean_squared = np.sum(processed_seg**2) * halfsum2
-        correlation = correlate(reference_seg, processed_seg, "full")
-        correlation = correlation[
-            int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-        ]
+        # correlation = correlate(reference_seg, processed_seg, "full")
+        # correlation = correlation[
+        #     int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+        # ]
+        correlation = correlate(
+            reference_seg, processed_seg, method="maxlag", lags=int(maxlag)
+        )
         unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
         if (ref_mean_square > small) and (proc_mean_squared > small):
             # Normalize cross-covariance
@@ -1873,10 +1880,13 @@ def bm_covary(
             # Normalize signal MS value by the window
             ref_mean_square = np.sum(reference_seg**2) * win_sum2
             proc_mean_squared = np.sum(processed_seg**2) * win_sum2
-            correlation = correlate(reference_seg, processed_seg, "full")
-            correlation = correlation[
-                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-            ]
+            # correlation = correlate(reference_seg, processed_seg, "full")
+            # correlation = correlation[
+            #    int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            # ]
+            correlation = correlate(
+                reference_seg, processed_seg, method="maxlag", lags=int(maxlag)
+            )
             unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
             if (ref_mean_square > small) and (proc_mean_squared > small):
                 # Normalize cross-covariance
@@ -1900,11 +1910,13 @@ def bm_covary(
         ref_mean_square = np.sum(reference_seg**2) * halfsum2
         proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-        correlation = np.correlate(reference_seg, processed_seg, "full")
-        correlation = correlation[
-            int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-        ]
-
+        # correlation = correlate(reference_seg, processed_seg, "full")
+        # correlation = correlation[
+        #     int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+        # ]
+        correlation = correlate(
+            reference_seg, processed_seg, method="maxlag", lags=int(maxlag)
+        )
         unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
         if (ref_mean_square > small) and (proc_mean_squared > small):
             # Normalized cross-covariance

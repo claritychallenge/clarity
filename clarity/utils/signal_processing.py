@@ -109,7 +109,8 @@ def correlate(
         mode (str): Mode to pass to ``scipy.signal.correlate``
         method (str):
             'maxlag': Implement cross correlation with a maximum number of lags.
-                      x and y must have the same length.
+                x and y must have the same length.
+                `mode` is ignored.
                 based on https://stackoverflow.com/questions/30677241/
                         how-to-limit-cross-correlation-window-width-in-numpy
             "auto": Run scipy.signal.correlate with method='auto'
