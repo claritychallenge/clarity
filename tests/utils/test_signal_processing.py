@@ -1,9 +1,11 @@
 """Test for utils.signal_processing module"""
+# pylint: disable=import-error
 import numpy as np
 import pytest
 
 from clarity.utils.signal_processing import (
     compute_rms,
+    correlate,
     denormalize_signals,
     normalize_signal,
     resample,
@@ -206,3 +208,59 @@ def test_resample_with_3d_array_error():
         resample(
             signal=input_signal, sample_rate=16000, new_sample_rate=8000, method="soxr"
         )
+
+
+def test_correlate_maxlag():
+    """Test the function correlate with maxlag"""
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([2, 4, 6, 8, 10])
+    maxlag = 1
+    expected_result = np.array([80, 110, 80])
+
+    result = correlate(x, y, lags=maxlag, method="maxlag")
+    print(result)
+    assert np.sum(result) == pytest.approx(
+        np.sum(expected_result), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+def test_correlate_auto():
+    """Test the function correlate with auto method"""
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([2, 4, 6])
+    expected_result = np.array([6, 16, 28, 40, 52, 28, 10])
+    result = correlate(x, y, method="auto")
+
+    assert np.sum(result) == pytest.approx(
+        np.sum(expected_result), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+def test_correlate_unknown_method():
+    """Test the function correlate with unknown method"""
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([2, 4, 6])
+    unknown_method = "invalid_method"
+
+    with pytest.raises(ValueError, match="Unknown method: invalid_method"):
+        correlate(x, y, method=unknown_method)
+
+
+def test_correlate_missing_maxlag():
+    """Test the function correlate with missing maxlag"""
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([2, 4, 6, 8, 10])
+
+    with pytest.raises(
+        ValueError, match="maxlag must be specified for method='maxlag'"
+    ):
+        correlate(x, y, method="maxlag")
+
+
+def test_correlate_maxlag_different_length():
+    """Test the function correlate with maxlag and different length"""
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([2, 4, 6])
+
+    with pytest.raises(ValueError, match="x and y must have the same length"):
+        correlate(x, y, lags=1, method="maxlag")

@@ -1,4 +1,5 @@
 """Signal processing utilities."""
+# pylint: disable=import-error
 from __future__ import annotations
 
 import numpy as np
@@ -86,3 +87,58 @@ def resample(
         )
 
     raise ValueError(f"Unknown resampling method: {method}")
+
+
+def correlate(
+    x: np.ndarray,
+    y: np.ndarray,
+    mode="full",
+    method="auto",
+    lags: int | float | None = None,
+) -> np.ndarray:
+    """
+    Wrap of ``scipy.signal.correlate`` that includes a mode
+    for maxlag.
+
+    This computes the same result as
+        numpy.correlate(x, y, mode='full')[len(a)-maxlag-1:len(a)+maxlag]
+
+    Args:
+        x (np.ndarray): First signal
+        y (np.ndarray): Second signal
+        mode (str): Mode to pass to ``scipy.signal.correlate``
+        method (str):
+            'maxlag': Implement cross correlation with a maximum number of lags.
+                      x and y must have the same length.
+                based on https://stackoverflow.com/questions/30677241/
+                        how-to-limit-cross-correlation-window-width-in-numpy
+            "auto": Run scipy.signal.correlate with method='auto'
+            'direct': Run scipy.signal.correlate with method='direct'
+            'fft': Run scipy.signal.correlate with method='fft'
+        lags (int): Maximum number of lags for `method` "maxlag".
+    Returns:
+        np.ndarray: cross correlation of x and y
+    """
+    if method == "maxlag":
+        if lags is None:
+            raise ValueError("maxlag must be specified for method='maxlag'")
+        lags = int(lags)
+
+        if x.shape[0] != y.shape[0]:
+            raise ValueError("x and y must have the same length")
+
+        py = np.pad(y.conj(), 2 * lags, mode="constant")
+        # pylint: disable=unsubscriptable-object
+        T = np.lib.stride_tricks.as_strided(
+            py[2 * lags :],
+            shape=(2 * lags + 1, len(y) + 2 * lags),
+            strides=(-py.strides[0], py.strides[0]),
+        )
+        px = np.pad(x, lags, mode="constant")
+        return T.dot(px)
+
+    if method in ["auto", "direct", "fft"]:
+        # Run scipy signal correlate with the specified method and mode
+        return scipy.signal.correlate(x, y, mode=mode, method=method)
+
+    raise ValueError(f"Unknown method: {method}")
