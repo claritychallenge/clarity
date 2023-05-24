@@ -15,12 +15,19 @@ from numpy import ndarray
 from omegaconf import DictConfig
 from scipy.io import wavfile
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
-from torchaudio.transforms import Fade, Resample
+from torchaudio.transforms import Fade
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram, Listener
-from clarity.utils.signal_processing import denormalize_signals, normalize_signal
+from clarity.utils.flac_encoder import FlacEncoder
+from clarity.utils.signal_processing import (
+    clip_signal,
+    denormalize_signals,
+    normalize_signal,
+    resample,
+    to_16bit,
+)
 from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 
 logger = logging.getLogger(__name__)
@@ -28,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 def separate_sources(
     model: torch.nn.Module,
-    mix: torch.Tensor,
+    mix: torch.Tensor | ndarray,
     sample_rate: int,
     segment: float = 10.0,
     overlap: float = 0.1,
@@ -119,11 +126,11 @@ def get_device(device: str) -> tuple:
     raise ValueError(f"Unsupported device type: {device}")
 
 
-def map_to_dict(sources: np.ndarray, sources_list: list[str]) -> dict:
+def map_to_dict(sources: ndarray, sources_list: list[str]) -> dict:
     """Map sources to a dictionary separating audio into left and right channels.
 
     Args:
-       sources (np.ndarray): Signal to be mapped to dictionary.
+       sources (ndarray): Signal to be mapped to dictionary.
        sources_list (list): List of strings used to index dictionary.
 
     Returns:
@@ -142,13 +149,15 @@ def map_to_dict(sources: np.ndarray, sources_list: list[str]) -> dict:
 
 # pylint: disable=unused-argument
 def decompose_signal(
-    config: DictConfig,
     model: torch.nn.Module,
-    signal: np.ndarray,
-    sample_rate: int,
+    model_sample_rate: int,
+    signal: ndarray,
+    signal_sample_rate: int,
     device: torch.device,
+    sources_list: list[str],
     listener: Listener,
-) -> dict[str, np.ndarray]:
+    normalise: bool = True,
+) -> dict[str, ndarray]:
     """
     Decompose signal into 8 stems.
 
@@ -158,47 +167,46 @@ def decompose_signal(
     HDEMUCS model trained on the MUSDB18 dataset.
 
     Args:
-        config (DictConfig): Configuration object.
         model (torch.nn.Module): Torch model.
-        signal (np.ndarray): Signal to be decomposed.
-        sample_rate (int): Sample frequency.
+        model_sample_rate (int): Sample rate of the model.
+        signal (ndarray): Signal to be decomposed.
+        signal_sample_rate (int): Sample frequency.
         device (torch.device): Torch device to use for processing.
-        listener (Listener).
+        sources_list (list): List of strings used to index dictionary.
+        listener (Listener): Listener object.
+        normalise (bool): Whether to normalise the signal.
 
      Returns:
          Dictionary: Indexed by sources with the associated model as values.
     """
 
-    if config.separator.model == "demucs":
+    # Resample mixture signal to model sample rate
+    if signal_sample_rate != model_sample_rate:
+        signal = resample(signal, signal_sample_rate, model_sample_rate)
+
+    if normalise:
         signal, ref = normalize_signal(signal)
 
-    model_sample_rate = (
-        model.sample_rate if config.separator.model == "openunmix" else 44100
-    )
-
-    if sample_rate != model_sample_rate:
-        resampler = Resample(sample_rate, model_sample_rate)
-        signal = resampler(signal)
-
     sources = separate_sources(
-        model, torch.from_numpy(signal), sample_rate, device=device
+        model, torch.from_numpy(signal), signal_sample_rate, device=device
     )
     # only one element in the batch
     sources = sources[0]
-    if config.separator.model == "demucs":
+
+    if normalise:
         sources = denormalize_signals(sources, ref)
 
-    signal_stems = map_to_dict(sources, config.separator.sources)
+    signal_stems = map_to_dict(sources, sources_list)
     return signal_stems
 
 
 def apply_baseline_ha(
     enhancer: NALR,
     compressor: Compressor,
-    signal: np.ndarray,
+    signal: ndarray,
     audiogram: Audiogram,
     apply_compressor: bool = False,
-) -> np.ndarray:
+) -> ndarray:
     """
     Apply NAL-R prescription hearing aid to a signal.
 
@@ -206,14 +214,12 @@ def apply_baseline_ha(
         enhancer: A NALR object that enhances the signal.
         compressor: A Compressor object that compresses the signal.
         signal: An ndarray representing the audio signal.
-        listener_audiogram: An ndarray representing the listener's audiogram.
-        cfs: An ndarray of center frequencies.
+        audiogram: An Audiogram object representing the listener's audiogram.
         apply_compressor: A boolean indicating whether to include the compressor.
 
     Returns:
         An ndarray representing the processed signal.
     """
-    print("XXX", audiogram)
     nalr_fir, _ = enhancer.build(audiogram)
     proc_signal = enhancer.apply(nalr_fir, signal)
     if apply_compressor:
@@ -234,8 +240,7 @@ def process_stems_for_listener(
         stems (dict) : Dictionary of stems
         enhancer (NALR) : NAL-R prescription hearing aid
         compressor (Compressor) : Compressor
-        listener: Listener object
-        cfs (np.ndarray) : Center frequencies
+        listener (Listener) : Listener object.
         apply_compressor (bool) : Whether to apply the compressor
     Returns:
         processed_sources (dict) : Dictionary of processed stems
@@ -261,27 +266,84 @@ def process_stems_for_listener(
     return processed_stems
 
 
-def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
-    """Clip and save the processed stems.
+def remix_signal(stems: dict) -> ndarray:
+    """
+    Function to remix signal. It takes the eight stems
+    and combines them into a stereo signal.
 
     Args:
-        signal (np.ndarray): Signal to be clipped and saved.
-        soft_clip (bool): Whether to use soft clipping.
+        stems (dict) : Dictionary of stems
 
     Returns:
-        signal (np.ndarray): Clipped signal.
-        n_clipped (int): Number of samples clipped.
+        (ndarray) : Remixed signal
+
     """
+    n_samples = stems[list(stems.keys())[0]].shape[0]
+    out_left, out_right = np.zeros(n_samples), np.zeros(n_samples)
+    for stem_str, stem_signal in stems.items():
+        if stem_str.startswith("l"):
+            out_left += stem_signal
+        else:
+            out_right += stem_signal
 
-    if soft_clip:
-        signal = np.tanh(signal)
-    n_clipped = np.sum(np.abs(signal) > 1.0)
-    np.clip(signal, -1.0, 1.0, out=signal)
-    return signal, int(n_clipped)
+    return np.stack([out_left, out_right], axis=1)
 
 
-def to_16bit(signal: np.ndarray) -> np.ndarray:
-    return (32768.0 * signal).astype(np.int16)
+def save_flac_signal(
+    signal: ndarray,
+    filename: Path,
+    signal_sample_rate: int,
+    output_sample_rate: int,
+    do_clip_signal: bool = False,
+    do_soft_clip: bool = False,
+    do_scale_signal: bool = False,
+) -> None:
+    """
+    Function to save output signals.
+
+    - The output signal will be resample to ``output_sample_rate``
+    - The output signal will be clipped to [-1, 1] if ``do_clip_signal`` is True
+        and use soft clipped if ``do_soft_clip`` is True. Note that if
+        ``do_clip_signal`` is False, ``do_soft_clip`` will be ignored.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be scaled to [-1, 1] if ``do_scale_signal`` is True.
+        If signal is scale, the scale factor will be saved in a TXT file.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be saved as a FLAC file.
+
+    Args:
+        signal (np.ndarray) : Signal to save
+        filename (Path) : Path to save signal
+        signal_sample_rate (int) : Sample rate of the input signal
+        output_sample_rate (int) : Sample rate of the output signal
+        do_clip_signal (bool) : Whether to clip signal
+        do_soft_clip (bool) : Whether to apply soft clipping
+        do_scale_signal (bool) : Whether to scale signal
+    """
+    # Resample signal to expected output sample rate
+    if signal_sample_rate != output_sample_rate:
+        signal = resample(signal, signal_sample_rate, output_sample_rate)
+
+    if do_scale_signal:
+        # Scale stem signal
+        max_value = np.max(np.abs(signal))
+        signal = signal / max_value
+
+        # Save scale factor
+        with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
+            file.write(f"{max_value}")
+
+    elif do_clip_signal:
+        # Clip the signal
+        signal, n_clipped = clip_signal(signal, do_soft_clip)
+        if n_clipped > 0:
+            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+
+    # Convert signal to 16-bit integer
+    signal = to_16bit(signal)
+
+    # Create flac encoder object to compress and save the signal
+    FlacEncoder().encode(signal, output_sample_rate, filename)
 
 
 @hydra.main(config_path="", config_name="config")
@@ -297,6 +359,9 @@ def enhance(config: DictConfig) -> None:
         - left channel vocal, drums, bass, and other stems
         - right channel vocal, drums, bass, and other stems
     """
+
+    if config.separator.model not in ["demucs", "openunmix"]:
+        raise ValueError(f"Separator model {config.separator.model} not supported.")
 
     enhanced_folder = Path("enhanced_signals")
     enhanced_folder.mkdir(parents=True, exist_ok=True)
@@ -321,8 +386,17 @@ def enhance(config: DictConfig) -> None:
 
     if config.separator.model == "demucs":
         separation_model = HDEMUCS_HIGH_MUSDB.get_model()
-    else:
+        model_sample_rate = HDEMUCS_HIGH_MUSDB.sample_rate
+        sources_order = separation_model.sources
+        normalise = True
+    elif config.separator.model == "openunmix":
         separation_model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq", niter=0)
+        model_sample_rate = separation_model.sample_rate
+        sources_order = ["vocals", "drums", "bass", "other"]
+        normalise = False
+    else:
+        raise ValueError(f"Separator model {config.separator.model} not supported.")
+
     device, _ = get_device(config.separator.device)
     separation_model.to(device)
 
@@ -366,9 +440,10 @@ def enhance(config: DictConfig) -> None:
             else "train"
         )
 
-        # Read the mixture signal
-        # Convert to 32-bit floating point and transpose
-        # from [samples, channels] to [channels, samples]
+        # Baseline Steps
+        # 1. Decompose the mixture signal into vocal, drums, bass, and other stems
+        #    We validate if 2 consecutive signals are the same to avoid
+        #    decomposing the same song multiple times
         if prev_song_name != song_name:
             # Decompose song only once
             prev_song_name = song_name
@@ -383,17 +458,20 @@ def enhance(config: DictConfig) -> None:
             assert sample_rate == config.sample_rate
 
             stems: dict[str, ndarray] = decompose_signal(
-                config,
                 separation_model,
+                model_sample_rate,
                 mixture_signal,
                 sample_rate,
                 device,
+                sources_order,
                 listener,
+                normalise,
             )
 
-        # Baseline applies NALR prescription to each stem instead of using the
-        # listener's audiograms in the decomposition. This stem can be skipped
-        # if the listener's audiograms are used in the decomposition
+        # 2. Apply NAL-R prescription to each stem
+        #     Baseline applies NALR prescription to each stem instead of using the
+        #     listener's audiograms in the decomposition. This step can be skipped
+        #     if the listener's audiograms are used in the decomposition
         processed_stems = process_stems_for_listener(
             stems,
             enhancer,
@@ -402,15 +480,8 @@ def enhance(config: DictConfig) -> None:
             config.apply_compressor,
         )
 
-        # save processed stems
-        n_samples = processed_stems[list(processed_stems.keys())[0]].shape[0]
-        output_left, output_right = np.zeros(n_samples), np.zeros(n_samples)
+        # 3. Save processed stems
         for stem_str, stem_signal in processed_stems.items():
-            if stem_str.startswith("l"):
-                output_left += stem_signal
-            else:
-                output_right += stem_signal
-
             filename = (
                 enhanced_folder
                 / f"{listener.id}"
@@ -418,26 +489,32 @@ def enhance(config: DictConfig) -> None:
                 / f"{listener.id}_{song_name}_{stem_str}.wav"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
+            save_flac_signal(
+                signal=stem_signal,
+                filename=filename,
+                signal_sample_rate=config.sample_rate,
+                output_sample_rate=config.stem_sample_rate,
+                do_scale_signal=True,
+            )
 
-            # Clip and save stem signals
-            clipped_signal, n_clipped = clip_signal(stem_signal, config.soft_clip)
-            if n_clipped > 0:
-                logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-            wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
+        # 4. Remix Signal
+        enhanced = remix_signal(processed_stems)
 
-        enhanced = np.stack([output_left, output_right], axis=1)
+        # 5. Save enhanced (remixed) signal
         filename = (
             enhanced_folder
             / f"{listener.id}"
             / f"{song_name}"
-            / f"{listener.id}_{song_name}_remix.wav"
+            / f"{listener.id}_{song_name}_remix.flac"
         )
-
-        # clip and save enhanced signal
-        clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
-        if n_clipped > 0:
-            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-        wavfile.write(filename, config.sample_rate, to_16bit(clipped_signal))
+        save_flac_signal(
+            signal=enhanced,
+            filename=filename,
+            signal_sample_rate=config.sample_rate,
+            output_sample_rate=config.remix_sample_rate,
+            do_clip_signal=True,
+            do_soft_clip=config.soft_clip,
+        )
 
 
 # pylint: disable = no-value-for-parameter

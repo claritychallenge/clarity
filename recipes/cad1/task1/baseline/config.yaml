@@ -15,7 +15,7 @@ remix_sample_rate: 32000 # sample rate for output remixed signal
 
 nalr:
   nfir: 220
-  fs: ${sample_rate}
+  sample_rate: ${sample_rate}
 
 apply_compressor: False
 compressor:
