@@ -63,7 +63,9 @@ def test_torch_msbg_stoi_xeon_e5_2673_cpu(regtest):
 def test_torchloudnorm(regtest):
     torch.manual_seed(0)
     torch.set_num_threads(1)
-    ln = torchloudnorm()
+    ln = torchloudnorm(
+        device="cpu",
+    )
 
     x = torch.randn(2, 44100)
     x = x.cpu()

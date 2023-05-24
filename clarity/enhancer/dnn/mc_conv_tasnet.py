@@ -35,6 +35,8 @@ def overlap_and_add(signal, frame_step, device):
     Based on https://github.com/tensorflow/tensorflow/blob/r1.12/tensorflow/
         contrib/signal/python/ops/reconstruction_ops.py
     """
+    signal = signal.to(device)
+
     outer_dimensions = signal.size()[:-2]
     frames, frame_length = signal.size()[-2:]
 
