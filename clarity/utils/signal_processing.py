@@ -8,6 +8,25 @@ import soxr
 from numpy import ndarray
 
 
+def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
+    """Clip the signal.
+
+    Args:
+        signal (np.ndarray): Signal to be clipped and saved.
+        soft_clip (bool): Whether to use soft clipping.
+
+    Returns:
+        signal (np.ndarray): Clipped signal.
+        n_clipped (int): Number of samples clipped.
+    """
+
+    if soft_clip:
+        signal = np.tanh(signal)
+    n_clipped = np.sum(np.abs(signal) > 1.0)
+    signal = np.clip(signal, -1.0, 1.0)
+    return signal, int(n_clipped)
+
+
 def compute_rms(signal: ndarray) -> float:
     """Compute RMS of signal
 
@@ -19,6 +38,62 @@ def compute_rms(signal: ndarray) -> float:
     if len(signal) == 0:
         return 0
     return np.sqrt(np.mean(np.square(signal)))
+
+
+def correlate(
+    x: np.ndarray,
+    y: np.ndarray,
+    mode="full",
+    method="auto",
+    lags: int | float | None = None,
+) -> np.ndarray:
+    """
+    Wrap of ``scipy.signal.correlate`` that includes a mode
+    for maxlag.
+
+    This computes the same result as
+        numpy.correlate(x, y, mode='full')[len(a)-maxlag-1:len(a)+maxlag]
+
+    Args:
+        x (np.ndarray): First signal
+        y (np.ndarray): Second signal
+        mode (str): Mode to pass to ``scipy.signal.correlate``
+        method (str):
+            'maxlag': Implement cross correlation with a maximum number of lags.
+                x and y must have the same length.
+                `mode` is ignored.
+                based on https://stackoverflow.com/questions/30677241/
+                        how-to-limit-cross-correlation-window-width-in-numpy
+            "auto": Run scipy.signal.correlate with method='auto'
+            'direct': Run scipy.signal.correlate with method='direct'
+            'fft': Run scipy.signal.correlate with method='fft'
+        lags (int): Maximum number of lags for `method` "maxlag".
+    Returns:
+        np.ndarray: cross correlation of x and y
+    """
+    if method == "maxlag":
+        if lags is None:
+            raise ValueError("maxlag must be specified for method='maxlag'")
+        lags = int(lags)
+
+        if x.shape[0] != y.shape[0]:
+            raise ValueError("x and y must have the same length")
+
+        py = np.pad(y.conj(), 2 * lags, mode="constant")
+        # pylint: disable=unsubscriptable-object
+        T = np.lib.stride_tricks.as_strided(
+            py[2 * lags :],
+            shape=(2 * lags + 1, len(y) + 2 * lags),
+            strides=(-py.strides[0], py.strides[0]),
+        )
+        px = np.pad(x, lags, mode="constant")
+        return T.dot(px)
+
+    if method in ["auto", "direct", "fft"]:
+        # Run scipy signal correlate with the specified method and mode
+        return scipy.signal.correlate(x, y, mode=mode, method=method)
+
+    raise ValueError(f"Unknown method: {method}")
 
 
 def denormalize_signals(sources: ndarray, ref: ndarray) -> ndarray:
@@ -89,57 +164,15 @@ def resample(
     raise ValueError(f"Unknown resampling method: {method}")
 
 
-def correlate(
-    x: np.ndarray,
-    y: np.ndarray,
-    mode="full",
-    method="auto",
-    lags: int | float | None = None,
-) -> np.ndarray:
-    """
-    Wrap of ``scipy.signal.correlate`` that includes a mode
-    for maxlag.
-
-    This computes the same result as
-        numpy.correlate(x, y, mode='full')[len(a)-maxlag-1:len(a)+maxlag]
+def to_16bit(signal: np.ndarray) -> np.ndarray:
+    """Convert the signal to 16 bit.
 
     Args:
-        x (np.ndarray): First signal
-        y (np.ndarray): Second signal
-        mode (str): Mode to pass to ``scipy.signal.correlate``
-        method (str):
-            'maxlag': Implement cross correlation with a maximum number of lags.
-                x and y must have the same length.
-                `mode` is ignored.
-                based on https://stackoverflow.com/questions/30677241/
-                        how-to-limit-cross-correlation-window-width-in-numpy
-            "auto": Run scipy.signal.correlate with method='auto'
-            'direct': Run scipy.signal.correlate with method='direct'
-            'fft': Run scipy.signal.correlate with method='fft'
-        lags (int): Maximum number of lags for `method` "maxlag".
+        signal (np.ndarray): Signal to be converted.
+
     Returns:
-        np.ndarray: cross correlation of x and y
+        signal (np.ndarray): Converted signal.
     """
-    if method == "maxlag":
-        if lags is None:
-            raise ValueError("maxlag must be specified for method='maxlag'")
-        lags = int(lags)
-
-        if x.shape[0] != y.shape[0]:
-            raise ValueError("x and y must have the same length")
-
-        py = np.pad(y.conj(), 2 * lags, mode="constant")
-        # pylint: disable=unsubscriptable-object
-        T = np.lib.stride_tricks.as_strided(
-            py[2 * lags :],
-            shape=(2 * lags + 1, len(y) + 2 * lags),
-            strides=(-py.strides[0], py.strides[0]),
-        )
-        px = np.pad(x, lags, mode="constant")
-        return T.dot(px)
-
-    if method in ["auto", "direct", "fft"]:
-        # Run scipy signal correlate with the specified method and mode
-        return scipy.signal.correlate(x, y, mode=mode, method=method)
-
-    raise ValueError(f"Unknown method: {method}")
+    signal = signal * 32768.0
+    signal = np.clip(signal, -32768.0, 32767.0)
+    return signal.astype(np.dtype("int16"))
