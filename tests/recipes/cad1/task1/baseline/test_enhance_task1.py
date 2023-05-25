@@ -1,10 +1,10 @@
 """Tests for the enhance module"""
+# pylint: disable=import-error
 from pathlib import Path
 
 import numpy as np
 import pytest
 import torch
-from omegaconf import DictConfig
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
@@ -44,16 +44,17 @@ def test_map_to_dict():
 
 
 @pytest.mark.parametrize(
-    "separation_model",
+    "separation_model,normalise",
     [
-        pytest.param("demucs"),
-        pytest.param("openunmix", marks=pytest.mark.slow),
+        (pytest.param("demucs"), True),
+        (pytest.param("openunmix", marks=pytest.mark.slow), True),
     ],
 )
-def test_decompose_signal(separation_model):
+def test_decompose_signal(separation_model, normalise):
     """Takes a signal and decomposes it into VDBO sources using the HDEMUCS model"""
     np.random.seed(123456789)
     # Load Separation Model
+    separation_model = separation_model.values[0]
     if separation_model == "demucs":
         model = HDEMUCS_HIGH_MUSDB.get_model().double()
     elif separation_model == "openunmix":
@@ -67,27 +68,19 @@ def test_decompose_signal(separation_model):
     duration = 0.5
     signal = np.random.uniform(size=(1, 2, int(sample_rate * duration)))
 
-    # config
-    config = DictConfig(
-        {
-            "sample_rate": sample_rate,
-            "separator": {
-                "model": "demucs",
-                "sources": ["drums", "bass", "other", "vocals"],
-            },
-        }
-    )
     # Call the decompose_signal function and check that the output has the expected keys
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
     audiogram = Audiogram(levels=np.ones(9), frequencies=cfs)
     listener = Listener(audiogram, audiogram)
     output = decompose_signal(
-        config,
-        model,
-        signal,
-        sample_rate,
-        device,
-        listener,
+        model=model,
+        model_sample_rate=sample_rate,
+        signal=signal,
+        signal_sample_rate=sample_rate,
+        device=device,
+        sources_list=["drums", "bass", "other", "vocals"],
+        listener=listener,
+        normalise=normalise,
     )
     expected_results = np.load(
         RESOURCES / f"test_enhance.test_decompose_signal_{separation_model}.npy",
