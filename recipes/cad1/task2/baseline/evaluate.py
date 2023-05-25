@@ -271,7 +271,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
         enhanced_song_id = f"{scene_id}_{listener.id}_{current_scene['song']}"
         enhanced_song_path = (
-            enhanced_folder / f"{listener.id}" / f"{enhanced_song_id}.wav"
+            enhanced_folder / f"{listener.id}" / f"{enhanced_song_id}.flac"
         )
 
         # Read WAV enhanced signal using scipy.io.wavfile
