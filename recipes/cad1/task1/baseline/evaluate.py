@@ -1,7 +1,6 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
-# pylint: disable=too-many-locals
 # pylint: disable=import-error
 import csv
 import hashlib
@@ -18,7 +17,11 @@ from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
-from clarity.utils.signal_processing import compute_rms
+from clarity.utils.flac_encoder import read_flac_signal
+from clarity.utils.signal_processing import compute_rms, resample
+
+# pylint: disable=too-many-locals
+
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +132,7 @@ def _evaluate_song_listener(
 
     Args:
         song (str): The name of the song to evaluate.
-        listener (str): The name of the listener to evaluate.
+        listener (Listener): The listener to evaluate the song for.
         config (DictConfig): The configuration object.
         split_dir (str): The name of the split directory.
         enhanced_folder (Path): The path to the folder containing the enhanced signals.
@@ -160,46 +163,53 @@ def _evaluate_song_listener(
             Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
         )
         reference_signal = (reference_signal / 32768.0).astype(np.float32)
+        reference_signal = resample(
+            reference_signal, sample_rate_reference_signal, config.stem_sample_rate
+        )
 
-        # Load enhanced instrument signals
-        # Load left channel
-        sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
+        # Read left instrument enhanced
+        left_enhanced_signal, sample_rate_left_enhanced_signal = read_flac_signal(
             enhanced_folder
             / f"{listener.id}"
             / f"{song}"
-            / f"{listener.id}_{song}_left_{instrument}.wav"
+            / f"{listener.id}_{song}_left_{instrument}.flac"
         )
-        left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
 
-        # Load right channel
-        sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
+        # Read right instrument enhanced
+        right_enhanced_signal, sample_rate_right_enhanced_signal = read_flac_signal(
             enhanced_folder
             / f"{listener.id}"
             / f"{song}"
-            / f"{listener.id}_{song}_right_{instrument}.wav"
-        )
-        right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
-
-        assert (
-            sample_rate_reference_signal
-            == sample_rate_left_enhanced_signal
-            == sample_rate_right_enhanced_signal
-            == config.sample_rate
+            / f"{listener.id}_{song}_right_{instrument}.flac"
         )
 
+        if sample_rate_left_enhanced_signal != sample_rate_right_enhanced_signal:
+            raise ValueError(
+                "The sample rates of the left and right enhanced signals are not "
+                "the same"
+            )
+
+        if sample_rate_reference_signal != config.sample_rate:
+            raise ValueError(
+                f"The sample rate of the reference signal is not {config.sample_rate}"
+            )
+
+        #  Compute left and right scores
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
-            left_enhanced_signal,
-            reference_signal[:, 0],
-            listener.audiogram_left,
-            config.sample_rate,
-            65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
+            processed_signal=left_enhanced_signal,
+            reference_signal=reference_signal[:, 0],
+            sample_rate_processed=int(sample_rate_left_enhanced_signal),
+            sample_rate_reference=config.stem_sample_rate,
+            audiogram=listener.audiogram_left,
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
-            right_enhanced_signal,
-            reference_signal[:, 1],
-            listener.audiogram_right,
-            config.sample_rate,
-            65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
+            processed_signal=right_enhanced_signal,
+            reference_signal=reference_signal[:, 1],
+            sample_rate_processed=int(sample_rate_right_enhanced_signal),
+            sample_rate_reference=config.stem_sample_rate,
+            audiogram=listener.audiogram_right,
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
     # Compute the combined score
