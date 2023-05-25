@@ -16,7 +16,7 @@ enhanced_sample_rate: 32000 # sample rate for the enhanced output signal
 
 nalr:
   nfir: 220
-  fs: ${sample_rate}
+  sample_rate: ${sample_rate}
 
 compressor:
   threshold: 0.7
