@@ -1,6 +1,7 @@
 """Utility functions for the baseline model."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 import warnings
@@ -12,9 +13,6 @@ import pandas as pd
 from omegaconf import DictConfig
 
 from clarity.utils.audiogram import Listener
-
-# pylint: disable=import-error
-
 
 logger = logging.getLogger(__name__)
 
