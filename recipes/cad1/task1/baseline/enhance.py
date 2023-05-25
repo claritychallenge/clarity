@@ -486,7 +486,7 @@ def enhance(config: DictConfig) -> None:
                 enhanced_folder
                 / f"{listener.id}"
                 / f"{song_name}"
-                / f"{listener.id}_{song_name}_{stem_str}.wav"
+                / f"{listener.id}_{song_name}_{stem_str}.flac"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
             save_flac_signal(
