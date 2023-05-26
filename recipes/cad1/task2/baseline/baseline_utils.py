@@ -38,7 +38,7 @@ def read_mp3(
                 str(file_path),
                 sr=sample_rate,
                 mono=False,
-                res_type="kaiser_best",
+                res_type="soxr_hq",
                 dtype=np.float32,
             )
     except Exception as error:
