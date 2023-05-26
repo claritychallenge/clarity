@@ -1804,6 +1804,8 @@ def bm_covary(
     # if start_sample < 0:
     #     raise ValueError("segment size too small")
     # win_corr = 1 / win_corr[start_sample:end_sample]
+    if int(len(window) - 1 - maxlag) < 0:
+        raise ValueError("segment size too small")
     win_corr = 1.0 / correlate(window, window, method="maxlag", lags=int(maxlag))
     win_sum2 = 1.0 / np.sum(window**2)  # Window power, inverted
 
@@ -1816,6 +1818,8 @@ def bm_covary(
     # if start_sample < 0:
     #     raise ValueError("segment size too small")
     # half_corr = 1 / half_corr[start_sample:end_sample]
+    if int(len(half_window) - 1 - maxlag) < 0:
+        raise ValueError("segment size too small")
     half_corr = 1.0 / correlate(
         half_window, half_window, method="maxlag", lags=int(maxlag)
     )
