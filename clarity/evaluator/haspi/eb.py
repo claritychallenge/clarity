@@ -1288,13 +1288,13 @@ def env_smooth(envelopes: np.ndarray, segment_size: int, sample_rate: float) -> 
     """
 
     # Compute the window
-    n_samples = int(
-        np.around(segment_size * (0.001 * sample_rate))
-    )  # Segment size in samples
-    test = n_samples - 2 * np.floor(n_samples / 2)  # 0=even, 1=odd
-    if test > 0:
-        # Force window length to be even
-        n_samples = n_samples + 1
+    # Segment size in samples
+    n_samples = int(np.around(segment_size * (0.001 * sample_rate)))
+    n_samples += n_samples % 2
+    # test = n_samples - 2 * np.floor(n_samples / 2)  # 0=even, 1=odd
+    # if test > 0:
+    #     # Force window length to be even
+    #     n_samples = n_samples + 1
     window = np.hanning(n_samples)  # Raised cosine von Hann window
     wsum = np.sum(window)  # Sum for normalization
 
