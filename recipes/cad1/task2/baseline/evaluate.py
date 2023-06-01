@@ -208,7 +208,7 @@ def evaluate_scene(
         reference_signal=ref_signal[1, :],
         sample_rate_processed=sample_rate,
         sample_rate_reference=sample_rate,
-        audiogram=listener.audiogram_left,
+        audiogram=listener.audiogram_right,
         level1=65 - 20 * np.log10(compute_rms(ref_signal[1, :])),
     )
     return aq_score_l, aq_score_r
@@ -249,7 +249,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     )
 
     # Iterate over scenes
-    for scene_id, listener_id in tqdm(scene_listener_pairs):
+    for scene_id, listener_id in tqdm(scene_listener_pairs[:1]):
         current_scene = scenes[scene_id]
 
         # Retrieve audiograms
