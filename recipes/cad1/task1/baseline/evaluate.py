@@ -79,7 +79,6 @@ class ResultsFile:
             instruments_scores (dict): A dictionary of scores for each instrument
                 channel in the result.
         """
-        logger.info(f"The combined score is {score}")
 
         with open(self.file_name, "a", encoding="utf-8", newline="") as csv_file:
             csv_writer = csv.writer(
@@ -144,8 +143,6 @@ def _evaluate_song_listener(
 
     """
 
-    logger.info(f"Evaluating {song} for {listener.id}")
-
     if config.evaluate.set_random_seed:
         set_song_seed(song)
 
@@ -156,7 +153,7 @@ def _evaluate_song_listener(
         "other",
         "vocals",
     ]:
-        logger.info(f"...evaluating {instrument}")
+        logger.info(f"          ...evaluating {instrument}")
 
         # Read instrument reference signal
         sample_rate_reference_signal, reference_signal = wavfile.read(
@@ -244,8 +241,14 @@ def run_calculate_aq(config: DictConfig) -> None:
     song_listener_pair = song_listener_pair[
         config.evaluate.batch :: config.evaluate.batch_size
     ]
+    num_song_list_pair = len(song_listener_pair)
+    for idx, song_listener in enumerate(song_listener_pair, 1):
+        song, listener_id = song_listener
+        logger.info(
+            f"[{idx:03d}/{num_song_list_pair:03d}] "
+            f"Processing {song} for {listener_id}..."
+        )
 
-    for song, listener_id in song_listener_pair:
         split_dir = "train"
         if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
             split_dir = "test"
@@ -256,6 +259,10 @@ def run_calculate_aq(config: DictConfig) -> None:
             config,
             split_dir,
             enhanced_folder,
+        )
+        logger.info(
+            f"[{idx:03d}/{num_song_list_pair:03d}] "
+            f"The combined score is {combined_score}"
         )
         results_file.add_result(
             listener.id,
