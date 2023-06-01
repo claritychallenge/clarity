@@ -249,7 +249,7 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     )
 
     # Iterate over scenes
-    for scene_id, listener_id in tqdm(scene_listener_pairs[:1]):
+    for scene_id, listener_id in tqdm(scene_listener_pairs):
         current_scene = scenes[scene_id]
 
         # Retrieve audiograms
