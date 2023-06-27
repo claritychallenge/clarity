@@ -4,8 +4,10 @@ path:
   music_dir: ${path.root}/audio/musdb18hq
   music_train_file: ${path.metadata_dir}/musdb18.train.json
   music_valid_file: ${path.metadata_dir}/musdb18.valid.json
+  music_eval_file: ${path.metadata_dir}/musdb18.eval.json
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
+  listeners_eval_file: ${path.metadata_dir}/listeners.eval.json
   exp_folder: ./exp_${separator.model} # folder to store enhanced signals and final results
 
 sample_rate: 44100       # sample rate of the input mixture
