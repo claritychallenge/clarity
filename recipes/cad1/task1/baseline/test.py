@@ -47,7 +47,7 @@ def enhance(config: DictConfig) -> None:
     if config.separator.model not in ["demucs", "openunmix"]:
         raise ValueError(f"Separator model {config.separator.model} not supported.")
 
-    enhanced_folder = Path("enhanced_signals") / "inferring"
+    enhanced_folder = Path("enhanced_signals") / "evaluation"
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
     if config.separator.model == "demucs":
@@ -68,12 +68,15 @@ def enhance(config: DictConfig) -> None:
 
     # Processing Validation Set
     # Load listener audiograms and songs
-    with open(config.path.listeners_eval_file, encoding="utf-8") as file:
+    with open(config.path.listeners_test_file, encoding="utf-8") as file:
         listener_audiograms = json.load(file)
 
-    with open(config.path.music_eval_file, encoding="utf-8") as file:
+    with open(config.path.music_test_file, encoding="utf-8") as file:
         song_data = json.load(file)
     songs_details = pd.DataFrame.from_dict(song_data)
+
+    with open(config.path.music_segments_test_file, encoding="utf-8") as file:
+        songs_segments = json.load(file)
 
     song_listener_pairs = make_song_listener_list(
         songs_details["Track Name"], listener_audiograms
@@ -167,8 +170,12 @@ def enhance(config: DictConfig) -> None:
                 / f"{listener_name}_{song_name}_{stem_str}.flac"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
+            start = songs_segments[song_name]["objective_evaluation"]["start"]
+            end = songs_segments[song_name]["objective_evaluation"]["end"]
             save_flac_signal(
-                signal=stem_signal,
+                signal=stem_signal[
+                    int(start * config.sample_rate) : int(end * config.sample_rate)
+                ],
                 filename=filename,
                 signal_sample_rate=config.sample_rate,
                 output_sample_rate=config.stem_sample_rate,
@@ -185,8 +192,12 @@ def enhance(config: DictConfig) -> None:
             / f"{song_name}"
             / f"{listener_info['name']}_{song_name}_remix.flac"
         )
+        start = songs_segments[song_name]["subjective_evaluation"]["start"]
+        end = songs_segments[song_name]["subjective_evaluation"]["end"]
         save_flac_signal(
-            signal=enhanced,
+            signal=enhanced[
+                int(start * config.sample_rate) : int(end * config.sample_rate)
+            ],
             filename=filename,
             signal_sample_rate=config.sample_rate,
             output_sample_rate=config.remix_sample_rate,
