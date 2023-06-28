@@ -11,6 +11,9 @@ path:
   music_segments_test_file: ${path.metadata_dir}/musdb18.segments.test.json
   listeners_test_file: ${path.metadata_dir}/listeners.test.json
 
+
+team_id: E001
+
 sample_rate: 44100       # sample rate of the input mixture
 stem_sample_rate: 24000  # sample rate output stems
 remix_sample_rate: 32000 # sample rate for output remixed signal
