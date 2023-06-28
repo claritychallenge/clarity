@@ -237,7 +237,7 @@ def enhance(config: DictConfig) -> None:
 
     logger.info("Evaluation complete.!!")
     logger.info(
-        f"Please, submit the file submission_{config.team_id}.zip to the challenge"
+        f"Please, submit the file submission_{config.team_id}.zip to the challenge "
         "using the link provided. Thank you.!!"
     )
 
