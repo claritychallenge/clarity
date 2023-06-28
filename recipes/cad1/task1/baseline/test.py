@@ -4,6 +4,7 @@ from __future__ import annotations
 # pylint: disable=import-error
 import json
 import logging
+import shutil
 from pathlib import Path
 
 import hydra
@@ -28,6 +29,29 @@ from recipes.cad1.task1.baseline.evaluate import make_song_listener_list
 # pylint: disable=too-many-locals
 
 logger = logging.getLogger(__name__)
+
+
+def pack_submission(
+    team_id: str,
+    root_dir: str | Path,
+    base_dir: str | Path = ".",
+) -> None:
+    """
+    Pack the submission files into an archive file.
+
+    Args:
+        team_id (str): Team ID.
+        root_dir (str | Path): Root directory of the archived file.
+        base_dir (str | Path): Base directory to archive. Defaults to ".".
+    """
+    # Pack the submission files
+    logger.info(f"Packing submission files for team {team_id}...")
+    shutil.make_archive(
+        f"submission_{team_id}",
+        "xztar",
+        root_dir=root_dir,
+        base_dir=base_dir,
+    )
 
 
 @hydra.main(config_path="", config_name="config")
@@ -204,6 +228,12 @@ def enhance(config: DictConfig) -> None:
             do_clip_signal=True,
             do_soft_clip=config.soft_clip,
         )
+
+    pack_submission(
+        team_id=config.team_id,
+        root_dir=enhanced_folder.parent,
+        base_dir=enhanced_folder.name,
+    )
 
 
 # pylint: disable = no-value-for-parameter
