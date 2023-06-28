@@ -48,7 +48,7 @@ def pack_submission(
     logger.info(f"Packing submission files for team {team_id}...")
     shutil.make_archive(
         f"submission_{team_id}",
-        "xztar",
+        "zip",
         root_dir=root_dir,
         base_dir=base_dir,
     )
@@ -233,6 +233,12 @@ def enhance(config: DictConfig) -> None:
         team_id=config.team_id,
         root_dir=enhanced_folder.parent,
         base_dir=enhanced_folder.name,
+    )
+
+    logger.info("Evaluation complete.!!")
+    logger.info(
+        f"Please, submit the file submission_{config.team_id}.zip to the challenge"
+        "using the link provided. Thank you.!!"
     )
 
 
