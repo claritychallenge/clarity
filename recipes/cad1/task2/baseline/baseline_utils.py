@@ -99,6 +99,13 @@ def load_listeners_and_scenes(config: DictConfig) -> tuple[dict, dict, dict]:
             listener_audiograms = json.load(fp)
         scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
 
+    elif config.evaluate.split == "test":
+        with open(config.path.listeners_test_file, encoding="utf-8") as fp:
+            listener_audiograms = json.load(fp)
+        scenes = df_scenes[df_scenes["split"] == "test"].to_dict("index")
+    else:
+        raise ValueError(f"Unknown split {config.evaluate.split}")
+
     with open(config.path.scenes_listeners_file, encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
         scenes_listeners = {
