@@ -7,6 +7,11 @@ path:
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
   exp_folder: ./exp_${separator.model} # folder to store enhanced signals and final results
+  music_test_file: ${path.metadata_dir}/musdb18.test.json
+  music_segments_test_file: ${path.metadata_dir}/musdb18.segments.test.json
+  listeners_test_file: ${path.metadata_dir}/listeners.test.json
+
+team_id: E001
 
 sample_rate: 44100       # sample rate of the input mixture
 stem_sample_rate: 24000  # sample rate output stems

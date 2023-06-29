@@ -10,6 +10,9 @@ path:
   scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
   hrtf_file: ${path.metadata_dir}/eBrird_BRIR.json
   exp_folder: ./exp # folder to store enhanced signals and final results
+  listeners_test_file: ${path.metadata_dir}/listeners.test.json
+
+team_id: E001
 
 sample_rate: 44100          # sample rate of the input signal
 enhanced_sample_rate: 32000 # sample rate for the enhanced output signal
@@ -35,7 +38,7 @@ evaluate:
   set_random_seed: True
   small_test: False
   save_intermediate_wavs: False
-  split: valid # train, valid
+  split: test # train, valid, test
   batch_size: 1   # Number of batches
   batch: 0      # Batch number to evaluate
 
