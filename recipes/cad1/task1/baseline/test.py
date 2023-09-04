@@ -183,9 +183,9 @@ def enhance(config: DictConfig) -> None:
         for stem_str, stem_signal in processed_stems.items():
             filename = (
                 enhanced_folder
-                / f"{listener_name}"
+                / f"{listener.id}"
                 / f"{song_name}"
-                / f"{listener_name}_{song_name}_{stem_str}.flac"
+                / f"{listener.id}_{song_name}_{stem_str}.flac"
             )
             filename.parent.mkdir(parents=True, exist_ok=True)
             start = songs_segments[song_name]["objective_evaluation"]["start"]
