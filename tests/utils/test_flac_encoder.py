@@ -94,7 +94,7 @@ def test_flac_encoder_encode_type_error():
         encoder.encode(signal, sample_rate)
 
 
-def test_flac_encoder_decode_fileNotFound():
+def test_flac_encoder_decode_file_not_found():
     encoder = FlacEncoder(compression_level=5)
     with pytest.raises(FileNotFoundError):
         encoder.decode("fake/path.flac")
