@@ -6,10 +6,13 @@ path:
   hrtf_dir: ${path.audio_dir}/eBrird
   listeners_train_file: ${path.metadata_dir}/listeners.train.json
   listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
+  listeners_test_file: ${path.metadata_dir}/listeners.test.json
   scenes_file: ${path.metadata_dir}/scenes.json
   scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
   hrtf_file: ${path.metadata_dir}/eBrird_BRIR.json
   exp_folder: ./exp # folder to store enhanced signals and final results
+
+team_id: T001
 
 sample_rate: 44100          # sample rate of the input signal
 enhanced_sample_rate: 32000 # sample rate for the enhanced output signal

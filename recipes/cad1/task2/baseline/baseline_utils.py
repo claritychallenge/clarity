@@ -99,6 +99,9 @@ def load_listeners_and_scenes(
     elif config.evaluate.split == "valid":
         listeners = Listener.load_listener_dict(config.path.listeners_valid_file)
         scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
+    elif config.evaluate.split == "test":
+        listeners = Listener.load_listener_dict(config.path.listeners_test_file)
+        scenes = df_scenes[df_scenes["split"] == "test"].to_dict("index")
     else:
         raise ValueError(f"Unknown split {config.evaluate.split}")
 
