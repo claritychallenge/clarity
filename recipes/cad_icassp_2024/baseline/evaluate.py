@@ -296,22 +296,24 @@ def run_calculate_aq(config: DictConfig) -> None:
         nalr_fir, _ = enhancer.build(listener.audiogram_left)
         left_reference = enhancer.apply(nalr_fir, reference_mixture[:, 0])
         left_score = compute_haaqi(
-            enhanced_signal[:, 0],
-            left_reference,
-            listener.audiogram_left,
-            config.sample_rate,
-            65 - 20 * np.log10(compute_rms(left_reference)),
+            processed_signal=enhanced_signal[:, 0],
+            reference_signal=left_reference,
+            audiogram=listener.audiogram_left,
+            sample_rate=config.sample_rate,
+            equalisation=2,
+            level1=65 - 20 * np.log10(compute_rms(left_reference)),
         )
 
         # Compute score for right channel
         nalr_fir, _ = enhancer.build(listener.audiogram_right)
         right_reference = enhancer.apply(nalr_fir, reference_mixture[:, 1])
         right_score = compute_haaqi(
-            enhanced_signal[:, 1],
-            right_reference,
-            listener.audiogram_left,
-            config.sample_rate,
-            65 - 20 * np.log10(compute_rms(left_reference)),
+            processed_signal=enhanced_signal[:, 1],
+            reference_signal=right_reference,
+            audiogram=listener.audiogram_left,
+            sample_rate=config.sample_rate,
+            equalisation=2,
+            level1=65 - 20 * np.log10(compute_rms(left_reference)),
         )
 
         # Save scores
