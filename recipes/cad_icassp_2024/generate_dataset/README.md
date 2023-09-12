@@ -44,7 +44,7 @@ song `A Classic Education - NightOwl` with the `hp_0103` head position.
 cadenza_data
 ├───audio
 |   ├───at_mic_music
-|   |   └───train (20.2 GB)
+|   |   └───train (80.8 GB)
 |   |       ├───A Classic Education - NightOwl-hp_0103
 |   |       |   |  bass.wav
 |   |       |   |  drums.wav
