@@ -20,6 +20,7 @@ from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.file_io import read_signal
+from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.signal_processing import compute_rms
 
 logger = logging.getLogger(__name__)
@@ -293,7 +294,7 @@ def run_calculate_aq(config: DictConfig) -> None:
 
         logger.info(
             f"[{idx:03d}/{num_scenes:03d}] "
-            f"Processing {song_name} for listener {listener_id}"
+            f"Evaluating {song_name} for listener {listener_id}"
         )
 
         # Load reference signals
@@ -315,12 +316,12 @@ def run_calculate_aq(config: DictConfig) -> None:
         listener = listener_dict[listener_id]
 
         # Load enhanced signal
-        enhanced_signal = read_signal(
+        enhanced_signal, _ = read_flac_signal(
             Path(
                 enhanced_folder
                 / f"{listener.id}"
                 / f"{song_name}"
-                / f"{scene_id}_{listener.id}_remix.wav"
+                / f"{scene_id}_{listener.id}_remix.flac"
             )
         )
 
@@ -337,8 +338,9 @@ def run_calculate_aq(config: DictConfig) -> None:
         left_score = compute_haaqi(
             processed_signal=enhanced_signal[:, 0],
             reference_signal=left_reference,
+            processed_sample_rate=config.remix_sample_rate,
+            reference_sample_rate=config.sample_rate,
             audiogram=listener.audiogram_left,
-            sample_rate=config.sample_rate,
             equalisation=2,
             level1=65 - 20 * np.log10(compute_rms(reference_mixture[:, 0])),
         )
@@ -354,8 +356,9 @@ def run_calculate_aq(config: DictConfig) -> None:
         right_score = compute_haaqi(
             processed_signal=enhanced_signal[:, 1],
             reference_signal=right_reference,
+            processed_sample_rate=config.remix_sample_rate,
+            reference_sample_rate=config.sample_rate,
             audiogram=listener.audiogram_right,
-            sample_rate=config.sample_rate,
             equalisation=2,
             level1=65 - 20 * np.log10(compute_rms(right_reference)),
         )
