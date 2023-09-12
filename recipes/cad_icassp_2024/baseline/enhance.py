@@ -202,6 +202,7 @@ def enhance(config: DictConfig) -> None:
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, config.evaluate.small_test
     )
+
     scene_listener_pairs = scene_listener_pairs[
         config.evaluate.batch :: config.evaluate.batch_size
     ]

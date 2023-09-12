@@ -165,6 +165,8 @@ def run(cfg: DictConfig) -> None:
             "Track Name": sample_name,
             "Split": music["Split"],
             "Path": f"{music['Split']}/{sample_name}",
+            "Original Track Name": music["Track Name"],
+            "Head Position": head_position,
         }
 
         if sample_name in precreated_samples:
@@ -208,6 +210,9 @@ def run(cfg: DictConfig) -> None:
     # Save the metadata
     with open(cfg.path.output_music_file, "w", encoding="utf-8") as f:
         json.dump(out_music, f, indent=4)
+
+    logger.info(f"Saved metadata to: {cfg.path.output_music_file}")
+    logger.info("Done.")
 
 
 # pylint: disable = no-value-for-parameter
