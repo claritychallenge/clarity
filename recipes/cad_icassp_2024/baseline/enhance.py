@@ -296,7 +296,7 @@ def enhance(config: DictConfig) -> None:
             enhanced_folder
             / f"{listener.id}"
             / f"{song_name}"
-            / f"{scene_id}_{listener.id}_remix.wav"
+            / f"{scene_id}_{listener.id}_remix.flac"
         )
 
         filename.parent.mkdir(parents=True, exist_ok=True)
