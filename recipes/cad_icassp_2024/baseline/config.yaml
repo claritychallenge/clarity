@@ -1,5 +1,5 @@
 path:
-  root: /media/gerardo/Extended_old/cadenza_data/icassp_2024
+  root: ???
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.root}/audio/at_mic_music
   gains_file: ${path.metadata_dir}/gains.json
@@ -11,6 +11,7 @@ path:
   exp_folder: ./exp # folder to store enhanced signals and final results
 
 sample_rate: 44100
+remix_sample_rate: 32000
 
 nalr:
   nfir: 220
@@ -32,7 +33,7 @@ separator:
 
 evaluate:
   set_random_seed: True
-  small_test: True
+  small_test: False
   batch_size: 1  # Number of batches
   batch: 0       # Batch number to evaluate
 
