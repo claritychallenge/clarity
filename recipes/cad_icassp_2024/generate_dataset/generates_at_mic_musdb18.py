@@ -116,9 +116,7 @@ def find_precreated_samples(source_dir: str | Path) -> list[str]:
         source_dir = Path(source_dir)
 
     if not source_dir.exists():
-        raise FileNotFoundError(
-            f"Source directory does not exist: {source_dir.as_posix()}"
-        )
+        return []
 
     return [f.name for f in source_dir.glob("*/*")]
 

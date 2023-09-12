@@ -157,10 +157,3 @@ def test_find_precreated_samples_empty_directory(tmp_path):
 
     # The result should be an empty list
     assert precreated_samples == []
-
-
-def test_find_precreated_samples_nonexistent_directory():
-    # Test when the source directory does not exist
-    source_dir = "nonexistent_directory"
-    with pytest.raises(FileNotFoundError):
-        find_precreated_samples(source_dir)
