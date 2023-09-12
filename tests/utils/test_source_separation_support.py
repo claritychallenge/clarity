@@ -46,7 +46,7 @@ def test_separate_sources():
     output = separate_sources(model, mix, sample_rate, device=device)
 
     expected_results = np.load(
-        RESOURCES / "test_esource_separation_support.test_separate_sources.npy",
+        RESOURCES / "test_source_separation_support.test_separate_sources.npy",
         allow_pickle=True,
     )
     # Check that the output has the correct shape
