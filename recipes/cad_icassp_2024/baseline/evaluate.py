@@ -15,9 +15,10 @@ import pyloudnorm as pyln
 from numpy import ndarray
 from omegaconf import DictConfig
 
+from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.utils.audiogram import Listener
+from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.file_io import read_signal
 from clarity.utils.signal_processing import compute_rms
 
@@ -91,6 +92,37 @@ class ResultsFile:
                     str(score),
                 ]
             )
+
+
+def apply_ha(
+    enhancer: NALR,
+    compressor: Compressor | None,
+    signal: ndarray,
+    audiogram: Audiogram,
+    apply_compressor: bool = False,
+) -> np.ndarray:
+    """
+    Apply NAL-R prescription hearing aid to a signal.
+
+    Args:
+        enhancer (NALR): A NALR object that enhances the signal.
+        compressor (Compressor | None): A Compressor object that compresses the signal.
+        signal (ndarray): An ndarray representing the audio signal.
+        audiogram (Audiogram): An Audiogram object representing the listener's
+            audiogram.
+        apply_compressor (bool): Whether to apply the compressor.
+
+    Returns:
+        An ndarray representing the processed signal.
+    """
+    nalr_fir, _ = enhancer.build(audiogram)
+    proc_signal = enhancer.apply(nalr_fir, signal)
+    if apply_compressor:
+        if compressor is None:
+            raise ValueError("Compressor must be provided to apply compressor.")
+
+        proc_signal, _, _ = compressor.process(proc_signal)
+    return proc_signal
 
 
 def apply_gains(stems: dict, sample_rate: float, gains: dict) -> dict:
@@ -292,28 +324,40 @@ def run_calculate_aq(config: DictConfig) -> None:
             )
         )
 
+        # Compute the scores
+        # First, we apply NAL-R to the reference signal
         # Compute the score for left channel
-        nalr_fir, _ = enhancer.build(listener.audiogram_left)
-        left_reference = enhancer.apply(nalr_fir, reference_mixture[:, 0])
+        left_reference = apply_ha(
+            enhancer=enhancer,
+            compressor=None,
+            signal=reference_mixture[:, 0],
+            audiogram=listener.audiogram_left,
+            apply_compressor=False,
+        )
         left_score = compute_haaqi(
             processed_signal=enhanced_signal[:, 0],
             reference_signal=left_reference,
             audiogram=listener.audiogram_left,
             sample_rate=config.sample_rate,
             equalisation=2,
-            level1=65 - 20 * np.log10(compute_rms(left_reference)),
+            level1=65 - 20 * np.log10(compute_rms(reference_mixture[:, 0])),
         )
 
         # Compute score for right channel
-        nalr_fir, _ = enhancer.build(listener.audiogram_right)
-        right_reference = enhancer.apply(nalr_fir, reference_mixture[:, 1])
+        right_reference = apply_ha(
+            enhancer=enhancer,
+            compressor=None,
+            signal=reference_mixture[:, 1],
+            audiogram=listener.audiogram_right,
+            apply_compressor=False,
+        )
         right_score = compute_haaqi(
             processed_signal=enhanced_signal[:, 1],
             reference_signal=right_reference,
-            audiogram=listener.audiogram_left,
+            audiogram=listener.audiogram_right,
             sample_rate=config.sample_rate,
             equalisation=2,
-            level1=65 - 20 * np.log10(compute_rms(left_reference)),
+            level1=65 - 20 * np.log10(compute_rms(right_reference)),
         )
 
         # Save scores
