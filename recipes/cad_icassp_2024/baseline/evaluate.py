@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 # pylint: disable=import-error
-import csv
 import hashlib
 import json
 import logging
@@ -21,78 +20,10 @@ from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import read_flac_signal
+from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms
 
 logger = logging.getLogger(__name__)
-
-
-class ResultsFile:
-    """A utility class for writing results to a CSV file.
-
-    Attributes:
-        file_name (str): The name of the file to write results to.
-    """
-
-    def __init__(self, file_name: str):
-        """Initialize the ResultsFile instance.
-
-        Args:
-            file_name (str): The name of the file to write results to.
-        """
-        self.file_name = file_name
-
-    def write_header(self):
-        """Write the header row to the CSV file."""
-        with open(self.file_name, "w", encoding="utf-8", newline="") as csv_file:
-            csv_writer = csv.writer(
-                csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-            )
-            csv_writer.writerow(
-                [
-                    "scene",
-                    "song",
-                    "listener",
-                    "left_score",
-                    "right_score",
-                    "score",
-                ]
-            )
-
-    def add_result(
-        self,
-        scene: str,
-        song: str,
-        listener_id: str,
-        left_score: float,
-        right_score: float,
-        score: float,
-    ):
-        """Add a result to the CSV file.
-
-        Args:
-            scene (str): The name of the scene that the result is for.
-            song (str): The name of the song that the result is for.
-            listener_id (str): The name of the listener who submitted the result.
-            left_score (float): The score for the left channel.
-            right_score (float): The score for the right channel.
-            score (float): The combined score.
-        """
-        logger.info(f"The combined score is {score}")
-
-        with open(self.file_name, "a", encoding="utf-8", newline="") as csv_file:
-            csv_writer = csv.writer(
-                csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-            )
-            csv_writer.writerow(
-                [
-                    scene,
-                    song,
-                    listener_id,
-                    str(left_score),
-                    str(right_score),
-                    str(score),
-                ]
-            )
 
 
 def apply_ha(
@@ -280,13 +211,25 @@ def run_calculate_aq(config: DictConfig) -> None:
 
     enhancer = NALR(**config.nalr)
 
+    scores_headers = [
+        "scene",
+        "song",
+        "listener",
+        "left_score",
+        "right_score",
+        "score",
+    ]
     if config.evaluate.batch_size == 1:
-        results_file = ResultsFile("scores.csv")
+        results_file = ResultsFile(
+            "scores.csv",
+            header_columns=scores_headers,
+        )
     else:
         results_file = ResultsFile(
-            f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv"
+            f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv",
+            header_columns=scores_headers,
         )
-    results_file.write_header()
+    # results_file.write_header()
 
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, config.evaluate.small_test
@@ -345,8 +288,8 @@ def run_calculate_aq(config: DictConfig) -> None:
             apply_compressor=False,
         )
         left_score = compute_haaqi(
-            processed_signal=enhanced_signal[:, 0],
-            reference_signal=left_reference,
+            processed_signal=enhanced_signal[:44100, 0],
+            reference_signal=left_reference[:44100],
             processed_sample_rate=config.remix_sample_rate,
             reference_sample_rate=config.sample_rate,
             audiogram=listener.audiogram_left,
@@ -363,8 +306,8 @@ def run_calculate_aq(config: DictConfig) -> None:
             apply_compressor=False,
         )
         right_score = compute_haaqi(
-            processed_signal=enhanced_signal[:, 1],
-            reference_signal=right_reference,
+            processed_signal=enhanced_signal[:44100, 1],
+            reference_signal=right_reference[:44100],
             processed_sample_rate=config.remix_sample_rate,
             reference_sample_rate=config.sample_rate,
             audiogram=listener.audiogram_right,
@@ -374,12 +317,14 @@ def run_calculate_aq(config: DictConfig) -> None:
 
         # Save scores
         results_file.add_result(
-            scene=scene_id,
-            song=song_name,
-            listener_id=listener.id,
-            left_score=left_score,
-            right_score=right_score,
-            score=float(np.mean([left_score, right_score])),
+            {
+                "scene": scene_id,
+                "song": song_name,
+                "listener": listener.id,
+                "left_score": left_score,
+                "right_score": right_score,
+                "score": float(np.mean([left_score, right_score])),
+            }
         )
 
     logger.info("Done!")
