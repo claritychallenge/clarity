@@ -11,7 +11,6 @@ import numpy as np
 import torch
 from numpy import ndarray
 from omegaconf import DictConfig
-from source_separation_utils import get_device, separate_sources
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
@@ -26,6 +25,7 @@ from clarity.utils.signal_processing import (
     resample,
     to_16bit,
 )
+from clarity.utils.source_separation_support import get_device, separate_sources
 from recipes.cad_icassp_2024.baseline.evaluate import (
     apply_gains,
     apply_ha,
