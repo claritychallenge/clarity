@@ -155,19 +155,17 @@ def run(cfg: DictConfig) -> None:
     }
 
     # create output metadata content
-    out_music = []
+    out_music = {}
     for idx, sample in enumerate(toprocess_samples.items(), 1):
         sample_name, sample_detail = sample
         music = music_metadata[sample_detail["music"]]
         head_position = sample_detail["head_position"]
 
-        out_music.append(
-            {
-                "Track Name": sample_name,
-                "Split": music["Split"],
-                "Path": f"{music['Split']}/{sample_name}",
-            }
-        )
+        out_music[sample_name] = {
+            "Track Name": sample_name,
+            "Split": music["Split"],
+            "Path": f"{music['Split']}/{sample_name}",
+        }
 
         if sample_name in precreated_samples:
             logger.info(
