@@ -370,7 +370,7 @@ def run_calculate_aq(config: DictConfig) -> None:
             listener_id=listener.id,
             left_score=left_score,
             right_score=right_score,
-            score=np.mean([left_score, right_score])[0],
+            score=float(np.mean([left_score, right_score])),
         )
 
     logger.info("Done!")
