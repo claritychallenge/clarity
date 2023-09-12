@@ -9,7 +9,6 @@ from pathlib import Path
 import hydra
 import numpy as np
 import torch
-from evaluate import apply_gains, make_scene_listener_list, remix_stems
 from numpy import ndarray
 from omegaconf import DictConfig
 from source_separation_utils import get_device, separate_sources
@@ -17,15 +16,81 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.utils.audiogram import Audiogram, Listener
-from clarity.utils.file_io import read_signal, write_signal
+from clarity.utils.audiogram import Listener
+from clarity.utils.file_io import read_signal
+from clarity.utils.flac_encoder import FlacEncoder
 from clarity.utils.signal_processing import (
+    clip_signal,
     denormalize_signals,
     normalize_signal,
     resample,
+    to_16bit,
+)
+from recipes.cad_icassp_2024.baseline.evaluate import (
+    apply_gains,
+    apply_ha,
+    make_scene_listener_list,
+    remix_stems,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def save_flac_signal(
+    signal: np.ndarray,
+    filename: Path,
+    signal_sample_rate,
+    output_sample_rate,
+    do_clip_signal: bool = False,
+    do_soft_clip: bool = False,
+    do_scale_signal: bool = False,
+) -> None:
+    """
+    Function to save output signals.
+
+    - The output signal will be resample to ``output_sample_rate``
+    - The output signal will be clipped to [-1, 1] if ``do_clip_signal`` is True
+        and use soft clipped if ``do_soft_clip`` is True. Note that if
+        ``do_clip_signal`` is False, ``do_soft_clip`` will be ignored.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be scaled to [-1, 1] if ``do_scale_signal`` is True.
+        If signal is scale, the scale factor will be saved in a TXT file.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be saved as a FLAC file.
+
+    Args:
+        signal (np.ndarray) : Signal to save
+        filename (Path) : Path to save signal
+        signal_sample_rate (int) : Sample rate of the input signal
+        output_sample_rate (int) : Sample rate of the output signal
+        do_clip_signal (bool) : Whether to clip signal
+        do_soft_clip (bool) : Whether to apply soft clipping
+        do_scale_signal (bool) : Whether to scale signal
+    """
+    # Resample signal to expected output sample rate
+    if signal_sample_rate != output_sample_rate:
+        signal = resample(signal, signal_sample_rate, output_sample_rate)
+
+    if do_scale_signal:
+        # Scale stem signal
+        max_value = np.max(np.abs(signal))
+        signal = signal / max_value
+
+        # Save scale factor
+        with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
+            file.write(f"{max_value}")
+
+    elif do_clip_signal:
+        # Clip the signal
+        signal, n_clipped = clip_signal(signal, do_soft_clip)
+        if n_clipped > 0:
+            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+
+    # Convert signal to 16-bit integer
+    signal = to_16bit(signal)
+
+    # Create flac encoder object to compress and save the signal
+    FlacEncoder().encode(signal, output_sample_rate, filename)
 
 
 # pylint: disable=unused-argument
@@ -85,37 +150,6 @@ def decompose_signal(
     return dict(zip(sources_list, sources))
 
 
-def apply_baseline_ha(
-    enhancer: NALR,
-    compressor: Compressor | None,
-    signal: ndarray,
-    audiogram: Audiogram,
-    apply_compressor: bool = False,
-) -> np.ndarray:
-    """
-    Apply NAL-R prescription hearing aid to a signal.
-
-    Args:
-        enhancer (NALR): A NALR object that enhances the signal.
-        compressor (Compressor | None): A Compressor object that compresses the signal.
-        signal (ndarray): An ndarray representing the audio signal.
-        audiogram (Audiogram): An Audiogram object representing the listener's
-            audiogram.
-        apply_compressor (bool): Whether to apply the compressor.
-
-    Returns:
-        An ndarray representing the processed signal.
-    """
-    nalr_fir, _ = enhancer.build(audiogram)
-    proc_signal = enhancer.apply(nalr_fir, signal)
-    if apply_compressor:
-        if compressor is None:
-            raise ValueError("Compressor must be provided to apply compressor.")
-
-        proc_signal, _, _ = compressor.process(proc_signal)
-    return proc_signal
-
-
 def process_remix_for_listener(
     signal: ndarray,
     enhancer: NALR,
@@ -135,10 +169,10 @@ def process_remix_for_listener(
     Returns:
         ndarray: Processed signal.
     """
-    left_output = apply_baseline_ha(
+    left_output = apply_ha(
         enhancer, compressor, signal[:, 0], listener.audiogram_left, apply_compressor
     )
-    right_output = apply_baseline_ha(
+    right_output = apply_ha(
         enhancer, compressor, signal[:, 1], listener.audiogram_right, apply_compressor
     )
 
@@ -264,13 +298,15 @@ def enhance(config: DictConfig) -> None:
             / f"{song_name}"
             / f"{scene_id}_{listener.id}_remix.wav"
         )
+
         filename.parent.mkdir(parents=True, exist_ok=True)
-        write_signal(
-            filename=filename,
+        save_flac_signal(
             signal=enhanced_signal,
-            sample_rate=config.sample_rate,
-            floating_point=False,
-            strict=False,
+            filename=filename,
+            signal_sample_rate=config.sample_rate,
+            output_sample_rate=config.remix_sample_rate,
+            do_clip_signal=True,
+            do_soft_clip=config.soft_clip,
         )
 
     logger.info("Done!")
