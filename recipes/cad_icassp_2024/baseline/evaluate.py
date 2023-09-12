@@ -207,8 +207,17 @@ def remix_stems(stems: dict, reference_signal, sample_rate: float) -> ndarray:
     return level_normalisation(remix_signal, reference_signal, sample_rate)
 
 
-def make_scene_listener_list(scenes_listeners, small_test=False):
-    """Make the list of scene-listener pairing to process"""
+def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
+    """Make the list of scene-listener pairing to process
+
+    Args:
+        scenes_listeners (dict): Dictionary of scenes and listeners.
+        small_test (bool): Whether to use a small test set.
+
+    Returns:
+        list: List of scene-listener pairings.
+
+    """
     scene_listener_pairs = [
         (scene, listener)
         for scene in scenes_listeners
