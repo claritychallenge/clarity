@@ -14,7 +14,8 @@ audiogram = np.array([45, 45, 35, 45, 60, 65, 70, 65])
 audiogram_frequencies = np.array([250, 500, 1000, 2000, 3000, 4000, 6000, 8000])
 
 
-signal, sr = librosa.load(librosa.ex("brahms"), duration=15)
+signal, sr = librosa.load(librosa.ex("choice"), duration=15)
+signal2, sr2 = librosa.load(librosa.ex("brahms"), duration=15)
 
 
 signal = signal.astype(np.float32) / 32767.0
@@ -37,7 +38,7 @@ for side in ["left", "right"][:1]:
     np.random.seed(0)
     score_2 = pyhaaqi.compute_haaqi(
         processed_signal=signal,
-        reference_signal=signal,
+        reference_signal=signal2,
         audiogram=audiogram,
         audiogram_frequencies=audiogram_frequencies,
         sample_rate=sr,
