@@ -161,7 +161,10 @@ Please note: you will not get identical HAAQI scores for the same signals if the
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
 
-The score for the baseline is XXXX HAAQI overall.
+The average validation score for the baseline is:
+
+* Demucs = 0.2154 HAAQI
+* Open-Unmix = 0.2104 HAAQI
 
 ## References
 
