@@ -69,10 +69,10 @@ def generate_scenes(cfg: DictConfig) -> None:
             }
             scene_id += 1
 
-        output_file = Path(cfg.path.metadata_dir) / "scenes.train.json"
-        output_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_file, "w", encoding="utf-8") as f:
-            json.dump(scenes_metadata, f, indent=4)
+    output_file = Path(cfg.path.metadata_dir) / "scenes.train.json"
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(scenes_metadata, f, indent=4)
 
 
 def generate_scene_listener(cfg: DictConfig) -> None:
