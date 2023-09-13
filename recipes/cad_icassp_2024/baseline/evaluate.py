@@ -242,7 +242,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         scene_id, listener_id = scene_listener_pair
 
         scene = scenes[scene_id]
-        song_name = f"{scene['music']}-{scene['head_position']}"
+        song_name = f"{scene['music']}-{scene['head_loudspeaker_position']}"
 
         logger.info(
             f"[{idx:03d}/{num_scenes:03d}] "
