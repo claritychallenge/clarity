@@ -7,7 +7,7 @@ import pytest
 from scipy.io import wavfile
 from scipy.signal import lfilter
 
-from recipes.cad_icassp_2024.generate_dataset.generates_at_mic_musdb18 import (
+from recipes.cad_icassp_2024.generate_dataset.generate_at_mic_musdb18 import (
     apply_hrtf,
     find_precreated_samples,
     load_hrtf_signals,
