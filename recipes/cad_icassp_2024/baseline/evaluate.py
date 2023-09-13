@@ -246,7 +246,7 @@ def run_calculate_aq(config: DictConfig) -> None:
 
         logger.info(
             f"[{idx:03d}/{num_scenes:03d}] "
-            f"Evaluating {song_name} for listener {listener_id}"
+            f"Evaluating {scene_id} for listener {listener_id}"
         )
 
         # Load reference signals
@@ -269,17 +269,10 @@ def run_calculate_aq(config: DictConfig) -> None:
 
         # Load enhanced signal
         enhanced_signal, _ = read_flac_signal(
-            Path(
-                enhanced_folder
-                / f"{listener.id}"
-                / f"{song_name}"
-                / f"{scene_id}_{listener.id}_remix.flac"
-            )
+            Path(enhanced_folder) / f"{scene_id}_{listener.id}_remix.flac"
         )
 
-        # Compute the scores
-        # First, we apply NAL-R to the reference signal
-        # Compute the score for left channel
+        # Apply hearing aid to reference signals
         left_reference = apply_ha(
             enhancer=enhancer,
             compressor=None,
@@ -287,17 +280,6 @@ def run_calculate_aq(config: DictConfig) -> None:
             audiogram=listener.audiogram_left,
             apply_compressor=False,
         )
-        left_score = compute_haaqi(
-            processed_signal=enhanced_signal[:44100, 0],
-            reference_signal=left_reference[:44100],
-            processed_sample_rate=config.remix_sample_rate,
-            reference_sample_rate=config.sample_rate,
-            audiogram=listener.audiogram_left,
-            equalisation=2,
-            level1=65 - 20 * np.log10(compute_rms(reference_mixture[:, 0])),
-        )
-
-        # Compute score for right channel
         right_reference = apply_ha(
             enhancer=enhancer,
             compressor=None,
@@ -305,14 +287,26 @@ def run_calculate_aq(config: DictConfig) -> None:
             audiogram=listener.audiogram_right,
             apply_compressor=False,
         )
+
+        # Compute the scores
+        left_score = compute_haaqi(
+            processed_signal=enhanced_signal[:, 0],
+            reference_signal=left_reference,
+            processed_sample_rate=config.remix_sample_rate,
+            reference_sample_rate=config.sample_rate,
+            audiogram=listener.audiogram_left,
+            equalisation=2,
+            level1=65 - 20 * np.log10(compute_rms(reference_mixture[:, 0])),
+        )
+
         right_score = compute_haaqi(
-            processed_signal=enhanced_signal[:44100, 1],
-            reference_signal=right_reference[:44100],
+            processed_signal=enhanced_signal[:, 1],
+            reference_signal=right_reference,
             processed_sample_rate=config.remix_sample_rate,
             reference_sample_rate=config.sample_rate,
             audiogram=listener.audiogram_right,
             equalisation=2,
-            level1=65 - 20 * np.log10(compute_rms(right_reference)),
+            level1=65 - 20 * np.log10(compute_rms(reference_mixture[:, 1])),
         )
 
         # Save scores
