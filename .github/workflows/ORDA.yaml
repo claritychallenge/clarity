@@ -1,0 +1,28 @@
+name: Release to ORDA
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+    steps:
+      - name: prepare-data-folder
+        run : mkdir 'data'
+      - name: download-archive
+        run: |
+          curl -sL "${{ github.event.release.zipball_url }}" > "$ARCHIVE_NAME".zip
+          curl -sL "${{ github.event.release.tarball_url }}" > "$ARCHIVE_NAME".tar.gz
+      - name: move-archive
+        run: |
+          mv "$ARCHIVE_NAME".zip data/
+          mv "$ARCHIVE_NAME".tar.gz data/
+      - name: upload-to-figshare
+        uses: figshare/github-upload-action@v1.1
+        with:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+          FIGSHARE_ENDPOINT: 'https://api.figshare.com/v2'
+          FIGSHARE_ARTICLE_ID: 23230694
+          DATA_DIR: 'data'
