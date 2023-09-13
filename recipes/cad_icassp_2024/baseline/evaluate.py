@@ -155,9 +155,9 @@ def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -
         for listener in scenes_listeners[scene]
     ]
 
-    # Can define a standard 'small_test' with just 1/50 of the data
+    # Can define a standard 'small_test' with just 1/15 of the data
     if small_test:
-        scene_listener_pairs = scene_listener_pairs[::50]
+        scene_listener_pairs = scene_listener_pairs[::15]
 
     return scene_listener_pairs
 

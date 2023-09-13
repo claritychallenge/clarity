@@ -4,10 +4,10 @@ path:
   music_dir: ${path.root}/audio/at_mic_music
   gains_file: ${path.metadata_dir}/gains.json
   head_positions_file: ${path.metadata_dir}/head_positions.json
-  listeners_file: ${path.metadata_dir}/listeners.train.json
-  music_file: ${path.metadata_dir}/at_mic_music.train.json
-  scenes_file: ${path.metadata_dir}/scenes.train.json
-  scene_listeners_file: ${path.metadata_dir}/scene_listeners.train.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
+  music_file: ${path.metadata_dir}/at_mic_music.valid.json
+  scenes_file: ${path.metadata_dir}/scenes.valid.json
+  scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
   exp_folder: ./exp # folder to store enhanced signals and final results
 
 sample_rate: 44100
