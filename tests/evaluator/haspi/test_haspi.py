@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.haspi import haspi_v2, haspi_v2_be
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram, Listener
 
 
 def test_haspi_v2() -> None:
@@ -58,14 +58,17 @@ def test_haspi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
     proc_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     proc_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
+    audiogram_left = Audiogram(levels=hl_left, frequencies=freqs)
+    audiogram_right = Audiogram(levels=hl_right, frequencies=freqs)
+
+    listener = Listener(audiogram_left=audiogram_left, audiogram_right=audiogram_right)
     score = haspi_v2_be(
         reference_left=ref_left,
         reference_right=ref_right,
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
         sample_rate=sample_rate,
-        audiogram_left=Audiogram(levels=hl_left, frequencies=freqs),
-        audiogram_right=Audiogram(levels=hl_right, frequencies=freqs),
+        listener=listener,
         level=100,
     )
 
@@ -104,14 +107,17 @@ def test_haspi_v2_better_ear_non_standard(
     proc_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     proc_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
 
+    audiogram_left = Audiogram(levels=hl_left, frequencies=freqs)
+    audiogram_right = Audiogram(levels=hl_right, frequencies=freqs)
+    listener = Listener(audiogram_left=audiogram_left, audiogram_right=audiogram_right)
+
     score = haspi_v2_be(
         reference_left=ref_left,
         reference_right=ref_right,
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
         sample_rate=sample_rate,
-        audiogram_left=Audiogram(levels=hl_left, frequencies=freqs),
-        audiogram_right=Audiogram(levels=hl_right, frequencies=freqs),
+        listener=listener,
         level=100,
     )
     assert score == pytest.approx(

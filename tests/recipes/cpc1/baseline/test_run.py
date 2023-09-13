@@ -13,7 +13,7 @@ from scipy.io.wavfile import read
 
 import recipes
 from clarity.evaluator.msbg.msbg import Ear
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.file_io import read_signal
 from recipes.cpc1.baseline.run import listen, run, run_calculate_SI, run_HL_processing
 
@@ -61,10 +61,11 @@ def test_listen(hydra_cfg):
     signal = np.random.rand(2000, 2)
     audiogram_mild = Audiogram(frequencies=cfs, levels=levels_1)
     audiogram_severe = Audiogram(frequencies=cfs, levels=levels_2)
+
     # Test asymmetric hearing loss in both orientations
-    processed = listen(ear, signal, audiogram_mild, audiogram_severe)
+    processed = listen(ear, signal, Listener(audiogram_mild, audiogram_severe))
     assert processed.shape == (2240, 2)
-    processed = listen(ear, signal, audiogram_severe, audiogram_mild)
+    processed = listen(ear, signal, Listener(audiogram_severe, audiogram_mild))
     assert processed.shape == (2240, 2)
 
 

@@ -11,6 +11,7 @@ import numpy as np
 from jinja2 import Environment, FileSystemLoader
 
 from clarity.enhancer.gha.gha_utils import format_gaintable, get_gaintable
+from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal, write_signal
 
 
@@ -96,7 +97,7 @@ class GHAHearingAid:
         return output
 
     def process_files(
-        self, infile_names, outfile_name, audiogram_left, audiogram_right, listener=None
+        self, infile_names: list[str], outfile_name: str, listener: Listener
     ):
         """Process a set of input signals and generate an output.
 
@@ -106,15 +107,15 @@ class GHAHearingAid:
             outfile_name (str): File in which to store output wav files
             dry_run (bool): perform dry run only
         """
-        logging.info("Processing %s with listener %s", outfile_name, listener)
+        logging.info("Processing %s with listener %s", outfile_name, listener.id)
 
         logging.info(
             "Audiogram severity is %s (left) and %s (right)",
-            audiogram_left.severity,
-            audiogram_right.severity,
+            listener.audiogram_left.severity,
+            listener.audiogram_right.severity,
         )
-        audiogram_left = audiogram_left.resample(self.audf)
-        audiogram_right = audiogram_right.resample(self.audf)
+        audiogram_left = listener.audiogram_left.resample(self.audf)
+        audiogram_right = listener.audiogram_right.resample(self.audf)
 
         # Get gain table with noisegate correction
         gaintable = get_gaintable(

@@ -9,7 +9,7 @@ from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram, Listener
 
 # pylint: disable=import-error, no-name-in-module
 from recipes.cad1.task1.baseline.enhance import (
@@ -79,14 +79,15 @@ def test_decompose_signal(separation_model):
     )
     # Call the decompose_signal function and check that the output has the expected keys
     cfs = np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000])
+    audiogram = Audiogram(levels=np.ones(9), frequencies=cfs)
+    listener = Listener(audiogram, audiogram)
     output = decompose_signal(
         config,
         model,
         signal,
         sample_rate,
         device,
-        left_audiogram=Audiogram(levels=np.ones(9), frequencies=cfs),
-        right_audiogram=Audiogram(levels=np.ones(9), frequencies=cfs),
+        listener,
     )
     expected_results = np.load(
         RESOURCES / f"test_enhance.test_decompose_signal_{separation_model}.npy",
@@ -136,6 +137,7 @@ def test_process_stems_for_listener():
         levels=np.ones(9),
         frequencies=np.array([250, 500, 1000, 2000, 4000, 6000, 8000, 9000, 10000]),
     )
+    listener = Listener(audiogram_left=audiogram, audiogram_right=audiogram)
     # Create mock objects for enhancer and compressor
     enhancer = NALR(nfir=220, sample_rate=16000)
     compressor = Compressor(
@@ -144,7 +146,7 @@ def test_process_stems_for_listener():
 
     # Call the process_stems_for_listener function and check output is as expected
     output_stems = process_stems_for_listener(
-        stems, enhancer, compressor, audiogram_left=audiogram, audiogram_right=audiogram
+        stems, enhancer, compressor, listener=listener
     )
     expected_results = np.load(
         RESOURCES / "test_enhance.test_process_stems_for_listener.npy",
