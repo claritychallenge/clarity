@@ -196,14 +196,16 @@ def evaluate_scene(
     aq_score_l = compute_haaqi(
         processed_signal[0, :],
         ref_signal[0, :],
-        listener.audiogram_left,
         sample_rate,
+        sample_rate,
+        listener.audiogram_left,
     )
     aq_score_r = compute_haaqi(
         processed_signal[1, :],
         ref_signal[1, :],
-        listener.audiogram_right,
         sample_rate,
+        sample_rate,
+        listener.audiogram_right,
     )
     return aq_score_l, aq_score_r
 
