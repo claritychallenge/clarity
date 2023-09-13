@@ -186,16 +186,7 @@ def test_write_clipping(tmp_path):
     """Should raise an error if the sample rate is not the same"""
     tmp_filename = tmp_path / "test.wav"
 
-    signal = np.ones((10, 2)) * 2.0
-
-    # strict=False, i.e. Clipping allowed - will write OK but log warning
-    write_signal(
-        tmp_filename,
-        signal,
-        sample_rate=16000,
-        floating_point=False,
-        strict=False,
-    )
+    signal = np.array([-1.0, 0.0, 1.0])  # <-- Clipping because 1.0 not OK
 
     # strict=True, i.e. Clipping not allowed - will throw an error
 
@@ -207,6 +198,22 @@ def test_write_clipping(tmp_path):
             floating_point=False,
             strict=True,
         )
+
+    # strict=False, i.e. Clipping allowed - will write OK but log warning
+    write_signal(
+        tmp_filename,
+        signal,
+        sample_rate=16000,
+        floating_point=False,
+        strict=False,
+    )
+
+    signal_read = read_signal(tmp_filename, sample_rate=16000)
+
+    # Note that the +1.0 is clipped to 0.99996948
+    assert signal_read == pytest.approx(np.array([-1.0, 0, 0.99996948]))
+    # This is the standard behaviour of soundfile and arises due to the
+    # asymmetric nature of the int16 format, i.e. -32768 to 32767
 
 
 def test_read_write_with_offset(tmp_path):

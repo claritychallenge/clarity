@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import numpy as np
 import scipy
+import soxr
 from numpy import ndarray
 
 
@@ -43,11 +44,17 @@ def normalize_signal(signal: ndarray) -> tuple[ndarray, ndarray]:
     return (signal - ref.mean()) / ref.std(), ref
 
 
-def resample(signal: ndarray, sample_rate: float, new_sample_rate: float) -> ndarray:
+def resample(
+    signal: ndarray,
+    sample_rate: float,
+    new_sample_rate: float,
+    method: str = "soxr",
+) -> ndarray:
     """Resample a signal to a new sample rate.
 
-    This is a sipmle wrapper around scipy.signal.resample. with the resampling
-    expressed in terms of sampling rates rather than desired number of samples.
+    This is a simple wrapper around  soxr and scipy.signal.resample with the resampling
+    expressed in terms of input and output sampling rates.
+
     It also ensures that for multichannel signals, resampling is in the time
     domain, i.e. down the columns.
 
@@ -55,11 +62,27 @@ def resample(signal: ndarray, sample_rate: float, new_sample_rate: float) -> nda
         signal: The signal to be resampled.
         sample_rate: The original sample rate.
         new_sample_rate: The new sample rate.
+        method: determine the approach use.
     Returns:
         The resampled signal.
     """
     if sample_rate == new_sample_rate:
         return signal
-    return scipy.signal.resample(
-        signal, int(new_sample_rate * signal.shape[0] / sample_rate)
-    )
+
+    if method == "soxr":
+        return soxr.resample(signal, sample_rate, new_sample_rate, quality="HQ")
+
+    if method == "polyphase":
+        sample_rate = int(sample_rate)
+        new_sample_rate = int(new_sample_rate)
+        gcd = np.gcd(sample_rate, new_sample_rate)
+        uprate = new_sample_rate // gcd
+        downrate = sample_rate // gcd
+        return scipy.signal.resample_poly(signal, up=uprate, down=downrate)
+
+    if method == "fft":
+        return scipy.signal.resample(
+            signal, int(new_sample_rate * signal.shape[0] / sample_rate)
+        )
+
+    raise ValueError(f"Unknown resampling method: {method}")

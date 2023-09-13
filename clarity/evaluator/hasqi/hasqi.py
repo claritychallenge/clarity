@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Final
 import numpy as np
 
 from clarity.evaluator.haspi import eb
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram, Listener
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -174,8 +174,7 @@ def hasqi_v2_better_ear(
     processed_left: ndarray,
     processed_right: ndarray,
     sample_rate: float,
-    audiogram_left: Audiogram,
-    audiogram_right: Audiogram,
+    listener: Listener,
     level: float = 100.0,
 ) -> float:
     """Better ear HASQI.
@@ -204,7 +203,7 @@ def hasqi_v2_better_ear(
         sample_rate,
         processed_left,
         sample_rate,
-        audiogram_left,
+        listener.audiogram_left,
         equalisation=1,
         level1=level,
     )
@@ -213,7 +212,7 @@ def hasqi_v2_better_ear(
         sample_rate,
         processed_right,
         sample_rate,
-        audiogram_right,
+        listener.audiogram_right,
         equalisation=1,
         level1=level,
     )

@@ -10,6 +10,7 @@ from tqdm import tqdm
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.utils.audiogram import Listener
 
 logger = logging.getLogger(__name__)
 
@@ -20,38 +21,30 @@ def enhance(cfg: DictConfig) -> None:
     enhanced_folder.mkdir(parents=True, exist_ok=True)
     with Path(cfg.path.scenes_listeners_file).open("r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)
-    with Path(cfg.path.listeners_file).open("r", encoding="utf-8") as fp:
-        listener_audiograms = json.load(fp)
+    listener_dict = Listener.load_listener_dict(cfg.path.listeners_file)
 
     enhancer = NALR(**cfg.nalr)
     compressor = Compressor(**cfg.compressor)
 
     for scene in tqdm(scenes_listeners):
-        for listener in scenes_listeners[scene]:
-            # retrieve audiograms
-            cfs = np.array(listener_audiograms[listener]["audiogram_cfs"])
-            audiogram_left = np.array(
-                listener_audiograms[listener]["audiogram_levels_l"]
-            )
-            audiogram_right = np.array(
-                listener_audiograms[listener]["audiogram_levels_r"]
-            )
+        for listener_id in scenes_listeners[scene]:
+            listener = listener_dict[listener_id]
 
             sample_rate, signal = wavfile.read(
                 Path(cfg.path.scenes_folder) / f"{scene}_mix_CH1.wav"
             )
             signal = signal / 32768.0
             assert sample_rate == cfg.nalr.sample_rate
-            nalr_fir, _ = enhancer.build(audiogram_left, cfs)
+            nalr_fir, _ = enhancer.build(listener.audiogram_left)
             out_l = enhancer.apply(nalr_fir, signal[:, 0])
 
-            nalr_fir, _ = enhancer.build(audiogram_right, cfs)
+            nalr_fir, _ = enhancer.build(listener.audiogram_right)
             out_r = enhancer.apply(nalr_fir, signal[:, 1])
 
             out_l, _, _ = compressor.process(out_l)
             out_r, _, _ = compressor.process(out_r)
             enhanced = np.stack([out_l, out_r], axis=1)
-            filename = f"{scene}_{listener}_HA-output.wav"
+            filename = f"{scene}_{listener_id}_HA-output.wav"
 
             if cfg.soft_clip:
                 enhanced = np.tanh(enhanced)

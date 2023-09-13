@@ -59,7 +59,7 @@ def test_convtasnet(regtest):
         "num_workers": 0,  # Overhead of multiprocessing not worth it for tiny dataset
     }
     cfg = OmegaConf.create(cfg)
-    device = "cuda" if torch.cuda.is_available() else None
+    device = "cpu"
     test_set = CEC1Dataset(**cfg.test_dataset)
     test_loader = torch.utils.data.DataLoader(dataset=test_set, **cfg.test_loader)
 

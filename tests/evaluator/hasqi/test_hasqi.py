@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.hasqi import hasqi_v2, hasqi_v2_better_ear
-from clarity.utils.audiogram import Audiogram
+from clarity.utils.audiogram import Audiogram, Listener
 
 
 def test_hasqi_v2() -> None:
@@ -53,6 +53,7 @@ def test_hasqi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
 
     audiogram_left = Audiogram(levels=hl_left, frequencies=freqs)
     audiogram_right = Audiogram(levels=hl_right, frequencies=freqs)
+    listener = Listener(audiogram_left=audiogram_left, audiogram_right=audiogram_right)
 
     ref_left = np.random.uniform(-1, 1, int(sample_rate * 0.5))  # i.e. 500 ms of audio
     ref_right = np.random.uniform(-1, 1, int(sample_rate * 0.5))
@@ -65,8 +66,7 @@ def test_hasqi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
         processed_left=proc_left + ref_left,
         processed_right=proc_right,
         sample_rate=sample_rate,
-        audiogram_left=audiogram_left,
-        audiogram_right=audiogram_right,
+        listener=listener,
         level=100,
     )
 

@@ -15,6 +15,7 @@ from scipy.signal import lfilter
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
+from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.car_noise_simulator.carnoise_signal_generator import (
     CarNoiseSignalGenerator,
 )
@@ -104,9 +105,7 @@ class CarSceneAcoustics:
         for key, item in self.ANECHOIC_HRTF_FOR_NOISE.items():
             self.hrir_for_noise[key] = wavfile.read(anechoic_hrtf_dir / item)[1]
 
-    def apply_hearing_aid(
-        self, signal: np.ndarray, audiogram: np.ndarray, center_frequencies: np.ndarray
-    ) -> np.ndarray:
+    def apply_hearing_aid(self, signal: np.ndarray, audiogram: Audiogram) -> np.ndarray:
         """
         Applies the hearing aid:
         It consists in NALR prescription and Compressor
@@ -120,7 +119,7 @@ class CarSceneAcoustics:
         Returns:
             np.ndarray: The enhanced audio signal.
         """
-        nalr_fir, _ = self.enhancer.build(audiogram, center_frequencies)
+        nalr_fir, _ = self.enhancer.build(audiogram)
         signal = self.enhancer.apply(nalr_fir, signal)
         signal, _, _ = self.compressor.process(signal)
         return signal
@@ -303,7 +302,7 @@ class CarSceneAcoustics:
         self,
         enh_signal: np.ndarray,
         scene: dict,
-        listener: dict,
+        listener: Listener,
         hrtf: dict,
         audio_manager: AudioManager,
         config: DictConfig,
@@ -314,7 +313,7 @@ class CarSceneAcoustics:
         Args:
             enh_signal (np.ndarray): The enhanced signal to apply the car acoustics to.
             scene (dict): The scene dictionary with the acoustics parameters.
-            listener (dict): The listener dictionary with the audiograms.
+            listener (Listener): The listener characteristics.
             hrtf (dict): A dictionary containing the head-related transfer functions
                 (HRTFs) for the listener being evaluated. This includes the left and
                 right HRTFs for the car and the anechoic room.
@@ -371,15 +370,11 @@ class CarSceneAcoustics:
 
         # 5. Apply Hearing Aid to Left and Right channels and join them
         processed_signal_left = self.apply_hearing_aid(
-            processed_signal[0, :],
-            np.array(listener["audiogram_levels_l"]),
-            np.array(listener["audiogram_cfs"]),
+            processed_signal[0, :], listener.audiogram_left
         )
 
         processed_signal_right = self.apply_hearing_aid(
-            processed_signal[1, :],
-            np.array(listener["audiogram_levels_r"]),
-            np.array(listener["audiogram_cfs"]),
+            processed_signal[1, :], listener.audiogram_right
         )
 
         processed_signal = np.stack(
