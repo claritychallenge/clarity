@@ -238,7 +238,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
     num_scenes = len(scene_listener_pairs)
-    for idx, scene_listener_pair in enumerate(scene_listener_pairs):
+    for idx, scene_listener_pair in enumerate(scene_listener_pairs, 1):
         scene_id, listener_id = scene_listener_pair
 
         scene = scenes[scene_id]
