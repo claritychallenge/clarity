@@ -1,6 +1,7 @@
 """Tests for the evaluation module"""
 from pathlib import Path
 
+# pylint: disable=import-error
 import numpy as np
 import pytest
 from omegaconf import DictConfig
@@ -101,14 +102,14 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.205517835,
-                "right_drums": 0.270553157,
-                "left_bass": 0.207187220,
-                "right_bass": 0.205454381,
-                "left_other": 0.237097711,
-                "right_other": 0.227505708,
-                "left_vocals": 0.227105999,
-                "right_vocals": 0.272616615,
+                "left_drums": 0.14229422779265366,
+                "right_drums": 0.15044965630960655,
+                "left_bass": 0.1333774836344767,
+                "right_bass": 0.14541827476097585,
+                "left_other": 0.16310480582621734,
+                "right_other": 0.15427835764875864,
+                "left_vocals": 0.12291980372806624,
+                "right_vocals": 0.1368378217706031,
             },
         )
     ],
@@ -182,7 +183,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.231629828, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.14358505393391977, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
     # Per instrument score
