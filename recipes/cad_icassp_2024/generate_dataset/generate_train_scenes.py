@@ -24,7 +24,7 @@ def choose_samples(source: list, size: int) -> list:
         return []
     if len(source) <= size:
         return source
-    return np.random.choice(source, size)
+    return np.random.choice(source, size, replace=False)
 
 
 def generate_scenes(cfg: DictConfig) -> None:

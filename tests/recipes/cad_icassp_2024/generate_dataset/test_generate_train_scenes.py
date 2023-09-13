@@ -92,17 +92,17 @@ def test_generate_scenes(tmp_path):
 
     # Check if the scenes are correctly generated
     assert scenes_data["scene_10001"]["music"] == "track1"
-    assert scenes_data["scene_10001"]["gain"] == "gain1"
-    assert scenes_data["scene_10001"]["head_loudspeaker_positions"] == "position1"
+    assert scenes_data["scene_10001"]["gain"] == "gain2"
+    assert scenes_data["scene_10001"]["head_loudspeaker_positions"] == "position2"
     assert scenes_data["scene_10002"]["music"] == "track1"
-    assert scenes_data["scene_10002"]["gain"] == "gain2"
-    assert scenes_data["scene_10002"]["head_loudspeaker_positions"] == "position2"
+    assert scenes_data["scene_10002"]["gain"] == "gain1"
+    assert scenes_data["scene_10002"]["head_loudspeaker_positions"] == "position1"
     assert scenes_data["scene_10003"]["music"] == "track2"
-    assert scenes_data["scene_10003"]["gain"] == "gain2"
-    assert scenes_data["scene_10003"]["head_loudspeaker_positions"] == "position1"
+    assert scenes_data["scene_10003"]["gain"] == "gain3"
+    assert scenes_data["scene_10003"]["head_loudspeaker_positions"] == "position2"
     assert scenes_data["scene_10004"]["music"] == "track2"
     assert scenes_data["scene_10004"]["gain"] == "gain1"
-    assert scenes_data["scene_10004"]["head_loudspeaker_positions"] == "position2"
+    assert scenes_data["scene_10004"]["head_loudspeaker_positions"] == "position1"
 
 
 def test_generate_scene_listener(tmp_path):
