@@ -253,7 +253,7 @@ def enhance(config: DictConfig) -> None:
 
         logger.info(
             f"[{idx:03d}/{num_scenes:03d}] "
-            f"Processing {song_name} for listener {listener_id}"
+            f"Processing {scene_id}: {song_name} for listener {listener_id}"
         )
         # Get the listener's audiogram
         listener = listener_dict[listener_id]
@@ -292,12 +292,7 @@ def enhance(config: DictConfig) -> None:
             apply_compressor=config.apply_compressor,
         )
 
-        filename = Path(
-            enhanced_folder
-            / f"{listener.id}"
-            / f"{song_name}"
-            / f"{scene_id}_{listener.id}_remix.flac"
-        )
+        filename = Path(enhanced_folder) / f"{scene_id}_{listener.id}_remix.flac"
 
         filename.parent.mkdir(parents=True, exist_ok=True)
         save_flac_signal(
