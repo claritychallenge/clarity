@@ -6,10 +6,9 @@ import logging
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.signal import convolve, firwin
+from scipy.signal import convolve, correlate, firwin
 
 from clarity.evaluator.ha_metric.ear_model import EarModel
-from clarity.utils.signal_processing import compute_rms, crosscorrelation
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -593,31 +592,31 @@ class HAAQI:
         # Raised cosine von Hann window
         window = np.hanning(nwin).conj().transpose()
 
-        # win_corr = correlate(window, window, "full")
-        # start_sample = int(len(window) - 1 - maxlag)
-        # end_sample = int(maxlag + len(window))
+        win_corr = correlate(window, window, "full")
+        start_sample = int(len(window) - 1 - maxlag)
+        end_sample = int(maxlag + len(window))
         if int(len(window) / 2 - maxlag) < 0:
             raise ValueError("segment size too small")
-        win_corr = 1 / crosscorrelation(window, window, maxlag, mode="dot")
-        # win_corr = 1 / win_corr[start_sample:end_sample]
-        win_sum2 = 1.0 / np.sum(window**2)  # Window power, inverted
+        win_corr = 1 / win_corr[start_sample:end_sample]
+        # Window power, inverted
+        win_sum2 = 1.0 / np.sum(window**2)
 
         # The first segment has a half window
         nhalf = int(nwin / 2)
         half_window = window[nhalf:nwin]
-        # half_corr = correlate(half_window, half_window, "full")
-        # start_sample = int(len(half_window) - 1 - maxlag)
-        # end_sample = int(maxlag + len(half_window))
+        half_corr = correlate(half_window, half_window, "full")
+        start_sample = int(len(half_window) - 1 - maxlag)
+        end_sample = int(maxlag + len(half_window))
+
         if int(len(half_window) - 1 - maxlag) < 0:
             raise ValueError("segment size too small")
-        half_corr = 1 / crosscorrelation(half_window, half_window, maxlag, mode="dot")
-        # half_corr = 1 / half_corr  # [start_sample:end_sample]
+
+        half_corr = 1 / half_corr[start_sample:end_sample]
         # MS sum normalization, first segment
         halfsum2 = 1.0 / np.sum(half_window**2)
 
         # Number of segments
-        nchan = reference_basilar_membrane.shape[0]
-        npts = reference_basilar_membrane.shape[1]
+        nchan, npts = reference_basilar_membrane.shape
         nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
 
         reference_mean_square = np.zeros((nchan, nseg))
@@ -633,25 +632,27 @@ class HAAQI:
 
             # The first (half) windowed segment
             nstart = 0
-            reference_seg = x[nstart:nhalf] * half_window  # Window the reference
-            processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
-            reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
-            processed_seg = processed_seg - np.mean(processed_seg)
+
+            # Window the signals
+            reference_seg = x[nstart:nhalf] * half_window
+            processed_seg = y[nstart:nhalf] * half_window
+
+            # 0 mean
+            reference_seg -= np.mean(reference_seg)
+            processed_seg -= np.mean(processed_seg)
 
             # Normalize signal MS value by the window
             ref_mean_square = np.sum(reference_seg**2) * halfsum2
 
             proc_mean_squared = np.sum(processed_seg**2) * halfsum2
-            # correlation = correlate(reference_seg, processed_seg, "full")
-            # correlation = correlation[
-            #  int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-            # ]
-            correlation = crosscorrelation(
-                reference_seg, processed_seg, maxlag, mode="dot"
-            )
-            unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
+            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlation[
+                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            ]
+
             if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                 # Normalize cross-covariance
+                unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
                 signal_cross_covariance[k, 0] = unbiased_cross_correlation / np.sqrt(
                     ref_mean_square * proc_mean_squared
                 )
@@ -670,22 +671,22 @@ class HAAQI:
                 # Window the processed signal
                 reference_seg = x[nstart:nstop] * window
                 processed_seg = y[nstart:nstop] * window
+
                 # Make 0-mean
-                reference_seg = reference_seg - np.mean(reference_seg)
-                processed_seg = processed_seg - np.mean(processed_seg)
+                reference_seg -= np.mean(reference_seg)
+                processed_seg -= np.mean(processed_seg)
 
                 # Normalize signal MS value by the window
                 ref_mean_square = np.sum(reference_seg**2) * win_sum2
                 proc_mean_squared = np.sum(processed_seg**2) * win_sum2
 
-                # correlation = correlate(reference_seg, processed_seg, "full")
-                # correlation = correlation[
-                #               int(len(reference_seg) - 1 - maxlag): int(
-                #                   maxlag + len(reference_seg))
-                #               ]
-                correlation = crosscorrelation(
-                    reference_seg, processed_seg, maxlag, mode="dot"
-                )
+                correlation = correlate(reference_seg, processed_seg, "full")
+                correlation = correlation[
+                    int(len(reference_seg) - 1 - maxlag) : int(
+                        maxlag + len(reference_seg)
+                    )
+                ]
+
                 unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
                 if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                     # Normalize cross-covariance
@@ -709,20 +710,17 @@ class HAAQI:
             processed_seg = y[nstart:nstop] * window[0:nhalf]
 
             # Make 0-mean
-            reference_seg = reference_seg - np.mean(reference_seg)
-            processed_seg = processed_seg - np.mean(processed_seg)
+            reference_seg -= np.mean(reference_seg)
+            processed_seg -= np.mean(processed_seg)
 
             # Normalize signal MS value by the window
             ref_mean_square = np.sum(reference_seg**2) * halfsum2
             proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-            # correlation = correlate(reference_seg, processed_seg, "full")
-            # correlation = correlation[
-            #   int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
-            # ]
-            correlation = crosscorrelation(
-                reference_seg, processed_seg, maxlag, mode="dot"
-            )
+            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlation[
+                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            ]
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
             if (ref_mean_square > self.small) and (proc_mean_squared > self.small):
                 # Normalized cross-covariance
@@ -880,7 +878,6 @@ def compute_haaqi(
     sample_rate: float = 24000.0,
     equalisation: int = 1,
     level1: float = 65.0,
-    scale_reference: bool = True,
 ) -> float:
     """Compute HAAQI metric
 
@@ -899,7 +896,6 @@ def compute_haaqi(
             2 = NAL-R EQ has already been added to the reference signal
             Defaults to 1.
         level1 (float): Reference level in dB SPL. Defaults to 65.0.
-        scale_reference (bool): Scale the reference signal to RMS=1. Defaults to True.
     """
 
     haaqi_audiogram_frequencies = [250, 500, 1000, 2000, 4000, 6000]
@@ -917,9 +913,6 @@ def compute_haaqi(
             return 1.0
         logger.error("If `Reference` is empty, `Processed` must be empty as well")
         return 0.0
-
-    if scale_reference:
-        reference_signal /= compute_rms(reference_signal)
 
     haaqi_metric = HAAQI(
         signal_sample_rate=sample_rate,

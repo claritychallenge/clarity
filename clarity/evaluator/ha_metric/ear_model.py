@@ -841,10 +841,9 @@ class EarModel:
         # Convert the control envelope to dB SPL
         logenv = np.maximum(control, self.small)
         logenv = level1 + 20 * np.log10(logenv)
-        logenv = np.minimum(
-            logenv, threshold_high
-        )  # Clip signal levels above the upper threshold
-        logenv = np.maximum(logenv, threshold_low)  # Clip signal at the lower threshold
+
+        # Clip signal levels
+        logenv = np.clip(logenv, threshold_low, threshold_high)
 
         # Compute the compression gain in dB
         gain = -attn_ohc - (logenv - threshold_low) * (1 - (1 / compression_ratio))
