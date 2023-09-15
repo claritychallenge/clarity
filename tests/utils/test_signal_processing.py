@@ -1,13 +1,41 @@
 """Test for utils.signal_processing module"""
+# pylint: disable=import-error
 import numpy as np
 import pytest
 
 from clarity.utils.signal_processing import (
+    clip_signal,
     compute_rms,
     denormalize_signals,
     normalize_signal,
     resample,
 )
+
+
+def test_clip_signal_hard_clip():
+    # Test hard clipping (default behavior)
+    input_signal = np.array([1.5, -0.5, 2.0, -2.5, 0.75])
+    clipped_signal, n_clipped = clip_signal(input_signal)
+    assert np.all(clipped_signal == np.array([1.0, -0.5, 1.0, -1.0, 0.75]))
+    assert n_clipped == 3
+
+
+def test_clip_signal_soft_clip():
+    # Test soft clipping
+    input_signal = np.array([1.5, -0.5, 2.0, -2.5, 0.75])
+    clipped_signal, n_clipped = clip_signal(input_signal, soft_clip=True)
+    assert np.sum(clipped_signal) == pytest.approx(
+        np.sum([0.90514825, -0.46211716, 0.96402758, -0.9866143, 0.63514895])
+    )
+    assert n_clipped == 0
+
+
+def test_clip_signal_all_within_range():
+    # Test when all values are already within the range
+    input_signal = np.array([-0.8, 0.2, -0.6, 0.9])
+    clipped_signal, n_clipped = clip_signal(input_signal)
+    assert np.all(clipped_signal == input_signal)
+    assert n_clipped == 0
 
 
 @pytest.mark.parametrize(
