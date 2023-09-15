@@ -18,6 +18,13 @@ def fixture_results_file(tmpdir):
     return ResultsFile(file_name, sample_header)
 
 
+def test_create_file_str(tmpdir):
+    # Create a temporary directory and a temporary CSV file for testing
+    file_name = f"{tmpdir}/test_results.csv"
+    result_file = ResultsFile(file_name, sample_header)
+    assert result_file.file_name.as_posix() == file_name
+
+
 def test_add_result(results_file):
     # Test adding a result to the CSV file
     results_file.add_result({"Name": "Charlie", "Score": 75})
