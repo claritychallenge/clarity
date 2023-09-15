@@ -12,6 +12,7 @@ path:
 
 sample_rate: 44100
 remix_sample_rate: 32000
+HAAQI_sample_rate: 24000
 
 nalr:
   nfir: 220
