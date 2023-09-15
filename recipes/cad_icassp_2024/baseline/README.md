@@ -163,8 +163,8 @@ As there are random noises generated within HAAQI, but the differences should be
 
 The average validation score for the baseline is:
 
-* Demucs = 0.2154 HAAQI
-* Open-Unmix = 0.2104 HAAQI
+* Demucs = 0.6496 HAAQI
+* Open-Unmix = 0.5822 HAAQI
 
 ## References
 
