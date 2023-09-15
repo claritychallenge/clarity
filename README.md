@@ -18,7 +18,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
-[![PyPI](https://img.shields.io/static/v1?label=CAD1%20and%20CPC2%20Challenges%20-%20pypi&message=v0.3.3&color=orange)](https://pypi.org/project/pyclarity/0.3.3/)
+[![PyPI](https://img.shields.io/static/v1?label=CAD1%20and%20CPC2%20Challenges%20-%20pypi&message=v0.4.0&color=orange)](https://pypi.org/project/pyclarity/0.4.0/)
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202023%20Challenge%20-%20pypi&message=v0.2.1&color=orange)](https://pypi.org/project/pyclarity/0.2.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC2%20Challenge%20-%20pypi&message=v0.1.1&color=orange)](https://pypi.org/project/pyclarity/0.1.1/)
 [![ORDA](https://img.shields.io/badge/ORDA--DOI-10.15131%2Fshef.data.23230694.v.1-lightgrey)](https://figshare.shef.ac.uk/articles/software/clarity/23230694/1)
@@ -34,10 +34,11 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
 
 ## Current Events
 
-- The first Cadenza Challenge (CAD1) is now open. :fire::fire:
+- The ICASSP 2024 Cadenza Challenge (CAD_ICASSP_2024) is now open. :fire::fire:
   - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
   - Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.
-  - Evaluation tools and a baseline system are available in the [CAD1 recipes](./recipes/cad1) folder. :new:
+- The first Cadenza Challenge (CAD1) is closed.
+  - Subjective Evaluation is underway. :new:
 - The 2nd Clarity Prediction Challenge (CPC2) is now open.   :fire::fire:
   - Join the [Clarity Challenge Group](https://groups.google.com/g/clarity-challenge) to keep up-to-date on developments.
   - Visit the Clarity Challenge [website](https://claritychallenge.org/) for more details.
@@ -86,11 +87,12 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
-- [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
-- [The 2nd Clarity Prediction Challenge (CPC2)](./recipes/cpc2)
+- [The ICASSP 2024 Cadenza CHallenge](./recipes/cad_icassp_2024)
 
 Previous challenges
 
+- [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
+- [The 2nd Clarity Prediction Challenge (CPC2)](./recipes/cpc2)
 - [The ICASSP 2023 Enhancement Challenge](./recipes/icassp_2023)
 - [The 2nd Clarity Enhancement Challenge (CEC2)](./recipes/cec2)
 - [The 1st Clarity Prediction Challenge (CPC1)](./recipes/cpc1)

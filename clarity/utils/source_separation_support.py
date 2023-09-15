@@ -37,10 +37,7 @@ def separate_sources(
     device = mix.device if device is None else torch.device(device)
     mix = torch.as_tensor(mix, device=device)
 
-    if mix.ndim == 1:
-        # one track and mono audio
-        mix = mix.unsqueeze(0)
-    elif mix.ndim == 2:
+    if mix.ndim == 2:
         # one track and stereo audio
         mix = mix.unsqueeze(0)
 
