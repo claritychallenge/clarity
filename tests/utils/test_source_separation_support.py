@@ -74,8 +74,6 @@ def test_separate_sources_no_batch():
             )
 
     # Set up some dummy input data
-
-    num_channels = 1
     length = 1
     sample_rate = 16000
     sources = ["vocals", "drums", "bass", "other"]
@@ -87,7 +85,7 @@ def test_separate_sources_no_batch():
     )
     device = torch.device("cpu")
 
-    mix = np.random.randn(num_channels, length * sample_rate)
+    mix = np.random.randn(length * sample_rate)
     # Call separate_sources
     output = separate_sources(model, mix, sample_rate, device=device)
 
