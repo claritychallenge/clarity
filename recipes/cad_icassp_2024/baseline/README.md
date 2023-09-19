@@ -161,11 +161,6 @@ Please note: you will not get identical HAAQI scores for the same signals if the
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
 
-The average validation score for the baseline is:
-
-* Demucs = 0.6496 HAAQI
-* Open-Unmix = 0.5822 HAAQI
-
 ## References
 
 * [1] Défossez, A. "Hybrid Spectrogram and Waveform Source Separation". Proceedings of the ISMIR 2021 Workshop on Music Source Separation. [doi:10.48550/arXiv.2111.03600](https://arxiv.org/abs/2111.03600)
