@@ -10,9 +10,8 @@ The ICASSP 2024 Cadenza Challenge dataset is based on the MUSDB18-HQ dataset.
 To download the data, please visit [Download data and software](https://cadenzachallenge.org/docs/icassp_2024/take_part/download)
 webpage.
 
-The data is split into four packages: `cadenza_icassp2024_core.v1_0.tgz`,
-`cadenza_icassp2024_augmentation_medleydb.tar.gz`, `cadenza_icassp2024_augmentation_bach10.tar.gz`
-and `cadenza_icassp2024_augmentation_fma_small.tar.gz`.
+The data is split into four packages: `cad_icassp_2024_core.v1.1.tgz`,
+`cad_icassp_2024_train.v1.0.tgz`, and `cad_icassp_2024_medleydb.tgz`.
 
 Unpack packages under the same root directory using
 
@@ -22,26 +21,15 @@ tar -xvzf <PACKAGE_NAME>
 
 ### 1.1 Necessary data
 
-* **Core** contains the metadata and audio signal to generate the ICASSP 2024 dataset.
+* **Core** contains the metadata and HRTFs signals to generate the ICASSP 2024 dataset.
 
 ```text
 cadenza_data
 ├───audio
-|   ├───hrtf (336 kB)
-|   |   |  BTE_fr-VP_E1-n22.5.wav
-|   |   |  BTE_fr-VP_E1-n30.0.wav
-|   |   |  ...
-|   |
-|   └───music
-|       └───train (20.2 GB)
-|           ├───A Classic Education - NightOwl
-|           |   |  bass.wav
-|           |   |  drums.wav
-|           |   |  other.wav
-|           |   |  vocals.wav
-|           |   |  mixture.wav
-|           |
-|           ├───...
+|   └───hrtf (336 kB)
+|       |  BTE_fr-VP_E1-n22.5.wav
+|       |  BTE_fr-VP_E1-n30.0.wav
+|       |  ...
 |
 └───metadata  (328 kB)
     |  gains.json
@@ -49,16 +37,32 @@ cadenza_data
     |  listeners.train.json
     |  listeners.valid.json
     |  musdb18.train.json
-    |  musdb18.valid.json
     |  scene_listeners.train.json
     |  scenes.train.json
     |  ...
 
 ```
 
+* **train** contains the MUSDB18 train split signals to generate the ICASSP 2024 dataset.
+
+```text
+cadenza_data
+└───audio
+    └───music (22 GB)
+        └─── Train
+             ├─── A Classic Education - NightOwl
+             |    | Bass.wav
+             |    | Drums.wav
+             |    | Other.wav
+             |    | Vocals.wav
+             |    | Mixture.wav
+             ├─── ...
+```
+
 ### 1.2 Additional optional data
 
-If you need additional music data for training your model, please restrict to the use of [MedleyDB](https://medleydb.weebly.com/) [[5](#references)] [[6](#references)],
+If you need additional music data for training your model, please restrict to the use of
+[MedleyDB](https://medleydb.weebly.com/) [[5](#references)] [[6](#references)],
 [BACH10](https://labsites.rochester.edu/air/resource.html) [7] and [FMA-small](https://github.com/mdeff/fma) [7].
 
 **Keeping the augmentation data restricted to these datasets will ensure that the evaluation is fair for all participants**.
@@ -73,32 +77,21 @@ cadenza_data
         └───Metadata
 ```
 
-* **BACH10** contains the BACH10 dataset [[7](#references)].
+* **BACH10** [[7](#references)].
 
-Tracks from the BACH10 dataset are not included in MUSDB18-HQ and can all be used as training augmentation data.
-
-```text
-cadenza_data
-└───audio
-    └───Bach10 (150 MB)
-        ├───01-AchGottundHerr
-        ├───...
-```
+Bach10 dataset can be downloaded from
+[Download data and software](https://cadenzachallenge.org/docs/icassp_2024/take_part/download#b1-download-the-packages)
+on the Challenge website.
 
 * **FMA Small** contains the FMA small subset of the FMA dataset [[8](references)].
+
+FMA small dataset can be downloaded from
+[Download data and software](https://cadenzachallenge.org/docs/icassp_2024/take_part/download#b1-download-the-packages)
+on the Challenge website.
 
 Tracks from the FMA small dataset are not included in the MUSDB18-HQ.
 This dataset does not provide independent stems but only the full mix.
 However, it can be used to train an unsupervised model to better initialise a supervised model.
-
-```text
-cadenza_data
-└───audio
-    └───fma_small (8 GB)
-        ├───000
-        ├───001
-        ├───...
-```
 
 ## 2. Baseline
 
@@ -113,7 +106,7 @@ the VDBO (vocals, drums, bass and others) stems for each song-listener pair.
 For each estimated stem, the baseline applies the gains and remix the signal.
 A simple NAL-R [2] fitting amplification is applied to the final remix
 
-The basile offers 2 source separation options:
+The baseline offers 2 source separation options:
 
 1. [Hybrid Demucs](https://github.com/facebookresearch/demucs) [[1](#references)]  distributed on [TorchAudio](https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html)
 2. [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch) [[2](#references)]  distributed through Pytorch hub.
@@ -160,11 +153,6 @@ To check the HAAQI code, see [here](https://github.com/claritychallenge/clarity/
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
-
-The average validation score for the baseline is:
-
-* Demucs = 0.6496 HAAQI
-* Open-Unmix = 0.5822 HAAQI
 
 ## References
 

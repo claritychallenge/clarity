@@ -118,7 +118,12 @@ def find_precreated_samples(source_dir: str | Path) -> list[str]:
     if not source_dir.exists():
         return []
 
-    return [f.name for f in source_dir.glob("*/*")]
+    previous_tracks = []
+    for song_path in source_dir.glob("train/*"):
+        if len(list(song_path.glob("*"))) >= 5:
+            previous_tracks.append(song_path.name)
+
+    return previous_tracks
 
 
 @hydra.main(config_path="", config_name="config")
@@ -145,14 +150,14 @@ def run(cfg: DictConfig) -> None:
         music_metadata = {m["Track Name"]: m for m in music_metadata}
 
     # Load the head positions metadata
-    with open(cfg.path.head_positions_file, encoding="utf-8") as f:
+    with open(cfg.path.head_loudspeaker_positions_file, encoding="utf-8") as f:
         head_positions_metadata = json.load(f)
 
     # From the scenes, get the samples names and parameters
     toprocess_samples = {
-        f"{v['music']}-{v['head_position']}": {
+        f"{v['music']}-{v['head_loudspeaker_positions']}": {
             "music": v["music"],
-            "head_position": v["head_position"],
+            "head_loudspeaker_positions": v["head_loudspeaker_positions"],
         }
         for _, v in scenes_metadata.items()
     }
@@ -162,7 +167,7 @@ def run(cfg: DictConfig) -> None:
     for idx, sample in enumerate(toprocess_samples.items(), 1):
         sample_name, sample_detail = sample
         music = music_metadata[sample_detail["music"]]
-        head_position = sample_detail["head_position"]
+        head_position = sample_detail["head_loudspeaker_positions"]
 
         out_music[sample_name] = {
             "Track Name": sample_name,
