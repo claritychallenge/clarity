@@ -20,11 +20,20 @@ from recipes.cad_icassp_2024.generate_dataset.generate_at_mic_musdb18 import (
 @pytest.fixture(name="temp_dir_with_samples")
 def fixture_temp_dir_with_samples(tmp_path):
     source_dir = Path(tmp_path)
-    sample_dirs = ["sample_dir1", "sample_dir2"]
-    for sample_dir in sample_dirs:
+    sample_dirs = {
+        "sample_dir1": [
+            "sample1.wav",
+            "sample2.wav",
+            "sample3.wav",
+            "sample4.wav",
+            "sample5.wav",
+        ],
+        "sample_dir2": ["sample1.wav"],
+    }
+
+    for sample_dir, sample_files in sample_dirs.items():
         sample_dir_path = Path(source_dir) / "train" / sample_dir
         sample_dir_path.mkdir(exist_ok=True, parents=True)
-        sample_files = ["sample1.wav", "sample2.wav"]
         for sample_file in sample_files:
             with open(sample_dir_path / sample_file, "w", encoding="utf-8") as f:
                 f.write("Sample content")
@@ -147,7 +156,7 @@ def test_find_precreated_samples(temp_dir_with_samples):
 
     # Check if the expected sample files are in the result
     assert "sample_dir1" in precreated_samples
-    assert "sample_dir1" in precreated_samples
+    assert "sample_dir2" not in precreated_samples
 
 
 def test_find_precreated_samples_empty_directory(tmp_path):
