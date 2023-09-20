@@ -118,7 +118,12 @@ def find_precreated_samples(source_dir: str | Path) -> list[str]:
     if not source_dir.exists():
         return []
 
-    return [f.name for f in source_dir.glob("train/*")]
+    previous_tracks = []
+    for song_path in source_dir.glob("train/*"):
+        if len(list(song_path.glob("*"))) >= 5:
+            previous_tracks.append(song_path.name)
+
+    return previous_tracks
 
 
 @hydra.main(config_path="", config_name="config")
