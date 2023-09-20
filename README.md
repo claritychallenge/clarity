@@ -22,7 +22,6 @@
 [![PyPI](https://img.shields.io/static/v1?label=CAD1%20and%20CPC2%20Challenges%20-%20pypi&message=v0.3.4&color=orange)](https://pypi.org/project/pyclarity/0.3.4/)
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202023%20Challenge%20-%20pypi&message=v0.2.1&color=orange)](https://pypi.org/project/pyclarity/0.2.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC2%20Challenge%20-%20pypi&message=v0.1.1&color=orange)](https://pypi.org/project/pyclarity/0.1.1/)
-
 [![ORDA](https://img.shields.io/badge/ORDA--DOI-10.15131%2Fshef.data.23230694.v.1-lightgrey)](https://figshare.shef.ac.uk/articles/software/clarity/23230694/1)
 </p>
 
