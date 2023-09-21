@@ -35,7 +35,7 @@ class Interp1d(torch.autograd.Function):
         require_grad = {}
         v = {}
         device = []
-        eps = torch.finfo(y.dtype).eps
+        eps = torch.finfo(torch.float32).eps
         for name, vec in {"x": x, "y": y, "xnew": xnew}.items():
             assert len(vec.shape) <= 2, "interp1d: all inputs must be " "at most 2-D."
             if len(vec.shape) == 1:
