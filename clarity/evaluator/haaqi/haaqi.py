@@ -49,7 +49,8 @@ def haaqi_v1(
         processed (np.ndarray):  Output signal with noise, distortion, HA gain,
             and/or processing.
         processed_freq (int): Sampling rate in Hz for processed signal.
-        audiogram (Audiogram): Audiogram object with hearing loss levels.
+        hearing_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric
+            frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.
         equalisation (int): hearing loss equalization mode for reference signal:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
@@ -177,8 +178,8 @@ def haaqi_v1(
 def compute_haaqi(
     processed_signal: ndarray,
     reference_signal: ndarray,
-    sample_rate_processed: float,
-    sample_rate_reference: float,
+    processed_sample_rate: float,
+    reference_sample_rate: float,
     audiogram: Audiogram,
     equalisation: int = 1,
     level1: float = 65.0,
@@ -191,9 +192,8 @@ def compute_haaqi(
         reference_signal (np.ndarray): Input reference speech signal with no noise
             or distortion. If a hearing loss is specified, NAL-R equalization
             is optional
-        sample_rate_processed (int): Sample rate of processed signal
-        sample_rate_reference (int): Sample rate of reference signal
-
+        processed_sample_rate (float): Sampling rate in Hz for processed signal.
+        reference_sample_rate (float): Sampling rate in Hz for reference signal.
         audiogram (Audiogram): Audiogram object.
         equalisation (int): hearing loss equalization mode for reference signal:
             1 = no EQ has been provided, the function will add NAL-R
@@ -213,9 +213,9 @@ def compute_haaqi(
 
     score, _, _, _ = haaqi_v1(
         reference=reference_signal,
-        reference_freq=sample_rate_reference,
+        reference_freq=reference_sample_rate,
         processed=processed_signal,
-        processed_freq=sample_rate_processed,
+        processed_freq=processed_sample_rate,
         audiogram=audiogram,
         equalisation=equalisation,
         level1=level1,
