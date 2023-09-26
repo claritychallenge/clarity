@@ -1,6 +1,7 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
 from __future__ import annotations
 
+# pylint: disable=too-many-locals
 # pylint: disable=import-error
 import csv
 import hashlib
@@ -17,11 +18,7 @@ from scipy.io import wavfile
 
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
-from clarity.utils.flac_encoder import read_flac_signal
-from clarity.utils.signal_processing import compute_rms, resample
-
-# pylint: disable=too-many-locals
-
+from clarity.utils.signal_processing import compute_rms
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +76,7 @@ class ResultsFile:
             instruments_scores (dict): A dictionary of scores for each instrument
                 channel in the result.
         """
+        logger.info(f"The combined score is {score}")
 
         with open(self.file_name, "a", encoding="utf-8", newline="") as csv_file:
             csv_writer = csv.writer(
@@ -131,7 +129,7 @@ def _evaluate_song_listener(
 
     Args:
         song (str): The name of the song to evaluate.
-        listener (Listener): The listener to evaluate the song for.
+        listener (str): The name of the listener to evaluate.
         config (DictConfig): The configuration object.
         split_dir (str): The name of the split directory.
         enhanced_folder (Path): The path to the folder containing the enhanced signals.
@@ -143,6 +141,8 @@ def _evaluate_song_listener(
 
     """
 
+    logger.info(f"Evaluating {song} for {listener.id}")
+
     if config.evaluate.set_random_seed:
         set_song_seed(song)
 
@@ -153,59 +153,56 @@ def _evaluate_song_listener(
         "other",
         "vocals",
     ]:
-        logger.info(f"          ...evaluating {instrument}")
+        logger.info(f"...evaluating {instrument}")
 
         # Read instrument reference signal
         sample_rate_reference_signal, reference_signal = wavfile.read(
             Path(config.path.music_dir) / split_dir / song / f"{instrument}.wav"
         )
         reference_signal = (reference_signal / 32768.0).astype(np.float32)
-        reference_signal = resample(
-            reference_signal, sample_rate_reference_signal, config.stem_sample_rate
-        )
 
-        # Read left instrument enhanced
-        left_enhanced_signal, sample_rate_left_enhanced_signal = read_flac_signal(
+        # Load enhanced instrument signals
+        # Load left channel
+        sample_rate_left_enhanced_signal, left_enhanced_signal = wavfile.read(
             enhanced_folder
             / f"{listener.id}"
             / f"{song}"
-            / f"{listener.id}_{song}_left_{instrument}.flac"
+            / f"{listener.id}_{song}_left_{instrument}.wav"
         )
+        left_enhanced_signal = (left_enhanced_signal / 32768.0).astype(np.float32)
 
-        # Read right instrument enhanced
-        right_enhanced_signal, sample_rate_right_enhanced_signal = read_flac_signal(
+        # Load right channel
+        sample_rate_right_enhanced_signal, right_enhanced_signal = wavfile.read(
             enhanced_folder
             / f"{listener.id}"
             / f"{song}"
-            / f"{listener.id}_{song}_right_{instrument}.flac"
+            / f"{listener.id}_{song}_right_{instrument}.wav"
+        )
+        right_enhanced_signal = (right_enhanced_signal / 32768.0).astype(np.float32)
+
+        assert (
+            sample_rate_reference_signal
+            == sample_rate_left_enhanced_signal
+            == sample_rate_right_enhanced_signal
+            == config.sample_rate
         )
 
-        if sample_rate_left_enhanced_signal != sample_rate_right_enhanced_signal:
-            raise ValueError(
-                "The sample rates of the left and right enhanced signals are not "
-                "the same"
-            )
-
-        if sample_rate_reference_signal != config.sample_rate:
-            raise ValueError(
-                f"The sample rate of the reference signal is not {config.sample_rate}"
-            )
-
-        #  Compute left and right scores
         per_instrument_score[f"left_{instrument}"] = compute_haaqi(
-            processed_signal=left_enhanced_signal,
-            reference_signal=reference_signal[:, 0],
-            sample_rate_processed=int(sample_rate_left_enhanced_signal),
-            sample_rate_reference=config.stem_sample_rate,
-            audiogram=listener.audiogram_left,
+            left_enhanced_signal,
+            reference_signal[:, 0],
+            config.sample_rate,
+            config.sample_rate,
+            listener.audiogram_left,
+            equalisation=1,
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
         per_instrument_score[f"right_{instrument}"] = compute_haaqi(
-            processed_signal=right_enhanced_signal,
-            reference_signal=reference_signal[:, 1],
-            sample_rate_processed=int(sample_rate_right_enhanced_signal),
-            sample_rate_reference=config.stem_sample_rate,
-            audiogram=listener.audiogram_right,
+            right_enhanced_signal,
+            reference_signal[:, 1],
+            config.sample_rate,
+            config.sample_rate,
+            listener.audiogram_right,
+            equalisation=1,
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
@@ -219,12 +216,12 @@ def _evaluate_song_listener(
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI-RMS metric."""
     # Load test songs
-    with open(config.path.music_file, encoding="utf-8") as fp:
+    with open(config.path.music_valid_file, encoding="utf-8") as fp:
         songs = json.load(fp)
-    songs_df = pd.DataFrame.from_dict(songs)
+    songs = pd.DataFrame.from_dict(songs)
 
     # Load listener data
-    listener_dict = Listener.load_listener_dict(config.path.listeners_file)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_valid_file)
 
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
@@ -235,22 +232,16 @@ def run_calculate_aq(config: DictConfig) -> None:
     results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
-        songs_df["Track Name"].tolist(), listener_dict, config.evaluate.small_test
+        songs["Track Name"].tolist(), listener_dict, config.evaluate.small_test
     )
 
     song_listener_pair = song_listener_pair[
         config.evaluate.batch :: config.evaluate.batch_size
     ]
-    num_song_list_pair = len(song_listener_pair)
-    for idx, song_listener in enumerate(song_listener_pair, 1):
-        song, listener_id = song_listener
-        logger.info(
-            f"[{idx:03d}/{num_song_list_pair:03d}] "
-            f"Processing {song} for {listener_id}..."
-        )
 
+    for song, listener_id in song_listener_pair:
         split_dir = "train"
-        if songs_df[songs_df["Track Name"] == song]["Split"].tolist()[0] == "test":
+        if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
             split_dir = "test"
         listener = listener_dict[listener_id]
         combined_score, per_instrument_score = _evaluate_song_listener(
@@ -259,10 +250,6 @@ def run_calculate_aq(config: DictConfig) -> None:
             config,
             split_dir,
             enhanced_folder,
-        )
-        logger.info(
-            f"[{idx:03d}/{num_song_list_pair:03d}] "
-            f"The combined score is {combined_score}"
         )
         results_file.add_result(
             listener.id,
