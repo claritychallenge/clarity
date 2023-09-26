@@ -4,9 +4,7 @@ path:
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.audio_dir}/music
   hrtf_dir: ${path.audio_dir}/eBrird
-  listeners_train_file: ${path.metadata_dir}/listeners.train.json
-  listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
-  listeners_test_file: ${path.metadata_dir}/listeners.test.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
   scenes_file: ${path.metadata_dir}/scenes.json
   scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.json
   hrtf_file: ${path.metadata_dir}/eBrird_BRIR.json
