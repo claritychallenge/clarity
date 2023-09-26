@@ -2,13 +2,9 @@ path:
   root: ../../cadenza_data_demo/cad1/task1
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.root}/audio/musdb18hq
-  music_train_file: ${path.metadata_dir}/musdb18.train.json
-  music_valid_file: ${path.metadata_dir}/musdb18.valid.json
-  listeners_train_file: ${path.metadata_dir}/listeners.train.json
-  listeners_valid_file: ${path.metadata_dir}/listeners.valid.json
-  music_test_file: ${path.metadata_dir}/musdb18.test.json
+  music_file: ${path.metadata_dir}/musdb18.valid.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
   music_segments_test_file: ${path.metadata_dir}/musdb18.segments.test.json
-  listeners_test_file: ${path.metadata_dir}/listeners.test.json
   exp_folder: ./exp_${separator.model} # folder to store enhanced signals and final results
 
 team_id: T001
@@ -29,7 +25,7 @@ compressor:
   release: 1000
   rms_buffer_size: 0.064
 
-soft_clip: True
+soft_clip: False
 
 separator:
   model: demucs   # demucs or openunmix

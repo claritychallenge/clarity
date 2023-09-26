@@ -366,24 +366,6 @@ def enhance(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals")
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
-    # Training stage
-    #
-    # The baseline is using an off-the-shelf model trained on the MUSDB18 dataset
-    # Training listeners and song are not necessary in this case.
-    #
-    # Training songs and audiograms can be read like this:
-    #
-    #  with open(config.path.listeners_train_file, "r", encoding="utf-8") as file:
-    #        listener_train_audiograms = json.load(file)
-    #
-    #  with open(config.path.music_train_file, "r", encoding="utf-8") as file:
-    #        song_data = json.load(file)
-    #  songs_train = pd.DataFrame.from_dict(song_data)
-    #
-    # train_song_listener_pairs = make_song_listener_list(
-    #     songs_train['Track Name'], listener_train_audiograms
-    # )
-
     if config.separator.model == "demucs":
         separation_model = HDEMUCS_HIGH_MUSDB.get_model()
         model_sample_rate = HDEMUCS_HIGH_MUSDB.sample_rate
@@ -402,17 +384,15 @@ def enhance(config: DictConfig) -> None:
 
     # Processing Validation Set
     # Load listener audiograms and songs
-    listener_dict = Listener.load_listener_dict(config.path.listeners_valid_file)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_file)
 
-    with open(config.path.music_valid_file, encoding="utf-8") as file:
+    with open(config.path.music_file, encoding="utf-8") as file:
         song_data = json.load(file)
-    songs_valid = pd.DataFrame.from_dict(song_data)
+    songs_df = pd.DataFrame.from_dict(song_data)
 
-    valid_song_listener_pairs = make_song_listener_list(
-        songs_valid["Track Name"], listener_dict
-    )
+    song_listener_pairs = make_song_listener_list(songs_df["Track Name"], listener_dict)
     # Select a batch to process
-    valid_song_listener_pairs = valid_song_listener_pairs[
+    song_listener_pairs = song_listener_pairs[
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
@@ -422,8 +402,8 @@ def enhance(config: DictConfig) -> None:
     # Decompose each song into left and right vocal, drums, bass, and other stems
     # and process each stem for the listener
     prev_song_name = None
-    num_song_list_pair = len(valid_song_listener_pairs)
-    for idx, song_listener in enumerate(valid_song_listener_pairs, 1):
+    num_song_list_pair = len(song_listener_pairs)
+    for idx, song_listener in enumerate(song_listener_pairs, 1):
         song_name, listener_name = song_listener
         logger.info(
             f"[{idx:03d}/{num_song_list_pair:03d}] "
@@ -435,7 +415,7 @@ def enhance(config: DictConfig) -> None:
         # Find the music split directory
         split_directory = (
             "test"
-            if songs_valid.loc[songs_valid["Track Name"] == song_name, "Split"].iloc[0]
+            if songs_df.loc[songs_df["Track Name"] == song_name, "Split"].iloc[0]
             == "test"
             else "train"
         )
