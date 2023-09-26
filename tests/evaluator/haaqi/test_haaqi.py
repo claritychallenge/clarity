@@ -58,8 +58,8 @@ def test_compute_haaqi(levels, freqs, expected_result):
     score = compute_haaqi(
         processed_signal=enh_signal,
         reference_signal=ref_signal,
-        sample_rate_processed=sample_rate,
-        sample_rate_reference=sample_rate,
+        processed_sample_rate=sample_rate,
+        reference_sample_rate=sample_rate,
         audiogram=audiogram,
     )
 

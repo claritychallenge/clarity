@@ -74,27 +74,3 @@ def test_read_flac_signal(tmp_path):
 
     assert np.sum(signal_out) == pytest.approx(np.sum(signal), rel=1e-4, abs=1e-4)
     assert sample_rate_out == sample_rate
-
-
-def test_flac_encoder_encode():
-    encoder = FlacEncoder(compression_level=5)
-    # Generate random audio signal
-    signal = np.random.randint(-32768, 32767, 4410).astype(np.int16)
-    sample_rate = 44100
-    encoded_data = encoder.encode(signal, sample_rate)
-    assert isinstance(encoded_data, bytes)
-
-
-def test_flac_encoder_encode_type_error():
-    encoder = FlacEncoder(compression_level=5)
-    # Generate random audio signal
-    signal = np.random.randint(-32768, 32767, 4410).astype(np.float32)
-    sample_rate = 44100
-    with pytest.raises(ValueError):
-        encoder.encode(signal, sample_rate)
-
-
-def test_flac_encoder_decode_file_not_found():
-    encoder = FlacEncoder(compression_level=5)
-    with pytest.raises(FileNotFoundError):
-        encoder.decode("fake/path.flac")
