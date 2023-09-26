@@ -11,12 +11,11 @@ from pathlib import Path
 import hydra
 import numpy as np
 from omegaconf import DictConfig
+from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
-from clarity.utils.flac_encoder import read_flac_signal
-from clarity.utils.signal_processing import compute_rms, resample
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,
@@ -195,21 +194,18 @@ def evaluate_scene(
 
     # Compute HAAQI scores
     aq_score_l = compute_haaqi(
-        processed_signal=processed_signal[0, :],
-        reference_signal=ref_signal[0, :],
-        sample_rate_processed=sample_rate,
-        sample_rate_reference=sample_rate,
-        audiogram=listener.audiogram_left,
-        level1=65 - 20 * np.log10(compute_rms(ref_signal[0, :])),
+        processed_signal[0, :],
+        ref_signal[0, :],
+        sample_rate,
+        sample_rate,
+        listener.audiogram_left,
     )
-
     aq_score_r = compute_haaqi(
-        processed_signal=processed_signal[1, :],
-        reference_signal=ref_signal[1, :],
-        sample_rate_processed=sample_rate,
-        sample_rate_reference=sample_rate,
-        audiogram=listener.audiogram_right,
-        level1=65 - 20 * np.log10(compute_rms(ref_signal[1, :])),
+        processed_signal[1, :],
+        ref_signal[1, :],
+        sample_rate,
+        sample_rate,
+        listener.audiogram_right,
     )
     return aq_score_l, aq_score_r
 
@@ -238,10 +234,9 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     results_file.write_header()
 
     # Initialize acoustic scene model
-    sample_rate_haaqi = 24000
     car_scene_acoustic = CarSceneAcoustics(
         track_duration=30,
-        sample_rate=sample_rate_haaqi,
+        sample_rate=config.sample_rate,
         hrtf_dir=config.path.hrtf_dir,
         config_nalr=config.nalr,
         config_compressor=config.compressor,
@@ -271,24 +266,19 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
         enhanced_song_id = f"{scene_id}_{listener.id}_{current_scene['song']}"
         enhanced_song_path = (
-            enhanced_folder / f"{listener.id}" / f"{enhanced_song_id}.flac"
+            enhanced_folder / f"{listener.id}" / f"{enhanced_song_id}.wav"
         )
 
         # Read WAV enhanced signal using scipy.io.wavfile
-        enhanced_signal, enhanced_sample_rate = read_flac_signal(enhanced_song_path)
-        assert enhanced_sample_rate == config.enhanced_sample_rate
+        enhanced_sample_rate, enhanced_signal = wavfile.read(enhanced_song_path)
+        enhanced_signal = enhanced_signal / 32768.0
+        assert enhanced_sample_rate == config.sample_rate
 
         # Evaluate scene
-        reference_signal_24k = resample(
-            reference_signal.T, config.sample_rate, sample_rate_haaqi
-        )
-        enhanced_signal_24k = resample(
-            enhanced_signal, enhanced_sample_rate, sample_rate_haaqi
-        )
         aq_score_l, aq_score_r = evaluate_scene(
-            reference_signal_24k.T,
-            enhanced_signal_24k.T,
-            sample_rate_haaqi,
+            reference_signal,
+            enhanced_signal.T,
+            config.sample_rate,
             scene_id,
             current_scene,
             listener,
