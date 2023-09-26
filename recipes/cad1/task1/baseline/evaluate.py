@@ -219,12 +219,12 @@ def _evaluate_song_listener(
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI-RMS metric."""
     # Load test songs
-    with open(config.path.music_valid_file, encoding="utf-8") as fp:
+    with open(config.path.music_file, encoding="utf-8") as fp:
         songs = json.load(fp)
-    songs = pd.DataFrame.from_dict(songs)
+    songs_df = pd.DataFrame.from_dict(songs)
 
     # Load listener data
-    listener_dict = Listener.load_listener_dict(config.path.listeners_valid_file)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_file)
 
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
@@ -235,7 +235,7 @@ def run_calculate_aq(config: DictConfig) -> None:
     results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
-        songs["Track Name"].tolist(), listener_dict, config.evaluate.small_test
+        songs_df["Track Name"].tolist(), listener_dict, config.evaluate.small_test
     )
 
     song_listener_pair = song_listener_pair[
@@ -250,7 +250,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         )
 
         split_dir = "train"
-        if songs[songs["Track Name"] == song]["Split"].tolist()[0] == "test":
+        if songs_df[songs_df["Track Name"] == song]["Split"].tolist()[0] == "test":
             split_dir = "test"
         listener = listener_dict[listener_id]
         combined_score, per_instrument_score = _evaluate_song_listener(
