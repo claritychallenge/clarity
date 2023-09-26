@@ -3,7 +3,6 @@ from __future__ import annotations
 
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
-import csv
 import hashlib
 import itertools
 import json
@@ -19,85 +18,10 @@ from scipy.io import wavfile
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal
+from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 
 logger = logging.getLogger(__name__)
-
-
-class ResultsFile:
-    """A utility class for writing results to a CSV file.
-
-    Attributes:
-        file_name (str): The name of the file to write results to.
-    """
-
-    def __init__(self, file_name: str):
-        """Initialize the ResultsFile instance.
-
-        Args:
-            file_name (str): The name of the file to write results to.
-        """
-        self.file_name = file_name
-
-    def write_header(self):
-        """Write the header row to the CSV file."""
-        with open(self.file_name, "w", encoding="utf-8", newline="") as csv_file:
-            csv_writer = csv.writer(
-                csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-            )
-            csv_writer.writerow(
-                [
-                    "song",
-                    "listener",
-                    "score",
-                    "left_bass",
-                    "right_bass",
-                    "left_drums",
-                    "right_drums",
-                    "left_other",
-                    "right_other",
-                    "left_vocals",
-                    "right_vocals",
-                ]
-            )
-
-    def add_result(
-        self,
-        listener_id: str,
-        song: str,
-        score: float,
-        instruments_scores: dict[str, float],
-    ):
-        """Add a result to the CSV file.
-
-        Args:
-            listener_id (str): The name of the listener who submitted the result.
-            song (str): The name of the song that the result is for.
-            score (float): The combined score for the result.
-            instruments_scores (dict): A dictionary of scores for each instrument
-                channel in the result.
-        """
-        logger.info(f"The combined score is {score}")
-
-        with open(self.file_name, "a", encoding="utf-8", newline="") as csv_file:
-            csv_writer = csv.writer(
-                csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-            )
-            csv_writer.writerow(
-                [
-                    song,
-                    listener_id,
-                    str(score),
-                    str(instruments_scores["left_bass"]),
-                    str(instruments_scores["right_bass"]),
-                    str(instruments_scores["left_drums"]),
-                    str(instruments_scores["right_drums"]),
-                    str(instruments_scores["left_other"]),
-                    str(instruments_scores["right_other"]),
-                    str(instruments_scores["left_vocals"]),
-                    str(instruments_scores["right_vocals"]),
-                ]
-            )
 
 
 def set_song_seed(song: str) -> None:
@@ -241,10 +165,30 @@ def run_calculate_aq(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
 
+    scores_headers = [
+        "song",
+        "listener",
+        "score",
+        "left_bass",
+        "right_bass",
+        "left_drums",
+        "right_drums",
+        "left_other",
+        "right_other",
+        "left_vocals",
+        "right_vocals",
+    ]
+
+    results_file_name = "scores.csv"
+    if config.evaluate.batch_size > 1:
+        results_file_name = (
+            f"scores_{int(config.evaluate.batch) + 1}-{config.evaluate.batch_size}.csv"
+        )
+
     results_file = ResultsFile(
-        f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv"
+        file_name=results_file_name,
+        header_columns=scores_headers,
     )
-    results_file.write_header()
 
     song_listener_pair = make_song_listener_list(
         songs_df["Track Name"].tolist(), listener_dict, config.evaluate.small_test
@@ -267,10 +211,12 @@ def run_calculate_aq(config: DictConfig) -> None:
             enhanced_folder=enhanced_folder,
         )
         results_file.add_result(
-            listener_id=listener.id,
-            song=song,
-            score=combined_score,
-            instruments_scores=per_instrument_score,
+            {
+                "song": song,
+                "listener": listener.id,
+                "score": combined_score,
+                **per_instrument_score,
+            }
         )
 
 
