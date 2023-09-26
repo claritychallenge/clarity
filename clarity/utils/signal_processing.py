@@ -2,6 +2,7 @@
 # pylint: disable=import-error
 from __future__ import annotations
 
+# pylint: disable=import-error
 import numpy as np
 import scipy
 import soxr

@@ -124,10 +124,11 @@ def smear3(f_smear: ndarray, inbuffer: ndarray) -> ndarray:
         winwave = np.zeros(FFT_SIZE)
         winwave[0:FRAME_SIZE] = window * inwave.flatten()
         spectrum = np.fft.fft(winwave, FFT_SIZE)
-        power = spectrum[0:nyquist] * np.conj(spectrum[0:nyquist])
-        mag = np.sqrt(power)
+
+        mag = np.abs(spectrum[0:nyquist])
         phasor = spectrum[0:nyquist] / (mag + (mag == 0))
-        smeared = np.dot(f_smear, power)
+
+        smeared = np.dot(f_smear, (mag**2).astype(complex))
         spectrum[0:nyquist] = np.sqrt(smeared) * phasor
         spectrum[nyquist] = 0
         spectrum[(nyquist + 1) : FFT_SIZE] = np.conj(spectrum[nyquist - 1 : 0 : -1])
