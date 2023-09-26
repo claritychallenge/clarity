@@ -8,40 +8,12 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from clarity.utils.audiogram import Audiogram, Listener
+from clarity.utils.flac_encoder import FlacEncoder
 from recipes.cad1.task1.baseline.evaluate import (
-    ResultsFile,
     _evaluate_song_listener,
     make_song_listener_list,
     set_song_seed,
 )
-
-
-def test_results_file(tmp_path):
-    """Test the class ResultsFile"""
-    results_file = tmp_path / "results.csv"
-    result_file = ResultsFile(results_file.as_posix())
-    result_file.write_header()
-    result_file.add_result(
-        listener_id="My listener",
-        song="My favorite song",
-        score=0.9,
-        instruments_scores={
-            "left_bass": 0.8,
-            "right_bass": 0.8,
-            "left_drums": 0.9,
-            "right_drums": 0.9,
-            "left_other": 0.8,
-            "right_other": 0.8,
-            "left_vocals": 0.95,
-            "right_vocals": 0.95,
-        },
-    )
-    with open(results_file, encoding="utf-8") as file:
-        contents = file.read()
-        assert (
-            "My favorite song,My listener,0.9,0.8,0.8,0.9,0.9,0.8,0.8,0.95,0.95"
-            in contents
-        )
 
 
 @pytest.mark.parametrize(
@@ -88,10 +60,11 @@ def test_make_song_listener_list():
             "punk_is_not_dead",
             "my_music_listener",
             {
+                "stem_sample_rate": 44100,
+                "sample_rate": 44100,
                 "evaluate": {"set_random_seed": True},
                 "path": {"music_dir": None},
-                "sample_rate": 44100,
-                "nalr": {"sample_rate": 44100},
+                "nalr": {"fs": 44100},
             },
             "test",
             {
@@ -102,14 +75,14 @@ def test_make_song_listener_list():
                 }
             },
             {
-                "left_drums": 0.14229422779265366,
-                "right_drums": 0.15044965630960655,
-                "left_bass": 0.1333774836344767,
-                "right_bass": 0.14541827476097585,
-                "left_other": 0.16310480582621734,
-                "right_other": 0.15427835764875864,
-                "left_vocals": 0.12291980372806624,
-                "right_vocals": 0.1368378217706031,
+                "left_drums": 0.14229280292204488,
+                "right_drums": 0.15044867874762802,
+                "left_bass": 0.13337685099485902,
+                "right_bass": 0.14541734646032817,
+                "left_other": 0.16310385596493193,
+                "right_other": 0.1542791489799909,
+                "left_vocals": 0.12291878218281638,
+                "right_vocals": 0.13683790592287856,
             },
         )
     ],
@@ -143,22 +116,22 @@ def test_evaluate_song_listener(
     instruments = ["drums", "bass", "other", "vocals"]
 
     # Create reference and enhanced wav samples
+    flac_encoder = FlacEncoder()
     for lr_instrument in list(expected_results.keys()):
         # enhanced signals are mono
         enh_file = (
             enhanced_folder
             / f"{listener.id}"
             / f"{song}"
-            / f"{listener.id}_{song}_{lr_instrument}.wav"
+            / f"{listener.id}_{song}_{lr_instrument}.flac"
         )
         enh_file.parent.mkdir(exist_ok=True, parents=True)
+        with open(Path(enh_file).with_suffix(".txt"), "w", encoding="utf-8") as file:
+            file.write("1.0")
 
         # Using very short 100 ms signals to speed up the test
-        wavfile.write(
-            enh_file,
-            44100,
-            np.random.uniform(-1, 1, 4410).astype(np.float32) * 32768,
-        )
+        enh_signal = np.random.uniform(-1, 1, 4410).astype(np.float32) * 32768
+        flac_encoder.encode(enh_signal.astype(np.int16), config.sample_rate, enh_file)
 
     for instrument in instruments:
         # reference signals are stereo
@@ -183,7 +156,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.14358505393391977, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.14358442152193474, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
     # Per instrument score
