@@ -182,7 +182,7 @@ def run_calculate_aq(config: DictConfig) -> None:
     results_file_name = "scores.csv"
     if config.evaluate.batch_size > 1:
         results_file_name = (
-            f"scores_{int(config.evaluate.batch) + 1}-{config.evaluate.batch_size}.csv"
+            f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv"
         )
 
     results_file = ResultsFile(
