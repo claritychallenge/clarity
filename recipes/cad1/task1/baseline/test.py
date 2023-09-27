@@ -94,9 +94,9 @@ def enhance(config: DictConfig) -> None:
 
     # Processing Validation Set
     # Load listener audiograms and songs
-    listener_dict = Listener.load_listener_dict(config.path.listeners_test_file)
+    listener_dict = Listener.load_listener_dict(config.path.listeners_file)
 
-    with open(config.path.music_test_file, encoding="utf-8") as file:
+    with open(config.path.music_file, encoding="utf-8") as file:
         song_data = json.load(file)
     songs_details = pd.DataFrame.from_dict(song_data)
 
