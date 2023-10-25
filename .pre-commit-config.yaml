@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0 # Use the ref you want to point at
+    rev: v4.5.0 # Use the ref you want to point at
     hooks:
       - id: trailing-whitespace
         types: [file, text]
@@ -20,13 +20,13 @@ repos:
       - id: check-toml
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.14.0
+    rev: v3.15.0
     hooks:
       - id: pyupgrade
         args: [--py38-plus]
 
   - repo: https://github.com/psf/black
-    rev: 23.9.1
+    rev: 23.10.1
     hooks:
       - id: black
         types: [python]
@@ -65,7 +65,7 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.1
+    rev: v1.6.1
     hooks:
       - id: mypy
         args:
@@ -73,13 +73,13 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.0.292"
+    rev: "v0.1.1"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.0
+    rev: v3.0.1
     hooks:
       - id: pylint
         args:
