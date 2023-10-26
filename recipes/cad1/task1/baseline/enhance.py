@@ -372,6 +372,10 @@ def enhance(config: DictConfig) -> None:
         sources_order = separation_model.sources
         normalise = True
     elif config.separator.model == "openunmix":
+        # line is a workaround from
+        # https://github.com/pytorch/pytorch/issues/617557
+        # pylint: disable=protected-access
+        torch.hub._validate_not_a_forked_repo = lambda a, b, c: True
         separation_model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq", niter=0)
         model_sample_rate = separation_model.sample_rate
         sources_order = ["vocals", "drums", "bass", "other"]
