@@ -43,11 +43,12 @@ def test_map_to_dict():
     assert output == expected_output
 
 
+@pytest.mark.xfail(reason="Github issue downloading from torch hub")
 @pytest.mark.parametrize(
     "separation_model,normalise",
     [
         (pytest.param("demucs"), True),
-        # (pytest.param("openunmix", marks=pytest.mark.slow), True),
+        (pytest.param("openunmix", marks=pytest.mark.slow), True),
     ],
 )
 def test_decompose_signal(separation_model, normalise):
