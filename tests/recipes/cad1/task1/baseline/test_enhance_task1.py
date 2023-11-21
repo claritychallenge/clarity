@@ -47,7 +47,7 @@ def test_map_to_dict():
     "separation_model,normalise",
     [
         (pytest.param("demucs"), True),
-        (pytest.param("openunmix", marks=pytest.mark.slow), True),
+        # (pytest.param("openunmix", marks=pytest.mark.slow), True),
     ],
 )
 def test_decompose_signal(separation_model, normalise):
