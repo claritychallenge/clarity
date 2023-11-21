@@ -1,6 +1,7 @@
 """Utility functions for the baseline model."""
 from __future__ import annotations
 
+# pylint: disable=import-error
 import json
 import logging
 import warnings
@@ -12,9 +13,6 @@ import pandas as pd
 from omegaconf import DictConfig
 
 from clarity.utils.audiogram import Listener
-
-# pylint: disable=import-error
-
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +38,7 @@ def read_mp3(
                 str(file_path),
                 sr=sample_rate,
                 mono=False,
-                res_type="kaiser_best",
+                res_type="soxr_hq",
                 dtype=np.float32,
             )
     except Exception as error:
@@ -95,12 +93,9 @@ def load_listeners_and_scenes(
         df_scenes = pd.read_json(fp, orient="index")
 
     # Load audiograms and scene data for the corresponding split
-    if config.evaluate.split == "train":
-        listeners = Listener.load_listener_dict(config.path.listeners_train_file)
-        scenes = df_scenes[df_scenes["split"] == "train"].to_dict("index")
-    elif config.evaluate.split == "valid":
-        listeners = Listener.load_listener_dict(config.path.listeners_valid_file)
-        scenes = df_scenes[df_scenes["split"] == "valid"].to_dict("index")
+    listeners = Listener.load_listener_dict(config.path.listeners_file)
+    if config.evaluate.split in ["train", "valid", "test"]:
+        scenes = df_scenes[df_scenes["split"] == config.evaluate.split].to_dict("index")
     else:
         raise ValueError(f"Unknown split {config.evaluate.split}")
 

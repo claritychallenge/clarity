@@ -3,7 +3,6 @@
 # pylint: disable=import-error
 from __future__ import annotations
 
-import csv
 import hashlib
 import logging
 from pathlib import Path
@@ -11,11 +10,12 @@ from pathlib import Path
 import hydra
 import numpy as np
 from omegaconf import DictConfig
-from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
+from clarity.utils.flac_encoder import read_flac_signal
+from clarity.utils.results_support import ResultsFile
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
 from recipes.cad1.task2.baseline.baseline_utils import (
     load_hrtf,
@@ -26,81 +26,6 @@ from recipes.cad1.task2.baseline.baseline_utils import (
 from recipes.cad1.task2.baseline.car_scene_acoustics import CarSceneAcoustics
 
 logger = logging.getLogger(__name__)
-
-
-class ResultsFile:
-    """A utility class for writing results to a CSV file.
-
-    Attributes:
-        file_name (str): The name of the file to write results to.
-    """
-
-    def __init__(self, file_name):
-        """Initialize the ResultsFile instance.
-
-        Args:
-            file_name (str): The name of the file to write results to.
-        """
-        self.file_name = file_name
-
-    def write_header(self):
-        """Write the header row to the CSV file."""
-        with open(self.file_name, "w", encoding="utf-8") as csv_f:
-            csv_writer = csv.writer(
-                csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-            )
-            csv_writer.writerow(
-                [
-                    "scene",
-                    "song",
-                    "genre",
-                    "listener",
-                    "score",
-                    "haaqi_left",
-                    "haaqi_right",
-                ]
-            )
-
-    # pylint: disable=too-many-arguments
-    def add_result(
-        self,
-        scene: str,
-        song: str,
-        genre: str,
-        listener: str,
-        score: float,
-        haaqi_left: float,
-        haaqi_right: float,
-    ):
-        """Add a result to the CSV file.
-
-        Args:
-            scene (str): The name of the scene that the result is for.
-            song (str): The name of the song that the result is for.
-            genre (str): The genre of the song that the result is for.
-            listener (str): The name of the listener who submitted the result.
-            score (float): The combined score for the result.
-            haaqi_left (float): The HAAQI score for the left channel.
-            haaqi_right (float): The HAAQI score for the right channel.
-        """
-
-        logger.info(f"The combined score for scene {scene}: {score:.4f}")
-
-        with open(self.file_name, "a", encoding="utf-8") as csv_f:
-            csv_writer = csv.writer(
-                csv_f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-            )
-            csv_writer.writerow(
-                [
-                    scene,
-                    song,
-                    genre,
-                    listener,
-                    str(score),
-                    str(haaqi_left),
-                    str(haaqi_right),
-                ]
-            )
 
 
 def set_scene_seed(scene: str):
@@ -228,10 +153,26 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
     enhanced_folder = Path("enhanced_signals")
     logger.info(f"Evaluating from {enhanced_folder} directory")
 
+    scores_headers = [
+        "scene",
+        "song",
+        "genre",
+        "listener",
+        "score",
+        "haaqi_left",
+        "haaqi_right",
+    ]
+
+    results_file_name = "scores.csv"
+    if config.evaluate.batch_size > 1:
+        results_file_name = (
+            f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv"
+        )
+
     results_file = ResultsFile(
-        f"scores_{config.evaluate.batch}-{config.evaluate.batch_size}.csv"
+        file_name=results_file_name,
+        header_columns=scores_headers,
     )
-    results_file.write_header()
 
     # Initialize acoustic scene model
     car_scene_acoustic = CarSceneAcoustics(
@@ -264,15 +205,14 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
 
         # Load enhanced signal
         enhanced_folder = Path("enhanced_signals") / config.evaluate.split
-        enhanced_song_id = f"{scene_id}_{listener.id}_{current_scene['song']}"
-        enhanced_song_path = (
-            enhanced_folder / f"{listener.id}" / f"{enhanced_song_id}.wav"
+        # Read WAV enhanced signal using scipy.io.wavfile
+        enhanced_signal, enhanced_sample_rate = read_flac_signal(
+            enhanced_folder
+            / f"{listener.id}"
+            / f"{scene_id}_{listener.id}_{current_scene['song']}.flac"
         )
 
-        # Read WAV enhanced signal using scipy.io.wavfile
-        enhanced_sample_rate, enhanced_signal = wavfile.read(enhanced_song_path)
-        enhanced_signal = enhanced_signal / 32768.0
-        assert enhanced_sample_rate == config.sample_rate
+        assert enhanced_sample_rate == config.enhanced_sample_rate
 
         # Evaluate scene
         aq_score_l, aq_score_r = evaluate_scene(
@@ -290,13 +230,15 @@ def run_calculate_audio_quality(config: DictConfig) -> None:
         # Compute combined score and save
         score = np.mean([aq_score_r, aq_score_l])
         results_file.add_result(
-            scene_id,
-            current_scene["song"],
-            current_scene["song_path"].split("/")[-2],
-            listener.id,
-            score=float(score),
-            haaqi_left=aq_score_l,
-            haaqi_right=aq_score_r,
+            {
+                "scene": scene_id,
+                "song": current_scene["song"],
+                "genre": current_scene["song_path"].split("/")[-2],
+                "listener": listener.id,
+                "score": float(score),
+                "haaqi_left": aq_score_l,
+                "haaqi_right": aq_score_r,
+            }
         )
 
 

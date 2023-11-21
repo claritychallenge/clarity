@@ -1,6 +1,7 @@
 """Test for baseline_utils.py"""
 from pathlib import Path
 
+# pylint: disable=import-error
 import librosa
 import numpy as np
 import pytest
@@ -35,7 +36,7 @@ def test_load_listeners_and_scenes():
         {
             "path": {
                 "scenes_file": (RESOURCES / "scenes.json").as_posix(),
-                "listeners_train_file": (RESOURCES / "listeners.json").as_posix(),
+                "listeners_file": (RESOURCES / "listeners.json").as_posix(),
                 "scenes_listeners_file": (
                     RESOURCES / "scenes_listeners.json"
                 ).as_posix(),

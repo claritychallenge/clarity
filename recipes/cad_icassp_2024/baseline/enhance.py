@@ -217,6 +217,7 @@ def enhance(config: DictConfig) -> None:
     # Load listener audiograms and songs
     listener_dict = Listener.load_listener_dict(config.path.listeners_file)
 
+    #
     with Path(config.path.gains_file).open("r", encoding="utf-8") as file:
         gains = json.load(file)
 

@@ -12,10 +12,11 @@ import hydra
 import numpy as np
 import pyloudnorm as pyln
 from omegaconf import DictConfig
-from scipy.io import wavfile
 from tqdm import tqdm
 
 from clarity.utils.audiogram import Listener
+from clarity.utils.flac_encoder import FlacEncoder
+from clarity.utils.signal_processing import clip_signal, resample, to_16bit
 from recipes.cad1.task2.baseline.baseline_utils import (
     make_scene_listener_list,
     read_mp3,
@@ -30,7 +31,7 @@ def compute_average_hearing_loss(listener: Listener) -> float:
     Compute the average hearing loss of a listener.
 
     Args:
-        listener (dict): The audiogram of the listener.
+        listener (Listener): The listener.
 
     Returns:
         average_hearing_loss (float): The average hearing loss of the listener.
@@ -56,7 +57,7 @@ def enhance_song(
 
     Args:
         waveform (np.ndarray): The waveform of the song.
-        listener_dict (dict): The audiograms of the listener.
+        listener (Listener): The listener.
         config (dict): Dictionary of configuration options for enhancing music.
 
     Returns:
@@ -110,6 +111,7 @@ def enhance(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
+    flac_encoder = FlacEncoder()
     for scene_id, listener_id in tqdm(scene_listener_pairs):
         current_scene = scenes[scene_id]
         listener = listener_dict[listener_id]
@@ -121,23 +123,26 @@ def enhance(config: DictConfig) -> None:
         out_l, out_r = enhance_song(
             waveform=song_waveform, listener=listener, config=config
         )
-
         enhanced = np.stack([out_l, out_r], axis=1)
-        filename = f"{scene_id}_{listener.id}_{current_scene['song']}.wav"
 
+        # Save the enhanced song
         enhanced_folder_listener = enhanced_folder / f"{listener.id}"
         enhanced_folder_listener.mkdir(parents=True, exist_ok=True)
+        filename = (
+            enhanced_folder_listener
+            / f"{scene_id}_{listener.id}_{current_scene['song']}.flac"
+        )
 
-        # Clip and save
-        if config.soft_clip:
-            enhanced = np.tanh(enhanced)
-        n_clipped = np.sum(np.abs(enhanced) > 1.0)
+        # - Resample to 32 kHz sample rate
+        # - Clip signal
+        # - Convert to 16bit
+        # - Compress using flac
+        enhanced = resample(enhanced, config.sample_rate, config.enhanced_sample_rate)
+        clipped_signal, n_clipped = clip_signal(enhanced, config.soft_clip)
         if n_clipped > 0:
             logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-        np.clip(enhanced, -1.0, 1.0, out=enhanced)
-        signal_16 = (32768.0 * enhanced).astype(np.int16)
-        wavfile.write(
-            enhanced_folder_listener / filename, config.sample_rate, signal_16
+        flac_encoder.encode(
+            to_16bit(clipped_signal), config.enhanced_sample_rate, filename
         )
 
 
