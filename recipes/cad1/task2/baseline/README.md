@@ -8,8 +8,8 @@ For more information please visit the [challenge website](https://cadenzachallen
 
 ### 1.1 Obtaining the CAD1 - Task2 data
 
-The music dataset for the First Cadenza Challenge - Task 2 is based on the small subset of the FMA [2] dataset
-(FMA-small) and the MTG-Jamendo dataset [4]. The dataset contains 1000 samples from seven musical genres,
+The music dataset for the First Cadenza Challenge - Task 2 is based on the small subset of the FMA [[2](#4-references)] dataset
+(FMA-small) and the MTG-Jamendo dataset [[4](#4-references)]. The dataset contains 1000 samples from seven musical genres,
 totalling 7000 songs with a distribution of 80% / 10% / 10% for `train`, `valid` and `test`.
 
 From FMA small:
@@ -82,16 +82,17 @@ If you have an Anaconda or Miniconda environment, you can install them as:
 * conda install -c conda-forge ffmpeg
 * conda install -c conda-forge libsndfile
 
-```bash
-
 ### 2.1 Enhancement
 
 The objective of the enhancement stage is takes a song and optimise it to a listener hearing characteristics
-knowing metadata information about the car noise scenario (you won't have access to noise signal), head
+knowing metadata information about the car noise scenario (note that you won't have access to noise signal), head
 rotation of the listener and the SNR of the enhanced music and the noise at the hearing aid microphones.
 
-In the baseline, we simply attenuate the song according to the average hearing loss and save it in 16-bit PCM WAV format.
+In the baseline, we attenuate the song according to the average hearing loss. The output are stereo signals
+that we save usi ng 32000 Hertz sample rate, 16bit precision, and we encoded it using the lossless FLAC compression.
 This attenuation prevents some clipping in the hearing aid output signal.
+
+The resulting signals are used for both, the objective (HAAQI) and subjective (listening panel) evaluation.
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
 where you have installed the Cadenza data foer the task2. This parameter defaults to one level above the recipe
@@ -120,8 +121,9 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 ### 2.2 Evaluation
 
 The `evaluate.py` module takes the enhanced signals and adds the room impulses and the car noise using
-the expected SNR. It then passes that signal through a fixed hearing aid. The hearing aid output and
-the reference song are used to compute the HAAQI [2] score.
+the expected SNR. It then passes that signal through a fixed hearing aid. The hearing aid is composed of
+NAL-R [[1](#4-references)] prescription and compression. The hearing aid output signal and
+the reference song are used to compute the HAAQI [[2](#4-references)] score.
 
 To run the evaluation stage, make sure that `path.root` is set in the `config.yaml` file and then run
 
@@ -138,9 +140,9 @@ Please note: you will not get identical HAAQI scores for the same signals if the
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
 As there are random noises generated within HAAQI, but the differences should be sufficiently small.
 
-The overall HAAQI score for baseline is 0.1248.
+The overall HAAQI score for baseline is **0.1423**.
 
-## References
+## 4. References
 
 * [1] Byrne, Denis, and Harvey Dillon. "The National Acoustic Laboratories'(NAL) new procedure for selecting the gain and frequency response of a hearing aid." Ear and hearing 7.4 (1986): 257-265. [doi:10.1097/00003446-198608000-00007](https://doi.org/10.1097/00003446-198608000-00007)
 * [2] Kates J M, Arehart K H. "The Hearing-Aid Audio Quality Index (HAAQI)". IEEE/ACM transactions on audio, speech, and language processing, 24(2), 354–365. [doi:10.1109/TASLP.2015.2507858](https://doi.org/10.1109%2FTASLP.2015.2507858)

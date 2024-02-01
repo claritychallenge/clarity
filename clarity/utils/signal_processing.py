@@ -1,10 +1,31 @@
 """Signal processing utilities."""
+# pylint: disable=import-error
 from __future__ import annotations
 
+# pylint: disable=import-error
 import numpy as np
 import scipy
 import soxr
 from numpy import ndarray
+
+
+def clip_signal(signal: np.ndarray, soft_clip: bool = False) -> tuple[np.ndarray, int]:
+    """Clip the signal.
+
+    Args:
+        signal (np.ndarray): Signal to be clipped and saved.
+        soft_clip (bool): Whether to use soft clipping.
+
+    Returns:
+        signal (np.ndarray): Clipped signal.
+        n_clipped (int): Number of samples clipped.
+    """
+
+    if soft_clip:
+        signal = np.tanh(signal)
+    n_clipped = np.sum(np.abs(signal) > 1.0)
+    signal = np.clip(signal, -1.0, 1.0)
+    return signal, int(n_clipped)
 
 
 def compute_rms(signal: ndarray) -> float:
@@ -86,3 +107,17 @@ def resample(
         )
 
     raise ValueError(f"Unknown resampling method: {method}")
+
+
+def to_16bit(signal: np.ndarray) -> np.ndarray:
+    """Convert the signal to 16 bit.
+
+    Args:
+        signal (np.ndarray): Signal to be converted.
+
+    Returns:
+        signal (np.ndarray): Converted signal.
+    """
+    signal = signal * 32768.0
+    signal = np.clip(signal, -32768.0, 32767.0)
+    return signal.astype(np.dtype("int16"))
