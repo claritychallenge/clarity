@@ -178,8 +178,9 @@ def haaqi_v1(
 def compute_haaqi(
     processed_signal: ndarray,
     reference_signal: ndarray,
+    processed_sample_rate: float,
+    reference_sample_rate: float,
     audiogram: Audiogram,
-    sample_rate: float,
     equalisation: int = 1,
     level1: float = 65.0,
 ) -> float:
@@ -191,8 +192,9 @@ def compute_haaqi(
         reference_signal (np.ndarray): Input reference speech signal with no noise
             or distortion. If a hearing loss is specified, NAL-R equalization
             is optional
+        processed_sample_rate (float): Sampling rate in Hz for processed signal.
+        reference_sample_rate (float): Sampling rate in Hz for reference signal.
         audiogram (Audiogram): Audiogram object.
-        sample_rate (int): Sample rate in Hz.
         equalisation (int): hearing loss equalization mode for reference signal:
             1 = no EQ has been provided, the function will add NAL-R
             2 = NAL-R EQ has already been added to the reference signal
@@ -211,9 +213,9 @@ def compute_haaqi(
 
     score, _, _, _ = haaqi_v1(
         reference=reference_signal,
-        reference_freq=sample_rate,
+        reference_freq=reference_sample_rate,
         processed=processed_signal,
-        processed_freq=sample_rate,
+        processed_freq=processed_sample_rate,
         audiogram=audiogram,
         equalisation=equalisation,
         level1=level1,

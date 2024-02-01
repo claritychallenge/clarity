@@ -112,9 +112,7 @@ class CarSceneAcoustics:
 
         Args:
             signal (np.ndarray): The audio signal to be enhanced.
-            audiogram (np.ndarray): An audiogram used to configure the NALR object.
-            center_frequencies (np.ndarray): An array of center frequencies
-                used to configure the NALR object.
+            audiogram (Audiogram): The audiogram of the listener.
 
         Returns:
             np.ndarray: The enhanced audio signal.

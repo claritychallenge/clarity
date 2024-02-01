@@ -1288,13 +1288,10 @@ def env_smooth(envelopes: np.ndarray, segment_size: int, sample_rate: float) -> 
     """
 
     # Compute the window
-    n_samples = int(
-        np.around(segment_size * (0.001 * sample_rate))
-    )  # Segment size in samples
-    test = n_samples - 2 * np.floor(n_samples / 2)  # 0=even, 1=odd
-    if test > 0:
-        # Force window length to be even
-        n_samples = n_samples + 1
+    # Segment size in samples
+    n_samples = int(np.around(segment_size * (0.001 * sample_rate)))
+    n_samples += n_samples % 2
+
     window = np.hanning(n_samples)  # Raised cosine von Hann window
     wsum = np.sum(window)  # Sum for normalization
 
@@ -1848,6 +1845,7 @@ def bm_covary(
         correlation = correlation[
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
         ]
+
         unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
         if (ref_mean_square > small) and (proc_mean_squared > small):
             # Normalize cross-covariance
@@ -1877,6 +1875,7 @@ def bm_covary(
             correlation = correlation[
                 int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
             ]
+
             unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
             if (ref_mean_square > small) and (proc_mean_squared > small):
                 # Normalize cross-covariance
@@ -1900,7 +1899,7 @@ def bm_covary(
         ref_mean_square = np.sum(reference_seg**2) * halfsum2
         proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-        correlation = np.correlate(reference_seg, processed_seg, "full")
+        correlation = correlate(reference_seg, processed_seg, "full")
         correlation = correlation[
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
         ]
