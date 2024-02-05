@@ -180,6 +180,14 @@ def ear_model(
     reference_b = np.zeros((nchan, nsamp))
     processed_b = np.zeros((nchan, nsamp))
 
+    reference_control, _, processed_control, _ = gammatone_basilar_membrane_vectorized(
+        reference_mid,
+        bandwidth_1,
+        processed_mid,
+        bandwidth_1,
+        freq_sample,
+        _center_freq_control,
+    )
     # Loop over each filter in the auditory filter bank
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
@@ -666,6 +674,79 @@ def middle_ear(reference: ndarray, freq_sample: float) -> ndarray:
     return lfilter(butterworth_high_pass, high_pass, y)
 
 
+def gammatone_basilar_membrane_vectorized(
+    reference: ndarray,
+    reference_bandwidth: ndarray,
+    processed: ndarray,
+    processed_bandwidth: ndarray,
+    freq_sample: float,
+    center_freq: ndarray,
+    ear_q: float = 9.26449,
+    min_bandwidth: float = 24.7,
+) -> tuple[ndarray, ndarray, ndarray, ndarray]:
+    erb = min_bandwidth + (center_freq / ear_q)
+
+    # Check the lengths of the two signals and trim to shortest
+    min_sample = min(len(reference), len(processed))
+    x = reference[:min_sample]
+    y = processed[:min_sample]
+
+    # Filter the first signal
+    # Initialize the filter coefficients
+    tpt = 2 * np.pi / freq_sample
+    tpt_bw = reference_bandwidth * tpt * erb * 1.019
+    a = np.exp(-tpt_bw)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
+
+    # Initialize the complex demodulation
+    npts = len(x)
+    sincf, coscf = gammatone_bandwidth_demodulation(
+        npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
+    )
+
+    # Filter the real and imaginary parts of the signal
+    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
+    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * sincf)
+    assert isinstance(ureal, np.ndarray)  # lfilter can return different types
+    assert isinstance(uimag, np.ndarray)
+
+    # Extract the BM velocity and the envelope
+    reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+    reference_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
+
+    # Filter the second signal using the existing cosine and sine sequences
+    tpt_bw = processed_bandwidth * tpt * erb * 1.019
+    a = np.exp(-tpt_bw)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
+
+    # Filter the real and imaginary parts of the signal
+    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * coscf)
+    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * sincf)
+    assert isinstance(ureal, np.ndarray)
+    assert isinstance(uimag, np.ndarray)
+
+    # Extract the BM velocity and the envelope
+    processed_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+    processed_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
+
+    return (
+        reference_envelope,
+        reference_basilar_membrane,
+        processed_envelope,
+        processed_basilar_membrane,
+    )
+
+
 def gammatone_basilar_membrane(
     reference: ndarray,
     reference_bandwidth: float,
@@ -745,7 +826,7 @@ def gammatone_basilar_membrane(
 
     # Initialize the complex demodulation
     npts = len(x)
-    sincf, coscf = gammatone_bandwidth_demodulation(
+    sincf, coscf = gammatone_bandwidth_demodulation_vectorized(
         npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
     )
 
@@ -785,6 +866,39 @@ def gammatone_basilar_membrane(
         processed_envelope,
         processed_basilar_membrane,
     )
+
+
+@njit
+def gammatone_bandwidth_demodulation_vectorized(
+    npts, tpt, center_freq, center_freq_cos, center_freq_sin
+):
+    """Gamma tone bandwidth demodulation
+
+    Arguments:
+        npts (): ???
+        tpt (): ???
+        center_freq (): ???
+        center_freq_cos (): ???
+        sincf (): ???
+
+    Returns:
+        sincf (): ???
+        coscf (): ???
+    """
+    cos_n = np.cos(tpt * center_freq)
+    sin_n = np.sin(tpt * center_freq)
+    cold = 1.0
+    sold = 0.0
+    center_freq_cos[0] = cold
+    center_freq_sin[0] = sold
+    for n in range(1, npts):
+        arg = cold * cos_n + sold * sin_n
+        sold = sold * cos_n - cold * sin_n
+        cold = arg
+        center_freq_cos[n] = cold
+        center_freq_sin[n] = sold
+
+    return center_freq_sin, center_freq_cos
 
 
 @njit

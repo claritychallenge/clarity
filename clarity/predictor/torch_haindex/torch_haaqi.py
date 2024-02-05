@@ -3,19 +3,16 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import logging
+from typing import Final
+
 import numpy as np
 import torch
-
 from numpy import ndarray
-from typing import Final
 
 from clarity.predictor.ha_ear_model.ear_model import EarModel
 from clarity.utils.audiogram import Audiogram
 
 logger = logging.getLogger(__name__)
-
-# HAAQI assumes the following audiogram frequencies:
-HAAQI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
 
 
 class TorchHAAQI(torch.nn.Module):
@@ -23,17 +20,21 @@ class TorchHAAQI(torch.nn.Module):
 
     def __init__(
         self,
-        processed_freq: float,
-        reference_freq: float,
+        equalisation: int = 1,
         silence_threshold: float = 2.5,
         add_noise: float = 0.0,
         segment_covariance: int = 16,
     ):
         """
+        TorchHAAQI
+
+        Signals need to be resample to 24000 Hz before calling the function
 
         Args:
-            processed_freq (float): Sampling rate in Hz for processed signal.
-            reference_freq (float): Sampling rate in Hz for reference signal.
+            equalisation (int): hearing loss equalization mode for reference signal
+                1 = no EQ has been provided, the function will add NAL-R
+                2 = NAL-R EQ has already been added to the reference signal
+                Defaults to 1
             silence_threshold (float): Silence threshold sum across bands,
                 dB above auditory threshold. Default : 2.5
             add_noise (float): Additive noise dB SL to condition cross-covariances.
@@ -42,29 +43,33 @@ class TorchHAAQI(torch.nn.Module):
                 Defaults to 16
         """
         super().__init__()
-        self.processed_freq = processed_freq
-        self.reference_freq = reference_freq
-
         self.silence_threshold = silence_threshold
         self.add_noise = add_noise
         self.segment_covariance = segment_covariance
+        self.equalisation = equalisation
 
     def forward(
         self,
-        reference: torch.Tensor,
         processed: torch.Tensor,
-        audiogram: Audiogram,
-        equalisation: int = 1,
+        reference: torch.Tensor,
+        audiogram: torch.Tensor,
         level1: float = 65.0,
-    ):
-        if not audiogram.has_frequencies(HAAQI_AUDIOGRAM_FREQUENCIES):
-            logging.warning(
-                "Audiogram does not have all HAAQI frequency measurements"
-                "Measurements will be interpolated"
-            )
-        audiogram = audiogram.resample(HAAQI_AUDIOGRAM_FREQUENCIES)
+    ) -> torch.Tensor:
+        """
+        Args:
+            processed (Torch.tensor): Processed signal with noise, distortion, HA gain,
+                and/or processing.
+            reference (Torch.tensor): Reference signal with no noise or distortion.
+            audiogram (torch.Tensor): hearing thresholds for frequencies
+                [250, 500, 1000, 2000, 4000, 6000].
+            level1 (float):  level1 (int): Optional input specifying level in dB SPL
+                that corresponds to a signal RMS = 1.
+                Default: 65
 
-        ear_model = EarModel(audiometric_freq=audiogram.frequencies)
+        Returns:
+            torch.Tensor, the batch with HAAQI scores
+        """
+        ear_model = EarModel()
 
         (
             reference_db,
@@ -73,14 +78,11 @@ class TorchHAAQI(torch.nn.Module):
             processed_basilar_membrane,
             reference_sl,
             processed_sl,
-            freq_sample,
-        ) = self.ear_model.forward(
+        ) = ear_model.forward(
             reference,
-            self.reference_freq,
             processed,
-            self.processed_freq,
-            audiogram.levels,
-            equalisation,
+            audiogram,
+            self.equalisation,
             level1,
         )
 

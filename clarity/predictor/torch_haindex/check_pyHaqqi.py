@@ -1,25 +1,23 @@
+import numpy as np
 import torch
 
-from clarity.predictor.ha_ear_model.ear_model import EarModel
+from clarity.evaluator.haspi.eb import center_frequency
+from clarity.evaluator.haspi.eb import ear_model as eb_ear_model
 from clarity.evaluator.haspi.eb import (
-    ear_model as eb_ear_model,
-    center_frequency,
-    loss_parameters,
-    input_align,
-    middle_ear,
-    gammatone_basilar_membrane,
     gammatone_bandwidth_demodulation,
+    gammatone_basilar_membrane,
+    input_align,
+    loss_parameters,
+    middle_ear,
 )
-
-import numpy as np
+from clarity.predictor.torch_haindex.ear_model import EarModel
 
 
 def check_ear_model():
     """Test ear model"""
     np.random.seed(0)
-    sig_len = 600
+    sig_len = 24000
     samp_freq = 24000
-    out_sig_len = sig_len * 24000 / samp_freq
 
     ref = np.random.random(size=sig_len)
     proc = np.random.random(size=sig_len)
@@ -31,12 +29,12 @@ def check_ear_model():
         hearing_loss=np.array([45, 45, 35, 45, 60, 65]),
         itype=0,
         level1=65,
-        nchan=10,
+        nchan=32,
         m_delay=1,
         shift=0.0,
     )
 
-    ear_model = EarModel(audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]))
+    ear_model = EarModel(nchan=10)
     (
         t_ref_db,
         t_ref_bm,
@@ -44,15 +42,12 @@ def check_ear_model():
         t_proc_bm,
         t_ref_sl,
         t_proc_sl,
-        t_freq_sample,
     ) = ear_model.forward(
-        torch.tensor(ref),
-        torch.tensor(samp_freq),
-        torch.tensor(ref + proc),
-        torch.tensor(samp_freq),
-        torch.tensor([45, 45, 35, 45, 60, 65]),
-        0,
-        65,
+        reference=torch.tensor(ref),
+        processed=torch.tensor(ref + proc),
+        hearing_loss=torch.tensor([45, 45, 35, 45, 60, 65]),
+        equalisation=0,
+        level1=65,
     )
 
     print(np.sum(np.abs(ref_db)) - np.sum(np.abs(t_ref_db.detach().numpy())))
@@ -61,7 +56,6 @@ def check_ear_model():
     print(np.sum(np.abs(proc_bm)) - np.sum(np.abs(t_proc_bm.detach().numpy())))
     print(np.sum(np.abs(ref_sl)) - np.sum(np.abs(t_ref_sl.detach().numpy())))
     print(np.sum(np.abs(proc_sl)) - np.sum(np.abs(t_proc_sl.detach().numpy())))
-    print(np.sum(np.abs(freq_sample)) - np.sum(np.abs(t_freq_sample.detach().numpy())))
 
     print("Done!")
 
@@ -78,7 +72,7 @@ def check_center_frequency():
         min_bw=24.7,
     )
     ear_model = EarModel(
-        nchan=10, audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000])
+        nchan=10,
     )
     t_center_freq = ear_model.center_frequency(
         low_freq=80,
@@ -109,9 +103,8 @@ def check_loss_parameters():
         audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
     )
 
-    ear_model = EarModel(
-        nchan=6, audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000])
-    )
+    ear_model = EarModel(nchan=6)
+
     (
         attenuated_ohc_t,
         bandwidth_t,
@@ -151,9 +144,7 @@ def check_input_align():
 
     ref, proc = input_align(reference_signal, processed_signal)
 
-    ear_model = EarModel(
-        nchan=6, audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000])
-    )
+    ear_model = EarModel(nchan=6)
     t_ref, t_proc = ear_model.input_align(
         torch.tensor(reference_signal),
         torch.tensor(processed_signal),
@@ -177,7 +168,7 @@ def check_middle_ear():
     reference_signal = 100 * np.random.random(size=sig_len)
     filtered_signal = middle_ear(reference_signal, 24000)
 
-    ear_model = EarModel(audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]))
+    ear_model = EarModel()
     t_filtered_signal = ear_model.middle_ear(torch.tensor(reference_signal))
 
     print("Middle Ear")
@@ -210,10 +201,7 @@ def check_gammatone_basilar_membrane():
         min_bandwidth=24.7,
     )
 
-    ear_model = EarModel(
-        audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
-        min_bandwidth=24.7,
-    )
+    ear_model = EarModel()
     (
         t_reference_envelope,
         t_reference_basilar_membrane,
@@ -259,10 +247,7 @@ def check_gammatone_bandwidth_demodulation():
         center_freq_sin=np.zeros(100),
     )
 
-    ear_model = EarModel(
-        audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
-        min_bandwidth=24.7,
-    )
+    ear_model = EarModel()
     (
         t_centre_freq_sin,
         t_centre_freq_cos,
@@ -284,10 +269,10 @@ def check_gammatone_bandwidth_demodulation():
 
 
 if __name__ == "__main__":
-    check_center_frequency()
-    check_loss_parameters()
-    check_input_align()
-    check_middle_ear()
-    check_gammatone_basilar_membrane()
-    check_gammatone_bandwidth_demodulation()
-    # check_ear_model()
+    # check_center_frequency()
+    # check_loss_parameters()
+    # check_input_align()
+    # check_middle_ear()
+    # check_gammatone_basilar_membrane()
+    # check_gammatone_bandwidth_demodulation()
+    check_ear_model()

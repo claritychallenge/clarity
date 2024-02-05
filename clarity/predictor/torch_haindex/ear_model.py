@@ -3,12 +3,16 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import torch
-from numpy import ndarray
 from torchaudio.functional import lfilter
 from torchaudio.transforms import Resample
 
-from clarity.predictor.ha_ear_model.interp1d import interp1d
-from clarity.predictor.ha_ear_model.utils import full_correlation
+from clarity.predictor.torch_haindex import (
+    COMPRESS_BASILAR_MEMBRANE_COEFS,
+    CORRECT_DELAY_COEFS,
+    MIDDLE_EAR_COEF,
+    full_correlation,
+    interp1d,
+)
 
 
 class EarModel(torch.nn.Module):
@@ -19,70 +23,15 @@ class EarModel(torch.nn.Module):
 
     """
 
-    # Basilar Membrane filter coefficients
-    COMPRESS_BASILAR_MEMBRANE_COEFS = {
-        "24000": {
-            "b": [0.09510798340249643, 0.09510798340249643],
-            "a": [1.0, -0.8097840331950071],
-        }
-    }
-    # Middle ear filter coefficients
-    MIDDLE_EAR_COEF = {
-        "24000": {
-            "butterworth_low_pass": [0.4341737512063021, 0.4341737512063021],
-            "low_pass": [1.0, -0.13165249758739583],
-            "butterworth_high_pass": [
-                0.9372603902698923,
-                -1.8745207805397845,
-                0.9372603902698923,
-            ],
-            "high_pass": [1.0, -1.8705806407352794, 0.8784609203442912],
-        }
-    }
-    CORRECT_DELAY_COEFS = [
-        0,
-        50,
-        92,
-        127,
-        157,
-        183,
-        205,
-        225,
-        242,
-        256,
-        267,
-        275,
-        283,
-        291,
-        299,
-        305,
-        311,
-        316,
-        320,
-        325,
-        329,
-        332,
-        335,
-        338,
-        340,
-        341,
-        342,
-        344,
-        344,
-        345,
-        346,
-        347,
-    ]
-
     def __init__(
         self,
-        audiometric_freq: list | ndarray,
         nchan: int = 32,
         m_delay: int = 1,
         shift: float = 0,
-        target_sample_rate: int = 24000,
+        freq_sample: int = 24000,
         small: float = 1e-30,
         min_bandwidth: float = 24.7,
+        device="cuda",
     ):
         """
         Constructor takes the reference and processed signals that are to be
@@ -98,8 +47,6 @@ class EarModel(torch.nn.Module):
                 1=quality: reference does not include NAL-R EQ
                 2=quality: reference already has NAL-R EQ applied
 
-            audiometric_freq (list): optional audiometric frequencies to use for the
-                hearing loss. If not specified, the default values are used.
             nchan (int): auditory frequency bands.
             m_delay (int): Compensate for the gammatone group delay.
             shift (float): optional frequency shift of the filter bank specified as
@@ -112,30 +59,31 @@ class EarModel(torch.nn.Module):
             small (float): small value to avoid division by zero.
         """
         super().__init__()
+        self.device = device
 
-        self.audiometric_freq = torch.tensor(audiometric_freq)
-        if self.audiometric_freq is None:
-            self.audiometric_freq = torch.tensor([250, 500, 1000, 2000, 4000, 6000])
+        self.audiometric_freq = torch.tensor([250, 500, 1000, 2000, 4000, 6000]).to(
+            self.device
+        )
 
         self.nchan = nchan
         self.m_delay = m_delay
-        self.target_sample_rate = target_sample_rate
+        self.freq_sample = freq_sample
         self.small = small
         self.min_bandwidth = min_bandwidth
 
         # General Precomputed parameters
         # -------------------------------
-        self._center_freq = self.center_frequency()
+        self._center_freq = self.center_frequency().to(self.device)
         self._center_freq_control = self.center_frequency(
             shift=None if shift == 0 else shift
-        )
+        ).to(self.device)
 
         # Loss parameters precomputed
         # ----------------------------
         self.nfilt = len(self._center_freq)
-        self.compression_ratio = 1.25 + 2.25 * torch.arange(self.nfilt) / (
-            self.nfilt - 1
-        )
+        self.compression_ratio = 1.25 + 2.25 * torch.arange(
+            self.nfilt, device=self.device
+        ) / (self.nfilt - 1)
         # HC loss that results in 1:1 compression
         self.max_ohc = 70 * (1 - (1 / self.compression_ratio))
         # Loss threshold for adjusting the OHC parameters
@@ -143,36 +91,40 @@ class EarModel(torch.nn.Module):
         # Output level for an input of 100 dB SPL
         self.upamp = 30 + (70 / self.compression_ratio)
 
-        # for equalisation = 0
-        [
-            self.attn_ohc_x,
-            self.bandwidth_min_x,
-            self.low_knee_x,
-            self.compression_ratio_x,
-            self.attn_ihc_x,
-        ] = self.loss_parameters(
-            torch.zeros(len(self.audiometric_freq)), self._center_freq
-        )
-
-        hl_max = torch.ones(self.audiometric_freq.size()) * 100
-
-        # Maximum BW for the control
-        _, self.bandwidth_1, _, _, _ = self.loss_parameters(
-            hl_max, self._center_freq_control
-        )
+        self.batch_size = 1
 
     def forward(
         self,
         reference,
-        reference_freq,
         processed,
-        processed_freq,
         hearing_loss,
         equalisation,
         level1,
     ):
+        # Add batch dimension when running a single signal
+        if 1 in [reference.ndim, processed.ndim, hearing_loss.ndim]:
+            raise ValueError(
+                f"Reference signal ({reference.size()}), "
+                f"processed signal ({processed.size()}) and, "
+                f"hearing loss ({hearing_loss.size()}) must "
+                "all have the same batch size. Min batch size = 1"
+            )
+
         if equalisation not in [0, 1, 2]:
             raise ValueError("equalisation must be 0, 1 or 2")
+
+        self.batch_size = reference.size(dim=0)
+
+        self._center_freq = self._center_freq.unsqueeze(0).repeat(self.batch_size, 1)
+        self._center_freq_control = self._center_freq_control.unsqueeze(0).repeat(
+            self.batch_size, 1
+        )
+        self.audiometric_freq = self.audiometric_freq.unsqueeze(0).repeat(
+            self.batch_size, 1
+        )
+        self.theoretical_ohc = self.theoretical_ohc.unsqueeze(0).repeat(
+            self.batch_size, 1
+        )
 
         (
             attn_ohc_y,
@@ -183,39 +135,45 @@ class EarModel(torch.nn.Module):
         ) = self.loss_parameters(hearing_loss, self._center_freq)
 
         if equalisation == 0:
-            attn_ohc_x = self.attn_ohc_x
-            bandwidth_min_x = self.bandwidth_min_x
-            low_knee_x = self.low_knee_x
-            compression_ratio_x = self.compression_ratio_x
-            attn_ihc_x = self.attn_ihc_x
-        else:
-            attn_ohc_x = attn_ohc_y
-            bandwidth_min_x = bandwidth_min_y
-            low_knee_x = low_knee_y
-            compression_ratio_x = compression_ratio_y
-            attn_ihc_x = attn_ihc_y
+            # for equalisation = 0
+            [
+                attn_ohc_x,
+                bandwidth_min_x,
+                low_knee_x,
+                compression_ratio_x,
+                attn_ihc_x,
+            ] = self.loss_parameters(
+                torch.zeros(self.audiometric_freq.size(), device=self.device),
+                self._center_freq,
+            )
 
-        # Input signal adjustments
-        # Convert the signals to 24 kHz sampling rate.
-        # Using 24 kHz guarantees that all of the cochlear filters have the same shape
-        # independent of the incoming signal sampling rates
-        reference_24hz, _ = self.resample(reference, reference_freq)
-        processed_24hz, freq_sample = self.resample(processed, processed_freq)
+            hl_max = (torch.ones(self.audiometric_freq.size()) * 100).to(self.device)
+
+            # Maximum BW for the control
+            _, self.bandwidth_1, _, _, _ = self.loss_parameters(
+                hl_max, self._center_freq_control
+            )
+        else:
+            attn_ohc_x = attn_ohc_y.clone()
+            bandwidth_min_x = bandwidth_min_y.clone()
+            low_knee_x = low_knee_y.clone()
+            compression_ratio_x = compression_ratio_y.clone()
+            attn_ihc_x = attn_ihc_y.clone()
 
         # Check file sizes
-        min_signal_length = min(len(reference_24hz), len(processed_24hz))
-        reference_24hz = reference_24hz[:min_signal_length]
-        processed_24hz = processed_24hz[:min_signal_length]
+        min_signal_length = min(reference.size()[1], processed.size()[1])
+        reference_24hz = reference[:, :min_signal_length]
+        processed_24hz = processed[:, :min_signal_length]
 
         # Bulk broadband signal alignment
-        reference_24hz, processed_24hz = self.input_align(
-            reference_24hz, processed_24hz
-        )
-        nsamp = len(reference_24hz)
+        # reference_24hz, processed_24hz = self.input_align(
+        #     reference_24hz, processed_24hz
+        # )
+        nsamp = reference_24hz.size()[1]
 
         # For HASQI, here add NAL-R equalization if the quality reference doesn't
         # already have it.
-        # TODO - NALR equalization is not implemented yet in torch
+        # TODO - NALR equalization in torch
         # if itype == 1:
         #     nfir = 140  # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
         #     enhancer = NALR(nfir, freq_sample)
@@ -228,21 +186,55 @@ class EarModel(torch.nn.Module):
         reference_mid = self.middle_ear(reference_24hz)
         processed_mid = self.middle_ear(processed_24hz)
 
-        reference_db = torch.zeros((self.nchan, nsamp))
-        processed_db = torch.zeros((self.nchan, nsamp))
+        reference_db = torch.zeros(
+            (self.batch_size, self.nchan, nsamp), device=self.device
+        )
+        processed_db = torch.zeros(
+            (self.batch_size, self.nchan, nsamp), device=self.device
+        )
 
         # Reference and processed average spectral values
-        reference_average = torch.zeros(self.nchan)
-        processed_average = torch.zeros(self.nchan)
-        reference_control_average = torch.zeros(self.nchan)
-        processed_control_average = torch.zeros(self.nchan)
+        reference_average = torch.zeros(
+            (self.batch_size, self.nchan), device=self.device
+        )
+        processed_average = torch.zeros(
+            (self.batch_size, self.nchan), device=self.device
+        )
+        reference_control_average = torch.zeros(
+            (self.batch_size, self.nchan), device=self.device
+        )
+        processed_control_average = torch.zeros(
+            (self.batch_size, self.nchan), device=self.device
+        )
 
         # Filter bandwidths adjusted for intensity
-        reference_bandwidth = torch.zeros(self.nchan)
-        processed_bandwidth = torch.zeros(self.nchan)
+        reference_bandwidth = torch.zeros(
+            (self.batch_size, self.nchan), device=self.device
+        )
+        processed_bandwidth = torch.zeros(
+            (self.batch_size, self.nchan), device=self.device
+        )
 
-        reference_b = torch.zeros((self.nchan, nsamp))
-        processed_b = torch.zeros((self.nchan, nsamp))
+        reference_b = torch.zeros(
+            (self.batch_size, self.nchan, nsamp), device=self.device
+        )
+        processed_b = torch.zeros(
+            (self.batch_size, self.nchan, nsamp), device=self.device
+        )
+
+        (
+            reference_control,
+            _,
+            processed_control,
+            _,
+        ) = self.gammatone_basilar_membrane(
+            reference_mid,
+            self.bandwidth_1,
+            processed_mid,
+            self.bandwidth_1,
+            self.freq_sample,
+            self._center_freq_control,
+        )
 
         # Loop over each filter in the auditory filter bank
         for n in range(self.nchan):
@@ -254,66 +246,72 @@ class EarModel(torch.nn.Module):
                 _,
             ) = self.gammatone_basilar_membrane(
                 reference_mid,
-                self.bandwidth_1[n],
+                self.bandwidth_1[:, n, None],
                 processed_mid,
-                self.bandwidth_1[n],
-                freq_sample,
-                self._center_freq_control[n],
+                self.bandwidth_1[:, n, None],
+                self.freq_sample,
+                self._center_freq_control[:, n, None],
             )
 
             # Adjust the auditory filter bandwidths for the average signal level
-            reference_bandwidth[n] = self.bandwidth_adjust(
-                reference_control, bandwidth_min_x[n], self.bandwidth_1[n], level1
+            reference_bandwidth[:, n, None] = self.bandwidth_adjust(
+                reference_control,
+                bandwidth_min_x[:, n, None],
+                self.bandwidth_1[:, n, None],
+                level1,
             )
-            processed_bandwidth[n] = self.bandwidth_adjust(
-                processed_control, bandwidth_min_y[n], self.bandwidth_1[n], level1
+            processed_bandwidth[:, n, None] = self.bandwidth_adjust(
+                processed_control,
+                bandwidth_min_y[:, n, None],
+                self.bandwidth_1[:, n, None],
+                level1,
             )
 
             # Envelopes and BM motion of the reference and processed signals
             xenv, xbm, yenv, ybm = self.gammatone_basilar_membrane(
                 reference_mid,
-                reference_bandwidth[n],
+                reference_bandwidth[:, n, None],
                 processed_mid,
-                processed_bandwidth[n],
-                freq_sample,
-                self._center_freq[n],
+                processed_bandwidth[:, n, None],
+                self.freq_sample,
+                self._center_freq[:, n, None],
             )
 
             # RMS levels of the ref and output envelopes for linear metric
-            reference_average[n] = torch.sqrt(torch.mean(xenv**2))
-            processed_average[n] = torch.sqrt(torch.mean(yenv**2))
-            reference_control_average[n] = torch.sqrt(
+            reference_average[:, n] = torch.sqrt(torch.mean(xenv**2))
+            processed_average[:, n] = torch.sqrt(torch.mean(yenv**2))
+            reference_control_average[:, n] = torch.sqrt(
                 torch.mean(reference_control**2)
             )
-            processed_control_average[n] = torch.sqrt(
+            processed_control_average[:, n] = torch.sqrt(
                 torch.mean(processed_control**2)
             )
 
             # Cochlear compression for the signal envelopes and BM motion
             (
                 reference_cochlear_compression,
-                reference_b[n],
+                reference_b[:, n, :],
             ) = self.env_compress_basilar_membrane(
                 xenv,
                 xbm,
                 reference_control,
-                attn_ohc_x[n],
-                low_knee_x[n],
-                compression_ratio_x[n],
-                freq_sample,
+                attn_ohc_x[..., n],
+                low_knee_x[..., n],
+                compression_ratio_x[..., n],
+                self.freq_sample,
                 level1,
             )
             (
                 processed_cochlear_compression,
-                processed_b[n],
+                processed_b[:, n, :],
             ) = self.env_compress_basilar_membrane(
                 yenv,
                 ybm,
                 processed_control,
-                attn_ohc_y[n],
-                low_knee_y[n],
-                compression_ratio_y[n],
-                freq_sample,
+                attn_ohc_y[:, n],
+                low_knee_y[:, n],
+                compression_ratio_y[:, n],
+                self.freq_sample,
                 level1,
             )
 
@@ -321,29 +319,40 @@ class EarModel(torch.nn.Module):
             processed_cochlear_compression = self.envelope_align(
                 reference_cochlear_compression, processed_cochlear_compression
             )  # Align processed envelope to reference
-            processed_b[n] = self.envelope_align(
-                reference_b[n], processed_b[n]
+            processed_b[:, n] = self.envelope_align(
+                reference_b[:, n], processed_b[:, n]
             )  # Align processed BM motion to reference
 
             # Convert the compressed envelopes and BM vibration envelopes to dB SPL
-            reference_cochlear_compression, reference_b[n] = self.envelope_sl(
-                reference_cochlear_compression, reference_b[n], attn_ihc_x[n], level1
+            reference_cochlear_compression, reference_b[:, n] = self.envelope_sl(
+                reference_cochlear_compression,
+                reference_b[:, n],
+                attn_ihc_x[:, n],
+                level1,
             )
-            processed_cochlear_compression, processed_b[n] = self.envelope_sl(
-                processed_cochlear_compression, processed_b[n], attn_ihc_y[n], level1
+            processed_cochlear_compression, processed_b[:, n] = self.envelope_sl(
+                processed_cochlear_compression,
+                processed_b[:, n],
+                attn_ihc_y[:, n],
+                level1,
             )
 
             # Apply the IHC rapid and short-term adaptation
             delta = 2  # Amount of overshoot
-            reference_db[n], reference_b[n] = self.inner_hair_cell_adaptation(
-                reference_cochlear_compression, reference_b[n], delta
+            reference_db[:, n], reference_b[:, n] = self.inner_hair_cell_adaptation(
+                reference_cochlear_compression, reference_b[:, n], delta
             )
-            processed_db[n], processed_b[n] = self.inner_hair_cell_adaptation(
-                processed_cochlear_compression, processed_b[n], delta
+            processed_db[:, n], processed_b[:, n] = self.inner_hair_cell_adaptation(
+                processed_cochlear_compression, processed_b[:, n], delta
             )
 
         # Additive noise level to give the auditory threshold
-        ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
+        # Additive noise level, dB re: auditory threshold
+        ihc_threshold = (
+            torch.tensor(-10, device=self.device)
+            .unsqueeze(0)
+            .repeat(self.batch_size, 1)
+        )
         reference_basilar_membrane = self.basilar_membrane_add_noise(
             reference_b, ihc_threshold, level1
         )
@@ -365,14 +374,10 @@ class EarModel(torch.nn.Module):
             reference_basilar_membrane = self.group_delay_compensate(
                 reference_basilar_membrane,
                 reference_bandwidth,
-                # self._center_freq,
-                # freq_sample,
             )
             processed_basilar_membrane = self.group_delay_compensate(
                 processed_basilar_membrane,
                 reference_bandwidth,
-                # self._center_freq,
-                # freq_sample,
             )
 
         # Convert average gammatone outputs to dB SPL
@@ -402,7 +407,6 @@ class EarModel(torch.nn.Module):
             processed_basilar_membrane,
             reference_sl,
             processed_sl,
-            freq_sample,
         )
 
     def center_frequency(
@@ -508,33 +512,27 @@ class EarModel(torch.nn.Module):
             compression_ratio : float
             attnenuated_ihc: torch.tensor
         """
-        if isinstance(center_freq, ndarray):
-            center_freq = torch.tensor(center_freq)
-
-        if isinstance(hearing_loss, ndarray):
-            hearing_loss = torch.tensor(hearing_loss)
-
         f_v = torch.cat(
             (
-                center_freq[0].unsqueeze(0),
+                center_freq[:, 0, None],
                 self.audiometric_freq,
-                center_freq[-1].unsqueeze(0),
+                center_freq[:, -1, None],
             ),
-            dim=0,
+            dim=1,
         )
         loss = interp1d(
             f_v,
             torch.cat(
                 (
-                    hearing_loss[0].unsqueeze(0),
+                    hearing_loss[:, 0, None],
                     hearing_loss,
-                    hearing_loss[-1].unsqueeze(0),
+                    hearing_loss[:, -1, None],
                 ),
-                dim=0,
+                dim=1,
             ),
             center_freq,
         )
-        loss = torch.maximum(loss, torch.zeros(loss.size())).squeeze(0)
+        loss = torch.maximum(loss, torch.zeros(loss.size(), device=self.device))
 
         # Apportion the loss in dB to the outer and inner hair cells based on the data
         # of
@@ -552,7 +550,7 @@ class EarModel(torch.nn.Module):
         )
 
         # Adjust the OHC bandwidth in proportion to the OHC loss
-        bandwidth = torch.ones(self.nfilt)
+        bandwidth = torch.ones((self.batch_size, self.nfilt), device=self.device)
         bandwidth = (
             bandwidth + (attenuated_ohc / 50.0) + 2.0 * (attenuated_ohc / 50.0) ** 6
         )
@@ -577,14 +575,14 @@ class EarModel(torch.nn.Module):
 
         """
 
-        sampler = Resample(sample_rate, self.target_sample_rate)
+        sampler = Resample(sample_rate, self.freq_sample)
 
         # Resample the signal
-        if sample_rate == self.target_sample_rate:
+        if sample_rate == self.freq_sample:
             # No resampling performed if the rates match
             return signal, sample_rate
 
-        return sampler(signal), self.target_sample_rate
+        return sampler(signal), self.freq_sample
 
     def input_align(self, reference, processed):
         # Match the length of the processed output to the reference for the purposes
@@ -602,9 +600,7 @@ class EarModel(torch.nn.Module):
         delay = min_sample_length - index - 1
 
         # Back up 2 msec to allow for dispersion
-        delay = torch.round(
-            delay - 2 * self.target_sample_rate / 1000
-        ).int()  # Back up 2 ms
+        delay = torch.round(delay - 2 * self.freq_sample / 1000).int()  # Back up 2 ms
 
         # Align the output with the reference allowing for the dispersion
         if delay > 0:
@@ -653,26 +649,28 @@ class EarModel(torch.nn.Module):
         Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
 
-        # Design the 1-pole Butterworth LP using the bilinear transformation
+        # Design the 1-pole Butterworth LP using the bi-linear transformation
         butterworth_low_pass = torch.tensor(
-            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["butterworth_low_pass"]
-        )
+            MIDDLE_EAR_COEF[str(self.freq_sample)]["butterworth_low_pass"]
+        ).to(self.device)
+
         low_pass = torch.tensor(
-            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["low_pass"],
+            MIDDLE_EAR_COEF[str(self.freq_sample)]["low_pass"],
             dtype=torch.float64,
-        )
+        ).to(self.device)
 
         # LP filter the input
         y = lfilter(reference, low_pass, butterworth_low_pass, clamp=False)
 
         # Design the 2-pole Butterworth HP using the bilinear transformation
         butterworth_high_pass = torch.tensor(
-            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["butterworth_high_pass"]
-        )
+            MIDDLE_EAR_COEF[str(self.freq_sample)]["butterworth_high_pass"]
+        ).to(self.device)
+
         high_pass = torch.tensor(
-            self.MIDDLE_EAR_COEF[str(self.target_sample_rate)]["high_pass"],
+            MIDDLE_EAR_COEF[str(self.freq_sample)]["high_pass"],
             dtype=torch.float64,
-        )
+        ).to(self.device)
 
         # HP fitler the signal
         return lfilter(y, high_pass, butterworth_high_pass, clamp=False)
@@ -738,14 +736,14 @@ class EarModel(torch.nn.Module):
         erb = self.min_bandwidth + (center_freq / ear_q)
 
         # Check the lengths of the two signals and trim to shortest
-        min_sample = min(len(reference), len(processed))
-        x = reference[:min_sample]
-        y = processed[:min_sample]
+        min_sample = min(reference.size(-1), processed.size(-1))
+        x = reference[:, :min_sample]
+        y = processed[:, :min_sample]
 
         # Filter the first signal
         # Initialize the filter coefficients
-        tpt = 2 * torch.pi / self.target_sample_rate
-        tpt_bw = reference_bandwidth * tpt * erb * 1.019
+        tpt = 2 * torch.pi / self.freq_sample
+        tpt_bw = reference_bandwidth.double() * tpt * erb * 1.019
         a = torch.exp(-tpt_bw)
         a_1 = 4.0 * a
         a_2 = -6.0 * a * a
@@ -755,29 +753,36 @@ class EarModel(torch.nn.Module):
         gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
 
         # Initialize the complex demodulation
-        npts = len(x)
+        npts = x.size(dim=1)
         sincf, coscf = self.gammatone_bandwidth_demodulation(npts, tpt, center_freq)
 
         # Filter the real and imaginary parts of the signal
+        one_tensor = torch.ones((self.batch_size, self.nchan), device=self.device)
+        zero_tensor = torch.zeros((self.batch_size, self.nchan), device=self.device)
         ureal = lfilter(
             x * coscf,
-            torch.tensor([1.0, -a_1, -a_2, -a_3, -a_4]).double(),
-            torch.tensor([1.0, a_1, a_5, 0, 0]).double(),
+            torch.cat([one_tensor, -a_1, -a_2, -a_3, -a_4], dim=1),
+            torch.cat([one_tensor, a_1, a_5, zero_tensor, zero_tensor], dim=1),
             clamp=False,
         )
         uimag = lfilter(
             x * sincf,
-            torch.tensor([1.0, -a_1, -a_2, -a_3, -a_4]).float().double(),
-            torch.tensor([1.0, a_1, a_5, 0, 0]).float().double(),
+            torch.cat([one_tensor, -a_1, -a_2, -a_3, -a_4], dim=1),
+            torch.cat([one_tensor, a_1, a_5, zero_tensor, zero_tensor], dim=1),
             clamp=False,
         )
 
+        ureal = ureal.unsqueeze(1).repeat(1, self.nchan, 1)
+        uimag = uimag.unsqueeze(1).repeat(1, self.nchan, 1)
+        coscf = coscf.unsqueeze(1).repeat(1, self.nchan, 1)
+        sincf = sincf.unsqueeze(1).repeat(1, self.nchan, 1)
+        gain = gain.unsqueeze(1).repeat(1, self.nchan, 1)
         # Extract the BM velocity and the envelope
         reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
         reference_envelope = gain * torch.sqrt(ureal * ureal + uimag * uimag)
 
         # Filter the second signal using the existing cosine and sine sequences
-        tpt_bw = processed_bandwidth * tpt * erb * 1.019
+        tpt_bw = processed_bandwidth.double() * tpt * erb * 1.019
         a = torch.exp(-tpt_bw)
         a_1 = 4.0 * a
         a_2 = -6.0 * a * a
@@ -789,14 +794,14 @@ class EarModel(torch.nn.Module):
         # Filter the real and imaginary parts of the signal
         ureal = lfilter(
             y * coscf,
-            torch.tensor([1, -a_1, -a_2, -a_3, -a_4]).double(),
-            torch.tensor([1, a_1, a_5, 0, 0]).double(),
+            torch.cat([one_tensor, -a_1, -a_2, -a_3, -a_4], dim=1),
+            torch.cat([one_tensor, a_1, a_5, zero_tensor, zero_tensor], dim=1),
             clamp=False,
         )
         uimag = lfilter(
             y * sincf,
-            torch.tensor([1, -a_1, -a_2, -a_3, -a_4]).double(),
-            torch.tensor([1, a_1, a_5, 0, 0]).double(),
+            torch.cat([one_tensor, -a_1, -a_2, -a_3, -a_4], dim=1),
+            torch.cat([one_tensor, a_1, a_5, zero_tensor, zero_tensor], dim=1),
             clamp=False,
         )
 
@@ -811,8 +816,8 @@ class EarModel(torch.nn.Module):
             processed_basilar_membrane,
         )
 
-    @staticmethod
     def gammatone_bandwidth_demodulation(
+        self,
         npts,
         tpt,
         center_freq,
@@ -830,24 +835,24 @@ class EarModel(torch.nn.Module):
             sincf (): ???
             coscf (): ???
         """
-        center_freq_cos = torch.zeros(npts)
-        center_freq_sin = torch.zeros(npts)
+        center_freq_cos = torch.zeros((self.batch_size, npts), device=self.device)
+        center_freq_sin = torch.zeros((self.batch_size, npts), device=self.device)
 
         if not isinstance(tpt, torch.FloatTensor):
-            tpt = torch.tensor(tpt)
+            tpt = torch.tensor(tpt).to(self.device)
 
         cos_n = torch.cos(tpt * center_freq)
         sin_n = torch.sin(tpt * center_freq)
         cold = 1.0
         sold = 0.0
-        center_freq_cos[0] = cold
-        center_freq_sin[0] = sold
+        center_freq_cos[:, 0] = cold
+        center_freq_sin[:, 0] = sold
         for n in range(1, npts):
             arg = cold * cos_n + sold * sin_n
             sold = sold * cos_n - cold * sin_n
             cold = arg
-            center_freq_cos[n] = cold
-            center_freq_sin[n] = sold
+            center_freq_cos[:, n] = cold
+            center_freq_sin[:, n] = sold
 
         return center_freq_sin, center_freq_cos
 
@@ -897,9 +902,9 @@ class EarModel(torch.nn.Module):
         envsig: torch.tensor,
         bm: torch.tensor,  # pylint: disable=invalid-name
         control: torch.tensor,
-        attn_ohc: float,
-        threshold_low: float,
-        compression_ratio: float,
+        attn_ohc: torch.tensor,
+        threshold_low: torch.tensor,
+        compression_ratio: torch.tensor,
         level1: float,
         threshold_high: int = 100,
     ) -> tuple[torch.tensor, torch.tensor]:
@@ -942,19 +947,22 @@ class EarModel(torch.nn.Module):
         # Clip signal levels above the upper threshold
         logenv = torch.minimum(logenv, torch.tensor(threshold_high))
         # Clip signal at the lower threshold
-        logenv = torch.maximum(logenv, threshold_low)
+        threshold_low = threshold_low.unsqueeze(1).repeat(1, logenv.shape[1])
+        logenv = torch.max(logenv, threshold_low)
 
+        attn_ohc = attn_ohc.unsqueeze(1).repeat(1, logenv.shape[1])
+        compression_ratio = compression_ratio.unsqueeze(1).repeat(1, logenv.shape[1])
         # Compute the compression gain in dB
         gain = -attn_ohc - (logenv - threshold_low) * (1 - (1 / compression_ratio))
 
         # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
         gain = torch.pow(10, gain / 20)
-        coefs = self.COMPRESS_BASILAR_MEMBRANE_COEFS[str(self.target_sample_rate)]
+        coefs = COMPRESS_BASILAR_MEMBRANE_COEFS[str(self.freq_sample)]
 
         gain = lfilter(
             gain.double(),
-            torch.tensor(coefs["a"], dtype=torch.double),
-            torch.tensor(coefs["b"], dtype=torch.double),
+            torch.tensor(coefs["a"], dtype=torch.double).to(self.device),
+            torch.tensor(coefs["b"], dtype=torch.double).to(self.device),
             clamp=False,
         )
 
@@ -995,24 +1003,76 @@ class EarModel(torch.nn.Module):
         # to the
         # same range as in Matlab, for consistent results
         lags = torch.round(
-            0.001 * torch.tensor(corr_range) * self.target_sample_rate
+            0.001
+            * torch.tensor(corr_range)
+            .unsqueeze(0)
+            .repeat(self.batch_size, 1)
+            .to(self.device)
+            * self.freq_sample
         ).int()
 
         # Range in samples
-        npts = torch.tensor(reference.size())
+        npts = (
+            torch.tensor(reference.size(dim=1))
+            .unsqueeze(0)
+            .repeat(self.batch_size, 1)
+            .to(self.device)
+        )
         lags = torch.min(lags, npts)
 
         ref_out_correlation = full_correlation(reference, output)
-        location = torch.argmax(
-            ref_out_correlation[npts - lags : npts + lags]
-        )  # Limit the range in which
+
+        # Limit the range in which
+
+        location = torch.zeros(lags.shape, device=self.device)
+        for n in range(location.shape[0]):
+            location[n] = torch.argmax(
+                ref_out_correlation[n, npts[n] - lags[n] : npts[n] + lags[n]],
+                keepdim=True,
+            )
+
         delay = lags - location - 1
 
+        out = []
         # Time shift the output sequence
-        if delay > 0:
-            # Output delayed relative to the reference
-            return torch.concatenate((output[delay:npts], torch.zeros(delay)))
-        return torch.concatenate((torch.zeros(-delay), output[: npts + delay]))
+        for n in range(self.batch_size):
+            if delay[n] > 0:
+                # Output delayed relative to the reference
+                out.append(
+                    torch.cat(
+                        (
+                            output[n, int(delay[n]) : int(npts[n])],
+                            torch.zeros(int(delay[n]), device=self.device),
+                        )
+                    )
+                )
+            else:
+                # Output advanced relative to the reference
+                out.append(
+                    torch.cat(
+                        (
+                            torch.zeros(int(-delay[n]), device=self.device),
+                            output[n, : int(npts[n] + delay[n])],
+                        )
+                    )
+                )
+        return torch.stack(out)
+        # if delay > 0:
+        #     # Output delayed relative to the reference
+        #     return torch.cat(
+        #         (
+        #             output[:, delay:npts],
+        #             torch.zeros((self.batch_size, delay), device=self.device),
+        #         ),
+        #         dim=1,
+        #     )
+        # return torch.cat(
+        #     (
+        #         torch.zeros((self.batch_size, -delay), device=self.device),
+        #         output[:, : torch.add(npts, delay)],
+        #     ),
+        #     dim=1,
+        # )
 
     def convert_rms_to_sl(
         self,
@@ -1055,13 +1115,17 @@ class EarModel(torch.nn.Module):
         """
 
         # Convert the control to dB SPL
-        control_db_spl = torch.maximum(control, torch.ones(control.size()) * self.small)
+        control_db_spl = torch.maximum(
+            control, torch.ones(control.size(), device=self.device) * self.small
+        )
         control_db_spl = level1 + 20 * torch.log10(control_db_spl)
         control_db_spl = torch.minimum(
-            control_db_spl, torch.ones(control_db_spl.size()) * threshold_high
+            control_db_spl,
+            torch.ones(control_db_spl.size(), device=self.device) * threshold_high,
         )
         control_db_spl = torch.maximum(
-            control_db_spl, torch.ones(control_db_spl.size()) * threshold_low
+            control_db_spl,
+            torch.ones(control_db_spl.size(), device=self.device) * threshold_low,
         )
 
         # Compute compression gain in dB
@@ -1071,14 +1135,16 @@ class EarModel(torch.nn.Module):
 
         # Convert the signal envelope to dB SPL
         control_db_spl = torch.maximum(
-            reference, torch.ones(control.size()) * self.small
+            reference, torch.ones(control.size(), device=self.device) * self.small
         )
         control_db_spl = level1 + 20 * torch.log10(control_db_spl)
         control_db_spl = torch.maximum(
-            control_db_spl, torch.zeros(control_db_spl.size())
+            control_db_spl, torch.zeros(control_db_spl.size(), device=self.device)
         )
         reference_db = control_db_spl + gain - attnenuated_ihc
-        reference_db = torch.maximum(reference_db, torch.zeros(reference_db.size()))
+        reference_db = torch.maximum(
+            reference_db, torch.zeros(reference_db.size(), device=self.device)
+        )
 
         return reference_db
 
@@ -1086,7 +1152,7 @@ class EarModel(torch.nn.Module):
         self,
         reference: torch.tensor,
         basilar_membrane: torch.tensor,
-        attenuated_ihc: float,
+        attenuated_ihc: torch.tensor,
         level1: float,
     ) -> tuple[torch.tensor, torch.tensor]:
         """
@@ -1111,8 +1177,11 @@ class EarModel(torch.nn.Module):
         Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
         # Convert the envelope to dB SL
+        attenuated_ihc = attenuated_ihc.unsqueeze(1).repeat(1, reference.size(1))
         _reference = level1 - attenuated_ihc + 20 * torch.log10(reference + self.small)
-        _reference = torch.maximum(_reference, torch.zeros(1))
+        _reference = torch.maximum(
+            _reference, torch.zeros(reference.size(), device=self.device)
+        )
 
         # Convert the linear BM motion to have a dB SL envelope
         gain = (_reference + self.small) / (reference + self.small)
@@ -1162,7 +1231,7 @@ class EarModel(torch.nn.Module):
         tau2 = 0.001 * tau2
 
         # Equivalent circuit parameters
-        freq_sample_inverse = 1 / self.target_sample_rate
+        freq_sample_inverse = 1 / self.freq_sample
         r_1 = 1 / delta
         r_2 = 0.5 * (1 - r_1)
         r_3 = r_2
@@ -1202,16 +1271,15 @@ class EarModel(torch.nn.Module):
             out = (v_0 - v_1) * r_1_inv
             output_db[n] = out
 
-        output_db = torch.maximum(output_db, torch.zeros(1))
+        output_db = torch.maximum(output_db, torch.zeros(1, device=self.device))
         gain = (output_db + small) / (reference_db + small)
 
         output_basilar_membrane = gain * reference_basilar_membrane
 
         return output_db, output_basilar_membrane
 
-    @staticmethod
     def basilar_membrane_add_noise(
-        reference: torch.tensor, threshold: int, level1: float
+        self, reference: torch.tensor, threshold: int, level1: float
     ) -> torch.tensor:
         """
         Apply the IHC attenuation to the BM motion and to add a low-level Gaussian
@@ -1232,8 +1300,8 @@ class EarModel(torch.nn.Module):
         """
         gain = 10 ** ((threshold - level1) / 20)  # Linear gain for the noise
 
-        # rng = np.random.default_rng()
-        noise = gain * torch.randn(reference.shape)  # Gaussian RMS=1, then attenuated
+        # Gaussian RMS=1, then attenuated
+        noise = gain * torch.randn(reference.size(), device=self.device)
         return reference + noise
 
     def group_delay_compensate(
@@ -1252,19 +1320,10 @@ class EarModel(torch.nn.Module):
         min_bandwidth: float = 24.7,
 
         Arguments:
-            xenv (np.ndarray): matrix of signal envelopes or BM motion
             bandwidths (): gammatone filter bandwidths adjusted for loss
-            center_freq (): center frequencies of the bands
-            freq_sample (): sampling rate for the input signal in Hz (e.g. 24,000 Hz)
-            ear_q (float):
-            min_bandwidth (float) :
 
         Returns:
             processed (): envelopes or BM motion compensated for the group delay.
-
-        Updates:
-            James M. Kates, 28 October 2011.
-            Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
         # Processing parameters
         nchan = len(bandwidths)
@@ -1301,14 +1360,14 @@ class EarModel(torch.nn.Module):
         # )  # Samples delay needed to add to give alignment
 
         # Add delay correction to each frequency band
-        processed = torch.zeros(reference.shape)
+        processed = torch.zeros(reference.shape, device=self.device)
         for n in range(nchan):
             ref = reference[n]
             npts = len(ref)
             processed[n] = torch.concatenate(
                 (
-                    torch.zeros(self.CORRECT_DELAY_COEFS[n]),
-                    ref[: npts - self.CORRECT_DELAY_COEFS[n]],
+                    torch.zeros(CORRECT_DELAY_COEFS[n], device=self.device),
+                    ref[: npts - CORRECT_DELAY_COEFS[n]],
                 )
             )
 

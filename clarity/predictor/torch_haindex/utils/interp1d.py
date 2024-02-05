@@ -1,5 +1,10 @@
-import torch
+"""
+CUDA 1-D interpolation for Pytorch.
+Original code from https://github.com/aliutkus/torchinterp1d/tree/master
+"""
 import contextlib
+
+import torch
 
 
 class Interp1d(torch.autograd.Function):
