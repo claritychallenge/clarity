@@ -1,4 +1,6 @@
 """Test the enhance module."""
+# pylint: disable=import-error
+
 from pathlib import Path
 
 import numpy as np
