@@ -16,8 +16,16 @@ from clarity.predictor.torch_haindex.ear_model import EarModel
 def check_ear_model():
     """Test ear model"""
     np.random.seed(0)
-    sig_len = 24000
     samp_freq = 24000
+    sig_len = 24000
+    for sig_len in [24000]:
+        for center_freq in [80, 114.49661]:
+            tpt = 0.0002617993877991494
+            sincf, coscf = gammatone_bandwidth_demodulation(
+                sig_len, tpt, center_freq, np.zeros(sig_len), np.zeros(sig_len)
+            )
+            a = np.stack((sincf, coscf), axis=1)
+            np.savetxt(f"a_{sig_len}_{center_freq}.csv", a, delimiter=",")
 
     ref = np.random.random(size=sig_len)
     proc = np.random.random(size=sig_len)

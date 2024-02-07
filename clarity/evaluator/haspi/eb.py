@@ -180,14 +180,6 @@ def ear_model(
     reference_b = np.zeros((nchan, nsamp))
     processed_b = np.zeros((nchan, nsamp))
 
-    reference_control, _, processed_control, _ = gammatone_basilar_membrane_vectorized(
-        reference_mid,
-        bandwidth_1,
-        processed_mid,
-        bandwidth_1,
-        freq_sample,
-        _center_freq_control,
-    )
     # Loop over each filter in the auditory filter bank
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
@@ -826,9 +818,11 @@ def gammatone_basilar_membrane(
 
     # Initialize the complex demodulation
     npts = len(x)
-    sincf, coscf = gammatone_bandwidth_demodulation_vectorized(
+    sincf, coscf = gammatone_bandwidth_demodulation(
         npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
     )
+    a = np.stack((sincf, coscf), axis=1).T
+    np.savetxt(f"a_{npts}.csv", a, delimiter=",")
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
