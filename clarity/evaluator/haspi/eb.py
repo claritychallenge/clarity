@@ -26,6 +26,61 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+COMPRESS_BASILAR_MEMBRANE_COEFS = {
+    "24000": {
+        "b": [0.09510798340249643, 0.09510798340249643],
+        "a": [1.0, -0.8097840331950071],
+    }
+}
+# Middle ear filter coefficients
+MIDDLE_EAR_COEF = {
+    "24000": {
+        "butterworth_low_pass": [0.4341737512063021, 0.4341737512063021],
+        "low_pass": [1.0, -0.13165249758739583],
+        "butterworth_high_pass": [
+            0.9372603902698923,
+            -1.8745207805397845,
+            0.9372603902698923,
+        ],
+        "high_pass": [1.0, -1.8705806407352794, 0.8784609203442912],
+    }
+}
+
+DELAY_COEFS = [
+    0,
+    50,
+    92,
+    127,
+    157,
+    183,
+    205,
+    225,
+    242,
+    256,
+    267,
+    275,
+    283,
+    291,
+    299,
+    305,
+    311,
+    316,
+    320,
+    325,
+    329,
+    332,
+    335,
+    338,
+    340,
+    341,
+    342,
+    344,
+    344,
+    345,
+    346,
+    347,
+]
+
 
 def ear_model(
     reference: ndarray,
@@ -654,14 +709,18 @@ def middle_ear(reference: ndarray, freq_sample: float) -> ndarray:
     """
 
     # Design the 1-pole Butterworth LP using the bilinear transformation
-    butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
+    if freq_sample == 24000:
+        butterworth_low_pass = MIDDLE_EAR_COEF["24000"]["butterworth_low_pass"]
+        low_pass = MIDDLE_EAR_COEF["24000"]["low_pass"]
+        butterworth_high_pass = MIDDLE_EAR_COEF["24000"]["butterworth_high_pass"]
+        high_pass = MIDDLE_EAR_COEF["24000"]["high_pass"]
+    else:
+        butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
+        # Design the 2-pole Butterworth HP using the bilinear transformation
+        butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
 
     # LP filter the input
     y = lfilter(butterworth_low_pass, low_pass, reference)
-
-    # Design the 2-pole Butterworth HP using the bilinear transformation
-    butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
-
     # HP filter the signal
     return lfilter(butterworth_high_pass, high_pass, y)
 
@@ -748,6 +807,14 @@ def gammatone_basilar_membrane(
     sincf, coscf = gammatone_bandwidth_demodulation(
         npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
     )
+
+    np.save("sincf.npy", sincf[:299])
+    np.savetxt("sincf.csv", sincf[:299])
+    np.save(
+        "coscf.npy",
+        coscf[:299],
+    )
+    np.savetxt("coscf.csv", coscf[:299])
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
@@ -916,7 +983,12 @@ def env_compress_basilar_membrane(
     # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
     gain = 10 ** (gain / 20)
     flp = 800
-    b, a = butter(1, flp / (0.5 * fsamp))
+
+    if fsamp == 24000:
+        b = COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["b"]
+        a = COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["a"]
+    else:
+        b, a = butter(1, flp / (0.5 * fsamp))
     gain = lfilter(b, a, gain)
 
     # Apply the gain to the signals
