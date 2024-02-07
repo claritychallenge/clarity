@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class HAAQI:
+class PyHAAQI:
     """
     Compute the HAAQI music quality index using the auditory model followed by
     computing the envelope cepstral correlation and Basilar Membrane vibration
@@ -81,7 +81,6 @@ class HAAQI:
         # Ear Model object
         ear_model_kwards = ear_model_kwards or {}
         self.ear_model = EarModel(
-            target_freq=ear_model_sample_rate,
             equalisation=equalisation,
             **ear_model_kwards,
         )
@@ -99,8 +98,7 @@ class HAAQI:
             processed_db,
             processed_basilar_membrane,
             reference_sl,
-            processed_sl,
-            _,
+            processed_sl
         ) = self.ear_model.compute(
             reference=reference,
             reference_freq=self.sample_rate,
@@ -788,7 +786,7 @@ class HAAQI:
 
         # Initialize the LP filter for loss of IHC synchronization
         # Center frequencies in Hz on an ERB scale
-        ear_model = EarModel(nchan=n_channels)
+        ear_model = EarModel(num_bands=n_channels)
         _center_freq = ear_model.center_frequency()
         # Default LP filter order
         if lp_filter_order is None:
@@ -914,7 +912,7 @@ def compute_haaqi(
         logger.error("If `Reference` is empty, `Processed` must be empty as well")
         return 0.0
 
-    haaqi_metric = HAAQI(
+    haaqi = PyHAAQI(
         signal_sample_rate=sample_rate,
         ear_model_sample_rate=24000.0,
         equalisation=equalisation,
@@ -923,10 +921,10 @@ def compute_haaqi(
         add_noise=0.0,
         segment_covariance=16,
         segment_size=8,
-        ear_model_kwards={"nchan": 32},
+        ear_model_kwards={"num_bands": 32},
     )
 
-    score, _, _, _ = haaqi_metric.compute(
+    score, _, _, _ = haaqi.compute(
         reference=reference_signal,
         processed=processed_signal,
         hearing_loss=audiogram_adjusted,

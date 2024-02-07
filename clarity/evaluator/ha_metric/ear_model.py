@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from numba import njit
-from scipy.signal import correlate, group_delay, lfilter, resample_poly
+from scipy.signal import correlate, lfilter
 
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.ha_metric.gammatone_filter import GammatoneFilter
 from clarity.evaluator.ha_metric.parameters import (
     COMPRESS_BASILAR_MEMBRANE_COEFS,
     MIDDLE_EAR_COEF,
-    RESAMPLE_COEFS,
+    DELAY_COEFS,
 )
 
 from clarity.utils.audiogram import Audiogram
@@ -163,9 +163,7 @@ class EarModel:
         processed = processed[:min_signal_length]
 
         # Aligned signals
-        reference, processed = self.input_align(
-            reference, processed, self.sample_frequency
-        )
+        reference, processed = self.input_align(reference, processed)
         nsamp = len(reference)
 
         # For HASQI, here add NAL-R equalization if the quality reference doesn't
@@ -178,8 +176,8 @@ class EarModel:
                 frequencies=np.array([250, 500, 1000, 2000, 4000, 6000]),
             )
             nalr_fir, _ = enhancer.build(audiogram)
-            reference_24hz = enhancer.apply(nalr_fir, reference)
-            reference_24hz = reference_24hz[nfir : nfir + nsamp]
+            reference = enhancer.apply(nalr_fir, reference)
+            reference = reference[nfir : nfir + nsamp]
 
         # Cochlear model
         # Middle ear
@@ -521,9 +519,8 @@ class EarModel:
 
         return attenuated_ohc, bandwidth, low_knee, compression_ratio, attenuated_ihc
 
-    @staticmethod
     def input_align(
-        reference: ndarray, processed: ndarray, fsamp: float = 24000.0
+        self, reference: ndarray, processed: ndarray
     ) -> tuple[ndarray, ndarray]:
         """
         Approximate temporal alignment of the reference and processed output
@@ -558,7 +555,9 @@ class EarModel:
         delay = min_sample_length // 2 - index
 
         # Back up 2 msec to allow for dispersion
-        delay = np.rint(delay - 2 * fsamp / 1000.0).astype(int)  # Back up 2 ms
+        delay = np.rint(delay - 2 * self.sample_frequency / 1000.0).astype(
+            int
+        )  # Back up 2 ms
 
         # Align the output with the reference allowing for the dispersion
         processed_out = np.zeros(processed_n)
@@ -952,44 +951,13 @@ class EarModel:
         # Processing parameters
         nchan = len(bandwidths)
 
-        # Filter ERB from Moore and Glasberg (1983)
-        erb = min_bandwidth + (center_freq / self.ear_q)
-
-        # Initialize the gammatone filter coefficients
-        tpt = 2 * np.pi / freq_sample
-        tpt_bandwidth = tpt * 1.019 * bandwidths * erb
-        a = np.exp(-tpt_bandwidth)
-        a_1 = 4.0 * a
-        a_2 = -6.0 * a * a
-        a_3 = 4.0 * a * a * a
-        a_4 = -a * a * a * a
-        a_5 = 4.0 * a * a
-
-        # Compute the group delay in samples at fsamp for each filter
-        _group_delay = np.zeros(nchan)
-        for n in range(nchan):
-            _, _group_delay[n] = group_delay(
-                ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
-            )
-        _group_delay = np.rint(_group_delay).astype(int)  # convert to integer samples
-
-        # Compute the delay correlation
-        group_delay_min = np.min(_group_delay)
-        _group_delay = (
-            _group_delay - group_delay_min
-        )  # Remove the minimum delay from all the over values
-        group_delay_max = np.max(_group_delay)
-        correct = (
-            group_delay_max - _group_delay
-        )  # Samples delay needed to add to give alignment
-
         # Add delay correction to each frequency band
         processed = np.zeros(reference.shape)
         for n in range(nchan):
             ref = reference[n]
             npts = len(ref)
             processed[n] = np.concatenate(
-                (np.zeros(correct[n]), ref[: npts - correct[n]])
+                (np.zeros(DELAY_COEFS[n]), ref[: npts - DELAY_COEFS[n]])
             )
 
         return processed
@@ -1033,7 +1001,7 @@ class EarModel:
             Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
 
-        control_db_spl = np.maximum(control, self.small)
+        control_db_spl = np.maximum(control, self.epsilon)
         control_db_spl = level1 + 20 * np.log10(control_db_spl)
         control_db_spl = np.minimum(control_db_spl, threshold_high)
         control_db_spl = np.maximum(control_db_spl, threshold_low)
@@ -1044,7 +1012,7 @@ class EarModel:
         )
 
         # Convert the signal envelope to dB SPL
-        control_db_spl = np.maximum(reference, self.small)
+        control_db_spl = np.maximum(reference, self.epsilon)
         control_db_spl = level1 + 20 * np.log10(control_db_spl)
         control_db_spl = np.maximum(control_db_spl, 0)
         reference_db = control_db_spl + gain - attenuated_ihc
