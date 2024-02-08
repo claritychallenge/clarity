@@ -7,6 +7,9 @@ When the sample rate is 24000 Hz, the constants are:
     - MIDDLE_EAR_COEF
     - DELAY_COEFS
 """
+
+import numpy as np
+
 COMPRESS_BASILAR_MEMBRANE_COEFS = {
     "24000": {
         "b": [0.09510798340249643, 0.09510798340249643],
@@ -61,3 +64,7 @@ DELAY_COEFS = [
     346,
     347,
 ]
+
+COSCF = np.load("clarity/evaluator/haspi/coscf.npy", allow_pickle=True).item()
+
+SINCF = np.load("clarity/evaluator/haspi/sincf.npy", allow_pickle=True).item()
