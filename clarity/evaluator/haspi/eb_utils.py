@@ -65,6 +65,8 @@ DELAY_COEFS = [
     347,
 ]
 
+center_freq = np.loadtxt("clarity/evaluator/ha_metric/center_freq.txt")
+
 COSCF = np.load("clarity/evaluator/haspi/coscf.npy", allow_pickle=True).item()
 
 SINCF = np.load("clarity/evaluator/haspi/sincf.npy", allow_pickle=True).item()
