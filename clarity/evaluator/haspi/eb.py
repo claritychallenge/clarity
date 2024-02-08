@@ -658,14 +658,21 @@ def middle_ear(reference: ndarray, freq_sample: float) -> ndarray:
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    # Design the 1-pole Butterworth LP using the bilinear transformation
-    butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
+    if freq_sample == 24000:
+        # Design the 1-pole Butterworth LP using the bilinear transformation
+        butterworth_low_pass = MIDDLE_EAR_COEF["24000"]["butterworth_low_pass"]
+        low_pass = MIDDLE_EAR_COEF["24000"]["low_pass"]
+        # Design the 2-pole Butterworth HP using the bilinear transformation
+        butterworth_high_pass = MIDDLE_EAR_COEF["24000"]["butterworth_high_pass"]
+        high_pass = MIDDLE_EAR_COEF["24000"]["high_pass"]
+    else:
+        # Design the 1-pole Butterworth LP using the bilinear transformation
+        butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
+        # Design the 2-pole Butterworth HP using the bilinear transformation
+        butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
 
     # LP filter the input
     y = lfilter(butterworth_low_pass, low_pass, reference)
-
-    # Design the 2-pole Butterworth HP using the bilinear transformation
-    butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
 
     # HP filter the signal
     return lfilter(butterworth_high_pass, high_pass, y)
