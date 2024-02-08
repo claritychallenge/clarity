@@ -19,6 +19,11 @@ from scipy.signal import (
 )
 
 from clarity.enhancer.nalr import NALR
+from clarity.evaluator.haspi.eb_utils import (
+    COMPRESS_BASILAR_MEMBRANE_COEFS,
+    DELAY_COEFS,
+    MIDDLE_EAR_COEF,
+)
 from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
@@ -916,7 +921,13 @@ def env_compress_basilar_membrane(
     # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
     gain = 10 ** (gain / 20)
     flp = 800
-    b, a = butter(1, flp / (0.5 * fsamp))
+
+    if fsamp == 24000:
+        b = COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["b"]
+        a = COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["a"]
+    else:
+        b, a = butter(1, flp / (0.5 * fsamp))
+
     gain = lfilter(b, a, gain)
 
     # Apply the gain to the signals
