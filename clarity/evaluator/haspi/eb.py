@@ -13,7 +13,6 @@ from scipy.signal import (
     convolve,
     correlate,
     firwin,
-    group_delay,
     lfilter,
     resample_poly,
 )
@@ -1145,6 +1144,7 @@ def basilar_membrane_add_noise(
     return reference + noise
 
 
+# pylint: disable=unused-argument
 def group_delay_compensate(
     reference: ndarray,
     bandwidths: ndarray,
@@ -1177,43 +1177,14 @@ def group_delay_compensate(
     # Processing parameters
     nchan = len(bandwidths)
 
-    # Filter ERB from Moore and Glasberg (1983)
-    erb = min_bandwidth + (center_freq / ear_q)
-
-    # Initialize the gammatone filter coefficients
-    tpt = 2 * np.pi / freq_sample
-    tpt_bandwidth = tpt * 1.019 * bandwidths * erb
-    a = np.exp(-tpt_bandwidth)
-    a_1 = 4.0 * a
-    a_2 = -6.0 * a * a
-    a_3 = 4.0 * a * a * a
-    a_4 = -a * a * a * a
-    a_5 = 4.0 * a * a
-
-    # Compute the group delay in samples at fsamp for each filter
-    _group_delay = np.zeros(nchan)
-    for n in range(nchan):
-        _, _group_delay[n] = group_delay(
-            ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
-        )
-    _group_delay = np.rint(_group_delay).astype(int)  # convert to integer samples
-
-    # Compute the delay correlation
-    group_delay_min = np.min(_group_delay)
-    _group_delay = (
-        _group_delay - group_delay_min
-    )  # Remove the minimum delay from all the over values
-    group_delay_max = np.max(_group_delay)
-    correct = (
-        group_delay_max - _group_delay
-    )  # Samples delay needed to add to give alignment
-
     # Add delay correction to each frequency band
     processed = np.zeros(reference.shape)
     for n in range(nchan):
         ref = reference[n]
         npts = len(ref)
-        processed[n] = np.concatenate((np.zeros(correct[n]), ref[: npts - correct[n]]))
+        processed[n] = np.concatenate(
+            (np.zeros(DELAY_COEFS[n]), ref[: npts - DELAY_COEFS[n]])
+        )
 
     return processed
 
