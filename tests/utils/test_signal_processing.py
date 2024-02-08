@@ -6,6 +6,7 @@ import pytest
 from clarity.utils.signal_processing import (
     clip_signal,
     compute_rms,
+    cross_correlation,
     denormalize_signals,
     normalize_signal,
     resample,
@@ -270,3 +271,21 @@ def test_resample_with_3d_array_error():
         resample(
             signal=input_signal, sample_rate=16000, new_sample_rate=8000, method="soxr"
         )
+
+
+@pytest.mark.parametrize(
+    "mode,expected_result",
+    [
+        ("dot", 155),
+        ("corr", 1),
+    ],
+)
+def test_crosscorrelation(mode, expected_result):
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([5, 4, 3, 2, 1])
+    maxlag = 2
+    result = cross_correlation(x, y, maxlag, mode)
+    print(result)
+    assert np.sum(result) == pytest.approx(
+        expected_result, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )

@@ -789,6 +789,14 @@ def gammatone_basilar_membrane(
     )
 
 
+def gammatone_bandwith_demu(samplerate, tpt, center_freq):
+    dt = float(1 / samplerate)
+    theta = 2 * np.pi * center_freq * dt
+    cos_theta = np.cos(theta)
+    sin_theta = np.sin(theta)
+    return sin_theta, cos_theta
+
+
 @njit()
 def gammatone_bandwidth_demodulation(
     npts, tpt, center_freq, center_freq_cos, center_freq_sin
