@@ -3,6 +3,7 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import logging
+import time
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -20,8 +21,10 @@ from scipy.signal import (
 from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi.eb_utils import (
     COMPRESS_BASILAR_MEMBRANE_COEFS,
+    COSCF,
     DELAY_COEFS,
     MIDDLE_EAR_COEF,
+    SINCF,
 )
 from clarity.utils.audiogram import Audiogram
 
@@ -136,8 +139,15 @@ def ear_model(
     # Convert the signals to 24 kHz sampling rate.
     # Using 24 kHz guarantees that all of the cochlear filters have the same shape
     # independent of the incoming signal sampling rates
-    reference_24hz, _ = resample_24khz(reference, reference_freq)
-    processed_24hz, freq_sample = resample_24khz(processed, processed_freq)
+    freq_sample = 24000
+    if reference_freq == freq_sample:
+        reference_24hz = reference
+    else:
+        reference_24hz, _ = resample_24khz(reference, reference_freq)
+    if processed_freq == freq_sample:
+        processed_24hz = processed
+    else:
+        processed_24hz, freq_sample = resample_24khz(processed, processed_freq)
 
     # Check file sizes
     min_signal_length = min(len(reference_24hz), len(processed_24hz))
@@ -163,6 +173,7 @@ def ear_model(
 
     # Cochlear model
     # Middle ear
+
     reference_mid = middle_ear(reference_24hz, freq_sample)
     processed_mid = middle_ear(processed_24hz, freq_sample)
 
@@ -185,6 +196,7 @@ def ear_model(
     processed_b = np.zeros((nchan, nsamp))
 
     # Loop over each filter in the auditory filter bank
+
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
         reference_control, _, processed_control, _ = gammatone_basilar_membrane(
@@ -197,6 +209,7 @@ def ear_model(
         )
 
         # Adjust the auditory filter bandwidths for the average signal level
+
         reference_bandwidth[n] = bandwidth_adjust(
             reference_control, bandwidth_min_x[n], bandwidth_1[n], level1
         )
@@ -205,6 +218,7 @@ def ear_model(
         )
 
         # Envelopes and BM motion of the reference and processed signals
+
         xenv, xbm, yenv, ybm = gammatone_basilar_membrane(
             reference_mid,
             reference_bandwidth[n],
@@ -221,6 +235,7 @@ def ear_model(
         processed_control_average[n] = np.sqrt(np.mean(processed_control**2))
 
         # Cochlear compression for the signal envelopes and BM motion
+
         reference_cochlear_compression, reference_b[n] = env_compress_basilar_membrane(
             xenv,
             xbm,
@@ -231,6 +246,7 @@ def ear_model(
             freq_sample,
             level1,
         )
+
         processed_cochlear_compression, processed_b[n] = env_compress_basilar_membrane(
             yenv,
             ybm,
@@ -243,6 +259,7 @@ def ear_model(
         )
 
         # Correct for the delay between the reference and output
+
         processed_cochlear_compression = envelope_align(
             reference_cochlear_compression, processed_cochlear_compression
         )  # Align processed envelope to reference
@@ -251,6 +268,7 @@ def ear_model(
         )  # Align processed BM motion to reference
 
         # Convert the compressed envelopes and BM vibration envelopes to dB SPL
+
         reference_cochlear_compression, reference_b[n] = envelope_sl(
             reference_cochlear_compression, reference_b[n], attn_ihc_x[n], level1
         )
@@ -260,6 +278,7 @@ def ear_model(
 
         # Apply the IHC rapid and short-term adaptation
         delta = 2  # Amount of overshoot
+
         reference_db[n], reference_b[n] = inner_hair_cell_adaptation(
             reference_cochlear_compression, reference_b[n], delta, freq_sample
         )
@@ -277,6 +296,7 @@ def ear_model(
     )
 
     # Correct for the gammatone filterbank interchannel group delay.
+
     if m_delay > 0:
         reference_db = group_delay_compensate(
             reference_db, reference_bandwidth, _center_freq, freq_sample
@@ -756,14 +776,22 @@ def gammatone_basilar_membrane(
 
     # Initialize the complex demodulation
     npts = len(x)
-    sincf, coscf = gammatone_bandwidth_demodulation(
-        npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
-    )
+    # if str(round(center_freq, 8)) in COSCF and str(round(center_freq, 8)) in SINCF:
+    #     coscf = np.tile(
+    #         COSCF[str(round(center_freq, 8))],
+    #         int(np.ceil(npts / len(COSCF[str(round(center_freq, 8))]))),
+    #     )[:npts]
+    #     sincf = np.tile(
+    #         SINCF[str(round(center_freq, 8))],
+    #         int(np.ceil(npts / len(SINCF[str(round(center_freq, 8))]))),
+    #     )[:npts]
+    # else:
+    sincf, coscf = gammatone_bandwidth_demodulation(npts, tpt, center_freq)
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
     uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * sincf)
-    assert isinstance(ureal, np.ndarray)  # lfilter can return different types
+    assert isinstance(ureal, np.ndarray)
     assert isinstance(uimag, np.ndarray)
 
     # Extract the BM velocity and the envelope
@@ -799,9 +827,7 @@ def gammatone_basilar_membrane(
 
 
 @njit
-def gammatone_bandwidth_demodulation(
-    npts, tpt, center_freq, center_freq_cos, center_freq_sin
-):
+def gammatone_bandwidth_demodulation(npts, tpt, center_freq):
     """Gamma tone bandwidth demodulation
 
     Arguments:
@@ -815,6 +841,9 @@ def gammatone_bandwidth_demodulation(
         sincf (): ???
         coscf (): ???
     """
+    center_freq_cos = np.zeros(npts)
+    center_freq_sin = np.zeros(npts)
+
     cos_n = np.cos(tpt * center_freq)
     sin_n = np.sin(tpt * center_freq)
     cold = 1.0
@@ -916,10 +945,10 @@ def env_compress_basilar_membrane(
     # Convert the control envelope to dB SPL
     logenv = np.maximum(control, small)
     logenv = level1 + 20 * np.log10(logenv)
-    logenv = np.minimum(
-        logenv, threshold_high
-    )  # Clip signal levels above the upper threshold
-    logenv = np.maximum(logenv, threshold_low)  # Clip signal at the lower threshold
+    # Clip signal levels above the upper threshold
+    logenv = np.minimum(logenv, threshold_high)
+    # Clip signal at the lower threshold
+    logenv = np.maximum(logenv, threshold_low)
 
     # Compute the compression gain in dB
     gain = -attn_ohc - (logenv - threshold_low) * (1 - (1 / compression_ratio))

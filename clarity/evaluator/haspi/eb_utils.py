@@ -8,7 +8,7 @@ When the sample rate is 24000 Hz, the constants are:
     - DELAY_COEFS
 """
 
-import numpy as np
+import json
 
 COMPRESS_BASILAR_MEMBRANE_COEFS = {
     "24000": {
@@ -65,8 +65,8 @@ DELAY_COEFS = [
     347,
 ]
 
-center_freq = np.loadtxt("clarity/evaluator/ha_metric/center_freq.txt")
+with open("coscf.json") as f:
+    COSCF = json.load(f)
 
-COSCF = np.load("clarity/evaluator/haspi/coscf.npy", allow_pickle=True).item()
-
-SINCF = np.load("clarity/evaluator/haspi/sincf.npy", allow_pickle=True).item()
+with open("sincf.json") as f:
+    SINCF = json.load(f)

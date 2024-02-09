@@ -4,19 +4,109 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7776b040-b92d-41c6-acb5-25f6feeda454" name="Changes" comment="" />
+    <list default="true" id="7776b040-b92d-41c6-acb5-25f6feeda454" name="Changes" comment="add Group delay">
+      <change afterPath="$PROJECT_DIR$/clarity/evaluator/ha_metric/find period.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clarity/evaluator/haspi/coscf.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clarity/evaluator/haspi/sincf.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clarity/evaluator/haspi/eb.py" beforeDir="false" afterPath="$PROJECT_DIR$/clarity/evaluator/haspi/eb.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clarity/evaluator/haspi/eb_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/clarity/evaluator/haspi/eb_utils.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2c7n8b72deLlWFEi93yWS1STGJX" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "363-add-precomputations-to-haaqi",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "last_opened_file_path": "/media/gerardo/Extended/clarity/clarity/evaluator/haspi",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/clarity/evaluator/haspi" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="clarity" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="haaqiing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="clarity" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/clarity/evaluator/ha_metric/haaqiing.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.haaqiing" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="add Group delay">
       <option name="closed" value="true" />
@@ -26,13 +116,42 @@
       <option name="project" value="LOCAL" />
       <updated>1707390212630</updated>
     </task>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7776b040-b92d-41c6-acb5-25f6feeda454" name="Changes" comment="" />
+      <created>1707471329272</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1707471329272</updated>
+      <workItem from="1707471331159" duration="12137000" />
+    </task>
     <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Group delay" />
     <MESSAGE value="add Group delay" />
     <option name="LAST_COMMIT_MESSAGE" value="add Group delay" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook:///media/gerardo/Extended/clarity/clarity/evaluator/ha_metric/find period.ipynb</url>
+          <line>7</line>
+          <option name="timeStamp" value="758" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="round(center_freq, 8)" />
+        <watch expression="COSCF" />
+        <watch expression="np.ceil(npts / len(COSCF[str(round(center_freq, 8))]))" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/clarity$t_haaqi_rms.coverage" NAME="t_haaqi_rms Coverage Results" MODIFIED="1681808962698" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/recipes/cad1/task1/baseline" />
@@ -68,7 +187,7 @@
     <SUITE FILE_PATH="coverage/clarity$pytest_in_test_evaluate_py.coverage" NAME="pytest in test_evaluate.py Coverage Results" MODIFIED="1677596335776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task1" />
     <SUITE FILE_PATH="coverage/clarity$t_eb_loss_parameters.coverage" NAME="t_eb_loss_parameters Coverage Results" MODIFIED="1679399195600" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/haaqi" />
     <SUITE FILE_PATH="coverage/clarity$haaqi__1_.coverage" NAME="haaqi (1) Coverage Results" MODIFIED="1680809440405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/haaqi" />
-    <SUITE FILE_PATH="coverage/clarity$haaqiing.coverage" NAME="haaqiing Coverage Results" MODIFIED="1694639309638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+    <SUITE FILE_PATH="coverage/clarity$haaqiing.coverage" NAME="haaqiing Coverage Results" MODIFIED="1707493357715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_haaqi_test_haaqi_v1.coverage" NAME="pytest for test_haaqi.test_haaqi_v1 Coverage Results" MODIFIED="1680718781728" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/evaluator/haaqi" />
     <SUITE FILE_PATH="coverage/clarity$test.coverage" NAME="test Coverage Results" MODIFIED="1707229438945" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor/torch_haindex" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_carnoise_parameter_generator_test_gen_parameters.coverage" NAME="pytest for test_carnoise_parameter_generator.test_gen_parameters Coverage Results" MODIFIED="1678194855323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/utils/car_noise_simulator" />
@@ -77,13 +196,14 @@
     <SUITE FILE_PATH="coverage/clarity$center_frequency.coverage" NAME="center_frequency Coverage Results" MODIFIED="1680790133381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/torch_version" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_enhance_test_enhance_song.coverage" NAME="pytest for test_enhance.test_enhance_song Coverage Results" MODIFIED="1678808092105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
     <SUITE FILE_PATH="coverage/clarity$compare_metrics.coverage" NAME="compare_metrics Coverage Results" MODIFIED="1681816019485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
-    <SUITE FILE_PATH="coverage/clarity$eval_refractoring.coverage" NAME="eval_refractoring Coverage Results" MODIFIED="1707385156160" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+    <SUITE FILE_PATH="coverage/clarity$eval_refractoring.coverage" NAME="eval_refractoring Coverage Results" MODIFIED="1707390619681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$refractor_haaqi.coverage" NAME="refractor_haaqi Coverage Results" MODIFIED="1683979267123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_build_scene_metadata_test_get_random_car_params.coverage" NAME="pytest for test_build_scene_metadata.test_get_random_car_params Coverage Results" MODIFIED="1678211143647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_evaluate_test_ResultsFile.coverage" NAME="pytest for test_evaluate.test_ResultsFile Coverage Results" MODIFIED="1677156685142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task1" />
     <SUITE FILE_PATH="coverage/clarity$check_pyHaqqi2.coverage" NAME="check_pyHaqqi2 Coverage Results" MODIFIED="1707228623262" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor/torch_haindex" />
-    <SUITE FILE_PATH="coverage/clarity$haaqiing__1_.coverage" NAME="haaqiing Coverage Results" MODIFIED="1683912848661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+    <SUITE FILE_PATH="coverage/clarity$haaqiing__1_.coverage" NAME="haaqiing (1) Coverage Results" MODIFIED="1707395981247" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$pytest_in_test_haaqi_py.coverage" NAME="pytest in test_haaqi.py Coverage Results" MODIFIED="1674148975549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/evaluator/haaqi" />
+    <SUITE FILE_PATH="coverage/clarity$eb_utils.coverage" NAME="eb_utils Coverage Results" MODIFIED="1707396428122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/haspi" />
     <SUITE FILE_PATH="coverage/clarity$haaqi.coverage" NAME="haaqi Coverage Results" MODIFIED="1680802109645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_torch" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_baseline_utils_test_read_mp3.coverage" NAME="pytest for test_baseline_utils.test_read_mp3 Coverage Results" MODIFIED="1678633097855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
     <SUITE FILE_PATH="coverage/clarity$gen_sample_noise.coverage" NAME="gen_sample_noise Coverage Results" MODIFIED="1678194411586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/utils/car_noise_simulator" />
