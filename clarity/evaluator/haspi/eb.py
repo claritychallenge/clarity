@@ -155,7 +155,7 @@ def ear_model(
     processed_24hz = processed_24hz[:min_signal_length]
 
     # Bulk broadband signal alignment
-    reference_24hz, processed_24hz = input_align(reference_24hz, processed_24hz)
+    # reference_24hz, processed_24hz = input_align(reference_24hz, processed_24hz)
     nsamp = len(reference_24hz)
 
     # For HASQI, here add NAL-R equalization if the quality reference doesn't
@@ -196,7 +196,6 @@ def ear_model(
     processed_b = np.zeros((nchan, nsamp))
 
     # Loop over each filter in the auditory filter bank
-
     for n in range(nchan):
         # Control signal envelopes for the reference and processed signals
         reference_control, _, processed_control, _ = gammatone_basilar_membrane(
@@ -263,6 +262,7 @@ def ear_model(
         processed_cochlear_compression = envelope_align(
             reference_cochlear_compression, processed_cochlear_compression
         )  # Align processed envelope to reference
+
         processed_b[n] = envelope_align(
             reference_b[n], processed_b[n]
         )  # Align processed BM motion to reference
@@ -458,6 +458,7 @@ def loss_parameters(
     # Use linear interpolation in dB. The interpolation assumes that
     # cfreq[1] < aud[1] and cfreq[nfilt] > aud[6]
     nfilt = len(center_freq)
+
     f_v = np.insert(
         audiometric_freq, [0, len(audiometric_freq)], [center_freq[0], center_freq[-1]]
     )
@@ -695,6 +696,83 @@ def middle_ear(reference: ndarray, freq_sample: float) -> ndarray:
 
     # HP filter the signal
     return lfilter(butterworth_high_pass, high_pass, y)
+
+
+def gammatone_basilar_membrane_vectorised(
+    reference: ndarray,
+    reference_bandwidth: float,
+    processed: ndarray,
+    processed_bandwidth: float,
+    freq_sample: float,
+    center_freq: float,
+    ear_q: float = 9.26449,
+    min_bandwidth: float = 24.7,
+) -> tuple[ndarray, ndarray, ndarray, ndarray]:
+    erb = min_bandwidth + (center_freq / ear_q)
+
+    # Check the lengths of the two signals and trim to shortest
+    min_sample = min(len(reference), len(processed))
+    x = reference[:min_sample]
+    y = processed[:min_sample]
+
+    # Filter the first signal
+    # Initialize the filter coefficients
+    tpt = 2 * np.pi / freq_sample
+    tpt_bw = reference_bandwidth * tpt * erb * 1.019
+    a = np.exp(-tpt_bw)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
+
+    # Initialize the complex demodulation
+    npts = len(x)
+    coscf = np.zeros((32, npts))
+    sincf = np.zeros((32, npts))
+    for index, cf in enumerate(center_freq):
+        cf = str(round(cf, 8))
+        coscf[index] = np.tile(COSCF[cf], int(np.ceil(npts / len(COSCF[cf]))))[:npts]
+        sincf[index] = np.tile(SINCF[cf], int(np.ceil(npts / len(SINCF[cf]))))[:npts]
+
+    # Filter the real and imaginary parts of the signal
+    x_vec = np.atleast_2d(x).repeat(repeats=32, axis=0)
+    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x_vec * coscf)
+    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x_vec * sincf)
+    assert isinstance(ureal, np.ndarray)
+    assert isinstance(uimag, np.ndarray)
+
+    # Extract the BM velocity and the envelope
+    reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+    reference_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
+
+    # Filter the second signal using the existing cosine and sine sequences
+    tpt_bw = processed_bandwidth * tpt * erb * 1.019
+    a = np.exp(-tpt_bw)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
+
+    # Filter the real and imaginary parts of the signal
+    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * coscf)
+    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * sincf)
+    assert isinstance(ureal, np.ndarray)
+    assert isinstance(uimag, np.ndarray)
+
+    # Extract the BM velocity and the envelope
+    processed_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+    processed_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
+
+    return (
+        reference_envelope,
+        reference_basilar_membrane,
+        processed_envelope,
+        processed_basilar_membrane,
+    )
 
 
 def gammatone_basilar_membrane(
@@ -1001,9 +1079,17 @@ def envelope_align(
     npts = len(reference)
     lags = min(lags, npts)
 
-    ref_out_correlation = correlate(reference, output, "full")
+    if reference.shape[0] < 48000:
+        start = 0
+        end = reference.shape[0]
+    else:
+        start = int(reference.shape[0] / 2) - 24000
+        end = start + 48000
+
+    ref_out_correlation = correlate(reference[start:end], output[start:end], "full")
+    npts2 = len(reference[start:end])
     location = np.argmax(
-        ref_out_correlation[npts - lags : npts + lags]
+        ref_out_correlation[npts2 - lags : npts2 + lags]
     )  # Limit the range in which
     delay = lags - location - 1
 
@@ -1307,20 +1393,23 @@ def env_smooth(envelopes: np.ndarray, segment_size: int, sample_rate: float) -> 
 
     # Compute the window
     # Segment size in samples
-    n_samples = int(np.around(segment_size * (0.001 * sample_rate)))
-    n_samples += n_samples % 2
+    # n_samples = int(np.around(segment_size * (0.001 * sample_rate)))
+    # n_samples += n_samples % 2
+    n_samples = 192
 
     window = np.hanning(n_samples)  # Raised cosine von Hann window
-    wsum = np.sum(window)  # Sum for normalization
-
+    # wsum = np.sum(window)  # Sum for normalization
+    wsum = 95.5
     #  The first segment has a half window
-    nhalf = int(n_samples / 2)
+    # nhalf = int(n_samples / 2)
+    nhalf = 96
     halfwindow = window[nhalf:n_samples]
-    halfsum = np.sum(halfwindow)
-
+    # halfsum = np.sum(halfwindow)
+    halfsum = 47.75
     # Number of segments and assign the matrix storage
-    n_channels = np.size(envelopes, 0)
-    npts = np.size(envelopes, 1)
+    # n_channels = np.size(envelopes, 0)
+    # npts = np.size(envelopes, 1)
+    n_channels, npts = envelopes.shape
     nseg = int(
         1 + np.floor(npts / n_samples) + np.floor((npts - n_samples / 2) / n_samples)
     )
@@ -1339,7 +1428,7 @@ def env_smooth(envelopes: np.ndarray, segment_size: int, sample_rate: float) -> 
         for n in range(1, nseg - 1):
             nstart = int(nstart + nhalf)
             nstop = int(nstart + n_samples)
-            smooth[k, n] = sum(r[nstart:nstop] * window.conj().transpose()) / wsum
+            smooth[k, n] = np.sum(r[nstart:nstop] * window.conj().transpose()) / wsum
 
         # The last (half) windowed segment
         nstart = nstart + nhalf
@@ -1833,8 +1922,9 @@ def bm_covary(
     halfsum2 = 1.0 / np.sum(half_window**2)  # MS sum normalization, first segment
 
     # Number of segments
-    nchan = reference_basilar_membrane.shape[0]
-    npts = reference_basilar_membrane.shape[1]
+    # nchan = reference_basilar_membrane.shape[0]
+    # npts = reference_basilar_membrane.shape[1]
+    nchan, npts = reference_basilar_membrane.shape
     nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
 
     reference_mean_square = np.zeros((nchan, nseg))
@@ -1843,22 +1933,41 @@ def bm_covary(
 
     # Loop to compute the signal mean-squared level in each band for each
     # segment and to compute the cross-corvariances.
+    reference_seg_ = (
+        reference_basilar_membrane[:, 0:nhalf] * half_window
+    )  # Window the reference
+    processed_seg_ = reference_basilar_membrane[:, 0:nhalf] * half_window
+
+    reference_seg_ = reference_seg_ - np.mean(reference_seg_, axis=1).reshape(
+        -1, 1
+    )  # Make 0-mean
+    processed_seg_ = processed_seg_ - np.mean(processed_seg_, axis=1).reshape(-1, 1)
+
+    ref_mean_square_ = np.sum(reference_seg_**2, axis=1) * halfsum2
+    proc_mean_squared_ = np.sum(processed_seg_**2, axis=1) * halfsum2
+
     for k in range(nchan):
         # Extract the BM motion in the frequency band
-        x = reference_basilar_membrane[k, :]
-        y = processed_basilar_membrane[k, :]
+        # x = reference_basilar_membrane[k, :]
+        # y = processed_basilar_membrane[k, :]
 
         # The first (half) windowed segment
         nstart = 0
-        reference_seg = x[nstart:nhalf] * half_window  # Window the reference
-        processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
-        reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
-        processed_seg = processed_seg - np.mean(processed_seg)
+        # reference_seg = x[nstart:nhalf] * half_window  # Window the reference
+        # processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
+        # reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+        # processed_seg = processed_seg - np.mean(processed_seg)
 
         # Normalize signal MS value by the window
-        ref_mean_square = np.sum(reference_seg**2) * halfsum2
+        # ref_mean_square = np.sum(reference_seg**2) * halfsum2
+        #
+        # proc_mean_squared = np.sum(processed_seg**2) * halfsum2
 
-        proc_mean_squared = np.sum(processed_seg**2) * halfsum2
+        reference_seg = reference_seg_[k, :]
+        processed_seg = processed_seg_[k, :]
+        ref_mean_square = ref_mean_square_[k]
+        proc_mean_squared = proc_mean_squared_[k]
+
         correlation = correlate(reference_seg, processed_seg, "full")
         correlation = correlation[
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
@@ -1878,6 +1987,8 @@ def bm_covary(
         processed_mean_square[k, 0] = proc_mean_squared
 
         # Loop over the remaining full segments, 50% overlap
+        x = reference_basilar_membrane[k, :]
+        y = processed_basilar_membrane[k, :]
         for n in range(1, nseg - 1):
             nstart = nstart + nhalf
             nstop = nstart + nwin
