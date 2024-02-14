@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77c80538-f094-4891-8ac7-04860b7ea237" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clarity/evaluator/haspi/eb.py" beforeDir="false" afterPath="$PROJECT_DIR$/clarity/evaluator/haspi/eb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clarity/utils/signal_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/clarity/utils/signal_processing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/test_signal_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/test_signal_processing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +23,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2c02hcx2RfreMxRpEpQiSi0St3V" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -48,6 +48,7 @@
   <component name="RunManager" selected="Python.check_pyHaqqi">
     <configuration name="check_pyHaqqi" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="clarity" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -70,6 +71,7 @@
     </configuration>
     <configuration name="check_pyHaqqi2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="clarity" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -92,6 +94,7 @@
     </configuration>
     <configuration name="ear_model" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="clarity" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -114,6 +117,7 @@
     </configuration>
     <configuration name="eb" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="clarity" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -136,6 +140,7 @@
     </configuration>
     <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="clarity" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -157,8 +162,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.check_pyHaqqi" />
       <item itemvalue="Python.check_pyHaqqi2" />
+      <item itemvalue="Python.check_pyHaqqi" />
       <item itemvalue="Python.ear_model" />
       <item itemvalue="Python.eb" />
       <item itemvalue="Python.test" />
@@ -166,12 +171,19 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.check_pyHaqqi" />
-        <item itemvalue="Python.eb" />
         <item itemvalue="Python.check_pyHaqqi2" />
+        <item itemvalue="Python.eb" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.ear_model" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -198,6 +210,8 @@
       <option name="presentableId" value="Default" />
       <updated>1707234297365</updated>
       <workItem from="1707234298390" duration="3426000" />
+      <workItem from="1707903022326" duration="146000" />
+      <workItem from="1707903175710" duration="677000" />
     </task>
     <option name="localTasksCounter" value="3" />
     <servers />
@@ -253,9 +267,19 @@
           <option name="timeStamp" value="736" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/clarity/predictor/torch_haindex/ear_model.py</url>
+          <line>780</line>
+          <option name="timeStamp" value="885" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/clarity/predictor/torch_haindex/ear_model.py</url>
+          <line>774</line>
+          <option name="timeStamp" value="886" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/clarity/evaluator/haspi/eb.py</url>
-          <line>753</line>
-          <option name="timeStamp" value="738" />
+          <line>760</line>
+          <option name="timeStamp" value="887" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -287,7 +311,7 @@
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_evaluate_test_make_song_listener_list.coverage" NAME="pytest for test_evaluate.test_make_song_listener_list Coverage Results" MODIFIED="1677595485685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task1" />
     <SUITE FILE_PATH="coverage/clarity$smearing.coverage" NAME="smearing Coverage Results" MODIFIED="1694786345291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/msbg" />
     <SUITE FILE_PATH="coverage/clarity$pytest_in_test_hasqi_py.coverage" NAME="pytest in test_hasqi.py Coverage Results" MODIFIED="1668441684273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/evaluator" />
-    <SUITE FILE_PATH="coverage/clarity$check_pyHaqqi.coverage" NAME="check_pyHaqqi Coverage Results" MODIFIED="1707235550034" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor" />
+    <SUITE FILE_PATH="coverage/clarity$check_pyHaqqi.coverage" NAME="check_pyHaqqi Coverage Results" MODIFIED="1707844027629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor" />
     <SUITE FILE_PATH="coverage/clarity$a.coverage" NAME="a Coverage Results" MODIFIED="1666781866082" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/enhancer" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_enhance_test_process_stems_for_listener.coverage" NAME="pytest for test_enhance.test_process_stems_for_listener Coverage Results" MODIFIED="1677598828432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task1" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_build_scene_metadata_test_set_seed.coverage" NAME="pytest for test_build_scene_metadata.test_set_seed Coverage Results" MODIFIED="1678378994989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
@@ -301,7 +325,7 @@
     <SUITE FILE_PATH="coverage/clarity$pytest_in_test_evaluate_py.coverage" NAME="pytest in test_evaluate.py Coverage Results" MODIFIED="1677596335776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task1" />
     <SUITE FILE_PATH="coverage/clarity$t_eb_loss_parameters.coverage" NAME="t_eb_loss_parameters Coverage Results" MODIFIED="1679399195600" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/haaqi" />
     <SUITE FILE_PATH="coverage/clarity$haaqi__1_.coverage" NAME="haaqi (1) Coverage Results" MODIFIED="1680809440405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/haaqi" />
-    <SUITE FILE_PATH="coverage/clarity$haaqiing.coverage" NAME="haaqiing Coverage Results" MODIFIED="1694639309638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+    <SUITE FILE_PATH="coverage/clarity$haaqiing.coverage" NAME="haaqiing Coverage Results" MODIFIED="1707840754189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_haaqi_test_haaqi_v1.coverage" NAME="pytest for test_haaqi.test_haaqi_v1 Coverage Results" MODIFIED="1680718781728" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/evaluator/haaqi" />
     <SUITE FILE_PATH="coverage/clarity$test.coverage" NAME="test Coverage Results" MODIFIED="1707229438945" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor/torch_haindex" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_carnoise_parameter_generator_test_gen_parameters.coverage" NAME="pytest for test_carnoise_parameter_generator.test_gen_parameters Coverage Results" MODIFIED="1678194855323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/utils/car_noise_simulator" />
@@ -310,12 +334,14 @@
     <SUITE FILE_PATH="coverage/clarity$center_frequency.coverage" NAME="center_frequency Coverage Results" MODIFIED="1680790133381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/torch_version" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_enhance_test_enhance_song.coverage" NAME="pytest for test_enhance.test_enhance_song Coverage Results" MODIFIED="1678808092105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
     <SUITE FILE_PATH="coverage/clarity$compare_metrics.coverage" NAME="compare_metrics Coverage Results" MODIFIED="1681816019485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+    <SUITE FILE_PATH="coverage/clarity$eval_refractoring.coverage" NAME="eval_refractoring Coverage Results" MODIFIED="1707390619681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$refractor_haaqi.coverage" NAME="refractor_haaqi Coverage Results" MODIFIED="1683979267123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_build_scene_metadata_test_get_random_car_params.coverage" NAME="pytest for test_build_scene_metadata.test_get_random_car_params Coverage Results" MODIFIED="1678211143647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_evaluate_test_ResultsFile.coverage" NAME="pytest for test_evaluate.test_ResultsFile Coverage Results" MODIFIED="1677156685142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task1" />
-    <SUITE FILE_PATH="coverage/clarity$check_pyHaqqi2.coverage" NAME="check_pyHaqqi2 Coverage Results" MODIFIED="1707228623262" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor/torch_haindex" />
-    <SUITE FILE_PATH="coverage/clarity$haaqiing__1_.coverage" NAME="haaqiing Coverage Results" MODIFIED="1683912848661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
+    <SUITE FILE_PATH="coverage/clarity$check_pyHaqqi2.coverage" NAME="check_pyHaqqi2 Coverage Results" MODIFIED="1707843904051" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/predictor/torch_haindex" />
+    <SUITE FILE_PATH="coverage/clarity$haaqiing__1_.coverage" NAME="haaqiing (1) Coverage Results" MODIFIED="1707395981247" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_metric" />
     <SUITE FILE_PATH="coverage/clarity$pytest_in_test_haaqi_py.coverage" NAME="pytest in test_haaqi.py Coverage Results" MODIFIED="1674148975549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/evaluator/haaqi" />
+    <SUITE FILE_PATH="coverage/clarity$eb_utils.coverage" NAME="eb_utils Coverage Results" MODIFIED="1707396428122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/haspi" />
     <SUITE FILE_PATH="coverage/clarity$haaqi.coverage" NAME="haaqi Coverage Results" MODIFIED="1680802109645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/evaluator/ha_torch" />
     <SUITE FILE_PATH="coverage/clarity$pytest_for_test_baseline_utils_test_read_mp3.coverage" NAME="pytest for test_baseline_utils.test_read_mp3 Coverage Results" MODIFIED="1678633097855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/recipes/cad1/task2" />
     <SUITE FILE_PATH="coverage/clarity$gen_sample_noise.coverage" NAME="gen_sample_noise Coverage Results" MODIFIED="1678194411586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/clarity/utils/car_noise_simulator" />
