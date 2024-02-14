@@ -3,7 +3,6 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import logging
-import time
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -14,18 +13,12 @@ from scipy.signal import (
     convolve,
     correlate,
     firwin,
+    group_delay,
     lfilter,
     resample_poly,
 )
 
 from clarity.enhancer.nalr import NALR
-from clarity.evaluator.haspi.eb_utils import (
-    COMPRESS_BASILAR_MEMBRANE_COEFS,
-    COSCF,
-    DELAY_COEFS,
-    MIDDLE_EAR_COEF,
-    SINCF,
-)
 from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
@@ -139,15 +132,8 @@ def ear_model(
     # Convert the signals to 24 kHz sampling rate.
     # Using 24 kHz guarantees that all of the cochlear filters have the same shape
     # independent of the incoming signal sampling rates
-    freq_sample = 24000
-    if reference_freq == freq_sample:
-        reference_24hz = reference
-    else:
-        reference_24hz, _ = resample_24khz(reference, reference_freq)
-    if processed_freq == freq_sample:
-        processed_24hz = processed
-    else:
-        processed_24hz, freq_sample = resample_24khz(processed, processed_freq)
+    reference_24hz, _ = resample_24khz(reference, reference_freq)
+    processed_24hz, freq_sample = resample_24khz(processed, processed_freq)
 
     # Check file sizes
     min_signal_length = min(len(reference_24hz), len(processed_24hz))
@@ -155,7 +141,7 @@ def ear_model(
     processed_24hz = processed_24hz[:min_signal_length]
 
     # Bulk broadband signal alignment
-    # reference_24hz, processed_24hz = input_align(reference_24hz, processed_24hz)
+    reference_24hz, processed_24hz = input_align(reference_24hz, processed_24hz)
     nsamp = len(reference_24hz)
 
     # For HASQI, here add NAL-R equalization if the quality reference doesn't
@@ -173,7 +159,6 @@ def ear_model(
 
     # Cochlear model
     # Middle ear
-
     reference_mid = middle_ear(reference_24hz, freq_sample)
     processed_mid = middle_ear(processed_24hz, freq_sample)
 
@@ -208,7 +193,6 @@ def ear_model(
         )
 
         # Adjust the auditory filter bandwidths for the average signal level
-
         reference_bandwidth[n] = bandwidth_adjust(
             reference_control, bandwidth_min_x[n], bandwidth_1[n], level1
         )
@@ -217,7 +201,6 @@ def ear_model(
         )
 
         # Envelopes and BM motion of the reference and processed signals
-
         xenv, xbm, yenv, ybm = gammatone_basilar_membrane(
             reference_mid,
             reference_bandwidth[n],
@@ -234,7 +217,6 @@ def ear_model(
         processed_control_average[n] = np.sqrt(np.mean(processed_control**2))
 
         # Cochlear compression for the signal envelopes and BM motion
-
         reference_cochlear_compression, reference_b[n] = env_compress_basilar_membrane(
             xenv,
             xbm,
@@ -245,7 +227,6 @@ def ear_model(
             freq_sample,
             level1,
         )
-
         processed_cochlear_compression, processed_b[n] = env_compress_basilar_membrane(
             yenv,
             ybm,
@@ -258,17 +239,14 @@ def ear_model(
         )
 
         # Correct for the delay between the reference and output
-
         processed_cochlear_compression = envelope_align(
             reference_cochlear_compression, processed_cochlear_compression
         )  # Align processed envelope to reference
-
         processed_b[n] = envelope_align(
             reference_b[n], processed_b[n]
         )  # Align processed BM motion to reference
 
         # Convert the compressed envelopes and BM vibration envelopes to dB SPL
-
         reference_cochlear_compression, reference_b[n] = envelope_sl(
             reference_cochlear_compression, reference_b[n], attn_ihc_x[n], level1
         )
@@ -278,7 +256,6 @@ def ear_model(
 
         # Apply the IHC rapid and short-term adaptation
         delta = 2  # Amount of overshoot
-
         reference_db[n], reference_b[n] = inner_hair_cell_adaptation(
             reference_cochlear_compression, reference_b[n], delta, freq_sample
         )
@@ -296,7 +273,6 @@ def ear_model(
     )
 
     # Correct for the gammatone filterbank interchannel group delay.
-
     if m_delay > 0:
         reference_db = group_delay_compensate(
             reference_db, reference_bandwidth, _center_freq, freq_sample
@@ -458,7 +434,6 @@ def loss_parameters(
     # Use linear interpolation in dB. The interpolation assumes that
     # cfreq[1] < aud[1] and cfreq[nfilt] > aud[6]
     nfilt = len(center_freq)
-
     f_v = np.insert(
         audiometric_freq, [0, len(audiometric_freq)], [center_freq[0], center_freq[-1]]
     )
@@ -678,101 +653,17 @@ def middle_ear(reference: ndarray, freq_sample: float) -> ndarray:
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
 
-    if freq_sample == 24000:
-        # Design the 1-pole Butterworth LP using the bilinear transformation
-        butterworth_low_pass = MIDDLE_EAR_COEF["24000"]["butterworth_low_pass"]
-        low_pass = MIDDLE_EAR_COEF["24000"]["low_pass"]
-        # Design the 2-pole Butterworth HP using the bilinear transformation
-        butterworth_high_pass = MIDDLE_EAR_COEF["24000"]["butterworth_high_pass"]
-        high_pass = MIDDLE_EAR_COEF["24000"]["high_pass"]
-    else:
-        # Design the 1-pole Butterworth LP using the bilinear transformation
-        butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
-        # Design the 2-pole Butterworth HP using the bilinear transformation
-        butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
+    # Design the 1-pole Butterworth LP using the bilinear transformation
+    butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * freq_sample))
 
     # LP filter the input
     y = lfilter(butterworth_low_pass, low_pass, reference)
 
+    # Design the 2-pole Butterworth HP using the bilinear transformation
+    butterworth_high_pass, high_pass = butter(2, 350 / (0.5 * freq_sample), "high")
+
     # HP filter the signal
     return lfilter(butterworth_high_pass, high_pass, y)
-
-
-def gammatone_basilar_membrane_vectorised(
-    reference: ndarray,
-    reference_bandwidth: float,
-    processed: ndarray,
-    processed_bandwidth: float,
-    freq_sample: float,
-    center_freq: float,
-    ear_q: float = 9.26449,
-    min_bandwidth: float = 24.7,
-) -> tuple[ndarray, ndarray, ndarray, ndarray]:
-    erb = min_bandwidth + (center_freq / ear_q)
-
-    # Check the lengths of the two signals and trim to shortest
-    min_sample = min(len(reference), len(processed))
-    x = reference[:min_sample]
-    y = processed[:min_sample]
-
-    # Filter the first signal
-    # Initialize the filter coefficients
-    tpt = 2 * np.pi / freq_sample
-    tpt_bw = reference_bandwidth * tpt * erb * 1.019
-    a = np.exp(-tpt_bw)
-    a_1 = 4.0 * a
-    a_2 = -6.0 * a * a
-    a_3 = 4.0 * a * a * a
-    a_4 = -a * a * a * a
-    a_5 = 4.0 * a * a
-    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
-
-    # Initialize the complex demodulation
-    npts = len(x)
-    coscf = np.zeros((32, npts))
-    sincf = np.zeros((32, npts))
-    for index, cf in enumerate(center_freq):
-        cf = str(round(cf, 8))
-        coscf[index] = np.tile(COSCF[cf], int(np.ceil(npts / len(COSCF[cf]))))[:npts]
-        sincf[index] = np.tile(SINCF[cf], int(np.ceil(npts / len(SINCF[cf]))))[:npts]
-
-    # Filter the real and imaginary parts of the signal
-    x_vec = np.atleast_2d(x).repeat(repeats=32, axis=0)
-    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x_vec * coscf)
-    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x_vec * sincf)
-    assert isinstance(ureal, np.ndarray)
-    assert isinstance(uimag, np.ndarray)
-
-    # Extract the BM velocity and the envelope
-    reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-    reference_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
-
-    # Filter the second signal using the existing cosine and sine sequences
-    tpt_bw = processed_bandwidth * tpt * erb * 1.019
-    a = np.exp(-tpt_bw)
-    a_1 = 4.0 * a
-    a_2 = -6.0 * a * a
-    a_3 = 4.0 * a * a * a
-    a_4 = -a * a * a * a
-    a_5 = 4.0 * a * a
-    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
-
-    # Filter the real and imaginary parts of the signal
-    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * coscf)
-    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * sincf)
-    assert isinstance(ureal, np.ndarray)
-    assert isinstance(uimag, np.ndarray)
-
-    # Extract the BM velocity and the envelope
-    processed_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-    processed_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
-
-    return (
-        reference_envelope,
-        reference_basilar_membrane,
-        processed_envelope,
-        processed_basilar_membrane,
-    )
 
 
 def gammatone_basilar_membrane(
@@ -854,22 +745,14 @@ def gammatone_basilar_membrane(
 
     # Initialize the complex demodulation
     npts = len(x)
-    # if str(round(center_freq, 8)) in COSCF and str(round(center_freq, 8)) in SINCF:
-    #     coscf = np.tile(
-    #         COSCF[str(round(center_freq, 8))],
-    #         int(np.ceil(npts / len(COSCF[str(round(center_freq, 8))]))),
-    #     )[:npts]
-    #     sincf = np.tile(
-    #         SINCF[str(round(center_freq, 8))],
-    #         int(np.ceil(npts / len(SINCF[str(round(center_freq, 8))]))),
-    #     )[:npts]
-    # else:
-    sincf, coscf = gammatone_bandwidth_demodulation(npts, tpt, center_freq)
+    sincf, coscf = gammatone_bandwidth_demodulation(
+        npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
+    )
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
     uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * sincf)
-    assert isinstance(ureal, np.ndarray)
+    assert isinstance(ureal, np.ndarray)  # lfilter can return different types
     assert isinstance(uimag, np.ndarray)
 
     # Extract the BM velocity and the envelope
@@ -905,7 +788,9 @@ def gammatone_basilar_membrane(
 
 
 @njit
-def gammatone_bandwidth_demodulation(npts, tpt, center_freq):
+def gammatone_bandwidth_demodulation(
+    npts, tpt, center_freq, center_freq_cos, center_freq_sin
+):
     """Gamma tone bandwidth demodulation
 
     Arguments:
@@ -919,9 +804,6 @@ def gammatone_bandwidth_demodulation(npts, tpt, center_freq):
         sincf (): ???
         coscf (): ???
     """
-    center_freq_cos = np.zeros(npts)
-    center_freq_sin = np.zeros(npts)
-
     cos_n = np.cos(tpt * center_freq)
     sin_n = np.sin(tpt * center_freq)
     cold = 1.0
@@ -1023,10 +905,10 @@ def env_compress_basilar_membrane(
     # Convert the control envelope to dB SPL
     logenv = np.maximum(control, small)
     logenv = level1 + 20 * np.log10(logenv)
-    # Clip signal levels above the upper threshold
-    logenv = np.minimum(logenv, threshold_high)
-    # Clip signal at the lower threshold
-    logenv = np.maximum(logenv, threshold_low)
+    logenv = np.minimum(
+        logenv, threshold_high
+    )  # Clip signal levels above the upper threshold
+    logenv = np.maximum(logenv, threshold_low)  # Clip signal at the lower threshold
 
     # Compute the compression gain in dB
     gain = -attn_ohc - (logenv - threshold_low) * (1 - (1 / compression_ratio))
@@ -1034,13 +916,7 @@ def env_compress_basilar_membrane(
     # Convert the gain to linear and apply a LP filter to give a 0.2 ms delay
     gain = 10 ** (gain / 20)
     flp = 800
-
-    if fsamp == 24000:
-        b = COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["b"]
-        a = COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["a"]
-    else:
-        b, a = butter(1, flp / (0.5 * fsamp))
-
+    b, a = butter(1, flp / (0.5 * fsamp))
     gain = lfilter(b, a, gain)
 
     # Apply the gain to the signals
@@ -1079,17 +955,9 @@ def envelope_align(
     npts = len(reference)
     lags = min(lags, npts)
 
-    if reference.shape[0] < 48000:
-        start = 0
-        end = reference.shape[0]
-    else:
-        start = int(reference.shape[0] / 2) - 24000
-        end = start + 48000
-
-    ref_out_correlation = correlate(reference[start:end], output[start:end], "full")
-    npts2 = len(reference[start:end])
+    ref_out_correlation = correlate(reference, output, "full")
     location = np.argmax(
-        ref_out_correlation[npts2 - lags : npts2 + lags]
+        ref_out_correlation[npts - lags : npts + lags]
     )  # Limit the range in which
     delay = lags - location - 1
 
@@ -1259,7 +1127,6 @@ def basilar_membrane_add_noise(
     return reference + noise
 
 
-# pylint: disable=unused-argument
 def group_delay_compensate(
     reference: ndarray,
     bandwidths: ndarray,
@@ -1292,14 +1159,43 @@ def group_delay_compensate(
     # Processing parameters
     nchan = len(bandwidths)
 
+    # Filter ERB from Moore and Glasberg (1983)
+    erb = min_bandwidth + (center_freq / ear_q)
+
+    # Initialize the gammatone filter coefficients
+    tpt = 2 * np.pi / freq_sample
+    tpt_bandwidth = tpt * 1.019 * bandwidths * erb
+    a = np.exp(-tpt_bandwidth)
+    a_1 = 4.0 * a
+    a_2 = -6.0 * a * a
+    a_3 = 4.0 * a * a * a
+    a_4 = -a * a * a * a
+    a_5 = 4.0 * a * a
+
+    # Compute the group delay in samples at fsamp for each filter
+    _group_delay = np.zeros(nchan)
+    for n in range(nchan):
+        _, _group_delay[n] = group_delay(
+            ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
+        )
+    _group_delay = np.rint(_group_delay).astype(int)  # convert to integer samples
+
+    # Compute the delay correlation
+    group_delay_min = np.min(_group_delay)
+    _group_delay = (
+        _group_delay - group_delay_min
+    )  # Remove the minimum delay from all the over values
+    group_delay_max = np.max(_group_delay)
+    correct = (
+        group_delay_max - _group_delay
+    )  # Samples delay needed to add to give alignment
+
     # Add delay correction to each frequency band
     processed = np.zeros(reference.shape)
     for n in range(nchan):
         ref = reference[n]
         npts = len(ref)
-        processed[n] = np.concatenate(
-            (np.zeros(DELAY_COEFS[n]), ref[: npts - DELAY_COEFS[n]])
-        )
+        processed[n] = np.concatenate((np.zeros(correct[n]), ref[: npts - correct[n]]))
 
     return processed
 
@@ -1393,23 +1289,20 @@ def env_smooth(envelopes: np.ndarray, segment_size: int, sample_rate: float) -> 
 
     # Compute the window
     # Segment size in samples
-    # n_samples = int(np.around(segment_size * (0.001 * sample_rate)))
-    # n_samples += n_samples % 2
-    n_samples = 192
+    n_samples = int(np.around(segment_size * (0.001 * sample_rate)))
+    n_samples += n_samples % 2
 
     window = np.hanning(n_samples)  # Raised cosine von Hann window
-    # wsum = np.sum(window)  # Sum for normalization
-    wsum = 95.5
+    wsum = np.sum(window)  # Sum for normalization
+
     #  The first segment has a half window
-    # nhalf = int(n_samples / 2)
-    nhalf = 96
+    nhalf = int(n_samples / 2)
     halfwindow = window[nhalf:n_samples]
-    # halfsum = np.sum(halfwindow)
-    halfsum = 47.75
+    halfsum = np.sum(halfwindow)
+
     # Number of segments and assign the matrix storage
-    # n_channels = np.size(envelopes, 0)
-    # npts = np.size(envelopes, 1)
-    n_channels, npts = envelopes.shape
+    n_channels = np.size(envelopes, 0)
+    npts = np.size(envelopes, 1)
     nseg = int(
         1 + np.floor(npts / n_samples) + np.floor((npts - n_samples / 2) / n_samples)
     )
@@ -1428,7 +1321,7 @@ def env_smooth(envelopes: np.ndarray, segment_size: int, sample_rate: float) -> 
         for n in range(1, nseg - 1):
             nstart = int(nstart + nhalf)
             nstop = int(nstart + n_samples)
-            smooth[k, n] = np.sum(r[nstart:nstop] * window.conj().transpose()) / wsum
+            smooth[k, n] = sum(r[nstart:nstop] * window.conj().transpose()) / wsum
 
         # The last (half) windowed segment
         nstart = nstart + nhalf
@@ -1922,9 +1815,8 @@ def bm_covary(
     halfsum2 = 1.0 / np.sum(half_window**2)  # MS sum normalization, first segment
 
     # Number of segments
-    # nchan = reference_basilar_membrane.shape[0]
-    # npts = reference_basilar_membrane.shape[1]
-    nchan, npts = reference_basilar_membrane.shape
+    nchan = reference_basilar_membrane.shape[0]
+    npts = reference_basilar_membrane.shape[1]
     nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
 
     reference_mean_square = np.zeros((nchan, nseg))
@@ -1933,41 +1825,22 @@ def bm_covary(
 
     # Loop to compute the signal mean-squared level in each band for each
     # segment and to compute the cross-corvariances.
-    reference_seg_ = (
-        reference_basilar_membrane[:, 0:nhalf] * half_window
-    )  # Window the reference
-    processed_seg_ = reference_basilar_membrane[:, 0:nhalf] * half_window
-
-    reference_seg_ = reference_seg_ - np.mean(reference_seg_, axis=1).reshape(
-        -1, 1
-    )  # Make 0-mean
-    processed_seg_ = processed_seg_ - np.mean(processed_seg_, axis=1).reshape(-1, 1)
-
-    ref_mean_square_ = np.sum(reference_seg_**2, axis=1) * halfsum2
-    proc_mean_squared_ = np.sum(processed_seg_**2, axis=1) * halfsum2
-
     for k in range(nchan):
         # Extract the BM motion in the frequency band
-        # x = reference_basilar_membrane[k, :]
-        # y = processed_basilar_membrane[k, :]
+        x = reference_basilar_membrane[k, :]
+        y = processed_basilar_membrane[k, :]
 
         # The first (half) windowed segment
         nstart = 0
-        # reference_seg = x[nstart:nhalf] * half_window  # Window the reference
-        # processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
-        # reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
-        # processed_seg = processed_seg - np.mean(processed_seg)
+        reference_seg = x[nstart:nhalf] * half_window  # Window the reference
+        processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
+        reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+        processed_seg = processed_seg - np.mean(processed_seg)
 
         # Normalize signal MS value by the window
-        # ref_mean_square = np.sum(reference_seg**2) * halfsum2
-        #
-        # proc_mean_squared = np.sum(processed_seg**2) * halfsum2
+        ref_mean_square = np.sum(reference_seg**2) * halfsum2
 
-        reference_seg = reference_seg_[k, :]
-        processed_seg = processed_seg_[k, :]
-        ref_mean_square = ref_mean_square_[k]
-        proc_mean_squared = proc_mean_squared_[k]
-
+        proc_mean_squared = np.sum(processed_seg**2) * halfsum2
         correlation = correlate(reference_seg, processed_seg, "full")
         correlation = correlation[
             int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
@@ -1987,8 +1860,6 @@ def bm_covary(
         processed_mean_square[k, 0] = proc_mean_squared
 
         # Loop over the remaining full segments, 50% overlap
-        x = reference_basilar_membrane[k, :]
-        y = processed_basilar_membrane[k, :]
         for n in range(1, nseg - 1):
             nstart = nstart + nhalf
             nstop = nstart + nwin
