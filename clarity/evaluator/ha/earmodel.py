@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Final, Tuple
+from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 from numba import njit
-from scipy.signal import butter, correlate, lfilter
+from scipy.signal import correlate, group_delay, lfilter
 
+from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram
 
 if TYPE_CHECKING:
@@ -22,81 +23,12 @@ class Ear:
 
     """
 
-    BANDWITH_1: Final = np.array(
-        1.280963780608,
-        1.34463367600863,
-        1.40430675025603,
-        1.46192770111434,
-        1.51915683759555,
-        1.57734190779408,
-        1.63752299850873,
-        1.70045880652767,
-        1.76666378924627,
-        1.83644871838567,
-        1.90996001038767,
-        1.98721534334793,
-        2.06813449183959,
-        2.15256517637044,
-        2.24030420428322,
-        2.33111441100562,
-        2.42473799259552,
-        2.52090681759646,
-        2.61935025946742,
-        2.71980102514491,
-        2.82199938493744,
-        2.92569614162676,
-        3.03065461604316,
-        3.13665187384759,
-        3.24347937385736,
-        3.35094318140336,
-        3.45886386002423,
-        3.56707613033287,
-        3.67542836520979,
-        3.78378197475444,
-        3.89201072193444,
-        4,
-    )
-
     COMPRESS_BASILAR_MEMBRANE_COEFS: Final = {
         "24000": {
             "b": [0.09510798340249643, 0.09510798340249643],
             "a": [1.0, -0.8097840331950071],
         }
     }
-    GROUP_DELAY_COEFS: Final = [
-        0,
-        50,
-        92,
-        127,
-        157,
-        183,
-        205,
-        225,
-        242,
-        256,
-        267,
-        275,
-        283,
-        291,
-        299,
-        305,
-        311,
-        316,
-        320,
-        325,
-        329,
-        332,
-        335,
-        338,
-        340,
-        341,
-        342,
-        344,
-        344,
-        345,
-        346,
-        347,
-    ]
 
     # Middle ear filter coefficients
     MIDDLE_EAR_COEF: Final = {
@@ -112,114 +44,315 @@ class Ear:
         }
     }
 
+    SAMPLE_RATE: Final = 24000
+    SMALL_VALUE: Final = 1e-30
+
     def __init__(
         self,
-        itype: int,
-        nchan: int = 32,
+        equalisation: int,
+        num_bands: int = 32,
         m_delay: int = 1,
         shift: float | None = None,
+        signals_same_size: bool = True,
     ):
         """
         Constructor for the Ear model.
+
+        - Signals must be resampled to 24000 Hz before using the model.
+        - Reference and enhanced signals must have the same length
+
         Args:
-            itype (int): purpose for the calculation:
+            equalisation (int): purpose for the calculation:
                  0=intelligibility: reference is normal hearing and must not
                    include NAL-R EQ
                  1=quality: reference does not include NAL-R EQ
                  2=quality: reference already has NAL-R EQ applied
-            level1:   level calibration: signal RMS=1 corresponds to Level1 dB SPL
-            nchan (int): auditory frequency bands. Default: 32
+            num_bands (int): auditory frequency bands. Default: 32
             m_delay (int): Compensate for the gammatone group delay. Default: 1
             shift (float): Basal shift of the basilar membrane length. Default: None
+            signals_same_size (bool): If True, it assumes that the Ear model object will
+                be called several times to compute scores for different signals. All
+                signals must have the same length. Default: True
         """
-        self.sample_rate = 24000
-        self.itype = itype
-        self.level1 = None
-        self.nchan = nchan
+
+        self.equalisation = equalisation
+        self.num_bands = num_bands
         self.m_delay = m_delay
-        self.shift = shift
-        self.audiogram = None
-        self._center_freq = self.center_frequency(self.nchan)
-        self.small = 1e-30
+
+        self.center_freq = self.center_frequency()
+        self.center_freq_control = self.center_frequency(shift=shift)
+
+        _, self.bandwidth_1, _, _, _ = self.loss_parameters(
+            hearing_loss=np.array([100, 100, 100, 100, 100, 100]),
+            center_freq=self.center_freq_control,
+            audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
+        )
+
+        self.level1: float = 65.0
+        self.audiogram: Audiogram | None = None
+
+        self.reference_computed = False
+
+        # Initialise array variables as empty numpy array instead of None.
+        # This to prevent the mypy error:
+        # error: Value of type "None" is not indexable  [index]
+        self.attn_ohc: ndarray = np.empty(0)
+        self.bandwidth_min: ndarray = np.empty(0)
+        self.low_knee: ndarray = np.empty(0)
+        self.compression_ratio: ndarray = np.empty(0)
+        self.attn_ihc: ndarray = np.empty(0)
+
+        # Variables used for alignment
+        self.reference_cochlear_compression: ndarray = np.empty(0)
+        self.reference_bandwidth: ndarray = np.empty(0)
+        self.temp_reference_b: ndarray = np.empty(0)
+        self.reference_align: ndarray = np.empty(0)
+
+        # sincf and coscf depends on the length of the signals, so
+        # they are only computed the first time a reference signal is processed
+        self.signals_same_size = signals_same_size
+        self.sincf: ndarray = np.empty(0)
+        self.coscf: ndarray = np.empty(0)
+
+        self.sincf_control: ndarray = np.empty(0)
+        self.coscf_control: ndarray = np.empty(0)
+
+        # start and end to remove the leading and trailing zeros
+        self.start_signal: int = 0
+        self.end_signal: int = -1
 
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram for the ear model.
+
+        It sets the `reference_computed` attribute to False.
+
         Args:
             audiogram (Audiogram): Audiogram object.
         """
-
         self.audiogram = audiogram
 
-    def process(
-        self, signal: ndarray, sample_rate: float, level1: float = 65.0
-    ) -> tuple[ndarray | Any, Any, Any]:
-        """Process the input signal and return the HAAQI score.
+        self.reference_computed = False
+        self.reference_cochlear_compression = np.empty(0)
+        self.temp_reference_b = np.empty(0)
+
+        if not self.signals_same_size:
+            # reset the variables if the next reference signal has different length
+            self.sincf = np.empty(0)
+            self.coscf = np.empty(0)
+            self.sincf_control = np.empty(0)
+            self.coscf_control = np.empty(0)
+
+    def process_reference(
+        self, signal: ndarray, level1: float = 65.0
+    ) -> tuple[ndarray, ndarray, ndarray]:
+        """Process the reference signal.
+
+        The variables `self.attn_ohc`, `self.bandwidth_min`, `self.low_knee`,
+        `self.compression_ratio` and, `self.attn_ihc` depend on the metric is running.
+        HASPI reference is normal hearing, and HAAQI & HASQI reference is hearing loss.
+
         Args:
             signal (np.ndarray): Input signal.
-            sample_rate (float): Sampling rate of the input signal.
-            level1 (float): Level calibration: signal RMS=1 corresponds to Level1 dB SPL.
+            level1 (float): Level calibration:
+                signal RMS=1 corresponds to Level1 dB SPL.
+
         Returns:
-            float: HAAQI score.
+            reference_db (np.ndarray): envelope for the reference signal in each band.
+            reference_basilar_membrane (np.ndarray): Basilar membrane motion for the
+                reference signal in each band
+            reference_sl (np.ndarray): compressed RMS average of the reference signal in
+                each band converted to dB SL
         """
+        num_samples = len(signal)
+
+        self.start_signal, self.end_signal = self.find_noiseless_boundaries(signal)
+        signal = signal[self.start_signal : self.end_signal + 1]
+
+        # Save the reference signal for alignment with the enhanced signal
+        self.reference_align = signal
+
+        if not isinstance(self.audiogram, Audiogram):
+            logging.error("Audiogram is not set")
+            raise ValueError("Audiogram is not set. Please set the audiogram first.")
+
+        if len(self.coscf) == 0 or len(self.sincf) == 0:
+            # Precompute the coscf and sincf for the reference signal
+            # These are reused by the enhanced signal
+            self.sincf = np.zeros((self.num_bands, num_samples))
+            self.coscf = np.zeros((self.num_bands, num_samples))
+
+            self.sincf_control = np.zeros((self.num_bands, num_samples))
+            self.coscf_control = np.zeros((self.num_bands, num_samples))
+
+            tpt = 2 * np.pi / self.SAMPLE_RATE
+            for n in range(self.num_bands):
+                self.sincf[n], self.coscf[n] = self.gammatone_bandwidth_demodulation(
+                    num_samples, tpt, self.center_freq[n]
+                )
+
+                (
+                    self.sincf_control[n],
+                    self.coscf_control[n],
+                ) = self.gammatone_bandwidth_demodulation(
+                    num_samples, tpt, self.center_freq_control[n]
+                )
+
+        # The cochlear model parameters for the reference signal are the same as for the
+        # hearing loss when computing quality (HAAQI and HASQI).
+        # But, it is `normal hearing` when computing intelligibility (HASPI).
 
         self.level1 = level1
-        if self.audiogram is None:
-            logging.error(
-                "Error: Audiogram is not set. "
-                "Please set the audiogram before processing."
-            )
-            raise ValueError("Audiogram is not set.")
-        if sample_rate != self.sample_rate:
-            logging.error(
-                "Error: only a sampling frequency of 24000 Hz can be used by HAAQI, "
-                "HASQI and HASPI."
-            )
-            raise ValueError("Invalid sampling frequency, valid value is 24000")
 
-        if self.shift in [None, 0]:
-            _center_freq_control = self._center_freq.copy()
+        if self.equalisation == 0:
+            hearing_loss = np.zeros_like(self.audiogram.levels)
         else:
-            _center_freq_control = self.center_frequency(shift=self.shift)
+            hearing_loss = self.audiogram.levels
 
-        nsamp = len(signal)
-
-        if self.itype == 0:
-            hearing_loss_x = np.zeros(len(self.audiogram.frequencies))
-        else:
-            hearing_loss_x = self.audiogram.levels.copy()
         [
-            attn_ohc_x,
-            bandwidth_min_x,
-            low_knee_x,
-            compression_ratio_x,
-            attn_ihc_x,
-        ] = self.loss_parameters(hearing_loss_x, self._center_freq)
+            self.attn_ohc,
+            self.bandwidth_min,
+            self.low_knee,
+            self.compression_ratio,
+            self.attn_ihc,
+        ] = self.loss_parameters(
+            hearing_loss=hearing_loss,
+            center_freq=self.center_freq,
+            audiometric_freq=self.audiogram.frequencies,
+        )
 
-        if self.itype == 1:
-            pass
+        # For HAAQI and HASQI, add NAL-R equalization if the quality reference doesn't
+        # already have it.
+        if self.equalisation == 1:
+            # Length in samples of the FIR NAL-R EQ filter (24-kHz rate)
+            nfir = 140
+            enhancer = NALR(nfir, self.SAMPLE_RATE)
+            nalr_fir, _ = enhancer.build(self.audiogram)
+            signal = enhancer.apply(nalr_fir, signal)
+            signal = signal[nfir : nfir + num_samples]
 
+        # Initialised to store the reference cochlear compression and BM motion
+        # for alignment with the enhanced signal
+        self.reference_cochlear_compression = np.zeros((self.num_bands, num_samples))
+        self.temp_reference_b = np.zeros((self.num_bands, num_samples))
+        self.reference_bandwidth = np.zeros(self.num_bands)
+
+        # compute the reference signal
+        (
+            reference_db,
+            reference_basilar_membrane,
+            reference_sl,
+        ) = self.process_common(
+            signal=signal,
+        )
+
+        # Set the reference computed to True
+        self.reference_computed = True
+
+        return reference_db, reference_basilar_membrane, reference_sl
+
+    def process_enhanced(self, signal: ndarray) -> tuple[ndarray, ndarray, ndarray]:
+        """Process the enhanced signal.
+
+        The variables `self.attn_ohc`, `self.bandwidth_min`, `self.low_knee`,
+        `self.compression_ratio` and, `self.attn_ihc` depend on the metric is running.
+        They are recomputed when running HASPI.
+
+        Args:
+            signal (np.ndarray): Input signal.
+
+        Returns:
+            enhanced_db (np.ndarray): envelope for the enhanced signal in each band.
+            enhanced_basilar_membrane (np.ndarray): Basilar membrane motion for the
+                enhanced signal in each band
+            enhanced_sl (np.ndarray): compressed RMS average of the enhanced signal in
+                each band converted to dB SL
+        """
+
+        if not self.reference_computed:
+            logging.error("Reference signal is not computed")
+            raise ValueError(
+                "Reference signal is not computed. "
+                "Please compute the reference signal first."
+            )
+
+        if not isinstance(self.audiogram, Audiogram):
+            raise ValueError("Set the Audiogram before calling `process_enhanced`.")
+
+        # Remove the leading and trailing zeros according the reference signal
+        signal = signal[self.start_signal : self.end_signal + 1]
+
+        # The cochlear model parameters for the enhanced signal are the same as for the
+        # hearing loss if calculating quality.
+        # But are for normal hearing if calculating intelligibility (HASPI).
+        if self.equalisation == 0:
+            [
+                self.attn_ohc,
+                self.bandwidth_min,
+                self.low_knee,
+                self.compression_ratio,
+                self.attn_ihc,
+            ] = self.loss_parameters(
+                hearing_loss=self.audiogram.levels,
+                center_freq=self.center_freq,
+                audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
+            )
+
+        # Compute the enhanced signal
+        (
+            enhanced_db,
+            enhanced_basilar_membrane,
+            enhanced_sl,
+        ) = self.process_common(
+            signal=signal,
+        )
+
+        return enhanced_db, enhanced_basilar_membrane, enhanced_sl
+
+    def process_common(self, signal: ndarray) -> tuple[ndarray | Any, Any, Any]:
+        """Run common steps for reference and enhanced signals."""
+
+        num_samples = len(signal)
+
+        # Middle ear
         signal_mid = self.middle_ear(signal)
-        signal_db = np.zeros((self.nchan, nsamp))
-        signal_average = np.zeros(self.nchan)
-        signal_control_average = np.zeros(self.nchan)
-        signal_bandwidth = np.zeros(self.nchan)
-        signal_b = np.zeros((self.nchan, nsamp))
 
-        for n in range(self.nchan):
+        signal_db = np.zeros((self.num_bands, num_samples))
+        signal_average = np.zeros(self.num_bands)
+        signal_control_average = np.zeros(self.num_bands)
+        signal_bandwidth = np.zeros(self.num_bands)
+        signal_b = np.zeros((self.num_bands, num_samples))
+
+        for n in range(self.num_bands):
+            # control signal
             signal_control, _ = self.gammatone_basilar_membrane(
-                signal_mid, self.BANDWITH_1[n], _center_freq_control
+                signal=signal_mid,
+                bandwidth=self.bandwidth_1[n],
+                center_freq=self.center_freq_control[n],
+                coscf=self.coscf_control[n],
+                sincf=self.sincf_control[n],
             )
+
+            # Adjust the auditory filter bandwidths for the average signal level
             signal_bandwidth[n] = self.bandwidth_adjust(
-                signal_control, bandwidth_min_x[n], self.BANDWITH_1[n], self.level1
+                control=signal_control,
+                bandwidth_min=self.bandwidth_min[n],
+                bandwidth_max=self.bandwidth_1[n],
             )
+
+            # Envelopes and BM motion of the signal
             envelope, basilar_membrane = self.gammatone_basilar_membrane(
                 signal_mid,
                 signal_bandwidth[n],
-                self._center_freq[n],
+                self.center_freq[n],
+                coscf=self.coscf[n],
+                sincf=self.sincf[n],
             )
+
+            # RMS levels of the envelopes for linear metric
             signal_average[n] = np.sqrt(np.mean(envelope**2))
             signal_control_average[n] = np.sqrt(np.mean(signal_control**2))
 
+            # Cochlear compression for the signal envelopes and BM motion
             (
                 signal_cochlear_compression,
                 signal_b[n],
@@ -227,18 +360,40 @@ class Ear:
                 envelope,
                 basilar_membrane,
                 signal_control,
-                attn_ohc_x[n],
-                low_knee_x[n],
-                compression_ratio_x[n],
+                self.attn_ohc[n],
+                self.low_knee[n],
+                self.compression_ratio[n],
             )
+
+            if self.reference_computed:
+                # Processing enhanced signal
+                signal_cochlear_compression = self.envelope_align(
+                    self.reference_cochlear_compression[n], signal_cochlear_compression
+                )
+                # Align processed BM motion to reference
+                signal_b[n] = self.envelope_align(self.temp_reference_b[n], signal_b[n])
+            else:
+                # Processing reference signal
+                self.reference_cochlear_compression[n] = signal_cochlear_compression
+                self.temp_reference_b[n] = signal_b[n]
+                self.reference_bandwidth[n] = signal_bandwidth[n]
+
+            # Convert the compressed envelopes and BM vibration envelopes to dB SPL
             signal_cochlear_compression, signal_b[n] = self.envelope_sl(
-                signal_cochlear_compression, signal_b[n], attn_ihc_x[n], self.level1
+                envelope=signal_cochlear_compression,
+                basilar_membrane=signal_b[n],
+                attenuated_ihc=self.attn_ihc[n],
             )
+
             # Apply the IHC rapid and short-term adaptation
             delta = 2  # Amount of overshoot
 
             signal_db[n], signal_b[n] = self.inner_hair_cell_adaptation(
-                signal_cochlear_compression, signal_b[n], delta, self.sample_rate
+                signal_cochlear_compression,
+                signal_b[n],
+                delta,
+                self.SAMPLE_RATE,
+                self.SMALL_VALUE,
             )
         # Additive noise level to give the auditory threshold
         ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
@@ -247,20 +402,26 @@ class Ear:
         )
 
         if self.m_delay > 0:
-            signal_db = self.group_delay_compensate(signal_db)
+            signal_db = self.group_delay_compensate(
+                input_signal=signal_db,
+                bandwidths=self.reference_bandwidth,
+                center_freq=self.center_freq,
+            )
 
             signal_basilar_membrane = self.group_delay_compensate(
-                signal_basilar_membrane
+                input_signal=signal_basilar_membrane,
+                bandwidths=self.reference_bandwidth,
+                center_freq=self.center_freq,
             )
 
         # Convert average gammatone outputs to dB SPL
         signal_sl = self.convert_rms_to_sl(
             signal_average,
             signal_control_average,
-            attn_ohc_x,
-            low_knee_x,
-            compression_ratio_x,
-            attn_ihc_x,
+            self.attn_ohc,
+            self.low_knee,
+            self.compression_ratio,
+            self.attn_ihc,
         )
 
         return signal_db, signal_basilar_membrane, signal_sl
@@ -280,11 +441,11 @@ class Ear:
         Arguments:
             low_freq (int): Low Frequency level.
             high_freq (int): High Frequency level.
-            shift (): optional frequency shift of the filter bank specified as a fractional
-                shift in distance along the BM. A positive shift is an increase in frequency
-                (basal shift), and negative is a decrease in frequency (apical shift). The
-                total length of the BM is normalized to 1. The frequency-to-distance map is
-                from D.D. Greenwood[3].
+            shift (): optional frequency shift of the filter bank specified as a
+                fractional shift in distance along the BM. A positive shift is an
+                increase in frequency (basal shift), and negative is a decrease
+                in frequency (apical shift). The total length of the BM is normalized
+                to 1. The frequency-to-distance map is from D.D. Greenwood[3].
             ear_q (float):
             min_bw (float):
 
@@ -311,13 +472,13 @@ class Ear:
         # Filter Bank" by Malcolm Slaney.
         # https://engineering.purdue.edu/~malcolm/apple/tr35/PattersonsEar.pdf
         _center_freq = -(ear_q * min_bw) + np.exp(
-            np.arange(1, self.nchan)
+            np.arange(1, self.num_bands)
             * (-np.log(high_freq + ear_q * min_bw) + np.log(low_freq + ear_q * min_bw))
-            / (self.nchan - 1)
+            / (self.num_bands - 1)
         ) * (high_freq + ear_q * min_bw)
-        _center_freq = np.insert(
-            _center_freq, 0, high_freq
-        )  # Last center frequency is set to highFreq
+
+        # Last center frequency is set to highFreq
+        _center_freq = np.insert(_center_freq, 0, high_freq)
         _center_freq = np.flip(_center_freq)
         return _center_freq
 
@@ -342,8 +503,8 @@ class Ear:
             attenuated_ohc (): attenuation in dB for the OHC gammatone filters
             bandwidth (): OHC filter bandwidth expressed in terms of normal
             low_knee (): Lower kneepoint for the low-level linear amplification
-            compression_ratio (): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal
-                hearing. Reduced in proportion to the OHC loss to 1:1.
+            compression_ratio (): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for
+                normal hearing. Reduced in proportion to the OHC loss to 1:1.
             attenuated_ihc ():	attenuation in dB for the input to the IHC synapse
 
         Updates:
@@ -387,12 +548,12 @@ class Ear:
         # I/O curves assume linear below 30 and above 100 dB SPL in normal ears.
         # HC loss that results in 1:1 compression
         max_ohc = 70 * (1 - (1 / compression_ratio))
-        theoretical_ohc = (
-            1.25 * max_ohc
-        )  # Loss threshold for adjusting the OHC parameters
 
-        # Apportion the loss in dB to the outer and inner hair cells based on the data of
-        # Moore et al (1999), JASA 106, 2761-2778.
+        # Loss threshold for adjusting the OHC parameters
+        theoretical_ohc = 1.25 * max_ohc
+
+        # Apportion the loss in dB to the outer and inner hair cells based
+        # on the data of Moore et al (1999), JASA 106, 2761-2778.
 
         # Reduce the CR towards 1:1 in proportion to the OHC loss.
         attenuated_ohc = 0.8 * np.copy(loss)
@@ -413,11 +574,12 @@ class Ear:
 
         # Compute the compression lower kneepoint and compression ratio
         low_knee = attenuated_ohc + 30
-        upamp = 30 + (70 / compression_ratio)  # Output level for an input of 100 dB SPL
 
-        compression_ratio = (100 - low_knee) / (
-            upamp + attenuated_ohc - low_knee
-        )  # OHC loss Compression ratio
+        # Output level for an input of 100 dB SPL
+        upamp = 30 + (70 / compression_ratio)
+
+        # OHC loss Compression ratio
+        compression_ratio = (100 - low_knee) / (upamp + attenuated_ohc - low_knee)
 
         return attenuated_ohc, bandwidth, low_knee, compression_ratio, attenuated_ihc
 
@@ -455,34 +617,36 @@ class Ear:
         signal: ndarray,
         bandwidth: float,
         center_freq: float,
+        coscf: ndarray,
+        sincf: ndarray,
         ear_q: float = 9.26449,
         min_bandwidth: float = 24.7,
     ) -> tuple[ndarray, ndarray]:
         """
-        4th-order gammatone auditory filter. This implementation is based on the c program
-        published on-line by Ning Ma, U. Sheffield, UK[1]_ that gives an implementation of
-        the Martin Cooke filters[2]_: an impulse-invariant transformation of the gammatone
+        4th-order gammatone auditory filter. This implementation is based on
+        the c program published on-line by Ning Ma, U. Sheffield, UK[1]_ that
+        gives an implementation of the Martin Cooke filters[2]_:
+        an impulse-invariant transformation of the gammatone
         filter. The signal is demodulated down to baseband using a complex exponential,
         and then passed through a cascade of four one-pole low-pass filters.
 
         This version filters two signals that have the same sampling rate and the same
-        gammatone filter center frequencies. The lengths of the two signals should match;
-        if they don't, the signals are truncated to the shorter of the two lengths.
+        gammatone filter center frequencies. The lengths of the two signals should
+        match; if they don't, the signals are truncated to the shorter of the two
+        lengths.
 
         Arguments:
             signal (): first sequence to be filtered
             bandwidth: bandwidth for x relative to that of a normal ear
             center_freq (int): filter center frequency in Hz
+            coscf (): cosine for centre frequency
+            sincf (): sine for centre frequency
             ear_q: (float): ???
             min_bandwidth (float): ???
 
         Returns:
-            reference_envelope (): filter envelope output (modulated down to baseband)
-                1st signal
-            reference_basilar_membrane (): Basilar Membrane for the first signal
-            processed_envelope (): filter envelope output (modulated down to baseband)
-                2nd signal
-            processed_basilar_membrane (): Basilar Membrane for the second signal
+            envelope (): envelope of the filtered signal
+            basilar_membrane (): BM motion output by the filter bank
         """
         # Filter Equivalent Rectangular Bandwidth from Moore and Glasberg (1983)
         # doi: 10.1121/1.389861
@@ -490,7 +654,7 @@ class Ear:
 
         # Filter the first signal
         # Initialize the filter coefficients
-        tpt = 2 * np.pi / self.sample_rate
+        tpt = 2 * np.pi / self.SAMPLE_RATE
         tpt_bw = bandwidth * tpt * erb * 1.019
         a = np.exp(-tpt_bw)
         a_1 = 4.0 * a
@@ -501,39 +665,35 @@ class Ear:
         gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
 
         # Initialize the complex demodulation
-        npts = len(signal)
-        sincf, coscf = self.gammatone_bandwidth_demodulation(npts, tpt, center_freq)
-
+        # npts = len(signal)
+        # sincf2, coscf2 = self.gammatone_bandwidth_demodulation(npts, tpt, center_freq)
         # Filter the real and imaginary parts of the signal
+
         ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], signal * coscf)
         uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], signal * sincf)
         assert isinstance(ureal, np.ndarray)
         assert isinstance(uimag, np.ndarray)
 
         # Extract the BM velocity and the envelope
-        reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-        reference_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
+        basilar_membrane = gain * (ureal * coscf + uimag * sincf)
+        envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
 
         return (
-            reference_envelope,
-            reference_basilar_membrane,
+            envelope,
+            basilar_membrane,
         )
 
     def bandwidth_adjust(
-        self,
-        control: ndarray,
-        bandwidth_min: float,
-        bandwidth_max: float,
-        level1: float,
+        self, control: ndarray, bandwidth_min: float, bandwidth_max: float
     ) -> float:
         """
-        Compute the increase in auditory filter bandwidth in response to high signal levels.
+        Compute the increase in auditory filter bandwidth in response to high signal
+        levels.
 
         Arguments:
             control (): envelope output in the control filter band
             bandwidth_min (): auditory filter bandwidth computed for the loss (or NH)
             bandwidth_max (): auditory filter bandwidth at maximum OHC damage
-            level1 ():     RMS=1 corresponds to Level1 dB SPL
 
         Returns:
             bandwidth (): filter bandwidth increased for high signal levels
@@ -541,7 +701,7 @@ class Ear:
 
         # Compute the control signal level
         control_rms = np.sqrt(np.mean(control**2))
-        control_db = 20 * np.log10(control_rms) + level1
+        control_db = 20 * np.log10(control_rms) + self.level1
 
         # Adjust the auditory filter bandwidth
         if control_db < 50:
@@ -566,9 +726,9 @@ class Ear:
     ) -> tuple[ndarray, ndarray]:
         """
         Compute the cochlear compression in one auditory filter band. The gain is linear
-        below the lower threshold, compressive with a compression ratio of CR:1 between the
-        lower and upper thresholds, and reverts to linear above the upper threshold. The
-        compressor assumes that auditory threshold is 0 dB SPL.
+        below the lower threshold, compressive with a compression ratio of CR:1 between
+        the lower and upper thresholds, and reverts to linear above the upper threshold.
+        The compressor assumes that auditory threshold is 0 dB SPL.
 
         Arguments:
             envsig (): analytic signal envelope (magnitude) returned by the
@@ -577,27 +737,16 @@ class Ear:
             control (): analytic control envelope returned by the wide control
                     path filter bank
             attn_ohc (): OHC attenuation at the input to the compressor
-            threshold_Low (): kneepoint for the low-level linear amplification
+            threshold_low (): kneepoint for the low-level linear amplification
             compression_ratio (): compression ratio
-            fsamp (): sampling rate in Hz
-            level1 (): dB reference level: a signal having an RMS value of 1 is
-                    assigned to Level1 dB SPL.
             threshold_high: kneepoint for the high-level linear amplification
 
         Returns:
             compressed_signal (): compressed version of the signal envelope
             compressed_basilar_membrane (): compressed version of the BM motion
-
-        Updates:
-        James M. Kates, 19 January 2007.
-        LP filter added 15 Feb 2007 (Ref: Zhang et al., 2001)
-        Version to compress the envelope, 20 Feb 2007.
-        Change in the OHC I/O function, 9 March 2007.
-        Two-tone suppression added 22 August 2008.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
         # Convert the control envelope to dB SPL
-        logenv = np.maximum(control, self.small)
+        logenv = np.maximum(control, self.SMALL_VALUE)
         logenv = self.level1 + 20 * np.log10(logenv)
         # Clip signal levels above the upper threshold
         logenv = np.minimum(logenv, threshold_high)
@@ -626,20 +775,15 @@ class Ear:
         return compressed_signal, compressed_basilar_membrane
 
     def envelope_sl(
-        self,
-        envelope: ndarray,
-        basilar_membrane: ndarray,
-        attenuated_ihc: float,
-        level1: float,
+        self, envelope: ndarray, basilar_membrane: ndarray, attenuated_ihc: float
     ) -> tuple[ndarray, ndarray]:
         """
         Convert the compressed envelope returned by cochlear_envcomp to dB SL.
 
         Arguments:
-            signal (): linear envelope after compression
+            envelope (): linear envelope after compression
             basilar_membrane (): linear Basilar Membrane vibration after compression
             attenuated_ihc (): IHC attenuation at the input to the synapse
-            level1 (): level in dB SPL corresponding to 1 RMS
 
         Returns:
             _reference (): reference envelope in dB SL
@@ -647,13 +791,226 @@ class Ear:
                 dB SL
         """
         # Convert the envelope to dB SL
-        _envelope = level1 - attenuated_ihc + 20 * np.log10(envelope + self.small)
+        _envelope = (
+            self.level1 - attenuated_ihc + 20 * np.log10(envelope + self.SMALL_VALUE)
+        )
         _envelope = np.maximum(_envelope, 0)
 
         # Convert the linear BM motion to have a dB SL envelope
-        gain = (_envelope + self.small) / (envelope + self.small)
+        gain = (_envelope + self.SMALL_VALUE) / (envelope + self.SMALL_VALUE)
 
         return _envelope, gain * basilar_membrane
+
+    def basilar_membrane_add_noise(self, signal: ndarray, threshold: int) -> ndarray:
+        """
+        Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise
+        to give the auditory threshold.
+
+        Arguments:
+            signal (): BM motion to be attenuated
+            threshold (): additive noise level in dB re:auditory threshold
+
+        Returns:
+            Attenuated signal with threshold noise added
+        """
+        # Linear gain for the noise
+        gain = 10 ** ((float(threshold) - self.level1) / 20)
+        noise = gain * np.random.standard_normal(signal.shape)
+        return signal + noise
+
+    def group_delay_compensate(
+        self,
+        input_signal: ndarray,
+        bandwidths: ndarray,
+        center_freq: ndarray,
+        ear_q: float = 9.26449,
+        min_bandwidth: float = 24.7,
+    ) -> ndarray:
+        """
+        Compensate for the group delay of the gammatone filter bank. The group
+        delay is computed for each filter at its center frequency. The firing
+        rate output of the IHC model is then adjusted so that all outputs have
+        the same group delay.
+
+        Arguments:
+            input_signal (np.ndarray): matrix of signal envelopes or BM motion
+
+        Returns:
+            processed (): envelopes or BM motion compensated for the group delay.
+        """
+
+        # Filter ERB from Moore and Glasberg (1983)
+        erb = min_bandwidth + (center_freq / ear_q)
+
+        # Initialize the gammatone filter coefficients
+        tpt = 2 * np.pi / self.SAMPLE_RATE
+        tpt_bandwidth = tpt * 1.019 * bandwidths * erb
+        a = np.exp(-tpt_bandwidth)
+        a_1 = 4.0 * a
+        a_2 = -6.0 * a * a
+        a_3 = 4.0 * a * a * a
+        a_4 = -a * a * a * a
+        a_5 = 4.0 * a * a
+
+        # Compute the group delay in samples at fsamp for each filter
+        _group_delay = np.zeros(self.num_bands)
+        for n in range(self.num_bands):
+            _, _group_delay[n] = group_delay(
+                ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
+            )
+        _group_delay = np.rint(_group_delay).astype(int)  # convert to integer samples
+
+        # Compute the delay correlation
+        group_delay_min = np.min(_group_delay)
+        _group_delay = (
+            _group_delay - group_delay_min
+        )  # Remove the minimum delay from all the over values
+        group_delay_max = np.max(_group_delay)
+        correct = (
+            group_delay_max - _group_delay
+        )  # Samples delay needed to add to give alignment
+
+        # Add delay correction to each frequency band
+        processed = np.zeros_like(input_signal)
+        npts = input_signal.shape[1]
+        for n in range(self.num_bands):
+            ref = input_signal[n]
+            processed[n] = np.concatenate(
+                (np.zeros(correct[n]), ref[: npts - correct[n]])
+            )
+        return processed
+
+    def convert_rms_to_sl(
+        self,
+        reference: ndarray,
+        control: ndarray,
+        attenuated_ohc: ndarray | float,
+        threshold_low: ndarray | int,
+        compression_ratio: ndarray | int,
+        attenuated_ihc: ndarray | float,
+    ) -> ndarray:
+        """
+        Covert the Root Mean Square average output of the gammatone filter bank
+        into dB SL. The gain is linear below the lower threshold, compressive
+        with a compression ratio of CR:1 between the lower and upper thresholds,
+        and reverts to linear above the upper threshold. The compressor
+        assumes that auditory threshold is 0 dB SPL.
+
+        Arguments:
+            reference (): analytic signal envelope (magnitude) returned by the
+                gammatone filter bank, RMS average level
+            control (): control signal envelope
+            attenuated_ohc (): OHC attenuation at the input to the compressor
+            threshold_low (): kneepoint for the low-level linear amplification
+            compression_ratio (): compression ratio
+            attenuated_ihc (): IHC attenuation at the input to the synapse
+
+        Returns:
+            reference_db (): compressed output in dB above the impaired threshold
+        """
+        control_db_spl = np.maximum(control, self.SMALL_VALUE)
+        control_db_spl = self.level1 + 20 * np.log10(control_db_spl)
+        control_db_spl = np.minimum(control_db_spl, 100)
+        control_db_spl = np.maximum(control_db_spl, threshold_low)
+
+        # Compute compression gain in dB
+        gain = -attenuated_ohc - (control_db_spl - threshold_low) * (
+            1 - (1 / compression_ratio)
+        )
+
+        # Convert the signal envelope to dB SPL
+        control_db_spl = np.maximum(reference, self.SMALL_VALUE)
+        control_db_spl = self.level1 + 20 * np.log10(control_db_spl)
+        control_db_spl = np.maximum(control_db_spl, 0)
+        reference_db = control_db_spl + gain - attenuated_ihc
+        reference_db = np.maximum(reference_db, 0)
+
+        return reference_db
+
+    def envelope_align(
+        self,
+        reference: ndarray,
+        output: ndarray,
+        corr_range: int = 100,
+    ) -> ndarray:
+        """
+        Align the envelope of the processed signal to that of the reference signal.
+
+        Arguments:
+            reference (): envelope or BM motion of the reference signal
+            output (): envelope or BM motion of the output signal
+            corr_range (int): range in msec for the correlation
+
+        Returns:
+            y (): shifted output envelope to match the input
+        """
+
+        # The MATLAB code limits the range of lags to search (to 100 ms) to save
+        # computation time - no such option exists in numpy, but the code below
+        # limits the delay to the same range as in Matlab, for consistent results
+
+        # Range in samples
+        lags = np.rint(0.001 * corr_range * self.SAMPLE_RATE).astype(int)
+        npts = len(reference)
+        lags = min(lags, npts)
+
+        ref_out_correlation = correlate(reference, output, "full")
+
+        location = np.argmax(ref_out_correlation[npts - lags : npts + lags])
+        delay = lags - location - 1
+
+        # Time shift the output sequence
+        if delay > 0:
+            # Output delayed relative to the reference
+            return np.concatenate((output[delay:npts], np.zeros(delay)))
+        return np.concatenate((np.zeros(-delay), output[: npts + delay]))
+
+    @staticmethod
+    @njit
+    def find_noiseless_boundaries(signal: ndarray) -> tuple[int, int]:
+        """
+        Prune silence from the signal.
+        """
+        signal_abs = np.abs(signal)
+        signal_max = np.max(signal_abs)
+        threshold = 0.001 * signal_max  # Zero detection threshold
+
+        above_threshold = np.where(signal_abs > threshold)[0]
+        start = above_threshold[0]
+        end = min(above_threshold[-1], len(signal))
+        return start, end
+
+    @staticmethod
+    @njit
+    def gammatone_bandwidth_demodulation(npts, tpt, center_freq):
+        """Gamma tone bandwidth demodulation
+
+        Arguments:
+            npts (): ???
+            tpt (): ???
+            center_freq (): ???
+
+        Returns:
+            sincf (): ???
+            coscf (): ???
+        """
+        center_freq_cos = np.zeros(npts)
+        center_freq_sin = np.zeros(npts)
+
+        cos_n = np.cos(tpt * center_freq)
+        sin_n = np.sin(tpt * center_freq)
+        cold = 1.0
+        sold = 0.0
+        center_freq_cos[0] = cold
+        center_freq_sin[0] = sold
+        for n in range(1, npts):
+            arg = cold * cos_n + sold * sin_n
+            sold = sold * cos_n - cold * sin_n
+            cold = arg
+            center_freq_cos[n] = cold
+            center_freq_sin[n] = sold
+
+        return center_freq_sin, center_freq_cos
 
     @staticmethod
     @njit
@@ -678,15 +1035,13 @@ class Ear:
                 but no IHC attenuation
             delta (): overshoot factor = delta x steady-state
             freq_sample (int): sampling rate in Hz
+            small (): small value to avoid divide by zero
 
         Returns:
             output_db (): envelope in dB SL with IHC adaptation
-            output_basilar_membrane (): Basilar Membrane multiplied by the IHC adaptation
-                gain function
+            output_basilar_membrane (): Basilar Membrane multiplied by the IHC
+                adaptation gain function
 
-        Updates:
-        James M. Kates, 1 October 2012.
-        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
         """
         # Test the amount of overshoot
         dsmall = 1.0001
@@ -741,134 +1096,48 @@ class Ear:
 
         return output_db, gain * basilar_membrane
 
-    def basilar_membrane_add_noise(self, signal: ndarray, threshold: int) -> ndarray:
+    @staticmethod
+    def correlate(signal1, signal2):
+        # Compute the length of the cross-correlation result
+        n = len(signal1) + len(signal2) - 1
+
+        # Compute the FFT of the signals
+        fft_signal1 = np.fft.fft(signal1, n=n)
+        fft_signal2 = np.fft.fft(signal2, n=n)
+
+        # Compute the cross-correlation in the frequency domain
+        cross_corr = np.fft.ifft(fft_signal1 * np.conj(fft_signal2))
+        # Find the index of the maximum value in the cross-correlation array
+        return cross_corr
+
+    def input_align(self, signal):
         """
-        Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise to
-        give the auditory threshold.
+        Approximate temporal alignment of the reference and processed output
+        signals. Leading and trailing zeros are then pruned.
 
         Arguments:
-            reference (): BM motion to be attenuated
-            threshold (): additive noise level in dB re:auditory threshold
-            level1 (): an input having RMS=1 corresponds to Level1 dB SPL
+             signal (np.ndarray): hearing-aid output sequence
 
         Returns:
-            Attenuated signal with threshold noise added
+              signal (np.ndarray): shifted
         """
-        gain = 10 ** ((threshold - self.level1) / 20)  # Linear gain for the noise
-        noise = gain * np.random.standard_normal(signal.shape)
-        return signal + noise
-
-    def group_delay_compensate(
-        self,
-        input_signal: ndarray,
-    ) -> ndarray:
-        """
-        Compensate for the group delay of the gammatone filter bank. The group
-        delay is computed for each filter at its center frequency. The firing
-        rate output of the IHC model is then adjusted so that all outputs have
-        the same group delay.
-
-        Arguments:
-            xenv (np.ndarray): matrix of signal envelopes or BM motion
-
-        Returns:
-            processed (): envelopes or BM motion compensated for the group delay.
-        """
-        # Add delay correction to each frequency band
-        processed = np.zeros_like(input_signal)
-        npts = len(input_signal.shape[1])
-        for n in range(self.nchan):
-            ref = input_signal[n]
-            processed[n] = np.concatenate(
-                (
-                    np.zeros(self.GROUP_DELAY_COEFS[n]),
-                    ref[: npts - self.GROUP_DELAY_COEFS[n]],
-                )
-            )
-
-        return processed
-
-    def convert_rms_to_sl(
-        self,
-        reference: ndarray,
-        control: ndarray,
-        attenuated_ohc: ndarray | float,
-        threshold_low: ndarray | int,
-        compression_ratio: ndarray | int,
-        attenuated_ihc: ndarray | float,
-    ) -> ndarray:
-        """
-        Covert the Root Mean Square average output of the gammatone filter bank
-        into dB SL. The gain is linear below the lower threshold, compressive
-        with a compression ratio of CR:1 between the lower and upper thresholds,
-        and reverts to linear above the upper threshold. The compressor
-        assumes that auditory threshold is 0 dB SPL.
-
-        Arguments:
-            reference (): analytic signal envelope (magnitude) returned by the
-            gammatone filter bank, RMS average level
-            control (): control signal envelope
-            attenuated_ohc (): OHC attenuation at the input to the compressor
-            threshold_low (): kneepoint for the low-level linear amplification
-            compression_ratio (): compression ratio
-            attenuated_ihc (): IHC attenuation at the input to the synapse
-            level1 (): dB reference level: a signal having an RMS value of 1 is
-                    assigned to Level1 dB SPL.
-            threshold_high (int):
-            small (float):
-
-        Returns:
-            reference_db (): compressed output in dB above the impaired threshold
-        """
-        control_db_spl = np.maximum(control, self.small)
-        control_db_spl = self.level1 + 20 * np.log10(control_db_spl)
-        control_db_spl = np.minimum(control_db_spl, 100)
-        control_db_spl = np.maximum(control_db_spl, threshold_low)
-
-        # Compute compression gain in dB
-        gain = -attenuated_ohc - (control_db_spl - threshold_low) * (
-            1 - (1 / compression_ratio)
+        samples = len(signal)
+        reference_processed_correlation = self.correlate(
+            self.reference_align - np.mean(self.reference_align),
+            signal - np.mean(signal),
         )
 
-        # Convert the signal envelope to dB SPL
-        control_db_spl = np.maximum(reference, small)
-        control_db_spl = self.level1 + 20 * np.log10(control_db_spl)
-        control_db_spl = np.maximum(control_db_spl, 0)
-        reference_db = control_db_spl + gain - attenuated_ihc
-        reference_db = np.maximum(reference_db, 0)
+        index = np.argmax(np.abs(reference_processed_correlation))
+        delay = samples - index - 1
 
-        return reference_db
+        # Back up 2 msec to allow for dispersion
+        delay = np.rint(delay - 2 * self.SAMPLE_RATE / 1000.0).astype(int)
 
-    @staticmethod
-    @njit
-    def gammatone_bandwidth_demodulation(npts, tpt, center_freq):
-        """Gamma tone bandwidth demodulation
-
-        Arguments:
-            npts (): ???
-            tpt (): ???
-            center_freq (): ???
-            center_freq_cos (): ???
-            sincf (): ???
-
-        Returns:
-            sincf (): ???
-            coscf (): ???
-        """
-        center_freq_cos = np.zeros(npts)
-        center_freq_sin = np.zeros(npts)
-
-        cos_n = np.cos(tpt * center_freq)
-        sin_n = np.sin(tpt * center_freq)
-        cold = 1.0
-        sold = 0.0
-        center_freq_cos[0] = cold
-        center_freq_sin[0] = sold
-        for n in range(1, npts):
-            arg = cold * cos_n + sold * sin_n
-            sold = sold * cos_n - cold * sin_n
-            cold = arg
-            center_freq_cos[n] = cold
-            center_freq_sin[n] = sold
-
-        return center_freq_sin, center_freq_cos
+        # Align the output with the reference allowing for the dispersion
+        if delay > 0:
+            # Output delayed relative to the reference
+            signal = np.concatenate((signal[delay:samples], np.zeros(delay)))
+        else:
+            # Output advanced relative to the reference
+            signal = np.concatenate((np.zeros(-delay), signal[: samples + delay]))
+        return signal
