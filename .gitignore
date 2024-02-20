@@ -72,3 +72,4 @@ clarity/_version.py
 
 # PyCharm
 .idea/
+.idea/*
