@@ -32,7 +32,7 @@ class HAAQI_V1:
         n_cepstral_coef: int = 6,
         segment_covariance: int = 16,
         ear_model_kwargs: dict | None = None,
-    ):
+    ) -> None:
         """Initialise HAAQI evaluator.
 
         Args:
@@ -111,12 +111,12 @@ class HAAQI_V1:
         # Number of modulation filter bands
         self.n_modulation_filter_bands = 1 + len(self.edge)
 
-    def set_audiogram(self, audiogram: Audiogram):
-        if not audiogram.has_frequencies(self.HAAQI_AUDIOGRAM_FREQUENCIES):
-            logging.warning(
-                "Audiogram does not have all HAAQI frequency measurements"
-                "Measurements will be interpolated"
-            )
+    def set_audiogram(self, audiogram: Audiogram) -> None:
+        """Set the audiogram.
+
+        Args:
+            audiogram (Audiogram): audiogram to set.
+        """
         self.ear_model.set_audiogram(audiogram)
 
     def process(
@@ -126,21 +126,73 @@ class HAAQI_V1:
         enhanced: ndarray,
         enhanced_sample_rate: float,
         level1: float = 65.0,
-        keep_reference: bool = True,
-    ):
-        """Process the reference and enhanced signals."""
-        if keep_reference and not self.reference_computed:
-            self.set_reference(reference, reference_sample_rate, level1)
-            self.reference_computed = True
-        elif not keep_reference:
-            self.set_reference(reference, reference_sample_rate, level1)
+    ) -> float:
+        """Process the reference and enhanced signals.
 
-        return self.score(enhanced, enhanced_sample_rate)
+        This method is a wrapper for the set_reference and score methods.
+        It assumes that the references need to be recomputed every time.
+        Recommended for when processing several different signals with the same
+        audiogram.
+
+        Args:
+            reference (ndarray): reference signal.
+            reference_sample_rate (float): reference signal sample rate.
+            enhanced (ndarray): enhanced signal.
+            enhanced_sample_rate (float): enhanced signal sample rate.
+            level1 (float, optional): level1. Defaults to 65.0.
+            keep_reference (bool, optional): keep reference. Defaults to False.
+
+        Returns:
+            HAAQI_score: float
+            Nonlinear_model: float
+            Linear_model: float
+            raw_data: ndarray
+
+        Example:
+            >>> ha = HAAQI_V1()
+            >>> ha.set_audiogram(audiogram)
+            >>>
+            >>> sr = 24000
+            >>> results = {}
+            >>> for song, reference, enhanced in zip(song_name, references, enhanceds):
+            >>>     score = ha.process(
+            >>>         reference,
+            >>>         sr,
+            >>>         enhanced,
+            >>>         sr
+            >>>     )
+            >>>    results[song] = score
+        """
+        self.set_reference(reference, reference_sample_rate, level1)
+        score, _, _, _ = self.score(enhanced, enhanced_sample_rate)
+        return score
 
     def set_reference(
         self, reference: ndarray, sample_rate: float, level1: float = 65.0
-    ):
-        """Set the reference signal."""
+    ) -> None:
+        """Set the reference signal.
+
+        Method computes the ear model and other variables from the reference
+         signal that will be reused in the ```score``` method.
+
+        ```set_audiogram``` must be called before this method.
+
+        Args:
+            reference (ndarray): reference signal.
+            sample_rate (float): reference signal sample rate.
+            level1 (float, optional): level1. Defaults to 65.0.
+
+        Raises:
+            ValueError: Audiogram must be set before calling this method.
+
+        Example:
+            >>> ha = HAAQI_V1()
+            >>> ha.set_audiogram(audiogram)
+            >>> ha.set_reference(reference, sr)
+        """
+        if self.audiogram is None:
+            raise ValueError("Audiogram must be set before calling this method.")
+
         if sample_rate != self.EAR_SAMPLE_RATE:
             reference = resample(reference, sample_rate, self.EAR_SAMPLE_RATE)
 
@@ -191,8 +243,25 @@ class HAAQI_V1:
         self,
         enhanced: ndarray,
         sample_rate: float,
-    ):
-        """Score the enhanced signal."""
+    ) -> tuple[float, float, float, ndarray]:
+        """Score the enhanced signal.
+
+        Args:
+            enhanced (ndarray): enhanced signal.
+            sample_rate (float): enhanced signal sample rate.
+
+        Returns:
+            HAAQI_score: float
+            Nonlinear_model: float
+            Linear_model: float
+            raw_data: ndarray
+
+        Example:
+            >>> ha = HAAQI_V1()
+            >>> ha.set_audiogram(audiogram)
+            >>> ha.set_reference(reference, sr)
+            >>> score, nonlinear, linear, raw = ha.score(enhanced, sr)
+        """
         if sample_rate != self.EAR_SAMPLE_RATE:
             enhanced = resample(enhanced, sample_rate, self.EAR_SAMPLE_RATE)
 
@@ -457,16 +526,16 @@ class HAAQI_V1:
         """Compute the cross-covariance matrix.
 
         Arguments:
-            b (): ???
-            nmod (): ???
-            nbasis (): ???
-            nsamp (): ???
-            nfir (): ???
-            reference_cep (): ???
-            processed_cep (): ???
+            b (ndarray): filter
+            nmod (int): number of modulation filter bands
+            nbasis (int): number of cepstral coefficients
+            nsamp (int): number of samples above threshold
+            nfir (int): filter length
+            reference_cep (ndarray): mel cepstrum coefficients of the reference signal
+            processed_cep (ndarray): mel cepstrum coefficients of the processed signal
 
         Returns:
-            cross_covariance_matrix ():
+            cross_covariance_matrix (ndarray):
         """
         nfir2 = nfir / 2
         # Convolve the input and output envelopes with the modulation filters
@@ -529,16 +598,6 @@ class HAAQI_V1:
             dloud (np.array) : [sum abs diff, std dev diff, max diff] spectra
             dnorm (np.array) : [sum abs diff, std dev diff, max diff] norm spectra
             dslope (np.array) : [sum abs diff, std dev diff, max diff] slope
-
-        References:
-        .. [1] Moore BCJ, Tan, CT (2004) Development and Validation of a Method
-               for Predicting the Perceived Naturalness of Sounds Subjected to
-               Spectral Distortion J Audio Eng Soc 52(9):900-914. Available at.
-               <http://www.aes.org/e-lib/browse.cfm?elib=13018>.
-
-        Updates:
-            James M. Kates, 28 June 2012.
-            Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
 
         # Convert the dB SL to linear magnitude values. Because of the auditory
@@ -609,11 +668,6 @@ class HAAQI_V1:
                 energy values
             processed_mean_square (np.array) : [nchan,nseg] of MS processed signal
                 energy values
-
-        Updates:
-            James M. Kates, 28 August 2012.
-            Output amplitude adjustment added, 30 october 2012.
-            Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
 
         # Initialize parameters
@@ -804,28 +858,9 @@ class HAAQI_V1:
             ihc_sync_covariance (): cross-covariance array, 6 different weightings for
                 loss of IHC synchronization at high frequencies:
                   LP Filter Order     Cutoff Freq, kHz
-                    1              1.5
-                    3              2.0
-                    5              2.5, 3.0, 3.5, 4.0
-
-        References:
-
-        .. [1] Tan CT, Moore, BCJ, Zacharov N, Mattila VV (2004) Predicting the
-            Perceived Quality of Nonlinearly Distorted Music and Speech Signals.
-            J Audio Eng Soc 52(9):900-914. Available at.
-               <http://www.aes.org/e-lib/browse.cfm?elib=13013>.
-
-        .. [2] Johnson DH (1980) The relationship between spike rate and synchrony in
-               responses of auditory‐nerve fibers to single tones J Acoustical Soc of Am
-               68:1115 Available at.
-               <https://doi.org/10.1121/1.384982>
-
-        Updates:
-            James M. Kates, 28 August 2012.
-            Adjusted for BM vibration in dB SL, 30 October 2012.
-            Threshold for including time-freq tile modified, 30 January 2013.
-            Version for different sync loss, 15 February 2013.
-            Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
+                         1              1.5
+                         3              2.0
+                         5              2.5, 3.0, 3.5, 4.0
         """
 
         # Array dimensions
