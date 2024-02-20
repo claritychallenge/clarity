@@ -906,10 +906,7 @@ class HAAQI_V1:
             logger.warning(
                 "Function AveCovary2: Ave signal below threshold, outputs set to 0."
             )
-            average_covariance = 0
-            # syncov = 0
-            ihc_sync_covariance = np.zeros(6)
-            return average_covariance, ihc_sync_covariance
+            return 0, np.zeros(6)
 
         # Remove the silent segments
         signal_cross_covariance = signal_cross_covariance[:, index]
