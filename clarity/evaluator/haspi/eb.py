@@ -115,6 +115,7 @@ def ear_model(
         hearing_loss_x = np.zeros(len(hearing_loss))
     else:
         hearing_loss_x = hearing_loss
+
     [
         attn_ohc_x,
         bandwidth_min_x,
@@ -1121,9 +1122,8 @@ def basilar_membrane_add_noise(
     gain = 10 ** ((threshold - level1) / 20)  # Linear gain for the noise
 
     # rng = np.random.default_rng()
-    noise = gain * np.random.standard_normal(
-        reference.shape
-    )  # Gaussian RMS=1, then attenuated
+    # Gaussian RMS=1, then attenuated
+    noise = gain * np.random.standard_normal(reference.shape)
     return reference + noise
 
 
