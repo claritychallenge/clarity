@@ -118,6 +118,7 @@ class HAAQI_V1:
             audiogram (Audiogram): audiogram to set.
         """
         self.ear_model.set_audiogram(audiogram)
+        self.audiogram = audiogram
 
     def process(
         self,
