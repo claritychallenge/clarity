@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 import numpy as np
 from numba import njit
-from scipy.signal import correlate, group_delay, lfilter
+from scipy.signal import butter, correlate, group_delay, lfilter
 
 from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram
@@ -22,27 +22,6 @@ class Ear:
     signals are resampled to 24000 Hz before using the model.
 
     """
-
-    COMPRESS_BASILAR_MEMBRANE_COEFS: Final = {
-        "24000": {
-            "b": [0.09510798340249643, 0.09510798340249643],
-            "a": [1.0, -0.8097840331950071],
-        }
-    }
-
-    # Middle ear filter coefficients
-    MIDDLE_EAR_COEF: Final = {
-        "24000": {
-            "butterworth_low_pass": [0.4341737512063021, 0.4341737512063021],
-            "low_pass": [1.0, -0.13165249758739583],
-            "butterworth_high_pass": [
-                0.9372603902698923,
-                -1.8745207805397845,
-                0.9372603902698923,
-            ],
-            "high_pass": [1.0, -1.8705806407352794, 0.8784609203442912],
-        }
-    }
 
     SAMPLE_RATE: Final = 24000
     SMALL_VALUE: Final = 1e-30
@@ -87,6 +66,25 @@ class Ear:
             center_freq=self.center_freq_control,
             audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
         )
+
+        flp = 800
+        b, a = butter(1, flp / (0.5 * self.SAMPLE_RATE))
+        self.compress_basilar_membrane_coef: dict = {
+            "b": b,
+            "a": a,
+        }
+
+        butterworth_low_pass, low_pass = butter(1, 5000 / (0.5 * self.SAMPLE_RATE))
+        butterworth_high_pass, high_pass = butter(
+            2, 350 / (0.5 * self.SAMPLE_RATE), "high"
+        )
+
+        self.middle_ear_coef: dict = {
+            "butterworth_low_pass": butterworth_low_pass,
+            "low_pass": low_pass,
+            "butterworth_high_pass": butterworth_high_pass,
+            "high_pass": high_pass,
+        }
 
         self.level1: float = 65.0
         self.audiogram: Audiogram | None = None
@@ -271,7 +269,7 @@ class Ear:
         if not self.reference_computed:
             logging.error("Reference signal is not computed")
             raise ValueError(
-                "Reference signal is not computed. "
+                "Reference signal is not computed."
                 "Please compute the reference signal first."
             )
 
@@ -319,7 +317,7 @@ class Ear:
         signal_db = np.zeros((self.num_bands, num_samples))
         signal_average = np.zeros(self.num_bands)
         signal_control_average = np.zeros(self.num_bands)
-        signal_bandwidth = np.zeros(self.num_bands)
+
         signal_b = np.zeros((self.num_bands, num_samples))
 
         for n in range(self.num_bands):
@@ -333,7 +331,7 @@ class Ear:
             )
 
             # Adjust the auditory filter bandwidths for the average signal level
-            signal_bandwidth[n] = self.bandwidth_adjust(
+            signal_bandwidth = self.bandwidth_adjust(
                 control=signal_control,
                 bandwidth_min=self.bandwidth_min[n],
                 bandwidth_max=self.bandwidth_1[n],
@@ -342,7 +340,7 @@ class Ear:
             # Envelopes and BM motion of the signal
             envelope, basilar_membrane = self.gammatone_basilar_membrane(
                 signal_mid,
-                signal_bandwidth[n],
+                signal_bandwidth,
                 self.center_freq[n],
                 coscf=self.coscf[n],
                 sincf=self.sincf[n],
@@ -376,7 +374,7 @@ class Ear:
                 # Processing reference signal
                 self.reference_cochlear_compression[n] = signal_cochlear_compression
                 self.temp_reference_b[n] = signal_b[n]
-                self.reference_bandwidth[n] = signal_bandwidth[n]
+                self.reference_bandwidth[n] = signal_bandwidth
 
             # Convert the compressed envelopes and BM vibration envelopes to dB SPL
             signal_cochlear_compression, signal_b[n] = self.envelope_sl(
@@ -600,15 +598,15 @@ class Ear:
         """
         # LP filter the input
         signal = lfilter(
-            self.MIDDLE_EAR_COEF["24000"]["butterworth_low_pass"],
-            self.MIDDLE_EAR_COEF["24000"]["low_pass"],
+            self.middle_ear_coef["butterworth_low_pass"],
+            self.middle_ear_coef["low_pass"],
             signal,
         )
 
         # HP filter the signal
         return lfilter(
-            self.MIDDLE_EAR_COEF["24000"]["butterworth_high_pass"],
-            self.MIDDLE_EAR_COEF["24000"]["high_pass"],
+            self.middle_ear_coef["butterworth_high_pass"],
+            self.middle_ear_coef["high_pass"],
             signal,
         )
 
@@ -665,8 +663,6 @@ class Ear:
         gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
 
         # Initialize the complex demodulation
-        # npts = len(signal)
-        # sincf2, coscf2 = self.gammatone_bandwidth_demodulation(npts, tpt, center_freq)
         # Filter the real and imaginary parts of the signal
 
         ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], signal * coscf)
@@ -678,10 +674,7 @@ class Ear:
         basilar_membrane = gain * (ureal * coscf + uimag * sincf)
         envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
 
-        return (
-            envelope,
-            basilar_membrane,
-        )
+        return envelope, basilar_membrane
 
     def bandwidth_adjust(
         self, control: ndarray, bandwidth_min: float, bandwidth_max: float
@@ -763,8 +756,8 @@ class Ear:
         # flp = 800
         # b, a = butter(1, flp / (0.5 * fsamp))
         gain = lfilter(
-            self.COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["b"],
-            self.COMPRESS_BASILAR_MEMBRANE_COEFS["24000"]["a"],
+            self.compress_basilar_membrane_coef["b"],
+            self.compress_basilar_membrane_coef["a"],
             gain,
         )
 
@@ -834,6 +827,10 @@ class Ear:
 
         Arguments:
             input_signal (np.ndarray): matrix of signal envelopes or BM motion
+            bandwidths (np.ndarray): array of filter bandwidths
+            center_freq (np.ndarray): array of filter center frequencies
+            ear_q (float): ???
+            min_bandwidth (float): ???
 
         Returns:
             processed (): envelopes or BM motion compensated for the group delay.
