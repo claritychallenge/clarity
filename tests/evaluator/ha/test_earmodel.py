@@ -132,6 +132,21 @@ def test_process_reference(ear_instance, audiogram):
     )
 
 
+def test_process_reference_before_audiogram(ear_instance):
+    """
+    Test the process_reference method of the Ear class before setting the audiogram.
+    """
+    ear_instance = ear_instance()
+
+    # Create a dummy signal for testing
+    num_samples = 1000
+    signal = np.random.randn(num_samples)
+
+    # Call process_reference before setting the audiogram
+    with pytest.raises(ValueError):
+        ear_instance.process_reference(signal)
+
+
 def test_process_enhanced(ear_instance, audiogram):
     """Test the process_enhanced method of the Ear class."""
     ear_instance = ear_instance()
@@ -156,6 +171,39 @@ def test_process_enhanced(ear_instance, audiogram):
     assert len(enhanced_db) == ear_instance.num_bands
     assert len(enhanced_basilar_membrane) == ear_instance.num_bands
     assert len(enhanced_sl) == ear_instance.num_bands
+
+
+def test_process_enhanced_before_reference(ear_instance, audiogram):
+    """
+    Test the process_enhanced method of the Ear class before calling process_reference.
+    """
+    ear_instance = ear_instance()
+
+    # Create a dummy signal for testing
+    num_samples = 1000
+    enhanced = np.random.randn(num_samples)
+
+    # Set the Audiogram
+    ear_instance.set_audiogram(audiogram)
+
+    # Call process_enhanced before process_reference
+    with pytest.raises(ValueError):
+        ear_instance.process_enhanced(enhanced)
+
+
+def test_process_enhanced_before_audiogram(ear_instance):
+    """
+    Test the process_enhanced method of the Ear class before setting the audiogram.
+    """
+    ear_instance = ear_instance()
+
+    # Create a dummy signal for testing
+    num_samples = 1000
+    enhanced = np.random.randn(num_samples)
+
+    # Call process_enhanced before setting the audiogram
+    with pytest.raises(ValueError):
+        ear_instance.process_enhanced(enhanced)
 
 
 def test_process_common(ear_instance, audiogram):
@@ -198,7 +246,27 @@ def test_center_frequency(ear_instance):
     )
 
 
-def test_loss_parameters(ear_instance):
+def test_center_frequency_shift(ear_instance):
+    """Test method center frequency"""
+    ear_instance = ear_instance(num_bands=10)
+
+    center_freq = ear_instance.center_frequency(
+        shift=0.1,
+        low_freq=80,
+        high_freq=8000,
+        ear_q=9.26449,
+        min_bw=24.7,
+    )
+    assert center_freq.shape == (10,)
+    assert np.sum(center_freq) == pytest.approx(
+        33526.27322859052, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+@pytest.mark.parametrize(
+    "audiometric_freq", ([np.array([250, 500, 1000, 2000, 4000, 6000], None)])
+)
+def test_loss_parameters(ear_instance, audiometric_freq):
     """Test loss parameters"""
 
     ear_instance = ear_instance()
@@ -212,7 +280,7 @@ def test_loss_parameters(ear_instance):
     ) = ear_instance.loss_parameters(
         hearing_loss=np.array([45, 45, 50, 60, 70, 80]),
         center_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
-        audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
+        audiometric_freq=audiometric_freq,
     )
 
     # check shapes
@@ -308,6 +376,50 @@ def test_bandwidth_adjust(ear_instance):
     assert isinstance(adjusted_bandwidth, float)
     assert np.sum(adjusted_bandwidth) == pytest.approx(
         56.68477203105376, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+def test_bandwidth_adjust_control_db_100(ear_instance):
+    """Test bandwidth_adjust method of the Ear class."""
+    np.random.seed(0)
+
+    ear_instance = ear_instance()
+    # Create dummy control signal, min bandwidth, and max bandwidth for testing
+    control = np.random.rand(1000) * 200
+    bandwidth_min = 20
+    bandwidth_max = 200
+
+    # Call bandwidth_adjust
+    adjusted_bandwidth = ear_instance.bandwidth_adjust(
+        control, bandwidth_min, bandwidth_max
+    )
+
+    # Add assertions based on expected behavior of bandwidth_adjust
+    assert isinstance(adjusted_bandwidth, float)
+    assert np.sum(adjusted_bandwidth) == pytest.approx(
+        bandwidth_max, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+def test_bandwidth_adjust_control_db_50(ear_instance):
+    """Test bandwidth_adjust method of the Ear class."""
+    np.random.seed(0)
+
+    ear_instance = ear_instance()
+    # Create dummy control signal, min bandwidth, and max bandwidth for testing
+    control = np.random.rand(1000) * 0.1
+    bandwidth_min = 20
+    bandwidth_max = 200
+
+    # Call bandwidth_adjust
+    adjusted_bandwidth = ear_instance.bandwidth_adjust(
+        control, bandwidth_min, bandwidth_max
+    )
+
+    # Add assertions based on expected behavior of bandwidth_adjust
+    assert isinstance(adjusted_bandwidth, float)
+    assert np.sum(adjusted_bandwidth) == pytest.approx(
+        bandwidth_min, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -487,6 +599,35 @@ def test_envelope_align(ear_instance):
     assert aligned_output.shape == (600,)
     assert np.sum(np.abs(aligned_output)) == pytest.approx(
         299.1891022020615, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    # Check output is now aligned with the reference
+    assert aligned_output[100] == pytest.approx(
+        scale * reference[100], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
+@pytest.mark.slow
+def test_envelope_align_long(ear_instance):
+    """Test envelope_align method of the Ear class."""
+
+    ear_instance = ear_instance()
+    np.random.seed(0)
+    sig_len = 2400
+    scale = 1.1
+    reference = np.random.random(size=sig_len)
+
+    # Make output look like a shifted copy of the reference
+    output = reference.copy()
+    output[50:] = output[:-50]
+    output[0:50] = 0
+    output *= scale
+
+    aligned_output = ear_instance.envelope_align(reference, output, corr_range=100)
+
+    # check shapes and values
+    assert aligned_output.shape == (sig_len,)
+    assert np.sum(np.abs(aligned_output)) == pytest.approx(
+        1304.2657154489764, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     # Check output is now aligned with the reference
     assert aligned_output[100] == pytest.approx(

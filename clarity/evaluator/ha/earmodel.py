@@ -328,6 +328,8 @@ class Ear:
             enhanced_sl (np.ndarray): compressed RMS average of the enhanced signal in
                 each band converted to dB SL
         """
+        if not isinstance(self.audiogram, Audiogram):
+            raise ValueError("Set the Audiogram before calling `process_enhanced`.")
 
         if not self.reference_computed:
             logging.error("Reference signal is not computed")
@@ -335,9 +337,6 @@ class Ear:
                 "Reference signal is not computed."
                 "Please compute the reference signal first."
             )
-
-        if not isinstance(self.audiogram, Audiogram):
-            raise ValueError("Set the Audiogram before calling `process_enhanced`.")
 
         # Remove the leading and trailing zeros according the reference signal
         signal = signal[self.start_signal : self.end_signal + 1]
@@ -773,10 +772,10 @@ class Ear:
         # Adjust the auditory filter bandwidth
         if control_db < 50:
             # No BW adjustment for a signal below 50 dB SPL
-            return bandwidth_min
+            return float(bandwidth_min)
         if control_db > 100:
             # Maximum BW if signal is above 100 dB SPL
-            return bandwidth_max
+            return float(bandwidth_max)
         return bandwidth_min + ((control_db - 50) / 50) * (
             bandwidth_max - bandwidth_min
         )
