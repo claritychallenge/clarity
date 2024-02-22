@@ -134,10 +134,47 @@ def test_set_reference(haaqi_instance, audiogram):
     )
 
 
+def test_set_reference_before_audiogram(haaqi_instance):
+    """Test the set_reference method of the HAAQI_V1 class."""
+    np.random.seed(42)
+
+    # Initialize HAAQI_V1 instance
+    haqqi_instance = haaqi_instance()
+
+    # Generate reference signal (example)
+    reference_signal = np.random.randn(600)
+
+    # Set the reference signal
+    with pytest.raises(ValueError):
+        haqqi_instance.set_reference(reference_signal, 24000)
+
+
+def test_set_resample_reference(haaqi_instance, audiogram):
+    """Test the set_resample_reference method of the Ear class."""
+    haaqi_instance = haaqi_instance()
+
+    # Create a dummy signal for testing
+    num_samples = 1000
+    signal = np.random.randn(num_samples)
+
+    # Set audiogram
+    haaqi_instance.set_audiogram(audiogram)
+
+    # Ensure reference is computed before calling set_resample_reference
+    haaqi_instance.set_reference(signal, 48000)
+
+    # Add assertions based on expected behavior of set_resample_reference
+    assert len(haaqi_instance.reference) == pytest.approx(
+        500, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+
 def test_score(haaqi_instance, audiogram):
     """Test the score method of the HAAQI_V1 class."""
 
     # Initialize HAAQI_V1 instance
+    np.random.seed(42)
+
     haqqi_instance = haaqi_instance()
     haqqi_instance.set_audiogram(audiogram)
 
@@ -161,22 +198,23 @@ def test_score(haaqi_instance, audiogram):
     # Add more specific assertions based on your expectations for the returned values
 
     assert combined_model == pytest.approx(
-        0.4550928987217293, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.441399286739319, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert nonlinear_model == pytest.approx(
-        0.6076413195145778, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.5907443781289128, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert linear_model == pytest.approx(
-        0.6368854502282981, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.6471322518381013, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(raw_data) == pytest.approx(
-        2.648552522125631, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        2.7085405110016305, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
 def test_linear_model(haaqi_instance, audiogram):
     """Test the linear_model method of the HAAQI_V1 class."""
     # Initialize HAAQI_V1 instance
+    np.random.seed(42)
     haqqi_instance = haaqi_instance()
     haqqi_instance.set_audiogram(audiogram)
 
@@ -193,13 +231,13 @@ def test_linear_model(haaqi_instance, audiogram):
     assert isinstance(d_norm, float)
     # Add more specific assertions based on your expectations for the returned values
     assert linear_model == pytest.approx(
-        0.28020388909904365, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.5139659725182287, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert d_loud == pytest.approx(
         0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert d_norm == pytest.approx(
-        0.4175914889702588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.7659701527842454, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -307,6 +345,59 @@ def test_melcor9(haaqi_instance, audiogram):
                 0.66563292,
                 0.80983534,
                 0.13411628,
+            ]
+        ),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
+
+
+def test_melcor9_zero(haaqi_instance, audiogram):
+    """Test the melcor9 method of the HAAQI_V1 class."""
+    haaqi_instance = haaqi_instance(
+        num_bands=4,
+        segment_size=4,
+        n_cepstral_coef=6,
+        silence_threshold=12,
+        add_noise=0.00,
+    )
+    haaqi_instance.set_audiogram(audiogram)
+
+    np.random.seed(0)
+    sig_len = 6000
+    reference = np.random.random(sig_len)
+    distorted = 20 * np.random.random(size=(4, sig_len))  # noqa: F841
+
+    haaqi_instance.set_reference(reference, 24000)
+    haaqi_instance.segments_above_threshold = 1
+
+    mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = haaqi_instance.melcor9(
+        signal=distorted,
+    )
+
+    assert mel_cep_mod.shape == (8,)
+
+    assert mel_cep_ave == pytest.approx(
+        0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert mel_cep_low == pytest.approx(
+        0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert mel_cep_high == pytest.approx(
+        0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    print(mel_cep_mod)
+    assert mel_cep_mod == pytest.approx(
+        np.array(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
             ]
         ),
         rel=pytest.rel_tolerance,
@@ -528,3 +619,55 @@ def test_ave_covary2(haaqi_instance, audiogram):
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
     )
+
+
+def test_ave_covary2_zero(haaqi_instance, audiogram):
+    """Test ave covary2 method of the HAAQI_V1 class."""
+    haaqi_instance = haaqi_instance(
+        num_bands=4,
+        silence_threshold=50,
+    )
+    haaqi_instance.set_audiogram(audiogram)
+
+    np.random.seed(0)
+    sig_len = 600
+
+    signal_cross_cov = np.random.random(size=(4, sig_len))
+    ref_mean_square = np.random.random(size=(4, sig_len))
+
+    ave_covariance, ihc_sync_covariance = haaqi_instance.ave_covary2(
+        signal_cross_covariance=signal_cross_cov,
+        reference_signal_mean_square=ref_mean_square,
+        lp_filter_order=np.array([1, 3, 5, 5, 5, 5]),
+        freq_cutoff=1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0]),
+    )
+
+    assert len(ihc_sync_covariance) == 6
+
+    assert ave_covariance == pytest.approx(
+        0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(ihc_sync_covariance) == pytest.approx(
+        0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+    assert ihc_sync_covariance == pytest.approx(
+        [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+        ],
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
+
+
+def test_str_representation(haaqi_instance):
+    # Create an instance of HAAQI_V1
+    haqqi_instance = haaqi_instance()
+
+    # Assert that calling str() on the instance returns the expected string
+    assert str(haqqi_instance) == "HAAQI V1"
