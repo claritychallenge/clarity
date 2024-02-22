@@ -41,7 +41,7 @@ class HaaqiV1:
 
     Example 1:
     For scoring different enhanced signals with the same audiogram and reference:
-    >>> from clarity.evaluator.ha import HAAQI_V1
+    >>> from clarity.evaluator.ha import HaaqiV1
     >>> from clarity.utils.audiogram import Audiogram
     >>> from scipy.io import wavfile
 

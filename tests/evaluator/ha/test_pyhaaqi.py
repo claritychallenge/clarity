@@ -164,7 +164,7 @@ def test_set_resample_reference(haaqi_instance, audiogram):
     haaqi_instance.set_reference(signal, 48000)
 
     # Add assertions based on expected behavior of set_resample_reference
-    assert len(haaqi_instance.reference) == pytest.approx(
+    assert haaqi_instance.reference_basilar_membrane.shape[1] == pytest.approx(
         500, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
