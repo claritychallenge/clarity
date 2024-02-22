@@ -16,7 +16,77 @@ logger = logging.getLogger(__name__)
 
 
 class HAAQI_V1:
-    """HAAQI evaluator class."""
+    """HAAQI evaluator class.
+
+    This class implements the HAAQI evaluator as described in the paper:
+    "The Hearing-Aid Audio Quality Index (HAAQI)"
+    https://doi.org/10.1109%2FTASLP.2015.2507858
+
+    The Class is designed to be used with the following workflow:
+    The process several signals with the same audiogram and the same reference signal.
+    1. Set the audiogram using the `set_audiogram` method.
+    2. Set the reference signal using the `set_reference` method.
+    3. Process the enhanced signal using the `score` method.
+
+    Then, for each enhanced signal, the `score` method can be called to obtain
+    the HAAQI score.
+
+    Or, to process a differen reference and enhanced signal using the same
+    audiogram:
+    1. Set the audiogram using the `set_audiogram` method.
+    2. Process the reference and enhanced signals using the `process` method.
+
+    Then, call the `process` method for each reference and enhanced signal to
+    obtain the HAAQI score.
+
+    Example 1:
+    For scoring different enhanced signals with the same audiogram and reference:
+    >>> from clarity.evaluator.ha import HAAQI_V1
+    >>> from clarity.utils.audiogram import Audiogram
+    >>> from scipy.io import wavfile
+
+    Create an audiogram
+    >>> audiogram_levels = np.array([30, 40, 40, 65, 70, 65])
+    >>> audiogram_frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    >>> audiogram = Audiogram(
+    >>>     levels=audiogram_levels,
+    >>>     frequencies=audiogram_frequencies,
+    >>> )
+
+    Load enhanced and reference signals
+    >>> reference, sr_r = wavfile.read("reference.wav")
+    >>> enhanced_1, sr_e_1 = wavfile.read("enhanced_1.wav")
+    >>> enhanced_2, sr_e_2 = wavfile.read("enhanced_2.wav")
+
+    Create the HAAQI evaluator
+    >>> ha = HAAQI_V1()
+    >>> ha.set_audiogram(audiogram)
+
+    Set the reference signal
+    >>> ha.set_reference(reference, sr_r)
+
+    Process the enhanced signals
+    >>> score_1 = ha.process(enhanced_1, sr_e_1)
+    >>> score_2 = ha.process(enhanced_2, sr_e_2)
+
+    ------------------------------------------------------------------------------------
+    Example 2:
+    For scoring different reference and enhanced signals with the same audiogram:
+
+    Create the HAAQI evaluator
+    >>> ha = HAAQI_V1()
+    >>> ha.set_audiogram(audiogram)
+
+    Load enhanced and reference signals
+    >>> reference_1, sr_r_1 = wavfile.read("reference_1.wav")
+    >>> reference_2, sr_r_2 = wavfile.read("reference_2.wav")
+    >>> enhanced_1, sr_e_1 = wavfile.read("enhanced_1.wav")
+    >>> enhanced_2, sr_e_2 = wavfile.read("enhanced_2.wav")
+
+    Process the reference and enhanced signals
+    >>> score_1 = ha.process(reference_1, sr_r_1, enhanced_1, sr_e_1)
+    >>> score_2 = ha.process(reference_2, sr_r_2, enhanced_2, sr_e_2)
+    """
 
     HAAQI_AUDIOGRAM_FREQUENCIES: Final = np.array([250, 500, 1000, 2000, 4000, 6000])
     EAR_SAMPLE_RATE: Final = 24000
@@ -148,21 +218,6 @@ class HAAQI_V1:
             Nonlinear_model: float
             Linear_model: float
             raw_data: ndarray
-
-        Example:
-            >>> ha = HAAQI_V1()
-            >>> ha.set_audiogram(audiogram)
-            >>>
-            >>> sr = 24000
-            >>> results = {}
-            >>> for song, reference, enhanced in zip(song_name, references, enhanceds):
-            >>>     score = ha.process(
-            >>>         reference,
-            >>>         sr,
-            >>>         enhanced,
-            >>>         sr
-            >>>     )
-            >>>    results[song] = score
         """
         self.set_reference(reference, reference_sample_rate, level1)
         score, _, _, _ = self.score(enhanced, enhanced_sample_rate)
