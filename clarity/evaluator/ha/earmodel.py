@@ -21,6 +21,66 @@ class Ear:
     The model assumes signals at 24000 Hz, please ensure that the input
     signals are resampled to 24000 Hz before using the model.
 
+    The ear model for the enhanced signal depends on the reference signal.
+    Therefore, the reference signal must be processed first.
+
+    The process is as follows:
+    1. Set the audiogram using the `set_audiogram` method.
+    2. Process the reference signal using the `process_reference` method.
+    3. Process the enhanced signal using the `process_enhanced` method.
+
+    For everytime you set the audiogram, the reference and enhanced signals
+    must be processed again.
+
+    The parameter `signals_same_size` has relevance when the ear model is called
+    several times to compute scores for different signals. All signals must have
+    the same length. This is to prevent the sincf and coscf from being recomputed
+    every time a signal is processed.
+
+    Example:
+    Crompute the ear model for the reference and enhanced signals.
+
+    >>> from scipy.io import wavfile
+    >>> from clarity.evaluator.ha import Ear
+    >>> from clarity.utils.audiogram import Audiogram
+    >>> from clarity.utils.signal_processing import resample
+
+    The audiogram is required to compute the ear model. The audiogram
+    levels and frequencies can be set as follows:
+
+    >>> audiogram_levels = np.array([30, 40, 40, 65, 70, 65])
+    >>> audiogram_frequencies = np.array([250, 500, 1000, 2000, 4000, 6000])
+    >>> audiogram = Audiogram(
+    ...     levels=audiogram_levels,
+    ...     frequencies=audiogram_frequencies,
+    ... )
+
+    We set some parameters for the ear model:
+    >>> sr = 24000
+    >>> level1 = 65
+    >>> equalisation = 0
+    >>> num_bands = 32
+    >>> m_delay = 1
+
+    The reference and enhanced signals can be resampled as follows:
+    >>> enhanced, sr_e = wavfile.read("enhanced.wav")
+    >>> reference, sr_r = wavfile.read("reference.wav")
+    >>> enhanced = resample(enhanced, sr_e, sr)
+    >>> reference = resample(reference, sr_r, sr)
+
+    The ear model can be computed as follows:
+    >>> ear = Ear(equalisation, num_bands, m_delay)
+    >>> ear.set_audiogram(audiogram)
+    >>> reference_db, reference_basilar_membrane, reference_sl = ear.process_reference(
+    ...     reference, level1
+    ... )
+    >>> enhanced_db, enhanced_basilar_membrane, enhanced_sl = ear.process_enhanced(
+    ...      enhanced
+    ... )
+
+    The output ```reference_db```, ```reference_basilar_membrane```,
+    ```reference_sl```, ```enhanced_db```, ```enhanced_basilar_membrane```,
+    and ```enhanced_sl``` are then used by HAAQI, HASQI, and HASPI metrics.
     """
 
     SAMPLE_RATE: Final = 24000
@@ -57,7 +117,9 @@ class Ear:
         self.equalisation = equalisation
         self.num_bands = num_bands
         self.m_delay = m_delay
+        self.signals_same_size = signals_same_size
 
+        # Compute signal independent parameters that are reused for all signals
         self.center_freq = self.center_frequency()
         self.center_freq_control = self.center_frequency(shift=shift)
 
@@ -86,14 +148,15 @@ class Ear:
             "high_pass": high_pass,
         }
 
+        # Initialise variables that are set when the audiogram is set
+        # or when processing the reference signal.
+        self.reference_computed = False
         self.level1: float = 65.0
         self.audiogram: Audiogram | None = None
 
-        self.reference_computed = False
-
-        # Initialise array variables as empty numpy array instead of None.
-        # This to prevent the mypy error:
-        # error: Value of type "None" is not indexable  [index]
+        # Array variables are initialised as empty arrays instead of None.
+        # This to prevent a mypy error:
+        # >>> error: Value of type "None" is not indexable  [index]
         self.attn_ohc: ndarray = np.empty(0)
         self.bandwidth_min: ndarray = np.empty(0)
         self.low_knee: ndarray = np.empty(0)
@@ -108,7 +171,6 @@ class Ear:
 
         # sincf and coscf depends on the length of the signals, so
         # they are only computed the first time a reference signal is processed
-        self.signals_same_size = signals_same_size
         self.sincf: ndarray = np.empty(0)
         self.coscf: ndarray = np.empty(0)
 
@@ -129,6 +191,7 @@ class Ear:
         """
         self.audiogram = audiogram
 
+        # Reset the variables if the audiogram is set
         self.reference_computed = False
         self.reference_cochlear_compression = np.empty(0)
         self.temp_reference_b = np.empty(0)
@@ -279,7 +342,7 @@ class Ear:
         # Remove the leading and trailing zeros according the reference signal
         signal = signal[self.start_signal : self.end_signal + 1]
 
-        signal = self.input_align(signal, min(24000, len(signal)))
+        signal = self.input_align(signal)
 
         # The cochlear model parameters for the enhanced signal are the same as for the
         # hearing loss if calculating quality.
@@ -309,7 +372,18 @@ class Ear:
         return enhanced_db, enhanced_basilar_membrane, enhanced_sl
 
     def process_common(self, signal: ndarray) -> tuple[ndarray | Any, Any, Any]:
-        """Run common steps for reference and enhanced signals."""
+        """Run common steps for reference and enhanced signals.
+
+        Args:
+            signal (np.ndarray): Input signal.
+
+        Returns:
+            signal_db (np.ndarray): envelope for the signal in each band.
+            signal_basilar_membrane (np.ndarray): Basilar membrane motion for the
+                signal in each band
+            signal_sl (np.ndarray): compressed RMS average of the signal in
+                each band converted to dB SL
+        """
 
         num_samples = len(signal)
 
@@ -591,12 +665,11 @@ class Ear:
         result is a rough approximation to the equal-loudness contour
         at threshold.
 
-        Arguments:
-        reference (np.ndarray):	input signal
-        freq_sample (float): sampling rate in Hz
+        Args:
+            signal (np.ndarray): signal to be processed
 
         Returns:
-        xout (): filtered output
+            signal (np.ndarray): signal processed through the middle ear filters
         """
         # LP filter the input
         signal = lfilter(
@@ -635,7 +708,7 @@ class Ear:
         match; if they don't, the signals are truncated to the shorter of the two
         lengths.
 
-        Arguments:
+        Args:
             signal (): first sequence to be filtered
             bandwidth: bandwidth for x relative to that of a normal ear
             center_freq (int): filter center frequency in Hz
@@ -685,7 +758,7 @@ class Ear:
         Compute the increase in auditory filter bandwidth in response to high signal
         levels.
 
-        Arguments:
+        Args:
             control (): envelope output in the control filter band
             bandwidth_min (): auditory filter bandwidth computed for the loss (or NH)
             bandwidth_max (): auditory filter bandwidth at maximum OHC damage
@@ -725,7 +798,7 @@ class Ear:
         the lower and upper thresholds, and reverts to linear above the upper threshold.
         The compressor assumes that auditory threshold is 0 dB SPL.
 
-        Arguments:
+        Args:
             envsig (): analytic signal envelope (magnitude) returned by the
                     gammatone filter bank
             bm (): BM motion output by the filter bank
@@ -775,7 +848,7 @@ class Ear:
         """
         Convert the compressed envelope returned by cochlear_envcomp to dB SL.
 
-        Arguments:
+        Args:
             envelope (): linear envelope after compression
             basilar_membrane (): linear Basilar Membrane vibration after compression
             attenuated_ihc (): IHC attenuation at the input to the synapse
@@ -801,7 +874,7 @@ class Ear:
         Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise
         to give the auditory threshold.
 
-        Arguments:
+        Args:
             signal (): BM motion to be attenuated
             threshold (): additive noise level in dB re:auditory threshold
 
@@ -828,7 +901,7 @@ class Ear:
         rate output of the IHC model is then adjusted so that all outputs have
         the same group delay.
 
-        Arguments:
+        Args:
             input_signal (np.ndarray): matrix of signal envelopes or BM motion
             bandwidths (np.ndarray): array of filter bandwidths
             center_freq (np.ndarray): array of filter center frequencies
@@ -894,7 +967,7 @@ class Ear:
         and reverts to linear above the upper threshold. The compressor
         assumes that auditory threshold is 0 dB SPL.
 
-        Arguments:
+        Args:
             reference (): analytic signal envelope (magnitude) returned by the
                 gammatone filter bank, RMS average level
             control (): control signal envelope
@@ -934,7 +1007,7 @@ class Ear:
         """
         Align the envelope of the processed signal to that of the reference signal.
 
-        Arguments:
+        Args:
             reference (): envelope or BM motion of the reference signal
             output (): envelope or BM motion of the output signal
             corr_range (int): range in msec for the correlation
@@ -952,10 +1025,12 @@ class Ear:
         npts = len(reference)
         lags = min(lags, npts)
 
-        ref_out_correlation = correlate(reference, output, "full")
+        ref_out_correlation = correlate(reference, output, "same")
 
-        location = np.argmax(ref_out_correlation[npts - lags : npts + lags])
-        delay = lags - location - 1
+        location = np.argmax(
+            np.abs(ref_out_correlation[int(npts / 2) - lags : int(npts / 2) + lags])
+        )
+        delay = lags - location
 
         # Time shift the output sequence
         if delay > 0:
@@ -966,8 +1041,14 @@ class Ear:
     @staticmethod
     @njit
     def find_noiseless_boundaries(signal: ndarray) -> tuple[int, int]:
-        """
-        Prune silence from the signal.
+        """Prune silence from the signal.
+
+        Args:
+            signal (np.ndarray): Input signal.
+
+        Returns:
+            start (int): Start index of the signal.
+            end (int): End index of the signal.
         """
         signal_abs = np.abs(signal)
         signal_max = np.max(signal_abs)
@@ -1026,7 +1107,7 @@ class Ear:
         the adaptation. IHC attenuation and additive noise for the equivalent
         auditory threshold are provided by a subsequent call to eb_BMatten.
 
-        Arguments:
+        Args:
             signal_db (np.ndarray): signal envelope in one frequency band in dB SL
                  contains OHC compression and IHC attenuation
             basilar_membrane (): basilar membrane vibration with OHC compression
@@ -1094,56 +1175,26 @@ class Ear:
 
         return output_db, gain * basilar_membrane
 
-    @staticmethod
-    def correlate(signal1: ndarray, signal2: ndarray, n: int | None = None):
-        """Correlation function using fft for fast computation
-
-        Args:
-            signal1 (np.ndarray): first signal
-            signal2 (np.ndarray): second signal
-            n (int): length of the cross-correlation result
-
-        Returns:
-            cross_corr (np.ndarray): cross-correlation result
-        """
-        # Compute the length of the cross-correlation result
-        if n is None:
-            n = len(signal1) + len(signal2) - 1
-
-        # Compute the FFT of the signals
-        fft_signal1 = np.fft.fft(signal1, n=n)
-        fft_signal2 = np.fft.fft(signal2, n=n)
-
-        # Compute the cross-correlation in the frequency domain
-        cross_corr = np.fft.ifft(fft_signal1 * np.conj(fft_signal2))
-        # Find the index of the maximum value in the cross-correlation array
-        return cross_corr
-
-    def input_align(self, signal, samples: int = 0):
+    def input_align(self, signal):
         """
         Approximate temporal alignment of the reference and processed output
         signals. Leading and trailing zeros are then pruned.
 
-        Arguments:
+        Args:
              signal (np.ndarray): hearing-aid output sequence
-            samples (int): number of samples used in correlation to align the signals
 
         Returns:
               signal (np.ndarray): shifted
         """
         signal_length = len(signal)
 
-        if samples == 0:
-            samples = signal_length
-
-        reference_processed_correlation = self.correlate(
-            signal1=self.reference_align - np.mean(self.reference_align),
-            signal2=signal - np.mean(signal),
-            n=samples,
+        reference_processed_correlation = correlate(
+            self.reference_align,
+            signal,
+            mode="same",
         )
-
         index = np.argmax(np.abs(reference_processed_correlation))
-        delay = samples - index
+        delay = int(signal_length / 2) - index
 
         # Back up 2 msec to allow for dispersion
         delay = np.rint(delay - 2 * self.SAMPLE_RATE / 1000.0).astype(int)
