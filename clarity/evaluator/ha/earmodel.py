@@ -472,7 +472,7 @@ class Ear:
         # Additive noise level to give the auditory threshold
         ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
         signal_basilar_membrane = self.basilar_membrane_add_noise(
-            signal_b, ihc_threshold
+            signal_b, ihc_threshold, self.level1
         )
 
         if self.m_delay > 0:
@@ -553,8 +553,7 @@ class Ear:
 
         # Last center frequency is set to highFreq
         _center_freq = np.insert(_center_freq, 0, high_freq)
-        _center_freq = np.flip(_center_freq)
-        return _center_freq
+        return np.flip(_center_freq)
 
     @staticmethod
     def loss_parameters(
@@ -869,7 +868,10 @@ class Ear:
 
         return _envelope, gain * basilar_membrane
 
-    def basilar_membrane_add_noise(self, signal: ndarray, threshold: int) -> ndarray:
+    @staticmethod
+    def basilar_membrane_add_noise(
+        signal: ndarray, threshold: int, level1: float
+    ) -> ndarray:
         """
         Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise
         to give the auditory threshold.
@@ -877,12 +879,13 @@ class Ear:
         Args:
             signal (): BM motion to be attenuated
             threshold (): additive noise level in dB re:auditory threshold
+            level1 (): Level calibration: signal RMS=1 corresponds to Level1 dB SPL
 
         Returns:
             Attenuated signal with threshold noise added
         """
         # Linear gain for the noise
-        gain = 10 ** ((float(threshold) - self.level1) / 20)
+        gain = 10 ** ((float(threshold) - level1) / 20)
         noise = np.random.standard_normal(signal.shape)
         noise = gain * noise
         return signal + noise
@@ -1023,14 +1026,22 @@ class Ear:
         # Range in samples
         lags = np.rint(0.001 * corr_range * self.SAMPLE_RATE).astype(int)
         npts = len(reference)
-        lags = min(lags, npts)
 
-        ref_out_correlation = correlate(reference, output, "same")
+        if lags < npts:
+            ref_out_correlation = correlate(reference, output, "same")
 
-        location = np.argmax(
-            np.abs(ref_out_correlation[int(npts / 2) - lags : int(npts / 2) + lags])
-        )
-        delay = lags - location
+            location = np.argmax(
+                np.abs(ref_out_correlation[int(npts / 2) - lags : int(npts / 2) + lags])
+            )
+            delay = lags - location
+        else:
+            # for very small signals better run full correlation
+            lags = min(lags, npts)
+            ref_out_correlation = correlate(reference, output, "full")
+            location = np.argmax(
+                ref_out_correlation[npts - lags : npts + lags]
+            )  # Limit the range in which
+            delay = lags - location - 1
 
         # Time shift the output sequence
         if delay > 0:
@@ -1061,7 +1072,9 @@ class Ear:
 
     @staticmethod
     @njit
-    def gammatone_bandwidth_demodulation(npts, tpt, center_freq):
+    def gammatone_bandwidth_demodulation(
+        npts: int, tpt: float, center_freq: float
+    ) -> tuple[ndarray, ndarray]:
         """Gamma tone bandwidth demodulation
 
         Arguments:
@@ -1094,8 +1107,12 @@ class Ear:
     @staticmethod
     @njit
     def inner_hair_cell_adaptation(
-        signal_db, basilar_membrane, delta, freq_sample, small
-    ):
+        signal_db: ndarray,
+        basilar_membrane: ndarray,
+        delta: float,
+        freq_sample: float,
+        small: float = 1.0001,
+    ) -> tuple[ndarray, ndarray]:
         """
         Provide inner hair cell (IHC) adaptation. The adaptation is based on an
         equivalent RC circuit model, and the derivatives are mapped into
@@ -1127,8 +1144,8 @@ class Ear:
         delta = max(delta, dsmall)
 
         # Initialize adaptation time constants
-        tau1 = 2  # Rapid adaptation in msec
-        tau2 = 60  # Short-term adaptation in msec
+        tau1 = 2.0  # Rapid adaptation in msec
+        tau2 = 60.0  # Short-term adaptation in msec
         tau1 = 0.001 * tau1  # Convert to seconds
         tau2 = 0.001 * tau2
 
@@ -1175,7 +1192,7 @@ class Ear:
 
         return output_db, gain * basilar_membrane
 
-    def input_align(self, signal):
+    def input_align(self, signal) -> ndarray:
         """
         Approximate temporal alignment of the reference and processed output
         signals. Leading and trailing zeros are then pruned.
