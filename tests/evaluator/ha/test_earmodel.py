@@ -720,3 +720,11 @@ def test_input_align(ear_instance):
     assert np.sum(np.abs(proc)) == pytest.approx(
         27199.009291096496, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
+
+
+def test_str_representation(ear_instance):
+    # Create an instance of HAAQI_V1
+    ear_instance = ear_instance()
+
+    # Assert that calling str() on the instance returns the expected string
+    assert str(ear_instance) == "HearingAid Model for HAAQI, HASQI and HAPPI."

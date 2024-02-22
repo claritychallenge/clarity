@@ -1221,3 +1221,6 @@ class Ear:
             return np.concatenate((signal[delay:signal_length], np.zeros(delay)))
         # Output advanced relative to the reference
         return np.concatenate((np.zeros(-delay), signal[: signal_length + delay]))
+
+    def __str__(self):
+        return "HearingAid Model for HAAQI, HASQI and HAPPI."
