@@ -15,7 +15,7 @@ from clarity.utils.signal_processing import resample
 logger = logging.getLogger(__name__)
 
 
-class HAAQI_V1:
+class HaaqiV1:
     """HAAQI evaluator class.
 
     This class implements the HAAQI evaluator as described in the paper:
@@ -365,7 +365,7 @@ class HAAQI_V1:
         d_norm = min(d_norm, 1)
         d_norm = max(d_norm, 0)
 
-        return 0.329 * d_loud + 0.671 * d_norm, d_loud, d_norm
+        return 0.329 * d_loud + 0.671 * d_norm, float(d_loud), float(d_norm)
 
     def non_linear_model(
         self, enhanced_db: ndarray, enhanced_basilar_membrane: ndarray
@@ -745,8 +745,6 @@ class HAAQI_V1:
         Arguments:
             reference_basilar_membrane (): Basilar Membrane movement, reference signal
             processed_basilar_membrane (): Basilar Membrane movement, processed signal
-            segment_size (): signal segment size, msec
-            freq_sample (int): sampling rate in Hz
 
         Returns:
             signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance
@@ -761,9 +759,6 @@ class HAAQI_V1:
             Output amplitude adjustment added, 30 october 2012.
             Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
-
-        # Initialize parameters
-        small = 1.0e-30
 
         # Lag for computing the cross-covariance
         lagsize = 1.0  # Lag (+/-) in msec
@@ -830,7 +825,9 @@ class HAAQI_V1:
             ]
 
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
-            if (ref_mean_square > small) and (proc_mean_squared > small):
+            if (ref_mean_square > self.SMALL_VALUE) and (
+                proc_mean_squared > self.SMALL_VALUE
+            ):
                 # Normalize cross-covariance
                 signal_cross_covariance[k, 0] = unbiased_cross_correlation / np.sqrt(
                     ref_mean_square * proc_mean_squared
@@ -862,7 +859,9 @@ class HAAQI_V1:
                 ]
 
                 unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
-                if (ref_mean_square > small) and (proc_mean_squared > small):
+                if (ref_mean_square > self.SMALL_VALUE) and (
+                    proc_mean_squared > self.SMALL_VALUE
+                ):
                     # Normalize cross-covariance
                     signal_cross_covariance[
                         k, n
@@ -896,7 +895,9 @@ class HAAQI_V1:
             ]
 
             unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
-            if (ref_mean_square > small) and (proc_mean_squared > small):
+            if (ref_mean_square > self.SMALL_VALUE) and (
+                proc_mean_squared > self.SMALL_VALUE
+            ):
                 # Normalized cross-covariance
                 signal_cross_covariance[
                     k, nseg - 1

@@ -93,7 +93,7 @@ class Ear:
         m_delay: int = 1,
         shift: float | None = None,
         signals_same_size: bool = True,
-    ):
+    ) -> None:
         """
         Constructor for the Ear model.
 
