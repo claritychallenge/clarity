@@ -264,7 +264,7 @@ def test_center_frequency_shift(ear_instance):
 
 
 @pytest.mark.parametrize(
-    "audiometric_freq", ([np.array([250, 500, 1000, 2000, 4000, 6000], None)])
+    "audiometric_freq", (np.array([250, 500, 1000, 2000, 4000, 6000]), None)
 )
 def test_loss_parameters(ear_instance, audiometric_freq):
     """Test loss parameters"""
@@ -606,7 +606,6 @@ def test_envelope_align(ear_instance):
     )
 
 
-@pytest.mark.slow
 def test_envelope_align_long(ear_instance):
     """Test envelope_align method of the Ear class."""
 
