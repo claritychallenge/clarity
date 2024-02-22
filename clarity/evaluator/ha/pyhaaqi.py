@@ -231,15 +231,6 @@ class HAAQI_V1:
         # Number of segments above threshold
         self.segments_above_threshold = self.index_above_threshold.shape[0]
 
-        # ***********************
-        # Save reference_cep for reuse in melcor 9
-        _reference = self.reference_smooth[:, self.index_above_threshold]
-        _reference += self.add_noise * np.random.standard_normal(_reference.shape)
-        self.reference_cep = np.dot(
-            self.cepm.T, _reference[:, : self.segments_above_threshold]
-        )
-        self.reference_cep -= np.mean(self.reference_cep, axis=1, keepdims=True)
-
     def score(
         self,
         enhanced: ndarray,
@@ -272,43 +263,12 @@ class HAAQI_V1:
             enhanced_sl,
         ) = self.ear_model.process_enhanced(enhanced)
 
-        enhanced_smooth = self.env_smooth(enhanced_db)
-
-        _, _, mel_cepstral_high, _ = self.melcor9(enhanced_smooth)
-
-        dloud_stats, dnorm_stats, _ = self.spectrum_diff(enhanced_sl)
-
-        signal_cross_covariance, reference_mean_square, _ = self.bm_covary(
-            self.reference_basilar_membrane,
-            enhanced_basilar_membrane,
-        )
-
-        _, ihc_sync_covariance = self.ave_covary2(
-            signal_cross_covariance, reference_mean_square
-        )
-
-        # Ave segment coherence with IHC loss of sync
-        basilar_membrane_sync5 = ihc_sync_covariance[4]
-
-        d_loud = dloud_stats[1] / 2.5  # Loudness difference std
-        d_loud = 1.0 - d_loud  # 1=perfect, 0=bad
-        d_loud = min(d_loud, 1)
-        d_loud = max(d_loud, 0)
-
-        # Dnorm:std
-        d_norm = dnorm_stats[1] / 25  # Slope difference std
-        d_norm = 1.0 - d_norm  # 1=perfect, 0=bad
-        d_norm = min(d_norm, 1)
-        d_norm = max(d_norm, 0)
-
-        # Construct the models
-        # Nonlinear model - Combined envelope and TFS
-        nonlinear_model = (
-            0.754 * (mel_cepstral_high**3) + 0.246 * basilar_membrane_sync5
-        )
-
-        # Linear model
-        linear_model = 0.329 * d_loud + 0.671 * d_norm
+        linear_model, d_loud, d_norm = self.linear_model(enhanced_sl)
+        (
+            nonlinear_model,
+            mel_cepstral_high,
+            basilar_membrane_sync5,
+        ) = self.non_linear_model(enhanced_db, enhanced_basilar_membrane)
 
         # Combined model
         combined_model = (
@@ -321,7 +281,75 @@ class HAAQI_V1:
         # Raw data
         raw = [mel_cepstral_high, basilar_membrane_sync5, d_loud, d_norm]
 
-        return combined_model, nonlinear_model, linear_model, raw
+        return combined_model, nonlinear_model, linear_model, np.array(raw)
+
+    def linear_model(self, enhanced_sl: ndarray) -> tuple[float, float, float]:
+        """
+        Compute the linear model.
+
+        Args:
+            enhanced_sl (ndarray): enhanced signal spectrum in dB SL
+
+        Returns:
+            linear_model: float
+            d_loud: float
+            d_norm: float
+        """
+        dloud_stats, dnorm_stats, _ = self.spectrum_diff(enhanced_sl)
+
+        d_loud = dloud_stats[1] / 2.5  # Loudness difference std
+        d_loud = 1.0 - d_loud  # 1=perfect, 0=bad
+        d_loud = min(d_loud, 1)
+        d_loud = max(d_loud, 0)
+
+        # Dnorm:std
+        d_norm = dnorm_stats[1] / 25  # Slope difference std
+        d_norm = 1.0 - d_norm  # 1=perfect, 0=bad
+        d_norm = min(d_norm, 1)
+        d_norm = max(d_norm, 0)
+
+        return 0.329 * d_loud + 0.671 * d_norm, d_loud, d_norm
+
+    def non_linear_model(
+        self, enhanced_db: ndarray, enhanced_basilar_membrane: ndarray
+    ) -> tuple[float, float, float]:
+        """
+        Compute the non-linear model.
+
+        Args:
+            enhanced_db (ndarray): enhanced signal spectrum in dB SL
+            enhanced_basilar_membrane (ndarray): enhanced basilar membrane movement
+
+        Returns:
+            nonlinear_model: float
+            mel_cepstral_high: float
+            basilar_membrane_sync5: float
+        """
+        signal_cross_covariance, reference_mean_square, _ = self.bm_covary(
+            self.reference_basilar_membrane,
+            enhanced_basilar_membrane,
+        )
+
+        print(np.sum(signal_cross_covariance))
+        print(np.sum(reference_mean_square))
+
+        enhanced_smooth = self.env_smooth(enhanced_db)
+        _, _, mel_cepstral_high, _ = self.melcor9(enhanced_smooth)
+
+        _, ihc_sync_covariance = self.ave_covary2(
+            signal_cross_covariance, reference_mean_square
+        )
+
+        # Ave segment coherence with IHC loss of sync
+        basilar_membrane_sync5 = ihc_sync_covariance[4]
+
+        # Construct the models
+        # Nonlinear model - Combined envelope and TFS
+        return (
+            0.754 * (mel_cepstral_high**3) + 0.246 * basilar_membrane_sync5,
+            mel_cepstral_high,
+            basilar_membrane_sync5,
+        )
 
     def env_smooth(self, envelopes: np.ndarray) -> ndarray:
         """
@@ -339,8 +367,6 @@ class HAAQI_V1:
 
         # Compute the window
         # Segment size in samples
-        # segment_size = 8
-
         if self.segment_size == 8:
             n_samples = 192
             wsum = 95.5
@@ -407,7 +433,7 @@ class HAAQI_V1:
 
     def melcor9(
         self,
-        distorted: ndarray,
+        signal: ndarray,
     ) -> tuple[float, float, float, ndarray]:
         """
         Compute the cross-correlations between the input signal
@@ -432,6 +458,12 @@ class HAAQI_V1:
             mel_cepstral_modulation (): vector of cross-correlations by modulation
                 frequency, averaged over analysis frequency band
         """
+        _reference = self.reference_smooth[:, self.index_above_threshold]
+        _reference += self.add_noise * np.random.standard_normal(_reference.shape)
+        self.reference_cep = np.dot(
+            self.cepm.T, _reference[:, : self.segments_above_threshold]
+        )
+        self.reference_cep -= np.mean(self.reference_cep, axis=1, keepdims=True)
 
         if self.segments_above_threshold <= 1:
             logger.warning(
@@ -440,16 +472,14 @@ class HAAQI_V1:
             return 0.0, 0.0, 0.0, np.zeros(self.n_modulation_filter_bands)
 
         # Remove the silent intervals
-        _distorted = distorted[:, self.index_above_threshold]
+        _signal = signal[:, self.index_above_threshold]
 
         # Add the low-level noise to the envelopes
-        _distorted += self.add_noise * np.random.standard_normal(_distorted.shape)
+        _signal += self.add_noise * np.random.standard_normal(_signal.shape)
 
         # Compute the mel cepstrum coefficients using only those segments
         # above threshold
-        distorted_cep = np.dot(
-            self.cepm.T, _distorted[:, : self.segments_above_threshold]
-        )
+        distorted_cep = np.dot(self.cepm.T, _signal[:, : self.segments_above_threshold])
         distorted_cep -= np.mean(distorted_cep, axis=1, keepdims=True)
 
         # Envelope sampling parameters
@@ -623,11 +653,10 @@ class HAAQI_V1:
 
         # Compute the normalized spectrum difference
         dnorm = np.zeros(3)
+        # Relative difference in specific loudness
         diff_normalised_spectrum = (
             self.reference_linear_magnitude - processed_linear_magnitude
-        ) / (
-            self.reference_linear_magnitude + processed_linear_magnitude
-        )  # Relative difference in specific loudness
+        ) / (self.reference_linear_magnitude + processed_linear_magnitude)
         dnorm[0] = np.sum(np.abs(diff_normalised_spectrum))
         dnorm[1] = self.num_bands * np.std(diff_normalised_spectrum)
         dnorm[2] = np.max(np.abs(diff_normalised_spectrum))
@@ -655,20 +684,28 @@ class HAAQI_V1:
         processed_basilar_membrane: ndarray,
     ) -> tuple[ndarray, ndarray, ndarray]:
         """
-        Compute the cross-covariance (normalized cross-correlation) between  the
+        Compute the cross-covariance (normalized cross-correlation) between the
         reference and processed signals in each auditory band. The signals are
-        divided into segments having 50% overlap.
+        divided into segments  having 50% overlap.
 
         Arguments:
             reference_basilar_membrane (): Basilar Membrane movement, reference signal
             processed_basilar_membrane (): Basilar Membrane movement, processed signal
+            segment_size (): signal segment size, msec
+            freq_sample (int): sampling rate in Hz
 
         Returns:
-            signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
-            reference_mean_square (np.array) : [nchan,nseg] of MS input signal
-                energy values
+            signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance
+                values.
+            reference_mean_square (np.array) : [nchan,nseg] of MS input signal energy
+                values.
             processed_mean_square (np.array) : [nchan,nseg] of MS processed signal
-                energy values
+                energy values.
+
+        Updates:
+            James M. Kates, 28 August 2012.
+            Output amplitude adjustment added, 30 october 2012.
+            Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.
         """
 
         # Initialize parameters
@@ -823,6 +860,225 @@ class HAAQI_V1:
         processed_mean_square *= 2.0
 
         return signal_cross_covariance, reference_mean_square, processed_mean_square
+
+    def bm_covary_old(
+        self,
+        reference_basilar_membrane: ndarray,
+        processed_basilar_membrane: ndarray,
+    ) -> tuple[ndarray, ndarray, ndarray]:
+        """
+        Compute the cross-covariance (normalized cross-correlation) between  the
+        reference and processed signals in each auditory band. The signals are
+        divided into segments having 50% overlap.
+
+        Arguments:
+            reference_basilar_membrane (): Basilar Membrane movement, reference signal
+            processed_basilar_membrane (): Basilar Membrane movement, processed signal
+
+        Returns:
+            signal_cross_covariance (np.array) : [nchan,nseg] of cross-covariance values
+            reference_mean_square (np.array) : [nchan,nseg] of MS input signal
+                energy values
+            processed_mean_square (np.array) : [nchan,nseg] of MS processed signal
+                energy values
+        """
+
+        # Initialize parameters
+
+        # Lag for computing the cross-covariance
+        # Lag (+/-) in msec
+        lagsize = 1.0
+        # Lag in samples
+        maxlag = np.rint(lagsize * (0.001 * self.EAR_SAMPLE_RATE)).astype(int)
+
+        # Compute the segment size in samples
+        nwin = np.rint(self.segment_covariance * (0.001 * self.EAR_SAMPLE_RATE)).astype(
+            int
+        )
+
+        nwin += nwin % 2 == 1  # Force window length to be even
+        window = np.hanning(nwin).conj().transpose()  # Raised cosine von Hann window
+
+        # compute inverted Window autocorrelation
+        win_corr = correlate(window, window, "full")
+        start_sample = int(len(window) - 1 - maxlag)
+        end_sample = int(maxlag + len(window))
+        if start_sample < 0:
+            raise ValueError("segment size too small")
+        win_corr = 1 / win_corr[start_sample:end_sample]
+        # win_corr = self.correlate(window, window, n=maxlag)
+
+        win_corr = 1 / win_corr
+        win_sum2 = 1.0 / np.sum(window**2)  # Window power, inverted
+
+        # The first segment has a half window
+        nhalf = int(nwin / 2)
+        half_window = window[nhalf:nwin]
+
+        half_corr = correlate(half_window, half_window, "full")
+        start_sample = int(len(half_window) - 1 - maxlag)
+        end_sample = int(maxlag + len(half_window))
+        if start_sample < 0:
+            raise ValueError("segment size too small")
+        half_corr = 1 / half_corr[start_sample:end_sample]
+        # half_corr = self.correlate(half_window, half_window, n=maxlag)
+
+        half_corr = 1 / half_corr
+        halfsum2 = 1.0 / np.sum(half_window**2)  # MS sum normalization, first segment
+
+        # Number of segments
+        npts = reference_basilar_membrane.shape[1]
+        nseg = int(1 + np.floor(npts / nwin) + np.floor((npts - nwin / 2) / nwin))
+
+        reference_mean_square = np.zeros((self.num_bands, nseg))
+        processed_mean_square = np.zeros((self.num_bands, nseg))
+        signal_cross_covariance = np.zeros((self.num_bands, nseg))
+
+        # Loop to compute the signal mean-squared level in each band for each
+        # segment and to compute the cross-corvariances.
+        for k in range(self.num_bands):
+            # Extract the BM motion in the frequency band
+            x = reference_basilar_membrane[k, :]
+            y = processed_basilar_membrane[k, :]
+
+            # The first (half) windowed segment
+            nstart = 0
+            reference_seg = x[nstart:nhalf] * half_window  # Window the reference
+            processed_seg = y[nstart:nhalf] * half_window  # Window the processed signal
+            reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+            processed_seg = processed_seg - np.mean(processed_seg)
+
+            # Normalize signal MS value by the window
+            ref_mean_square = np.sum(reference_seg**2) * halfsum2
+
+            proc_mean_squared = np.sum(processed_seg**2) * halfsum2
+            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlation[
+                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            ]
+            # correlation = self.correlate(reference_seg, processed_seg, n=maxlag)
+
+            unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
+            if (ref_mean_square > self.SMALL_VALUE) and (
+                proc_mean_squared > self.SMALL_VALUE
+            ):
+                # Normalize cross-covariance
+                signal_cross_covariance[k, 0] = unbiased_cross_correlation / np.sqrt(
+                    ref_mean_square * proc_mean_squared
+                )
+            else:
+                signal_cross_covariance[k, 0] = 0.0
+
+            # Save the reference MS level
+            reference_mean_square[k, 0] = ref_mean_square
+            processed_mean_square[k, 0] = proc_mean_squared
+
+            # Loop over the remaining full segments, 50% overlap
+            for n in range(1, nseg - 1):
+                nstart = nstart + nhalf
+                nstop = nstart + nwin
+                reference_seg = x[nstart:nstop] * window  # Window the reference
+                processed_seg = y[nstart:nstop] * window  # Window the processed signal
+                reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+                processed_seg = processed_seg - np.mean(processed_seg)
+
+                # Normalize signal MS value by the window
+                ref_mean_square = np.sum(reference_seg**2) * win_sum2
+                proc_mean_squared = np.sum(processed_seg**2) * win_sum2
+
+                correlation = correlate(reference_seg, processed_seg, "full")
+                correlation = correlation[
+                    int(len(reference_seg) - 1 - maxlag) : int(
+                        maxlag + len(reference_seg)
+                    )
+                ]
+                # correlation = self.correlate(reference_seg, processed_seg, n=maxlag)
+
+                unbiased_cross_correlation = np.max(np.abs(correlation * win_corr))
+                if (ref_mean_square > self.SMALL_VALUE) and (
+                    proc_mean_squared > self.SMALL_VALUE
+                ):
+                    # Normalize cross-covariance
+                    signal_cross_covariance[
+                        k, n
+                    ] = unbiased_cross_correlation / np.sqrt(
+                        ref_mean_square * proc_mean_squared
+                    )
+                else:
+                    signal_cross_covariance[k, n] = 0.0
+
+                reference_mean_square[k, n] = ref_mean_square
+                processed_mean_square[k, n] = proc_mean_squared
+
+            # The last (half) windowed segment
+            nstart = nstart + nhalf
+            nstop = nstart + nhalf
+            reference_seg = x[nstart:nstop] * window[0:nhalf]  # Window the reference
+            processed_seg = (
+                y[nstart:nstop] * window[0:nhalf]
+            )  # Window the processed signal
+            reference_seg = reference_seg - np.mean(reference_seg)  # Make 0-mean
+            processed_seg = processed_seg - np.mean(processed_seg)
+            # Normalize signal MS value by the window
+            ref_mean_square = np.sum(reference_seg**2) * halfsum2
+            proc_mean_squared = np.sum(processed_seg**2) * halfsum2
+
+            correlation = correlate(reference_seg, processed_seg, "full")
+            correlation = correlation[
+                int(len(reference_seg) - 1 - maxlag) : int(maxlag + len(reference_seg))
+            ]
+            # correlation = self.correlate(reference_seg, processed_seg, n=maxlag)
+
+            unbiased_cross_correlation = np.max(np.abs(correlation * half_corr))
+            if (ref_mean_square > self.SMALL_VALUE) and (
+                proc_mean_squared > self.SMALL_VALUE
+            ):
+                # Normalized cross-covariance
+                signal_cross_covariance[
+                    k, nseg - 1
+                ] = unbiased_cross_correlation / np.sqrt(
+                    ref_mean_square * proc_mean_squared
+                )
+            else:
+                signal_cross_covariance[k, nseg - 1] = 0.0
+
+            # Save the reference and processed MS level
+            reference_mean_square[k, nseg - 1] = ref_mean_square
+            processed_mean_square[k, nseg - 1] = proc_mean_squared
+
+        # Limit the cross-covariance to lie between 0 and 1
+        signal_cross_covariance = np.clip(signal_cross_covariance, 0, 1)
+
+        # Adjust the BM magnitude to correspond to the envelope in dB SL
+        reference_mean_square *= 2.0
+        processed_mean_square *= 2.0
+
+        return signal_cross_covariance, reference_mean_square, processed_mean_square
+
+    @staticmethod
+    def correlate(signal1: ndarray, signal2: ndarray, n: int | None = None):
+        """Correlation function using fft for fast computation
+
+        Args:
+            signal1 (np.ndarray): first signal
+            signal2 (np.ndarray): second signal
+            n (int): length of the cross-correlation result
+
+        Returns:
+            cross_corr (np.ndarray): cross-correlation result
+        """
+        # Compute the length of the cross-correlation result
+        if n is None:
+            n = len(signal1) + len(signal2) - 1
+
+        # Compute the FFT of the signals
+        fft_signal1 = np.fft.fft(signal1, n=n)
+        fft_signal2 = np.fft.fft(signal2, n=n)
+
+        # Compute the cross-correlation in the frequency domain
+        cross_corr = np.fft.ifft(fft_signal1 * np.conj(fft_signal2))
+        # Find the index of the maximum value in the cross-correlation array
+        return np.real(cross_corr)
 
     def ave_covary2(
         self,

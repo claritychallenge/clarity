@@ -279,6 +279,8 @@ class Ear:
         # Remove the leading and trailing zeros according the reference signal
         signal = signal[self.start_signal : self.end_signal + 1]
 
+        signal = self.input_align(signal, min(24000, len(signal)))
+
         # The cochlear model parameters for the enhanced signal are the same as for the
         # hearing loss if calculating quality.
         # But are for normal hearing if calculating intelligibility (HASPI).
@@ -808,7 +810,8 @@ class Ear:
         """
         # Linear gain for the noise
         gain = 10 ** ((float(threshold) - self.level1) / 20)
-        noise = gain * np.random.standard_normal(signal.shape)
+        noise = np.random.standard_normal(signal.shape)
+        noise = gain * noise
         return signal + noise
 
     def group_delay_compensate(
@@ -859,13 +862,11 @@ class Ear:
 
         # Compute the delay correlation
         group_delay_min = np.min(_group_delay)
-        _group_delay = (
-            _group_delay - group_delay_min
-        )  # Remove the minimum delay from all the over values
+        # Remove the minimum delay from all the over values
+        _group_delay = _group_delay - group_delay_min
         group_delay_max = np.max(_group_delay)
-        correct = (
-            group_delay_max - _group_delay
-        )  # Samples delay needed to add to give alignment
+        # Samples delay needed to add to give alignment
+        correct = group_delay_max - _group_delay
 
         # Add delay correction to each frequency band
         processed = np.zeros_like(input_signal)
@@ -1094,9 +1095,20 @@ class Ear:
         return output_db, gain * basilar_membrane
 
     @staticmethod
-    def correlate(signal1, signal2):
+    def correlate(signal1: ndarray, signal2: ndarray, n: int | None = None):
+        """Correlation function using fft for fast computation
+
+        Args:
+            signal1 (np.ndarray): first signal
+            signal2 (np.ndarray): second signal
+            n (int): length of the cross-correlation result
+
+        Returns:
+            cross_corr (np.ndarray): cross-correlation result
+        """
         # Compute the length of the cross-correlation result
-        n = len(signal1) + len(signal2) - 1
+        if n is None:
+            n = len(signal1) + len(signal2) - 1
 
         # Compute the FFT of the signals
         fft_signal1 = np.fft.fft(signal1, n=n)
@@ -1107,25 +1119,31 @@ class Ear:
         # Find the index of the maximum value in the cross-correlation array
         return cross_corr
 
-    def input_align(self, signal):
+    def input_align(self, signal, samples: int = 0):
         """
         Approximate temporal alignment of the reference and processed output
         signals. Leading and trailing zeros are then pruned.
 
         Arguments:
              signal (np.ndarray): hearing-aid output sequence
+            samples (int): number of samples used in correlation to align the signals
 
         Returns:
               signal (np.ndarray): shifted
         """
-        samples = len(signal)
+        signal_length = len(signal)
+
+        if samples == 0:
+            samples = signal_length
+
         reference_processed_correlation = self.correlate(
-            self.reference_align - np.mean(self.reference_align),
-            signal - np.mean(signal),
+            signal1=self.reference_align - np.mean(self.reference_align),
+            signal2=signal - np.mean(signal),
+            n=samples,
         )
 
         index = np.argmax(np.abs(reference_processed_correlation))
-        delay = samples - index - 1
+        delay = samples - index
 
         # Back up 2 msec to allow for dispersion
         delay = np.rint(delay - 2 * self.SAMPLE_RATE / 1000.0).astype(int)
@@ -1133,8 +1151,6 @@ class Ear:
         # Align the output with the reference allowing for the dispersion
         if delay > 0:
             # Output delayed relative to the reference
-            signal = np.concatenate((signal[delay:samples], np.zeros(delay)))
-        else:
-            # Output advanced relative to the reference
-            signal = np.concatenate((np.zeros(-delay), signal[: samples + delay]))
-        return signal
+            return np.concatenate((signal[delay:signal_length], np.zeros(delay)))
+        # Output advanced relative to the reference
+        return np.concatenate((np.zeros(-delay), signal[: signal_length + delay]))
