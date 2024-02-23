@@ -1026,7 +1026,7 @@ class Ear:
         lags = np.rint(0.001 * corr_range * self.SAMPLE_RATE).astype(int)
         npts = len(reference)
 
-        if lags < npts:
+        if npts >= 5000:
             ref_out_correlation = correlate(reference, output, "same")
 
             location = np.argmax(

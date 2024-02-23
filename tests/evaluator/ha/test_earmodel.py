@@ -578,40 +578,14 @@ def test_convert_rms_to_sl(ear_instance):
     )
 
 
-def test_envelope_align(ear_instance):
+@pytest.mark.parametrize(
+    "sig_len, result", [(600, 299.1891022020615), (5000, 2708.984425770519)]
+)
+def test_envelope_align(ear_instance, sig_len, result):
     """Test envelope_align method of the Ear class."""
 
     ear_instance = ear_instance()
     np.random.seed(0)
-    sig_len = 600
-    scale = 1.1
-    reference = np.random.random(size=sig_len)
-
-    # Make output look like a shifted copy of the reference
-    output = reference.copy()
-    output[50:] = output[:-50]
-    output[0:50] = 0
-    output *= scale
-
-    aligned_output = ear_instance.envelope_align(reference, output, corr_range=100)
-
-    # check shapes and values
-    assert aligned_output.shape == (600,)
-    assert np.sum(np.abs(aligned_output)) == pytest.approx(
-        299.1891022020615, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    # Check output is now aligned with the reference
-    assert aligned_output[100] == pytest.approx(
-        scale * reference[100], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-
-
-def test_envelope_align_long(ear_instance):
-    """Test envelope_align method of the Ear class."""
-
-    ear_instance = ear_instance()
-    np.random.seed(0)
-    sig_len = 2400
     scale = 1.1
     reference = np.random.random(size=sig_len)
 
@@ -626,7 +600,7 @@ def test_envelope_align_long(ear_instance):
     # check shapes and values
     assert aligned_output.shape == (sig_len,)
     assert np.sum(np.abs(aligned_output)) == pytest.approx(
-        1304.2657154489764, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        result, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     # Check output is now aligned with the reference
     assert aligned_output[100] == pytest.approx(
@@ -652,9 +626,14 @@ def test_find_noiseless_boundaries(ear_instance):
     # Call the find_noiseless_boundaries method
     start, end = ear_instance.find_noiseless_boundaries(signal)
 
+    # To include test of njit function in coverage
+    start_pf, end_pf = ear_instance.find_noiseless_boundaries.py_func(signal)
+
     # Assertions based on expected behavior
     assert start == silence_start
     assert end == silence_end - 1
+    assert start_pf == silence_start
+    assert end_pf == silence_end - 1
 
 
 def test_gammatone_bandwidth_demodulation(ear_instance):
@@ -666,12 +645,32 @@ def test_gammatone_bandwidth_demodulation(ear_instance):
         tpt=0.001,
         center_freq=1000,
     )
+
+    # To include test of njit function in coverage
+    (
+        centre_freq_sin_pf,
+        centre_freq_cos_pf,
+    ) = ear_instance.gammatone_bandwidth_demodulation.py_func(
+        npts=100,
+        tpt=0.001,
+        center_freq=1000,
+    )
+
     assert centre_freq_sin.shape == (100,)
     assert centre_freq_cos.shape == (100,)
     assert np.sum(centre_freq_sin) == pytest.approx(
         -0.3791946274493412, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(centre_freq_cos) == pytest.approx(
+        -0.39460748051808026, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+    assert centre_freq_sin_pf.shape == (100,)
+    assert centre_freq_cos_pf.shape == (100,)
+    assert np.sum(centre_freq_sin_pf) == pytest.approx(
+        -0.3791946274493412, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(centre_freq_cos_pf) == pytest.approx(
         -0.39460748051808026, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
@@ -689,6 +688,14 @@ def test_inner_hair_cell_adaptation(ear_instance):
         signal_db=ref, basilar_membrane=bm, delta=1.00, freq_sample=24000
     )
 
+    # To include test of njit function in coverage
+    (
+        output_db_pf,
+        output_basilar_membrane_pf,
+    ) = ear_instance.inner_hair_cell_adaptation.py_func(
+        signal_db=ref, basilar_membrane=bm, delta=1.00, freq_sample=24000
+    )
+
     # check shapes and values
     assert output_db.shape == (600,)
     assert output_basilar_membrane.shape == (600,)
@@ -696,6 +703,15 @@ def test_inner_hair_cell_adaptation(ear_instance):
         298.9359292744365, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(np.abs(output_basilar_membrane)) == pytest.approx(
+        0.2963294865299153, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+
+    assert output_db_pf.shape == (600,)
+    assert output_basilar_membrane_pf.shape == (600,)
+    assert np.sum(np.abs(output_db_pf)) == pytest.approx(
+        298.9359292744365, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(np.abs(output_basilar_membrane_pf)) == pytest.approx(
         0.2963294865299153, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
