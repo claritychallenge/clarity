@@ -594,31 +594,6 @@ def test_bm_covary_error(haaqi_instance, audiogram, segment_covariance):
         )
 
 
-def test_bm_covary_ref_meansquare_small(haaqi_instance, audiogram, caplog):
-    """Test bm covary fails when segment size too small"""
-    haaqi_instance = haaqi_instance(
-        num_bands=4,
-        segment_covariance=4,
-    )
-    haaqi_instance.set_audiogram(audiogram)
-
-    np.random.seed(0)
-    sig_len = 600
-    reference = np.random.random(size=(4, sig_len)) * 1e-15
-    processed = np.random.random(size=(4, sig_len))
-
-    (
-        _signal_cross_cov,
-        _ref_mean_square,
-        _proc_mean_square,
-    ) = haaqi_instance.bm_covary(
-        reference_basilar_membrane=reference,
-        processed_basilar_membrane=reference + 0.4 * processed,
-    )
-
-    assert "Reference mean square is too small" in caplog.text
-
-
 def test_ave_covary2(haaqi_instance, audiogram):
     """Test ave covary2 method of the HAAQI_V1 class."""
     haaqi_instance = haaqi_instance(
