@@ -1124,7 +1124,6 @@ def basilar_membrane_add_noise(
     noise = gain * np.random.standard_normal(
         reference.shape
     )  # Gaussian RMS=1, then attenuated
-    noise = gain * noise
     return reference + noise
 
 
