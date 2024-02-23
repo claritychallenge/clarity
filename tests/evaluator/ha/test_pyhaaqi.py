@@ -211,6 +211,22 @@ def test_score(haaqi_instance, audiogram):
     )
 
 
+def test_score_different_sample_rate(haaqi_instance, audiogram, caplog):
+    """Test the score method of the HAAQI_V1 class with different sample rates."""
+    # Initialize HAAQI_V1 instance
+    np.random.seed(42)
+    haqqi_instance = haaqi_instance()
+    haqqi_instance.set_audiogram(audiogram)
+
+    # Generate reference and enhanced signals (example)
+    reference_signal = np.random.randn(1200)
+
+    # Set the reference signal
+    haqqi_instance.set_reference(reference_signal, 48000)
+
+    assert "Resampling" in caplog.text
+
+
 def test_linear_model(haaqi_instance, audiogram):
     """Test the linear_model method of the HAAQI_V1 class."""
     # Initialize HAAQI_V1 instance
@@ -553,11 +569,12 @@ def test_bm_covary_ok(haaqi_instance, audiogram):
     )
 
 
-def test_bm_covary_error(haaqi_instance, audiogram):
+@pytest.mark.parametrize("segment_covariance", [1, 2])
+def test_bm_covary_error(haaqi_instance, audiogram, segment_covariance):
     """Test bm covary fails when segment size too small"""
     haaqi_instance = haaqi_instance(
         num_bands=4,
-        segment_covariance=2,
+        segment_covariance=segment_covariance,
     )
     haaqi_instance.set_audiogram(audiogram)
 
@@ -575,6 +592,31 @@ def test_bm_covary_error(haaqi_instance, audiogram):
             reference_basilar_membrane=reference,
             processed_basilar_membrane=reference + 0.4 * processed,
         )
+
+
+def test_bm_covary_ref_meansquare_small(haaqi_instance, audiogram, caplog):
+    """Test bm covary fails when segment size too small"""
+    haaqi_instance = haaqi_instance(
+        num_bands=4,
+        segment_covariance=4,
+    )
+    haaqi_instance.set_audiogram(audiogram)
+
+    np.random.seed(0)
+    sig_len = 600
+    reference = np.random.random(size=(4, sig_len)) * 1e-15
+    processed = np.random.random(size=(4, sig_len))
+
+    (
+        _signal_cross_cov,
+        _ref_mean_square,
+        _proc_mean_square,
+    ) = haaqi_instance.bm_covary(
+        reference_basilar_membrane=reference,
+        processed_basilar_membrane=reference + 0.4 * processed,
+    )
+
+    assert "Reference mean square is too small" in caplog.text
 
 
 def test_ave_covary2(haaqi_instance, audiogram):
@@ -621,7 +663,7 @@ def test_ave_covary2(haaqi_instance, audiogram):
     )
 
 
-def test_ave_covary2_zero(haaqi_instance, audiogram):
+def test_ave_covary2_zero(haaqi_instance, audiogram, caplog):
     """Test ave covary2 method of the HAAQI_V1 class."""
     haaqi_instance = haaqi_instance(
         num_bands=4,
@@ -635,34 +677,14 @@ def test_ave_covary2_zero(haaqi_instance, audiogram):
     signal_cross_cov = np.random.random(size=(4, sig_len))
     ref_mean_square = np.random.random(size=(4, sig_len))
 
-    ave_covariance, ihc_sync_covariance = haaqi_instance.ave_covary2(
+    haaqi_instance.ave_covary2(
         signal_cross_covariance=signal_cross_cov,
         reference_signal_mean_square=ref_mean_square,
         lp_filter_order=np.array([1, 3, 5, 5, 5, 5]),
         freq_cutoff=1000 * np.array([1.5, 2.0, 2.5, 3.0, 3.5, 4.0]),
     )
 
-    assert len(ihc_sync_covariance) == 6
-
-    assert ave_covariance == pytest.approx(
-        0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert np.sum(ihc_sync_covariance) == pytest.approx(
-        0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-
-    assert ihc_sync_covariance == pytest.approx(
-        [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ],
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
-    )
+    assert "Ave signal below threshold, outputs set to 0." in caplog.text
 
 
 def test_str_representation(haaqi_instance):

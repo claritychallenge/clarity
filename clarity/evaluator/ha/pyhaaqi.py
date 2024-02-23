@@ -250,6 +250,10 @@ class HaaqiV1:
             raise ValueError("Audiogram must be set before calling this method.")
 
         if sample_rate != self.EAR_SAMPLE_RATE:
+            logger.warning(
+                "Sample rate of the reference signal is different from the "
+                "ear model sample rate. Resampling."
+            )
             reference = resample(reference, sample_rate, self.EAR_SAMPLE_RATE)
 
         # Compute Ear model
@@ -310,6 +314,10 @@ class HaaqiV1:
             >>> score, nonlinear, linear, raw = ha.score(enhanced, sr)
         """
         if sample_rate != self.EAR_SAMPLE_RATE:
+            logger.warning(
+                "Sample rate of the enhanced signal is different from the "
+                "ear model sample rate. Resampling."
+            )
             enhanced = resample(enhanced, sample_rate, self.EAR_SAMPLE_RATE)
 
         (
@@ -833,6 +841,10 @@ class HaaqiV1:
                     ref_mean_square * proc_mean_squared
                 )
             else:
+                logger.warning(
+                    "Function bm_covary: Reference mean square is too small, "
+                    "outputs set to 0."
+                )
                 signal_cross_covariance[k, 0] = 0.0
 
             # Save the reference MS level
@@ -869,6 +881,10 @@ class HaaqiV1:
                         ref_mean_square * proc_mean_squared
                     )
                 else:
+                    logger.warning(
+                        "Function bm_covary: Reference mean square is too small, "
+                        "outputs set to 0."
+                    )
                     signal_cross_covariance[k, n] = 0.0
 
                 reference_mean_square[k, n] = ref_mean_square
@@ -905,6 +921,10 @@ class HaaqiV1:
                     ref_mean_square * proc_mean_squared
                 )
             else:
+                logger.warning(
+                    "Function bm_covary: Reference mean square is too small, "
+                    "outputs set to 0."
+                )
                 signal_cross_covariance[k, nseg - 1] = 0.0
 
             # Save the reference and processed MS level

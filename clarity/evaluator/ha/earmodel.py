@@ -225,7 +225,6 @@ class Ear:
                 each band converted to dB SL
         """
         num_samples = len(signal)
-
         self.start_signal, self.end_signal = self.find_noiseless_boundaries(signal)
         signal = signal[self.start_signal : self.end_signal + 1]
 
@@ -946,6 +945,7 @@ class Ear:
         # Add delay correction to each frequency band
         processed = np.zeros_like(input_signal)
         npts = input_signal.shape[1]
+
         for n in range(self.num_bands):
             ref = input_signal[n]
             processed[n] = np.concatenate(
