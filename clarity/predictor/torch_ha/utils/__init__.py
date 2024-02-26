@@ -1,7 +1,7 @@
 """Util functions for HAAQI, HASPI, HASQI Hearing Aids Indices"""
 
-from clarity.predictor.torch_haindex.utils.interp1d import interp1d
-from clarity.predictor.torch_haindex.utils.utils import (
+from clarity.predictor.torch_ha.utils.interp1d import interp1d
+from clarity.predictor.torch_ha.utils.utils import (
     COMPRESS_BASILAR_MEMBRANE_COEFS,
     CORRECT_DELAY_COEFS,
     MIDDLE_EAR_COEF,

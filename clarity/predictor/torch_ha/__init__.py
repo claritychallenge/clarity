@@ -1,6 +1,6 @@
 """Util functions for HAAQI, HASPI, HASQI Hearing Aids Indices"""
 
-from clarity.predictor.torch_haindex.utils import *
+from clarity.predictor.torch_ha.utils import *
 
 __all__ = [
     "interp1d",

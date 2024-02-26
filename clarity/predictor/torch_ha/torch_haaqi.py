@@ -9,7 +9,7 @@ import numpy as np
 import torch
 from numpy import ndarray
 
-from clarity.predictor.ha_ear_model.ear_model import EarModel
+from clarity.predictor.torch_ha.torch_earmodel import EarModel
 from clarity.utils.audiogram import Audiogram
 
 logger = logging.getLogger(__name__)

@@ -10,7 +10,11 @@ from clarity.evaluator.haspi.eb import (
     loss_parameters,
     middle_ear,
 )
-from clarity.predictor.torch_haindex.ear_model import EarModel
+from clarity.predictor.torch_ha.torch_earmodel import EarModel
+from clarity.predictor.torch_ha.torch_earmodel import (
+    center_frequency as torch_center_frequency,
+)
+from clarity.predictor.torch_ha.torch_earmodel import gammatone_bandwidth_demodulation
 
 
 def check_ear_model():
@@ -26,7 +30,12 @@ def check_ear_model():
     ref3 = np.random.random(size=sig_len)
     proc3 = np.random.random(size=sig_len)
 
-    ear_model = EarModel(nchan=32).to("cuda")
+    ear_model = EarModel(
+        num_bands=32,
+        equalisation=0,
+        signal_length=sig_len,
+        batch_size=3,
+    ).to("cuda")
     (
         t_ref_db,
         t_ref_bm,
@@ -43,13 +52,20 @@ def check_ear_model():
             np.array(
                 [
                     [45, 45, 35, 45, 60, 65],
-                    [45, 45, 35, 45, 60, 65],
-                    [45, 45, 35, 45, 60, 65],
+                    [20, 20, 20, 25, 25, 25],
+                    [0, 0, 0, 0, 0, 0],
                 ]
             )
         ).to("cuda"),
-        equalisation=0,
-        level1=65,
+        level1=torch.tensor(
+            np.array(
+                [
+                    [65],
+                    [50],
+                    [44],
+                ]
+            )
+        ).to("cuda"),
     )
 
     print(t_ref_db.shape)
@@ -68,10 +84,9 @@ def check_center_frequency():
         ear_q=9.26449,
         min_bw=24.7,
     )
-    ear_model = EarModel(
+
+    t_center_freq = torch_center_frequency(
         nchan=10,
-    )
-    t_center_freq = ear_model.center_frequency(
         low_freq=80,
         high_freq=8000,
         shift=None,
@@ -81,7 +96,7 @@ def check_center_frequency():
 
     print(
         "Center Frequency :",
-        np.sum(center_freq) - np.sum(t_center_freq.detach().numpy()),
+        np.sum(center_freq) - np.sum(t_center_freq),
     )
 
 
@@ -100,7 +115,7 @@ def check_loss_parameters():
         audiometric_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
     )
 
-    ear_model = EarModel(nchan=6)
+    ear_model = EarModel(num_bands=6, device="cpu")
 
     (
         attenuated_ohc_t,
@@ -109,8 +124,10 @@ def check_loss_parameters():
         compression_ratio_t,
         attenuated_ihc_t,
     ) = ear_model.loss_parameters(
-        hearing_loss=np.array([45, 45, 50, 60, 70, 80]),
-        center_freq=np.array([250, 500, 1000, 2000, 4000, 6000]),
+        hearing_loss=torch.tensor(
+            np.array([[45, 45, 50, 60, 70, 80]]), dtype=torch.float64
+        ),
+        center_freq=torch.tensor(np.array([[250, 500, 1000, 2000, 4000, 6000]])),
     )
 
     print("Loss Parameters")
@@ -141,10 +158,10 @@ def check_input_align():
 
     ref, proc = input_align(reference_signal, processed_signal)
 
-    ear_model = EarModel(nchan=6)
+    ear_model = EarModel(num_bands=6, device="cpu")
     t_ref, t_proc = ear_model.input_align(
-        torch.tensor(reference_signal),
-        torch.tensor(processed_signal),
+        torch.tensor(reference_signal).unsqueeze(0),
+        torch.tensor(processed_signal).unsqueeze(0),
     )
 
     print("Input Align")
@@ -165,8 +182,10 @@ def check_middle_ear():
     reference_signal = 100 * np.random.random(size=sig_len)
     filtered_signal = middle_ear(reference_signal, 24000)
 
-    ear_model = EarModel()
-    t_filtered_signal = ear_model.middle_ear(torch.tensor(reference_signal))
+    ear_model = EarModel(device="cpu")
+    t_filtered_signal = ear_model.middle_ear(
+        torch.tensor(reference_signal).unsqueeze(0)
+    )
 
     print("Middle Ear")
     print(
@@ -198,19 +217,19 @@ def check_gammatone_basilar_membrane():
         min_bandwidth=24.7,
     )
 
-    ear_model = EarModel()
+    ear_model = EarModel(device="cpu")
     (
         t_reference_envelope,
         t_reference_basilar_membrane,
         t_processed_envelope,
         t_processed_basilar_membrane,
     ) = ear_model.gammatone_basilar_membrane(
-        torch.tensor(ref),
-        torch.tensor(1.4),
-        torch.tensor(proc),
-        torch.tensor(2.0),
-        torch.tensor(1000),
-        torch.tensor(9.26449),
+        torch.tensor(ref).unsqueeze(0),
+        torch.tensor(1.4).unsqueeze(0),
+        torch.tensor(proc).unsqueeze(0),
+        torch.tensor(2.0).unsqueeze(0),
+        torch.tensor(1000).unsqueeze(0),
+        torch.tensor(9.26449).unsqueeze(0),
     )
 
     print("Gammatone Basilar Membrane")
@@ -266,10 +285,10 @@ def check_gammatone_bandwidth_demodulation():
 
 
 if __name__ == "__main__":
-    # check_center_frequency()
-    # check_loss_parameters()
+    check_center_frequency()
+    check_loss_parameters()
     # check_input_align()
-    # check_middle_ear()
+    check_middle_ear()
     # check_gammatone_basilar_membrane()
     # check_gammatone_bandwidth_demodulation()
     check_ear_model()

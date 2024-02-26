@@ -10,7 +10,7 @@ from clarity.evaluator.haspi.eb import (
     loss_parameters,
     middle_ear,
 )
-from clarity.predictor.torch_haindex.ear_model import EarModel
+from clarity.predictor.torch_ha.torch_earmodel import EarModel
 
 
 def check_ear_model():
