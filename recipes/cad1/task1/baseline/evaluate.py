@@ -46,7 +46,7 @@ def make_song_listener_list(
 
 def _evaluate_song_listener(
     song: str,
-        listener: Listener,
+    listener: Listener,
     haaqi_left: HaaqiV1,
     haaqi_right: HaaqiV1,
     config: DictConfig,
