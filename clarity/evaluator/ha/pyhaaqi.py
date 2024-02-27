@@ -54,12 +54,12 @@ class HaaqiV1:
     >>> )
 
     Load enhanced and reference signals
-    >>> reference, sr_r = wavfile.read("reference.wav")
-    >>> enhanced_1, sr_e_1 = wavfile.read("enhanced_1.wav")
-    >>> enhanced_2, sr_e_2 = wavfile.read("enhanced_2.wav")
+    >>> sr_r, reference = wavfile.read("reference.wav")
+    >>> sr_e_1, enhanced_1 = wavfile.read("enhanced_1.wav")
+    >>> sr_e_2, enhanced_2 = wavfile.read("enhanced_2.wav")
 
     Create the HAAQI evaluator
-    >>> ha = HAAQI_V1()
+    >>> ha = HaaqiV1()
     >>> ha.set_audiogram(audiogram)
 
     Set the reference signal
@@ -74,7 +74,7 @@ class HaaqiV1:
     For scoring different reference and enhanced signals with the same audiogram:
 
     Create the HAAQI evaluator
-    >>> ha = HAAQI_V1()
+    >>> ha = HaaqiV1()
     >>> ha.set_audiogram(audiogram)
 
     Load enhanced and reference signals
