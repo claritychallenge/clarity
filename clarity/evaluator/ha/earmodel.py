@@ -248,14 +248,14 @@ class Ear:
             tpt = 2 * np.pi / self.SAMPLE_RATE
             for n in range(self.num_bands):
                 self.sincf[n], self.coscf[n] = self.gammatone_bandwidth_demodulation(
-                    num_samples, tpt, self.center_freq[n]
+                    int(num_samples * 1.01), tpt, self.center_freq[n]
                 )
 
                 (
                     self.sincf_control[n],
                     self.coscf_control[n],
                 ) = self.gammatone_bandwidth_demodulation(
-                    num_samples, tpt, self.center_freq_control[n]
+                    int(num_samples * 1.01), tpt, self.center_freq_control[n]
                 )
 
         # The cochlear model parameters for the reference signal are the same as for the
