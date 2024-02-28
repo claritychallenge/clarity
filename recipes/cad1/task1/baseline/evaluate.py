@@ -15,8 +15,8 @@ import pandas as pd
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
-from clarity.evaluator.haaqi import compute_haaqi
 from clarity.evaluator.ha import HaaqiV1
+from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
@@ -129,7 +129,7 @@ def _evaluate_song_listener(
             reference_sample_rate=config.stem_sample_rate,
             enhanced=left_enhanced_signal,
             enhanced_sample_rate=config.stem_sample_rate,
-            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0]))
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
 
         per_instrument_score[f"right_{instrument}"] = haaqi_right.process(
@@ -141,7 +141,7 @@ def _evaluate_song_listener(
             reference_sample_rate=config.stem_sample_rate,
             enhanced=right_enhanced_signal,
             enhanced_sample_rate=config.stem_sample_rate,
-            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1]))
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
     # Compute the combined score
@@ -197,9 +197,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
-    ear_model_kwargs = {
-        "signals_same_size": True
-    }
+    ear_model_kwargs = {"signals_same_size": True}
     haaqi_left = HaaqiV1(equalisation=1, ear_model_kwargs=ear_model_kwargs)
     haaqi_right = HaaqiV1(equalisation=1, ear_model_kwargs=ear_model_kwargs)
 
