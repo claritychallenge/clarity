@@ -238,11 +238,12 @@ class Ear:
         if len(self.coscf) == 0 or len(self.sincf) == 0:
             # Precompute the coscf and sincf for the reference signal
             # These are reused by the enhanced signal
-            self.sincf = np.zeros((self.num_bands, num_samples))
-            self.coscf = np.zeros((self.num_bands, num_samples))
+            # It generates a 1% longer sincf and coscf to avoid edge effects
+            self.sincf = np.zeros((self.num_bands, int(num_samples * 1.01)))
+            self.coscf = np.zeros((self.num_bands, int(num_samples * 1.01)))
 
-            self.sincf_control = np.zeros((self.num_bands, num_samples))
-            self.coscf_control = np.zeros((self.num_bands, num_samples))
+            self.sincf_control = np.zeros((self.num_bands, int(num_samples * 1.01)))
+            self.coscf_control = np.zeros((self.num_bands, int(num_samples * 1.01)))
 
             tpt = 2 * np.pi / self.SAMPLE_RATE
             for n in range(self.num_bands):
@@ -736,6 +737,8 @@ class Ear:
 
         # Initialize the complex demodulation
         # Filter the real and imaginary parts of the signal
+        coscf = coscf[: len(signal)]
+        sincf = sincf[: len(signal)]
 
         ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], signal * coscf)
         uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], signal * sincf)
