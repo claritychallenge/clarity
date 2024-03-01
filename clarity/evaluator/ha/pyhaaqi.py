@@ -181,6 +181,22 @@ class HaaqiV1:
         # Number of modulation filter bands
         self.n_modulation_filter_bands = 1 + len(self.edge)
 
+    def reset_reference(self) -> None:
+        """Reset the reference signal variables used by
+            the enhanced signal.
+        """
+        self.ear_model.reset_reference()
+        self.reference_smooth: ndarray = np.empty(0)
+        self.reference_basilar_membrane: ndarray = np.empty(0)
+        self.reference_sl: ndarray = np.empty(0)
+        self.reference_computed: ndarray = np.empty(0)
+        self.reference_cep: ndarray = np.empty(0)
+        self.reference_linear_magnitude: ndarray = np.empty(0)
+
+        self.segments_above_threshold: int = 0
+        self.index_above_threshold: ndarray = np.empty(0)
+
+
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram.
 
@@ -219,6 +235,7 @@ class HaaqiV1:
             Linear_model: float
             raw_data: ndarray
         """
+        self.reset_reference()
         self.set_reference(reference, reference_sample_rate, level1)
         score, _, _, _ = self.score(enhanced, enhanced_sample_rate)
         return score
@@ -266,6 +283,9 @@ class HaaqiV1:
         # ***********************
         # Save reference smooth for reuse in melcor9
         self.reference_smooth = self.env_smooth(reference_db)
+
+        self.ref_noise = np.random.standard_normal(self.reference_smooth.shape)
+        self.enh_noise = np.random.standard_normal(self.reference_smooth.shape)
 
         # ***********************
         # Save reference_linear_magnitude for reuse in diff_spectrum
@@ -521,7 +541,7 @@ class HaaqiV1:
                 frequency, averaged over analysis frequency band
         """
         _reference = self.reference_smooth[:, self.index_above_threshold]
-        _reference += self.add_noise * np.random.standard_normal(_reference.shape)
+        _reference += self.add_noise * self.ref_noise[:, self.index_above_threshold] # np.random.standard_normal(_reference.shape)
         self.reference_cep = np.dot(
             self.cepm.T, _reference[:, : self.segments_above_threshold]
         )
@@ -534,14 +554,14 @@ class HaaqiV1:
             return 0.0, 0.0, 0.0, np.zeros(self.n_modulation_filter_bands)
 
         # Remove the silent intervals
-        _signal = signal[:, self.index_above_threshold]
+        signal = signal[:, self.index_above_threshold]
 
         # Add the low-level noise to the envelopes
-        _signal += self.add_noise * np.random.standard_normal(_signal.shape)
+        signal += self.add_noise * self.enh_noise[:, self.index_above_threshold] #np.random.standard_normal(signal.shape)
 
         # Compute the mel cepstrum coefficients using only those segments
         # above threshold
-        distorted_cep = np.dot(self.cepm.T, _signal[:, : self.segments_above_threshold])
+        distorted_cep = np.dot(self.cepm.T, signal[:, : self.segments_above_threshold])
         distorted_cep -= np.mean(distorted_cep, axis=1, keepdims=True)
 
         # Envelope sampling parameters

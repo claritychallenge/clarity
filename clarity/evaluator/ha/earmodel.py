@@ -181,6 +181,21 @@ class Ear:
         self.start_signal: int = 0
         self.end_signal: int = -1
 
+    def reset_reference(self) -> None:
+        """Reset the reference signal."""
+        self.reference_computed = False
+        self.attn_ohc = np.empty(0)
+        self.bandwidth_min = np.empty(0)
+        self.low_knee = np.empty(0)
+        self.compression_ratio = np.empty(0)
+        self.attn_ihc = np.empty(0)
+        self.reference_cochlear_compression = np.empty(0)
+        self.reference_bandwidth = np.empty(0)
+        self.temp_reference_b = np.empty(0)
+        self.reference_align = np.empty(0)
+        self.start_signal = 0
+        self.end_signal = -1
+
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram for the ear model.
 
@@ -192,9 +207,7 @@ class Ear:
         self.audiogram = audiogram
 
         # Reset the variables if the audiogram is set
-        self.reference_computed = False
-        self.reference_cochlear_compression = np.empty(0)
-        self.temp_reference_b = np.empty(0)
+        self.reset_reference()
 
         if not self.signals_same_size:
             # reset the variables if the next reference signal has different length
@@ -312,7 +325,7 @@ class Ear:
         return reference_db, reference_basilar_membrane, reference_sl
 
     def process_enhanced(self, signal: ndarray) -> tuple[ndarray, ndarray, ndarray]:
-        """Process the enhanced signal.
+        """Process the enhanced signal. The signal must be sampled at 24000 Hz
 
         The variables `self.attn_ohc`, `self.bandwidth_min`, `self.low_knee`,
         `self.compression_ratio` and, `self.attn_ihc` depend on the metric is running.
@@ -370,7 +383,7 @@ class Ear:
 
         return enhanced_db, enhanced_basilar_membrane, enhanced_sl
 
-    def process_common(self, signal: ndarray) -> tuple[ndarray | Any, Any, Any]:
+    def process_common(self, signal: ndarray, noise:ndarray) -> tuple[ndarray | Any, Any, Any]:
         """Run common steps for reference and enhanced signals.
 
         Args:
@@ -447,8 +460,20 @@ class Ear:
                 signal_b[n] = self.envelope_align(self.temp_reference_b[n], signal_b[n])
             else:
                 # Processing reference signal
-                self.reference_cochlear_compression[n] = signal_cochlear_compression
-                self.temp_reference_b[n] = signal_b[n]
+                self.reference_cochlear_compression[n] = np.pad(
+                    signal_cochlear_compression,
+                    (
+                        0,
+                        len(self.reference_cochlear_compression[n])
+                        - len(signal_cochlear_compression),
+                    ),
+                    "constant",
+                )
+                self.temp_reference_b[n] = np.pad(
+                    signal_b[n],
+                    (0, len(self.temp_reference_b[n]) - len(signal_b[n])),
+                    "constant",
+                )
                 self.reference_bandwidth[n] = signal_bandwidth
 
             # Convert the compressed envelopes and BM vibration envelopes to dB SPL
@@ -471,7 +496,7 @@ class Ear:
         # Additive noise level to give the auditory threshold
         ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
         signal_basilar_membrane = self.basilar_membrane_add_noise(
-            signal_b, ihc_threshold, self.level1
+            signal_b, noise, ihc_threshold, self.level1
         )
 
         if self.m_delay > 0:
