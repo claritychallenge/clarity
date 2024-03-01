@@ -237,9 +237,10 @@ class Ear:
             reference_sl (np.ndarray): compressed RMS average of the reference signal in
                 each band converted to dB SL
         """
-        num_samples = len(signal)
+
         self.start_signal, self.end_signal = self.find_noiseless_boundaries(signal)
         signal = signal[self.start_signal : self.end_signal + 1]
+        num_samples = len(signal)
 
         # Save the reference signal for alignment with the enhanced signal
         self.reference_align = signal
