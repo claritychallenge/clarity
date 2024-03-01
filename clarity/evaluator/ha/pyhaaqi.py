@@ -183,7 +183,7 @@ class HaaqiV1:
 
     def reset_reference(self) -> None:
         """Reset the reference signal variables used by
-            the enhanced signal.
+        the enhanced signal.
         """
         self.ear_model.reset_reference()
         self.reference_smooth: ndarray = np.empty(0)
@@ -195,7 +195,6 @@ class HaaqiV1:
 
         self.segments_above_threshold: int = 0
         self.index_above_threshold: ndarray = np.empty(0)
-
 
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram.
@@ -541,7 +540,9 @@ class HaaqiV1:
                 frequency, averaged over analysis frequency band
         """
         _reference = self.reference_smooth[:, self.index_above_threshold]
-        _reference += self.add_noise * self.ref_noise[:, self.index_above_threshold] # np.random.standard_normal(_reference.shape)
+        _reference += (
+            self.add_noise * self.ref_noise[:, self.index_above_threshold]
+        )  # np.random.standard_normal(_reference.shape)
         self.reference_cep = np.dot(
             self.cepm.T, _reference[:, : self.segments_above_threshold]
         )
@@ -557,7 +558,9 @@ class HaaqiV1:
         signal = signal[:, self.index_above_threshold]
 
         # Add the low-level noise to the envelopes
-        signal += self.add_noise * self.enh_noise[:, self.index_above_threshold] #np.random.standard_normal(signal.shape)
+        signal += (
+            self.add_noise * self.enh_noise[:, self.index_above_threshold]
+        )  # np.random.standard_normal(signal.shape)
 
         # Compute the mel cepstrum coefficients using only those segments
         # above threshold
