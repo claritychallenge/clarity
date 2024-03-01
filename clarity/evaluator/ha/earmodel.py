@@ -383,7 +383,7 @@ class Ear:
 
         return enhanced_db, enhanced_basilar_membrane, enhanced_sl
 
-    def process_common(self, signal: ndarray, noise:ndarray) -> tuple[ndarray | Any, Any, Any]:
+    def process_common(self, signal: ndarray) -> tuple[ndarray | Any, Any, Any]:
         """Run common steps for reference and enhanced signals.
 
         Args:
@@ -496,7 +496,7 @@ class Ear:
         # Additive noise level to give the auditory threshold
         ihc_threshold = -10  # Additive noise level, dB re: auditory threshold
         signal_basilar_membrane = self.basilar_membrane_add_noise(
-            signal_b, noise, ihc_threshold, self.level1
+            signal_b, ihc_threshold, self.level1
         )
 
         if self.m_delay > 0:
