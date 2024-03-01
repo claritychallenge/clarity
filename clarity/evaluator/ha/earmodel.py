@@ -196,6 +196,12 @@ class Ear:
         self.start_signal = 0
         self.end_signal = -1
 
+        self.sincf: ndarray = np.empty(0)
+        self.coscf: ndarray = np.empty(0)
+
+        self.sincf_control: ndarray = np.empty(0)
+        self.coscf_control: ndarray = np.empty(0)
+
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram for the ear model.
 
@@ -208,13 +214,6 @@ class Ear:
 
         # Reset the variables if the audiogram is set
         self.reset_reference()
-
-        if not self.signals_same_size:
-            # reset the variables if the next reference signal has different length
-            self.sincf = np.empty(0)
-            self.coscf = np.empty(0)
-            self.sincf_control = np.empty(0)
-            self.coscf_control = np.empty(0)
 
     def process_reference(
         self, signal: ndarray, level1: float = 65.0
