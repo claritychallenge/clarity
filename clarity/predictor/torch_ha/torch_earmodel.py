@@ -233,8 +233,8 @@ class EarModel(torch.nn.Module):
             attn_ihc_x = attn_ihc_y.clone()
 
         # Bulk broadband signal alignment
-        reference_24hz, processed_24hz = self.input_align(
-            reference_24hz, processed_24hz
+        reference, processed = self.input_align(
+            reference, processed
         )
         nsamp = reference.size()[1]
 

@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77c80538-f094-4891-8ac7-04860b7ea237" name="Changes" comment="remove some noisy logging. Can't be tested">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clarity/predictor/torch_ha/check_torch_ear_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/clarity/predictor/torch_ha/check_torch_ear_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clarity/predictor/torch_ha/torch_earmodel.py" beforeDir="false" afterPath="$PROJECT_DIR$/clarity/predictor/torch_ha/torch_earmodel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -226,7 +224,15 @@
       <workItem from="1707903175710" duration="677000" />
       <workItem from="1708944084505" duration="954000" />
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="remove some noisy logging. Can't be tested">
+      <option name="closed" value="true" />
+      <created>1709559752402</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1709559752402</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
