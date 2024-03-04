@@ -28,7 +28,6 @@ from clarity.utils.signal_processing import compute_rms, resample
 logger = logging.getLogger(__name__)
 
 
-
 def set_song_seed(song: str) -> None:
     """Set a seed that is unique for the given song"""
     song_encoded = hashlib.md5(song.encode("utf-8")).hexdigest()
@@ -94,7 +93,6 @@ def _evaluate_song_listener(
         )
         reference_signal = (reference_signal / 32768.0).astype(np.float32)
 
-
         # Read left instrument enhanced
         left_enhanced_signal, sample_rate_left_enhanced_signal = read_flac_signal(
             enhanced_folder
@@ -136,7 +134,7 @@ def _evaluate_song_listener(
             reference_sample_rate=config.stem_sample_rate,
             enhanced=left_enhanced_signal,
             enhanced_sample_rate=config.stem_sample_rate,
-            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0]))
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
 
         per_instrument_score[f"right_{instrument}"] = haaqi_right.process(
@@ -148,7 +146,7 @@ def _evaluate_song_listener(
             reference_sample_rate=config.stem_sample_rate,
             enhanced=right_enhanced_signal,
             enhanced_sample_rate=config.stem_sample_rate,
-            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1]))
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
     # Compute the combined score
@@ -197,50 +195,52 @@ def _evaluate_song_listener_remix(
     )
     reference_signal = (reference_signal / 32768.0).astype(np.float32)
 
-
     # Read left instrument enhanced
-    
+
     enhanced_signal, enhanced_sample_rate = read_flac_signal(
         enhanced_folder
         / f"{listener.id}"
         / f"{song}"
         / f"{listener.id}_{song}_remix.flac"
     )
-    
+
     left_enhanced_signal = enhanced_signal[:, 0]
     right_enhanced_signal = enhanced_signal[:, 1]
 
-    reference = resample(reference_signal[:, 0], sample_rate_reference_signal,
-                         config.stem_sample_rate)
-    enhanced = resample(left_enhanced_signal, int(enhanced_sample_rate),
-                        config.stem_sample_rate)
+    reference = resample(
+        reference_signal[:, 0], sample_rate_reference_signal, config.stem_sample_rate
+    )
+    enhanced = resample(
+        left_enhanced_signal, int(enhanced_sample_rate), config.stem_sample_rate
+    )
 
     min_len = min(len(reference), len(enhanced))
 
     #  Compute left and right scores
     per_instrument_score["remix_left"] = haaqi_left.process(
-            reference=reference[:min_len],
-            reference_sample_rate=config.stem_sample_rate,
-            enhanced=enhanced[:min_len],
-            enhanced_sample_rate=config.stem_sample_rate,
-            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0]))
-        )
+        reference=reference[:min_len],
+        reference_sample_rate=config.stem_sample_rate,
+        enhanced=enhanced[:min_len],
+        enhanced_sample_rate=config.stem_sample_rate,
+        level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
+    )
 
-    reference = resample(reference_signal[:, 1], sample_rate_reference_signal,
-                         config.stem_sample_rate)
-    enhanced = resample(right_enhanced_signal, int(enhanced_sample_rate),
-                        config.stem_sample_rate)
+    reference = resample(
+        reference_signal[:, 1], sample_rate_reference_signal, config.stem_sample_rate
+    )
+    enhanced = resample(
+        right_enhanced_signal, int(enhanced_sample_rate), config.stem_sample_rate
+    )
 
     min_len = min(len(reference), len(enhanced))
 
     per_instrument_score["remix_right"] = haaqi_right.process(
-            reference=reference[:min_len],
-            reference_sample_rate=config.stem_sample_rate,
-            enhanced=enhanced[:min_len],
-            enhanced_sample_rate=config.stem_sample_rate,
-            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1]))
-        )
-
+        reference=reference[:min_len],
+        reference_sample_rate=config.stem_sample_rate,
+        enhanced=enhanced[:min_len],
+        enhanced_sample_rate=config.stem_sample_rate,
+        level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
+    )
 
     # Compute the combined score
     per_instrument_score["remix_score"] = np.mean(list(per_instrument_score.values()))
@@ -276,15 +276,12 @@ def run_calculate_aq(config: DictConfig) -> None:
         "right_vocals",
         "remix_score",
         "remix_left",
-        "remix_right"
-        
+        "remix_right",
     ]
 
     results_file_name = "scores_new_haaqi.csv"
     if config.evaluate.batch_size > 1:
-        results_file_name = (
-            f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}_new_haaqi.csv"
-        )
+        results_file_name = f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}_new_haaqi.csv"
 
     results_file = ResultsFile(
         file_name=results_file_name,
@@ -302,9 +299,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
-    ear_model_kwargs = {
-        "signals_same_size": True
-    }
+    ear_model_kwargs = {"signals_same_size": True}
     haaqi_left = HaaqiV1(equalisation=1, ear_model_kwargs=ear_model_kwargs)
     haaqi_right = HaaqiV1(equalisation=1, ear_model_kwargs=ear_model_kwargs)
 
@@ -342,7 +337,7 @@ def run_calculate_aq(config: DictConfig) -> None:
                 "listener": listener.id,
                 "score": combined_score,
             }
-        ) 
+        )
         results_file.add_result(per_instrument_score)
 
 
