@@ -257,8 +257,12 @@ class Ear:
             self.sincf = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
             self.coscf = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
 
-            self.sincf_control = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
-            self.coscf_control = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
+            self.sincf_control = np.zeros(
+                (self.num_bands, int(initial_num_samples * 1.01))
+            )
+            self.coscf_control = np.zeros(
+                (self.num_bands, int(initial_num_samples * 1.01))
+            )
 
             tpt = 2 * np.pi / self.SAMPLE_RATE
             for n in range(self.num_bands):
