@@ -1226,11 +1226,11 @@ class Ear:
         return output_db, gain * basilar_membrane
 
     def inner_hair_cell_adaptation_2(
-            signal_db: np.ndarray,
-            basilar_membrane: np.ndarray,
-            delta: float,
-            freq_sample: float,
-            small: float = 1.0001,
+        signal_db: np.ndarray,
+        basilar_membrane: np.ndarray,
+        delta: float,
+        freq_sample: float,
+        small: float = 1.0001,
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Provide inner hair cell (IHC) adaptation. The adaptation is based on an
