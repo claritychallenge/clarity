@@ -233,9 +233,9 @@ class EarModel(torch.nn.Module):
             attn_ihc_x = attn_ihc_y.clone()
 
         # Bulk broadband signal alignment
-        # reference_24hz, processed_24hz = self.input_align(
-        #     reference_24hz, processed_24hz
-        # )
+        reference_24hz, processed_24hz = self.input_align(
+            reference_24hz, processed_24hz
+        )
         nsamp = reference.size()[1]
 
         # For HASQI, here add NAL-R equalization if the quality reference doesn't
@@ -552,11 +552,21 @@ class EarModel(torch.nn.Module):
         # Align the output with the reference allowing for the dispersion
         if delay > 0:
             # Output delayed relative to the reference
-            processed = torch.cat((processed[delay:processed_n], torch.zeros(delay)))
+            processed = torch.cat(
+                (
+                    processed[:, delay:processed_n],
+                    torch.zeros((self.batch_size, delay)),
+                ),
+                dim=1,
+            )
         else:
             # Output advanced relative to the reference
             processed = torch.cat(
-                (torch.zeros(-delay), processed[: processed_n + delay])
+                (
+                    torch.zeros((self.batch_size, -delay)),
+                    processed[:, : processed_n + delay],
+                ),
+                dim=1,
             )
 
         # Find the start and end of the noiseless reference sequence

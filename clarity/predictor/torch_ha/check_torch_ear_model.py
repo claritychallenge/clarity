@@ -284,8 +284,8 @@ def check_gammatone_bandwidth_demodulation():
 if __name__ == "__main__":
     # check_center_frequency()
     # check_loss_parameters()
-    check_input_align()
+    # check_input_align()
     # #check_middle_ear()
     # check_gammatone_basilar_membrane()
     # check_gammatone_bandwidth_demodulation()
-    # check_ear_model()
+    check_ear_model()
