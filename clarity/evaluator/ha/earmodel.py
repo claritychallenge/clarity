@@ -196,12 +196,6 @@ class Ear:
         self.start_signal = 0
         self.end_signal = -1
 
-        self.sincf: ndarray = np.empty(0)
-        self.coscf: ndarray = np.empty(0)
-
-        self.sincf_control: ndarray = np.empty(0)
-        self.coscf_control: ndarray = np.empty(0)
-
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram for the ear model.
 
@@ -214,6 +208,13 @@ class Ear:
 
         # Reset the variables if the audiogram is set
         self.reset_reference()
+
+        if not self.signals_same_size:
+            # reset the variables if the next reference signal has different length
+            self.sincf = np.empty(0)
+            self.coscf = np.empty(0)
+            self.sincf_control = np.empty(0)
+            self.coscf_control = np.empty(0)
 
     def process_reference(
         self, signal: ndarray, level1: float = 65.0
@@ -237,6 +238,7 @@ class Ear:
                 each band converted to dB SL
         """
 
+        initial_num_samples = len(signal)
         self.start_signal, self.end_signal = self.find_noiseless_boundaries(signal)
         signal = signal[self.start_signal : self.end_signal + 1]
         num_samples = len(signal)
@@ -252,23 +254,23 @@ class Ear:
             # Precompute the coscf and sincf for the reference signal
             # These are reused by the enhanced signal
             # It generates a 1% longer sincf and coscf to avoid edge effects
-            self.sincf = np.zeros((self.num_bands, int(num_samples * 1.01)))
-            self.coscf = np.zeros((self.num_bands, int(num_samples * 1.01)))
+            self.sincf = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
+            self.coscf = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
 
-            self.sincf_control = np.zeros((self.num_bands, int(num_samples * 1.01)))
-            self.coscf_control = np.zeros((self.num_bands, int(num_samples * 1.01)))
+            self.sincf_control = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
+            self.coscf_control = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
 
             tpt = 2 * np.pi / self.SAMPLE_RATE
             for n in range(self.num_bands):
                 self.sincf[n], self.coscf[n] = self.gammatone_bandwidth_demodulation(
-                    int(num_samples * 1.01), tpt, self.center_freq[n]
+                    int(initial_num_samples * 1.01), tpt, self.center_freq[n]
                 )
 
                 (
                     self.sincf_control[n],
                     self.coscf_control[n],
                 ) = self.gammatone_bandwidth_demodulation(
-                    int(num_samples * 1.01), tpt, self.center_freq_control[n]
+                    int(initial_num_samples * 1.01), tpt, self.center_freq_control[n]
                 )
 
         # The cochlear model parameters for the reference signal are the same as for the

@@ -1,0 +1,24 @@
+path:
+  root: /media/gerardo/Extreme SSD/Challenges/CAD1/Dataset/task1
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio/musdb18hq
+  music_file: ${path.metadata_dir}/musdb18.test.json
+  listeners_file: ${path.metadata_dir}/listeners.test.json
+  exp_folder: /media/gerardo/Extreme SSD/Challenges/CAD1/Submissions/Task1/E001
+
+sample_rate: 44100
+stem_sample_rate: 24000  # sample rate output stems
+remix_sample_rate: 32000 # sample rate for output remixed signal
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+  batch_size: 1  # Number of batches
+  batch: 0       # Batch number to evaluate
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
+  job:
+    chdir: True
