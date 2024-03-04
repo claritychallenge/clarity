@@ -165,6 +165,7 @@ class HaaqiV1:
         self.reference_linear_magnitude: ndarray = np.empty(0)
 
         # Variables for silence threshold
+        self.len_reference: int = 0
         self.segments_above_threshold: int = 0
         self.index_above_threshold: ndarray = np.empty(0)
 
@@ -186,6 +187,7 @@ class HaaqiV1:
         the enhanced signal.
         """
         self.ear_model.reset_reference()
+        self.len_reference = 0
         self.reference_smooth: ndarray = np.empty(0)
         self.reference_basilar_membrane: ndarray = np.empty(0)
         self.reference_sl: ndarray = np.empty(0)
@@ -272,6 +274,8 @@ class HaaqiV1:
             )
             reference = resample(reference, sample_rate, self.EAR_SAMPLE_RATE)
 
+        self.len_reference = len(reference)
+
         # Compute Ear model
         (
             reference_db,
@@ -338,6 +342,16 @@ class HaaqiV1:
                 "ear model sample rate. Resampling."
             )
             enhanced = resample(enhanced, sample_rate, self.EAR_SAMPLE_RATE)
+
+        if self.len_reference > len(enhanced):
+            logger.warning(
+                f"The enhanced signal is shorter than the reference signal. "
+                f"Padding the enhanced signal with {self.len_reference - len(enhanced)}"
+                f" zeros."
+            )
+            enhanced = np.pad(
+                enhanced, (0, self.len_reference - len(enhanced)), mode="constant"
+            )
 
         (
             enhanced_db,
