@@ -165,6 +165,7 @@ class HaaqiV1:
         self.reference_linear_magnitude: ndarray = np.empty(0)
 
         # Variables for silence threshold
+        self.len_reference: int = 0
         self.segments_above_threshold: int = 0
         self.index_above_threshold: ndarray = np.empty(0)
 
@@ -181,14 +182,12 @@ class HaaqiV1:
         # Number of modulation filter bands
         self.n_modulation_filter_bands = 1 + len(self.edge)
 
-        self.ref_noise: ndarray = np.empty(0)
-        self.enh_noise: ndarray = np.empty(0)
-
     def reset_reference(self) -> None:
         """Reset the reference signal variables used by
         the enhanced signal.
         """
         self.ear_model.reset_reference()
+        self.len_reference = 0
         self.reference_basilar_membrane = np.empty(0)
         self.reference_sl = np.empty(0)
         self.reference_computed = np.empty(0)
@@ -197,9 +196,6 @@ class HaaqiV1:
 
         self.segments_above_threshold = 0
         self.index_above_threshold = np.empty(0)
-
-        self.ref_noise = np.empty(0)
-        self.enh_noise = np.empty(0)
 
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram.
@@ -277,6 +273,8 @@ class HaaqiV1:
             )
             reference = resample(reference, sample_rate, self.EAR_SAMPLE_RATE)
 
+        self.len_reference = len(reference)
+
         # Compute Ear model
         (
             reference_db,
@@ -312,7 +310,6 @@ class HaaqiV1:
         # Save reference smooth for reuse in melcor9
 
         ref_noise = np.random.standard_normal(reference_smooth.shape)
-        self.enh_noise = np.random.standard_normal(reference_smooth.shape)
 
         reference_smooth = reference_smooth[:, self.index_above_threshold]
         reference_smooth += (
@@ -352,6 +349,16 @@ class HaaqiV1:
                 "ear model sample rate. Resampling."
             )
             enhanced = resample(enhanced, sample_rate, self.EAR_SAMPLE_RATE)
+
+        if self.len_reference > len(enhanced):
+            logger.warning(
+                f"The enhanced signal is shorter than the reference signal. "
+                f"Padding the enhanced signal with {self.len_reference - len(enhanced)}"
+                f" zeros."
+            )
+            enhanced = np.pad(
+                enhanced, (0, self.len_reference - len(enhanced)), mode="constant"
+            )
 
         (
             enhanced_db,
@@ -564,9 +571,8 @@ class HaaqiV1:
         signal = signal[:, self.index_above_threshold]
 
         # Add the low-level noise to the envelopes
-        signal += (
-            self.add_noise * self.enh_noise[:, self.index_above_threshold]
-        )  # np.random.standard_normal(signal.shape)
+        enh_noise = np.random.standard_normal(signal.shape)
+        signal += self.add_noise * enh_noise  # np.random.standard_normal(signal.shape)
 
         # Compute the mel cepstrum coefficients using only those segments
         # above threshold

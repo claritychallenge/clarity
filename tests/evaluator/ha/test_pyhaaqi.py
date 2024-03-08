@@ -93,7 +93,7 @@ def test_process(haaqi_instance, audiogram):
     assert isinstance(score, float)
     # Add more specific assertions based on your expectations for the processed score
     assert score == pytest.approx(
-        0.4424403567354818, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.4436550332504911, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -194,16 +194,16 @@ def test_score(haaqi_instance, audiogram):
     # Add more specific assertions based on your expectations for the returned values
 
     assert combined_model == pytest.approx(
-        0.4424403567354818, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.4436550332504911, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert nonlinear_model == pytest.approx(
-        0.591865631637806, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.593172151355272, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert linear_model == pytest.approx(
         0.6471322518381013, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(raw_data) == pytest.approx(
-        2.713098452094693, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        2.71840950785675, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -280,13 +280,13 @@ def test_non_linear_model(haaqi_instance, audiogram):
     # Add more specific assertions based on your expectations for the returned values
 
     assert nonlinear_model == pytest.approx(
-        0.474396008387019, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.3523479465443247, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert mel_cepstral_high == pytest.approx(
-        0.8314667944208036, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.7494387584642824, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert basilar_membrane_sync5 == pytest.approx(
-        0.16658079252302546, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.14214541460405816, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
