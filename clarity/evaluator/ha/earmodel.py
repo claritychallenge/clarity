@@ -257,8 +257,12 @@ class Ear:
             self.sincf = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
             self.coscf = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
 
-            self.sincf_control = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
-            self.coscf_control = np.zeros((self.num_bands, int(initial_num_samples * 1.01)))
+            self.sincf_control = np.zeros(
+                (self.num_bands, int(initial_num_samples * 1.01))
+            )
+            self.coscf_control = np.zeros(
+                (self.num_bands, int(initial_num_samples * 1.01))
+            )
 
             tpt = 2 * np.pi / self.SAMPLE_RATE
             for n in range(self.num_bands):
@@ -1215,6 +1219,89 @@ class Ear:
             v_2 = denom * (-a21 * b_1 + a11 * b_2)
             out = (v_0 - v_1) * r_1_inv
             output_db[n] = out
+
+        output_db = np.maximum(output_db, 0)
+        gain = (output_db + small) / (signal_db + small)
+
+        return output_db, gain * basilar_membrane
+
+    def inner_hair_cell_adaptation_2(
+        signal_db: np.ndarray,
+        basilar_membrane: np.ndarray,
+        delta: float,
+        freq_sample: float,
+        small: float = 1.0001,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Provide inner hair cell (IHC) adaptation. The adaptation is based on an
+        equivalent RC circuit model, and the derivatives are mapped into
+        1st-order backward differences. Rapid and short-term adaptation are
+        provided. The input is the signal envelope in dB SL, with IHC attenuation
+        already applied to the envelope. The outputs are the envelope in dB SL
+        with adaptation providing overshoot of the long-term output level, and
+        the BM motion is multiplied by a gain vs. time function that reproduces
+        the adaptation. IHC attenuation and additive noise for the equivalent
+        auditory threshold are provided by a subsequent call to eb_BMatten.
+
+        Args:
+            signal_db (np.ndarray): signal envelope in one frequency band in dB SL
+                 contains OHC compression and IHC attenuation
+            basilar_membrane (): basilar membrane vibration with OHC compression
+                but no IHC attenuation
+            delta (): overshoot factor = delta x steady-state
+            freq_sample (int): sampling rate in Hz
+            small (): small value to avoid divide by zero
+
+        Returns:
+            output_db (): envelope in dB SL with IHC adaptation
+            output_basilar_membrane (): Basilar Membrane multiplied by the IHC
+                adaptation gain function
+
+        """
+        # Test the amount of overshoot
+        dsmall = 1.0001
+        delta = max(delta, dsmall)
+
+        # Initialize adaptation time constants
+        tau1 = 2.0  # Rapid adaptation in msec
+        tau2 = 60.0  # Short-term adaptation in msec
+        tau1 = 0.001 * tau1  # Convert to seconds
+        tau2 = 0.001 * tau2
+
+        # Equivalent circuit parameters
+        freq_sample_inverse = 1 / freq_sample
+        r_1 = 1 / delta
+        r_2 = 0.5 * (1 - r_1)
+        r_3 = r_2
+        c_1 = tau1 * (r_1 + r_2) / (r_1 * r_2)
+        c_2 = tau2 / ((r_1 + r_2) * r_3)
+
+        # Intermediate values used for the voltage update matrix inversion
+        a11 = r_1 + r_2 + r_1 * r_2 * (c_1 / freq_sample_inverse)
+        a12 = -r_1
+        a21 = -r_3
+        a22 = r_2 + r_3 + r_2 * r_3 * (c_2 / freq_sample_inverse)
+        denom = 1 / ((a11 * a22) - (a21 * a12))
+
+        # Additional intermediate values
+        r_1_inv = 1 / r_1
+        product_r1_r2_c1 = r_1 * r_2 * (c_1 / freq_sample_inverse)
+        product_r2_r3_c2 = r_2 * r_3 * (c_2 / freq_sample_inverse)
+
+        # Initialize the outputs and state of the equivalent circuit
+        nsamp = len(signal_db)
+
+        output_db = np.zeros_like(signal_db)
+        v_1 = np.zeros_like(signal_db[0])
+        v_2 = np.zeros_like(signal_db[0])
+
+        # Compute intermediate values for the whole array
+        v_0 = signal_db
+        b_1 = v_0 * r_2 + product_r1_r2_c1 * v_1
+        b_2 = product_r2_r3_c2 * v_2
+        v_1 = denom * (a22 * b_1 - a12 * b_2)
+        v_2 = denom * (-a21 * b_1 + a11 * b_2)
+        output_db = (v_0 - v_1) * r_1_inv
 
         output_db = np.maximum(output_db, 0)
         gain = (output_db + small) / (signal_db + small)
