@@ -126,6 +126,7 @@ class HaaqiV1:
             ear_model_kwargs (dict, optional): keyword arguments for the Ear
                 model. Defaults to None.
         """
+
         if ear_model_kwargs is None:
             ear_model_kwargs = {}
 
@@ -157,7 +158,6 @@ class HaaqiV1:
         )
 
         # Set reference variables that will be reused in different methods
-        self.reference_smooth: ndarray = np.empty(0)
         self.reference_basilar_membrane: ndarray = np.empty(0)
         self.reference_sl: ndarray = np.empty(0)
         self.reference_computed: ndarray = np.empty(0)
@@ -181,20 +181,25 @@ class HaaqiV1:
         # Number of modulation filter bands
         self.n_modulation_filter_bands = 1 + len(self.edge)
 
+        self.ref_noise: ndarray = np.empty(0)
+        self.enh_noise: ndarray = np.empty(0)
+
     def reset_reference(self) -> None:
         """Reset the reference signal variables used by
         the enhanced signal.
         """
         self.ear_model.reset_reference()
-        self.reference_smooth: ndarray = np.empty(0)
-        self.reference_basilar_membrane: ndarray = np.empty(0)
-        self.reference_sl: ndarray = np.empty(0)
-        self.reference_computed: ndarray = np.empty(0)
-        self.reference_cep: ndarray = np.empty(0)
-        self.reference_linear_magnitude: ndarray = np.empty(0)
+        self.reference_basilar_membrane = np.empty(0)
+        self.reference_sl = np.empty(0)
+        self.reference_computed = np.empty(0)
+        self.reference_cep = np.empty(0)
+        self.reference_linear_magnitude = np.empty(0)
 
-        self.segments_above_threshold: int = 0
-        self.index_above_threshold: ndarray = np.empty(0)
+        self.segments_above_threshold = 0
+        self.index_above_threshold = np.empty(0)
+
+        self.ref_noise = np.empty(0)
+        self.enh_noise = np.empty(0)
 
     def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram.
@@ -280,13 +285,6 @@ class HaaqiV1:
         ) = self.ear_model.process_reference(reference, level1)
 
         # ***********************
-        # Save reference smooth for reuse in melcor9
-        self.reference_smooth = self.env_smooth(reference_db)
-
-        self.ref_noise = np.random.standard_normal(self.reference_smooth.shape)
-        self.enh_noise = np.random.standard_normal(self.reference_smooth.shape)
-
-        # ***********************
         # Save reference_linear_magnitude for reuse in diff_spectrum
         self.reference_linear_magnitude = 10 ** (self.reference_sl / 20)
         reference_sum = np.sum(self.reference_linear_magnitude)
@@ -298,8 +296,9 @@ class HaaqiV1:
         # for reuse in melcor9
 
         # Find the segments that lie sufficiently above the quiescent rate
+        reference_smooth = self.env_smooth(reference_db)
         # Convert envelope dB to linear (specific loudness)
-        reference_linear = 10 ** (self.reference_smooth / 20)
+        reference_linear = 10 ** (reference_smooth / 20)
         # Proportional to loudness in sones
         reference_sum = np.sum(reference_linear, 0) / self.num_bands
         # Convert back to dB (loudness in phons)
@@ -308,6 +307,21 @@ class HaaqiV1:
         self.index_above_threshold = np.where(reference_sum > self.silence_threshold)[0]
         # Number of segments above threshold
         self.segments_above_threshold = self.index_above_threshold.shape[0]
+
+        # ***********************
+        # Save reference smooth for reuse in melcor9
+
+        ref_noise = np.random.standard_normal(reference_smooth.shape)
+        self.enh_noise = np.random.standard_normal(reference_smooth.shape)
+
+        reference_smooth = reference_smooth[:, self.index_above_threshold]
+        reference_smooth += (
+            self.add_noise * ref_noise[:, self.index_above_threshold]
+        )  # np.random.standard_normal(_reference.shape)
+        self.reference_cep = np.dot(
+            self.cepm.T, reference_smooth[:, : self.segments_above_threshold]
+        )
+        self.reference_cep -= np.mean(self.reference_cep, axis=1, keepdims=True)
 
     def score(
         self,
@@ -539,14 +553,6 @@ class HaaqiV1:
             mel_cepstral_modulation (): vector of cross-correlations by modulation
                 frequency, averaged over analysis frequency band
         """
-        _reference = self.reference_smooth[:, self.index_above_threshold]
-        _reference += (
-            self.add_noise * self.ref_noise[:, self.index_above_threshold]
-        )  # np.random.standard_normal(_reference.shape)
-        self.reference_cep = np.dot(
-            self.cepm.T, _reference[:, : self.segments_above_threshold]
-        )
-        self.reference_cep -= np.mean(self.reference_cep, axis=1, keepdims=True)
 
         if self.segments_above_threshold <= 1:
             logger.warning(

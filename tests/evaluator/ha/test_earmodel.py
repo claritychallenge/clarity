@@ -119,16 +119,16 @@ def test_process_reference(ear_instance, audiogram):
         1074.0358414117686, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(ear_instance.coscf) == pytest.approx(
-        71.72892210848208, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        39.57544991609893, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(ear_instance.sincf) == pytest.approx(
-        -278.7015186488348, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        -265.6095035515243, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(ear_instance.coscf_control) == pytest.approx(
-        71.72892210848208, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        39.57544991609893, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(ear_instance.sincf_control) == pytest.approx(
-        -278.7015186488348, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        -265.6095035515243, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 

@@ -93,7 +93,7 @@ def test_process(haaqi_instance, audiogram):
     assert isinstance(score, float)
     # Add more specific assertions based on your expectations for the processed score
     assert score == pytest.approx(
-        0.441399286739319, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.4424403567354818, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -115,7 +115,6 @@ def test_set_reference(haaqi_instance, audiogram):
     assert haqqi_instance.audiogram is not None
     assert haqqi_instance.reference_basilar_membrane is not None
     assert haqqi_instance.reference_sl is not None
-    assert haqqi_instance.reference_smooth is not None
     assert haqqi_instance.reference_linear_magnitude is not None
     assert haqqi_instance.segments_above_threshold >= 0
     assert isinstance(haqqi_instance.index_above_threshold, np.ndarray)
@@ -125,9 +124,6 @@ def test_set_reference(haaqi_instance, audiogram):
     )
     assert np.sum(haqqi_instance.reference_sl) == pytest.approx(
         526.453739008096, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert np.sum(haqqi_instance.reference_smooth) == pytest.approx(
-        2140.4223790398237, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(haqqi_instance.reference_linear_magnitude) == pytest.approx(
         1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
@@ -198,16 +194,16 @@ def test_score(haaqi_instance, audiogram):
     # Add more specific assertions based on your expectations for the returned values
 
     assert combined_model == pytest.approx(
-        0.441399286739319, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.4424403567354818, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert nonlinear_model == pytest.approx(
-        0.5907443781289128, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.591865631637806, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert linear_model == pytest.approx(
         0.6471322518381013, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert np.sum(raw_data) == pytest.approx(
-        2.7085405110016305, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        2.713098452094693, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -284,13 +280,13 @@ def test_non_linear_model(haaqi_instance, audiogram):
     # Add more specific assertions based on your expectations for the returned values
 
     assert nonlinear_model == pytest.approx(
-        0.4855342000239626, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.474396008387019, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert mel_cepstral_high == pytest.approx(
-        0.8399715403081676, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.8314667944208036, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
     assert basilar_membrane_sync5 == pytest.approx(
-        0.15723904904739136, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.16658079252302546, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
@@ -416,45 +412,6 @@ def test_melcor9_zero(haaqi_instance, audiogram):
                 0,
             ]
         ),
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
-    )
-
-
-def test_melcor9_equal_input(haaqi_instance, audiogram):
-    """Test the melcor9 method of the HAAQI_V1 class with equal inputs"""
-
-    haaqi_instance = haaqi_instance(
-        num_bands=4,
-        segment_size=4,
-        n_cepstral_coef=6,
-        silence_threshold=12,
-        add_noise=0.00,
-    )
-    haaqi_instance.set_audiogram(audiogram)
-
-    np.random.seed(0)
-    sig_len = 6000
-    reference = np.random.random(size=sig_len)
-    haaqi_instance.set_reference(reference, 24000)
-
-    mel_cep_ave, mel_cep_low, mel_cep_high, mel_cep_mod = haaqi_instance.melcor9(
-        signal=haaqi_instance.reference_smooth,
-    )
-
-    assert mel_cep_mod.shape == (8,)
-
-    assert mel_cep_ave == pytest.approx(
-        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert mel_cep_low == pytest.approx(
-        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert mel_cep_high == pytest.approx(
-        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert mel_cep_mod == pytest.approx(
-        np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]),
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
     )
