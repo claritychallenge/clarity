@@ -748,6 +748,8 @@ def gammatone_basilar_membrane(
     sincf, coscf = gammatone_bandwidth_demodulation(
         npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
     )
+    a = np.stack((sincf, coscf), axis=1).T
+    np.savetxt(f"a_{npts}.csv", a, delimiter=",")
 
     # Filter the real and imaginary parts of the signal
     ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
@@ -787,7 +789,15 @@ def gammatone_basilar_membrane(
     )
 
 
-@njit
+def gammatone_bandwith_demu(samplerate, tpt, center_freq):
+    dt = float(1 / samplerate)
+    theta = 2 * np.pi * center_freq * dt
+    cos_theta = np.cos(theta)
+    sin_theta = np.sin(theta)
+    return sin_theta, cos_theta
+
+
+@njit()
 def gammatone_bandwidth_demodulation(
     npts, tpt, center_freq, center_freq_cos, center_freq_sin
 ):

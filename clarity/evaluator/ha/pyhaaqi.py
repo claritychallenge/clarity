@@ -183,9 +183,8 @@ class HaaqiV1:
         self.n_modulation_filter_bands = 1 + len(self.edge)
 
     def reset_reference(self) -> None:
-        """Reset the reference signal variables used by
-        the enhanced signal.
-        """
+        """Reset the reference signal."""
+
         self.ear_model.reset_reference()
         self.len_reference = 0
         self.reference_basilar_membrane = np.empty(0)
