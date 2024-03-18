@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import logging
+from math import floor
 from typing import Final
 
 import numpy as np
 from numpy import ndarray
-from math import floor
-from scipy.signal import convolve, correlate, firwin, convolve2d
+from scipy.signal import convolve, convolve2d, correlate, firwin
 
 from clarity.evaluator.ha.earmodel import Ear
 from clarity.utils.audiogram import Audiogram
@@ -38,15 +38,14 @@ class HaspiV2:
         self,
         equalisation: int = 1,
         num_bands: int = 32,
-            f_lp: float = 320.0,
+        f_lp: float = 320.0,
         silence_threshold: float = 2.5,
         add_noise: float = 0.0,
         segment_size: int = 8,
         n_cepstral_coef: int = 6,
         segment_covariance: int = 16,
-        ear_model_kwargs: dict | None = None
+        ear_model_kwargs: dict | None = None,
     ) -> None:
-
         if ear_model_kwargs is None:
             ear_model_kwargs = {}
 
@@ -76,7 +75,6 @@ class HaspiV2:
         self.nbasis = 6  # Use 6 basis functions
         self.thresh_cep = 2.5  # Silence threshold in dB SL
         self.thresh_nerve = 0.1  # Dither in dB RMS to add to envelope signals
-
 
     def reset_reference(self) -> None:
         """Reset the reference signal."""
@@ -156,17 +154,18 @@ class HaspiV2:
 
         for n in range(self.nbasis):
             basis = np.cos(freq[n] * np.pi * k / (self.num_bands - 1))
-            self.cepm[:, n] = basis / np.sqrt(np.sum(basis ** 2))
+            self.cepm[:, n] = basis / np.sqrt(np.sum(basis**2))
 
         # Find the reference segments that lie sufficiently above the quiescent rate
         x_linear = 10 ** (
-                reference_lp / 20
+            reference_lp / 20
         )  # Convert envelope dB to linear (specific loudness)
         # Proportional to loudness in sones
         xsum = np.sum(x_linear, 1) / self.num_bands
         xsum = 20 * np.log10(xsum)  # Convert back to dB (loudness in phons)
         self.num_seg_avobe_threshold = np.where(xsum > self.thresh_cep)[
-            0]  # Identify those segments above threshold
+            0
+        ]  # Identify those segments above threshold
         nsamp = len(self.num_seg_avobe_threshold)  # Number of segments above threshold
 
         # Exit if not enough segments above zero
@@ -183,12 +182,7 @@ class HaspiV2:
         # Band edges [0, 4, 8, 12.5, 20.5, 30.5, 52.4, 78.1, 128, 200, 328] Hz
         reference_mod = self.fir_modulation_filter(reference_cep, self.f_lp * 8.0)
 
-    def env_filter(
-        self,
-        signal: ndarray,
-        filter_cutoff: float,
-        freq_sub_sample: float
-    ):
+    def env_filter(self, signal: ndarray, filter_cutoff: float, freq_sub_sample: float):
         # Check the filter design parameters
         if freq_sub_sample > self.EAR_SAMPLE_RATE:
             raise ValueError("upsampling rate too high.")
@@ -216,12 +210,13 @@ class HaspiV2:
         # unlike np.hann and scipy.signal.windows.hann; the code below replicates this
         # behaviour
         window = 0.5 * (
-                    1 - np.cos(2 * np.pi * np.arange(1, nfilt / 2 + 1) / (nfilt + 1)))
+            1 - np.cos(2 * np.pi * np.arange(1, nfilt / 2 + 1) / (nfilt + 1))
+        )
         benv = np.concatenate((window, np.flip(window)))
         benv = benv / np.sum(benv)
 
         signal_env = convolve2d(signal, np.expand_dims(benv, 1), "full")
-        signal_env = signal_env[nhalf: nhalf + nsamp, :]
+        signal_env = signal_env[nhalf : nhalf + nsamp, :]
 
         space = floor(self.EAR_SAMPLE_RATE / freq_sub_sample)
         index = np.arange(0, nsamp, space)
@@ -229,8 +224,8 @@ class HaspiV2:
         return signal_env[index, :]
 
     def cepstral_correlation_coef(
-            self,
-            signal_db: ndarray,
+        self,
+        signal_db: ndarray,
     ) -> ndarray:
         """
         Compute the cepstral correlation coefficients between the reference signal
