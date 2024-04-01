@@ -1,4 +1,5 @@
 """Gammatone filterbank simulation of the Cochlea."""
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """ Run the dummy enhancement. """
+
 import json
 import logging
 import pathlib

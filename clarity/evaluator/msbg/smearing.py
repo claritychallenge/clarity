@@ -1,4 +1,5 @@
 """Temporal smearing component of MSBG model."""
+
 from __future__ import annotations
 
 import math

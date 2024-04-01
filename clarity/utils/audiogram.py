@@ -1,4 +1,5 @@
 """Dataclass to represent a monaural audiogram"""
+
 from __future__ import annotations
 
 import json

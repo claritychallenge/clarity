@@ -1,4 +1,5 @@
 """Tests for the enhance module"""
+
 # pylint: disable=import-error
 from pathlib import Path
 

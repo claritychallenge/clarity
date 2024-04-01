@@ -1,4 +1,5 @@
 """Tests for enhancer.gha.gainrule_camfit module"""
+
 import numpy as np
 import pytest
 

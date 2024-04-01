@@ -1,4 +1,5 @@
 """Functions for HASPI neural network stage."""
+
 from __future__ import annotations
 
 import numpy as np

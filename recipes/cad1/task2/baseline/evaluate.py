@@ -1,4 +1,5 @@
 """Evaluate the enhanced signals using the HAAQI metric."""
+
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
 from __future__ import annotations

@@ -1,4 +1,5 @@
 """Make intelligibility predictions from HASPI scores."""
+
 from __future__ import annotations
 
 import json

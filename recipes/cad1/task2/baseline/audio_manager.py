@@ -1,4 +1,5 @@
 """A utility class for managing audio files."""
+
 from __future__ import annotations
 
 import logging

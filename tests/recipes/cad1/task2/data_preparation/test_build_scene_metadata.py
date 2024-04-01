@@ -1,4 +1,5 @@
 """Tests for the build_scene_metadata.py script"""
+
 from pathlib import Path
 
 import numpy as np

@@ -6,6 +6,7 @@ Authors
  * Mirco Ravanelli 2020
  * Sung-Lin Yeh 2020
 """
+
 import speechbrain as sb
 import torch
 from speechbrain.decoders.ctc import CTCPrefixScorer

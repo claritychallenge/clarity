@@ -3,6 +3,7 @@ Class to generate random parameters for the Car noise signal generation
 
 These are 2 separated class to keep the logic separated
 """
+
 from __future__ import annotations
 
 from typing import Final

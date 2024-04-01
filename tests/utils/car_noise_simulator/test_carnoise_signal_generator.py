@@ -1,4 +1,5 @@
 """Tests for the Car noise signal generator"""
+
 # pylint: disable=import-error
 
 from pathlib import Path

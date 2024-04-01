@@ -1,4 +1,5 @@
 """Tests for smearing module"""
+
 import numpy as np
 import pytest
 

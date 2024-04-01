@@ -1,4 +1,5 @@
 """Scene rendering for CEC1 challenge."""
+
 import logging
 import math
 from pathlib import Path

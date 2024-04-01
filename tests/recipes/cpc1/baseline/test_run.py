@@ -1,4 +1,5 @@
 """Tests for cpc1 run module"""
+
 from __future__ import annotations
 
 import csv

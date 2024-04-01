@@ -1,4 +1,5 @@
 """Tests for cec2 build_scenes module."""
+
 import json
 from pathlib import Path
 from unittest.mock import patch

@@ -1,4 +1,5 @@
 """Tests for cec2 baseline evaluate module."""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,6 +1,7 @@
 """
 Class to generate the car noise signal.
 """
+
 from __future__ import annotations
 
 from typing import Final

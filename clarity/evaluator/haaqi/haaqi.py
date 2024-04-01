@@ -1,4 +1,5 @@
 """Matlab's haaqi version 1 to python version."""
+
 from __future__ import annotations
 
 import logging

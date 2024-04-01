@@ -1,4 +1,5 @@
 """Tests for mbstoi_utils module"""
+
 import numpy as np
 import pytest
 

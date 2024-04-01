@@ -1,6 +1,7 @@
 """
 An FIR-based torch implementation of approximated MSBG hearing loss model
 """
+
 from __future__ import annotations
 
 import json

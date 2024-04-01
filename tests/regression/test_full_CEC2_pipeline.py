@@ -1,4 +1,5 @@
 """Regression Tests for CEC2"""
+
 # pylint: disable=too-many-locals invalid-name
 from __future__ import annotations
 
