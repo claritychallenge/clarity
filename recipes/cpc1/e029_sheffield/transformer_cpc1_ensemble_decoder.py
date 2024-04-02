@@ -8,6 +8,7 @@ Authors
 
 Modified by Zehai Tu for uncertainty estimation with ensemble
 """
+
 import speechbrain as sb
 import torch
 from speechbrain.decoders.ctc import CTCPrefixScorer

@@ -1,4 +1,5 @@
 """Module for testing torch_msbg.py"""
+
 import numpy as np
 import pytest
 import torch

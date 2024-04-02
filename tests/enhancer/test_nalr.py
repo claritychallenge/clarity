@@ -1,4 +1,5 @@
 """Tests for the enhancer.nalr module."""
+
 import numpy as np
 import pytest
 

@@ -1,4 +1,5 @@
 """Functions for downloading demo data."""
+
 import os
 from pathlib import Path
 

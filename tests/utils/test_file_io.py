@@ -1,4 +1,5 @@
 """Test the file_io module."""
+
 import numpy as np
 import pytest
 

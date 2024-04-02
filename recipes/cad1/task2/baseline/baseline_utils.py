@@ -1,4 +1,5 @@
 """Utility functions for the baseline model."""
+
 from __future__ import annotations
 
 # pylint: disable=import-error

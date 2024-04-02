@@ -1,4 +1,5 @@
 """ Run the baseline enhancement. """
+
 from __future__ import annotations
 
 # pylint: disable=import-error

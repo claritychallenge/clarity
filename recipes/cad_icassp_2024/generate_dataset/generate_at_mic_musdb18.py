@@ -16,6 +16,7 @@ The script outputs:
     - The metadata of the music at the hearing aids microphone.
     - The music signals at the hearing aids microphone.
 """
+
 from __future__ import annotations
 
 # pylint: disable=import-error

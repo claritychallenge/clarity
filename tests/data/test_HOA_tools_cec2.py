@@ -1,4 +1,5 @@
 """Tests for the data.HOA_tools_cec2 module."""
+
 import numpy as np
 import pytest
 from numba.typed import List as TypedList  # pylint: disable=no-name-in-module

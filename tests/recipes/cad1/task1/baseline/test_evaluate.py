@@ -1,4 +1,5 @@
 """Tests for the evaluation module"""
+
 from pathlib import Path
 
 # pylint: disable=import-error

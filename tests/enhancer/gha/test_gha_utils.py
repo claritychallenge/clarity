@@ -1,4 +1,5 @@
 """Tests for enhancer.gha.gha_utils module"""
+
 import hashlib
 
 import numpy as np

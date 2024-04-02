@@ -1,4 +1,5 @@
 """Tests for icassp_2023 cec2 report score module"""
+
 from __future__ import annotations
 
 from csv import DictWriter

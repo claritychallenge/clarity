@@ -1,4 +1,5 @@
 """A class for the car acoustic environment."""
+
 # pylint: disable=import-error
 # pylint: disable=too-many-instance-attributes
 from __future__ import annotations

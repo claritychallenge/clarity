@@ -2,6 +2,7 @@
 Class for encoding and decoding audio signals
     using flac compression.
 """
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """Adopted from https://github.com/kaituoxu/Conv-TasNet"""
+
 from __future__ import annotations
 
 import math

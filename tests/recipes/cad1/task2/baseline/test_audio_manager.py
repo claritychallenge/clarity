@@ -1,4 +1,5 @@
 """Test for AudioManager module"""
+
 from pathlib import Path
 
 import numpy as np

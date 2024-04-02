@@ -1,4 +1,5 @@
 """Support for the MSBG hearing loss model."""
+
 from __future__ import annotations
 
 import json

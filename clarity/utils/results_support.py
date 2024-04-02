@@ -1,4 +1,5 @@
 """Dataclass to save challenges results to a CSV file."""
+
 from __future__ import annotations
 
 # pylint: disable=import-error

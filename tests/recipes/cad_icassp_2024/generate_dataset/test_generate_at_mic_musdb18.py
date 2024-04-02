@@ -1,4 +1,5 @@
 """Test the generate dataset script for the ICASSP 2024 CAD recipe."""
+
 # pylint:: disable=import-error
 from pathlib import Path
 
