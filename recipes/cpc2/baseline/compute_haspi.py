@@ -1,4 +1,5 @@
 """ Compute the HASPI scores. """
+
 from __future__ import annotations
 
 import hashlib

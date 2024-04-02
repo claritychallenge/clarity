@@ -1,4 +1,5 @@
 """Clarity ambisonic scene rendering."""
+
 import json
 import logging
 import math

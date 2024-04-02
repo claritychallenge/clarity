@@ -1,4 +1,5 @@
 """Modified Binaural Short-Time Objective Intelligibility (MBSTOI) Measure"""
+
 import importlib.resources as pkg_resources
 import logging
 import math

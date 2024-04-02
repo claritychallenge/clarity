@@ -1,4 +1,5 @@
 """Utilities for MBSTOI processing."""
+
 from __future__ import annotations
 
 import logging

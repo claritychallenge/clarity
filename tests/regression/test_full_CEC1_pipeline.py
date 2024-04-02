@@ -1,4 +1,5 @@
 """Tests the full CEC1 baseline pipeline"""
+
 # pylint: disable=too-many-locals invalid-name
 
 # Regression test
@@ -172,12 +173,12 @@ def test_full_cec1_pipeline(regtest):
 
     assert len(proc_pad) >= len(signal_processed)
 
-    clean_pad[
-        int(delay[0]) : int(len(reference_processed) + int(delay[0])), 0
-    ] = reference_processed[:, 0]
-    clean_pad[
-        int(delay[1]) : int(len(reference_processed) + int(delay[1])), 1
-    ] = reference_processed[:, 1]
+    clean_pad[int(delay[0]) : int(len(reference_processed) + int(delay[0])), 0] = (
+        reference_processed[:, 0]
+    )
+    clean_pad[int(delay[1]) : int(len(reference_processed) + int(delay[1])), 1] = (
+        reference_processed[:, 1]
+    )
     proc_pad[: len(signal_processed)] = signal_processed
 
     grid_coarseness = 1

@@ -1,4 +1,5 @@
 """Test for merge_batches module"""
+
 import pytest
 
 

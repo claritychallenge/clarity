@@ -1,4 +1,5 @@
 """Module that contains functions for source separation."""
+
 from __future__ import annotations
 
 # pylint: disable=import-error

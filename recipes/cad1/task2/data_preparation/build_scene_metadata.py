@@ -1,4 +1,5 @@
 """Module to Generate the metadata for the scenes in the CAD-1 Task-2 challenge."""
+
 # pylint: disable=import-error
 from __future__ import annotations
 

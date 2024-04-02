@@ -1,4 +1,5 @@
 """Fixtures for testing."""
+
 from __future__ import annotations
 
 from pathlib import Path

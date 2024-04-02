@@ -1,4 +1,5 @@
 """Module to generate the scenes and scene-listeners metadata files for training"""
+
 from __future__ import annotations
 
 # pylint: disable=import-error

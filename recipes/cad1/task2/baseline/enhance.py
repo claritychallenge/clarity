@@ -1,4 +1,5 @@
 """ Run the dummy enhancement. """
+
 # pylint: disable=too-many-locals
 # pylint: disable=import-error
 from __future__ import annotations

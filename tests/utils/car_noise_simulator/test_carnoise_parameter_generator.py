@@ -1,4 +1,5 @@
 """Tests for the Car noise parameters generator"""
+
 # pylint: disable=import-error
 
 import numpy as np

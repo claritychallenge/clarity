@@ -1,6 +1,5 @@
 """Tests for the haspi computation functions."""
 
-
 from pathlib import Path
 from unittest.mock import patch
 

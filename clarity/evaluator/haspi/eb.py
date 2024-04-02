@@ -1,4 +1,5 @@
 """Module for HASPI, HASQI, HAAQI EBs"""
+
 from __future__ import annotations
 
 # pylint: disable=import-error

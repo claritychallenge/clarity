@@ -1,4 +1,5 @@
 """Tests for icassp_2023 cec2 enhance module."""
+
 from __future__ import annotations
 
 from pathlib import Path

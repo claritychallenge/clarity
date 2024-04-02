@@ -1,4 +1,5 @@
 """Tests for the data.utils module."""
+
 from __future__ import annotations
 
 import numpy as np

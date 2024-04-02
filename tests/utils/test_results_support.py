@@ -1,4 +1,5 @@
 """test for results support module"""
+
 # pylint: disable=import-error
 from pathlib import Path
 
