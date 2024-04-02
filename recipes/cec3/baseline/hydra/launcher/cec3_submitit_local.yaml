@@ -1,0 +1,9 @@
+# Submitit configuration for running data preparation stage locally
+
+defaults:
+  - submitit_local
+
+cpus_per_task: 1
+tasks_per_node: 2
+mem_gb: 4
+nodes: 1
