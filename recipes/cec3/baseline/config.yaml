@@ -1,11 +1,13 @@
+task: ??? # This can be set to 'task1', 'task2' or 'task3'
+
 path:
   root: ??? # root folder for clarity data
   exp: ??? # folder to store enhanced signals and final results
-  metadata_dir: ${path.root}/clarity_data/metadata
-  scenes_folder: ${path.root}/clarity_data/dev/scenes
+  scenes_folder: ${path.root}/${task}/clarity_data/dev/scenes
+  metadata_dir: ${path.root}/${task}/clarity_data/metadata
   scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.dev.json
   listeners_file: ${path.metadata_dir}/listeners.json
-  scenes_file: ${path.metadata_dir}/scenes.json
+  scenes_file: ${path.metadata_dir}/scenes.dev.json
 
 nalr:
   nfir: 220
