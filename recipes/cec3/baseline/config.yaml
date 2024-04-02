@@ -1,0 +1,38 @@
+path:
+  root: ??? # root folder for clarity data
+  exp: ??? # folder to store enhanced signals and final results
+  metadata_dir: ${path.root}/clarity_data/metadata
+  scenes_folder: ${path.root}/clarity_data/dev/scenes
+  scenes_listeners_file: ${path.metadata_dir}/scenes_listeners.dev.json
+  listeners_file: ${path.metadata_dir}/listeners.json
+  scenes_file: ${path.metadata_dir}/scenes.json
+
+nalr:
+  nfir: 220
+  sample_rate: 48000
+
+compressor:
+  threshold: 0.35
+  attenuation: 0.1
+  attack: 50
+  release: 1000
+  rms_buffer_size: 0.064
+
+soft_clip: True
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+  first_scene: 0
+  n_scenes: 0
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp}
+  sweep:
+    dir: ${path.exp}/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+
+defaults:
+  - override hydra/launcher: cec3_submitit_local
