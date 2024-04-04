@@ -10,10 +10,20 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
 
-from clarity.utils.audiogram import Listener
+from clarity.enhancer.compressor import Compressor
+from clarity.enhancer.nalr import NALR
+from clarity.utils.audiogram import Audiogram, Listener
 from recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
+
+
+def amplify_signal(signal, audiogram: Audiogram, enhancer, compressor):
+    """Amplify signal for a given audiogram"""
+    nalr_fir, _ = enhancer.build(audiogram)
+    out = enhancer.apply(nalr_fir, signal)
+    out, _, _ = compressor.process(out)
+    return out
 
 
 @hydra.main(config_path=".", config_name="config")
@@ -27,6 +37,10 @@ def enhance(cfg: DictConfig) -> None:
         scenes_listeners = json.load(fp)
 
     listener_dict = Listener.load_listener_dict(cfg.path.listeners_file)
+    enhancer = NALR(**cfg.nalr)
+    compressor = Compressor(**cfg.compressor)
+    amplified_folder = pathlib.Path(cfg.path.exp) / "amplified_signals"
+    amplified_folder.mkdir(parents=True, exist_ok=True)
 
     # Make list of all scene listener pairs that will be run
     scene_listener_pairs = make_scene_listener_list(
@@ -56,14 +70,27 @@ def enhance(cfg: DictConfig) -> None:
         # pylint: disable=unused-variable
         listener = listener_dict[listener_id]  # noqa: F841
 
-        # Note: The audiograms are stored in the listener object,
-        # but they are not needed for the baseline
-
-        # Baseline just reads the signal from the front microphone pair
-        # and write it out as the enhanced signal
-
         wavfile.write(
             enhanced_folder / f"{scene}_{listener_id}_enhanced.wav", sample_rate, signal
+        )
+
+        # Apply the baseline NALR amplification
+
+        out_l = amplify_signal(
+            signal[:, 0], listener.audiogram_left, enhancer, compressor
+        )
+        out_r = amplify_signal(
+            signal[:, 1], listener.audiogram_right, enhancer, compressor
+        )
+        amplified = np.stack([out_l, out_r], axis=1)
+
+        if cfg.soft_clip:
+            amplified = np.tanh(amplified)
+
+        wavfile.write(
+            amplified_folder / f"{scene}_{listener_id}_HA-output.wav",
+            sample_rate,
+            amplified.astype(np.float32),
         )
 
 
