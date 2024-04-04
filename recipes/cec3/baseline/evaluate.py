@@ -13,20 +13,10 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 from tqdm import tqdm
 
-from clarity.enhancer.compressor import Compressor
-from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haspi import haspi_v2_be
-from clarity.utils.audiogram import Audiogram, Listener
+from clarity.utils.audiogram import Listener
 
 logger = logging.getLogger(__name__)
-
-
-def amplify_signal(signal, audiogram: Audiogram, enhancer, compressor):
-    """Amplify signal for a given audiogram"""
-    nalr_fir, _ = enhancer.build(audiogram)
-    out = enhancer.apply(nalr_fir, signal)
-    out, _, _ = compressor.process(out)
-    return out
 
 
 def set_scene_seed(scene):
@@ -100,16 +90,12 @@ def run_calculate_si(cfg: DictConfig) -> None:
         scenes_listeners = json.load(fp)
 
     listeners_dict = Listener.load_listener_dict(cfg.path.listeners_file)
-    enhancer = NALR(**cfg.nalr)
-    compressor = Compressor(**cfg.compressor)
 
-    enhanced_folder = pathlib.Path(cfg.path.exp) / "enhanced_signals"
     amplified_folder = pathlib.Path(cfg.path.exp) / "amplified_signals"
     scenes_folder = pathlib.Path(cfg.path.scenes_folder)
     amplified_folder.mkdir(parents=True, exist_ok=True)
 
     # Make list of all scene listener pairs that will be run
-
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, cfg.evaluate.small_test
     )
@@ -135,9 +121,8 @@ def run_calculate_si(cfg: DictConfig) -> None:
             set_scene_seed(scene)
 
         # Read signals
-
         sr_signal, signal = wavfile.read(
-            enhanced_folder / f"{scene}_{listener_id}_enhanced.wav"
+            amplified_folder / f"{scene}_{listener_id}_HA-output.wav",
         )
         _, reference = wavfile.read(scenes_folder / f"{scene}_reference.wav")
 
@@ -147,30 +132,11 @@ def run_calculate_si(cfg: DictConfig) -> None:
 
         reference = reference / 32768.0
 
-        # amplify left and right ear signals
+        # Evaluate the HA-output signals
         listener = listeners_dict[listener_id]
 
-        out_l = amplify_signal(
-            signal[:, 0], listener.audiogram_left, enhancer, compressor
-        )
-        out_r = amplify_signal(
-            signal[:, 1], listener.audiogram_right, enhancer, compressor
-        )
-        amplified = np.stack([out_l, out_r], axis=1)
-
-        if cfg.soft_clip:
-            amplified = np.tanh(amplified)
-
-        wavfile.write(
-            amplified_folder / f"{scene}_{listener_id}_HA-output.wav",
-            sr_signal,
-            amplified.astype(np.float32),
-        )
-
-        # Evaluate the amplified signal
-
         haspi_score = compute_metric(
-            haspi_v2_be, amplified, reference, listener, sr_signal
+            haspi_v2_be, signal, reference, listener, sr_signal
         )
 
         results_file.add_result(scene, listener_id, haspi_score)

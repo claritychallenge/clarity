@@ -65,22 +65,31 @@ These can be set in the `config.yaml` file or provided on the command line. In t
 
 The baseline enhancement simply takes the 6-channel hearing aid inputs and reduces this to a stereo hearing aid output by passing through the 'front' microphone signal of the left and right ear.
 
-Alternatively, you can provide the root variable on the command line, e.g.,
+The stereo pair is then passed through a provided hearing aid amplification stage using a NAL-R [[1](#references)] fitting amplification and a simple automatic gain compressor. The amplification is determined by the audiograms defined by the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. After amplification, the evaluate function calculates the better-ear HASPI  [[2](#references)].
+
+To run the baseline enhancement system use, first set the `task`, `path.root` and `path.exp` variables in the `config.yaml` file and then run,
+
+```bash
+python enhance.py
+```
+
+Alternatively, you can provide the task and paths on the command line, e.g.,
 
 ```bash
 python enhance.py task=task1 path.root=/Users/jon/clarity_CEC3_data path.exp=/Users/jon/exp
 ```
 
-Where '/Users/jon' is replaced with the path to the root of the clarity data and the experiment folder.
+Where `/Users/jon` is replaced with the path to the root of the clarity data and the experiment folder.
 
-The folder `enhanced_signals` will appear in the `exp` folder. Note, the experiment folder will be created if it does not already exist.
+The folders `enhanced_signals`  and `amplified_signals` will appear in the `exp` folder. Note, the experiment folder will be created if it does not already exist.
 
 ### Evaluation
 
-The `evaluate.py`  will first pass signals through a provided hearing aid amplification stage using a NAL-R [[1](#references)] fitting amplification and a simple automatic gain compressor. The amplification is determined by the audiograms defined by the scene-listener pairs in `clarity_data/metadata/scenes_listeners.dev.json` for the development set. After amplification, the evaluate function calculates the better-ear HASPI  [[2](#references)].
+The evaluate script computes the HASPI scores for the signals stored in the `amplified_signals` folder. The script will read the scene-listener pairs from the development set and calculate the HASPI score for each pair. The final score is the mean HASPI score across all pairs. It can be run as,
 
 ```bash
-python evaluate.py
+python evaluate.py task=task1 path.root=/Users/jon/clarity_CEC3_data path.exp=/Users/jon/exp
+
 ```
 
 The full evaluation set is 7500 scene-listener pairs and will take a long time to run, i.e., around 8 hours on a MacBook Pro. A standard small set which uses 1/15 of the data has been defined. This takes around 30 minutes to evaluate and can be run with,
