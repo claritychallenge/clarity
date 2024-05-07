@@ -4,7 +4,7 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import logging
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 import numpy as np
 from numba import njit  # type: ignore # <-- silence mypy no attribute error
@@ -790,9 +790,12 @@ def gammatone_basilar_membrane(
 
 @njit
 def gammatone_bandwidth_demodulation(
-    npts: int, tpt: float, center_freq: float, 
-    center_freq_cos: np.ndarray, center_freq_sin: np.ndarray
-) -> Tuple(np.ndarray, np.ndarray):
+    npts: int,
+    tpt: float,
+    center_freq: float,
+    center_freq_cos: np.ndarray,
+    center_freq_sin: np.ndarray,
+) -> tuple(np.ndarray, np.ndarray):
     """Create the carriers for demodulaton, using the 2d Rotation method from
       https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html
     to generate the sin and cos components.  More efficient, perhaps, than
@@ -832,8 +835,8 @@ def bandwidth_adjust(
     level1: float,
 ) -> float:
     """
-    Compute the increase in auditory filter bandwidth in response to high signal 
-    levels.  The RMS of the control signal, a scalar, is used to set the 
+    Compute the increase in auditory filter bandwidth in response to high signal
+    levels.  The RMS of the control signal, a scalar, is used to set the
     bandwidth for the entire signal.
 
     Arguments:
