@@ -4,7 +4,7 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import logging
-from typing import TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 
 import numpy as np
 from numba import njit  # type: ignore # <-- silence mypy no attribute error
@@ -790,20 +790,24 @@ def gammatone_basilar_membrane(
 
 @njit
 def gammatone_bandwidth_demodulation(
-    npts, tpt, center_freq, center_freq_cos, center_freq_sin
-):
-    """Gamma tone bandwidth demodulation
+    npts: int, tpt: float, center_freq: float, 
+    center_freq_cos: np.ndarray, center_freq_sin: np.ndarray
+) -> Tuple(np.ndarray, np.ndarray):
+    """Create the carriers for demodulaton, using the 2d Rotation method from
+      https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html
+    to generate the sin and cos components.  More efficient, perhaps, than
+    calculating the sin and cos at each point in time.
 
     Arguments:
-        npts (): ???
-        tpt (): ???
-        center_freq (): ???
-        center_freq_cos (): ???
-        sincf (): ???
+        npts (): How many points are needed.
+        tpt (): Phase change (2pi/T) due to each sample time.
+        center_freq (): The carrier frequency
+        center_freq_cos (): Array to overwrite for the output.
+        center_freq_sin (): Array to overwrite for the output.
 
     Returns:
-        sincf (): ???
-        coscf (): ???
+        sincf (): Samples of the carrier frequency in sin phase.
+        coscf (): Samples of the carrier frequency in cos phase.
     """
     cos_n = np.cos(tpt * center_freq)
     sin_n = np.sin(tpt * center_freq)
@@ -828,7 +832,9 @@ def bandwidth_adjust(
     level1: float,
 ) -> float:
     """
-    Compute the increase in auditory filter bandwidth in response to high signal levels.
+    Compute the increase in auditory filter bandwidth in response to high signal 
+    levels.  The RMS of the control signal, a scalar, is used to set the 
+    bandwidth for the entire signal.
 
     Arguments:
         control (): envelope output in the control filter band
