@@ -58,22 +58,12 @@ class CrossoverOne(CrossoverBase):
         )
 
         # get filter coefficients for lowpass
-        # (and bandpass if more than one frequency is provided)
-        for n in range(freq.size):
-            # get coefficients
-            kind = "lowpass" if n == 0 else "bandpass"
-            f = freq[n] if n == 0 else freq[n - 1 : n + 1]
-            sos = butter(N, f, kind, analog=False, output="sos")
-            # write to sos matrix
-            if n == 0:
-                SOS[n, 0:n_sos] = sos
-            else:
-                SOS[n] = sos
+        sos = butter(N, freq[0], "lowpass", analog=False, output="sos")
+        SOS[0, 0:n_sos] = sos
 
         # get filter coefficients for the highpass
-        sos = butter(N, freq[-1], "highpass", analog=False, output="sos")
-        # write to sos matrix
-        SOS[-1, 0:n_sos] = sos
+        sos = butter(N, freq[0], "highpass", analog=False, output="sos")
+        SOS[1, 0:n_sos] = sos
 
         # Apply every Butterworth filter twice
         SOS = np.tile(SOS, (1, 2, 1))
@@ -92,10 +82,19 @@ class CrossoverOne(CrossoverBase):
             signal (np.ndarray): The input signal.
 
         Returns:
-            np.ndarray: The filtered signal. shape (2, len(signal))
+            np.ndarray: The filtered signal. Shape (2, len(signal))
             with the first row being the lowpass and the second row the highpass.
         """
-        return np.vstack([sosfilt(self.sos[0], signal), sosfilt(self.sos[1], signal)])
+        if signal.ndim > 1:
+            raise ValueError("Only 1D signals are supported.")
+
+        lowpass_signal = sosfilt(self.sos[0, 0], signal)
+        lowpass_signal = sosfilt(self.sos[0, 1], lowpass_signal)
+
+        highpass_signal = sosfilt(self.sos[1, 0], signal)
+        highpass_signal = sosfilt(self.sos[1, 1], highpass_signal)
+
+        return np.vstack([lowpass_signal, highpass_signal])
 
     def __str__(self):
         return f"Crossover filter with crossover frequency: {self.xover_freqs[0]} Hz"
@@ -116,11 +115,9 @@ class CrossoverOne(CrossoverBase):
                 else:
                     h_total += h
 
-                text = "bandpass"
+                text = "Highpass"
                 if i == 0:
                     text = "Lowpass"
-                elif i == len(self.sos) - 1:
-                    text = "Highpass"
 
                 ax.plot(w, 20 * np.log10(abs(h)), label=text)
 
@@ -149,8 +146,17 @@ if __name__ == "__main__":
     # test the function
     import librosa
 
-    signal, sr = librosa.load(librosa.ex("trumpet"), sr=None)
+    signal, sr = librosa.load(librosa.ex("choice"), sr=None)
 
-    crosover = CrossoverOne(250, 4, sr)
+    crosover = CrossoverOne(1000, 4, sr)
     crosover.plot_filter()
-    print(crosover(signal).shape)
+    filtered_signal = crosover(signal)
+    fig, ax = plt.subplots(3, 1)
+    ax[0].specgram(signal, Fs=sr)
+    ax[1].specgram(filtered_signal[0], Fs=sr)
+    ax[2].specgram(filtered_signal[1], Fs=sr)
+    ax[0].set_title("Original signal")
+    ax[1].set_title("Lowpass")
+    ax[2].set_title("Highpass")
+    plt.tight_layout()
+    plt.show()
