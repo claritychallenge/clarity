@@ -36,7 +36,7 @@ class CrossoverOne(CrossoverBase):
         if N % 2:
             raise ValueError("The order 'N' must be an even number.")
 
-        if len(self.freq_crossover) > 1:
+        if len(self.xover_freqs) > 1:
             raise ValueError("Only one crossover frequency is allowed.")
 
         self.sos = self.compute_coefficients()
@@ -49,7 +49,7 @@ class CrossoverOne(CrossoverBase):
         N = int(self.order / 2)
 
         # normalized frequency (half-cycle / per sample)
-        freq = np.atleast_1d(np.asarray(self.freq_crossover)) / self.sample_rate * 2
+        freq = np.atleast_1d(np.asarray(self.xover_freqs)) / self.sample_rate * 2
 
         # init neutral SOS matrix of shape (freq.size+1, SOS_dim_2, 6)
         n_sos = int(np.ceil(N / 2))  # number of lowpass sos
@@ -87,14 +87,24 @@ class CrossoverOne(CrossoverBase):
         return SOS
 
     def __call__(self, signal: np.ndarray) -> np.ndarray:
-        """Return the filter coefficients."""
-        return sosfilt(self.sos, signal)
+        """Apply the filter to the signal.
+
+        Args:
+            signal (np.ndarray): The input signal.
+
+        Returns:
+            np.ndarray: The filtered signal. shape (2, len(signal))
+            with the first row being the lowpass and the second row the highpass.
+        """
+        return np.vstack([sosfilt(self.sos[0], signal), sosfilt(self.sos[1], signal)])
 
     def __str__(self):
-        return f"Crossover filter with crossover frequency: {self.freq_crossover[0]} Hz"
+        return f"Crossover filter with crossover frequency: {self.xover_freqs[0]} Hz"
 
-    def plot(self):
-        """Plot the frequency response of the filter."""
+    def plot_filter(self):
+        """Method to plot the frequency response of the filter.
+        This can help to validate the Class is generating the expected filters
+        """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             fig, ax = plt.subplots(1, 1)
@@ -121,7 +131,7 @@ class CrossoverOne(CrossoverBase):
             ax.text(
                 0.05,
                 0.95,
-                f"Crossover frequency: {self.freq_crossover[0]} Hz",
+                f"Crossover frequency: {self.xover_freqs[0]} Hz",
                 fontsize=15,
                 transform=ax.transAxes,
                 va="top",
@@ -138,6 +148,10 @@ class CrossoverOne(CrossoverBase):
 
 if __name__ == "__main__":
     # test the function
-    crosover = CrossoverOne(250, 4, 44100)
-    crosover.plot()
-    print(crosover)
+    import librosa
+
+    signal, sr = librosa.load(librosa.ex("trumpet"), sr=None)
+
+    crosover = CrossoverOne(250, 4, sr)
+    crosover.plot_filter()
+    print(crosover(signal).shape)
