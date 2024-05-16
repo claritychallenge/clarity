@@ -1,15 +1,14 @@
 """Class compute crossover filter for one crossover frequency."""
+
 from __future__ import annotations
 
-import numpy as np
-import matplotlib.pyplot as plt
-
-from clarity.enhancer.multiband_compressor.crossover.crossover_base import (
-    CrossoverBase,
-)
-from scipy.signal import butter, sosfreqz, sosfilt
-
 import warnings
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.signal import butter, sosfilt, sosfreqz
+
+from clarity.enhancer.multiband_compressor.crossover.crossover_base import CrossoverBase
 
 
 class CrossoverOne(CrossoverBase):
