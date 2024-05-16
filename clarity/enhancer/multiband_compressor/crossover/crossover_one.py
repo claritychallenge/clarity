@@ -13,6 +13,12 @@ import warnings
 
 
 class CrossoverOne(CrossoverBase):
+    """Class compute crossover filter for one crossover frequency.
+    This is based on the pyFar implementation.
+
+    https://pyfar.readthedocs.io/en/v0.1.0/pyfar.dsp.filter.html
+    """
+
     def __init__(
         self,
         freq_crossover: int,
