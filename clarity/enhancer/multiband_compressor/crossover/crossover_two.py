@@ -15,6 +15,12 @@ import warnings
 class CrossoverTwoOrMore(CrossoverBase):
     """
     A class to compute crossover filter for two or more crossover frequencies.
+    This is based on [1]
+
+    References:
+    [1] D'Appolito, J. A. (1984, October). Active realization of multiway all-pass
+    crossover systems. In Audio Engineering Society Convention 76.
+    Audio Engineering Society.
     """
 
     def __init__(
