@@ -1,5 +1,7 @@
 """Abstract Class for Crossover Filters."""
+
 from __future__ import annotations
+
 import numpy as np
 
 
