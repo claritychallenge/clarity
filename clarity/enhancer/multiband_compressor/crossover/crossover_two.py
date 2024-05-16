@@ -6,7 +6,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import butter, tf2zpk, zpk2tf
+from scipy.signal import butter, lfilter, tf2zpk, zpk2tf
 
 from clarity.enhancer.multiband_compressor.crossover.crossover_base import CrossoverBase
 
@@ -122,3 +122,110 @@ class CrossoverTwoOrMore(CrossoverBase):
         # convert poles, zeros and gain back to filter coefficients
         b, a = zpk2tf(r, p, k)
         return b, a
+
+    def __call__(self, signal: np.ndarray) -> np.ndarray:
+        """Apply the crossover filter to the signal.
+
+        Args:
+            signal (np.ndarray): The input signal.
+
+        Returns:
+            np.ndarray: The filtered signal.
+        """
+        # Running only with 5 crossover filters
+        if self.xover_freqs.shape[0] != 5:
+            warnings.warn(
+                "This class is implemented for 5 crossover filters."
+                " We are working on generalise it for any number of crossover"
+                " frequencies greater than 2."
+                " For now, the signal will be returned without filtering."
+                " Returning the input signal without filtering."
+            )
+            return signal
+
+        # Apply the crossover filters
+        filtered_signal = np.zeros((len(self.xover_freqs) + 1, signal.shape[0]))
+        for idx, xover_freq in enumerate(self.xover_freqs):
+            if idx == 0:
+                filtered_signal[idx] = self.xover_1(signal)
+            elif idx == 1:
+                filtered_signal[idx] = self.xover_2(signal)
+            elif idx == 2:
+                filtered_signal[idx] = self.xover_3(signal)
+            elif idx == 3:
+                filtered_signal[idx] = self.xover_4(signal)
+            elif idx == 4:
+                filtered_signal[idx] = self.xover_5(signal)
+            else:
+                raise ValueError("This class is implemented for 5 crossover filters.")
+            filtered_signal[5] = self.xover_6(signal)
+
+        return filtered_signal
+
+    def plot_filter(self):
+        """Method to plot the frequency response of the filter.
+        This can help to validate the Class is generating the expected filters
+        """
+        x = np.concatenate(([1], np.zeros(65500)))
+        y = self(x)
+
+        fplt = np.linspace(0, self.sample_rate, len(x))
+        plt.figure()
+        for idx in range(len(self.xover_freqs) + 1):
+            Y = np.fft.fft(y[idx, :])
+            plt.plot(fplt, 20 * np.log10(np.abs(Y)))
+
+        ytotal = np.sum(y, axis=0)
+        Ytotal = np.fft.fft(ytotal)
+        plt.plot(fplt, 20 * np.log10(np.abs(Ytotal)))
+
+        plt.show()
+
+    def xover_6(self, signal):
+        for m in range(5):
+            signal = lfilter(self.bstore[:, m, 1], self.astore[:, m, 1], signal)
+        return signal
+
+    def xover_5(self, signal):
+        for m in range(4):
+            signal = lfilter(self.bstore[:, m, 1], self.astore[:, m, 1], signal)
+        signal = lfilter(self.bstore[:, 4, 0], self.astore[:, 4, 0], signal)
+        return signal
+
+    def xover_4(self, signal):
+        for m in range(3):
+            signal = lfilter(self.bstore[:, m, 1], self.astore[:, m, 1], signal)
+        signal = lfilter(self.bstore[:, 3, 0], self.astore[:, 3, 0], signal)
+        signal = lfilter(self.bstore_phi[:, 4], self.astore_phi[:, 4], signal)
+        return signal
+
+    def xover_3(self, signal):
+        for m in range(2):
+            signal = lfilter(self.bstore[:, m, 1], self.astore[:, m, 1], signal)
+        signal = lfilter(self.bstore[:, 2, 0], self.astore[:, 2, 0], signal)
+        for m in range(3, 5):
+            signal = lfilter(self.bstore_phi[:, m], self.astore_phi[:, m], signal)
+        return signal
+
+    def xover_2(self, signal):
+        signal = lfilter(self.bstore[:, 0, 1], self.astore[:, 0, 1], signal)
+        signal = lfilter(self.bstore[:, 1, 0], self.astore[:, 1, 0], signal)
+        for m in range(2, 5):
+            signal = lfilter(self.bstore_phi[:, m], self.astore_phi[:, m], signal)
+        return signal
+
+    def xover_1(self, signal):
+        signal = lfilter(self.bstore[:, 0, 0], self.astore[:, 0, 0], signal)
+        for m in range(1, 5):
+            signal = lfilter(self.bstore_phi[:, m], self.astore_phi[:, m], signal)
+        return signal
+
+
+if __name__ == "__main__":
+    # Test the class
+    xover_freqs = np.array([250, 500, 1000, 2000, 4000]) / np.sqrt(2)
+    xover = CrossoverTwoOrMore(xover_freqs)
+    signal = np.random.randn(1000)
+    filtered_signal = xover(signal)
+    print(filtered_signal.shape)
+    xover.plot_filter()
