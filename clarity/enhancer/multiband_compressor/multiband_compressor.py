@@ -1,9 +1,10 @@
 """An implementation for Multiband Dynamic Range Compressor."""
+
 from __future__ import annotations
 
-from clarity.enhancer.multiband_compressor.crossover import Crossover
-
 import numpy as np
+
+from clarity.enhancer.multiband_compressor.crossover import Crossover
 
 
 class Compressor:
