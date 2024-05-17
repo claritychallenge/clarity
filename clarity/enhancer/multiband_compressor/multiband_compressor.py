@@ -151,16 +151,16 @@ class MultibandCompressor:
         """
 
         num_compressors = len(self.center_frequencies)
-        if isinstance(attack, float):
-            attack = [attack] * num_compressors
-        if isinstance(release, float):
-            release = [release] * num_compressors
-        if isinstance(threshold, float):
-            threshold = [threshold] * num_compressors
-        if isinstance(ratio, float):
-            ratio = [ratio] * num_compressors
-        if isinstance(gain, float):
-            gain = [gain] * num_compressors
+        if isinstance(attack, (int, float)):
+            attack = [float(attack)] * num_compressors
+        if isinstance(release, (int, float)):
+            release = [float(release)] * num_compressors
+        if isinstance(threshold, (int, float)):
+            threshold = [float(threshold)] * num_compressors
+        if isinstance(ratio, (int, float)):
+            ratio = [float(ratio)] * num_compressors
+        if isinstance(gain, (int, float)):
+            gain = [float(gain)] * num_compressors
 
         if len(attack) != num_compressors:
             raise ValueError(
