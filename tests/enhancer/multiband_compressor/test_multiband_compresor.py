@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 from clarity.enhancer.multiband_compressor.multiband_compressor import (
     Compressor,
     MultibandCompressor,

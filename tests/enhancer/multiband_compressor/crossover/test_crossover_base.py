@@ -1,6 +1,8 @@
 """ Test the CrossoverBase Abstract class. """
-import pytest
+
 import numpy as np
+import pytest
+
 from clarity.enhancer.multiband_compressor.crossover.crossover_base import CrossoverBase
 
 
