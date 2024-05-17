@@ -139,13 +139,14 @@ class CrossoverTwoOrMore(CrossoverBase):
                 " We are working on generalise it for any number of crossover"
                 " frequencies greater than 2."
                 " For now, the signal will be returned without filtering."
-                " Returning the input signal without filtering."
+                " Returning the input signal without filtering.",
+                stacklevel=1,
             )
             return signal
 
         # Apply the crossover filters
         filtered_signal = np.zeros((len(self.xover_freqs) + 1, signal.shape[0]))
-        for idx, xover_freq in enumerate(self.xover_freqs):
+        for idx in range(len(self.xover_freqs)):
             if idx == 0:
                 filtered_signal[idx] = self.xover_1(signal)
             elif idx == 1:

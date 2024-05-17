@@ -120,12 +120,12 @@ class MultibandCompressor:
 
         self.sample_rate = sample_rate
 
-        self.attack = list()
-        self.release = list()
-        self.threshold = list()
-        self.ratio = list()
-        self.gain = list()
-        self.compressor = list()
+        self.attack: list = list()
+        self.release: list = list()
+        self.threshold: list = list()
+        self.ratio: list = list()
+        self.gain: list = list()
+        self.compressor: list = list()
 
     def set_compressors(
         self,

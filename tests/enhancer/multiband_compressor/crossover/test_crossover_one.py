@@ -1,11 +1,9 @@
 """Test CrossoverOne class."""
-
 import numpy as np
 import pytest
 from matplotlib import pyplot as plt
 
 from clarity.enhancer.multiband_compressor.crossover import CrossoverOne
-from clarity.enhancer.multiband_compressor.crossover.crossover_base import CrossoverBase
 
 
 def test_initialization():
