@@ -1,4 +1,5 @@
 """Test CrossoverOne class."""
+
 import numpy as np
 import pytest
 from matplotlib import pyplot as plt
