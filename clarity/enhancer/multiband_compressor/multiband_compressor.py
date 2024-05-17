@@ -127,8 +127,6 @@ class MultibandCompressor:
         self.gain = list()
         self.compressor = list()
 
-        # TODO Create the compressors
-
     def set_compressors(
         self,
         attack: list | float = 15.0,
