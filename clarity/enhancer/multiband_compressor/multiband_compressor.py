@@ -45,7 +45,7 @@ class Compressor:
         self.gain = gain
         self.sample_rate = sample_rate
 
-    def process(self, input_signal: np.ndarray) -> np.ndarray:
+    def __call__(self, input_signal: np.ndarray) -> np.ndarray:
         """Process the signal.
         The method processes the input signal and returns the output signal.
 
@@ -235,9 +235,7 @@ class MultibandCompressor:
         compressed_signal = np.zeros_like(split_signal)
 
         for idx, sig in enumerate(split_signal):
-            compressed_signal[idx] = (
-                self.compressor[idx].process(sig[np.newaxis, :]).squeeze(0)
-            )
+            compressed_signal[idx] = self.compressor[idx](sig[np.newaxis, :]).squeeze(0)
 
         if return_bands:
             return np.sum(compressed_signal, axis=0), compressed_signal
@@ -255,8 +253,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from scipy.io import wavfile
 
-    signal, sr = librosa.load("bwv608.mp3", sr=None, duration=10, mono=False)
-    signal = signal[0, :]
+    signal, sr = librosa.load(librosa.ex("brahms"), sr=None, duration=10, mono=False)
 
     mbc = MultibandCompressor(center_frequencies=[250, 500, 1000, 2000, 4000, 8000])
     print(mbc.xover_freqs)
