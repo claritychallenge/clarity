@@ -1,5 +1,4 @@
 """An implementation for Multiband Dynamic Range Compressor."""
-
 from __future__ import annotations
 
 import numpy as np
