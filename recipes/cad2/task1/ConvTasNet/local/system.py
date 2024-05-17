@@ -1,8 +1,8 @@
-import torch
-import pytorch_lightning as pl
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-
 from collections.abc import MutableMapping
+
+import pytorch_lightning as pl
+import torch
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 def flatten_dict(d, parent_key="", sep="_"):

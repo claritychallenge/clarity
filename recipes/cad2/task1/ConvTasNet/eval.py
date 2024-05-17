@@ -1,19 +1,14 @@
+import argparse
 import os
+import sys
+from pathlib import Path
+
+import musdb
+import museval
 import soundfile as sf
 import torch
 import yaml
-import argparse
-from pathlib import Path
-import musdb
-import museval
-
-import sys
-
-from local import (
-    ConvTasNet,
-    MUSDB18Dataset,
-)
-
+from local import ConvTasNet, MUSDB18Dataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -88,7 +83,7 @@ def main(conf):
         output_path = Path(os.path.join(eval_save_dir, track.name))
         output_path.mkdir(exist_ok=True, parents=True)
 
-        print("Processing... {}".format(track.name), file=sys.stderr)
+        print(f"Processing... {track.name}", file=sys.stderr)
         print(track.name, file=fp)
 
         for target, estimate in estimates.items():

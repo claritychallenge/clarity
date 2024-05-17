@@ -1,12 +1,13 @@
-from pathlib import Path
-import torch.utils.data
 import random
-import torch
-import tqdm
+from pathlib import Path
+
 import soundfile as sf
+import torch
+import torch.utils.data
+import tqdm
 
 
-class Compose(object):
+class Compose:
     """Composes several augmentation transforms.
     Args:
         augmentations: list of augmentations to compose.
@@ -177,9 +178,8 @@ class MUSDB18Dataset(torch.utils.data.Dataset):
             )
         else:
             start = 0
-            
-        self.mixture_path = self.tracks[track_id]["path"]
 
+        self.mixture_path = self.tracks[track_id]["path"]
 
         # load sources
         for source in self.sources:
@@ -228,7 +228,8 @@ class MUSDB18Dataset(torch.utils.data.Dataset):
         audio_mix = torch.stack(list(audio_sources.values())).sum(0)
         if self.mix_background:
             audio_sources = torch.stack(
-                [audio_sources['vocals'], audio_sources['background']],  dim=0,        
+                [audio_sources["vocals"], audio_sources["background"]],
+                dim=0,
             )
         elif self.targets:
             audio_sources = torch.stack(

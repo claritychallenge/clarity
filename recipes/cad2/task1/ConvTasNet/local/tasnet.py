@@ -94,7 +94,7 @@ class ConvTasNet(nn.Module):
             causal: causal or non-causal
             mask_nonlinear: use which non-linear function to generate mask
         """
-        super(ConvTasNet, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.N, self.L, self.B, self.H, self.P, self.X, self.R, self.C = (
             N,
@@ -150,12 +150,10 @@ class ConvTasNet(nn.Module):
         """
         import pytorch_lightning as pl  # Not used in torch.hub
 
-        
-
         model_conf = dict(
             model_name=self.__class__.__name__,
             state_dict=self.get_state_dict(),
-            #model_args=self.get_model_args(),
+            # model_args=self.get_model_args(),
         )
         # Additional infos
         infos = dict()
@@ -166,11 +164,11 @@ class ConvTasNet(nn.Module):
         )
         model_conf["infos"] = infos
         return model_conf
-        
+
     def get_state_dict(self):
         """In case the state dict needs to be modified before sharing the model."""
         return self.state_dict()
-    
+
     def get_model_args(self):
         """Arguments needed to re-instantiate the model."""
         fb_config = self.encoder.filterbank.get_config()
@@ -193,7 +191,7 @@ class Encoder(nn.Module):
     """Estimation of the nonnegative mixture weight by a 1-D conv layer."""
 
     def __init__(self, L, N, audio_channels):
-        super(Encoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.L, self.N = L, N
         # Components
@@ -215,7 +213,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self, N, L, audio_channels):
-        super(Decoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.N, self.L = N, L
         self.audio_channels = audio_channels
@@ -245,7 +243,6 @@ class Decoder(nn.Module):
         return est_source
 
 
-
 class TemporalConvNet(nn.Module):
     def __init__(
         self, N, B, H, P, X, R, C, norm_type="gLN", causal=False, mask_nonlinear="relu"
@@ -263,7 +260,7 @@ class TemporalConvNet(nn.Module):
             causal: causal or non-causal
             mask_nonlinear: use which non-linear function to generate mask
         """
-        super(TemporalConvNet, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.C = C
         self.mask_nonlinear = mask_nonlinear
@@ -332,7 +329,7 @@ class TemporalBlock(nn.Module):
         norm_type="gLN",
         causal=False,
     ):
-        super(TemporalBlock, self).__init__()
+        super().__init__()
         # [M, B, K] -> [M, H, K]
         conv1x1 = nn.Conv1d(in_channels, out_channels, 1, bias=False)
         prelu = nn.PReLU()
@@ -377,7 +374,7 @@ class DepthwiseSeparableConv(nn.Module):
         norm_type="gLN",
         causal=False,
     ):
-        super(DepthwiseSeparableConv, self).__init__()
+        super().__init__()
         # Use `groups` option to implement depthwise convolution
         # [M, H, K] -> [M, H, K]
         depthwise_conv = nn.Conv1d(
@@ -416,7 +413,7 @@ class Chomp1d(nn.Module):
     """To ensure the output length is the same as the input."""
 
     def __init__(self, chomp_size):
-        super(Chomp1d, self).__init__()
+        super().__init__()
         self.chomp_size = chomp_size
 
     def forward(self, x):
@@ -450,7 +447,7 @@ class ChannelwiseLayerNorm(nn.Module):
     """Channel-wise Layer Normalization (cLN)"""
 
     def __init__(self, channel_size):
-        super(ChannelwiseLayerNorm, self).__init__()
+        super().__init__()
         self.gamma = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.beta = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.reset_parameters()
@@ -476,7 +473,7 @@ class GlobalLayerNorm(nn.Module):
     """Global Layer Normalization (gLN)"""
 
     def __init__(self, channel_size):
-        super(GlobalLayerNorm, self).__init__()
+        super().__init__()
         self.gamma = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.beta = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.reset_parameters()
