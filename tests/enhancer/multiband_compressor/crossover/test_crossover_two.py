@@ -1,6 +1,7 @@
 """ Tests for the CrossoverTwoOrMore class """
-import pytest
+
 import numpy as np
+import pytest
 from matplotlib import pyplot as plt
 
 # Adjust the import based on your actual module structure
