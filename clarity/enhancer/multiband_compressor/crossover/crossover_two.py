@@ -223,7 +223,7 @@ class CrossoverTwoOrMore(CrossoverBase):
 
 if __name__ == "__main__":
     # Test the class
-    xover_freqs = np.array([250, 500, 1000, 2000, 4000]) / np.sqrt(2)
+    xover_freqs = np.array([250, 500, 1000, 2000, 4000]) * np.sqrt(2)
     xover = CrossoverTwoOrMore(xover_freqs)
     signal = np.random.randn(1000)
     filtered_signal = xover(signal)

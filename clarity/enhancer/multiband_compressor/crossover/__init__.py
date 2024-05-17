@@ -22,5 +22,8 @@ class Crossover:
         else:
             raise ValueError("Invalid arguments.")
 
+    def __call__(self, *args, **kwargs):
+        return self.crossover(*args, **kwargs)
+
 
 __all__ = ["Crossover"]
