@@ -79,6 +79,7 @@ def test_multiband_compressor_initialization(default_multiband_compressor):
         4000,
         8000,
     ]
+
     assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
         np.sum(
             np.array(default_multiband_compressor.center_frequencies[:-1]) * np.sqrt(2)
