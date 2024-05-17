@@ -166,20 +166,22 @@ class CrossoverTwoOrMore(CrossoverBase):
         """Method to plot the frequency response of the filter.
         This can help to validate the Class is generating the expected filters
         """
-        x = np.concatenate(([1], np.zeros(65500)))
-        y = self(x)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            x = np.concatenate(([1], np.zeros(65500)))
+            y = self(x)
 
-        fplt = np.linspace(0, self.sample_rate, len(x))
-        plt.figure()
-        for idx in range(len(self.xover_freqs) + 1):
-            Y = np.fft.fft(y[idx, :])
-            plt.plot(fplt, 20 * np.log10(np.abs(Y)))
+            fplt = np.linspace(0, self.sample_rate, len(x))
+            plt.figure()
+            for idx in range(len(self.xover_freqs) + 1):
+                Y = np.fft.fft(y[idx, :])
+                plt.plot(fplt, 20 * np.log10(np.abs(Y)))
 
-        ytotal = np.sum(y, axis=0)
-        Ytotal = np.fft.fft(ytotal)
-        plt.plot(fplt, 20 * np.log10(np.abs(Ytotal)))
+            ytotal = np.sum(y, axis=0)
+            Ytotal = np.fft.fft(ytotal)
+            plt.plot(fplt, 20 * np.log10(np.abs(Ytotal)))
 
-        plt.show()
+            plt.show()
 
     def xover_6(self, signal):
         for m in range(5):
