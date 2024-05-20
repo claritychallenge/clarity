@@ -9,8 +9,7 @@ from omegaconf import DictConfig
 
 @hydra.main(config_path="", config_name="config")
 def enhance(config: DictConfig) -> None:
-    print(config)
-    pass
+    print(config)pass
 
 
 if __name__ == "__main__":
