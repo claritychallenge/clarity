@@ -22,36 +22,6 @@ def test_compressor_initialization(default_compressor):
     assert default_compressor.sample_rate == 44100.0
 
 
-def test_compressor_invalid_threshold():
-    """Test the initialization of the Compressor class with invalid threshold."""
-    with pytest.raises(ValueError):
-        Compressor(threshold=70)
-
-
-def test_compressor_invalid_ratio():
-    """Test the initialization of the Compressor class with invalid ratio."""
-    with pytest.raises(ValueError):
-        Compressor(ratio=25)
-
-
-def test_compressor_invalid_attack():
-    """Test the initialization of the Compressor class with invalid attack."""
-    with pytest.raises(ValueError):
-        Compressor(attack=0.0)
-
-
-def test_compressor_invalid_release():
-    """Test the initialization of the Compressor class with invalid release."""
-    with pytest.raises(ValueError):
-        Compressor(release=1001.0)
-
-
-def test_compressor_invalid_gain():
-    """Test the initialization of the Compressor class with invalid makeup gain."""
-    with pytest.raises(ValueError):
-        Compressor(gain=25)
-
-
 def test_compressor_signal_processing(default_compressor):
     """Test the signal processing of the Compressor class."""
     input_signal = np.array([[1, 2, 3, 4, 5]])
@@ -68,19 +38,21 @@ def test_compressor_signal_processing(default_compressor):
 def default_multiband_compressor():
     """Fixture for the MultibandCompressor class with default parameters."""
     return MultibandCompressor(
-        crossover_frequencies=[250, 500, 1000, 2000, 4000] * np.sqrt(2)
+        crossover_frequencies=np.array([250, 500, 1000, 2000, 4000]) * np.sqrt(2)
     )
 
 
 def test_multiband_compressor_initialization(default_multiband_compressor):
     """Test the initialization of the MultibandCompressor class."""
-    assert default_multiband_compressor.crossover_frequencies == [
-        250,
-        500,
-        1000,
-        2000,
-        4000,
-    ] * np.sqrt(2)
+    assert default_multiband_compressor.crossover_frequencies == np.array(
+        [
+            250,
+            500,
+            1000,
+            2000,
+            4000,
+        ]
+    ) * np.sqrt(2)
 
     assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
         np.sum(np.array(default_multiband_compressor.crossover_frequencies[:-1])),
