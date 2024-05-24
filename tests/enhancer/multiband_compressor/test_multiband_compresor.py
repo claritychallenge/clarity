@@ -67,24 +67,23 @@ def test_compressor_signal_processing(default_compressor):
 @pytest.fixture
 def default_multiband_compressor():
     """Fixture for the MultibandCompressor class with default parameters."""
-    return MultibandCompressor(center_frequencies=[250, 500, 1000, 2000, 4000, 8000])
+    return MultibandCompressor(
+        crossover_frequencies=[250, 500, 1000, 2000, 4000] * np.sqrt(2)
+    )
 
 
 def test_multiband_compressor_initialization(default_multiband_compressor):
     """Test the initialization of the MultibandCompressor class."""
-    assert default_multiband_compressor.center_frequencies == [
+    assert default_multiband_compressor.crossover_frequencies == [
         250,
         500,
         1000,
         2000,
         4000,
-        8000,
-    ]
+    ] * np.sqrt(2)
 
     assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
-        np.sum(
-            np.array(default_multiband_compressor.center_frequencies[:-1]) * np.sqrt(2)
-        ),
+        np.sum(np.array(default_multiband_compressor.crossover_frequencies[:-1])),
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
     )
@@ -96,7 +95,7 @@ def test_multiband_compressor_invalid_parameters():
     invalid parameters.
     """
     with pytest.raises(ValueError):
-        MultibandCompressor(center_frequencies=[250, 500, 1000, 2000, 4000], order=3)
+        MultibandCompressor(crossover_frequencies=[250, 500, 1000, 2000, 4000], order=3)
 
 
 def test_multiband_compressor_set_compressors(default_multiband_compressor):
