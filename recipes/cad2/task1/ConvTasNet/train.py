@@ -6,6 +6,7 @@ Model is trained to separate the vocals from the background music.
 import argparse
 import json
 import os
+import yaml
 from pathlib import Path
 
 import pytorch_lightning as pl
@@ -44,8 +45,7 @@ parser.add_argument(
 )
 
 
-def main(conf):
-    # Define dataloader using ORIGINAL mixture.
+def create_datasets_and_loaders(conf):
     source_augmentations = Compose([augment_gain, augment_channelswap])
 
     dataset_kwargs = {
@@ -90,32 +90,36 @@ def main(conf):
         pin_memory=True,
     )
 
-    model = ConvTasNet(**conf["convtasnet"], samplerate=conf["data"]["sample_rate"])
-    optimizer = torch.optim.Adam(model.parameters(), conf["optim"]["lr"])
+    return train_loader, train_set, val_loader, val_set
 
-    # Define scheduler
+
+def create_model_and_optimizer(conf):
+    model = ConvTasNet(**conf["convtasnet"], samplerate=conf["data"]["sample_rate"])
+    optimizer = torch.optim.Adam(model.parameters(), lr=conf["optim"]["lr"])
     scheduler = None
     if conf["training"]["half_lr"]:
         scheduler = ReduceLROnPlateau(optimizer=optimizer, factor=0.5, patience=5)
-    # Just after instantiating, save the args. Easy loading in the future.
-    exp_dir = conf["main_args"]["exp_dir"]
-    os.makedirs(exp_dir, exist_ok=True)
-    conf_path = os.path.join(exp_dir, "conf.yml")
-    with open(conf_path, "w") as outfile:
-        yaml.safe_dump(conf, outfile)
+    return model, optimizer, scheduler
 
-    # Define Loss function.
-    loss_func = torch.nn.L1Loss()
-    system = System(
-        model=model,
-        loss_func=loss_func,
-        optimizer=optimizer,
-        train_loader=train_loader,
-        val_loader=val_loader,
-        scheduler=scheduler,
-        config=conf,
+
+def create_trainer(conf, callbacks):
+    return pl.Trainer(
+        max_epochs=conf["training"]["epochs"],
+        callbacks=callbacks,
+        default_root_dir=conf["main_args"]["exp_dir"],
+        accelerator="gpu" if torch.cuda.is_available() else "cpu",
+        strategy="auto",
+        devices="auto",
+        gradient_clip_val=5.0,
+        accumulate_grad_batches=conf["training"]["aggregate"],
     )
 
+
+def get_loss_func():
+    return torch.nn.L1Loss()
+
+
+def create_callbacks(conf, exp_dir):
     # Define callbacks
     callbacks = []
     checkpoint_dir = os.path.join(exp_dir, "checkpoints/")
@@ -127,19 +131,10 @@ def main(conf):
         callbacks.append(
             EarlyStopping(monitor="val_loss", mode="min", patience=20, verbose=True)
         )
+    return callbacks, checkpoint
 
-    trainer = pl.Trainer(
-        max_epochs=conf["training"]["epochs"],
-        callbacks=callbacks,
-        default_root_dir=exp_dir,
-        accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        strategy="auto",
-        devices="auto",
-        gradient_clip_val=5.0,
-        accumulate_grad_batches=conf["training"]["aggregate"],
-    )
-    trainer.fit(system)
 
+def save_best_model(system, checkpoint, exp_dir, train_set):
     best_k = {k: v.item() for k, v in checkpoint.best_k_models.items()}
     with open(os.path.join(exp_dir, "best_k_models.json"), "w") as f:
         json.dump(best_k, f, indent=0)
@@ -153,17 +148,50 @@ def main(conf):
     torch.save(to_save, os.path.join(exp_dir, "best_model.pth"))
 
 
+def load_config(config_path):
+    with open(config_path) as f:
+        return yaml.safe_load(f)
+
+
+def main(conf):
+    train_loader, train_set, val_loader, _ = create_datasets_and_loaders(conf)
+    model, optimizer, scheduler = create_model_and_optimizer(conf)
+
+    # Just after instantiating, save the args. Easy loading in the future.
+    exp_dir = conf["main_args"]["exp_dir"]
+    os.makedirs(exp_dir, exist_ok=True)
+    conf_path = os.path.join(exp_dir, "conf.yml")
+    with open(conf_path, "w") as outfile:
+        yaml.safe_dump(conf, outfile)
+
+    # Define Loss function.
+    loss_func = get_loss_func()
+    system = System(
+        model=model,
+        loss_func=loss_func,
+        optimizer=optimizer,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        scheduler=scheduler,
+        config=conf,
+    )
+
+    # Define callbacks
+    callbacks, checkpoint = create_callbacks(conf, exp_dir)
+    trainer = create_trainer(conf, callbacks)
+    trainer.fit(system)
+
+    save_best_model(system, checkpoint, exp_dir, train_set)
+
+
 if __name__ == "__main__":
     from pprint import pprint as print
-
-    import yaml
     from asteroid.utils import parse_args_as_dict, prepare_parser_from_dict
 
     # We start with opening the config file conf.yml as a dictionary from
     # which we can create parsers. Each top level key in the dictionary defined
     # by the YAML file creates a group in the parser.
-    with open("local/conf.yml") as f:
-        def_conf = yaml.safe_load(f)
+    def_conf = load_config("local/conf.yml")
     parser = prepare_parser_from_dict(def_conf, parser=parser)
     # Arguments are then parsed into a hierarchical dictionary (instead of
     # flat, as returned by argparse) to facilitate calls to the different
