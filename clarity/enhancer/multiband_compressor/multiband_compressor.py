@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from clarity.enhancer.multiband_compressor.crossover import Crossover
 from clarity.enhancer.multiband_compressor.compressor_qmul import Compressor
+from clarity.enhancer.multiband_compressor.crossover import Crossover
 
 
 class MultibandCompressor:
