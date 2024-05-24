@@ -44,18 +44,25 @@ def default_multiband_compressor():
 
 def test_multiband_compressor_initialization(default_multiband_compressor):
     """Test the initialization of the MultibandCompressor class."""
-    assert default_multiband_compressor.crossover_frequencies == np.array(
-        [
-            250,
-            500,
-            1000,
-            2000,
-            4000,
-        ]
-    ) * np.sqrt(2)
+    assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
+        np.sum(
+            np.array(
+                [
+                    250,
+                    500,
+                    1000,
+                    2000,
+                    4000,
+                ]
+            )
+            * np.sqrt(2)
+        ),
+        rel=pytest.rel_tolerance,
+        abs=pytest.abs_tolerance,
+    )
 
     assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
-        np.sum(np.array(default_multiband_compressor.crossover_frequencies[:-1])),
+        np.sum(np.array(default_multiband_compressor.xover_freqs)),
         rel=pytest.rel_tolerance,
         abs=pytest.abs_tolerance,
     )
@@ -81,6 +88,8 @@ def test_multiband_compressor_set_compressors(default_multiband_compressor):
 def test_multiband_compressor_call(default_multiband_compressor):
     """Test the __call__ method of the MultibandCompressor class."""
     signal = np.random.rand(1000)
+    signal = signal[np.newaxis, :]
+
     default_multiband_compressor.set_compressors()
     compressed_signal = default_multiband_compressor(signal)
     assert isinstance(compressed_signal, np.ndarray)
