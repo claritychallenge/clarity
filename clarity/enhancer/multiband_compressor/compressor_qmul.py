@@ -31,30 +31,35 @@ class Compressor:
         if threshold > 0 or threshold < -60:
             warnings.warn(
                 "Threshold outside the recommended range [0.0, -60.0] dB."
-                f" {threshold} dB was provided."
+                f" {threshold} dB was provided.",
+                stacklevel=1,
             )
         if ratio < 1 or ratio > 20:
             warnings.warn(
                 "Ratio outside the recommended range [1.0, 20.0]."
-                f" {ratio} was provided."
+                f" {ratio} was provided.",
+                stacklevel=1,
             )
 
         if attack < 0.1 or attack > 80.0:
             warnings.warn(
                 "Attack outside the recommended range [0.1, 80.0] ms."
-                f" {attack} ms was provided."
+                f" {attack} ms was provided.",
+                stacklevel=1,
             )
 
         if release < 0.1 or release > 1000.0:
             warnings.warn(
                 "Release outside the recommended range [0.1, 1000.0] ms."
-                f" {release} ms was provided."
+                f" {release} ms was provided.",
+                stacklevel=1,
             )
 
         if gain < 0 or gain > 24:
             warnings.warn(
                 "Make-up gain outside the recommended range [0.0, 24.0] dB."
-                f" {gain} dB was provided."
+                f" {gain} dB was provided.",
+                stacklevel=1,
             )
 
         self.threshold = float(threshold)
