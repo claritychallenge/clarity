@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import butter, lfilter, tf2zpk, zpk2tf
