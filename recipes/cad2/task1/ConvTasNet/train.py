@@ -12,7 +12,13 @@ from pathlib import Path
 import pytorch_lightning as pl
 import torch
 from asteroid.engine.system import System
-from local import Compose, ConvTasNet, MUSDB18Dataset, augment_channelswap, augment_gain
+from .local import (
+    Compose,
+    ConvTasNet,
+    MUSDB18Dataset,
+    augment_channelswap,
+    augment_gain,
+)
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader

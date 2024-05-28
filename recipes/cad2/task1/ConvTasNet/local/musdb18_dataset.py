@@ -160,6 +160,7 @@ class MUSDB18Dataset(torch.utils.data.Dataset):
         self.samples_per_track = samples_per_track
         if exclude_tracks is None:
             exclude_tracks = []
+
         self.tracks = [
             x for x in list(self.get_tracks()) if x["path"].stem not in exclude_tracks
         ]
@@ -282,4 +283,4 @@ class MUSDB18Dataset(torch.utils.data.Dataset):
         return infos
 
 
-musdb_license = dict()
+musdb_license: dict = dict()
