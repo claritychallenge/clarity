@@ -12,6 +12,10 @@ import pytorch_lightning as pl
 import torch
 import yaml
 from asteroid.engine.system import System
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.utils.data import DataLoader
+
 from .local import (
     Compose,
     ConvTasNet,
@@ -19,9 +23,6 @@ from .local import (
     augment_channelswap,
     augment_gain,
 )
-from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-from torch.utils.data import DataLoader
 
 validation_tracks = [
     "Actions - One Minute Smile",
