@@ -6,11 +6,11 @@ Model is trained to separate the vocals from the background music.
 import argparse
 import json
 import os
-import yaml
 from pathlib import Path
 
 import pytorch_lightning as pl
 import torch
+import yaml
 from asteroid.engine.system import System
 from .local import (
     Compose,
@@ -192,6 +192,7 @@ def main(conf):
 
 if __name__ == "__main__":
     from pprint import pprint as print
+
     from asteroid.utils import parse_args_as_dict, prepare_parser_from_dict
 
     # We start with opening the config file conf.yml as a dictionary from
