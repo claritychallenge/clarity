@@ -70,6 +70,9 @@ repos:
       - id: mypy
         args:
           - --explicit-package-bases
+        additional_dependencies:
+          - 'types-PyYAML'
+
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
