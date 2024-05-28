@@ -8,7 +8,7 @@ import museval
 import soundfile as sf
 import torch
 import yaml
-from local import ConvTasNet, MUSDB18Dataset
+from local import ConvTasNet
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
