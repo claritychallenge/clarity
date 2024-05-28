@@ -176,7 +176,8 @@ class ConvTasNet(nn.Module):
         # Assert both dict are disjoint
         if not all(k not in fb_config for k in masknet_config):
             raise AssertionError(
-                "Filterbank and Mask network config share common keys. Merging them is not safe."
+                "Filterbank and Mask network config share common keys. Merging them is"
+                " not safe."
             )
         # Merge all args under model_args.
         model_args = {
@@ -505,7 +506,7 @@ if __name__ == "__main__":
     B, H, P, X, R, C, norm_type, causal = 2, 3, 3, 3, 2, 2, "gLN", False
     mixture = torch.randint(3, (M, T))
     # test Encoder
-    encoder = Encoder(L, N)
+    encoder = Encoder(L, N, 1)
     encoder.conv1d_U.weight.data = torch.randint(2, encoder.conv1d_U.weight.size())
     mixture_w = encoder(mixture)
     print("mixture", mixture)
@@ -519,7 +520,7 @@ if __name__ == "__main__":
     print("est_mask", est_mask)
 
     # test Decoder
-    decoder = Decoder(N, L)
+    decoder = Decoder(N, L, audio_channels=1)
     est_mask = torch.randint(2, (B, K, C, N))
     est_source = decoder(mixture_w, est_mask)
     print("est_source", est_source)
