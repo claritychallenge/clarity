@@ -26,6 +26,7 @@ class Compressor:
         attack: float = 15.0,
         release: float = 100.0,
         gain: float = 0.0,
+        knee_width: float = 0.0,
         sample_rate: float = 44100.0,
     ) -> None:
         if threshold > 0 or threshold < -60:
@@ -68,6 +69,8 @@ class Compressor:
         self.release = float(release)
         self.gain = float(gain)
         self.sample_rate = float(sample_rate)
+        self.knee_width = float(knee_width)
+
         self.alpha_attack = np.exp(-1.0 / (0.001 * self.sample_rate * self.attack))
         self.alpha_release = np.exp(-1.0 / (0.001 * self.sample_rate * self.release))
 
@@ -82,15 +85,21 @@ class Compressor:
             np.ndarray: The output signal.(channels, samples)
         """
 
-        # The lines below are constant and so could move to the constructor
-        alpha_attack = np.exp(-1.0 / (0.001 * self.sample_rate * self.attack))
-        alpha_release = np.exp(-1.0 / (0.001 * self.sample_rate * self.release))
-
         # Compute the instantaneous desired levels
         x_g = 20 * np.log10(np.abs(input_signal))
         x_g[x_g < -120] = -120
         y_g = self.threshold + (x_g - self.threshold) / self.ratio
-        y_g[x_g < self.threshold] = x_g[x_g < self.threshold]
+        # y_g[x_g < self.threshold] = x_g[x_g < self.threshold]
+        # Adding knee width
+        index = 2 * (x_g - self.threshold) < -self.knee_width
+        y_g[index] = x_g[index]
+
+        index = 2 * np.abs((x_g - self.threshold)) <= self.knee_width
+        y_g[index] = x_g[index] + (
+            (1 / self.ratio - 1)
+            * (x_g[index] - self.threshold + self.knee_width / 2) ** 2
+        ) / (2 * self.knee_width)
+
         y_l = x_g - y_g
 
         # Do the filtering - cannot easily vectorise this part
@@ -98,7 +107,7 @@ class Compressor:
         for channel, filtered_signal in enumerate(filtered):
             out = 0
             for i, sample in enumerate(y_l[channel]):
-                alpha = alpha_attack if sample > out else alpha_release
+                alpha = self.alpha_attack if sample > out else self.alpha_release
                 out = alpha * out + (1 - alpha) * sample
                 filtered_signal[i] = out
 
@@ -132,6 +141,7 @@ if __name__ == "__main__":
         release=100.0,
         gain=1.25,
         sample_rate=sr,
+        knee_width=10.0,
     )
 
     compressed_signal = compressor(signal)
