@@ -94,7 +94,7 @@ class Compressor:
         index = 2 * (x_g - self.threshold) < -self.knee_width
         y_g[index] = x_g[index]
 
-        index = 2 * np.abs((x_g - self.threshold)) <= self.knee_width
+        index = 2 * np.abs(x_g - self.threshold) <= self.knee_width
         y_g[index] = x_g[index] + (
             (1 / self.ratio - 1)
             * (x_g[index] - self.threshold + self.knee_width / 2) ** 2
