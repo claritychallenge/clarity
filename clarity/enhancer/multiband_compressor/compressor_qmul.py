@@ -89,16 +89,20 @@ class Compressor:
         x_g = 20 * np.log10(np.abs(input_signal))
         x_g[x_g < -120] = -120
         y_g = self.threshold + (x_g - self.threshold) / self.ratio
-        # y_g[x_g < self.threshold] = x_g[x_g < self.threshold]
-        # Adding knee width
-        index = 2 * (x_g - self.threshold) < -self.knee_width
-        y_g[index] = x_g[index]
 
-        index = 2 * np.abs((x_g - self.threshold)) <= self.knee_width
-        y_g[index] = x_g[index] + (
-            (1 / self.ratio - 1)
-            * (x_g[index] - self.threshold + self.knee_width / 2) ** 2
-        ) / (2 * self.knee_width)
+        if self.knee_width == 0:
+            # If knee width is zero, apply hard knee
+            y_g[x_g < self.threshold] = x_g[x_g < self.threshold]
+        else:
+            # Apply soft knee
+            index = 2 * np.abs((x_g - self.threshold)) <= self.knee_width
+            y_g[index] = x_g[index] + (
+                (1 / self.ratio - 1)
+                * (x_g[index] - self.threshold + self.knee_width / 2) ** 2
+            ) / (2 * self.knee_width)
+
+            index = 2 * (x_g - self.threshold) < -self.knee_width
+            y_g[index] = x_g[index]
 
         y_l = x_g - y_g
 
