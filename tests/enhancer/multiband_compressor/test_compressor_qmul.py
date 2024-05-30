@@ -37,6 +37,7 @@ def test_initialization_default(default_compressor):
     assert default_compressor.release == 100.0
     assert default_compressor.gain == 0.0
     assert default_compressor.sample_rate == 44100.0
+    assert default_compressor.knee_width == 0.0
 
 
 def test_initialization_custom(custom_compressor):
@@ -47,6 +48,7 @@ def test_initialization_custom(custom_compressor):
     assert custom_compressor.release == 100.0
     assert custom_compressor.gain == 1.25
     assert custom_compressor.sample_rate == 44100.0
+    assert custom_compressor.knee_width == 0.0
 
 
 def test_warning_threshold():
