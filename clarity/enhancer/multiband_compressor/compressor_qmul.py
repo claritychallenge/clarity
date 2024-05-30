@@ -95,7 +95,7 @@ class Compressor:
             y_g[x_g < self.threshold] = x_g[x_g < self.threshold]
         else:
             # Apply soft knee
-            index = 2 * np.abs((x_g - self.threshold)) <= self.knee_width
+            index = 2 * np.abs(x_g - self.threshold) <= self.knee_width
             y_g[index] = x_g[index] + (
                 (1 / self.ratio - 1)
                 * (x_g[index] - self.threshold + self.knee_width / 2) ** 2
