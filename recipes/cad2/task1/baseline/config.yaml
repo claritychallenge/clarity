@@ -9,12 +9,18 @@ path:
   scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
   exp_folder: ./exp_${separator.causality} # folder to store enhanced signals and final results
 
+input_sample_rate: 44100   # sample rate of the input mixture
+output_sample_rate: 32000  # sample rate output stems
+
 separator:
   causality: causal
   device: ~
+  separation:
+    number_sources: 2
+    segment: 6.0
+    overlap: 0.1
+    sample_rate: ${input_sample_rate}
 
-input_sample_rate: 44100   # sample rate of the input mixture
-output_sample_rate: 32000  # sample rate output stems
 
 compressor:
   crossover_filter:

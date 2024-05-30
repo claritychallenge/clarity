@@ -7,12 +7,17 @@ from pathlib import Path
 
 import hydra
 import numpy as np
+from numpy import ndarray
+
 import torch
+from torchaudio.transforms import Fade
+
 
 from omegaconf import DictConfig
 
 from clarity.utils.audiogram import Listener
-from clarity.utils.file_io import read_signal
+from clarity.utils.file_io import read_signal, write_signal
+from clarity.utils.signal_processing import resample
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 
@@ -29,8 +34,76 @@ class MultibandCompressor:
         self.order = order
         self.compressors_params = compressors_params
 
-    def __call__(self, signal):
+    def __call__(self, signal, listener: Listener):
         return signal
+
+
+def separate_sources(
+    model: torch.nn.Module,
+    mix: torch.Tensor | ndarray,
+    sample_rate: int,
+    segment: float = 10.0,
+    overlap: float = 0.1,
+    number_sources: int = 4,
+    device: torch.device | str | None = None,
+):
+    """
+    Apply model to a given mixture.
+    Use fade, and add segments together in order to add model segment by segment.
+
+    Args:
+        model (torch.nn.Module): model to use for separation
+        mix (torch.Tensor): mixture to separate, shape (batch, channels, time)
+        sample_rate (int): sampling rate of the mixture
+        segment (float): segment length in seconds
+        overlap (float): overlap between segments, between 0 and 1
+        number_sources (int): number of sources to separate
+        device (torch.device, str, or None): if provided, device on which to
+            execute the computation, otherwise `mix.device` is assumed.
+            When `device` is different from `mix.device`, only local computations will
+            be on `device`, while the entire tracks will be stored on `mix.device`.
+
+    Returns:
+        torch.Tensor: estimated sources
+
+    Based on https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html
+    """
+    device = mix.device if device is None else torch.device(device)
+    mix = torch.as_tensor(mix, dtype=torch.float, device=device)
+
+    if mix.ndim == 1:
+        # one track and mono audio
+        mix = mix.unsqueeze(0)
+    elif mix.ndim == 2:
+        # one track and stereo audio
+        mix = mix.unsqueeze(0)
+
+    batch, channels, length = mix.shape
+
+    chunk_len = int(sample_rate * segment * (1 + overlap))
+    start = 0
+    end = chunk_len
+    overlap_frames = overlap * sample_rate
+    fade = Fade(fade_in_len=0, fade_out_len=int(overlap_frames), fade_shape="linear")
+
+    final = torch.zeros(batch, number_sources, channels, length, device=device)
+
+    while start < length - overlap_frames:
+        chunk = mix[:, :, start:end]
+        with torch.no_grad():
+            out = model.forward(chunk)
+        out = fade(out)
+        final[:, :, :, start:end] += out
+        if start == 0:
+            fade.fade_in_len = int(overlap_frames)
+            start += int(chunk_len - overlap_frames)
+        else:
+            start += chunk_len
+        end += chunk_len
+        if end >= length:
+            fade.fade_out_len = 0
+
+    return final
 
 
 def get_device(device: str) -> tuple:
@@ -171,32 +244,52 @@ def enhance(config: DictConfig) -> None:
     for scene_id, listener_id in scene_listener_pairs:
         scene = scenes[scene_id]
         listener = listener_dict[listener_id]
+        alpha = alphas[scene["alpha"]]
 
         # Load the music
         music = read_signal(
-            Path(config.path.music_dir) / songs[scene["track_name"]],
-            offset=int(scene["start_time"] * config.input_sample_rate),
+            Path(config.path.music_dir)
+            / songs[scene["segment_id"]]["path"]
+            / "mixture.wav",
+            offset=int(
+                songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
+            ),
             n_samples=int(
-                (scene["end_time"] - scene["start_time"]) * config.input_sample_rate
+                (
+                    songs[scene["segment_id"]]["end_time"]
+                    - songs[scene["segment_id"]]["start_time"]
+                )
+                * config.input_sample_rate
             ),
         )
 
         # Separate the music
-        separated = separation_model(music, device=device)
+        sources = separate_sources(
+            separation_model,
+            music.T,
+            device=device,
+            **config.separator.separation,
+        )
+        sources = sources.squeeze(0).cpu().detach().numpy()
+
+        vocals, accompaniment = sources
 
         # Enhance the vocals
-        enhanced_vocals = separated["vocals"]
-        enhanced_vocals = mbc(enhanced_vocals)
-
-        # Amplify the music
-        amplified = listener.amplify(separated, alphas[scene["alpha"]])
+        enhanced_vocals = mbc(vocals, listener)
 
         # Downmix to stereo
-        stereo = listener.downmix(amplified)
+        enhanced_signal = enhanced_vocals * alpha + accompaniment * (1 - alpha)
 
         # Save the enhanced music
-        enhanced_path = enhanced_folder / f"{scene_id}_{listener_id}.wav"
-        stereo.save(enhanced_path)
+        enhanced_path = enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}.wav"
+        write_signal(
+            enhanced_path,
+            resample(
+                enhanced_signal.T, config.input_sample_rate, config.output_sample_rate
+            ),
+            config.output_sample_rate,
+            floating_point=False,
+        )
 
         print(f"Enhanced music saved to {enhanced_path}")
 
