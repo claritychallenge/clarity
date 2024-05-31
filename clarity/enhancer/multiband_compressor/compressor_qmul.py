@@ -17,6 +17,40 @@ class Compressor:
     [1] Giannoulis, D., Massberg, M., & Reiss, J. D. (2012).
     Digital dynamic range compressor design - A tutorial and analysis.
     Journal of the Audio Engineering Society, 60(6), 399-408.
+
+    Example:
+    >>> import librosa
+    >>> import matplotlib.pyplot as plt
+
+    >>> signal, sr = librosa.load(librosa.ex("brahms"), sr=None, duration=10, mono=False)
+    >>> if signal.ndim == 1:
+    >>>      signal = signal[np.newaxis, :]
+
+    >>> compressor = Compressor(
+    ...    threshold=-30.0,
+    ...    ratio=4.0,
+    ...    attack=10.0,
+    ...    release=100.0,
+    ...    gain=1.25,
+    ...    sample_rate=sr,
+    ...    knee_width=10.0,
+    ...)
+
+    >>> compressed_signal = compressor(signal)
+    >>> fig, axes = plt.subplots(2, 1)
+    >>> axes[0].specgram(signal[0], Fs=sr, NFFT=512, noverlap=256)
+    >>> axes[0].set_title("original signal")
+    >>> axes[1].specgram(compressed_signal[0], Fs=sr, NFFT=512, noverlap=256)
+    >>> axes[1].set_title("Compressed signal")
+    >>> plt.yticks([x for x in range(0, int(sr / 2), 1000)])
+    >>> plt.tight_layout()
+    >>> plt.show()
+    >>> plt.close()
+
+    >>> plt.figure()
+    >>> plt.plot(signal[0])
+    >>> plt.plot(compressed_signal[0])
+    >>> plt.show()
     """
 
     def __init__(
@@ -128,40 +162,3 @@ class Compressor:
             f"attack={self.attack}, release={self.release}, gain={self.gain}, "
             f"sample_rate={self.sample_rate}"
         )
-
-
-if __name__ == "__main__":
-    import librosa
-    import matplotlib.pyplot as plt
-
-    signal, sr = librosa.load(librosa.ex("brahms"), sr=None, duration=10, mono=False)
-    if signal.ndim == 1:
-        signal = signal[np.newaxis, :]
-
-    compressor = Compressor(
-        threshold=-30.0,
-        ratio=4.0,
-        attack=10.0,
-        release=100.0,
-        gain=1.25,
-        sample_rate=sr,
-        knee_width=10.0,
-    )
-
-    compressed_signal = compressor(signal)
-    fig, axes = plt.subplots(2, 1)
-    axes[0].specgram(signal[0], Fs=sr, NFFT=512, noverlap=256)
-    axes[0].set_title("original signal")
-
-    axes[1].specgram(compressed_signal[0], Fs=sr, NFFT=512, noverlap=256)
-    axes[1].set_title("Compressed signal")
-    plt.yticks([x for x in range(0, int(sr / 2), 1000)])
-
-    plt.tight_layout()
-    plt.show()
-    plt.close()
-
-    plt.figure()
-    plt.plot(signal[0])
-    plt.plot(compressed_signal[0])
-    plt.show()
