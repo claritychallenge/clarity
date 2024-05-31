@@ -1,6 +1,7 @@
 """Class compute crossover filter for one crossover frequency."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
