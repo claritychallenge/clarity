@@ -35,6 +35,54 @@ class MultibandCompressor:
                 If the values are floats, all compressors will have the same value. If
                 the values are lists, the length must be the same as the number of
                 compressors (len(crossover_frequencies) + 1).
+
+        Example:
+        >>> import librosa
+        >>> import matplotlib.pyplot as plt
+
+        >>> signal, sr = librosa.load(
+        ...    librosa.ex("brahms"),
+        ...    sr=None,
+        ...    duration=10,
+        ...    mono=False
+        ... )
+
+        >>> signal = np.vstack((signal, signal * 0.8))
+
+        >>> HL = np.array([20, 20, 30, 40, 50, 60])
+        >>> mbc = MultibandCompressor(
+        >>>     crossover_frequencies=np.array([250, 500, 1000, 2000, 4000]) * np.sqrt(2),
+        >>>     order=4,
+        >>>     sample_rate=sr,
+        >>>     compressors_params={
+        ...         "attack": [11, 11, 14, 13, 11, 11],
+        ...         "release": [80, 80, 80, 80, 100, 100],
+        ...         "threshold": -40,
+        ...         "ratio": 4.0,
+        ...         "gain": np.maximum((HL - 20) / 3, 0),
+        ...         "knee_width": 0,
+        ...     }
+        ... )
+
+        >>> compressed_signal, compressed_bands = mbc(signal, return_bands=True)
+
+        >>> for chan in range(signal.shape[0]):
+        >>>     fig, axes = plt.subplots(3, 1, figsize=(10, 10))
+        >>>     axes[0].specgram(signal[chan], Fs=sr, NFFT=512, noverlap=256)
+        >>>     axes[0].set_title("Original Signal")
+
+        >>>     axes[1].specgram(compressed_signal[chan], Fs=sr, NFFT=512, noverlap=256)
+        >>>     axes[1].set_title("Compressed Signal")
+
+        >>>     axes[2].plot(signal[chan])
+        >>>     axes[2].plot(compressed_signal[chan])
+        >>>     axes[2].set_title("Time Domain")
+
+        >>>     fig.suptitle(f"Channel {chan}", fontsize=20)
+
+        >>>     plt.tight_layout()
+        >>>     plt.show()
+        >>>     plt.close()
         """
 
         if isinstance(crossover_frequencies, (int, float)):
@@ -55,12 +103,14 @@ class MultibandCompressor:
             self.threshold: float = 0.0
             self.ratio: float = 1.0
             self.gain: float = 0.0
+            self.knee_width: float = 0.0
         else:
             self.attack = compressors_params.get("attack", 15.0)
             self.release = compressors_params.get("release", 100.0)
             self.threshold = compressors_params.get("threshold", 0.0)
             self.ratio = compressors_params.get("ratio", 1.0)
             self.gain = compressors_params.get("gain", 0.0)
+            self.knee_width = compressors_params.get("knee_width", 0.0)
 
         # Initialize the compressors
         self.compressor: list = list()
@@ -70,6 +120,7 @@ class MultibandCompressor:
             threshold=self.threshold,
             ratio=self.ratio,
             gain=self.gain,
+            knee_width=self.knee_width,
         )
 
     def set_compressors(
@@ -79,6 +130,7 @@ class MultibandCompressor:
         threshold: list | float = 0.0,
         ratio: list | float = 1.0,
         gain: list | float = 0.0,
+        knee_width: list | float = 0.0,
     ) -> None:
         """Set the compressors parameters.
 
@@ -109,6 +161,8 @@ class MultibandCompressor:
             ratio = [float(ratio)] * self.num_compressors
         if isinstance(gain, (int, float)):
             gain = [float(gain)] * self.num_compressors
+        if isinstance(knee_width, (int, float)):
+            knee_width = [float(knee_width)] * self.num_compressors
 
         if len(attack) != self.num_compressors:
             raise ValueError(
@@ -140,6 +194,12 @@ class MultibandCompressor:
                 "crossover frequencies + 1. "
                 f"{len(gain)} was provided, {self.num_compressors} expected."
             )
+        if len(knee_width) != self.num_compressors:
+            raise ValueError(
+                "Knee width must be a float or have the same length as "
+                "crossover frequencies + 1. "
+                f"{len(knee_width)} was provided, {self.num_compressors} expected."
+            )
 
         self.compressor = [
             Compressor(
@@ -148,6 +208,7 @@ class MultibandCompressor:
                 threshold=threshold[i],
                 ratio=ratio[i],
                 gain=gain[i],
+                knee_width=knee_width[i],
                 sample_rate=self.sample_rate,
             )
             for i in range(self.num_compressors)
@@ -196,47 +257,3 @@ class MultibandCompressor:
             out_text += f"{comp}\n"
 
         return out_text
-
-
-if __name__ == "__main__":
-    import librosa
-    import matplotlib.pyplot as plt
-
-    signal, sr = librosa.load(librosa.ex("brahms"), sr=None, duration=10, mono=False)
-    # if signal.ndim == 1:
-    #     signal = signal[np.newaxis, :]
-    signal = np.vstack((signal, signal * 0.8))
-
-    HL = np.array([20, 20, 30, 40, 50, 60])
-    mbc = MultibandCompressor(
-        crossover_frequencies=np.array([250, 500, 1000, 2000, 4000]) * np.sqrt(2),
-        order=4,
-        sample_rate=sr,
-        compressors_params={
-            "attack": [11, 11, 14, 13, 11, 11],
-            "release": [80, 80, 80, 80, 100, 100],
-            "threshold": [-40, -40, -40, -40, -40, -40],
-            "ratio": [4, 4, 4, 4, 4, 4],
-            "gain": np.maximum((HL - 20) / 3, 0),
-        },
-    )
-
-    compressed_signal, compressed_bands = mbc(signal, return_bands=True)
-
-    for chan in range(signal.shape[0]):
-        fig, axes = plt.subplots(3, 1, figsize=(10, 10))
-        axes[0].specgram(signal[chan], Fs=sr, NFFT=512, noverlap=256)
-        axes[0].set_title("Original Signal")
-
-        axes[1].specgram(compressed_signal[chan], Fs=sr, NFFT=512, noverlap=256)
-        axes[1].set_title("Compressed Signal")
-
-        axes[2].plot(signal[chan])
-        axes[2].plot(compressed_signal[chan])
-        axes[2].set_title("Time Domain")
-
-        fig.suptitle(f"Channel {chan}", fontsize=20)
-
-        plt.tight_layout()
-        plt.show()
-        plt.close()

@@ -29,14 +29,14 @@ class Crossover:
 
     def __init__(
         self,
-        freq_crossover: list | int,
+        freq_crossover: list | ndarray | int,
         N: int = 4,
         sample_rate: float = 44100,
     ) -> None:
         """Initialize the crossover filter.
 
         Args:
-            freq_crossover (list | int): The crossover frequency (Hz).
+            freq_crossover (list | ndarray | int): The crossover frequency (Hz).
             N (int): The order of the filter.
             sample_rate (float): The sample rate of the signal (Hz).
         """
