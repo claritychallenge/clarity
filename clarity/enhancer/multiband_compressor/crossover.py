@@ -16,6 +16,15 @@ class Crossover:
     [1] D'Appolito, J. A. (1984, October). Active realization of multiway all-pass
     crossover systems. In Audio Engineering Society Convention 76.
     Audio Engineering Society.
+
+    Example:
+    >>> xover_freqs = np.array(
+    ...    [250, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 8000]
+    ...) * np.sqrt(2)
+    >>> xover = Crossover(xover_freqs)
+    >>> signal = np.random.randn(1000)
+    >>> filtered_signal = xover(signal)
+    >>> xover.plot_filter()
     """
 
     def __init__(
@@ -194,16 +203,3 @@ class Crossover:
         plt.xlim([-10, int(self.sample_rate / 2)])
         plt.ylim([-250, 10])
         plt.show()
-
-
-if __name__ == "__main__":
-    # Test the class
-    xover_freqs = np.array(
-        [250, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 8000]
-    ) * np.sqrt(2)
-    xover = Crossover(xover_freqs)
-    signal = np.random.randn(1000)
-    filtered_signal = xover(signal)
-    print(filtered_signal.shape)
-    xover.plot_filter()
-    print(xover)
