@@ -4,7 +4,7 @@ from __future__ import annotations
 
 # pylint: disable=import-error
 import logging
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numba import njit  # type: ignore # <-- silence mypy no attribute error
@@ -795,7 +795,7 @@ def gammatone_bandwidth_demodulation(
     center_freq: float,
     center_freq_cos: np.ndarray,
     center_freq_sin: np.ndarray,
-) -> tuple(np.ndarray, np.ndarray):
+) -> tuple[np.ndarray, np.ndarray]:
     """Create the carriers for demodulaton, using the 2d Rotation method from
       https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html
     to generate the sin and cos components.  More efficient, perhaps, than
