@@ -9,10 +9,11 @@ from clarity.enhancer.multiband_compressor.crossover import Crossover
 
 
 class MultibandCompressor:
+    """Multiband Compressor."""
+
     def __init__(
         self,
         crossover_frequencies: int | float | list | np.ndarray,
-        order: int = 4,
         sample_rate: float = 44100,
         compressors_params: dict | None = None,
     ) -> None:
@@ -51,8 +52,9 @@ class MultibandCompressor:
 
         >>> HL = np.array([20, 20, 30, 40, 50, 60])
         >>> mbc = MultibandCompressor(
-        >>>     crossover_frequencies=np.array([250, 500, 1000, 2000, 4000]) * np.sqrt(2),
-        >>>     order=4,
+        >>>     crossover_frequencies=(
+        ...         np.array([250, 500, 1000, 2000, 4000]) * np.sqrt(2)
+        ...     ),
         >>>     sample_rate=sr,
         >>>     compressors_params={
         ...         "attack": [11, 11, 14, 13, 11, 11],
@@ -92,7 +94,7 @@ class MultibandCompressor:
         self.num_compressors = len(self.xover_freqs) + 1
 
         # Compute the crossover filters
-        self.crossover = Crossover(self.xover_freqs, order, sample_rate)
+        self.crossover = Crossover(self.xover_freqs, sample_rate)
 
         self.sample_rate = sample_rate
 
@@ -113,7 +115,7 @@ class MultibandCompressor:
             self.knee_width = compressors_params.get("knee_width", 0.0)
 
         # Initialize the compressors
-        self.compressor: list = list()
+        self.compressor: list = []
         self.set_compressors(
             attack=self.attack,
             release=self.release,
@@ -142,6 +144,7 @@ class MultibandCompressor:
             threshold (list | float): The threshold in dB.
             ratio (list | float): The ratio.
             gain (list | float): The make-up gain in dB.
+            knee_width (list | float): The knee width in dB.
 
         Returns:
             list[Compressor]: The compressors.
@@ -231,12 +234,11 @@ class MultibandCompressor:
                 (bands, channel, samples)
         """
 
-        bands_signal = self.crossover(signal[0])[:, np.newaxis, :]
-        if signal.shape[0] > 1:
-            for sig in signal[1:]:
-                bands_signal = np.hstack(
-                    (bands_signal, self.crossover(sig)[:, np.newaxis, :])
-                )
+        if signal.ndim == 1:
+            # add dimension to mono signals
+            signal = signal[np.newaxis, :]
+
+        bands_signal = self.crossover(signal, axis=-1)
 
         compressed_bands = np.zeros_like(bands_signal)
         for idx, sig in enumerate(bands_signal):

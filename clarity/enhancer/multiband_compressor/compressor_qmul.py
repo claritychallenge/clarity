@@ -22,7 +22,12 @@ class Compressor:
     >>> import librosa
     >>> import matplotlib.pyplot as plt
 
-    >>> signal, sr = librosa.load(librosa.ex("brahms"), sr=None, duration=10, mono=False)
+    >>> signal, sr = librosa.load(
+    ...     librosa.ex("brahms"),
+    ...     sr=None,
+    ...     duration=10,
+    ...     mono=False
+    ... )
     >>> if signal.ndim == 1:
     >>>      signal = signal[np.newaxis, :]
 

@@ -1,6 +1,7 @@
 """Class compute crossover filter for one crossover frequency."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
@@ -35,21 +36,21 @@ def compute_coefficients(
     bstore_phi = np.zeros((2 * order + 1, xover_freqs.shape[0]))
     astore_phi = np.zeros((2 * order + 1, xover_freqs.shape[0]))
 
-    for idx, xover_freq in enumerate(xover_freqs):
+    for i, freq in enumerate(xover_freqs):
         for ifilt in range(2):
             if ifilt == 0:
                 btype = "low"
             else:
                 btype = "high"
-            b, a = linkwitz_riley(xover_freq / (sample_rate / 2), btype, order)
-            bstore[:, idx, ifilt] = b
-            astore[:, idx, ifilt] = a
+            b, a = linkwitz_riley(freq / (sample_rate / 2), btype, order)
+            bstore[:, i, ifilt] = b
+            astore[:, i, ifilt] = a
 
-        bstore_phi[:, idx], astore_phi[:, idx] = make_all_pass(
-            bstore[:, idx, 0],
-            astore[:, idx, 0],
-            bstore[:, idx, 1],
-            astore[:, idx, 1],
+        bstore_phi[:, i], astore_phi[:, i] = make_all_pass(
+            bstore[:, i, 0],
+            astore[:, i, 0],
+            bstore[:, i, 1],
+            astore[:, i, 1],
         )
 
     return bstore, astore, bstore_phi, astore_phi
@@ -160,35 +161,62 @@ class Crossover:
             compute_coefficients(self.xover_freqs, self.sample_rate, self.FILTER_ORDER)
         )
 
-    def __call__(self, signal: np.ndarray) -> np.ndarray:
+    def __call__(self, signal: np.ndarray, axis: int = -1) -> np.ndarray:
         """Apply the crossover filter to the signal.
 
         Args:
             signal (np.ndarray): The input signal.
+            axis (int): The axis along which to apply the filter.
+              Default is -1. More information in ```scipy.signal.lfilter```
+              documentation.
 
         Returns:
             np.ndarray: The filtered signal.
         """
-        filtered_signal = np.zeros((len(self.xover_freqs) + 1, signal.shape[0]))
+        output_signal = []
         for filter_idx in range(self.xover_freqs.shape[0] + 1):
-            filtered_signal[filter_idx] = self.xover_component(
-                signal, filter_idx, len(self.xover_freqs)
+            output_signal.append(
+                self.xover_component(
+                    signal, filter_idx, len(self.xover_freqs), axis=axis
+                )
             )
-        return filtered_signal
+        return np.array(output_signal)
 
-    def xover_component(self, signal, filter_idx, len_xover_freqs):
+    def xover_component(
+        self, signal: ndarray, filter_idx: int, len_xover_freqs: int, axis: int = -1
+    ) -> ndarray:
+        """Apply the crossover filter to the signal.
+
+        Args:
+            signal (np.ndarray): The input signal.
+            filter_idx (int): The index of the filter to apply.
+            len_xover_freqs (int): The number of crossover frequencies.
+            axis (int): The axis along which to apply the filter.
+              Default is -1. ```More information in scipy.signal.lfilter```
+              documentation.
+
+        Returns:
+            np.ndarray: The filtered signal.
+        """
         # The low pass filter component
         if filter_idx < len_xover_freqs:
             signal = lfilter(
-                self.bstore[:, filter_idx, 0], self.astore[:, filter_idx, 0], signal
+                self.bstore[:, filter_idx, 0],
+                self.astore[:, filter_idx, 0],
+                signal,
+                axis=axis,
             )
         # The high pass filter component
         if filter_idx > 0:
             if filter_idx == 1:
-                signal = lfilter(self.bstore[:, 0, 1], self.astore[:, 0, 1], signal)
+                signal = lfilter(
+                    self.bstore[:, 0, 1], self.astore[:, 0, 1], signal, axis=axis
+                )
             else:
                 for m in range(filter_idx):
-                    signal = lfilter(self.bstore[:, m, 1], self.astore[:, m, 1], signal)
+                    signal = lfilter(
+                        self.bstore[:, m, 1], self.astore[:, m, 1], signal, axis=axis
+                    )
 
         # The phi filter component
         if len_xover_freqs + 1 > 2:
@@ -197,11 +225,12 @@ class Crossover:
                     self.bstore_phi[:, filter_idx + 1],
                     self.astore_phi[:, filter_idx + 1],
                     signal,
+                    axis=axis,
                 )
             elif filter_idx < len_xover_freqs - 2:
                 for m in range(filter_idx + 1, len_xover_freqs):
                     signal = lfilter(
-                        self.bstore_phi[:, m], self.astore_phi[:, m], signal
+                        self.bstore_phi[:, m], self.astore_phi[:, m], signal, axis=axis
                     )
 
         return signal
@@ -214,13 +243,14 @@ class Crossover:
         """Method to plot the frequency response of the filter.
         This can help to validate the Class is generating the expected filters
         """
+
         x = np.concatenate(([1], np.zeros(65500)))
         y = self(x)
 
         fplt = np.linspace(0, self.sample_rate, len(x))
         plt.figure()
-        for idx in range(len(self.xover_freqs) + 1):
-            Y = np.fft.fft(y[idx, :])
+        for i in range(len(self.xover_freqs) + 1):
+            Y = np.fft.fft(y[i, :])
             plt.plot(fplt, 20 * np.log10(np.abs(Y)))
 
         ytotal = np.sum(y, axis=0)
