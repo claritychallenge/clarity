@@ -34,8 +34,7 @@ def run_data_split(cfg, track):
         return
 
     file_path = (
-        Path(cfg.path.root)
-        / f"clarity_CPC1_data_train/metadata/CPC1.{'train'+track}.json"
+        Path(cfg.path.root) / f"clarity_CPC1_data_train/metadata/CPC1.train{track}.json"
     )
 
     with file_path.open("r", encoding="utf-8") as fp:
@@ -231,11 +230,11 @@ def generate_data_split(
 
 def run_signal_generation_train(cfg, track):
     train_json_path = (
-        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json"
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.train{track}.json"
     )
 
     train_signal_folder = (
-        Path(cfg.path.cpc1_train_data) / f"clarity_data/HA_outputs/{'train'+track}/"
+        Path(cfg.path.cpc1_train_data) / f"clarity_data/HA_outputs/train{track}/"
     )
 
     target_folder = Path(cfg.path.exp_folder) / f"cpc1_asr_data{track}"
@@ -278,11 +277,9 @@ def run_signal_generation_train(cfg, track):
 
 
 def run_signal_generation_test(cfg, track):
-    test_json_path = (
-        Path(cfg.path.cpc1_test_data) / f"metadata/CPC1.{'test'+track}.json"
-    )
+    test_json_path = Path(cfg.path.cpc1_test_data) / f"metadata/CPC1.test{track}.json"
     test_signal_folder = (
-        Path(cfg.path.cpc1_test_data) / f"clarity_data/HA_outputs/{'test'+track}/"
+        Path(cfg.path.cpc1_test_data) / f"clarity_data/HA_outputs/test{track}/"
     )
 
     target_folder = Path(cfg.path.exp_folder) / f"cpc1_asr_data{track}"
