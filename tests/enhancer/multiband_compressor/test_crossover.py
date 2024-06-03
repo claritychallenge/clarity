@@ -4,7 +4,10 @@ import numpy as np
 import pytest
 from matplotlib import pyplot as plt
 
-from clarity.enhancer.multiband_compressor.crossover import Crossover
+from clarity.enhancer.multiband_compressor.crossover import (
+    Crossover,
+    compute_coefficients,
+)
 
 
 @pytest.fixture
@@ -44,21 +47,24 @@ def test_initialization_multiple_frequencies(multi_freq_crossover):
     assert multi_freq_crossover.xover_freqs.shape[0] == 3
 
 
-def test_initialization_invalid_order():
-    """Test the initialization of the Crossover class with an invalid order."""
-    xover_freqs = 1000
-    with pytest.raises(ValueError):
-        Crossover(xover_freqs, N=3)  # Should raise ValueError since N must be 4
-
-
-def test_compute_coefficients(multi_freq_crossover):
+def test_compute_coefficients():
     """Test the compute_coefficients method of the Crossover class."""
-    multi_freq_crossover.compute_coefficients()
+    bstore, astore, bstore_phi, astore_phi = compute_coefficients(
+        np.array([1000, 2000, 3000]), 8000, 4
+    )
     # Check that the coefficients are not None
-    assert multi_freq_crossover.bstore is not None
-    assert multi_freq_crossover.astore is not None
-    assert multi_freq_crossover.bstore_phi is not None
-    assert multi_freq_crossover.astore_phi is not None
+    assert np.sum(bstore) == pytest.approx(
+        6.70591633, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(astore) == pytest.approx(
+        13.411832670, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(bstore_phi) == pytest.approx(
+        28.748181628, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
+    assert np.sum(astore_phi) == pytest.approx(
+        28.748181628, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+    )
 
 
 def test_filter_application(multi_freq_crossover, random_signal):
