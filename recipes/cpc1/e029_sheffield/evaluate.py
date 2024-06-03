@@ -91,7 +91,7 @@ def run(cfg: DictConfig) -> None:
     elif cfg.cpc1_track == "closed":
         track = ""
     else:
-        logger.error("cpc1_track has to be closed or open")
+        raise ValueError("cpc1_track has to be closed or open")
 
     # encoder representation evaluation
     prediction_dev, label_dev = read_data(

@@ -88,6 +88,8 @@ class MSBGHearingModel(nn.Module):
         elif src_position == "ITU":
             interf_itu = interp1d(ITU_HZ, ITU_ERP_DRP)
             src_corrn = interf_itu(HZ)
+        else:
+            raise ValueError(f"Unknown src_position: {src_position}")
         nyquist = sr / 2
         ixf_useful = np.where(HZ < nyquist)[0]
         hz_used = np.append(HZ[ixf_useful], nyquist)
@@ -139,33 +141,25 @@ class MSBGHearingModel(nn.Module):
         current_dir = Path(__file__).parent
         gtf_dir = current_dir / "../evaluator/msbg/msbg_hparams"
         if impaired_degree > 56:
-            severe_not_moderate = 1
+            f_smear = make_smear_mat3(4, 2, sr)
             gt4_bank_file = gtf_dir / "GT4FBank_Brd3.0E_Spaced2.3E_44100Fs.json"
             bw_broaden_coef = 3
         elif impaired_degree > 35:
-            severe_not_moderate = 0
             gt4_bank_file = gtf_dir / "GT4FBank_Brd2.0E_Spaced1.5E_44100Fs.json"
             bw_broaden_coef = 2
+            f_smear = make_smear_mat3(2.4, 1.6, sr)
         elif impaired_degree > 15:
-            severe_not_moderate = -1
             gt4_bank_file = gtf_dir / "GT4FBank_Brd1.5E_Spaced1.1E_44100Fs.json"
             bw_broaden_coef = 1
+            f_smear = make_smear_mat3(1.6, 1.1, sr)
         else:
-            severe_not_moderate = -2
             gt4_bank_file = gtf_dir / "GT4FBank_Brd1.5E_Spaced1.1E_44100Fs.json"
             bw_broaden_coef = 1
+            f_smear = make_smear_mat3(1.001, 1.001, sr)
+
         # gt4_bank = loadmat(gt4_bank_file)
         with gt4_bank_file.open("r", encoding="utf-8") as fp:
             gt4_bank = json.load(fp)
-
-        if severe_not_moderate > 0:
-            f_smear = make_smear_mat3(4, 2, sr)
-        elif severe_not_moderate == 0:
-            f_smear = make_smear_mat3(2.4, 1.6, sr)
-        elif severe_not_moderate == -1:
-            f_smear = make_smear_mat3(1.6, 1.1, sr)
-        elif severe_not_moderate == -2:
-            f_smear = make_smear_mat3(1.001, 1.001, sr)
 
         self.smear_nfft = 512
         self.smear_win_len = 256

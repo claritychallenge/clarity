@@ -64,6 +64,9 @@ def test_convtasnet(regtest):
     test_set = CEC1Dataset(**cfg.test_dataset)
     test_loader = torch.utils.data.DataLoader(dataset=test_set, **cfg.test_loader)
 
+    down_sample = None
+    up_sample = None
+
     if cfg.test_dataset.downsample_factor != 1:
         down_sample = torchaudio.transforms.Resample(
             orig_freq=cfg.test_dataset["sample_rate"],
@@ -92,11 +95,11 @@ def test_convtasnet(regtest):
 
                 noisy = torch.reshape(noisy, (1, 6, -1))
                 noisy = noisy.to(device).cpu()
-                if cfg.test_dataset["downsample_factor"] != 1:
-                    proc = down_sample(noisy)
+
+                proc = down_sample(noisy) if down_sample else noisy
                 enhanced = (den_model(proc)).squeeze(1)
                 enhanced = enhanced.cpu()
-                if cfg.test_dataset["downsample_factor"] != 1:
+                if up_sample is not None:
                     enhanced = up_sample(enhanced)
                 enhanced = torch.clamp(enhanced, -1, 1)
                 out.append(enhanced.detach().cpu().numpy()[0])
