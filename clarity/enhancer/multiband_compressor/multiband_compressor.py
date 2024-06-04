@@ -163,7 +163,7 @@ class MultibandCompressor:
         if isinstance(ratio, (int, float)):
             ratio = [float(ratio)] * self.num_compressors
         if isinstance(makeup_gain, (int, float)):
-            gain = [float(makeup_gain)] * self.num_compressors
+            makeup_gain = [float(makeup_gain)] * self.num_compressors
         if isinstance(knee_width, (int, float)):
             knee_width = [float(knee_width)] * self.num_compressors
 
