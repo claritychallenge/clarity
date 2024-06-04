@@ -54,12 +54,12 @@ def test_decompose_signal(separation_model):
         model = HDEMUCS_HIGH_MUSDB.get_model()
         model_sample_rate = HDEMUCS_HIGH_MUSDB.sample_rate
         sources_order = model.sources
-
     elif separation_model == "openunmix":
         model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq")
         model_sample_rate = model.sample_rate
         sources_order = ["vocals", "drums", "bass", "other"]
-
+    else:
+        raise ValueError("Invalid separation model")
     device = torch.device("cpu")
     model.to(device)
 

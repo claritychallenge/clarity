@@ -119,6 +119,8 @@ def enhance(config: DictConfig) -> None:
     # Decompose each song into left and right vocal, drums, bass, and other stems
     # and process each stem for the listener
     prev_song_name = None
+    stems = {}
+
     num_song_list_pair = len(song_listener_pairs)
     for idx, song_listener in enumerate(song_listener_pairs, 1):
         song_name, listener_name = song_listener

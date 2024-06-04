@@ -61,6 +61,8 @@ def test_decompose_signal(separation_model, normalise):
         model = HDEMUCS_HIGH_MUSDB.get_model().double()
     elif separation_model == "openunmix":
         model = torch.hub.load("sigsep/open-unmix-pytorch", "umxhq").double()
+    else:
+        raise ValueError(f"Unknown separation model: {separation_model}")
 
     device = torch.device("cpu")
     model.to(device)

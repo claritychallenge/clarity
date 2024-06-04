@@ -92,16 +92,16 @@ def run(cfg: DictConfig) -> None:
     elif cfg.cpc1_track == "closed":
         track = ""
     else:
-        logger.error("cpc1_track has to be closed or open")
+        raise ValueError("cpc1_track has to be closed or open")
 
     # encoder representation evaluation
     prediction_dev, label_dev = read_data(
         Path(cfg.path.exp_folder) / "dev_enc_similarity.json",
-        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.train{track}.json",
     )
     prediction_test, label_test = read_data(
         Path(cfg.path.exp_folder) / "test_enc_similarity.json",
-        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
+        Path(f"../test_listener_responses/CPC1.test{track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
@@ -113,11 +113,11 @@ def run(cfg: DictConfig) -> None:
     # decoder representation evaluation
     prediction_dev, label_dev = read_data(
         Path(cfg.path.exp_folder) / "dev_dec_similarity.json",
-        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.train{track}.json",
     )
     prediction_test, label_test = read_data(
         Path(cfg.path.exp_folder) / "test_dec_similarity.json",
-        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
+        Path(f"../test_listener_responses/CPC1.test{track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
