@@ -18,7 +18,7 @@ def test_compressor_initialization(default_compressor):
     assert default_compressor.ratio == 1.0
     assert default_compressor.attack == 15.0
     assert default_compressor.release == 100.0
-    assert default_compressor.gain == 0.0
+    assert default_compressor.makeup_gain == 0.0
     assert default_compressor.sample_rate == 44100.0
 
 
@@ -79,14 +79,14 @@ def test_multiband_compressor_initialization(default_multiband_compressor):
     assert default_multiband_compressor.release == 100.0
     assert default_multiband_compressor.threshold == 0.0
     assert default_multiband_compressor.ratio == 1.0
-    assert default_multiband_compressor.gain == 0.0
+    assert default_multiband_compressor.makeup_gain == 0.0
     assert default_multiband_compressor.knee_width == 0.0
 
 
 def test_multiband_compressor_set_compressors(default_multiband_compressor):
     """Test the set_compressors method of the MultibandCompressor class."""
     default_multiband_compressor.set_compressors(
-        attack=10.0, release=50.0, threshold=-20.0, ratio=2.0, gain=6.0
+        attack=10.0, release=50.0, threshold=-20.0, ratio=2.0, makeup_gain=6.0
     )
     assert len(default_multiband_compressor.compressor) == 6
 
