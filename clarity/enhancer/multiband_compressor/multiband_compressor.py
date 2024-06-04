@@ -61,7 +61,7 @@ class MultibandCompressor:
         ...         "release": [80, 80, 80, 80, 100, 100],
         ...         "threshold": -40,
         ...         "ratio": 4.0,
-        ...         "gain": np.maximum((HL - 20) / 3, 0),
+        ...         "makeup_gain": np.maximum((HL - 20) / 3, 0),
         ...         "knee_width": 0,
         ...     }
         ... )
@@ -104,14 +104,14 @@ class MultibandCompressor:
             self.release: float = 100.0
             self.threshold: float = 0.0
             self.ratio: float = 1.0
-            self.gain: float = 0.0
+            self.makeup_gain: float = 0.0
             self.knee_width: float = 0.0
         else:
             self.attack = compressors_params.get("attack", 15.0)
             self.release = compressors_params.get("release", 100.0)
             self.threshold = compressors_params.get("threshold", 0.0)
             self.ratio = compressors_params.get("ratio", 1.0)
-            self.gain = compressors_params.get("gain", 0.0)
+            self.makeup_gain = compressors_params.get("makeup_gain", 0.0)
             self.knee_width = compressors_params.get("knee_width", 0.0)
 
         # Initialize the compressors
@@ -121,7 +121,7 @@ class MultibandCompressor:
             release=self.release,
             threshold=self.threshold,
             ratio=self.ratio,
-            gain=self.gain,
+            makeup_gain=self.makeup_gain,
             knee_width=self.knee_width,
         )
 
@@ -131,7 +131,7 @@ class MultibandCompressor:
         release: list | float = 100.0,
         threshold: list | float = 0.0,
         ratio: list | float = 1.0,
-        gain: list | float = 0.0,
+        makeup_gain: list | float = 0.0,
         knee_width: list | float = 0.0,
     ) -> None:
         """Set the compressors parameters.
@@ -162,8 +162,8 @@ class MultibandCompressor:
             threshold = [float(threshold)] * self.num_compressors
         if isinstance(ratio, (int, float)):
             ratio = [float(ratio)] * self.num_compressors
-        if isinstance(gain, (int, float)):
-            gain = [float(gain)] * self.num_compressors
+        if isinstance(makeup_gain, (int, float)):
+            gain = [float(makeup_gain)] * self.num_compressors
         if isinstance(knee_width, (int, float)):
             knee_width = [float(knee_width)] * self.num_compressors
 
@@ -191,11 +191,11 @@ class MultibandCompressor:
                 "length as crossover frequencies + 1. "
                 f"{len(ratio)} was provided, {self.num_compressors} expected."
             )
-        if len(gain) != self.num_compressors:
+        if len(makeup_gain) != self.num_compressors:
             raise ValueError(
                 "Gain must be a float or have the same length as "
                 "crossover frequencies + 1. "
-                f"{len(gain)} was provided, {self.num_compressors} expected."
+                f"{len(makeup_gain)} was provided, {self.num_compressors} expected."
             )
         if len(knee_width) != self.num_compressors:
             raise ValueError(
@@ -210,7 +210,7 @@ class MultibandCompressor:
                 release=release[i],
                 threshold=threshold[i],
                 ratio=ratio[i],
-                gain=gain[i],
+                makeup_gain=makeup_gain[i],
                 knee_width=knee_width[i],
                 sample_rate=self.sample_rate,
             )

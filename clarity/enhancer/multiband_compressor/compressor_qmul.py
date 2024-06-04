@@ -36,7 +36,7 @@ class Compressor:
     ...    ratio=4.0,
     ...    attack=10.0,
     ...    release=100.0,
-    ...    gain=1.25,
+    ...    makeup_gain=1.25,
     ...    sample_rate=sr,
     ...    knee_width=10.0,
     ...)
@@ -64,7 +64,7 @@ class Compressor:
         ratio: float = 1.0,
         attack: float = 15.0,
         release: float = 100.0,
-        gain: float = 0.0,
+        makeup_gain: float = 0.0,
         knee_width: float = 0.0,
         sample_rate: float = 44100.0,
     ) -> None:
@@ -95,10 +95,10 @@ class Compressor:
                 stacklevel=1,
             )
 
-        if gain < 0 or gain > 24:
+        if makeup_gain < 0 or makeup_gain > 24:
             warnings.warn(
                 "Make-up gain outside the recommended range [0.0, 24.0] dB."
-                f" {gain} dB was provided.",
+                f" {makeup_gain} dB was provided.",
                 stacklevel=1,
             )
 
@@ -106,7 +106,7 @@ class Compressor:
         self.ratio = float(ratio)
         self.attack = float(attack)
         self.release = float(release)
-        self.gain = float(gain)
+        self.makeup_gain = float(makeup_gain)
         self.sample_rate = float(sample_rate)
         self.knee_width = float(knee_width)
 
@@ -155,7 +155,7 @@ class Compressor:
                 filtered_signal[i] = out
 
         # Compute the gains and apply to the input signal
-        c = 10 ** ((self.gain - filtered) / 20.0)
+        c = 10 ** ((self.makeup_gain - filtered) / 20.0)
         output_signal = input_signal * c
 
         return output_signal
@@ -163,7 +163,7 @@ class Compressor:
     def __str__(self) -> str:
         """Return the string representation of the object."""
         return (
-            f"Compressor: threshold={self.threshold}, ratio={self.ratio}, "
-            f"attack={self.attack}, release={self.release}, gain={self.gain}, "
-            f"sample_rate={self.sample_rate}"
+            f"Compressor: threshold={self.threshold}, ratio={self.ratio},"
+            f" attack={self.attack}, release={self.release}, makeup"
+            f" gain={self.makeup_gain}, sample_rate={self.sample_rate}"
         )
