@@ -176,7 +176,7 @@ def test_multiband_wrong_number_gain():
         MultibandCompressor(
             crossover_frequencies=np.array([250]),
             compressors_params={
-                "gain": [1],
+                "makeup_gain": [1],
             },
         )
 
