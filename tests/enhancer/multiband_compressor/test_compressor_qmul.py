@@ -18,7 +18,7 @@ def custom_compressor():
         ratio=4.0,
         attack=10.0,
         release=100.0,
-        gain=1.25,
+        makeup_gain=1.25,
         sample_rate=44100.0,
         knee_width=10.0,
     )
@@ -36,7 +36,7 @@ def test_initialization_default(default_compressor):
     assert default_compressor.ratio == 1.0
     assert default_compressor.attack == 15.0
     assert default_compressor.release == 100.0
-    assert default_compressor.gain == 0.0
+    assert default_compressor.makeup_gain == 0.0
     assert default_compressor.sample_rate == 44100.0
     assert default_compressor.knee_width == 0.0
 
@@ -47,7 +47,7 @@ def test_initialization_custom(custom_compressor):
     assert custom_compressor.ratio == 4.0
     assert custom_compressor.attack == 10.0
     assert custom_compressor.release == 100.0
-    assert custom_compressor.gain == 1.25
+    assert custom_compressor.makeup_gain == 1.25
     assert custom_compressor.sample_rate == 44100.0
     assert custom_compressor.knee_width == 10.0
 
@@ -79,7 +79,7 @@ def test_warning_release():
 def test_warning_gain():
     """Test the warning for a gain outside the recommended range."""
     with pytest.warns(UserWarning, match="Make-up gain outside the recommended range"):
-        Compressor(gain=25.0)
+        Compressor(makeup_gain=25.0)
 
 
 def test_call_default(default_compressor, random_signal):

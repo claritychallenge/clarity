@@ -8,11 +8,11 @@ from omegaconf import DictConfig
 
 @hydra.main(config_path="", config_name="config")
 def enhance(config: DictConfig) -> None:
-
     print(config)
 
     pass
 
 
+# pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     enhance()
