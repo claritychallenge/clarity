@@ -88,7 +88,7 @@ class Renderer:
             signal_l = convolve(signal[:, 0], brir[:, 0], mode="full", method="fft")
             signal_r = convolve(signal[:, 1], brir[:, 1], mode="full", method="fft")
         else:
-            logging.error("Signal does not have the required shape.")
+            raise ValueError("Signal or BRIR does not have the required shape.")
         output = np.vstack([signal_l, signal_r]).T
         return output[0:output_len, :]
 
