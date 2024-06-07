@@ -2,26 +2,21 @@
 
 from __future__ import annotations
 
-from numpy import ndarray
-from omegaconf import DictConfig
-from pathlib import Path
-from torchaudio.transforms import Fade
-
-import hydra
 import json
 import logging
+from pathlib import Path
+
+import hydra
 import numpy as np
 import torch
+from numpy import ndarray
+from omegaconf import DictConfig
+from torchaudio.transforms import Fade
 
 from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal, write_signal
 from clarity.utils.flac_encoder import FlacEncoder
-from clarity.utils.signal_processing import (
-    clip_signal,
-    resample,
-    to_16bit,
-)
-
+from clarity.utils.signal_processing import clip_signal, resample, to_16bit
 from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 

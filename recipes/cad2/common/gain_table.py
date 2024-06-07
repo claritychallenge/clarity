@@ -1,14 +1,14 @@
+import numpy as np
+from numpy import ndarray
+
 from clarity.enhancer.gha.gha_utils import (
-    gainrule_camfit_compr,
     FittingParams,
+    gainrule_camfit_compr,
     multifit_apply_noisegate,
 )
 
 # from clarity.enhancer.gha.gainrule_camfit import multifit_apply_noisegate
 from clarity.utils.audiogram import Audiogram
-
-from numpy import ndarray
-import numpy as np
 
 
 class CamfitGainTable:

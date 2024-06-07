@@ -1,4 +1,4 @@
-# CAD2-TASK1 singing/accompaniment separation model 
+# CAD2-TASK1 singing/accompaniment separation model
 
 This recipe contains the necessary content to replicate the separation models used in CAD2-Task1.
 
@@ -7,7 +7,7 @@ This recipe contains the necessary content to replicate the separation models us
 - Evaluation logic is based on https://github.com/asteroid-team/asteroid/blob/master/egs/musdb18/X-UMX/eval.py
 - Dataloader is based on https://github.com/asteroid-team/asteroid/blob/master/asteroid/data/musdb18_dataset.py
 
-You can replicate the Causal and Non-Causal model by running:  
+You can replicate the Causal and Non-Causal model by running:
 * **To replicate the Non-Causal model**
 ```bash
 python train.py \
