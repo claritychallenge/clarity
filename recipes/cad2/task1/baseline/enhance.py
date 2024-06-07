@@ -2,43 +2,87 @@
 
 from __future__ import annotations
 
-import json
-import logging
-from pathlib import Path
-
-import hydra
-import numpy as np
 from numpy import ndarray
-
-import torch
+from omegaconf import DictConfig
+from pathlib import Path
 from torchaudio.transforms import Fade
 
-
-from omegaconf import DictConfig
+import hydra
+import json
+import logging
+import numpy as np
+import torch
 
 from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal, write_signal
-from clarity.utils.signal_processing import resample
+from clarity.utils.flac_encoder import FlacEncoder
+from clarity.utils.signal_processing import (
+    clip_signal,
+    resample,
+    to_16bit,
+)
+
+from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logger = logging.getLogger(__name__)
 
 
-class MultibandCompressor:
-    def __init__(
-        self,
-        crossover_frequencies: float = 2000.0,
-        order: int = 4,
-        sample_rate: float = 44100,
-        compressors_params: dict | None = None,
-    ):
-        self.xover_freqs = np.array([crossover_frequencies])
-        self.sample_rate = sample_rate
-        self.order = order
-        self.compressors_params = compressors_params
+def save_flac_signal(
+    signal: ndarray,
+    filename: Path,
+    signal_sample_rate,
+    output_sample_rate,
+    do_clip_signal: bool = False,
+    do_soft_clip: bool = False,
+    do_scale_signal: bool = False,
+) -> None:
+    """
+    Function to save output signals.
 
-    def __call__(self, signal, listener: Listener):
-        return signal
+    - The output signal will be resample to ``output_sample_rate``
+    - The output signal will be clipped to [-1, 1] if ``do_clip_signal`` is True
+        and use soft clipped if ``do_soft_clip`` is True. Note that if
+        ``do_clip_signal`` is False, ``do_soft_clip`` will be ignored.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be scaled to [-1, 1] if ``do_scale_signal`` is True.
+        If signal is scale, the scale factor will be saved in a TXT file.
+        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
+    - The output signal will be saved as a FLAC file.
+
+    Args:
+        signal (np.ndarray) : Signal to save
+        filename (Path) : Path to save signal
+        signal_sample_rate (int) : Sample rate of the input signal
+        output_sample_rate (int) : Sample rate of the output signal
+        do_clip_signal (bool) : Whether to clip signal
+        do_soft_clip (bool) : Whether to apply soft clipping
+        do_scale_signal (bool) : Whether to scale signal
+    """
+    # Resample signal to expected output sample rate
+    if signal_sample_rate != output_sample_rate:
+        signal = resample(signal, signal_sample_rate, output_sample_rate)
+
+    if do_scale_signal:
+        # Scale stem signal
+        max_value = np.max(np.abs(signal))
+        signal = signal / max_value
+
+        # Save scale factor
+        with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
+            file.write(f"{max_value}")
+
+    elif do_clip_signal:
+        # Clip the signal
+        signal, n_clipped = clip_signal(signal, do_soft_clip)
+        if n_clipped > 0:
+            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
+
+    # Convert signal to 16-bit integer
+    signal = to_16bit(signal)
+
+    # Create flac encoder object to compress and save the signal
+    FlacEncoder().encode(signal, output_sample_rate, filename)
 
 
 def separate_sources(
@@ -230,12 +274,10 @@ def enhance(config: DictConfig) -> None:
     # Load separation model
     separation_model = load_separation_model(config.separator.causality, device)
 
-    # Load multiband compressor for amplification
-    mbc = MultibandCompressor(
-        crossover_frequencies=config.compressor.crossover_filter.frequencies,
-        order=config.compressor.crossover_filter.order,
-        sample_rate=config.compressor.crossover_filter.sample_rate,
-        compressors_params=config.compressor.parameters,
+    # create hearing aid
+    hearing_aid = HearingAid(
+        config.ha.compressor,
+        config.ha.camfit_gain_table,
     )
 
     # Make the list of scene-listener pairings to process
@@ -279,27 +321,32 @@ def enhance(config: DictConfig) -> None:
             device=device,
             **config.separator.separation,
         )
-        sources = sources.squeeze(0).cpu().detach().numpy()
-
-        vocals, accompaniment = sources
+        vocals, accompaniment = sources.squeeze(0).cpu().detach().numpy()
 
         # Enhance the vocals
-        enhanced_vocals = mbc(vocals, listener)
+        hearing_aid.set_compressors(listener)
+        enhanced_vocals = hearing_aid(vocals)
 
         # Downmix to stereo
         enhanced_signal = enhanced_vocals * alpha + accompaniment * (1 - alpha)
+        enhanced_signal /= np.max(np.abs(enhanced_signal))
 
         # Save the enhanced music
-        enhanced_path = enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}.wav"
-        write_signal(
-            enhanced_path,
-            resample(
-                enhanced_signal.T, config.input_sample_rate, config.output_sample_rate
-            ),
-            config.output_sample_rate,
-            floating_point=False,
+        filename = enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}_remix.flac"
+        filename.parent.mkdir(parents=True, exist_ok=True)
+
+        save_flac_signal(
+            signal=enhanced_signal.T,
+            filename=filename,
+            signal_sample_rate=config.input_sample_rate,
+            output_sample_rate=config.remix_sample_rate,
+            do_clip_signal=True,
+            do_soft_clip=config.soft_clip,
         )
 
+    logger.info("Done!")
 
+
+# pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     enhance()

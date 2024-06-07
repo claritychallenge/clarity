@@ -10,7 +10,7 @@ path:
   exp_folder: ./exp_${separator.causality} # folder to store enhanced signals and final results
 
 input_sample_rate: 44100   # sample rate of the input mixture
-output_sample_rate: 32000  # sample rate output stems
+remix_sample_rate: 32000  # sample rate for the output remixed signal
 
 separator:
   causality: causal
@@ -22,20 +22,21 @@ separator:
     sample_rate: ${input_sample_rate}
 
 
-compressor:
-  crossover_filter:
-    frequencies: [100, 1000, 10000]
-    order: 4
+ha: # hearing aid
+  compressor:
+    crossover_frequencies: [353.55, 707.11, 1414.21, 2828.43, 5656.85] # [250, 500, 1000, 2000, 4000] * sqrt(2)
     sample_rate: ${input_sample_rate}
-  parameters:
-    threshold: 0.35
-    attack: 50
-    release: 100
-    ratio: 10
+  camfit_gain_table:
+    noisegate_levels: 40
+    noisegate_slope: 0
+    cr_level: 0
+    max_output_level: 100
 
 evaluate:
   set_random_seed: True
   small_test: True
+
+soft_clip: False
 
 # hydra config
 hydra:
