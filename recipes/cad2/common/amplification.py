@@ -1,12 +1,13 @@
 """Hearing aid amplification module for CAD2."""
+
 from __future__ import annotations
 
-from clarity.enhancer.multiband_compressor import MultibandCompressor
-from recipes.cad2.common.gain_table import CamfitGainTable
-from clarity.utils.audiogram import Listener
-
-from numpy import ndarray
 import numpy as np
+from numpy import ndarray
+
+from clarity.enhancer.multiband_compressor import MultibandCompressor
+from clarity.utils.audiogram import Listener
+from recipes.cad2.common.gain_table import CamfitGainTable
 
 
 class HearingAid:

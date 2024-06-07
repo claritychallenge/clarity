@@ -1,7 +1,8 @@
-from local.tasnet import ConvTasNetStereo
+import os
+
 import torch
 import yaml
-import os
+from local.tasnet import ConvTasNetStereo
 
 conf_path = os.path.join("/home/gerardoroadabike/Downloads/", "conf.yml")
 with open(conf_path) as f:

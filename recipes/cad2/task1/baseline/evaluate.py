@@ -23,7 +23,6 @@ from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 from recipes.cad2.common.amplification import HearingAid
-
 from recipes.cad2.task1.baseline.enhance import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
