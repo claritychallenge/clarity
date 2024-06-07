@@ -22,6 +22,7 @@ from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
+from recipes.cad2.common.amplification import HearingAid
 
 from recipes.cad2.task1.baseline.enhance import make_scene_listener_list
 
@@ -58,8 +59,12 @@ def run_compute_scores(config: DictConfig) -> None:
         "scene",
         "song",
         "listener",
-        "left_score",
-        "right_score",
+        "haaqi_left",
+        "haaqi_right",
+        "whisper_left",
+        "whisper_right",
+        "score_left",
+        "score_right",
         "score",
     ]
 
@@ -80,6 +85,12 @@ def run_compute_scores(config: DictConfig) -> None:
     scene_listener_pairs = scene_listener_pairs[
         config.evaluate.batch :: config.evaluate.batch_size
     ]
+
+    # create hearing aid
+    hearing_aid = HearingAid(
+        config.ha.compressor,
+        config.ha.camfit_gain_table,
+    )
 
     for idx, scene_listener_ids in enumerate(scene_listener_pairs, 1):
         logger.info(

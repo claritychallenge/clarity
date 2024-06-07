@@ -325,11 +325,12 @@ def enhance(config: DictConfig) -> None:
 
         # Enhance the vocals
         hearing_aid.set_compressors(listener)
-        enhanced_vocals = hearing_aid(vocals)
 
         # Downmix to stereo
-        enhanced_signal = enhanced_vocals * alpha + accompaniment * (1 - alpha)
+        enhanced_signal = vocals * alpha + accompaniment * (1 - alpha)
         enhanced_signal /= np.max(np.abs(enhanced_signal))
+
+        enhanced_signal = hearing_aid(vocals)
 
         # Save the enhanced music
         filename = enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}_remix.flac"
