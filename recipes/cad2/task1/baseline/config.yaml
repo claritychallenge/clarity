@@ -1,7 +1,45 @@
 path:
-  root: ??
-  exp_folder: ./exp_${separator.model} # folder to store enhanced signals and final results
+  root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task1
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio
+  musics_file: ${path.metadata_dir}/music.valid.json
+  alphas_file: ${path.metadata_dir}/alpha.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
+  scenes_file: ${path.metadata_dir}/scene.valid.json
+  scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
+  exp_folder: ./exp_${separator.causality} # folder to store enhanced signals and final results
 
 input_sample_rate: 44100   # sample rate of the input mixture
 output_sample_rate: 32000  # sample rate output stems
 
+separator:
+  causality: causal
+  device: ~
+  separation:
+    number_sources: 2
+    segment: 6.0
+    overlap: 0.1
+    sample_rate: ${input_sample_rate}
+
+
+compressor:
+  crossover_filter:
+    frequencies: [100, 1000, 10000]
+    order: 4
+    sample_rate: ${input_sample_rate}
+  parameters:
+    threshold: 0.35
+    attack: 50
+    release: 100
+    ratio: 10
+
+evaluate:
+  set_random_seed: True
+  small_test: True
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
+  job:
+    chdir: True
