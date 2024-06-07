@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
 import hydra
@@ -19,6 +20,8 @@ from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal, write_signal
 from clarity.utils.signal_processing import resample
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
+
+logger = logging.getLogger(__name__)
 
 
 class MultibandCompressor:
@@ -241,11 +244,16 @@ def enhance(config: DictConfig) -> None:
     )
 
     # Process each scene-listener pair
-    for scene_id, listener_id in scene_listener_pairs:
+    for idx, scene_listener_ids in enumerate(scene_listener_pairs, 1):
+        logger.info(
+            f"[{idx:04d}/{len(scene_listener_pairs):04d}] Processing scene-listener"
+            f" pair: {scene_listener_ids}"
+        )
+
+        scene_id, listener_id = scene_listener_ids
         scene = scenes[scene_id]
         listener = listener_dict[listener_id]
         alpha = alphas[scene["alpha"]]
-
         # Load the music
         music = read_signal(
             Path(config.path.music_dir)
@@ -254,6 +262,7 @@ def enhance(config: DictConfig) -> None:
             offset=int(
                 songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
             ),
+            offset_is_samples=True,
             n_samples=int(
                 (
                     songs[scene["segment_id"]]["end_time"]
@@ -290,8 +299,6 @@ def enhance(config: DictConfig) -> None:
             config.output_sample_rate,
             floating_point=False,
         )
-
-        print(f"Enhanced music saved to {enhanced_path}")
 
 
 if __name__ == "__main__":
