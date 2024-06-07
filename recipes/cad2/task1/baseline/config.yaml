@@ -1,0 +1,7 @@
+path:
+  root: ??
+  exp_folder: ./exp_${separator.model} # folder to store enhanced signals and final results
+
+input_sample_rate: 44100   # sample rate of the input mixture
+output_sample_rate: 32000  # sample rate output stems
+
