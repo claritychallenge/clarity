@@ -11,13 +11,10 @@ import hydra
 import numpy as np
 import whisper
 from jiwer import compute_measures
-from numpy import ndarray
 from omegaconf import DictConfig
 
-from clarity.enhancer.compressor import Compressor
-from clarity.enhancer.nalr import NALR
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.utils.audiogram import Audiogram, Listener
+from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
