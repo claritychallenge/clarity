@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
     from clarity.enhancer.gha.gha_utils import FittingParams
 
+logging.basicConfig(level=logging.INFO)
+
 
 def compute_proportion_overlap(
     a1: float,
@@ -479,6 +481,6 @@ def gainrule_camfit_compr(
         )
         noisegate_slope[:, i] = noisegateslope * np.ones(np.size(sFitmodel_frequencies))
 
-    logging.info("Noisegate levels are %s", noisegate_level)
+    logging.debug("Noisegate levels are %s", noisegate_level)
 
     return sGt, noisegate_level, noisegate_slope
