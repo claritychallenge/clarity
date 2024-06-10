@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 import hashlib
+import hydra
 import json
 import logging
-import warnings
-from pathlib import Path
-
-import hydra
 import numpy as np
-import pyloudnorm as pyln
+import whisper
+
 from numpy import ndarray
 from omegaconf import DictConfig
+from pathlib import Path
+from jiwer import compute_measures
 
 from clarity.enhancer.compressor import Compressor
 from clarity.enhancer.nalr import NALR
@@ -22,10 +22,63 @@ from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
+
 from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.baseline.enhance import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
+
+
+def compute_intelligibility(
+    enhanced_path: Path,
+    segment_metadata: dict,
+    config: DictConfig,
+) -> float:
+    """
+    Compute the Intelligibility score for the enhanced signal
+    using the Whisper model
+    """
+    scorer = whisper.load_model(config.evaluate.whisper_version)
+    hypotesis = scorer.transcribe(enhanced_path.as_posix())["text"]
+    reference = segment_metadata["text"]
+    results = compute_measures(reference, hypotesis)
+    total_words = results["substitutions"] + results["deletions"] + results["hits"]
+    return results["hits"] / total_words
+
+
+def compute_quality(
+    reference_signal: np.ndarray,
+    enhanced_signal: np.ndarray,
+    listener: Listener,
+    config: DictConfig,
+) -> tuple[float, float]:
+    """Compute the HAAQI score for the left and right channels"""
+    scores = []
+
+    for channel in range(2):
+        audiogram = (
+            listener.audiogram_left if channel == 0 else listener.audiogram_right
+        )
+        s = compute_haaqi(
+            processed_signal=resample(
+                enhanced_signal[:, channel],
+                config.remix_sample_rate,
+                config.HAAQI_sample_rate,
+            ),
+            reference_signal=resample(
+                reference_signal[:, channel],
+                config.input_sample_rate,
+                config.HAAQI_sample_rate,
+            ),
+            processed_sample_rate=config.HAAQI_sample_rate,
+            reference_sample_rate=config.HAAQI_sample_rate,
+            audiogram=audiogram,
+            equalisation=2,
+            level1=65 - 20 * np.log10(compute_rms(reference_signal[:, channel])),
+        )
+        scores.append(s)
+
+    return scores[0], scores[1]
 
 
 @hydra.main(config_path="", config_name="config")
@@ -60,10 +113,9 @@ def run_compute_scores(config: DictConfig) -> None:
         "listener",
         "haaqi_left",
         "haaqi_right",
-        "whisper_left",
-        "whisper_right",
-        "score_left",
-        "score_right",
+        "haaqi_avg",
+        "whisper",
+        "alpha",
         "score",
     ]
 
@@ -78,6 +130,7 @@ def run_compute_scores(config: DictConfig) -> None:
             header_columns=scores_headers,
         )
 
+    # Create the list of scene-listener pairs
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, config.evaluate.small_test
     )
@@ -85,43 +138,74 @@ def run_compute_scores(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
-    # create hearing aid
+    # Hearing aid object
     hearing_aid = HearingAid(
         config.ha.compressor,
         config.ha.camfit_gain_table,
     )
 
+    # Loop over the scene-listener pairs
     for idx, scene_listener_ids in enumerate(scene_listener_pairs, 1):
-        logger.info(
-            f"[{idx:04d}/{len(scene_listener_pairs):04d}] Processing scene-listener"
-            f" pair: {scene_listener_ids}"
-        )
+        # Iterate over the scene-listener pairs
+        # The reference is the original signal
 
         scene_id, listener_id = scene_listener_ids
+
+        logger.info(
+            f"[{idx:04d}/{len(scene_listener_pairs):04d}] Processing scene-listener"
+            f" pair: {scene_id}-{listener_id}"
+        )
+
+        # Load scene details
         scene = scenes[scene_id]
         listener = listener_dict[listener_id]
         alpha = alphas[scene["alpha"]]
 
+        # Load the reference signal
+        start_sample = int(
+            songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
+        )
+        end_sample = int(
+            songs[scene["segment_id"]]["end_time"] * config.input_sample_rate
+        )
         reference = read_signal(
             Path(config.path.music_dir)
             / songs[scene["segment_id"]]["path"]
             / "mixture.wav",
-            offset=int(
-                songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
-            ),
+            offset=start_sample,
             offset_is_samples=True,
-            n_samples=int(
-                (
-                    songs[scene["segment_id"]]["end_time"]
-                    - songs[scene["segment_id"]]["start_time"]
-                )
-                * config.input_sample_rate
-            ),
+            n_samples=int(end_sample - start_sample),
         )
+        # Apply hearing aid
+        hearing_aid.set_compressors(listener)
+        reference = hearing_aid(reference)
 
         # Load the enhanced signals
-        enhanced_signal, _ = read_flac_signal(
+        enhanced_signal_path = (
             enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}_remix.flac"
+        )
+        enhanced_signal, _ = read_flac_signal(enhanced_signal_path)
+
+        # Compute the HAAQI and Whisper scores
+        haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)
+        whisper_score = compute_intelligibility(
+            enhanced_signal_path,
+            songs[scene["segment_id"]],
+            config,
+        )
+
+        results_file.add_result(
+            {
+                "scene": scene_id,
+                "song": songs[scene["segment_id"]]["track_name"],
+                "listener": listener_id,
+                "haaqi_left": haaqi_scores[0],
+                "haaqi_right": haaqi_scores[1],
+                "haaqi_avg": np.mean(haaqi_scores),
+                "whisper": whisper_score,
+                "alpha": alpha,
+                "score": alpha * whisper_score + (1 - alpha) * np.mean(haaqi_scores),
+            }
         )
 
 

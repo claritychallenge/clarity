@@ -11,6 +11,7 @@ path:
 
 input_sample_rate: 44100   # sample rate of the input mixture
 remix_sample_rate: 32000  # sample rate for the output remixed signal
+HAAQI_sample_rate: 24000  # sample rate for computing HAAQI score
 
 separator:
   causality: causal
@@ -33,8 +34,11 @@ ha: # hearing aid
     max_output_level: 100
 
 evaluate:
+  whisper_version: base.en
   set_random_seed: True
   small_test: True
+  batch_size: 1  # Number of batches
+  batch: 0       # Batch number to evaluate
 
 soft_clip: False
 
