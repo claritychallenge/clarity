@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cad1.task2.baseline.evaluate module &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cad1.task2.baseline.merge_batches_results module" href="recipes.cad1.task2.baseline.merge_batches_results.html" />
+    <link rel="prev" title="recipes.cad1.task2.baseline.enhance module" href="recipes.cad1.task2.baseline.enhance.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-recipes.cad1.task2.baseline.evaluate">
+<span id="recipes-cad1-task2-baseline-evaluate-module"></span><h1>recipes.cad1.task2.baseline.evaluate module<a class="headerlink" href="#module-recipes.cad1.task2.baseline.evaluate" title="Link to this heading">¶</a></h1>
+<p>Evaluate the enhanced signals using the HAAQI metric.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.baseline.evaluate.evaluate_scene">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">evaluate_scene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enh_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scene_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_scene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.audiogram.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_scene_acoustic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipes.cad1.task2.baseline.car_scene_acoustics.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics" title="recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics"><span class="pre">CarSceneAcoustics</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hrtf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/baseline/evaluate.html#evaluate_scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.baseline.evaluate.evaluate_scene" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a single scene and return HAAQI scores for left and right ears</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_signal</strong> (<em>np.ndarray</em>) – A numpy array of shape (2, n_samples)
+containing the reference signal.</p></li>
+<li><p><strong>enh_signal</strong> (<em>np.ndarray</em>) – A numpy array of shape (2, n_samples)
+containing the enhanced signal.</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – The sampling frequency of the reference and enhanced signals.</p></li>
+<li><p><strong>scene_id</strong> (<em>str</em>) – A string identifier for the scene being evaluated.</p></li>
+<li><p><strong>current_scene</strong> (<em>dict</em>) – A dictionary containing information about the scene being
+evaluated, including the song ID, the listener ID, the car noise type, and
+the split.</p></li>
+<li><p><strong>listener</strong> (<a class="reference internal" href="clarity.utils.audiogram.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><em>Listener</em></a>) – the listener to use</p></li>
+<li><p><strong>car_scene_acoustic</strong> (<a class="reference internal" href="recipes.cad1.task2.baseline.car_scene_acoustics.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics" title="recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics"><em>CarSceneAcoustics</em></a>) – An instance of the CarSceneAcoustics
+class, which is used to generate car noise and add binaural room impulse
+responses (BRIRs) to the enhanced signal.</p></li>
+<li><p><strong>hrtf</strong> (<em>dict</em>) – A dictionary containing the head-related transfer functions (HRTFs)
+for the listener being evaluated. This includes the left and right HRTFs for
+the car and the anechoic room.</p></li>
+<li><p><strong>config</strong> (<em>DictConfig</em>) – A dictionary-like object containing various configuration
+parameters for the evaluation. This includes the path to the enhanced signal
+folder,the path to the music directory, and a flag indicating whether to set
+a random seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing HAAQI scores for left and right ears.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.baseline.evaluate.run_calculate_audio_quality">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">run_calculate_audio_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/baseline/evaluate.html#run_calculate_audio_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.baseline.evaluate.run_calculate_audio_quality" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate the enhanced signals using the HAAQI metric.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.baseline.evaluate.set_scene_seed">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">set_scene_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad1/task2/baseline/evaluate.html#set_scene_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.baseline.evaluate.set_scene_seed" title="Link to this definition">¶</a></dt>
+<dd><p>Set a seed that is unique for the given song
+based on the last 8 characters of the ‘md5’
+<cite>.hexdigest</cite> of the scene itself.</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cad1.html">recipes.cad1 package</a><ul>
+  <li><a href="recipes.cad1.task2.html">recipes.cad1.task2 package</a><ul>
+  <li><a href="recipes.cad1.task2.baseline.html">recipes.cad1.task2.baseline package</a><ul>
+      <li>Previous: <a href="recipes.cad1.task2.baseline.enhance.html" title="previous chapter">recipes.cad1.task2.baseline.enhance module</a></li>
+      <li>Next: <a href="recipes.cad1.task2.baseline.merge_batches_results.html" title="next chapter">recipes.cad1.task2.baseline.merge_batches_results module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cad1.task2.baseline.evaluate.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.data.HOA_tools_cec2 module &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.data.demo_data module" href="clarity.data.demo_data.html" />
+    <link rel="prev" title="clarity.data package" href="clarity.data.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-clarity.data.HOA_tools_cec2">
+<span id="clarity-data-hoa-tools-cec2-module"></span><h1>clarity.data.HOA_tools_cec2 module<a class="headerlink" href="#module-clarity.data.HOA_tools_cec2" title="Link to this heading">¶</a></h1>
+<p>Tools to support higher order ambisonic processing.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.HOARotator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">HOARotator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#HOARotator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.HOARotator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides methods for rotating ambisonics.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.HOARotator.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#HOARotator.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.HOARotator.rotate" title="Link to this definition">¶</a></dt>
+<dd><p>Apply rotation to HOA signals using precomputed rotation matrices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>array-like</em>) – ambisonic signals</p></li>
+<li><p><strong>rotation_vector</strong> (<em>array-like</em>) – rotation vector (in radians)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>transformed ambisonic signals</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.P">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">P</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.typed.List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba.typed.List</span></span></span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.P" title="Link to this definition">¶</a></dt>
+<dd><p>P function for rotation matrix calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<em>int</em>) – index</p></li>
+<li><p><strong>a</strong> (<em>int</em>) – ‘a’ value</p></li>
+<li><p><strong>b</strong> (<em>int</em>) – ‘b’ value</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – order</p></li>
+<li><p><strong>r</strong> (<em>list</em><em>(</em><em>matrix</em><em>)</em>) – rotation matrices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>P value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.U">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">U</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.typed.List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba.typed.List</span></span></span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.U" title="Link to this definition">¶</a></dt>
+<dd><p>U coefficient initialiser for rotation matrix calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rotation_degree</strong> (<em>int</em>) – Upper parameters of spherical harmonic
+component Y and n the lower.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – index</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – order</p></li>
+<li><p><strong>rotation_matrices</strong> (<em>list</em><em>(</em><em>matrix</em><em>)</em>) – rotation matrices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>U value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.V">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">V</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.typed.List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba.typed.List</span></span></span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.V" title="Link to this definition">¶</a></dt>
+<dd><p>V coefficient initialiser for rotation matrix calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>degree</strong> (<em>int</em>) – valid inputs are <cite>int(|m|) &lt;= order</cite>.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – index</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – order</p></li>
+<li><p><strong>rotation_matrices</strong> (<em>list</em><em>(</em><em>matrix</em><em>)</em>) – rotation matrices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>V value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.W">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">W</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.typed.List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba.typed.List</span></span></span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.W" title="Link to this definition">¶</a></dt>
+<dd><p>W coefficient initialiser for rotation matrix calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>degree</strong> (<em>int</em>) – degree</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – index</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – order</p></li>
+<li><p><strong>rotation_matrices</strong> (<em>list</em><em>(</em><em>matrix</em><em>)</em>) – rotation matrices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>W value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.ambisonic_convolve">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">ambisonic_convolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hoa_impulse_responses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#ambisonic_convolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.ambisonic_convolve" title="Link to this definition">¶</a></dt>
+<dd><p>Convolve HOA Impulse Responses with signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>ndarray</em><em>[</em><em>samples</em><em>]</em>) – the signal to convole</p></li>
+<li><p><strong>hoa_impulse_response</strong> (<em>ndarray</em><em>[</em><em>samples</em><em>, </em><em>channels</em><em>]</em>) – the HOA impulse responses</p></li>
+<li><p><strong>order</strong> (<em>int</em><em>, </em><em>optional</em>) – ambisonic order.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the convolved signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray[samples, channels]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.binaural_mixdown">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">binaural_mixdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ambisonic_signals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hrir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hrir_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#binaural_mixdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.binaural_mixdown" title="Link to this definition">¶</a></dt>
+<dd><p>Perform binaural mixdown of ambisonic signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ambisonic_signals</strong> (<em>array-like</em>) – inputs</p></li>
+<li><p><strong>hrir_filename</strong> (<em>string</em>) – name of HRIR file</p></li>
+<li><p><strong>hrir_metadata</strong> (<em>dict</em>) – data for channel selection and ambisonic decoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>stereo audio</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.centred_element">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">centred_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.centred_element" title="Link to this definition">¶</a></dt>
+<dd><p>Get value from centered element indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>matrix</em>) – reference input matrix</p></li>
+<li><p><strong>row</strong> (<em>int</em>) – row index</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – column index</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>matrix element</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.compute_UVW_coefficients">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">compute_UVW_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.compute_UVW_coefficients" title="Link to this definition">¶</a></dt>
+<dd><p>Compute U, V and W coefficients for rotation matrix calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<em>index</em>) – degree</p></li>
+<li><p><strong>n</strong> (<em>index</em>) – index</p></li>
+<li><p><strong>el</strong> (<em>index</em>) – order</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>u, v, w</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.compute_band_rotation">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">compute_band_rotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numba.typed.List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.compute_band_rotation" title="Link to this definition">¶</a></dt>
+<dd><p>Compute submatrix for rotation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – order of submatrix</p></li>
+<li><p><strong>rotationmatrices</strong> (<em>list</em><em>(</em><em>matrix</em><em>)</em>) – previous and current submatrices</p></li>
+<li><p><strong>output</strong> (<em>matrix</em>) – output destination</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>rotation submatrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.compute_rms">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">compute_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#compute_rms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.compute_rms" title="Link to this definition">¶</a></dt>
+<dd><p>Compute rms values along a given axis.
+:param input_signal: Input signal
+:type input_signal: np.ndarray
+:param axis: Axis along which to compute the Root Mean Square. 0 (default) or 1.
+:type axis: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Root Mean Square for the given axis.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.compute_rotation_matrix">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">compute_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">foa_rotmat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.compute_rotation_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a rotation matrix to rotate HOA soundfield.</p>
+<p>Based on <a href="#id4"><span class="problematic" id="id1">[1]_</span></a> and <a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. Operates on HOA of a given order rotates by azimuth theta
+and elevation phi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – order of ambisonic soundfield</p></li>
+<li><p><strong>foa_rotmat</strong> (<em>arraylike</em>) – rotation matrix to expand</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>HOA rotation matrix</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p>References:
+.. [1] Ivanic J, Ruedenberg K (1996) Rotation Matrices for Real Spherical Harmonics.</p>
+<blockquote>
+<div><p>Direct Determination J. Phys. Chem. 1996, 100(15):6342–6347. Available at
+&lt;<a class="reference external" href="https://pubs.acs.org/doi/10.1021/jp953350u">https://pubs.acs.org/doi/10.1021/jp953350u</a>&gt; and
+&lt;<a class="reference external" href="https://doi.org/10.1021/JP9833350">https://doi.org/10.1021/JP9833350</a>&gt;</p>
+</div></blockquote>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Gorzel M, Allen A, Kelly I, Kammerl J, Gungormusler, A, Yeh H, Boland F
+Efficient Encoding and Decoding of Binaural Sound with Resonance Audio
+In Proc. of the AES International Conference on Immersive and Interactive
+Audio, March 2019. Available at
+&lt;<a class="reference external" href="https://www.aes.org/e-lib/browse.cfm?elib=20446">https://www.aes.org/e-lib/browse.cfm?elib=20446</a>&gt;</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.compute_rotation_vector">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">compute_rotation_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#compute_rotation_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.compute_rotation_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the rotation vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_angle</strong> (<em>float</em>)</p></li>
+<li><p><strong>end_angle</strong> (<em>float</em>)</p></li>
+<li><p><strong>signal_length</strong> (<em>int</em>)</p></li>
+<li><p><strong>start_idx</strong> (<em>int</em>)</p></li>
+<li><p><strong>end_idx</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.convert_a_to_b_format">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">convert_a_to_b_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">front_left_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">front_right_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">back_left_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">back_right_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#convert_a_to_b_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.convert_a_to_b_format" title="Link to this definition">¶</a></dt>
+<dd><p>Converts 1st order A format audio into 1st order B format.
+For more information on ambisonic formats see Gerzon, Michael A.
+“Ambisonics. Part two: Studio techniques.” (1975).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>front_left_up</strong> (<em>np.ndarray</em>) – Front-left-up audio</p></li>
+<li><p><strong>front_right_down</strong> (<em>np.ndarray</em>) – Front-right-down audio</p></li>
+<li><p><strong>back_left_down</strong> (<em>np.ndarray</em>) – Back-left-down audio</p></li>
+<li><p><strong>back_right_up</strong> (<em>np.ndarray</em>) – Back-right-up audio</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – input must be numpy array</p></li>
+<li><p><strong>ValueError</strong> – all inputs must have same dimensions</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>4xN array containing B-format audio. indexed w,x,y,z</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.dB_to_gain">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">dB_to_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#dB_to_gain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.dB_to_gain" title="Link to this definition">¶</a></dt>
+<dd><p>Convert dB to gain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em>)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns</dt><dd><p>float:</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.dot">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clarity.data.HOA_tools_cec2.dot" title="Link to this definition">¶</a></dt>
+<dd><p>Wraps np.dot for numba <a class="reference external" href="mailto:#&#37;&#52;&#48;njit">#<span>&#64;</span>njit</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>Array</em>)</p></li>
+<li><p><strong>B</strong> (<em>Array</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>output</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.equalise_rms_levels">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">equalise_rms_levels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#equalise_rms_levels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.equalise_rms_levels" title="Link to this definition">¶</a></dt>
+<dd><p>Equalise RMS levels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>array</em>) – signals</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>normalised signals</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.rotation_control_vector">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">rotation_control_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#rotation_control_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.rotation_control_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Generate mapped rotation control vector for values of theta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array_length</strong> (<em>int</em>) – Length of array</p></li>
+<li><p><strong>start_index</strong> (<em>int</em>) – Start position</p></li>
+<li><p><strong>end_index</strong> (<em>int</em>)</p></li>
+<li><p><strong>smoothness</strong> (<em>int</em><em>, </em><em>optional</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>mapped rotation control vector</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.data.HOA_tools_cec2.smoothstep">
+<span class="sig-prename descclassname"><span class="pre">clarity.data.HOA_tools_cec2.</span></span><span class="sig-name descname"><span class="pre">smoothstep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/data/HOA_tools_cec2.html#smoothstep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.data.HOA_tools_cec2.smoothstep" title="Link to this definition">¶</a></dt>
+<dd><p>Apply the smoothstep function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – input</p></li>
+<li><p><strong>x_min</strong> (<em>float</em><em>, </em><em>optional</em>) – clamp minimum. Defaults to 0.</p></li>
+<li><p><strong>x_max</strong> (<em>float</em><em>, </em><em>optional</em>) – clamp maximum. Defaults to 1.</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – smoothing factor. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>smoothstep values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.data.html">clarity.data package</a><ul>
+      <li>Previous: <a href="clarity.data.html" title="previous chapter">clarity.data package</a></li>
+      <li>Next: <a href="clarity.data.demo_data.html" title="next chapter">clarity.data.demo_data module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.data.HOA_tools_cec2.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

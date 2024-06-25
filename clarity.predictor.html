@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.predictor package &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.predictor.torch_msbg module" href="clarity.predictor.torch_msbg.html" />
+    <link rel="prev" title="clarity.evaluator.msbg.smearing module" href="clarity.evaluator.msbg.smearing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-predictor-package">
+<h1>clarity.predictor package<a class="headerlink" href="#clarity-predictor-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.predictor.torch_msbg.html">clarity.predictor.torch_msbg module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.calibrate_spl"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.calibrate_spl()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.f_smear"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.f_smear</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.forward"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.gt_fir_sin"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.gt_fir_sin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.measure_rms"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.measure_rms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.recruitment"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.recruitment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.recruitment_fir"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.recruitment_fir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.recruitment_out_coef"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.recruitment_out_coef</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.smear"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.smear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.MSBGHearingModel.src_to_cochlea_filt"><code class="docutils literal notranslate"><span class="pre">MSBGHearingModel.src_to_cochlea_filt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.torchloudnorm"><code class="docutils literal notranslate"><span class="pre">torchloudnorm</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.torchloudnorm.apply_filter"><code class="docutils literal notranslate"><span class="pre">torchloudnorm.apply_filter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.torchloudnorm.forward"><code class="docutils literal notranslate"><span class="pre">torchloudnorm.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.torchloudnorm.high_pass"><code class="docutils literal notranslate"><span class="pre">torchloudnorm.high_pass</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.torchloudnorm.integrated_loudness"><code class="docutils literal notranslate"><span class="pre">torchloudnorm.integrated_loudness()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_msbg.html#clarity.predictor.torch_msbg.torchloudnorm.normalize_loudness"><code class="docutils literal notranslate"><span class="pre">torchloudnorm.normalize_loudness()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clarity.predictor.torch_stoi.html">clarity.predictor.torch_stoi module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.NegSTOILoss"><code class="docutils literal notranslate"><span class="pre">NegSTOILoss</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.NegSTOILoss.detect_silent_frames"><code class="docutils literal notranslate"><span class="pre">NegSTOILoss.detect_silent_frames()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.NegSTOILoss.forward"><code class="docutils literal notranslate"><span class="pre">NegSTOILoss.forward()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.NegSTOILoss.rowcol_norm"><code class="docutils literal notranslate"><span class="pre">NegSTOILoss.rowcol_norm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.NegSTOILoss.stft"><code class="docutils literal notranslate"><span class="pre">NegSTOILoss.stft()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.masked_mean"><code class="docutils literal notranslate"><span class="pre">masked_mean()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.masked_norm"><code class="docutils literal notranslate"><span class="pre">masked_norm()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.predictor.torch_stoi.html#clarity.predictor.torch_stoi.meanvar_norm"><code class="docutils literal notranslate"><span class="pre">meanvar_norm()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-clarity.predictor">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.predictor" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+      <li>Previous: <a href="clarity.evaluator.msbg.smearing.html" title="previous chapter">clarity.evaluator.msbg.smearing module</a></li>
+      <li>Next: <a href="clarity.predictor.torch_msbg.html" title="next chapter">clarity.predictor.torch_msbg module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.predictor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

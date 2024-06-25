@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.evaluator.haspi.haspi module &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.evaluator.haspi.ip module" href="clarity.evaluator.haspi.ip.html" />
+    <link rel="prev" title="clarity.evaluator.haspi.ebm module" href="clarity.evaluator.haspi.ebm.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-clarity.evaluator.haspi.haspi">
+<span id="clarity-evaluator-haspi-haspi-module"></span><h1>clarity.evaluator.haspi.haspi module<a class="headerlink" href="#module-clarity.evaluator.haspi.haspi" title="Link to this heading">¶</a></h1>
+<p>HASPI intelligibility Index</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.haspi.haspi_v2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.haspi.</span></span><span class="sig-name descname"><span class="pre">haspi_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.audiogram.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_lp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">320.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/haspi.html#haspi_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.haspi.haspi_v2" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the HASPI intelligibility index using the
+auditory model followed by computing the envelope cepstral
+correlation and BM vibration high-level covariance. The reference
+signal presentation level for NH listeners is assumed to be 65 dB
+SPL. The same model is used for both normal and impaired hearing. This
+version of HASPI uses a modulation filterbank followed by an ensemble of
+neural networks to compute the estimated intelligibility.</p>
+<p><strong>NB</strong> - The original HASPI model derivation included a bug which meant that
+although the ‘shift’ parameter used in band centre frequency calculations was set to
+‘0.02’ it was never actually applied. To replicate this behaviour ear_model is
+called with ‘shift’ set to None.  For discussion please refer to the discussion in
+<cite>Issue #105 &lt;https://github.com/claritychallenge/clarity/issues/105&gt;</cite>
+for further details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – Clear input reference speech signal with no noise or
+distortion. If a hearing loss is specified, no amplification should be
+provided.</p></li>
+<li><p><strong>reference_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for signal x</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – Output signal with noise, distortion, HA gain, and/or
+processing.</p></li>
+<li><p><strong>processed_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for signal y.</p></li>
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – (1,6) vector of hearing loss at the 6 audiometric
+frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.</p></li>
+<li><p><strong>level1</strong> (<em>int</em>) – Optional input specifying level in dB SPL that corresponds to a
+signal RMS = 1. Default is 65 dB SPL if argument not provided.</p></li>
+<li><p><strong>f_lp</strong> (<em>int</em>)</p></li>
+<li><p><strong>itype</strong> (<em>int</em>) – Intelligibility model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>float, raw: nd-array)
+Intel: Intelligibility estimated by passing the cepstral coefficients</p>
+<blockquote>
+<div><p>through a modulation filterbank followed by an ensemble of
+neural networks.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>raw: vector of 10 cep corr modulation filterbank outputs, averaged</dt><dd><p>over basis functions 2-6.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(Intel</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 5 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.haspi.haspi_v2_be">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.haspi.</span></span><span class="sig-name descname"><span class="pre">haspi_v2_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.audiogram.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/haspi.html#haspi_v2_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.haspi.haspi_v2_be" title="Link to this definition">¶</a></dt>
+<dd><p>Better ear HASPI.</p>
+<p>Calculates HASPI for left and right ear and selects the better result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_left</strong> (<em>np.ndarray</em>) – left channel of reference signal</p></li>
+<li><p><strong>ref_right</strong> (<em>np.ndarray</em>) – right channel of reference signal</p></li>
+<li><p><strong>proc_left</strong> (<em>np.ndarray</em>) – left channel of processed signal</p></li>
+<li><p><strong>proc_right</strong> (<em>np.ndarray</em>) – right channel of processed signal</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – sampling rate for both signal</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>audiogram_right</em>) – left ear audiogram</p></li>
+<li><p><strong>(</strong><strong>)</strong> – right ear audiogram</p></li>
+<li><p><strong>level</strong> – level in dB SPL corresponding to RMS=1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>beHASPI score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>Zuzanna Podwinska, March 2022</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.evaluator.html">clarity.evaluator package</a><ul>
+  <li><a href="clarity.evaluator.haspi.html">clarity.evaluator.haspi package</a><ul>
+      <li>Previous: <a href="clarity.evaluator.haspi.ebm.html" title="previous chapter">clarity.evaluator.haspi.ebm module</a></li>
+      <li>Next: <a href="clarity.evaluator.haspi.ip.html" title="next chapter">clarity.evaluator.haspi.ip module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.evaluator.haspi.haspi.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

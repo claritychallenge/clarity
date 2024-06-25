@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.evaluator.msbg.msbg_utils module &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.evaluator.msbg.smearing module" href="clarity.evaluator.msbg.smearing.html" />
+    <link rel="prev" title="clarity.evaluator.msbg.msbg module" href="clarity.evaluator.msbg.msbg.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-clarity.evaluator.msbg.msbg_utils">
+<span id="clarity-evaluator-msbg-msbg-utils-module"></span><h1>clarity.evaluator.msbg.msbg_utils module<a class="headerlink" href="#module-clarity.evaluator.msbg.msbg_utils" title="Link to this heading">¶</a></h1>
+<p>Support for the MSBG hearing loss model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">GTFParamDict</span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#GTFParamDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.BROADEN">
+<span class="sig-name descname"><span class="pre">BROADEN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.BROADEN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.DateCreated">
+<span class="sig-name descname"><span class="pre">DateCreated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.DateCreated" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.ERBn_CentFrq">
+<span class="sig-name descname"><span class="pre">ERBn_CentFrq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.ERBn_CentFrq" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.Fs">
+<span class="sig-name descname"><span class="pre">Fs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.Fs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTnDelays">
+<span class="sig-name descname"><span class="pre">GTnDelays</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTnDelays" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTn_CentFrq">
+<span class="sig-name descname"><span class="pre">GTn_CentFrq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTn_CentFrq" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTn_denoms">
+<span class="sig-name descname"><span class="pre">GTn_denoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTn_denoms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTn_nums">
+<span class="sig-name descname"><span class="pre">GTn_nums</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.GTn_nums" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_Delays">
+<span class="sig-name descname"><span class="pre">HP_Delays</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_Delays" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_FCorner">
+<span class="sig-name descname"><span class="pre">HP_FCorner</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_FCorner" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_denoms">
+<span class="sig-name descname"><span class="pre">HP_denoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_denoms" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_nums">
+<span class="sig-name descname"><span class="pre">HP_nums</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.HP_nums" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.NChans">
+<span class="sig-name descname"><span class="pre">NChans</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.NChans" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.NGAMMA">
+<span class="sig-name descname"><span class="pre">NGAMMA</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.NGAMMA" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.Recombination_dB">
+<span class="sig-name descname"><span class="pre">Recombination_dB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.Recombination_dB" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.SPACING">
+<span class="sig-name descname"><span class="pre">SPACING</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.SPACING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.GTFParamDict.Start2PoleHP">
+<span class="sig-name descname"><span class="pre">Start2PoleHP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict.Start2PoleHP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.fir2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">fir2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_gains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#fir2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.fir2" title="Link to this definition">¶</a></dt>
+<dd><p>FIR arbitrary shape filter design using the frequency sampling method.</p>
+<p>Partial implementation of MATLAB fir2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_length</strong> (<em>int</em>) – Order</p></li>
+<li><p><strong>frequencies</strong> (<em>ndarray</em>) – The frequency sampling points (0 &lt; frequencies &lt; 1) where
+1 is Nyquist rate. First and last elements must be 0 and 1 respectively.</p></li>
+<li><p><strong>filter_gains</strong> (<em>ndarray</em>) – The filter gains at the frequency sampling points.</p></li>
+<li><p><strong>window_shape</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – window to apply.
+(default: hamming window)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>nn + 1 filter coefficients, 1</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.firwin2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">firwin2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_taps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_gains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antisymmetric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#firwin2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.firwin2" title="Link to this definition">¶</a></dt>
+<dd><p>FIR filter design using the window method.</p>
+<p>Partial implementation of scipy firwin2 but using our own MATLAB-derived fir2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_taps</strong> (<em>int</em>) – The number of taps in the FIR filter.</p></li>
+<li><p><strong>frequencies</strong> (<em>ndarray</em>) – The frequency sampling points. 0.0 to 1.0 with 1.0
+being Nyquist.</p></li>
+<li><p><strong>filter_gains</strong> (<em>ndarray</em>) – The filter gains at the frequency sampling points.</p></li>
+<li><p><strong>window</strong> (<em>string</em><em> or </em><em>(</em><em>string</em><em>, </em><em>float</em><em>)</em><em>, </em><em>optional</em>) – See scipy.firwin2. Default is None</p></li>
+<li><p><strong>antisymmetric</strong> (<em>bool</em><em>, </em><em>optional</em>) – Unused but present to maintain compatibility
+with scipy firwin2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filter coefficients of the FIR filter, as a 1-D array of length n.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.gen_eh2008_speech_noise">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">gen_eh2008_speech_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supplied_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#gen_eh2008_speech_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.gen_eh2008_speech_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Generate speech shaped noise.</p>
+<dl class="simple">
+<dt>Start with white noise and re-shape to ideal SII, ie flat to 500 Hz, and sloping</dt><dd><p>-9db/oct beyond that.</p>
+</dd>
+</dl>
+<p>Slightly different shape from SII stylised same as EarHEar 2008 paper, Moore et al.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>duration</strong> (<em>float</em>) – Duration of signal in seconds</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em>) – Sampling rate</p></li>
+<li><p><strong>level</strong> (<em>float</em><em>, </em><em>optional</em>) – Normalise to level dB if present</p></li>
+<li><p><strong>supplied_b</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – High-pass filter. Default uses built-in
+pre-emphasis filter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Noise signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.gen_tone">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">gen_tone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#gen_tone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.gen_tone" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a pure tone.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>freq</strong> (<em>float</em>) – Frequency of tone in Hz.</p></li>
+<li><p><strong>duration</strong> (<em>float</em>) – Duration of tone in seconds.</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – Sample rate of generated tone in Hz.
+Default is 44100.</p></li>
+<li><p><strong>level</strong> (<em>float</em><em>, </em><em>optional</em>) – Level of tone in dB SPL. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.generate_key_percent">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">generate_key_percent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_to_track</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#generate_key_percent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.generate_key_percent" title="Link to this definition">¶</a></dt>
+<dd><p>Generate key percent.
+Locates frames above some energy threshold or tracks a certain percentage
+of frames. To track a certain percentage of frames in order to get measure
+of rms, adaptively sets threshold after looking at histogram of whole recording</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>ndarray</em>) – The signal to analyse.</p></li>
+<li><p><strong>threshold_db</strong> (<em>float</em>) – fixed energy threshold (dB).</p></li>
+<li><p><strong>window_length</strong> (<em>int</em>) – length of window in samples.</p></li>
+<li><p><strong>percent_to_track</strong> (<em>float</em><em>, </em><em>optional</em>) – Track a percentage of frames.
+Default is None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – percent_to_track is set too high.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>containing
+- key (ndarray): The key array of indices of samples used in rms calculation.
+- used_threshold_db (float): Root Mean Squared threshold.</p>
+<blockquote>
+<div><p>and the threshold used to get a more accurate rms calculation</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.measure_rms">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">measure_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_rel_rms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_to_track</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#measure_rms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.measure_rms" title="Link to this definition">¶</a></dt>
+<dd><p>Measure Root Mean Square.</p>
+<p>A sophisticated method of measuring RMS in a file. It splits the signal up into
+short windows, performs  a histogram of levels, calculates an approximate RMS,
+and then uses that RMS to calculate a threshold level in the histogram and then
+re-measures the RMS only using those durations whose individual RMS exceed that
+threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>ndarray</em>) – the signal of which to measure the Root Mean Square.</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em>) – sampling frequency.</p></li>
+<li><p><strong>db_rel_rms</strong> (<em>float</em>) – threshold for frames to track.</p></li>
+<li><p><strong>percent_to_track</strong> (<em>float</em><em>, </em><em>optional</em>) – track percentage of frames,
+rather than threshold (default: {None})</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple containing
+- rms (float): overall calculated rms (linear)
+- key (ndarray): “key” array of indices of samples used in rms calculation
+- rel_db_thresh (float): fixed threshold value of -12 dB
+- active (float): proportion of values used in rms calculation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.pad">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.pad" title="Link to this definition">¶</a></dt>
+<dd><p>Zero pad signal to required length.</p>
+<p>Assumes required length is not less than input length.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.msbg.msbg_utils.read_gtf_file">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.msbg.msbg_utils.</span></span><span class="sig-name descname"><span class="pre">read_gtf_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#clarity.evaluator.msbg.msbg_utils.GTFParamDict" title="clarity.evaluator.msbg.msbg_utils.GTFParamDict"><span class="pre">GTFParamDict</span></a></span></span><a class="reference internal" href="_modules/clarity/evaluator/msbg/msbg_utils.html#read_gtf_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.msbg.msbg_utils.read_gtf_file" title="Link to this definition">¶</a></dt>
+<dd><p>Read a gammatone filterbank file.</p>
+<p>List data is converted into numpy arrays.</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.evaluator.html">clarity.evaluator package</a><ul>
+  <li><a href="clarity.evaluator.msbg.html">clarity.evaluator.msbg package</a><ul>
+      <li>Previous: <a href="clarity.evaluator.msbg.msbg.html" title="previous chapter">clarity.evaluator.msbg.msbg module</a></li>
+      <li>Next: <a href="clarity.evaluator.msbg.smearing.html" title="next chapter">clarity.evaluator.msbg.smearing module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.evaluator.msbg.msbg_utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
