@@ -14,12 +14,13 @@ from omegaconf import DictConfig
 from torchaudio.transforms import Fade
 
 from clarity.utils.audiogram import Listener
-from clarity.utils.file_io import read_signal, write_signal
+from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import FlacEncoder
 from clarity.utils.signal_processing import clip_signal, resample, to_16bit
 from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
+logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
 
 
@@ -216,12 +217,12 @@ def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -
 
     # Can define a standard 'small_test' with just 1/50 of the data
     if small_test:
-        scene_listener_pairs = scene_listener_pairs[::50]
+        scene_listener_pairs = scene_listener_pairs[::400]
 
     return scene_listener_pairs
 
 
-@hydra.main(config_path="", config_name="config", version_base="1.1")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def enhance(config: DictConfig) -> None:
     """
     Run the music enhancement.

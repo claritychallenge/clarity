@@ -8,6 +8,7 @@ from pathlib import Path
 
 import hydra
 import numpy as np
+import torch.nn
 import whisper
 from jiwer import compute_measures
 from omegaconf import DictConfig
@@ -27,14 +28,13 @@ logger = logging.getLogger(__name__)
 def compute_intelligibility(
     enhanced_path: Path,
     segment_metadata: dict,
-    config: DictConfig,
+    scorer: torch.nn.Module,
 ) -> float:
     """
     Compute the Intelligibility score for the enhanced signal
     using the Whisper model
     """
-    scorer = whisper.load_model(config.evaluate.whisper_version)
-    hypotesis = scorer.transcribe(enhanced_path.as_posix())["text"]
+    hypotesis = scorer.transcribe(enhanced_path.as_posix(), fp16=False)["text"]
     reference = segment_metadata["text"]
     results = compute_measures(reference, hypotesis)
     total_words = results["substitutions"] + results["deletions"] + results["hits"]
@@ -76,7 +76,7 @@ def compute_quality(
     return scores[0], scores[1]
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def run_compute_scores(config: DictConfig) -> None:
     """Compute the scores for the enhanced signals"""
 
@@ -139,17 +139,18 @@ def run_compute_scores(config: DictConfig) -> None:
         config.ha.camfit_gain_table,
     )
 
+    intelligibility_scorer = whisper.load_model(config.evaluate.whisper_version)
+
     # Loop over the scene-listener pairs
     for idx, scene_listener_ids in enumerate(scene_listener_pairs, 1):
         # Iterate over the scene-listener pairs
         # The reference is the original signal
-
-        scene_id, listener_id = scene_listener_ids
-
         logger.info(
             f"[{idx:04d}/{len(scene_listener_pairs):04d}] Processing scene-listener"
-            f" pair: {scene_id}-{listener_id}"
+            f" pair: {scene_listener_ids}"
         )
+
+        scene_id, listener_id = scene_listener_ids
 
         # Load scene details
         scene = scenes[scene_id]
@@ -186,7 +187,7 @@ def run_compute_scores(config: DictConfig) -> None:
         whisper_score = compute_intelligibility(
             enhanced_signal_path,
             songs[scene["segment_id"]],
-            config,
+            intelligibility_scorer,
         )
 
         results_file.add_result(
