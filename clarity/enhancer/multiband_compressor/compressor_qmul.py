@@ -110,6 +110,8 @@ class Compressor:
         self.sample_rate = float(sample_rate)
         self.knee_width = float(knee_width)
 
+        self.eps = 1e-12
+
         self.alpha_attack = np.exp(-1.0 / (0.001 * self.sample_rate * self.attack))
         self.alpha_release = np.exp(-1.0 / (0.001 * self.sample_rate * self.release))
 
@@ -125,6 +127,7 @@ class Compressor:
         """
 
         # Compute the instantaneous desired levels
+        input_signal[input_signal == 0] = self.eps
         x_g = 20 * np.log10(np.abs(input_signal))
         x_g[x_g < -120] = -120
         y_g = self.threshold + (x_g - self.threshold) / self.ratio
