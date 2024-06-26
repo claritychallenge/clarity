@@ -69,3 +69,7 @@ clarity/_version.py
 
 # Sound files
 *.wav
+
+# PyCharm
+.idea/
+.idea/*
