@@ -222,6 +222,29 @@ def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -
     return scene_listener_pairs
 
 
+def downmix_signal(
+    vocals: ndarray,
+    accompaniment: ndarray,
+    beta: float,
+) -> ndarray:
+    """
+    Downmix the vocals and accompaniment to stereo.
+    Args:
+        vocals (np.ndarray): Vocal signal.
+        accompaniment (np.ndarray): Accompaniment signal.
+        beta (float): Downmix parameter.
+
+    Returns:
+        np.ndarray: Downmixed signal.
+
+    Notes:
+        When beta is 0, the downmix is the accompaniment.
+        When beta is 1, the downmix is the vocals.
+    """
+
+    return vocals * (beta / 2 + 0.5) + accompaniment * (1 - beta) / 2
+
+
 @hydra.main(config_path="", config_name="config", version_base=None)
 def enhance(config: DictConfig) -> None:
     """
@@ -323,9 +346,10 @@ def enhance(config: DictConfig) -> None:
         hearing_aid.set_compressors(listener)
 
         # Downmix to stereo
-        enhanced_signal = vocals * alpha + accompaniment * (1 - alpha)
+        enhanced_signal = downmix_signal(vocals, accompaniment, beta=alpha)
+        # Peak Normalisation
         enhanced_signal /= np.max(np.abs(enhanced_signal))
-
+        # Apply Amplification
         enhanced_signal = hearing_aid(vocals)
 
         # Save the enhanced music
