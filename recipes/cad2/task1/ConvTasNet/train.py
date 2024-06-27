@@ -16,9 +16,9 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
-from .local import (
+from recipes.cad2.task1.ConvTasNet.local import (
     Compose,
-    ConvTasNet,
+    ConvTasNetStereo,
     MUSDB18Dataset,
     augment_channelswap,
     augment_gain,
@@ -101,7 +101,9 @@ def create_datasets_and_loaders(conf):
 
 
 def create_model_and_optimizer(conf):
-    model = ConvTasNet(**conf["convtasnet"], samplerate=conf["data"]["sample_rate"])
+    model = ConvTasNetStereo(
+        **conf["convtasnet"], samplerate=conf["data"]["sample_rate"]
+    )
     optimizer = torch.optim.Adam(model.parameters(), lr=conf["optim"]["lr"])
     scheduler = None
     if conf["training"]["half_lr"]:

@@ -35,6 +35,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from huggingface_hub import PyTorchModelHubMixin
 
 EPS = 1e-8
 
@@ -63,7 +64,7 @@ def overlap_and_add(signal, frame_step):
     return result
 
 
-class ConvTasNet(nn.Module):
+class ConvTasNetStereo(nn.Module, PyTorchModelHubMixin):
     def __init__(
         self,
         N=256,

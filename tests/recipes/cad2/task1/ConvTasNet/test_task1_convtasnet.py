@@ -12,7 +12,7 @@ import torch
 from pytorch_lightning.callbacks import ModelCheckpoint
 from scipy.io import wavfile
 
-from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNet
+from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 from recipes.cad2.task1.ConvTasNet.train import (
     create_callbacks,
     create_datasets_and_loaders,
@@ -102,7 +102,7 @@ def test_create_datasets_and_loaders(mock_conf):
 
 def test_create_model_and_optimizer(mock_conf):
     model, optimizer, scheduler = create_model_and_optimizer(mock_conf)
-    assert isinstance(model, ConvTasNet)
+    assert isinstance(model, ConvTasNetStereo)
     assert isinstance(optimizer, torch.optim.Adam)
     if mock_conf["training"]["half_lr"]:
         assert isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau)
