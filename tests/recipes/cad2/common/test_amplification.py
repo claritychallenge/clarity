@@ -1,4 +1,5 @@
 """Tests for the hearing aid amplification module."""
+
 import numpy as np
 import pytest
 
