@@ -1,6 +1,7 @@
 """Test the enhance function."""
+
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
@@ -9,13 +10,13 @@ from omegaconf import DictConfig
 from scipy.io import wavfile
 
 from recipes.cad2.task1.baseline.enhance import (
-    save_flac_signal,
-    separate_sources,
+    downmix_signal,
+    enhance,
     get_device,
     load_separation_model,
     make_scene_listener_list,
-    downmix_signal,
-    enhance,
+    save_flac_signal,
+    separate_sources,
 )
 
 
