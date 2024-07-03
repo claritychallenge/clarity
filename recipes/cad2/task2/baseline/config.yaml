@@ -13,11 +13,17 @@ input_sample_rate: 44100
 remix_sample_rate: 32000
 HAAQI_sample_rate: 24000
 
-soft_clip: False
+ha: # hearing aid
+  compressor:
+    crossover_frequencies: [353.55, 707.11, 1414.21, 2828.43, 5656.85] # [250, 500, 1000, 2000, 4000] * sqrt(2)
+    sample_rate: ${input_sample_rate}
+  camfit_gain_table:
+    noisegate_levels: 40
+    noisegate_slope: 0
+    cr_level: 0
+    max_output_level: 100
 
-separator:
-  model: demucs   # demucs or openunmix
-  device: ~
+soft_clip: False
 
 evaluate:
   set_random_seed: True
