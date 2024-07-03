@@ -116,7 +116,7 @@ def separate_sources(
 
     if mix.ndim == 1:
         # one track and mono audio
-        mix = mix.unsqueeze(0)
+        mix = mix.unsqueeze(0).unsqueeze(0)
     elif mix.ndim == 2:
         # one track and stereo audio
         mix = mix.unsqueeze(0)
@@ -347,10 +347,9 @@ def enhance(config: DictConfig) -> None:
 
         # Downmix to stereo
         enhanced_signal = downmix_signal(vocals, accompaniment, beta=alpha)
-        # Peak Normalisation
-        enhanced_signal /= np.max(np.abs(enhanced_signal))
+
         # Apply Amplification
-        enhanced_signal = hearing_aid(vocals)
+        enhanced_signal = hearing_aid(enhanced_signal)
 
         # Save the enhanced music
         filename = enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}_remix.flac"

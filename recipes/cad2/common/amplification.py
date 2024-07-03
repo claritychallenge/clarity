@@ -118,8 +118,8 @@ if __name__ == "__main__":
         {
             "name": "listener_14",
             "audiogram_cfs": [250, 500, 1000, 2000, 3000, 4000, 6000, 8000],
-            "audiogram_levels_l": [30, 20, 40, 50, 70, 75, 90, 75],
-            "audiogram_levels_r": [25, 25, 30, 30, 35, 40, 50, 60],
+            "audiogram_levels_l": [20, 35, 40, 50, 60, 65, 75, 70],
+            "audiogram_levels_r": [80, 80, 80, 70, 70, 70, 80, 80],
         }
     )
     signal = np.random.randn(44100)
