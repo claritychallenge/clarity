@@ -1,0 +1,37 @@
+path:
+  root: ???
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio
+  gains_file: ${path.metadata_dir}/gains.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
+  music_file: ${path.metadata_dir}/music.valid.json
+  scenes_file: ${path.metadata_dir}/scenes.valid.json
+  scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
+  exp_folder: ./exp # folder to store enhanced signals and final results
+
+input_sample_rate: 44100
+remix_sample_rate: 32000
+HAAQI_sample_rate: 24000
+
+ha: # hearing aid
+  compressor:
+    crossover_frequencies: [353.55, 707.11, 1414.21, 2828.43, 5656.85] # [250, 500, 1000, 2000, 4000] * sqrt(2)
+    sample_rate: ${input_sample_rate}
+  camfit_gain_table:
+    noisegate_levels: 40
+    noisegate_slope: 0
+    cr_level: 0
+    max_output_level: 100
+
+soft_clip: False
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+  batch_size: 1  # Number of batches
+  batch: 0       # Batch number to evaluate
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
