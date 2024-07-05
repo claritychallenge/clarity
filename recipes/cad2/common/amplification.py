@@ -48,15 +48,15 @@ class HearingAid:
             listener.audiogram_right,
             interpolate=False,
         )
-        gain_left, cr_left = self.compute_bill_params(gaintable_left_ear)
-        gain_right, cr_right = self.compute_bill_params(gaintable_right_ear)
+        gain_left, cr_left = self.compute_55_65_85_params(gaintable_left_ear)
+        gain_right, cr_right = self.compute_55_65_85_params(gaintable_right_ear)
 
         for i in range(2):
             self.mbc.append(
                 self.compressor.set_compressors(
-                    attack=15,
-                    release=10,
-                    threshold=40,
+                    attack=[11, 11, 14, 13, 11, 11],
+                    release=[80, 80, 80, 80, 100, 100],
+                    threshold=-40,
                     ratio=(cr_left if i == 0 else cr_right).tolist(),
                     makeup_gain=(gain_left if i == 0 else gain_right).tolist(),
                     knee_width=0,
@@ -64,10 +64,13 @@ class HearingAid:
             )
 
     @staticmethod
-    def compute_bill_params(gain_table):
-        level_55 = gain_table[65]
-        level_85 = gain_table[95]
-        gain = gain_table[75]
+    def compute_55_65_85_params(gain_table: ndarray) -> tuple[ndarray, ndarray]:
+        """Compute the gain and compression ratio using
+        levels at  55. 65 and 85 dB SPL from CAMFIT gaintable.
+        """
+        level_55 = gain_table[65]  # 55 dB SPL
+        level_85 = gain_table[95]  # 85 dB SPL
+        gain = gain_table[75]  # 65 dB SPL
         cr = np.divide(
             (85 - 55),
             (85 + level_85) - (55 + level_55),
@@ -86,7 +89,7 @@ class HearingAid:
             cr,
         )
 
-        return gain, cr
+        return np.minimum(gain, 24), cr
 
     def __call__(self, signal: ndarray) -> ndarray:
         """Apply hearing aid to the signal.
