@@ -8,6 +8,7 @@ import museval
 import soundfile as sf
 import torch
 import yaml
+
 from local import ConvTasNet
 
 parser = argparse.ArgumentParser()
@@ -61,7 +62,6 @@ def main(conf):
     txtout = os.path.join(eval_save_dir, "results.txt")
     fp = open(txtout, "w")
 
-    series_list = []
     torch.no_grad().__enter__()
     for track in test_set:
         input_file = os.path.join(
