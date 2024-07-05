@@ -241,8 +241,11 @@ def downmix_signal(
         When beta is 0, the downmix is the accompaniment.
         When beta is 1, the downmix is the vocals.
     """
-
-    return vocals * (beta / 2 + 0.5) + accompaniment * (1 - beta) / 2
+    # Vocals +1Db, Accompaniment -1Db
+    return (
+        vocals * 10 ** (1 / 20) * (beta / 2 + 0.5)
+        + accompaniment * 10 ** (-1 / 20) * (1 - beta) / 2
+    )
 
 
 @hydra.main(config_path="", config_name="config", version_base=None)
@@ -252,12 +255,10 @@ def enhance(config: DictConfig) -> None:
     The system decomposes the music into vocals and accompaniment.
     Then, vocals are enhanced according to alpha values.
     Finally, the music is amplified according hearing loss and downmix to stereo.
+
     Args:
         config (dict): Dictionary of configuration options for enhancing music.
 
-    Returns 8 stems for each song:
-        - left channel vocal, drums, bass, and other stems
-        - right channel vocal, drums, bass, and other stems
     """
     if config.separator.causality not in ["causal", "noncausal"]:
         raise ValueError(
