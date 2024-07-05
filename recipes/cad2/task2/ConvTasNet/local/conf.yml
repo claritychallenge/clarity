@@ -1,0 +1,35 @@
+# ConvTasNet config
+convtasnet:
+  N: 256
+  L: 20
+  B: 256
+  H: 512
+  P: 1 #3
+  X: 1 #10
+  R: 1 # 4
+  C: 2
+  audio_channels: 2 #  stereo
+  norm_type: gLN
+  causal: False
+  mask_nonlinear: 'relu'
+
+# Training config
+training:
+  epochs: 1 #200
+  batch_size: 2 # 16
+  num_workers: 1 #4
+  half_lr: yes
+  early_stop: yes
+# Optim config
+optim:
+  lr: 0.0001
+# Data config
+data:
+  root_path:  "/media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2/audio" # path to Cadenza dataset, audio folder
+  music_tracks_file: "/media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2/metadata/" # path to metadata file in cadenza format
+  sample_rate: 44100
+  target: 'Oboe'
+  samples_per_track: 64
+  segment_length: 3.0
+
+
