@@ -15,70 +15,12 @@ from torchaudio.transforms import Fade
 
 from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal
-from clarity.utils.flac_encoder import FlacEncoder
-from clarity.utils.signal_processing import clip_signal, resample, to_16bit
+from clarity.utils.flac_encoder import save_flac_signal
 from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
-
-
-def save_flac_signal(
-    signal: ndarray,
-    filename: Path,
-    signal_sample_rate,
-    output_sample_rate,
-    do_clip_signal: bool = False,
-    do_soft_clip: bool = False,
-    do_scale_signal: bool = False,
-) -> None:
-    """
-    Function to save output signals.
-
-    - The output signal will be resample to ``output_sample_rate``
-    - The output signal will be clipped to [-1, 1] if ``do_clip_signal`` is True
-        and use soft clipped if ``do_soft_clip`` is True. Note that if
-        ``do_clip_signal`` is False, ``do_soft_clip`` will be ignored.
-        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
-    - The output signal will be scaled to [-1, 1] if ``do_scale_signal`` is True.
-        If signal is scale, the scale factor will be saved in a TXT file.
-        Note that if ``do_clip_signal`` is True, ``do_scale_signal`` will be ignored.
-    - The output signal will be saved as a FLAC file.
-
-    Args:
-        signal (np.ndarray) : Signal to save
-        filename (Path) : Path to save signal
-        signal_sample_rate (int) : Sample rate of the input signal
-        output_sample_rate (int) : Sample rate of the output signal
-        do_clip_signal (bool) : Whether to clip signal
-        do_soft_clip (bool) : Whether to apply soft clipping
-        do_scale_signal (bool) : Whether to scale signal
-    """
-    # Resample signal to expected output sample rate
-    if signal_sample_rate != output_sample_rate:
-        signal = resample(signal, signal_sample_rate, output_sample_rate)
-
-    if do_scale_signal:
-        # Scale stem signal
-        max_value = np.max(np.abs(signal))
-        signal = signal / max_value
-
-        # Save scale factor
-        with open(filename.with_suffix(".txt"), "w", encoding="utf-8") as file:
-            file.write(f"{max_value}")
-
-    elif do_clip_signal:
-        # Clip the signal
-        signal, n_clipped = clip_signal(signal, do_soft_clip)
-        if n_clipped > 0:
-            logger.warning(f"Writing {filename}: {n_clipped} samples clipped")
-
-    # Convert signal to 16-bit integer
-    signal = to_16bit(signal)
-
-    # Create flac encoder object to compress and save the signal
-    FlacEncoder().encode(signal, output_sample_rate, filename)
 
 
 def separate_sources(
