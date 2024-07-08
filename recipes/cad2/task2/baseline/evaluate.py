@@ -15,47 +15,14 @@ import pyloudnorm as pyln
 from numpy import ndarray
 from omegaconf import DictConfig
 
-from clarity.enhancer.compressor import Compressor
-from clarity.enhancer.nalr import NALR
+from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.evaluator.haaqi import compute_haaqi
-from clarity.utils.audiogram import Audiogram, Listener
-from clarity.utils.file_io import read_signal
+from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 
 logger = logging.getLogger(__name__)
-
-
-def apply_ha(
-    enhancer: NALR,
-    compressor: Compressor | None,
-    signal: ndarray,
-    audiogram: Audiogram,
-    apply_compressor: bool = False,
-) -> np.ndarray:
-    """
-    Apply NAL-R prescription hearing aid to a signal.
-
-    Args:
-        enhancer (NALR): A NALR object that enhances the signal.
-        compressor (Compressor | None): A Compressor object that compresses the signal.
-        signal (ndarray): An ndarray representing the audio signal.
-        audiogram (Audiogram): An Audiogram object representing the listener's
-            audiogram.
-        apply_compressor (bool): Whether to apply the compressor.
-
-    Returns:
-        An ndarray representing the processed signal.
-    """
-    nalr_fir, _ = enhancer.build(audiogram)
-    proc_signal = enhancer.apply(nalr_fir, signal)
-    if apply_compressor:
-        if compressor is None:
-            raise ValueError("Compressor must be provided to apply compressor.")
-
-        proc_signal, _, _ = compressor.process(proc_signal)
-    return proc_signal
 
 
 def apply_gains(stems: dict, sample_rate: float, gains: dict) -> dict:
@@ -70,6 +37,7 @@ def apply_gains(stems: dict, sample_rate: float, gains: dict) -> dict:
         dict: Dictionary of stems with applied gains.
     """
     meter = pyln.Meter(int(sample_rate))
+
     stems_gain = {}
     for stem_str, stem_signal in stems.items():
         if stem_signal.shape[0] < stem_signal.shape[1]:
@@ -88,55 +56,21 @@ def apply_gains(stems: dict, sample_rate: float, gains: dict) -> dict:
     return stems_gain
 
 
-def level_normalisation(
-    signal: ndarray, reference_signal: ndarray, sample_rate: float
-) -> ndarray:
-    """Normalise the signal to the LUFS level of the reference signal.
-
-    Args:
-        signal (ndarray): Signal to normalise.
-        reference_signal (ndarray): Reference signal.
-        sample_rate (float): Sample rate of the signal.
-
-    Returns:
-        ndarray: Normalised signal.
-    """
-    meter = pyln.Meter(int(sample_rate))
-    signal_lufs = meter.integrated_loudness(signal)
-    reference_signal_lufs = meter.integrated_loudness(reference_signal)
-
-    if signal_lufs == -np.inf:
-        signal_lufs = -80
-
-    if reference_signal_lufs == -np.inf:
-        reference_signal_lufs = -80
-
-    gain = reference_signal_lufs - signal_lufs
-
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", message="Possible clipped samples in output")
-        normed_signal = pyln.normalize.loudness(signal, signal_lufs, signal_lufs + gain)
-    return normed_signal
-
-
-def remix_stems(stems: dict, reference_signal, sample_rate: float) -> ndarray:
+def remix_stems(stems: dict) -> ndarray:
     """Remix the stems into a stereo signal.
 
     The remixing is done by summing the stems.
-    Then, the signal is normalised to the LUFS level of the reference signal.
 
     Args:
         stems (dict): Dictionary of stems.
-        reference_signal (ndarray): Reference signal.
-        sample_rate (float): Sample rate of the signal.
 
     Returns:
         ndarray: Stereo signal.
     """
-    remix_signal = np.zeros(stems["vocals"].shape)
+    remix_signal = np.zeros(stems["source_1"].shape)
     for _, stem_signal in stems.items():
         remix_signal += stem_signal
-    return level_normalisation(remix_signal, reference_signal, sample_rate)
+    return remix_signal
 
 
 def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
@@ -156,9 +90,9 @@ def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -
         for listener in scenes_listeners[scene]
     ]
 
-    # Can define a standard 'small_test' with just 1/15 of the data
+    # Can define a standard 'small_test' with just 1/50 of the data
     if small_test:
-        scene_listener_pairs = scene_listener_pairs[::15]
+        scene_listener_pairs = scene_listener_pairs[::400]
 
     return scene_listener_pairs
 
@@ -170,7 +104,7 @@ def set_song_seed(song: str) -> None:
     np.random.seed(song_md5)
 
 
-def load_reference_stems(music_dir: str | Path) -> tuple[dict[str, ndarray], ndarray]:
+def load_reference_stems(music_dir: str | Path, stems: dict) -> tuple[dict[str, ndarray], ndarray]:
     """Load the reference stems for a given scene.
 
     Args:
@@ -181,14 +115,17 @@ def load_reference_stems(music_dir: str | Path) -> tuple[dict[str, ndarray], nda
         original_mixture (ndarray): The original mixture.
     """
     reference_stems = {}
-    for instrument in ["drums", "bass", "other", "vocals"]:
-        stem = read_signal(Path(music_dir) / f"{instrument}.wav")
-        reference_stems[instrument] = stem
+    for source_id, source_data in stems.items():
+        if source_id == "mixture":
+            continue
 
-    return reference_stems, read_signal(Path(music_dir) / "mixture.wav")
+        stem, _ = read_flac_signal(Path(music_dir) / source_data['track'])
+        reference_stems[source_id] = stem
+
+    return reference_stems
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
 
@@ -210,15 +147,22 @@ def run_calculate_aq(config: DictConfig) -> None:
     with Path(config.path.music_file).open("r", encoding="utf-8") as file:
         songs = json.load(file)
 
-    enhancer = NALR(**config.nalr)
+        # Load compressor params
+    with Path(config.path.enhancer_params_file).open("r", encoding="utf-8") as file:
+        enhancer_params = json.load(file)
+
+    enhancer = MultibandCompressor(
+        crossover_frequencies=config.hearing_aid.crossover_frequencies,
+        sample_rate=config.input_sample_rate,
+    )
 
     scores_headers = [
         "scene",
         "song",
         "listener",
-        "left_score",
-        "right_score",
-        "score",
+        "left_haaqi",
+        "right_haaqi",
+        "avg_haaqi",
     ]
     if config.evaluate.batch_size == 1:
         results_file = ResultsFile(
@@ -230,7 +174,6 @@ def run_calculate_aq(config: DictConfig) -> None:
             f"scores_{config.evaluate.batch + 1}-{config.evaluate.batch_size}.csv",
             header_columns=scores_headers,
         )
-    # results_file.write_header()
 
     scene_listener_pairs = make_scene_listener_list(
         scenes_listeners, config.evaluate.small_test
@@ -243,7 +186,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         scene_id, listener_id = scene_listener_pair
 
         scene = scenes[scene_id]
-        song_name = f"{scene['music']}-{scene['head_loudspeaker_positions']}"
+        song_name = scene['music']
 
         logger.info(
             f"[{idx:03d}/{num_scenes:03d}] "
@@ -251,14 +194,14 @@ def run_calculate_aq(config: DictConfig) -> None:
         )
 
         # Load reference signals
-        reference_stems, original_mixture = load_reference_stems(
-            Path(config.path.music_dir) / songs[song_name]["Path"]
+        reference_stems = load_reference_stems(
+            Path(config.path.music_dir), songs[song_name]
         )
         reference_stems = apply_gains(
-            reference_stems, config.sample_rate, gains[scene["gain"]]
+            reference_stems, config.input_sample_rate, gains[scene["gain"]]
         )
         reference_mixture = remix_stems(
-            reference_stems, original_mixture, config.sample_rate
+            reference_stems
         )
 
         # Set the random seed for the scene
@@ -268,25 +211,42 @@ def run_calculate_aq(config: DictConfig) -> None:
         # Evaluate listener
         listener = listener_dict[listener_id]
 
+        # Compressor params
+        mbc_params_listener = {'left': {}, 'right': {}}
+
+        for ear in ['left', 'right']:
+            mbc_params_listener[ear]['release'] = config.hearing_aid.release
+            mbc_params_listener[ear]['attack'] = config.hearing_aid.attack
+            mbc_params_listener[ear]['threshold'] = config.hearing_aid.threshold
+        mbc_params_listener['left']['ratio'] = enhancer_params[listener_id]['cr_l']
+        mbc_params_listener['right']['ratio'] = enhancer_params[listener_id]['cr_r']
+        mbc_params_listener['left']['makeup_gain'] = enhancer_params[listener_id][
+            'gain_l']
+        mbc_params_listener['right']['makeup_gain'] = enhancer_params[listener_id][
+            'gain_r']
+
+
+        # Get set directory
+        if 0 < int(scene_id[1:]) < 4999:
+            dataset_dir = "train"
+        elif 5000 < int(scene_id[1:]) < 5999:
+            dataset_dir = "valid"
+        else:
+            dataset_dir = "test"
+
         # Load enhanced signal
         enhanced_signal, _ = read_flac_signal(
-            Path(enhanced_folder) / f"{scene_id}_{listener.id}_remix.flac"
+            Path(enhanced_folder) / dataset_dir / f"{scene_id}_{listener.id}_remix.flac"
         )
 
         # Apply hearing aid to reference signals
-        left_reference = apply_ha(
-            enhancer=enhancer,
-            compressor=None,
+        enhancer.set_compressors(**mbc_params_listener['left'])
+        left_reference = enhancer(
             signal=reference_mixture[:, 0],
-            audiogram=listener.audiogram_left,
-            apply_compressor=False,
         )
-        right_reference = apply_ha(
-            enhancer=enhancer,
-            compressor=None,
-            signal=reference_mixture[:, 1],
-            audiogram=listener.audiogram_right,
-            apply_compressor=False,
+        enhancer.set_compressors(**mbc_params_listener['right'])
+        right_reference = enhancer(
+            signal=reference_mixture[:, 1]
         )
 
         # Compute the scores
@@ -297,7 +257,7 @@ def run_calculate_aq(config: DictConfig) -> None:
                 config.HAAQI_sample_rate,
             ),
             reference_signal=resample(
-                left_reference, config.sample_rate, config.HAAQI_sample_rate
+                left_reference[0], config.input_sample_rate, config.HAAQI_sample_rate
             ),
             processed_sample_rate=config.HAAQI_sample_rate,
             reference_sample_rate=config.HAAQI_sample_rate,
@@ -313,7 +273,7 @@ def run_calculate_aq(config: DictConfig) -> None:
                 config.HAAQI_sample_rate,
             ),
             reference_signal=resample(
-                right_reference, config.sample_rate, config.HAAQI_sample_rate
+                right_reference[0], config.input_sample_rate, config.HAAQI_sample_rate
             ),
             processed_sample_rate=config.HAAQI_sample_rate,
             reference_sample_rate=config.HAAQI_sample_rate,
@@ -328,9 +288,9 @@ def run_calculate_aq(config: DictConfig) -> None:
                 "scene": scene_id,
                 "song": song_name,
                 "listener": listener.id,
-                "left_score": left_score,
-                "right_score": right_score,
-                "score": float(np.mean([left_score, right_score])),
+                "left_haaqi": left_score,
+                "right_haaqi": right_score,
+                "avg_haaqi": float(np.mean([left_score, right_score])),
             }
         )
 
