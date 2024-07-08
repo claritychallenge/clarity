@@ -26,8 +26,7 @@ separator:
     overlap: 0.1
     sample_rate: ${input_sample_rate}
 
-
-hearing_aid:
+enhancer:
   crossover_frequencies: [353.55, 707.11, 1414.21, 2828.43, 5656.85] # [250, 500, 1000, 2000, 4000] * sqrt(2)
   attack: [11, 11, 14, 13, 11, 11]
   release: [80, 80, 80, 80, 100, 100]

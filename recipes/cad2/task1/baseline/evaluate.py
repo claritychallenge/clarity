@@ -13,13 +13,13 @@ import whisper
 from jiwer import compute_measures
 from omegaconf import DictConfig
 
+from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
-from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.baseline.enhance import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
@@ -102,6 +102,10 @@ def run_compute_scores(config: DictConfig) -> None:
     with Path(config.path.musics_file).open("r", encoding="utf-8") as file:
         songs = json.load(file)
 
+    # Load compressor params
+    with Path(config.path.enhancer_params_file).open("r", encoding="utf-8") as file:
+        enhancer_params = json.load(file)
+
     scores_headers = [
         "scene",
         "song",
@@ -133,10 +137,10 @@ def run_compute_scores(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
-    # Hearing aid object
-    hearing_aid = HearingAid(
-        config.ha.compressor,
-        config.ha.camfit_gain_table,
+    # create hearing aid
+    enhancer = MultibandCompressor(
+        crossover_frequencies=config.enhancer.crossover_frequencies,
+        sample_rate=config.input_sample_rate,
     )
 
     intelligibility_scorer = whisper.load_model(config.evaluate.whisper_version)
@@ -173,8 +177,29 @@ def run_compute_scores(config: DictConfig) -> None:
             n_samples=int(end_sample - start_sample),
         )
         # Apply hearing aid
-        hearing_aid.set_compressors(listener)
-        reference = hearing_aid(reference)
+
+        # Get the listener's compressor params
+        mbc_params_listener = {"left": {}, "right": {}}
+
+        for ear in ["left", "right"]:
+            mbc_params_listener[ear]["release"] = config.enhancer.release
+            mbc_params_listener[ear]["attack"] = config.enhancer.attack
+            mbc_params_listener[ear]["threshold"] = config.enhancer.threshold
+        mbc_params_listener["left"]["ratio"] = enhancer_params[listener_id]["cr_l"]
+        mbc_params_listener["right"]["ratio"] = enhancer_params[listener_id]["cr_r"]
+        mbc_params_listener["left"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_l"
+        ]
+        mbc_params_listener["right"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_r"
+        ]
+
+        enhancer.set_compressors(**mbc_params_listener["left"])
+        left_reference = enhancer(signal=reference[:, 0])
+
+        enhancer.set_compressors(**mbc_params_listener["right"])
+        right_reference = enhancer(signal=reference[:, 0])
+        reference = np.stack([left_reference[0], right_reference[0]], axis=1)
 
         # Load the enhanced signals
         enhanced_signal_path = (

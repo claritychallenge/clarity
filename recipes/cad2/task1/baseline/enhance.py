@@ -13,10 +13,10 @@ from numpy import ndarray
 from omegaconf import DictConfig
 from torchaudio.transforms import Fade
 
+from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.audiogram import Listener
 from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import save_flac_signal
-from recipes.cad2.common.amplification import HearingAid
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logging.captureWarnings(True)
@@ -233,13 +233,17 @@ def enhance(config: DictConfig) -> None:
     with Path(config.path.musics_file).open("r", encoding="utf-8") as file:
         songs = json.load(file)
 
+    # Load compressor params
+    with Path(config.path.enhancer_params_file).open("r", encoding="utf-8") as file:
+        enhancer_params = json.load(file)
+
     # Load separation model
     separation_model = load_separation_model(config.separator.causality, device)
 
     # create hearing aid
-    hearing_aid = HearingAid(
-        config.ha.compressor,
-        config.ha.camfit_gain_table,
+    enhancer = MultibandCompressor(
+        crossover_frequencies=config.enhancer.crossover_frequencies,
+        sample_rate=config.input_sample_rate,
     )
 
     # Make the list of scene-listener pairings to process
@@ -256,8 +260,12 @@ def enhance(config: DictConfig) -> None:
 
         scene_id, listener_id = scene_listener_ids
         scene = scenes[scene_id]
-        listener = listener_dict[listener_id]
+
+        # This recipe is not using the listener metadata
+        # listener = listener_dict[listener_id]
+
         alpha = alphas[scene["alpha"]]
+
         # Load the music
         music = read_signal(
             Path(config.path.music_dir)
@@ -285,21 +293,40 @@ def enhance(config: DictConfig) -> None:
         )
         vocals, accompaniment = sources.squeeze(0).cpu().detach().numpy()
 
-        # Enhance the vocals
-        hearing_aid.set_compressors(listener)
+        # Get the listener's compressor params
+        mbc_params_listener = {"left": {}, "right": {}}
+
+        for ear in ["left", "right"]:
+            mbc_params_listener[ear]["release"] = config.enhancer.release
+            mbc_params_listener[ear]["attack"] = config.enhancer.attack
+            mbc_params_listener[ear]["threshold"] = config.enhancer.threshold
+        mbc_params_listener["left"]["ratio"] = enhancer_params[listener_id]["cr_l"]
+        mbc_params_listener["right"]["ratio"] = enhancer_params[listener_id]["cr_r"]
+        mbc_params_listener["left"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_l"
+        ]
+        mbc_params_listener["right"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_r"
+        ]
 
         # Downmix to stereo
         enhanced_signal = downmix_signal(vocals, accompaniment, beta=alpha)
 
         # Apply Amplification
-        enhanced_signal = hearing_aid(enhanced_signal)
+        enhancer.set_compressors(**mbc_params_listener["left"])
+        left_enhanced = enhancer(signal=enhanced_signal[0, :])
+
+        enhancer.set_compressors(**mbc_params_listener["right"])
+        right_enhanced = enhancer(signal=enhanced_signal[1, :])
+
+        enhanced_signal = np.stack((left_enhanced[0], right_enhanced[0]), axis=1)
 
         # Save the enhanced music
         filename = enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}_remix.flac"
         filename.parent.mkdir(parents=True, exist_ok=True)
 
         save_flac_signal(
-            signal=enhanced_signal.T,
+            signal=enhanced_signal,
             filename=filename,
             signal_sample_rate=config.input_sample_rate,
             output_sample_rate=config.remix_sample_rate,

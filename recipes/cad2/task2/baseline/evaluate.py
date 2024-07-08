@@ -104,7 +104,9 @@ def set_song_seed(song: str) -> None:
     np.random.seed(song_md5)
 
 
-def load_reference_stems(music_dir: str | Path, stems: dict) -> tuple[dict[str, ndarray], ndarray]:
+def load_reference_stems(
+    music_dir: str | Path, stems: dict
+) -> tuple[dict[str, ndarray], ndarray]:
     """Load the reference stems for a given scene.
 
     Args:
@@ -119,7 +121,7 @@ def load_reference_stems(music_dir: str | Path, stems: dict) -> tuple[dict[str, 
         if source_id == "mixture":
             continue
 
-        stem, _ = read_flac_signal(Path(music_dir) / source_data['track'])
+        stem, _ = read_flac_signal(Path(music_dir) / source_data["track"])
         reference_stems[source_id] = stem
 
     return reference_stems
@@ -152,7 +154,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         enhancer_params = json.load(file)
 
     enhancer = MultibandCompressor(
-        crossover_frequencies=config.hearing_aid.crossover_frequencies,
+        crossover_frequencies=config.enhancer.crossover_frequencies,
         sample_rate=config.input_sample_rate,
     )
 
@@ -186,7 +188,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         scene_id, listener_id = scene_listener_pair
 
         scene = scenes[scene_id]
-        song_name = scene['music']
+        song_name = scene["music"]
 
         logger.info(
             f"[{idx:03d}/{num_scenes:03d}] "
@@ -200,9 +202,8 @@ def run_calculate_aq(config: DictConfig) -> None:
         reference_stems = apply_gains(
             reference_stems, config.input_sample_rate, gains[scene["gain"]]
         )
-        reference_mixture = remix_stems(
-            reference_stems
-        )
+        reference_mixture = remix_stems(reference_stems)
+        reference_mixture = reference_mixture * 10 ** (-8.9 / 20)
 
         # Set the random seed for the scene
         if config.evaluate.set_random_seed:
@@ -212,24 +213,25 @@ def run_calculate_aq(config: DictConfig) -> None:
         listener = listener_dict[listener_id]
 
         # Compressor params
-        mbc_params_listener = {'left': {}, 'right': {}}
+        mbc_params_listener = {"left": {}, "right": {}}
 
-        for ear in ['left', 'right']:
-            mbc_params_listener[ear]['release'] = config.hearing_aid.release
-            mbc_params_listener[ear]['attack'] = config.hearing_aid.attack
-            mbc_params_listener[ear]['threshold'] = config.hearing_aid.threshold
-        mbc_params_listener['left']['ratio'] = enhancer_params[listener_id]['cr_l']
-        mbc_params_listener['right']['ratio'] = enhancer_params[listener_id]['cr_r']
-        mbc_params_listener['left']['makeup_gain'] = enhancer_params[listener_id][
-            'gain_l']
-        mbc_params_listener['right']['makeup_gain'] = enhancer_params[listener_id][
-            'gain_r']
-
+        for ear in ["left", "right"]:
+            mbc_params_listener[ear]["release"] = config.enhancer.release
+            mbc_params_listener[ear]["attack"] = config.enhancer.attack
+            mbc_params_listener[ear]["threshold"] = config.enhancer.threshold
+        mbc_params_listener["left"]["ratio"] = enhancer_params[listener_id]["cr_l"]
+        mbc_params_listener["right"]["ratio"] = enhancer_params[listener_id]["cr_r"]
+        mbc_params_listener["left"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_l"
+        ]
+        mbc_params_listener["right"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_r"
+        ]
 
         # Get set directory
-        if 0 < int(scene_id[1:]) < 4999:
+        if 0 < int(scene_id[1:]) < 49999:
             dataset_dir = "train"
-        elif 5000 < int(scene_id[1:]) < 5999:
+        elif 50000 < int(scene_id[1:]) < 59999:
             dataset_dir = "valid"
         else:
             dataset_dir = "test"
@@ -240,14 +242,12 @@ def run_calculate_aq(config: DictConfig) -> None:
         )
 
         # Apply hearing aid to reference signals
-        enhancer.set_compressors(**mbc_params_listener['left'])
+        enhancer.set_compressors(**mbc_params_listener["left"])
         left_reference = enhancer(
             signal=reference_mixture[:, 0],
         )
-        enhancer.set_compressors(**mbc_params_listener['right'])
-        right_reference = enhancer(
-            signal=reference_mixture[:, 1]
-        )
+        enhancer.set_compressors(**mbc_params_listener["right"])
+        right_reference = enhancer(signal=reference_mixture[:, 1])
 
         # Compute the scores
         left_score = compute_haaqi(

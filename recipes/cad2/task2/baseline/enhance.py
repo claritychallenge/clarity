@@ -190,7 +190,7 @@ def load_separation_model(
         "Violin",
     ]:
         logger.info(
-            f"Loading model "
+            "Loading model "
             f"cadenzachallenge/ConvTasNet_{instrument}_{causal[causality]}"
         )
         models[instrument] = ConvTasNetStereo.from_pretrained(
@@ -201,10 +201,7 @@ def load_separation_model(
 
 
 def process_remix_for_listener(
-    signal: ndarray,
-    enhancer: MultibandCompressor,
-    enhancer_params: dict,
-    listener
+    signal: ndarray, enhancer: MultibandCompressor, enhancer_params: dict, listener
 ) -> ndarray:
     """Process the stems from sources.
 
@@ -215,7 +212,7 @@ def process_remix_for_listener(
     """
 
     output = []
-    for side, ear in enumerate(['left', 'right']):
+    for side, ear in enumerate(["left", "right"]):
         enhancer.set_compressors(**enhancer_params[ear])
         output.append(enhancer(signal[:, side]))
 
@@ -275,7 +272,7 @@ def enhance(config: DictConfig) -> None:
 
     # create hearing aid
     enhancer = MultibandCompressor(
-        crossover_frequencies=config.hearing_aid.crossover_frequencies,
+        crossover_frequencies=config.enhancer.crossover_frequencies,
         sample_rate=config.input_sample_rate,
     )
 
@@ -306,20 +303,20 @@ def enhance(config: DictConfig) -> None:
         listener = listener_dict[listener_id]
 
         # Get the listener's compressor params
-        mbc_params_listener = {'left': {}, 'right': {}}
+        mbc_params_listener = {"left": {}, "right": {}}
 
-        for ear in ['left', 'right']:
-            mbc_params_listener[ear]['release'] = config.hearing_aid.release
-            mbc_params_listener[ear]['attack'] = config.hearing_aid.attack
-            mbc_params_listener[ear]['threshold'] = config.hearing_aid.threshold
-        mbc_params_listener['left']['ratio'] = enhancer_params[listener_id]['cr_l']
-        mbc_params_listener['right']['ratio'] = enhancer_params[listener_id]['cr_r']
-        mbc_params_listener['left']['makeup_gain'] = enhancer_params[listener_id][
-            'gain_l']
-        mbc_params_listener['right']['makeup_gain'] = enhancer_params[listener_id][
-            'gain_r']
-
-
+        for ear in ["left", "right"]:
+            mbc_params_listener[ear]["release"] = config.enhancer.release
+            mbc_params_listener[ear]["attack"] = config.enhancer.attack
+            mbc_params_listener[ear]["threshold"] = config.enhancer.threshold
+        mbc_params_listener["left"]["ratio"] = enhancer_params[listener_id]["cr_l"]
+        mbc_params_listener["right"]["ratio"] = enhancer_params[listener_id]["cr_r"]
+        mbc_params_listener["left"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_l"
+        ]
+        mbc_params_listener["right"]["makeup_gain"] = enhancer_params[listener_id][
+            "gain_r"
+        ]
 
         # Read the mixture signal
         # Convert to 32-bit floating point and transpose
@@ -364,20 +361,20 @@ def enhance(config: DictConfig) -> None:
         )
 
         # Save the enhanced signal in the corresponding directory
-        if 0 < int(scene_id[1:]) < 4999:
+        if 0 < int(scene_id[1:]) < 49999:
             out_dir = "train"
-        elif 5000 < int(scene_id[1:]) < 5999:
+        elif 50000 < int(scene_id[1:]) < 59999:
             out_dir = "valid"
         else:
             out_dir = "test"
 
         filename = (
-                Path(enhanced_folder) / out_dir / f"{scene_id}_{listener.id}_remix.flac"
+            Path(enhanced_folder) / out_dir / f"{scene_id}_{listener.id}_remix.flac"
         )
 
         filename.parent.mkdir(parents=True, exist_ok=True)
         save_flac_signal(
-            signal=enhanced_signal,
+            signal=enhanced_signal * 10 ** (-8.9 / 20),
             filename=filename,
             signal_sample_rate=config.input_sample_rate,
             output_sample_rate=config.remix_sample_rate,
