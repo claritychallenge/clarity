@@ -4,11 +4,14 @@ path:
   zenodo_download_path: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/Rebalancing_Classical/Zenodo
   root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2
   metadata_dir: ${path.root}/metadata
+  scene_metadata_file: ${path.metadata_dir}/scenes.train2.json
+  gain_metadata: ${path.metadata_dir}/gains_meta.json
   music_dir: ${path.root}/audio
+  music_metadata: ${path.metadata_dir}/music.train.json
 
-input_sample_rate: 44100
-remix_sample_rate: 32000
-
+seed_scene_generation: Cad2Task2_2024
+gains_per_track: 4
+listener_per_scene: 2
 
 # hydra config
 hydra:
