@@ -65,13 +65,9 @@ def create_audio_valid(cfg):
     audio_path.mkdir(parents=True, exist_ok=True)
 
     zenodo_download_path = Path(cfg.path.zenodo_download_path)
-    valid_metadata_path = zenodo_download_path / "metadata" / "music_tracks.valid.json"
     valid_samples_path = (
         zenodo_download_path / "metadata" / "music.valid.to_generate.json"
     )
-
-    with open(valid_metadata_path, "r") as f:
-        valid_metadata = json.load(f)
 
     with open(valid_samples_path, "r") as f:
         valid_samples = json.load(f)
@@ -81,7 +77,7 @@ def create_audio_valid(cfg):
     ):
         mixture = []
         for source, source_info in track_info.items():
-            if source == "mixture":
+            if source == "mixture_target":
                 mixture_target = audio_path / source_info["track"]
                 continue
 
@@ -104,22 +100,23 @@ def create_audio_valid(cfg):
                 track_path, sr=None, offset=start, duration=duration, mono=False
             )
             mixture.append(signal)
-
-            save_flac_signal(
-                signal.T,
-                target,
-                sr,
-                sr,
-            )
+            if not target.exists():
+                save_flac_signal(
+                    signal.T,
+                    target,
+                    sr,
+                    sr,
+                )
 
         mixture = np.stack(mixture)
         mixture = mixture.sum(axis=0)
-        save_flac_signal(
-            mixture.T,
-            mixture_target,
-            sr,
-            sr,
-        )
+        if not mixture_target.exists():
+            save_flac_signal(
+                mixture.T,
+                mixture_target,
+                sr,
+                sr,
+            )
 
 
 @hydra.main(config_path="", config_name="config", version_base=None)
@@ -159,6 +156,12 @@ def prepare_cad2_dataset(config: DictConfig) -> None:
 
     # Create valid audio directory
     create_audio_valid(config)
+
+    # Copy the metadata directory
+    print(f"Copying {directory} directory.")
+    shutil.copytree(
+        zenodo_path / "metadata", Path(config.path.metadata_dir), dirs_exist_ok=True
+    )
 
 
 if __name__ == "__main__":
