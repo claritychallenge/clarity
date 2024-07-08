@@ -35,6 +35,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from huggingface_hub import PyTorchModelHubMixin
 
 EPS = 1e-8
 
@@ -63,7 +64,7 @@ def overlap_and_add(signal, frame_step):
     return result
 
 
-class ConvTasNet(nn.Module):
+class ConvTasNetStereo(nn.Module, PyTorchModelHubMixin):
     def __init__(
         self,
         N=256,
@@ -94,7 +95,7 @@ class ConvTasNet(nn.Module):
             causal: causal or non-causal
             mask_nonlinear: use which non-linear function to generate mask
         """
-        super(ConvTasNet, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.N, self.L, self.B, self.H, self.P, self.X, self.R, self.C = (
             N,
@@ -176,7 +177,8 @@ class ConvTasNet(nn.Module):
         # Assert both dict are disjoint
         if not all(k not in fb_config for k in masknet_config):
             raise AssertionError(
-                "Filterbank and Mask network config share common keys. Merging them is not safe."
+                "Filterbank and Mask network config share common keys. Merging them is"
+                " not safe."
             )
         # Merge all args under model_args.
         model_args = {
@@ -191,7 +193,7 @@ class Encoder(nn.Module):
     """Estimation of the nonnegative mixture weight by a 1-D conv layer."""
 
     def __init__(self, L, N, audio_channels):
-        super(Encoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.L, self.N = L, N
         # Components
@@ -213,7 +215,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self, N, L, audio_channels):
-        super(Decoder, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.N, self.L = N, L
         self.audio_channels = audio_channels
@@ -260,7 +262,7 @@ class TemporalConvNet(nn.Module):
             causal: causal or non-causal
             mask_nonlinear: use which non-linear function to generate mask
         """
-        super(TemporalConvNet, self).__init__()
+        super().__init__()
         # Hyper-parameter
         self.C = C
         self.mask_nonlinear = mask_nonlinear
@@ -329,7 +331,7 @@ class TemporalBlock(nn.Module):
         norm_type="gLN",
         causal=False,
     ):
-        super(TemporalBlock, self).__init__()
+        super().__init__()
         # [M, B, K] -> [M, H, K]
         conv1x1 = nn.Conv1d(in_channels, out_channels, 1, bias=False)
         prelu = nn.PReLU()
@@ -374,7 +376,7 @@ class DepthwiseSeparableConv(nn.Module):
         norm_type="gLN",
         causal=False,
     ):
-        super(DepthwiseSeparableConv, self).__init__()
+        super().__init__()
         # Use `groups` option to implement depthwise convolution
         # [M, H, K] -> [M, H, K]
         depthwise_conv = nn.Conv1d(
@@ -413,7 +415,7 @@ class Chomp1d(nn.Module):
     """To ensure the output length is the same as the input."""
 
     def __init__(self, chomp_size):
-        super(Chomp1d, self).__init__()
+        super().__init__()
         self.chomp_size = chomp_size
 
     def forward(self, x):
@@ -447,7 +449,7 @@ class ChannelwiseLayerNorm(nn.Module):
     """Channel-wise Layer Normalization (cLN)"""
 
     def __init__(self, channel_size):
-        super(ChannelwiseLayerNorm, self).__init__()
+        super().__init__()
         self.gamma = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.beta = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.reset_parameters()
@@ -473,7 +475,7 @@ class GlobalLayerNorm(nn.Module):
     """Global Layer Normalization (gLN)"""
 
     def __init__(self, channel_size):
-        super(GlobalLayerNorm, self).__init__()
+        super().__init__()
         self.gamma = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.beta = nn.Parameter(torch.Tensor(1, channel_size, 1))  # [1, N, 1]
         self.reset_parameters()
@@ -505,7 +507,7 @@ if __name__ == "__main__":
     B, H, P, X, R, C, norm_type, causal = 2, 3, 3, 3, 2, 2, "gLN", False
     mixture = torch.randint(3, (M, T))
     # test Encoder
-    encoder = Encoder(L, N)
+    encoder = Encoder(L, N, 1)
     encoder.conv1d_U.weight.data = torch.randint(2, encoder.conv1d_U.weight.size())
     mixture_w = encoder(mixture)
     print("mixture", mixture)
@@ -519,7 +521,7 @@ if __name__ == "__main__":
     print("est_mask", est_mask)
 
     # test Decoder
-    decoder = Decoder(N, L)
+    decoder = Decoder(N, L, audio_channels=1)
     est_mask = torch.randint(2, (B, K, C, N))
     est_source = decoder(mixture_w, est_mask)
     print("est_source", est_source)

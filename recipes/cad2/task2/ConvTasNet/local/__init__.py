@@ -1,8 +1,8 @@
 from .cad2task2_dataloader import RebalanceMusicDataset
-from .tasnet import ConvTasNet, overlap_and_add
+from .tasnet import ConvTasNetStereo, overlap_and_add
 
 __all__ = [
-    "ConvTasNet",
+    "ConvTasNetStereo",
     "overlap_and_add",
     "RebalanceMusicDataset",
 ]
