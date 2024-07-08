@@ -1,0 +1,24 @@
+# Zenodo download path: path to the zenodo download folder.
+# root: root path of the dataset. This path will contain the audio and metadata folders
+path:
+  zenodo_download_path: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/Rebalancing_Classical/Zenodo
+  root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio
+  gains_file: ${path.metadata_dir}/gains.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
+  music_file: ${path.metadata_dir}/music.valid.json
+  scenes_file: ${path.metadata_dir}/scenes.valid.json
+  scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
+  exp_folder: ./exp # folder to store enhanced signals and final results
+
+input_sample_rate: 44100
+remix_sample_rate: 32000
+
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
+  job:
+    chdir: True
