@@ -16,7 +16,6 @@ from omegaconf import DictConfig
 from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
-from clarity.utils.file_io import read_signal
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
@@ -74,6 +73,26 @@ def compute_quality(
         scores.append(s)
 
     return scores[0], scores[1]
+
+
+def load_reference_signal(
+    path: str | Path, start_sample: int | None, end_sample: int | None
+) -> np.ndarray:
+    """Load the reference signal"""
+    if start_sample is None:
+        start_sample = 0
+    if end_sample is None:
+        end_sample = -1
+
+    vocal, _ = read_flac_signal(path / "vocals.flac")
+    accompaniment = np.zeros_like(vocal)
+
+    for instrument in ["bass", "drums", "other"]:
+        instrument_signal, _ = read_flac_signal(path / f"{instrument}.flac")
+        accompaniment += instrument_signal
+
+    mixture = vocal * 10 ** (1 / 20) + accompaniment * 10 ** (-1 / 20)
+    return mixture[start_sample:end_sample, :]
 
 
 @hydra.main(config_path="", config_name="config", version_base=None)
@@ -161,6 +180,9 @@ def run_compute_scores(config: DictConfig) -> None:
         listener = listener_dict[listener_id]
         alpha = alphas[scene["alpha"]]
 
+        #############################################################
+        # REFERENCE SIGNAL
+
         # Load the reference signal
         start_sample = int(
             songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
@@ -168,15 +190,11 @@ def run_compute_scores(config: DictConfig) -> None:
         end_sample = int(
             songs[scene["segment_id"]]["end_time"] * config.input_sample_rate
         )
-        reference = read_signal(
-            Path(config.path.music_dir)
-            / songs[scene["segment_id"]]["path"]
-            / "mixture.wav",
-            offset=start_sample,
-            offset_is_samples=True,
-            n_samples=int(end_sample - start_sample),
+        reference = load_reference_signal(
+            Path(config.path.music_dir) / songs[scene["segment_id"]]["path"],
+            start_sample,
+            end_sample,
         )
-        # Apply hearing aid
 
         # Get the listener's compressor params
         mbc_params_listener = {"left": {}, "right": {}}
@@ -194,18 +212,27 @@ def run_compute_scores(config: DictConfig) -> None:
             "gain_r"
         ]
 
+        # Apply compressor to reference signal
         enhancer.set_compressors(**mbc_params_listener["left"])
         left_reference = enhancer(signal=reference[:, 0])
 
         enhancer.set_compressors(**mbc_params_listener["right"])
         right_reference = enhancer(signal=reference[:, 0])
+
+        # Reference signal amplified
         reference = np.stack([left_reference[0], right_reference[0]], axis=1)
+
+        #############################################################
+        # ENHANCED SIGNAL
 
         # Load the enhanced signals
         enhanced_signal_path = (
             enhanced_folder / f"{scene_id}_{listener_id}_A{alpha}_remix.flac"
         )
         enhanced_signal, _ = read_flac_signal(enhanced_signal_path)
+
+        #############################################################
+        # COMPUTE SCORES
 
         # Compute the HAAQI and Whisper scores
         haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)

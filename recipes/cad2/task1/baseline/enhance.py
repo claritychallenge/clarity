@@ -16,8 +16,7 @@ from torchaudio.transforms import Fade
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.audiogram import Listener
-from clarity.utils.file_io import read_signal
-from clarity.utils.flac_encoder import save_flac_signal
+from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logging.captureWarnings(True)
@@ -203,10 +202,11 @@ def downmix_signal(
         When beta is 1, the downmix is the vocals.
     """
     # Vocals +1Db, Accompaniment -1Db
-    return (
-        vocals * 10 ** (1 / 20) * (beta / 2 + 0.5)
-        + accompaniment * 10 ** (-1 / 20) * (1 - beta) / 2
-    )
+    # vocal amplification
+    vamp = beta**2 + 1
+    # accompaniment amplification
+    aamp = 2 - vamp
+    return vocals * vamp + accompaniment * aamp
 
 
 @hydra.main(config_path="", config_name="config", version_base=None)
@@ -281,40 +281,39 @@ def enhance(config: DictConfig) -> None:
         scene = scenes[scene_id]
 
         # This recipe is not using the listener metadata
-        # listener = listener_dict[listener_id]
+        listener = listener_dict[listener_id]
 
         alpha = alphas[scene["alpha"]]
 
         # Load the music
-        input_mixture = read_signal(
+        input_mixture, input_sample_rate = read_flac_signal(
             Path(config.path.music_dir)
             / songs[scene["segment_id"]]["path"]
-            / "mixture.wav",
-            offset=int(
-                songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
-            ),
-            offset_is_samples=True,
-            n_samples=int(
-                (
-                    songs[scene["segment_id"]]["end_time"]
-                    - songs[scene["segment_id"]]["start_time"]
-                )
-                * config.input_sample_rate
-            ),
+            / "mixture.flac"
         )
+        start_sample = int(
+            songs[scene["segment_id"]]["start_time"] * config.input_sample_rate
+        )
+        end_time = int(
+            (songs[scene["segment_id"]]["end_time"]) * config.input_sample_rate
+        )
+
+        input_mixture = input_mixture[start_sample:end_time, :]
+        assert input_sample_rate == config.input_sample_rate
+
         # normalise input mixture to -40 dB LUFS
         input_mixture = normalise_luft(
             input_mixture, config.input_sample_rate, target_luft=-40
         )
 
         # Separate the music
-        sources = separate_sources(
+        est_sources = separate_sources(
             separation_model,
             input_mixture.T,
             device=device,
             **config.separator.separation,
         )
-        vocals, accompaniment = sources.squeeze(0).cpu().detach().numpy()
+        vocals, accompaniment = est_sources.squeeze(0).cpu().detach().numpy()
 
         # Get the listener's compressor params
         mbc_params_listener = {"left": {}, "right": {}}
