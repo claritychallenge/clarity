@@ -15,8 +15,9 @@ from omegaconf import DictConfig
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.evaluator.haaqi import compute_haaqi
+from clarity.evaluator.msbg.msbg import Ear
 from clarity.utils.audiogram import Listener
-from clarity.utils.flac_encoder import read_flac_signal
+from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 from recipes.cad2.task1.baseline.enhance import make_scene_listener_list
@@ -25,18 +26,49 @@ logger = logging.getLogger(__name__)
 
 
 def compute_intelligibility(
-    enhanced_path: Path,
+    enhanced_signal: np.ndarray,
     segment_metadata: dict,
     scorer: torch.nn.Module,
+    listener: Listener,
+    sample_rate: int,
+    save_intermediate: bool = False,
+    path_intermediate: str | Path | None = None,
+    equiv_0db_spl: float = 100,
 ) -> float:
     """
     Compute the Intelligibility score for the enhanced signal
-    using the Whisper model
+    using the Whisper model.
+
+    To the enhanced signal, we apply the MSGB hearing loss model
+    before transcribing with Whisper.
     """
-    hypotesis = scorer.transcribe(enhanced_path.as_posix(), fp16=False)["text"]
+    ear = Ear(
+        equiv_0db_spl=equiv_0db_spl,
+        sample_rate=sample_rate,
+    )
+    ear.set_audiogram(listener.audiogram_left)
+    enhanced_left = ear.process(enhanced_signal[:, 0])[0]
+
+    ear.set_audiogram(listener.audiogram_right)
+    enhanced_right = ear.process(enhanced_signal[:, 1])[0]
+
+    enhanced_signal = np.stack([enhanced_left, enhanced_right], axis=1)
+
+    save_flac_signal(
+        enhanced_signal,
+        path_intermediate,
+        44100,
+        sample_rate,
+    )
+    # Whisper model requires 16kHz
+    hypotesis = scorer.transcribe(path_intermediate.as_posix(), fp16=False)["text"]
     reference = segment_metadata["text"]
     results = compute_measures(reference, hypotesis)
     total_words = results["substitutions"] + results["deletions"] + results["hits"]
+
+    if not save_intermediate:
+        path_intermediate.unlink()
+
     return results["hits"] / total_words
 
 
@@ -237,9 +269,15 @@ def run_compute_scores(config: DictConfig) -> None:
         # Compute the HAAQI and Whisper scores
         haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)
         whisper_score = compute_intelligibility(
-            enhanced_signal_path,
-            songs[scene["segment_id"]],
-            intelligibility_scorer,
+            enhanced_signal=enhanced_signal,
+            segment_metadata=songs[scene["segment_id"]],
+            scorer=intelligibility_scorer,
+            listener=listener,
+            sample_rate=config.remix_sample_rate,
+            save_intermediate=config.evaluate.save_intermediate,
+            path_intermediate=enhanced_signal_path.parent
+            / f"{scene_id}_{listener_id}_A{alpha}_remix_hl.flac",
+            equiv_0db_spl=config.evaluate.equiv_0db_spl,
         )
 
         results_file.add_result(

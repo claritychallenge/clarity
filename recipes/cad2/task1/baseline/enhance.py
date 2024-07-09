@@ -356,9 +356,9 @@ def enhance(config: DictConfig) -> None:
             do_soft_clip=config.soft_clip,
         )
 
-    logger.info("Done!")
-
 
 # pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     enhance()
+
+    logger.info("Done!")

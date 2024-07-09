@@ -287,7 +287,6 @@ def enhance(config: DictConfig) -> None:
 
     # Decompose each song into left and right vocal, drums, bass, and other stems
     # and process each stem for the listener
-    previous_song = ""
     num_scenes = len(scene_listener_pairs)
     for idx, scene_listener_pair in enumerate(scene_listener_pairs, 1):
         scene_id, listener_id = scene_listener_pair
@@ -321,37 +320,35 @@ def enhance(config: DictConfig) -> None:
         # Read the mixture signal
         # Convert to 32-bit floating point and transpose
         # from [samples, channels] to [channels, samples]
-        if song_name != previous_song:
-            source_list = {
-                f"source_{idx}": s["instrument"].split("_")[0]
-                for idx, s in enumerate(songs[song_name].values(), 1)
-                if "Mixture" not in s["instrument"]
-            }
+        source_list = {
+            f"source_{idx}": s["instrument"].split("_")[0]
+            for idx, s in enumerate(songs[song_name].values(), 1)
+            if "Mixture" not in s["instrument"]
+        }
 
-            mixture_signal, mix_sample_rate = read_flac_signal(
-                filename=Path(config.path.music_dir)
-                / songs[song_name]["mixture"]["track"]
-            )
-            assert mix_sample_rate == config.input_sample_rate
+        mixture_signal, mix_sample_rate = read_flac_signal(
+            filename=Path(config.path.music_dir) / songs[song_name]["mixture"]["track"]
+        )
+        assert mix_sample_rate == config.input_sample_rate
 
-            start = songs[song_name]["mixture"]["start"]
-            end = start + songs[song_name]["mixture"]["duration"]
-            mixture_signal = mixture_signal[
-                int(start * mix_sample_rate) : int(end * mix_sample_rate),
-                :,
-            ]
-            stems: dict[str, ndarray] = decompose_signal(
-                model=separation_models,
-                signal=mixture_signal,
-                signal_sample_rate=config.input_sample_rate,
-                device=device,
-                sources_list=source_list,
-                listener=listener,
-            )
+        start = songs[song_name]["mixture"]["start"]
+        end = start + songs[song_name]["mixture"]["duration"]
+        mixture_signal = mixture_signal[
+            int(start * mix_sample_rate) : int(end * mix_sample_rate),
+            :,
+        ]
+        stems: dict[str, ndarray] = decompose_signal(
+            model=separation_models,
+            signal=mixture_signal,
+            signal_sample_rate=config.input_sample_rate,
+            device=device,
+            sources_list=source_list,
+            listener=listener,
+        )
 
-            gain_scene = check_repeated_source(gains[scene["gain"]], source_list)
-            stems = apply_gains(stems, config.input_sample_rate, gain_scene)
-            enhanced_signal = remix_stems(stems)
+        gain_scene = check_repeated_source(gains[scene["gain"]], source_list)
+        stems = apply_gains(stems, config.input_sample_rate, gain_scene)
+        enhanced_signal = remix_stems(stems)
 
         enhanced_signal = process_remix_for_listener(
             signal=enhanced_signal,
@@ -359,6 +356,11 @@ def enhance(config: DictConfig) -> None:
             enhancer_params=mbc_params_listener,
             listener=listener,
         )
+
+        # adjust level
+        dbi = np.array(list(gain_scene.values()))
+        dbn = -10 * np.log10(np.sum(10 ** (dbi / 10)) / dbi.shape[0])
+        enhanced_signal = enhanced_signal * 10 ** (dbn / 20)
 
         # Save the enhanced signal in the corresponding directory
         if 0 < int(scene_id[1:]) < 49999:
@@ -374,7 +376,7 @@ def enhance(config: DictConfig) -> None:
 
         filename.parent.mkdir(parents=True, exist_ok=True)
         save_flac_signal(
-            signal=enhanced_signal * 10 ** (-8.9 / 20),
+            signal=enhanced_signal,
             filename=filename,
             signal_sample_rate=config.input_sample_rate,
             output_sample_rate=config.remix_sample_rate,

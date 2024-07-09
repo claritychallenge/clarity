@@ -1,5 +1,5 @@
 path:
-  root: ???
+  root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data_package/cadenza_data/cad2/task1
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.root}/audio
   musics_file: ${path.metadata_dir}/music.valid.json
@@ -11,7 +11,7 @@ path:
   exp_folder: ./exp_${separator.causality} # folder to store enhanced signals and final results
 
 input_sample_rate: 44100   # sample rate of the input mixture
-remix_sample_rate: 32000  # sample rate for the output remixed signal
+remix_sample_rate: 44100  # sample rate for the output remixed signal
 HAAQI_sample_rate: 24000  # sample rate for computing HAAQI score
 
 separator:
@@ -35,6 +35,8 @@ evaluate:
   whisper_version: base.en
   set_random_seed: True
   small_test: True
+  save_intermediate: True
+  equiv_0db_spl: 100
   batch_size: 1  # Number of batches
   batch: 0       # Batch number to evaluate
 
