@@ -8,6 +8,7 @@ from pathlib import Path
 
 import hydra
 import numpy as np
+import pyloudnorm as pyln
 import torch
 from numpy import ndarray
 from omegaconf import DictConfig
@@ -21,6 +22,24 @@ from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
+
+
+def normalise_luft(
+    signal: np.ndarray, sample_rate: float, target_luft=-40
+) -> np.ndarray:
+    """
+    Normalise the signal to a target loudness level.
+    Args:
+        signal: input signal to normalise
+        sample_rate: sample rate of the signal
+        target_luft: target loudness level in LUFS
+
+    Returns:
+        np.ndarray: normalised signal
+    """
+    level_meter = pyln.Meter(int(sample_rate))
+    input_level = level_meter.integrated_loudness(signal)
+    return signal * (10 ** ((target_luft - input_level) / 20))
 
 
 def separate_sources(
@@ -267,7 +286,7 @@ def enhance(config: DictConfig) -> None:
         alpha = alphas[scene["alpha"]]
 
         # Load the music
-        music = read_signal(
+        input_mixture = read_signal(
             Path(config.path.music_dir)
             / songs[scene["segment_id"]]["path"]
             / "mixture.wav",
@@ -283,11 +302,15 @@ def enhance(config: DictConfig) -> None:
                 * config.input_sample_rate
             ),
         )
+        # normalise input mixture to -40 dB LUFS
+        input_mixture = normalise_luft(
+            input_mixture, config.input_sample_rate, target_luft=-40
+        )
 
         # Separate the music
         sources = separate_sources(
             separation_model,
-            music.T,
+            input_mixture.T,
             device=device,
             **config.separator.separation,
         )
