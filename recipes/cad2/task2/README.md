@@ -11,7 +11,7 @@ The Second Cadenza Challenge - task 2 is using two datasets for training:
 * EnsembleSet: This contains 80 pieces of synthesised classical music.
 * CadenzaWoodwind: This contains 19 pieces of woodwind quartets.
 
-To download the data, please visit [here](https://forms.gle/taYK6MfBeW9sQk5PA). 
+To download the data, please visit [here](https://forms.gle/taYK6MfBeW9sQk5PA).
 The data is contained in several packages:
 * CadenzaWoodwind.zip: containing the CadenzaWoodwind dataset.
 * EnsembleSet_Mix_1.zip: containing the EnsembleSet dataset for microphone `MIX_1`.
@@ -72,7 +72,7 @@ cadenza_data
 
 ## 2. Baseline
 
-In the `baseline/` folder, we provide code for running the baseline enhancement system 
+In the `baseline/` folder, we provide code for running the baseline enhancement system
 and performing the objective evaluation.
 Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
@@ -81,18 +81,18 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 The enhancement system uses an audio source separation model to separate the different
 sources of the mixture. What instruments are contained in the mixture is given information.
 
-Next, using the requested gains, it changes the levels of the different sources and 
-downmix to stereo. Then, uses a multiband dynamic range compressor to compress the audio signal. 
+Next, using the requested gains, it changes the levels of the different sources and
+downmix to stereo. Then, uses a multiband dynamic range compressor to compress the audio signal.
 The final signals is saved in FLAC, 44100 Hz, 16-bit format.
 
 The audio source separation model correspond to 8 ConvTasNet models trained on EnsembleSet and CadenzaWoodwind.
 Each model is trained to separate a single target instrument from the music.
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
-where you have installed the Cadenza data. You can also define your own `path.exp_folder` 
+where you have installed the Cadenza data. You can also define your own `path.exp_folder`
 to store the enhanced signals and evaluated results.
 
-You can modify the code to add your own enhancement system or your own remixing strategy 
+You can modify the code to add your own enhancement system or your own remixing strategy
 using the alpha parameter.
 
 Then run:

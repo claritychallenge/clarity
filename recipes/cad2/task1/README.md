@@ -8,11 +8,11 @@ For more information please visit the [challenge website](https://cadenzachallen
 
 The Second Cadenza Challenge - task 1 is using the transcribed version of the MUSDB18-HQ dataset.
 This extension comprises 96 manual transcriptions of English songs by
-non-native English speakers, following the same split for training, validation and test as museval, 
+non-native English speakers, following the same split for training, validation and test as museval,
 totalling 366 minutes of audio.
 
-To download the data, please visit [here](https://forms.gle/BzGrtdzqLvdjH6ja8). 
-The data is contained in the package `cadenza_cad2_task1_train.v1_0.tar.gz`. 
+To download the data, please visit [here](https://forms.gle/BzGrtdzqLvdjH6ja8).
+The data is contained in the package `cadenza_cad2_task1_train.v1_0.tar.gz`.
 The package contains the transcribe version of the MUSDB18-HQ dataset in FLAC format
 and the metadata for the systems.
 
@@ -59,25 +59,25 @@ cadenza_data
 
 ## 2. Baseline
 
-In the `baseline/` folder, we provide code for running the baseline enhancement system 
+In the `baseline/` folder, we provide code for running the baseline enhancement system
 and performing the objective evaluation.
 Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 
 ### 2.1 Enhancement
 
 The enhancement system uses an audio source separation model to separate the vocals from the music.
-Next, using the alpha parameter, it changes the levels of the vocals and music to 
-simulate different mixing scenarios. Then, uses a multiband dynamic range compressor to 
+Next, using the alpha parameter, it changes the levels of the vocals and music to
+simulate different mixing scenarios. Then, uses a multiband dynamic range compressor to
 amplify the audio signal. The final signals is saved in FLAC, 44100 Hz, 16-bit format.
 
 The audio source separation model correspond to a ConvTasNet model trained on the MUSDB18-HQ dataset
 to separate the vocals from the background.
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
-where you have installed the Cadenza data. You can also define your own `path.exp_folder` 
+where you have installed the Cadenza data. You can also define your own `path.exp_folder`
 to store the enhanced signals and evaluated results.
 
-You can modify the code to add your own enhancement system or your own remixing strategy 
+You can modify the code to add your own enhancement system or your own remixing strategy
 using the alpha parameter.
 
 Then run:

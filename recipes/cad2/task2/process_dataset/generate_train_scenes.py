@@ -1,8 +1,10 @@
 """
 Module to generate new train scenes"""
+
 from __future__ import annotations
 
 import hashlib
+
 # pylint: disable=import-error
 import json
 from pathlib import Path
@@ -34,10 +36,10 @@ def generate_scenes(cfg: DictConfig) -> dict:
     music_metadata = Path(cfg.path.music_metadata)
 
     gains_metadata = Path(cfg.path.gain_metadata)
-    with open(gains_metadata, "r") as f:
+    with open(gains_metadata) as f:
         gains = json.load(f)
 
-    with open(music_metadata, "r") as f:
+    with open(music_metadata) as f:
         music_meta = json.load(f)
 
     for track, track_info in music_meta.items():
@@ -61,7 +63,7 @@ def generate_scene_listener(cfg: DictConfig) -> None:
     with open(scene_metadata_path) as f:
         scenes = json.load(f)
 
-    with open(f"{cfg.path.metadata_dir}/listeners.train.json", "r") as f:
+    with open(f"{cfg.path.metadata_dir}/listeners.train.json") as f:
         listeners = list(json.load(f).keys())
 
     scene_listeners = {}

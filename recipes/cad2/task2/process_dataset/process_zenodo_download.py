@@ -13,6 +13,7 @@ following structure:
     - CadenzaWoodwind.json
     - EnsembleSet.json
 """
+
 from __future__ import annotations
 
 import json
@@ -37,7 +38,7 @@ def create_audio_train(cfg):
     zenodo_download_path = Path(cfg.path.zenodo_download_path)
     train_metadata_path = zenodo_download_path / "metadata" / "music_tracks.train.json"
 
-    with open(train_metadata_path, "r") as f:
+    with open(train_metadata_path) as f:
         train_metadata = json.load(f)
 
     for track, track_info in tqdm(
@@ -69,7 +70,7 @@ def create_audio_valid(cfg):
         zenodo_download_path / "metadata" / "music.valid.to_generate.json"
     )
 
-    with open(valid_samples_path, "r") as f:
+    with open(valid_samples_path) as f:
         valid_samples = json.load(f)
 
     for track, track_info in tqdm(
