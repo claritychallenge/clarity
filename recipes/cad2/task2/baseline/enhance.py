@@ -24,6 +24,7 @@ from recipes.cad2.task2.baseline.evaluate import (
     apply_gains,
     make_scene_listener_list,
     remix_stems,
+    adjust_level,
 )
 
 logger = logging.getLogger(__name__)
@@ -346,21 +347,23 @@ def enhance(config: DictConfig) -> None:
             listener=listener,
         )
 
+        # Apply gains to sources
         gain_scene = check_repeated_source(gains[scene["gain"]], source_list)
         stems = apply_gains(stems, config.input_sample_rate, gain_scene)
+
+        # Downmix to stereo
         enhanced_signal = remix_stems(stems)
 
+        # adjust levels to get roughly -40 dB before compressor
+        enhanced_signal = adjust_level(enhanced_signal, gains[scene["gain"]])
+
+        # Apply compressor
         enhanced_signal = process_remix_for_listener(
             signal=enhanced_signal,
             enhancer=enhancer,
             enhancer_params=mbc_params_listener,
             listener=listener,
         )
-
-        # adjust level
-        dbi = np.array(list(gain_scene.values()))
-        dbn = -10 * np.log10(np.sum(10 ** (dbi / 10)) / dbi.shape[0])
-        enhanced_signal = enhanced_signal * 10 ** (dbn / 20)
 
         # Save the enhanced signal in the corresponding directory
         if 0 < int(scene_id[1:]) < 49999:

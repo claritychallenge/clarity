@@ -20,6 +20,7 @@ training:
   num_workers: 1 #4
   half_lr: yes
   early_stop: yes
+  aggregate: 1
 # Optim config
 optim:
   lr: 0.0001
@@ -28,7 +29,7 @@ data:
   root_path:  "/media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2/audio" # path to Cadenza dataset, audio folder
   music_tracks_file: "/media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2/metadata/" # path to metadata file in cadenza format
   sample_rate: 44100
-  target: 'Oboe'
+  target: 'Bassoon'
   samples_per_track: 64
   segment_length: 3.0
 

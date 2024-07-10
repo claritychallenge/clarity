@@ -282,10 +282,8 @@ def enhance(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
-        try:
-            scene = scenes[scene_id]
-        except KeyError:
-            continue
+        scene = scenes[scene_id]
+
         # This recipe is not using the listener metadata
         listener = listener_dict[listener_id]
 
@@ -367,4 +365,4 @@ def enhance(config: DictConfig) -> None:
 if __name__ == "__main__":
     enhance()
 
-    logger.info("Done!")
+    logger.info("Enhancement completed.")

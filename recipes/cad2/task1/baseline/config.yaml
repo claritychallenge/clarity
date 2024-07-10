@@ -6,7 +6,7 @@ path:
   alphas_file: ${path.metadata_dir}/alpha.json
   listeners_file: ${path.metadata_dir}/listeners.valid.json
   enhancer_params_file: ${path.metadata_dir}/compressor_params.valid.json
-  scenes_file: ${path.metadata_dir}/scene.valid_10.json
+  scenes_file: ${path.metadata_dir}/scene.valid.json
   scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
   exp_folder: ./exp_${separator.causality} # folder to store enhanced signals and final results
 
@@ -35,10 +35,10 @@ evaluate:
   whisper_version: base.en
   set_random_seed: True
   small_test: False
-  save_intermediate: False
+  save_intermediate: True
   equiv_0db_spl: 100
-  batch_size: 1  # Number of batches
-  batch: 0       # Batch number to evaluate
+  batch_size: 100  # Number of batches
+  batch: 1       # Batch number to evaluate
 
 # hydra config
 hydra:

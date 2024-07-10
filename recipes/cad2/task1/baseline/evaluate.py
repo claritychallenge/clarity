@@ -246,10 +246,7 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
-        try:
-            scene = scenes[scene_id]
-        except KeyError:
-            continue
+
         # Load scene details
         scene = scenes[scene_id]
         listener = listener_dict[listener_id]
@@ -345,3 +342,4 @@ def run_compute_scores(config: DictConfig) -> None:
 # pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     run_compute_scores()
+    logger.info("Evaluation completed")

@@ -61,6 +61,9 @@ class RebalanceMusicDataset(data.Dataset):
         self.repeated_instruments = ["Violin", "Viola", "Flute", "Sax"]
 
         self.root_path = Path(root_path)
+        if split == "train":
+            self.root_path = root_path / "train"
+
         self.music_tracks_file = Path(music_tracks_file)
 
         self.target = target

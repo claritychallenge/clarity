@@ -6,14 +6,13 @@ from pathlib import Path
 import pytorch_lightning as pl
 import torch
 from asteroid.engine.system import System
-from asteroid.models import ConvTasNet
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from torch_audiomentations import Compose, Gain, ShuffleChannels, PitchShift
 
 from local import (
-    ConvTasNet,
+    ConvTasNetStereo,
     RebalanceMusicDataset,
 )
 
@@ -33,9 +32,9 @@ class AugSystem(System):
         apply_augmentation = Compose(
             transforms=[
                 Gain(
-                    min_gain_in_db=-15.0, max_gain_in_db=5.0, p=0.5, mode="per_channel"
+                    min_gain_in_db=-10.0, max_gain_in_db=5.0, p=0.5, mode="per_channel"
                 ),
-                ShuffleChannels(mode="per_example"),
+                ShuffleChannels(mode="per_example", p=0.5),
                 PitchShift(
                     min_transpose_semitones=-2,
                     max_transpose_semitones=2,
@@ -53,13 +52,13 @@ class AugSystem(System):
 
 def main(conf):
     dataset_kwargs = {
-        "root_path": Path(conf["data"]["root_path"]),
         "sample_rate": conf["data"]["sample_rate"],
         "target": conf["data"]["target"],
         "segment_length": conf["data"]["segment_length"],
     }
 
     train_set = RebalanceMusicDataset(
+        root_path=Path(conf["data"]["root_path"]),
         split="train",
         music_tracks_file=f"{conf['data']['music_tracks_file']}/music.train.json",
         samples_per_track=conf["data"]["samples_per_track"],
@@ -69,6 +68,7 @@ def main(conf):
     )
 
     val_set = RebalanceMusicDataset(
+        root_path=Path(conf["data"]["root_path"]),
         music_tracks_file=f"{conf['data']['music_tracks_file']}/music.valid.json",
         split="valid",
         **dataset_kwargs,
@@ -92,7 +92,9 @@ def main(conf):
         drop_last=False,
     )
 
-    model = ConvTasNet(**conf["convtasnet"], samplerate=conf["data"]["sample_rate"])
+    model = ConvTasNetStereo(
+        **conf["convtasnet"], samplerate=conf["data"]["sample_rate"]
+    )
 
     optimizer = torch.optim.Adam(model.parameters(), conf["optim"]["lr"])
 
@@ -109,6 +111,7 @@ def main(conf):
 
     # Define Loss function.
     loss_func = torch.nn.L1Loss()
+    # loss_func = PITLossWrapper(pairwise_neg_sisdr, pit_from="pw_mtx")
     system = AugSystem(
         model=model,
         loss_func=loss_func,
@@ -132,16 +135,14 @@ def main(conf):
         )
 
     trainer = pl.Trainer(
-        # max_epochs=conf["training"]["epochs"],
+        max_epochs=conf["training"]["epochs"],
         callbacks=callbacks,
         default_root_dir=exp_dir,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
         strategy="auto",
         devices="auto",
         gradient_clip_val=5.0,
-        accumulate_grad_batches=1,
-        limit_train_batches=10,
-        max_epochs=2,
+        accumulate_grad_batches=conf["training"]["aggregate"],
     )
     trainer.fit(system)
 

@@ -127,6 +127,16 @@ def load_reference_stems(
     return reference_stems
 
 
+def adjust_level(signal: np.ndarray, gains_scene: dict) -> np.ndarray:
+    """
+    Adjust the level of the signal to compensate the effect of amplifying the
+    sources
+    """
+    dbi = np.array(list(gains_scene.values()))
+    dbn = -10 * np.log10(np.sum(10 ** (dbi / 10)) / dbi.shape[0])
+    return signal * 10 ** (dbn / 20)
+
+
 @hydra.main(config_path="", config_name="config", version_base=None)
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
@@ -203,7 +213,7 @@ def run_calculate_aq(config: DictConfig) -> None:
             reference_stems, config.input_sample_rate, gains[scene["gain"]]
         )
         reference_mixture = remix_stems(reference_stems)
-        reference_mixture = reference_mixture * 10 ** (-8.9 / 20)
+        reference_mixture = adjust_level(reference_mixture, gains[scene["gain"]])
 
         # Set the random seed for the scene
         if config.evaluate.set_random_seed:
