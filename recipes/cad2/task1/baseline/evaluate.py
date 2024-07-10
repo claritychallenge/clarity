@@ -104,8 +104,8 @@ def compute_intelligibility(
             sample_rate,
         )
 
-    left_path.unlink()
-    right_path.unlink()
+    Path(left_path).unlink()
+    Path(right_path).unlink()
 
     return left_results["hits"] / total_words, right_results["hits"] / total_words
 
