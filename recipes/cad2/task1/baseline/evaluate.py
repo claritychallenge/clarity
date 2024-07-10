@@ -65,27 +65,27 @@ def compute_intelligibility(
     # Compute left ear
     ear.set_audiogram(listener.audiogram_left)
     enhanced_left = ear.process(enhanced_signal[:, 0])[0]
-    left_path = path_intermediate.parent / "left.flac"
+    left_path = f"{path_intermediate.as_posix()}_left.flac"
     save_flac_signal(
         enhanced_signal,
         left_path,
         44100,
         sample_rate,
     )
-    hipothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    hipothesis = scorer.transcribe(left_path, fp16=False)["text"]
     left_results = compute_measures(reference, hipothesis)
 
     # Compute right ear
     ear.set_audiogram(listener.audiogram_right)
     enhanced_right = ear.process(enhanced_signal[:, 1])[0]
-    right_path = path_intermediate.parent / "right.flac"
+    right_path = f"{path_intermediate.as_posix()}_right.flac"
     save_flac_signal(
         enhanced_signal,
         right_path,
         44100,
         sample_rate,
     )
-    hipothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
+    hipothesis = scorer.transcribe(right_path, fp16=False)["text"]
     right_results = compute_measures(reference, hipothesis)
 
     # Compute the average score for both ears
