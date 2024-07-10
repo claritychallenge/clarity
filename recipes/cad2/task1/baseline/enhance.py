@@ -270,6 +270,10 @@ def enhance(config: DictConfig) -> None:
         scenes_listeners, config.evaluate.small_test
     )
 
+    scene_listener_pairs = scene_listener_pairs[
+        config.evaluate.batch :: config.evaluate.batch_size
+    ]
+
     # Process each scene-listener pair
     for idx, scene_listener_ids in enumerate(scene_listener_pairs, 1):
         logger.info(
