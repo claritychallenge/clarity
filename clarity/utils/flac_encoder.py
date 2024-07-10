@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import logging
 import tempfile
+
 # pylint: disable=import-error, protected-access
 from pathlib import Path
 
@@ -14,7 +15,7 @@ import numpy as np
 import pyflac as pf
 import soundfile as sf
 
-from clarity.utils.signal_processing import resample, clip_signal, to_16bit
+from clarity.utils.signal_processing import clip_signal, resample, to_16bit
 
 logger = logging.getLogger(__name__)
 
