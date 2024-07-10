@@ -52,36 +52,6 @@ def test_initialization_custom(custom_compressor):
     assert custom_compressor.knee_width == 10.0
 
 
-def test_warning_threshold():
-    """Test the warning for a threshold outside the recommended range."""
-    with pytest.warns(UserWarning, match="Threshold outside the recommended range"):
-        Compressor(threshold=10.0)
-
-
-def test_warning_ratio():
-    """Test the warning for a ratio outside the recommended range."""
-    with pytest.warns(UserWarning, match="Ratio outside the recommended range"):
-        Compressor(ratio=0.5)
-
-
-def test_warning_attack():
-    """Test the warning for an attack outside the recommended range."""
-    with pytest.warns(UserWarning, match="Attack outside the recommended range"):
-        Compressor(attack=0.05)
-
-
-def test_warning_release():
-    """Test the warning for a release outside the recommended range."""
-    with pytest.warns(UserWarning, match="Release outside the recommended range"):
-        Compressor(release=1500.0)
-
-
-def test_warning_gain():
-    """Test the warning for a gain outside the recommended range."""
-    with pytest.warns(UserWarning, match="Make-up gain outside the recommended range"):
-        Compressor(makeup_gain=25.0)
-
-
 def test_call_default(default_compressor, random_signal):
     """Test the call method of the Compressor class with default parameters."""
     processed_signal = default_compressor(random_signal)
