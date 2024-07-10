@@ -246,7 +246,10 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
-
+        try:
+            scene = scenes[scene_id]
+        except KeyError:
+            continue
         # Load scene details
         scene = scenes[scene_id]
         listener = listener_dict[listener_id]

@@ -1,0 +1,4 @@
+openai-whisper
+jiwer
+huggingface-hub
+safetensors
