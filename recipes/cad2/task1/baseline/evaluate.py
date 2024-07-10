@@ -34,42 +34,80 @@ def compute_intelligibility(
     save_intermediate: bool = False,
     path_intermediate: str | Path | None = None,
     equiv_0db_spl: float = 100,
-) -> float:
+) -> tuple[float, float]:
     """
     Compute the Intelligibility score for the enhanced signal
     using the Whisper model.
 
     To the enhanced signal, we apply the MSGB hearing loss model
     before transcribing with Whisper.
+
+    Args:
+        enhanced_signal: The enhanced signal
+        segment_metadata: The metadata of the segment
+        scorer: The Whisper model
+        listener: The listener
+        sample_rate: The sample rate of the signal
+        save_intermediate: Save the intermediate signal
+        path_intermediate: The path to save the intermediate signal
+        equiv_0db_spl: The equivalent 0 dB SPL
+
+    Returns:
+        The intelligibility score for the left and right channels
     """
     ear = Ear(
         equiv_0db_spl=equiv_0db_spl,
         sample_rate=sample_rate,
     )
+
+    reference = segment_metadata["text"]
+
+    # Compute left ear
     ear.set_audiogram(listener.audiogram_left)
     enhanced_left = ear.process(enhanced_signal[:, 0])[0]
-
-    ear.set_audiogram(listener.audiogram_right)
-    enhanced_right = ear.process(enhanced_signal[:, 1])[0]
-
-    enhanced_signal = np.stack([enhanced_left, enhanced_right], axis=1)
-
+    left_path = path_intermediate.parent / "left.flac"
     save_flac_signal(
         enhanced_signal,
-        path_intermediate,
+        left_path,
         44100,
         sample_rate,
     )
-    # Whisper model requires 16kHz
-    hypotesis = scorer.transcribe(path_intermediate.as_posix(), fp16=False)["text"]
-    reference = segment_metadata["text"]
-    results = compute_measures(reference, hypotesis)
-    total_words = results["substitutions"] + results["deletions"] + results["hits"]
+    hipothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    left_results = compute_measures(reference, hipothesis)
 
-    if not save_intermediate:
-        path_intermediate.unlink()
+    # Compute right ear
+    ear.set_audiogram(listener.audiogram_right)
+    enhanced_right = ear.process(enhanced_signal[:, 1])[0]
+    right_path = path_intermediate.parent / "right.flac"
+    save_flac_signal(
+        enhanced_signal,
+        right_path,
+        44100,
+        sample_rate,
+    )
+    hipothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
+    right_results = compute_measures(reference, hipothesis)
 
-    return results["hits"] / total_words
+    # Compute the average score for both ears
+    total_words = (
+        right_results["substitutions"]
+        + right_results["deletions"]
+        + right_results["hits"]
+    )
+
+    if save_intermediate:
+        enhanced_signal = np.stack([enhanced_left, enhanced_right], axis=1)
+        save_flac_signal(
+            enhanced_signal,
+            path_intermediate,
+            44100,
+            sample_rate,
+        )
+
+    left_path.unlink()
+    right_path.unlink()
+
+    return left_results["hits"] / total_words, right_results["hits"] / total_words
 
 
 def compute_quality(
@@ -164,7 +202,9 @@ def run_compute_scores(config: DictConfig) -> None:
         "haaqi_left",
         "haaqi_right",
         "haaqi_avg",
-        "whisper",
+        "whisper_left",
+        "whisper_rigth",
+        "whisper_be",
         "alpha",
         "score",
     ]
@@ -268,7 +308,7 @@ def run_compute_scores(config: DictConfig) -> None:
 
         # Compute the HAAQI and Whisper scores
         haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)
-        whisper_score = compute_intelligibility(
+        whisper_scores = compute_intelligibility(
             enhanced_signal=enhanced_signal,
             segment_metadata=songs[scene["segment_id"]],
             scorer=intelligibility_scorer,
@@ -288,9 +328,13 @@ def run_compute_scores(config: DictConfig) -> None:
                 "haaqi_left": haaqi_scores[0],
                 "haaqi_right": haaqi_scores[1],
                 "haaqi_avg": np.mean(haaqi_scores),
-                "whisper": whisper_score,
+                "whisper_left": whisper_scores[0],
+                "whisper_rigth": whisper_scores[1],
+                "whisper_be": np.max(whisper_scores),
                 "alpha": alpha,
-                "score": alpha * whisper_score + (1 - alpha) * np.mean(haaqi_scores),
+                "score": alpha * np.max(whisper_scores) + (1 - alpha) * np.mean(
+                    haaqi_scores
+                ),
             }
         )
 

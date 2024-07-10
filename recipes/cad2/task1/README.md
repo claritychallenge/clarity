@@ -1,6 +1,6 @@
 # The Second Cadenza Challenge (CAD2) - Task 1: Lyrics Intelligibility
 
-Cadenza challenge code for the First Cadenza Challenge (CAD2) Task1.
+Cadenza code for the Second Cadenza Challenge (CAD2) Task1.
 
 For more information please visit the [challenge website](https://cadenzachallenge.org/docs/cadenza2/intro).
 
@@ -68,9 +68,10 @@ Note that we use [hydra](https://hydra.cc/docs/intro/) for config handling.
 The enhancement system uses an audio source separation model to separate the vocals from the music.
 Next, using the alpha parameter, it changes the levels of the vocals and music to 
 simulate different mixing scenarios. Then, uses a multiband dynamic range compressor to 
-compress the audio signal. The final signals is saved in FLAC, 44100 Hz, 16-bit format.
+amplify the audio signal. The final signals is saved in FLAC, 44100 Hz, 16-bit format.
 
-The audio source separation model correspond to a ConvTasNet model trained on the MUSDB18-HQ dataset.
+The audio source separation model correspond to a ConvTasNet model trained on the MUSDB18-HQ dataset
+to separate the vocals from the background.
 
 To run the baseline enhancement system first, make sure that `paths.root` in `config.yaml` points to
 where you have installed the Cadenza data. You can also define your own `path.exp_folder` 

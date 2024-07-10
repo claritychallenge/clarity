@@ -278,8 +278,10 @@ def enhance(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
-        scene = scenes[scene_id]
-
+        try:
+            scene = scenes[scene_id]
+        except KeyError:
+            continue
         # This recipe is not using the listener metadata
         listener = listener_dict[listener_id]
 
