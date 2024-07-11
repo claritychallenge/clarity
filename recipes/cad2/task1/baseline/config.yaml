@@ -1,5 +1,5 @@
 path:
-  root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data_package/cadenza_data/cad2/task1
+  root: ???   # Set to the root of the dataset
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.root}/audio
   musics_file: ${path.metadata_dir}/music.valid.json
