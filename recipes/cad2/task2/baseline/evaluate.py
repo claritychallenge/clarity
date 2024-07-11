@@ -8,6 +8,7 @@ import json
 import logging
 import warnings
 from pathlib import Path
+from typing import Any
 
 import hydra
 import numpy as np
@@ -104,17 +105,14 @@ def set_song_seed(song: str) -> None:
     np.random.seed(song_md5)
 
 
-def load_reference_stems(
-    music_dir: str | Path, stems: dict
-) -> tuple[dict[str, ndarray], ndarray]:
+def load_reference_stems(music_dir: str | Path, stems: dict) -> dict[Any, ndarray]:
     """Load the reference stems for a given scene.
 
     Args:
-        scene (dict): The scene to load the stems for.
-        music_dir (str | Path): The path to the music directory.
+        music_dir (str | Path): Path to the music directory.
+        stems (dict): Dictionary of stems
     Returns:
-        reference_stems (dict): A dictionary of reference stems.
-        original_mixture (ndarray): The original mixture.
+        dict: Dictionary of reference stems.
     """
     reference_stems = {}
     for source_id, source_data in stems.items():
@@ -223,7 +221,7 @@ def run_calculate_aq(config: DictConfig) -> None:
         listener = listener_dict[listener_id]
 
         # Compressor params
-        mbc_params_listener = {"left": {}, "right": {}}
+        mbc_params_listener: dict[str, dict] = {"left": {}, "right": {}}
 
         for ear in ["left", "right"]:
             mbc_params_listener[ear]["release"] = config.enhancer.release

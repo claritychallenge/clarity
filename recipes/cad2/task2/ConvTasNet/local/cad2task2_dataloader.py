@@ -59,15 +59,15 @@ class RebalanceMusicDataset(data.Dataset):
             "Violin",
         ]
         self.repeated_instruments = ["Violin", "Viola", "Flute", "Sax"]
+        if isinstance(root_path, str):
+            root_path = Path(root_path)
 
-        self.root_path = Path(root_path)
+        self.root_path: Path = root_path
         if split == "train":
-            self.root_path = root_path / "train"
+            self.root_path: Path = root_path / "train"
 
-        self.music_tracks_file = Path(music_tracks_file)
-
+        self.music_tracks_file: Path = Path(music_tracks_file)
         self.target = target
-
         self.samples_per_track = samples_per_track
         self.segment_length = segment_length
         self.random_segments = random_segments
@@ -92,7 +92,7 @@ class RebalanceMusicDataset(data.Dataset):
             self.min_src = 1
             self.max_src = 3
 
-            self.accompaniment_tracks = {
+            self.accompaniment_tracks: dict[str, list] = {
                 i: [] for i in self.instruments if i != self.target
             }
             for k, v in self.tracks.items():

@@ -1,37 +1,38 @@
-## Description
+# CAD2-TASK2 target instrument/accompaniment separation model
 
-ConvTasNet model trained using DAMP-VSEP dataset.
-The dataset is preprocessed to obtain only single ensembles performances.
-The preprocess return two train sets, one validation and one test sets.
+This recipe contains the necessary content to replicate the separation models used in CAD2-Task1.
 
-The preprocessing steps can be found is [this repo](https://github.com/groadabike/DAMP-VSEP-Singles)
+- The system is based on Asteroid Source Separation system.
+- ConvTasNet implementation is based on stereo adaptation by Alexandre Defossez <https://github.com/facebookresearch/demucs/blob/v1/demucs/tasnet.py>
 
-The details of the dataset:
+You can replicate the Causal and Non-Causal model by running:
+- **To replicate the Non-Causal model**
 
-| Dataset       |   Perf    | hrs       |
-|:--------------|----------:|----------:|
-| train_english |  9243     |    77     |
-| train_singles |  20660    |   174     |
-| valid         |  100      |   0.8     |
-| test          |  100      |   0.8     |
+```bash
+python train.py \
+    --exp_dir /path/to/save/exps \
+    --batch_size 4 \
+    --aggregate 2 \
+    --lr 0.0005 \
+    --root /path/to/MUSDB18 \
+    --sample_rate 44100 \
+    --segment 5.0 \
+    --samples_per_track 64
+```
 
+- **To replicate the Causal model**
 
-
-## Results
-The next results were obtained by remixing the sources.
-Results using the original mixture are pending.
-
-|               | Mixture   |SI-SNRi(dB) (v)| STOI (v)|SDRi(dB) (b)|
-|:-------------:|:---------:|:-------------:|:-------:|:----------:|
-| train_english | remix     |        14.3   | 0.6872  |       14.5 |
-| train_english | original  |        ---    |   ---   |       ---  |
-| train_singles | remix     |        15.0   | 0.6808  |       14.8 |
-| train_singles | original  |        ---    |   ---   |       ---  |
-
-(v): vocal
-(b): background accompaniment
-
-## Python requirements
-
-pip install librosa
-conda install -c conda-forge ffmpeg
+```bash
+python train.py \
+    --exp_dir /path/to/save/exps \
+    --batch_size 4 \
+    --aggregate 1 \
+    --lr 0.0005 \
+    --root /path/to/MUSDB18 \
+    --sample_rate 44100 \
+    --segment 4.0 \
+    --samples_per_track 64 \
+    --causal True \
+    --n_src 2 \
+    --norm_type cLN
+```

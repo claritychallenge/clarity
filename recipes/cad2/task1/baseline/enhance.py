@@ -14,7 +14,6 @@ from omegaconf import DictConfig
 from torchaudio.transforms import Fade
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
-from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 from recipes.cad2.task1.baseline.evaluate import (
@@ -195,7 +194,8 @@ def enhance(config: DictConfig) -> None:
     enhanced_folder.mkdir(parents=True, exist_ok=True)
 
     # Load listener dictionary
-    listener_dict = Listener.load_listener_dict(config.path.listeners_file)
+    # To load the metadata of all listeners
+    # listener_dict = Listener.load_listener_dict(config.path.listeners_file)
 
     # Load alphas
     with Path(config.path.alphas_file).open("r", encoding="utf-8") as file:
