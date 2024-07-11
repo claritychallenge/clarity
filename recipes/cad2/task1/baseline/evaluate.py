@@ -378,9 +378,8 @@ def run_compute_scores(config: DictConfig) -> None:
                 "whisper_rigth": whisper_scores[1],
                 "whisper_be": np.max(whisper_scores),
                 "alpha": alpha,
-                "score": alpha * np.max(whisper_scores) + (1 - alpha) * np.mean(
-                    haaqi_scores
-                ),
+                "score": alpha * np.max(whisper_scores)
+                + (1 - alpha) * np.mean(haaqi_scores),
             }
         )
 
