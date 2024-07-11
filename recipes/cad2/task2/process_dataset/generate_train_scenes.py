@@ -4,7 +4,6 @@ Module to generate new train scenes"""
 from __future__ import annotations
 
 import hashlib
-
 # pylint: disable=import-error
 import json
 from pathlib import Path
@@ -74,7 +73,7 @@ def generate_scene_listener(cfg: DictConfig) -> None:
             np.random.choice(listeners, cfg.listener_per_scene)
         )
 
-    output_file = Path(cfg.path.metadata_dir) / f"scene_listeners.train.json"
+    output_file = Path(cfg.path.metadata_dir) / "scene_listeners.train.json"
     output_file.parent.mkdir(parents=True, exist_ok=True)
     with open(output_file, "w") as f:
         json.dump(scene_listeners, f, indent=4)

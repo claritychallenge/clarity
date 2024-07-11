@@ -527,7 +527,7 @@ if __name__ == "__main__":
     print("est_source", est_source)
 
     # test Conv-TasNet
-    conv_tasnet = ConvTasNet(N, L, B, H, P, X, R, C, norm_type=norm_type)
+    conv_tasnet = ConvTasNetStereo(N, L, B, H, P, X, R, C, norm_type=norm_type)
     est_source = conv_tasnet(mixture)
     print("est_source", est_source)
     print("est_source size", est_source.size())

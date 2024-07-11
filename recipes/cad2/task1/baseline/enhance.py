@@ -16,11 +16,11 @@ from torchaudio.transforms import Fade
 from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
+from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 from recipes.cad2.task1.baseline.evaluate import (
     make_scene_listener_list,
     normalise_luft,
 )
-from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
@@ -246,7 +246,8 @@ def enhance(config: DictConfig) -> None:
         scene = scenes[scene_id]
 
         # This recipe is not using the listener metadata
-        listener = listener_dict[listener_id]
+        # But you can load it as follows:
+        # listener = listener_dict[listener_id]
 
         alpha = alphas[scene["alpha"]]
 
