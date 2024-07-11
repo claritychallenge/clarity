@@ -120,6 +120,7 @@ class RebalanceMusicDataset(data.Dataset):
             self.track_name = target_name
 
         accompaniment_tracks = []
+        target_track = {}
         for type_source, source in self.tracks[target_name].items():
             if type_source == "mixture":
                 continue

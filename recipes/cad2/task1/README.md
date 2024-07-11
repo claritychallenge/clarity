@@ -124,6 +124,6 @@ The training is based in an Asteroid recipe.
 ## 3. Results
 
 | Baseline  | HAAQI  | Correctness | Overall | Z_Normalized |
-|:---------:|:------:|:-----------:|:-------:|:------------:|
-|  Causal   | 0.7755 |   0.3732    | 0.2229  |    0.2486    |
-| NonCausal |        |             |         |              |
+|:----------|:------:|:-----------:|:-------:|:------------:|
+| Causal    | 0.7755 |   0.3732    | 0.6514  |    0.2486    |
+| NonCausal | 0.7841 |   0.3857    | 0.6649  |    0.2597    |
