@@ -35,10 +35,10 @@ evaluate:
   whisper_version: base.en
   set_random_seed: True
   small_test: False
-  save_intermediate: True
+  save_intermediate: False
   equiv_0db_spl: 100
-  batch_size: 100  # Number of batches
-  batch: 1       # Batch number to evaluate
+  batch_size: 1  # Number of batches
+  batch: 0       # Batch number to evaluate
 
 # hydra config
 hydra:
