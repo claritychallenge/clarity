@@ -14,10 +14,11 @@ These tables report the validation set scores.
 
 The overall scores are:
 
-- HAAQI: **xx**
-- Correct transcribed words (CTW): **xx**
+| Baseline  | HAAQI  | Correctness | Overall | Z_Normalized |
+|:---------:|:------:|:-----------:|:-------:|:------------:|
+|  Causal   | 0.7755 |   0.3732    | 0.2229  |    0.2486    |
+| NonCausal |        |             |         |              |
 
 ### Task 2 - Rebalancing Classical Music
 
 - HAAQI: **xx**
-
