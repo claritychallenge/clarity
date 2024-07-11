@@ -6,6 +6,7 @@ This recipe contains the necessary content to replicate the separation models us
 - ConvTasNet implementation is based on stereo adaptation by Alexandre Defossez <https://github.com/facebookresearch/demucs/blob/v1/demucs/tasnet.py>
 
 You can replicate the Causal and Non-Causal model by running:
+
 - **To replicate the Non-Causal model**
 
 ```bash

@@ -8,16 +8,18 @@ For more information please visit the [challenge website](https://cadenzachallen
 
 The Second Cadenza Challenge - task 2 is using two datasets for training:
 
-* EnsembleSet: This contains 80 pieces of synthesised classical music.
-* CadenzaWoodwind: This contains 19 pieces of woodwind quartets.
+- EnsembleSet: This contains 80 pieces of synthesised classical music.
+- CadenzaWoodwind: This contains 19 pieces of woodwind quartets.
 
 To download the data, please visit [here](https://forms.gle/taYK6MfBeW9sQk5PA).
 The data is contained in several packages:
-* CadenzaWoodwind.zip: containing the CadenzaWoodwind dataset.
-* EnsembleSet_Mix_1.zip: containing the EnsembleSet dataset for microphone `MIX_1`.
-* metadata.zip: containing the metadata for the systems.
+
+-CadenzaWoodwind.zip: containing the CadenzaWoodwind dataset.
+- EnsembleSet_Mix_1.zip: containing the EnsembleSet dataset for microphone `MIX_1`.
+- metadata.zip: containing the metadata for the systems.
 
 ### 1.1 Generate data directory
+
 The baseline system expects the data in a specific directory structure.
 To generate this structure:
 
@@ -34,8 +36,7 @@ Note that the script will unzip the packages if they are not already unzipped.
 
 The script `process_dataset/process_zenodo_download.py` will generate the following structure:
 
-
-* **audio** directory containing the audio files.
+- **audio** directory containing the audio files.
 
 ```text
 cadenza_data
@@ -45,7 +46,8 @@ cadenza_data
             ├───train
             └───valid
 ```
-* **Metadata** contains the metadata for the systems.
+
+- **Metadata** contains the metadata for the systems.
 
 ```text
 cadenza_data
@@ -68,7 +70,6 @@ cadenza_data
             ├───scene_listeners.train.json
             └───scene_listeners.valid.json
 ```
-
 
 ## 2. Baseline
 
@@ -116,7 +117,6 @@ python enhance.py --help
 The folder `enhanced_signals` will appear in the `exp` folder.
 
 ### 2.2 Evaluation
-
 
 A csv file containing the eight HAAQI scores and the combined score will be generated in the `path.exp_folder`.
 
