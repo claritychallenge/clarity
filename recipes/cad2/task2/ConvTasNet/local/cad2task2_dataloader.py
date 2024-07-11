@@ -42,7 +42,7 @@ class RebalanceMusicDataset(data.Dataset):
         music_tracks_file: Path | str,
         target: str,
         samples_per_track: int = 1,
-        segment_length: float | None = 5.0,
+        segment_length: float | None = None,
         random_segments=False,
         random_track_mix=False,
         split: str = "train",
@@ -182,11 +182,6 @@ class RebalanceMusicDataset(data.Dataset):
 
             # new random segment
             start = accomp_track["start"]
-            if self.random_segments:
-                start = np.round(
-                    np.random.uniform(0, accomp_duration - self.segment_length), 2
-                )
-
             if self.random_segments:
                 start = np.round(
                     np.random.uniform(0, accomp_duration - self.segment_length), 2

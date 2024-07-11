@@ -24,7 +24,7 @@ tar -xvzf <PACKAGE_NAME>
 
 ### 1.1 Necessary data
 
-* **Music** contains the MUSDB18-HQ music dataset for training, validation and evaluation.
+- **Music** contains the MUSDB18-HQ music dataset for training, validation and evaluation.
 
 ```text
 cadenza_data
@@ -36,7 +36,8 @@ cadenza_data
                      ├───audio
                      └───lyrics
 ```
-* **Metadata** contains the metadata for the systems.
+
+- **Metadata** contains the metadata for the systems.
 
 ```text
 cadenza_data
@@ -55,7 +56,6 @@ cadenza_data
             ├───scene_listeners.train.json
             └───scene_listeners.valid.json
 ```
-
 
 ## 2. Baseline
 
@@ -102,7 +102,6 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 ### 2.2 Evaluation
 
-
 A csv file containing the HAAQI scores and Whisper correct transcribed words will be generated in the `path.exp_folder`.
 
 To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
@@ -124,6 +123,7 @@ The training is based in an Asteroid recipe.
 
 ## 3. Results
 
-The overall HAAQI score is: **xxx**
-The overall CTW score is: **xxx**
-The overall score is: **xxx**
+| Baseline  | HAAQI  | Correctness | Overall | Z_Normalized |
+|:---------:|:------:|:-----------:|:-------:|:------------:|
+|  Causal   | 0.7755 |   0.3732    | 0.2229  |    0.2486    |
+| NonCausal |        |             |         |              |
