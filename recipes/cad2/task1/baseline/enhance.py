@@ -8,7 +8,6 @@ from pathlib import Path
 
 import hydra
 import numpy as np
-import pyloudnorm as pyln
 import torch
 from numpy import ndarray
 from omegaconf import DictConfig
@@ -18,27 +17,13 @@ from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
+from recipes.cad2.task1.baseline.evaluate import (
+    normalise_luft,
+    make_scene_listener_list,
+)
 
 logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
-
-
-def normalise_luft(
-    signal: np.ndarray, sample_rate: float, target_luft=-40
-) -> np.ndarray:
-    """
-    Normalise the signal to a target loudness level.
-    Args:
-        signal: input signal to normalise
-        sample_rate: sample rate of the signal
-        target_luft: target loudness level in LUFS
-
-    Returns:
-        np.ndarray: normalised signal
-    """
-    level_meter = pyln.Meter(int(sample_rate))
-    input_level = level_meter.integrated_loudness(signal)
-    return signal * (10 ** ((target_luft - input_level) / 20))
 
 
 def separate_sources(
@@ -156,30 +141,6 @@ def load_separation_model(causality: str, device: torch.device) -> ConvTasNetSte
             "cadenzachallenge/ConvTasNet_LyricsSeparation_NonCausal"
         ).to(device)
     return model
-
-
-def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
-    """Make the list of scene-listener pairing to process
-
-    Args:
-        scenes_listeners (dict): Dictionary of scenes and listeners.
-        small_test (bool): Whether to use a small test set.
-
-    Returns:
-        list: List of scene-listener pairings.
-
-    """
-    scene_listener_pairs = [
-        (scene, listener)
-        for scene in scenes_listeners
-        for listener in scenes_listeners[scene]
-    ]
-
-    # Can define a standard 'small_test' with just 1/50 of the data
-    if small_test:
-        scene_listener_pairs = scene_listener_pairs[::400]
-
-    return scene_listener_pairs
 
 
 def downmix_signal(

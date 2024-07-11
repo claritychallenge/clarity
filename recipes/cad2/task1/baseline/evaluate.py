@@ -8,6 +8,7 @@ from pathlib import Path
 
 import hydra
 import numpy as np
+import pyloudnorm as pyln
 import torch.nn
 import whisper
 from jiwer import compute_measures
@@ -20,9 +21,32 @@ from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
-from recipes.cad2.task1.baseline.enhance import make_scene_listener_list
 
 logger = logging.getLogger(__name__)
+
+
+def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
+    """Make the list of scene-listener pairing to process
+
+    Args:
+        scenes_listeners (dict): Dictionary of scenes and listeners.
+        small_test (bool): Whether to use a small test set.
+
+    Returns:
+        list: List of scene-listener pairings.
+
+    """
+    scene_listener_pairs = [
+        (scene, listener)
+        for scene in scenes_listeners
+        for listener in scenes_listeners[scene]
+    ]
+
+    # Can define a standard 'small_test' with just 1/50 of the data
+    if small_test:
+        scene_listener_pairs = scene_listener_pairs[::400]
+
+    return scene_listener_pairs
 
 
 def compute_intelligibility(
@@ -146,7 +170,10 @@ def compute_quality(
 
 
 def load_reference_signal(
-    path: str | Path, start_sample: int | None, end_sample: int | None
+    path: str | Path,
+    start_sample: int | None,
+    end_sample: int | None,
+    level_luft: float = -40.0,
 ) -> np.ndarray:
     """Load the reference signal"""
     if start_sample is None:
@@ -158,11 +185,30 @@ def load_reference_signal(
     accompaniment = np.zeros_like(vocal)
 
     for instrument in ["bass", "drums", "other"]:
-        instrument_signal, _ = read_flac_signal(path / f"{instrument}.flac")
+        instrument_signal, sample_rate = read_flac_signal(path / f"{instrument}.flac")
         accompaniment += instrument_signal
 
     mixture = vocal * 10 ** (1 / 20) + accompaniment * 10 ** (-1 / 20)
+    mixture = normalise_luft(mixture, sample_rate, level_luft)
     return mixture[start_sample:end_sample, :]
+
+
+def normalise_luft(
+    signal: np.ndarray, sample_rate: float, target_luft=-40
+) -> np.ndarray:
+    """
+    Normalise the signal to a target loudness level.
+    Args:
+        signal: input signal to normalise
+        sample_rate: sample rate of the signal
+        target_luft: target loudness level in LUFS
+
+    Returns:
+        np.ndarray: normalised signal
+    """
+    level_meter = pyln.Meter(int(sample_rate))
+    input_level = level_meter.integrated_loudness(signal)
+    return signal * (10 ** ((target_luft - input_level) / 20))
 
 
 @hydra.main(config_path="", config_name="config", version_base=None)
@@ -289,7 +335,7 @@ def run_compute_scores(config: DictConfig) -> None:
         left_reference = enhancer(signal=reference[:, 0])
 
         enhancer.set_compressors(**mbc_params_listener["right"])
-        right_reference = enhancer(signal=reference[:, 0])
+        right_reference = enhancer(signal=reference[:, 1])
 
         # Reference signal amplified
         reference = np.stack([left_reference[0], right_reference[0]], axis=1)
@@ -332,8 +378,9 @@ def run_compute_scores(config: DictConfig) -> None:
                 "whisper_rigth": whisper_scores[1],
                 "whisper_be": np.max(whisper_scores),
                 "alpha": alpha,
-                "score": alpha * np.max(whisper_scores)
-                + (1 - alpha) * np.mean(haaqi_scores),
+                "score": alpha * np.max(whisper_scores) + (1 - alpha) * np.mean(
+                    haaqi_scores
+                ),
             }
         )
 
@@ -341,4 +388,5 @@ def run_compute_scores(config: DictConfig) -> None:
 # pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     run_compute_scores()
+
     logger.info("Evaluation completed")

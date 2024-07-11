@@ -52,7 +52,8 @@ parser.add_argument(
 )
 
 
-def create_datasets_and_loaders(conf):
+def create_datasets_and_loaders(conf: dict) -> tuple:
+    """Create train and val datasets and loaders."""
     source_augmentations = Compose([augment_gain, augment_channelswap])
 
     dataset_kwargs = {
@@ -100,7 +101,8 @@ def create_datasets_and_loaders(conf):
     return train_loader, train_set, val_loader, val_set
 
 
-def create_model_and_optimizer(conf):
+def create_model_and_optimizer(conf: dict) -> tuple:
+    """Create model, optimizer and lr_scheduler."""
     model = ConvTasNetStereo(
         **conf["convtasnet"], samplerate=conf["data"]["sample_rate"]
     )
@@ -111,7 +113,8 @@ def create_model_and_optimizer(conf):
     return model, optimizer, scheduler
 
 
-def create_trainer(conf, callbacks):
+def create_trainer(conf: dict, callbacks: list) -> pl.Trainer:
+    """Create PyTorch Lightning trainer."""
     return pl.Trainer(
         max_epochs=conf["training"]["epochs"],
         callbacks=callbacks,
@@ -124,11 +127,13 @@ def create_trainer(conf, callbacks):
     )
 
 
-def get_loss_func():
+def get_loss_func() -> torch.nn.L1Loss:
+    """Return the loss function."""
     return torch.nn.L1Loss()
 
 
-def create_callbacks(conf, exp_dir):
+def create_callbacks(conf: dict, exp_dir: str) -> tuple:
+    """Create callbacks for the training."""
     # Define callbacks
     callbacks = []
     checkpoint_dir = os.path.join(exp_dir, "checkpoints/")
