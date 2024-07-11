@@ -161,7 +161,8 @@ def decompose_signal(
             device=device,
         )
         target, accompaniment = sources.squeeze(0).cpu().detach().numpy()
-        est_sources[f"source_{idx}"] = target
+        target += accompaniment * 0.15
+        est_sources[f"source_{idx}"] = target.T
     return est_sources
 
 

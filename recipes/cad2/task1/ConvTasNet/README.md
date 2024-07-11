@@ -8,7 +8,8 @@ This recipe contains the necessary content to replicate the separation models us
 - Dataloader is based on <https://github.com/asteroid-team/asteroid/blob/master/asteroid/data/musdb18_dataset.py>
 
 You can replicate the Causal and Non-Causal model by running:
-* **To replicate the Non-Causal model**
+- **To replicate the Non-Causal model**
+
 ```bash
 python train.py \
     --exp_dir /path/to/save/exps \
@@ -21,7 +22,8 @@ python train.py \
     --samples_per_track 64
 ```
 
-* **To replicate the Causal model**
+- **To replicate the Causal model**
+
 ```bash
 python train.py \
     --exp_dir /path/to/save/exps \

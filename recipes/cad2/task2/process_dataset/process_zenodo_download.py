@@ -132,8 +132,6 @@ def prepare_cad2_dataset(config: DictConfig) -> None:
         "CadenzaWoodwind",
         "EnsembleSet_Mix_1",
         "metadata",
-        "URMP",
-        "BACH10",
     ]:
         if not (zenodo_path / directory.replace("_Mix_1", "")).exists():
             if (zenodo_path / f"{directory}.zip").exists():
