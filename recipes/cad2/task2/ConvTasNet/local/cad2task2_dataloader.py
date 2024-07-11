@@ -64,7 +64,7 @@ class RebalanceMusicDataset(data.Dataset):
 
         self.root_path: Path = root_path
         if split == "train":
-            self.root_path: Path = root_path / "train"
+            self.root_path = root_path / "train"
 
         self.music_tracks_file: Path = Path(music_tracks_file)
         self.target = target

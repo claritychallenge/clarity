@@ -79,6 +79,11 @@ def compute_intelligibility(
     Returns:
         The intelligibility score for the left and right channels
     """
+    if path_intermediate is None:
+        path_intermediate = Path.cwd()
+    if isinstance(path_intermediate, str):
+        path_intermediate = Path(path_intermediate)
+
     ear = Ear(
         equiv_0db_spl=equiv_0db_spl,
         sample_rate=sample_rate,
@@ -89,7 +94,7 @@ def compute_intelligibility(
     # Compute left ear
     ear.set_audiogram(listener.audiogram_left)
     enhanced_left = ear.process(enhanced_signal[:, 0])[0]
-    left_path = f"{path_intermediate.as_posix()}_left.flac"
+    left_path = Path(f"{path_intermediate.as_posix()}_left.flac")
     save_flac_signal(
         enhanced_signal,
         left_path,
@@ -102,7 +107,7 @@ def compute_intelligibility(
     # Compute right ear
     ear.set_audiogram(listener.audiogram_right)
     enhanced_right = ear.process(enhanced_signal[:, 1])[0]
-    right_path = f"{path_intermediate.as_posix()}_right.flac"
+    right_path = Path(f"{path_intermediate.as_posix()}_right.flac")
     save_flac_signal(
         enhanced_signal,
         right_path,
@@ -176,6 +181,10 @@ def load_reference_signal(
     level_luft: float = -40.0,
 ) -> np.ndarray:
     """Load the reference signal"""
+
+    if isinstance(path, str):
+        path = Path(path)
+
     if start_sample is None:
         start_sample = 0
     if end_sample is None:
@@ -315,7 +324,7 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         # Get the listener's compressor params
-        mbc_params_listener = {"left": {}, "right": {}}
+        mbc_params_listener: dict[str, dict] = {"left": {}, "right": {}}
 
         for ear in ["left", "right"]:
             mbc_params_listener[ear]["release"] = config.enhancer.release
@@ -378,8 +387,9 @@ def run_compute_scores(config: DictConfig) -> None:
                 "whisper_rigth": whisper_scores[1],
                 "whisper_be": np.max(whisper_scores),
                 "alpha": alpha,
-                "score": alpha * np.max(whisper_scores)
-                + (1 - alpha) * np.mean(haaqi_scores),
+                "score": alpha * np.max(whisper_scores) + (1 - alpha) * np.mean(
+                    haaqi_scores
+                ),
             }
         )
 
