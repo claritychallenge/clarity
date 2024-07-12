@@ -2,10 +2,13 @@ import argparse
 import json
 import os
 from pathlib import Path
+from pprint import pprint as print
 
 import pytorch_lightning as pl
 import torch
+import yaml
 from asteroid.engine.system import System
+from asteroid.utils import parse_args_as_dict, prepare_parser_from_dict
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
@@ -142,11 +145,6 @@ def main(conf):
 
 
 if __name__ == "__main__":
-    from pprint import pprint as print
-
-    import yaml
-    from asteroid.utils import parse_args_as_dict, prepare_parser_from_dict
-
     # We start with opening the config file conf.yml as a dictionary from
     # which we can create parsers. Each top level key in the dictionary defined
     # by the YAML file creates a group in the parser.
