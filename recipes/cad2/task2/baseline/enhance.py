@@ -19,13 +19,13 @@ from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from clarity.utils.source_separation_support import get_device
+from recipes.cad2.task2.ConvTasNet.local.tasnet import ConvTasNetStereo
 from recipes.cad2.task2.baseline.evaluate import (
     adjust_level,
     apply_gains,
     make_scene_listener_list,
     remix_stems,
 )
-from recipes.cad2.task2.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logger = logging.getLogger(__name__)
 
@@ -312,7 +312,7 @@ def enhance(config: DictConfig) -> None:
         listener = listener_dict[listener_id]
 
         # Get the listener's compressor params
-        mbc_params_listener = {"left": {}, "right": {}}
+        mbc_params_listener: dict[str, dict] = {"left": {}, "right": {}}
 
         for ear in ["left", "right"]:
             mbc_params_listener[ear]["release"] = config.enhancer.release

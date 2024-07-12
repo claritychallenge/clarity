@@ -77,6 +77,7 @@ def create_audio_valid(cfg):
         valid_samples.items(), desc="Creating validation audio"
     ):
         mixture = []
+        mixture_target = ""
         for source, source_info in track_info.items():
             if source == "mixture_target":
                 mixture_target = audio_path / source_info["track"]
@@ -163,5 +164,6 @@ def prepare_cad2_dataset(config: DictConfig) -> None:
     )
 
 
+# pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     prepare_cad2_dataset()

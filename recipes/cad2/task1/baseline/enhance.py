@@ -15,11 +15,11 @@ from torchaudio.transforms import Fade
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
+from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 from recipes.cad2.task1.baseline.evaluate import (
     make_scene_listener_list,
     normalise_luft,
 )
-from recipes.cad2.task1.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
@@ -282,7 +282,7 @@ def enhance(config: DictConfig) -> None:
         vocals, accompaniment = est_sources.squeeze(0).cpu().detach().numpy()
 
         # Get the listener's compressor params
-        mbc_params_listener = {"left": {}, "right": {}}
+        mbc_params_listener: dict[str, dict] = {"left": {}, "right": {}}
 
         for ear in ["left", "right"]:
             mbc_params_listener[ear]["release"] = config.enhancer.release

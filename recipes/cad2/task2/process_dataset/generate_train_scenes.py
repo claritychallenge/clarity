@@ -4,7 +4,6 @@ Module to generate new train scenes"""
 from __future__ import annotations
 
 import hashlib
-
 # pylint: disable=import-error
 import json
 from pathlib import Path
@@ -93,6 +92,7 @@ def run(cfg: DictConfig) -> None:
     generate_scene_listener(cfg)
 
 
+# pylint: disable = no-value-for-parameter
 if __name__ == "__main__":
     run()
     print("Done!")

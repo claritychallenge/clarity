@@ -1,3 +1,4 @@
+"""Model evaluation script for Conv-TasNet."""
 import argparse
 import os
 import sys
@@ -132,13 +133,15 @@ def main(conf):
 def eval_track(
     reference,
     user_estimates,
-    eval_targets=[],
+    eval_targets=None,
     track_name="",
     mode="v4",
     win=1.0,
     hop=1.0,
     sample_rate=44100,
 ):
+    if eval_targets is None:
+        eval_targets = []
     audio_estimates = []
     audio_reference = []
 
