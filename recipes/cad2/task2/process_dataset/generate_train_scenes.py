@@ -4,6 +4,7 @@ Module to generate new train scenes"""
 from __future__ import annotations
 
 import hashlib
+
 # pylint: disable=import-error
 import json
 from pathlib import Path
