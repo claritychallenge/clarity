@@ -17,6 +17,8 @@ remix_sample_rate: 32000
 HAAQI_sample_rate: 24000
 
 separator:
+  force_redownload: True
+  add_residual: 0.1
   causality: noncausal
   device: ~
   separation:

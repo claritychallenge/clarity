@@ -19,13 +19,13 @@ from clarity.enhancer.multiband_compressor import MultibandCompressor
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
 from clarity.utils.source_separation_support import get_device
+from recipes.cad2.task2.ConvTasNet.local.tasnet import ConvTasNetStereo
 from recipes.cad2.task2.baseline.evaluate import (
     adjust_level,
     apply_gains,
     make_scene_listener_list,
     remix_stems,
 )
-from recipes.cad2.task2.ConvTasNet.local.tasnet import ConvTasNetStereo
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +131,7 @@ def decompose_signal(
     device: torch.device,
     sources_list: dict,
     listener: Listener,
+    add_residual: float = 0.0,
 ) -> dict[str, ndarray]:
     """
     Decompose the signal into the estimated sources.
@@ -146,34 +147,39 @@ def decompose_signal(
         device (torch.device): Device to use for separation.
         sources_list (dict): List of sources to separate.
         listener (Listener): Listener audiogram.
-
+        add_residual (float): Add residual to the target estimated sources from
+            the accompaniment.
 
     Returns:
         dict: Dictionary of estimated sources.
     """
-    est_sources = {}
-    for idx, source in enumerate(sources_list, 1):
-        sources = separate_sources(
+    out_sources = {}
+    for source in sources_list:
+        est_sources = separate_sources(
             model=model[sources_list[source]],
             mix=signal,
             sample_rate=signal_sample_rate,
             number_sources=2,
             device=device,
         )
-        target, accompaniment = sources.squeeze(0).cpu().detach().numpy()
-        target += accompaniment * 0.15
-        est_sources[f"source_{idx}"] = target.T
-    return est_sources
+        target, accompaniment = est_sources.squeeze(0).cpu().detach().numpy()
+
+        if add_residual > 0.0:
+            target += accompaniment * add_residual
+
+        out_sources[source] = target.T
+    return out_sources
 
 
 def load_separation_model(
-    causality: str, device: torch.device
+    causality: str, device: torch.device, force_redownload: bool = True
 ) -> dict[str, ConvTasNetStereo]:
     """
     Load the separation model.
     Args:
         causality (str): Causality of the model (causal or noncausal).
         device (torch.device): Device to load the model.
+        force_redownload (bool): Whether to force redownload the model.
 
     Returns:
         model: Separation model.
@@ -197,7 +203,7 @@ def load_separation_model(
         )
         models[instrument] = ConvTasNetStereo.from_pretrained(
             f"cadenzachallenge/ConvTasNet_{instrument}_{causal[causality]}",
-            force_download=True,
+            force_download=force_redownload,
         ).to(device)
     return models
 
@@ -270,7 +276,9 @@ def enhance(config: DictConfig) -> None:
         enhancer_params = json.load(file)
 
     # Load separation model
-    separation_models = load_separation_model(config.separator.causality, device)
+    separation_models = load_separation_model(
+        config.separator.causality, device, config.separator.force_redownload
+    )
 
     # create hearing aid
     enhancer = MultibandCompressor(
@@ -339,13 +347,16 @@ def enhance(config: DictConfig) -> None:
             int(start * mix_sample_rate) : int(end * mix_sample_rate),
             :,
         ]
+
+        # Estimate the isolated sources
         stems: dict[str, ndarray] = decompose_signal(
             model=separation_models,
-            signal=mixture_signal,
+            signal=mixture_signal.T,  # Channel first
             signal_sample_rate=config.input_sample_rate,
             device=device,
             sources_list=source_list,
             listener=listener,
+            add_residual=config.separator.add_residual,
         )
 
         # Apply gains to sources
