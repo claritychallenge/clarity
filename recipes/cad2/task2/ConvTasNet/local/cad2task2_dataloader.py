@@ -93,9 +93,12 @@ class RebalanceMusicDataset(data.Dataset):
             "Viola",
             "Violin",
         ]
-        self.repeated_instruments = []  # ["Violin", "Viola", "Flute", "Sax"]
+        self.repeated_instruments: list[str] = []  # ["Violin", "Viola", "Flute", "Sax"]
 
-        self.root_path = Path(root_path)
+        if isinstance(root_path, str):
+            root_path = Path(root_path)
+
+        self.root_path: Path = root_path
         if split == "train":
             self.root_path = root_path / "train"
 
@@ -128,7 +131,7 @@ class RebalanceMusicDataset(data.Dataset):
             self.min_src = 1
             self.max_src = 3
 
-            self.accompaniment_tracks = {
+            self.accompaniment_tracks : dict = {
                 i: [] for i in self.instruments if i != self.target
             }
             for k, v in self.tracks.items():
@@ -156,6 +159,7 @@ class RebalanceMusicDataset(data.Dataset):
             self.track_name = target_name
 
         accompaniment_tracks = []
+        target_track = None
         for type_source, source in self.tracks[target_name].items():
             if type_source == "mixture":
                 continue
