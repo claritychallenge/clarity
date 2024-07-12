@@ -138,7 +138,7 @@ The training is based in an Asteroid recipe.
 
 ## 3. Results
 
-| System    | HAAQI |
-|:----------|:-----:|
-| Causal    |  0.0  |
-| NonCausal |  0.0  |
+| System    | HAAQI  |
+|:----------|:------:|
+| Causal    |   -    |
+| NonCausal | 0.4594 |
