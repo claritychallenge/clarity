@@ -8,7 +8,8 @@ import museval
 import soundfile as sf
 import torch
 import yaml
-from local import ConvTasNet
+
+from local import ConvTasNetStereo
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -34,7 +35,7 @@ compute_metrics = ["si_sdr", "sdr", "sir", "sar"]
 def main(conf):
     model_path = os.path.join(conf["exp_dir"], "best_model.pth")
 
-    model = ConvTasNet(
+    model = ConvTasNetStereo(
         **conf["train_conf"]["convtasnet"],
         samplerate=conf["train_conf"]["data"]["sample_rate"],
     )
