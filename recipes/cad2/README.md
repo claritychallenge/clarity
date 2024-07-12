@@ -21,4 +21,7 @@ The overall scores are:
 
 ### Task 2 - Rebalancing Classical Music
 
-- HAAQI: **xx**
+| System    | HAAQI |
+|:----------|:-----:|
+| Causal    |  0.0  |
+| NonCausal |  0.0  |
