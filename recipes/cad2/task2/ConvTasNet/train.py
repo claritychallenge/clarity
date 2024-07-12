@@ -9,10 +9,6 @@ import torch
 import yaml
 from asteroid.engine.system import System
 from asteroid.utils import parse_args_as_dict, prepare_parser_from_dict
-from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-from torch.utils.data import DataLoader
-
 from local import (
     Compose,
     ConvTasNetStereo,
@@ -20,6 +16,9 @@ from local import (
     augment_channelswap,
     augment_gain,
 )
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.utils.data import DataLoader
 
 # Keys which are not in the conf.yml file can be added here.
 # In the hierarchical dictionary created when parsing, the key `key` can be
