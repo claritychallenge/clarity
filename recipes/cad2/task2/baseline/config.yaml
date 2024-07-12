@@ -1,0 +1,49 @@
+# Zenodo download path: path to the zenodo download folder.
+# root: root path of the dataset. This path will contain the audio and metadata folders
+path:
+  root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD2/cadenza_data/cad2/task2
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio
+  gains_file: ${path.metadata_dir}/gains.json
+  listeners_file: ${path.metadata_dir}/listeners.valid.json
+  enhancer_params_file: ${path.metadata_dir}/compressor_params.valid.json
+  music_file: ${path.metadata_dir}/music.valid.json
+  scenes_file: ${path.metadata_dir}/scenes.valid.json
+  scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
+  exp_folder: ./exp # folder to store enhanced signals and final results
+
+input_sample_rate: 44100
+remix_sample_rate: 32000
+HAAQI_sample_rate: 24000
+
+separator:
+  force_redownload: True
+  add_residual: 0.1
+  causality: noncausal
+  device: ~
+  separation:
+    number_sources: 2
+    segment: 6.0
+    overlap: 0.1
+    sample_rate: ${input_sample_rate}
+
+enhancer:
+  crossover_frequencies: [353.55, 707.11, 1414.21, 2828.43, 5656.85] # [250, 500, 1000, 2000, 4000] * sqrt(2)
+  attack: [11, 11, 14, 13, 11, 11]
+  release: [80, 80, 80, 80, 100, 100]
+  threshold: [-30, -30, -30, -30, -30, -30]
+
+soft_clip: False
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+  batch_size: 1  # Number of batches
+  batch: 0       # Batch number to evaluate
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
+  job:
+    chdir: True

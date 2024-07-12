@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import warnings
-
 import numpy as np
 
 
@@ -68,39 +66,28 @@ class Compressor:
         knee_width: float = 0.0,
         sample_rate: float = 44100.0,
     ) -> None:
-        if threshold > 0 or threshold < -60:
-            warnings.warn(
-                "Threshold outside the recommended range [0.0, -60.0] dB."
-                f" {threshold} dB was provided.",
-                stacklevel=1,
-            )
-        if ratio < 1 or ratio > 20:
-            warnings.warn(
-                "Ratio outside the recommended range [1.0, 20.0]."
-                f" {ratio} was provided.",
-                stacklevel=1,
-            )
+        """Constructor for the Compressor class.
 
-        if attack < 0.1 or attack > 80.0:
-            warnings.warn(
-                "Attack outside the recommended range [0.1, 80.0] ms."
-                f" {attack} ms was provided.",
-                stacklevel=1,
-            )
+        Args:
+            threshold (float): The threshold level in dB.
+            ratio (float): The compression ratio.
+            attack (float): The attack time in ms.
+            release (float): The release time in ms.
+            makeup_gain (float): The make-up gain in dB.
+            knee_width (float): The knee width in dB.
+            sample_rate (float): The sample rate in Hz.
 
-        if release < 0.1 or release > 1000.0:
-            warnings.warn(
-                "Release outside the recommended range [0.1, 1000.0] ms."
-                f" {release} ms was provided.",
-                stacklevel=1,
-            )
-
-        if makeup_gain < 0 or makeup_gain > 24:
-            warnings.warn(
-                "Make-up gain outside the recommended range [0.0, 24.0] dB."
-                f" {makeup_gain} dB was provided.",
-                stacklevel=1,
-            )
+        Notes:
+            Original implementation recommends ranges for each parameter.
+            We are not enforcing these ranges in this implementation.
+            The ranges are:
+            - threshold in the range [0.0, -60.0] dB,
+            - ratio in the range [1.0, 20.0],
+            - attack in the range [0.1, 80.0] ms,
+            - release in the range [0.1, 1000.0] ms,
+            - makeup_gain in the range [0.0, 24.0] dB.
+            - knee_width in the range [0.0, 10.0] dB.
+        """
 
         self.threshold = float(threshold)
         self.ratio = float(ratio)
@@ -109,6 +96,8 @@ class Compressor:
         self.makeup_gain = float(makeup_gain)
         self.sample_rate = float(sample_rate)
         self.knee_width = float(knee_width)
+
+        self.eps = 1e-12
 
         self.alpha_attack = np.exp(-1.0 / (0.001 * self.sample_rate * self.attack))
         self.alpha_release = np.exp(-1.0 / (0.001 * self.sample_rate * self.release))
@@ -125,6 +114,7 @@ class Compressor:
         """
 
         # Compute the instantaneous desired levels
+        input_signal[input_signal == 0] = self.eps
         x_g = 20 * np.log10(np.abs(input_signal))
         x_g[x_g < -120] = -120
         y_g = self.threshold + (x_g - self.threshold) / self.ratio
