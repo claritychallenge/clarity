@@ -8,10 +8,9 @@ import museval
 import soundfile as sf
 import torch
 import yaml
+from local import ConvTasNetStereo, RebalanceMusicDataset
 from museval import TrackStore, evaluate
 from tqdm import tqdm
-
-from local import ConvTasNetStereo, RebalanceMusicDataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
