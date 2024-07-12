@@ -268,8 +268,8 @@ def read_flac_signal(filename: Path) -> tuple[np.ndarray, float]:
 def save_flac_signal(
     signal: np.ndarray,
     filename: Path,
-    signal_sample_rate,
-    output_sample_rate,
+    signal_sample_rate: int,
+    output_sample_rate: int | None = None,
     do_clip_signal: bool = False,
     do_soft_clip: bool = False,
     do_scale_signal: bool = False,
@@ -277,7 +277,9 @@ def save_flac_signal(
     """
     Function to save output signals.
 
-    - The output signal will be resample to ``output_sample_rate``
+    - The output signal will be resample to ``output_sample_rate``.
+        If ``output_sample_rate`` is None, the output signal will have
+        the same sample rate as the input signal.
     - The output signal will be clipped to [-1, 1] if ``do_clip_signal`` is True
         and use soft clipped if ``do_soft_clip`` is True. Note that if
         ``do_clip_signal`` is False, ``do_soft_clip`` will be ignored.
@@ -297,6 +299,9 @@ def save_flac_signal(
         do_scale_signal (bool) : Whether to scale signal
     """
     # Resample signal to expected output sample rate
+    if output_sample_rate is None:
+        output_sample_rate = signal_sample_rate
+
     if signal_sample_rate != output_sample_rate:
         signal = resample(signal, signal_sample_rate, output_sample_rate)
 
