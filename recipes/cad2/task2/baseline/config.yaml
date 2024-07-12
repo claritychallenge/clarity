@@ -37,7 +37,7 @@ soft_clip: False
 
 evaluate:
   set_random_seed: True
-  small_test: True
+  small_test: False
   batch_size: 1  # Number of batches
   batch: 0       # Batch number to evaluate
 
