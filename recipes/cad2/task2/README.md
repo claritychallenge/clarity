@@ -135,10 +135,3 @@ This recipe is based on the stereo modification of the ConvTasNet done by Alexan
 and available in Demucs' branch [`v1`](https://github.com/facebookresearch/demucs/blob/110f8fee0815d4c0d4ed3e2d478e37df247cd269/demucs/tasnet.py)
 
 The training is based in an Asteroid recipe.
-
-## 3. Results
-
-| System    | HAAQI  |
-|:----------|:------:|
-| Causal    |   -    |
-| NonCausal | 0.4594 |

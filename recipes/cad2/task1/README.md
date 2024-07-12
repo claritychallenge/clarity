@@ -120,10 +120,3 @@ This recipe is based on the stereo modification of the ConvTasNet done by Alexan
 and available in Demucs' branch [`v1`](https://github.com/facebookresearch/demucs/blob/110f8fee0815d4c0d4ed3e2d478e37df247cd269/demucs/tasnet.py)
 
 The training is based in an Asteroid recipe.
-
-## 3. Results
-
-| Baseline  | HAAQI  | Correctness | Overall | Z_Normalized |
-|:----------|:------:|:-----------:|:-------:|:------------:|
-| Causal    | 0.7755 |   0.3732    | 0.6514  |    0.2486    |
-| NonCausal | 0.7841 |   0.3857    | 0.6649  |    0.2597    |
