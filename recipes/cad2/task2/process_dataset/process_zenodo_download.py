@@ -41,7 +41,7 @@ def create_audio_train(cfg):
     with open(train_metadata_path) as f:
         train_metadata = json.load(f)
 
-    for track, track_info in tqdm(
+    for _track, track_info in tqdm(
         train_metadata.items(), desc="Copying training audio"
     ):
         dataset = track_info["dataset"]

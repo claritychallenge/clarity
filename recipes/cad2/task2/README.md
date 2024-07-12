@@ -14,7 +14,7 @@ The Second Cadenza Challenge - task 2 is using two datasets for training:
 To download the data, please visit [here](https://forms.gle/taYK6MfBeW9sQk5PA).
 The data is contained in several packages:
 
--CadenzaWoodwind.zip: containing the CadenzaWoodwind dataset.
+- CadenzaWoodwind.zip: containing the CadenzaWoodwind dataset.
 - EnsembleSet_Mix_1.zip: containing the EnsembleSet dataset for microphone `MIX_1`.
 - metadata.zip: containing the metadata for the systems.
 

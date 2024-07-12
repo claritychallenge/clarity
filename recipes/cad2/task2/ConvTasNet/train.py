@@ -6,11 +6,17 @@ from pathlib import Path
 import pytorch_lightning as pl
 import torch
 from asteroid.engine.system import System
-from local import ConvTasNetStereo, RebalanceMusicDataset
-from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
-from torch_audiomentations import Compose, Gain, PitchShift, ShuffleChannels
+
+from local import (
+    ConvTasNetStereo,
+    RebalanceMusicDataset,
+    Compose,
+    augment_gain,
+    augment_channelswap,
+)
 
 # Keys which are not in the conf.yml file can be added here.
 # In the hierarchical dictionary created when parsing, the key `key` can be
@@ -23,50 +29,30 @@ parser.add_argument(
 )
 
 
-class AugSystem(System):
-    def training_step(self, batch, batch_nb):
-        apply_augmentation = Compose(
-            transforms=[
-                Gain(
-                    min_gain_in_db=-10.0, max_gain_in_db=5.0, p=0.5, mode="per_channel"
-                ),
-                ShuffleChannels(mode="per_example", p=0.5),
-                PitchShift(
-                    min_transpose_semitones=-2,
-                    max_transpose_semitones=2,
-                    p=0.5,
-                    mode="per_example",
-                    sample_rate=44100,
-                ),
-            ]
-        )
-        batch[0] = apply_augmentation(batch[0], sample_rate=44100)
-        loss = self.common_step(batch, batch_nb, train=True)
-        self.log("loss", loss, logger=True)
-        return loss
-
-
 def main(conf):
+    source_augmentations = Compose([augment_gain, augment_channelswap])
+
     dataset_kwargs = {
+        "root_path": Path(conf["data"]["root_path"]),
         "sample_rate": conf["data"]["sample_rate"],
         "target": conf["data"]["target"],
-        "segment_length": conf["data"]["segment_length"],
     }
 
     train_set = RebalanceMusicDataset(
-        root_path=Path(conf["data"]["root_path"]),
         split="train",
         music_tracks_file=f"{conf['data']['music_tracks_file']}/music.train.json",
         samples_per_track=conf["data"]["samples_per_track"],
+        segment_length=conf["data"]["segment_length"],
         random_segments=True,
         random_track_mix=True,
+        source_augmentations=source_augmentations,
         **dataset_kwargs,
     )
 
     val_set = RebalanceMusicDataset(
-        root_path=Path(conf["data"]["root_path"]),
         music_tracks_file=f"{conf['data']['music_tracks_file']}/music.valid.json",
         split="valid",
+        segment_length=None,
         **dataset_kwargs,
     )
 
@@ -108,7 +94,7 @@ def main(conf):
     # Define Loss function.
     loss_func = torch.nn.L1Loss()
     # loss_func = PITLossWrapper(pairwise_neg_sisdr, pit_from="pw_mtx")
-    system = AugSystem(
+    system = System(
         model=model,
         loss_func=loss_func,
         optimizer=optimizer,
@@ -122,7 +108,7 @@ def main(conf):
     callbacks = []
     checkpoint_dir = os.path.join(exp_dir, "checkpoints/")
     checkpoint = ModelCheckpoint(
-        checkpoint_dir, monitor="val_loss", mode="min", save_top_k=10, verbose=True
+        checkpoint_dir, monitor="val_loss", mode="min", save_top_k=1, verbose=True
     )
     callbacks.append(checkpoint)
     if conf["training"]["early_stop"]:
@@ -156,10 +142,9 @@ def main(conf):
 
 
 if __name__ == "__main__":
-    from pprint import pprint as print
-
     import yaml
-    from asteroid.utils import parse_args_as_dict, prepare_parser_from_dict
+    from pprint import pprint as print
+    from asteroid.utils import prepare_parser_from_dict, parse_args_as_dict
 
     # We start with opening the config file conf.yml as a dictionary from
     # which we can create parsers. Each top level key in the dictionary defined

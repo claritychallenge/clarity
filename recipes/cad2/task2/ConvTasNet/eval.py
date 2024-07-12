@@ -1,7 +1,3 @@
-"""Evaluate the Conv-TasNet model on the test set."""
-
-from __future__ import annotations
-
 import argparse
 import os
 import sys
@@ -11,9 +7,10 @@ import museval
 import soundfile as sf
 import torch
 import yaml
-from local import ConvTasNetStereo, RebalanceMusicDataset
 from museval import TrackStore, evaluate
 from tqdm import tqdm
+
+from local import ConvTasNetStereo, RebalanceMusicDataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -37,7 +34,6 @@ compute_metrics = ["si_sdr", "sdr", "sir", "sar"]
 
 
 def main(conf):
-    """Evaluate the model on the test set."""
     model_path = os.path.join(conf["exp_dir"], "best_model.pth")
 
     model = ConvTasNetStereo(
@@ -68,13 +64,14 @@ def main(conf):
             f"{conf['train_conf']['data']['music_tracks_file']}/music.eval.json"
         ),
         **dataset_kwargs,
+        segment_length=None,
         samples_per_track=1,
         random_segments=False,
         random_track_mix=False,
     )
 
     # Randomly choose the indexes of sentences to save.
-    eval_save_dir = Path(conf["exp_dir"]) / conf["out_dir"]
+    eval_save_dir = os.path.join(conf["exp_dir"], conf["out_dir"])
     Path(eval_save_dir).mkdir(exist_ok=True, parents=True)
 
     txtout = os.path.join(eval_save_dir, "results.txt")
@@ -99,7 +96,7 @@ def main(conf):
         references[target_inst] = sources_np[0].T
         references["accompaniment"] = sources_np[1].T
 
-        output_path = Path(eval_save_dir) / test_set.track_name
+        output_path = Path(os.path.join(eval_save_dir, test_set.track_name))
         output_path.mkdir(exist_ok=True, parents=True)
 
         print(f"Processing... {test_set.track_name}", file=sys.stderr)
@@ -133,19 +130,15 @@ def main(conf):
 
 
 def eval_track(
-    reference: dict,
-    user_estimates: dict,
-    eval_targets: list | None = None,
-    track_name: str = "",
-    mode: str = "v4",
-    win: float = 1.0,
-    hop: float = 1.0,
-    sample_rate: int = 44100,
+    reference,
+    user_estimates,
+    eval_targets=[],
+    track_name="",
+    mode="v4",
+    win=1.0,
+    hop=1.0,
+    sample_rate=44100,
 ):
-    """Evaluate a single track using museval."""
-    if eval_targets is None:
-        eval_targets = []
-
     audio_estimates = []
     audio_reference = []
 
@@ -154,8 +147,8 @@ def eval_track(
     if len(eval_targets) >= 2:
         # compute evaluation of remaining targets
         for target in eval_targets:
-            audio_estimates.append(user_estimates[target])
-            audio_reference.append(reference[target])
+            audio_estimates.append(user_estimates[target] + 1e-15)
+            audio_reference.append(reference[target] + 1e-15)
 
         SDR, ISR, SIR, SAR = evaluate(
             audio_reference,

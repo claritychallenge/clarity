@@ -131,7 +131,7 @@ class MUSDB18Dataset(torch.utils.data.Dataset):
     def __init__(
         self,
         root: str,
-        sources=["vocals", "bass", "drums", "other"],
+        sources=None,
         targets=None,
         mix_background=False,
         suffix=".wav",
@@ -145,6 +145,8 @@ class MUSDB18Dataset(torch.utils.data.Dataset):
         source_augmentations=lambda audio: audio,
         sample_rate=44100,
     ):
+        if sources is None:
+            sources = ["vocals", "bass", "drums", "other"]
         self.root: Path = Path(root).expanduser()
         self.split = split
         self.sample_rate = sample_rate

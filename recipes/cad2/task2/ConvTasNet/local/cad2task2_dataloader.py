@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import librosa
 import numpy as np
@@ -211,7 +212,7 @@ class RebalanceMusicDataset(data.Dataset):
         )
         return audio_mix, audio_sources
 
-    def get_infos(self) -> dict[str, str]:
+    def get_infos(self) -> dict[str, Any]:
         """Get dataset infos (for publishing models).
 
         Returns:
