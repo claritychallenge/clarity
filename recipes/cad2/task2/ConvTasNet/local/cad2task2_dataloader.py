@@ -1,3 +1,5 @@
+"""Dataloader for CAD2 TASK2"""
+
 from __future__ import annotations
 
 import json
@@ -10,6 +12,7 @@ from torch.utils import data
 
 
 def get_audio_durations(track_path: Path | str) -> float:
+    """Get the duration of an audio track."""
     if isinstance(track_path, str):
         track_path = Path(track_path)
     return librosa.get_duration(path=track_path.as_posix())
@@ -47,7 +50,7 @@ class RebalanceMusicDataset(data.Dataset):
         random_track_mix=False,
         split: str = "train",
         sample_rate: int = 44100,
-    ):
+    ) -> None:
         self.instruments = [
             "Bassoon",
             "Cello",
@@ -105,10 +108,10 @@ class RebalanceMusicDataset(data.Dataset):
                             source["instrument"].split("_")[0]
                         ].append(k)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.target_tracks) * self.samples_per_track
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor]:
         # assemble the mixture of target and interferers
         audio_sources = {}
         track_idx = idx // self.samples_per_track
@@ -208,7 +211,7 @@ class RebalanceMusicDataset(data.Dataset):
         )
         return audio_mix, audio_sources
 
-    def get_infos(self):
+    def get_infos(self) -> dict[str, str]:
         """Get dataset infos (for publishing models).
 
         Returns:
@@ -238,35 +241,3 @@ woodwing_licence = dict(
     licence_link="https://creativecommons.org/licenses/by/4.0/",
     non_commercial=False,
 )
-
-
-if __name__ == "__main__":
-    _root_path = Path(
-        "/media/gerardoroadabike/Extreme"
-        " SSD1/Challenges/CAD2/cadenza_data/cad2/task2/audio"
-    )
-    _music_tracks_file = Path(
-        "/media/gerardoroadabike/Extreme"
-        " SSD1/Challenges/CAD2/cadenza_data/cad2/task2/metadata/music.valid.json"
-    )
-    for target_source in [
-        "Bassoon",
-        # "Cello",
-        # "Clarinet",
-        # "Flute",
-        # "Oboe",
-        # "Sax",
-        # "Viola",
-        # "Violin",
-    ]:
-        dataset = RebalanceMusicDataset(
-            _root_path,
-            _music_tracks_file,
-            target_source,
-            split="valid",
-            random_track_mix=False,
-            random_segments=False,
-            segment_length=None,
-        )
-        for x, y in dataset:
-            print(x.shape, y.shape)

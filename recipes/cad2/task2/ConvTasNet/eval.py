@@ -1,3 +1,6 @@
+"""Evaluate the Conv-TasNet model on the test set."""
+from __future__ import annotations
+
 import argparse
 import os
 import sys
@@ -7,9 +10,10 @@ import museval
 import soundfile as sf
 import torch
 import yaml
-from local import ConvTasNet, RebalanceMusicDataset
 from museval import TrackStore, evaluate
 from tqdm import tqdm
+
+from local import ConvTasNetStereo, RebalanceMusicDataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -33,9 +37,10 @@ compute_metrics = ["si_sdr", "sdr", "sir", "sar"]
 
 
 def main(conf):
+    """Evaluate the model on the test set."""
     model_path = os.path.join(conf["exp_dir"], "best_model.pth")
 
-    model = ConvTasNet(
+    model = ConvTasNetStereo(
         **conf["train_conf"]["convtasnet"],
         samplerate=conf["train_conf"]["data"]["sample_rate"],
     )
@@ -69,7 +74,7 @@ def main(conf):
     )
 
     # Randomly choose the indexes of sentences to save.
-    eval_save_dir = os.path.join(conf["exp_dir"], conf["out_dir"])
+    eval_save_dir = Path(conf["exp_dir"]) / conf["out_dir"]
     Path(eval_save_dir).mkdir(exist_ok=True, parents=True)
 
     txtout = os.path.join(eval_save_dir, "results.txt")
@@ -94,7 +99,7 @@ def main(conf):
         references[target_inst] = sources_np[0].T
         references["accompaniment"] = sources_np[1].T
 
-        output_path = Path(os.path.join(eval_save_dir, test_set.track_name))
+        output_path = Path(eval_save_dir) / test_set.track_name
         output_path.mkdir(exist_ok=True, parents=True)
 
         print(f"Processing... {test_set.track_name}", file=sys.stderr)
@@ -128,15 +133,19 @@ def main(conf):
 
 
 def eval_track(
-    reference,
-    user_estimates,
-    eval_targets=[],
-    track_name="",
-    mode="v4",
-    win=1.0,
-    hop=1.0,
-    sample_rate=44100,
+    reference: dict,
+    user_estimates: dict,
+    eval_targets: list | None = None,
+    track_name: str = "",
+    mode: str = "v4",
+    win: float = 1.0,
+    hop: float = 1.0,
+    sample_rate: int = 44100,
 ):
+    """Evaluate a single track using museval."""
+    if eval_targets is None:
+        eval_targets = []
+
     audio_estimates = []
     audio_reference = []
 

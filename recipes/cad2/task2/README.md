@@ -1,6 +1,6 @@
 # The Second Cadenza Challenge (CAD2) - Task 2: Rebalancing Classical Music
 
-Cadenza challenge code for the First Cadenza Challenge (CAD2) Task2.
+Cadenza challenge code for the Second Cadenza Challenge (CAD2) Task2.
 
 For more information please visit the [challenge website](https://cadenzachallenge.org/docs/cadenza2/intro).
 
@@ -30,7 +30,6 @@ To generate this structure:
    5. `path.root` to the path where you want to save the data.
 
 Note that the script will unzip the packages if they are not already unzipped.
-
 
 ### 1.2 Necessary data
 
@@ -139,4 +138,7 @@ The training is based in an Asteroid recipe.
 
 ## 3. Results
 
-The overall HAAQI score is: **xxx**
+| System    | HAAQI |
+|:----------|:-----:|
+| Causal    |  0.0  |
+| NonCausal |  0.0  |
