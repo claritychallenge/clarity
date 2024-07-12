@@ -131,7 +131,7 @@ class RebalanceMusicDataset(data.Dataset):
             self.min_src = 1
             self.max_src = 3
 
-            self.accompaniment_tracks : dict = {
+            self.accompaniment_tracks: dict = {
                 i: [] for i in self.instruments if i != self.target
             }
             for k, v in self.tracks.items():

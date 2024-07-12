@@ -1,8 +1,8 @@
 from .cad2task2_dataloader import (
-    RebalanceMusicDataset,
     Compose,
-    augment_gain,
+    RebalanceMusicDataset,
     augment_channelswap,
+    augment_gain,
 )
 from .tasnet import ConvTasNetStereo, overlap_and_add
 
