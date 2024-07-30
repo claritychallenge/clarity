@@ -18,6 +18,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
+[![PyPI](https://img.shields.io/static/v1?label=CAD2%20Challenge%20-%20pypi&message=v0.6.0&color=orange)](https://pypi.org/project/pyclarity/0.6.0/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC3%20Challenge%20-%20pypi&message=v0.5.0&color=orange)](https://pypi.org/project/pyclarity/0.5.0/)
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202024%20Cadenza%20Challenge%20-%20pypi&message=v0.4.1&color=orange)](https://pypi.org/project/pyclarity/0.4.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CAD1%20and%20CPC2%20Challenges%20-%20pypi&message=v0.3.4&color=orange)](https://pypi.org/project/pyclarity/0.3.4/)
@@ -37,14 +38,12 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
 
 ## Current Events
 
+- The 2nd Cadenza Challenge is now open :fire::fire:
+  - Visit the [cadenza website](https://cadenzachallenge.org/docs/cadenza2/intro) for more details.
+  - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
 - The 3rd Clarity Enhancement Challenge is now open. :fire::fire:
   - Visit the [challenge website](https://claritychallenge.org/docs/cec3/cec3_intro) for more details.
   - Join the [Clarity Challenge Group](https://groups.google.com/g/clarity-challenge) to keep up-to-date on developments.
-- The ICASSP 2024 Cadenza Challenge (CAD_ICASSP_2024) will be presented at ICASSP 2024.
-  - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
-  - Visit the Cadenenza Challenge [website](https://cadenzachallenge.org/) for more details.
-- The first Cadenza Challenge (CAD1) is closed.
-  - Subjective Evaluation is underway. :new:
 - The 2nd Clarity Prediction Challenge (CPC2) is now closed.
 - The 4th Clarity Workshop will be held as a satellite event of Interspeech 2023. For details visit the [workshop website](https://claritychallenge.org/clarity2023-workshop/).
 
@@ -90,6 +89,7 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
+- [The 2nd Cadenza Challege](./recipes/cad2)
 - [The 3rd Clarity Enhancement Challenge](./recipes/cec3)
 
 Previous challenges
