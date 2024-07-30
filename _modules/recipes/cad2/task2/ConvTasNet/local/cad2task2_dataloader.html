@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">librosa</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">soundfile</span> <span class="k">as</span> <span class="nn">sf</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.utils</span> <span class="kn">import</span> <span class="n">data</span>
+
+
+<div class="viewcode-block" id="Compose">
+<a class="viewcode-back" href="../../../../../../recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.html#recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.Compose">[docs]</a>
+<span class="k">class</span> <span class="nc">Compose</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Composes several augmentation transforms.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        augmentations: list of augmentations to compose.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transforms</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">:</span>
+            <span class="n">audio</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">audio</span></div>
+
+
+
+<div class="viewcode-block" id="augment_gain">
+<a class="viewcode-back" href="../../../../../../recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.html#recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.augment_gain">[docs]</a>
+<span class="k">def</span> <span class="nf">augment_gain</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.25</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a random gain to each source between `low` and `high`&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">gain_1</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span>
+        <span class="n">gain_2</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">audio</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">gain_1</span><span class="p">,</span> <span class="n">audio</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">gain_2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">audio</span></div>
+
+
+
+<div class="viewcode-block" id="augment_channelswap">
+<a class="viewcode-back" href="../../../../../../recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.html#recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.augment_channelswap">[docs]</a>
+<span class="k">def</span> <span class="nf">augment_channelswap</span><span class="p">(</span><span class="n">audio</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly swap channels of stereo sources&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">audio</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">audio</span></div>
+
+
+
+<div class="viewcode-block" id="get_audio_durations">
+<a class="viewcode-back" href="../../../../../../recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.html#recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.get_audio_durations">[docs]</a>
+<span class="k">def</span> <span class="nf">get_audio_durations</span><span class="p">(</span><span class="n">track_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">track_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">track_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">librosa</span><span class="o">.</span><span class="n">get_duration</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">track_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="RebalanceMusicDataset">
+<a class="viewcode-back" href="../../../../../../recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.html#recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.RebalanceMusicDataset">[docs]</a>
+<span class="k">class</span> <span class="nc">RebalanceMusicDataset</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset to process EnsembleSet and CadenzaWoodwind datasets for CAD2 Task2 baseline</span>
+<span class="sd">    The dataset is composed of a target source and a random number of</span>
+<span class="sd">    accompaniment sources.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        root_path (str): Path to the root directory of the dataset</span>
+<span class="sd">        music_tracks_file (str): Path to the json file containing the music tracks</span>
+<span class="sd">        target (str): Target source to be extracted</span>
+<span class="sd">        samples_per_track (int): Number of samples to extract from each track</span>
+<span class="sd">        segment_length (float): Length of the segment to extract</span>
+<span class="sd">        random_segments (bool): If True, extract random segments from the tracks</span>
+<span class="sd">        random_track_mix (bool): If True, mix random accompaniment tracks</span>
+<span class="sd">        split (str): Split of the dataset to use</span>
+<span class="sd">        sample_rate (int): Sample rate of the audio files</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_name</span> <span class="o">=</span> <span class="s2">&quot;EnsembleSet &amp; CadenzaWoodwind&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">music_tracks_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">samples_per_track</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">random_segments</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">random_track_mix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span>
+        <span class="n">source_augmentations</span><span class="o">=</span><span class="k">lambda</span> <span class="n">audio</span><span class="p">:</span> <span class="n">audio</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">44100</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;Bassoon&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Cello&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Clarinet&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Flute&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Oboe&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Sax&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Viola&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Violin&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repeated_instruments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># [&quot;Violin&quot;, &quot;Viola&quot;, &quot;Flute&quot;, &quot;Sax&quot;]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">root_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">root_path</span>
+        <span class="k">if</span> <span class="n">split</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">root_path</span> <span class="o">/</span> <span class="s2">&quot;train&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">music_tracks_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">music_tracks_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_track</span> <span class="o">=</span> <span class="n">samples_per_track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment_length</span> <span class="o">=</span> <span class="n">segment_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_segments</span> <span class="o">=</span> <span class="n">random_segments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_track_mix</span> <span class="o">=</span> <span class="n">random_track_mix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="o">=</span> <span class="n">split</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_augmentations</span> <span class="o">=</span> <span class="n">source_augmentations</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">music_tracks_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracks_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_tracks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">type_source</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">type_source</span> <span class="o">==</span> <span class="s2">&quot;mixture&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">in</span> <span class="n">source</span><span class="p">[</span><span class="s2">&quot;instrument&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">target_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min_src</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_src</span> <span class="o">=</span> <span class="mi">3</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">accompaniment_tracks</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">i</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">type_source</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">type_source</span> <span class="o">==</span> <span class="s2">&quot;mixture&quot;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">source</span><span class="p">[</span><span class="s2">&quot;instrument&quot;</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">accompaniment_tracks</span><span class="p">[</span>
+                            <span class="n">source</span><span class="p">[</span><span class="s2">&quot;instrument&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_tracks</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_track</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="c1"># assemble the mixture of target and interferers</span>
+        <span class="n">audio_sources</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">track_idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_per_track</span>
+
+        <span class="c1"># Load the target source</span>
+        <span class="n">target_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_tracks</span><span class="p">[</span><span class="n">track_idx</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">track_name</span> <span class="o">=</span> <span class="n">target_name</span>
+
+        <span class="n">accompaniment_tracks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">target_track</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">type_source</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">type_source</span> <span class="o">==</span> <span class="s2">&quot;mixture&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">in</span> <span class="n">source</span><span class="p">[</span><span class="s2">&quot;instrument&quot;</span><span class="p">]:</span>
+                <span class="n">target_track</span> <span class="o">=</span> <span class="n">source</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">accompaniment_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="n">segment_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment_length</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">segment_length</span> <span class="o">=</span> <span class="n">target_track</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+
+        <span class="n">target_duration</span> <span class="o">=</span> <span class="n">target_track</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">target_track</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_segments</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_duration</span><span class="p">)</span> <span class="o">-</span> <span class="n">segment_length</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">segment_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment_length</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">segment_length</span> <span class="o">=</span> <span class="n">target_track</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+
+        <span class="n">start_sample</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span>
+        <span class="n">stop_sample</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">start</span> <span class="o">+</span> <span class="n">segment_length</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span>
+
+        <span class="n">target_signal</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">/</span> <span class="n">target_track</span><span class="p">[</span><span class="s2">&quot;track&quot;</span><span class="p">],</span>
+            <span class="n">always_2d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start_sample</span><span class="p">,</span>
+            <span class="n">stop</span><span class="o">=</span><span class="n">stop_sample</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># convert to torch tensor</span>
+        <span class="n">target_signal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">target_signal</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># target_signal = F.pad(target_signal, (target_len - target_signal.size(1), 0))</span>
+        <span class="n">target_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_augmentations</span><span class="p">(</span><span class="n">target_signal</span><span class="p">)</span>
+        <span class="n">target_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">segment_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span>
+        <span class="n">audio_sources</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">target_len</span><span class="p">)</span>
+        <span class="n">audio_sources</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_signal</span>
+        <span class="n">audio_sources</span><span class="p">[</span><span class="s2">&quot;accompaniment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">target_signal</span><span class="p">)</span>
+
+        <span class="c1"># ***************************************</span>
+        <span class="c1"># Load accompaniments</span>
+        <span class="c1"># If random mixture, change `accompaniment_tracks` variable with</span>
+        <span class="c1"># random instruments and tracks</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_track_mix</span><span class="p">:</span>
+            <span class="n">num_accomp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_src</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">accompaniment_instruments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">x</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_instruments</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">x</span>
+                <span class="p">],</span>
+                <span class="n">num_accomp</span><span class="p">,</span>
+                <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">accompaniment_tracks</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">accomp_instrument</span> <span class="ow">in</span> <span class="n">accompaniment_instruments</span><span class="p">:</span>
+                <span class="n">a_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accompaniment_tracks</span><span class="p">[</span><span class="n">accomp_instrument</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">a_t</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">accomp_instrument</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;instrument&quot;</span><span class="p">]:</span>
+                        <span class="n">accompaniment_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Load accompaniment files</span>
+        <span class="k">for</span> <span class="n">accomp_track</span> <span class="ow">in</span> <span class="n">accompaniment_tracks</span><span class="p">:</span>
+            <span class="n">accomp_duration</span> <span class="o">=</span> <span class="n">accomp_track</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+
+            <span class="c1"># new random segment</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">accomp_track</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_segments</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">accomp_duration</span> <span class="o">-</span> <span class="n">segment_length</span><span class="p">))</span>
+
+            <span class="n">start_sample</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span>
+            <span class="n">stop_sample</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">start</span> <span class="o">+</span> <span class="n">segment_length</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">accomp_signal</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">/</span> <span class="n">accomp_track</span><span class="p">[</span><span class="s2">&quot;track&quot;</span><span class="p">],</span>
+                    <span class="n">always_2d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">start</span><span class="o">=</span><span class="n">start_sample</span><span class="p">,</span>
+                    <span class="n">stop</span><span class="o">=</span><span class="n">stop_sample</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">accomp_signal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">accomp_signal</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+                <span class="n">accomp_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_augmentations</span><span class="p">(</span><span class="n">accomp_signal</span><span class="p">)</span>
+
+                <span class="n">audio_sources</span><span class="p">[</span><span class="s2">&quot;accompaniment&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">accomp_signal</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">accomp_track</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;start </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;len </span><span class="si">{</span><span class="n">segment_length</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="c1"># prepare mixture</span>
+        <span class="n">audio_mix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">audio_sources</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">audio_sources</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">audio_sources</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">audio_sources</span><span class="p">[</span><span class="s2">&quot;accompaniment&quot;</span><span class="p">]],</span>
+            <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">audio_mix</span><span class="p">,</span> <span class="n">audio_sources</span>
+
+<div class="viewcode-block" id="RebalanceMusicDataset.get_infos">
+<a class="viewcode-back" href="../../../../../../recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.html#recipes.cad2.task2.ConvTasNet.local.cad2task2_dataloader.RebalanceMusicDataset.get_infos">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dataset infos (for publishing models).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict, dataset infos with keys `dataset`, `task` and `licences`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">infos</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">infos</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span>
+        <span class="n">infos</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;separation&quot;</span>
+        <span class="n">infos</span><span class="p">[</span><span class="s2">&quot;licenses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembleset_license</span><span class="p">,</span> <span class="n">woodwing_licence</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">infos</span></div>
+</div>
+
+
+
+<span class="n">ensembleset_license</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;EnsembleSet&quot;</span><span class="p">,</span>
+    <span class="n">title_link</span><span class="o">=</span><span class="s2">&quot;https://zenodo.org/records/6519024&quot;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;Saurjya Sarkar, Emmanouil Benetos, Mark Sandler&quot;</span><span class="p">,</span>
+    <span class="n">licence</span><span class="o">=</span><span class="s2">&quot;CC BY-NC 4.0&quot;</span><span class="p">,</span>
+    <span class="n">licence_link</span><span class="o">=</span><span class="s2">&quot;https://creativecommons.org/licenses/by-nc/4.0/&quot;</span><span class="p">,</span>
+    <span class="n">non_commercial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">woodwing_licence</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;CadenzaWoodwind&quot;</span><span class="p">,</span>
+    <span class="n">title_link</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;Alex Miller, Trevor Cox, Gerardo Roa Dabike&quot;</span><span class="p">,</span>
+    <span class="n">licence</span><span class="o">=</span><span class="s2">&quot;CC NC 4.0&quot;</span><span class="p">,</span>
+    <span class="n">licence_link</span><span class="o">=</span><span class="s2">&quot;https://creativecommons.org/licenses/by/4.0/&quot;</span><span class="p">,</span>
+    <span class="n">non_commercial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">_root_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+        <span class="s2">&quot;/media/gerardoroadabike/Extreme&quot;</span>
+        <span class="s2">&quot; SSD1/Challenges/CAD2/cadenza_data/cad2/task2/audio&quot;</span>
+    <span class="p">)</span>
+    <span class="n">_music_tracks_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+        <span class="s2">&quot;/media/gerardoroadabike/Extreme&quot;</span>
+        <span class="s2">&quot; SSD1/Challenges/CAD2/cadenza_data/cad2/task2/metadata/music.valid.json&quot;</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">target_source</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;Bassoon&quot;</span><span class="p">,</span>
+        <span class="c1"># &quot;Cello&quot;,</span>
+        <span class="c1"># &quot;Clarinet&quot;,</span>
+        <span class="c1"># &quot;Flute&quot;,</span>
+        <span class="c1"># &quot;Oboe&quot;,</span>
+        <span class="c1"># &quot;Sax&quot;,</span>
+        <span class="c1"># &quot;Viola&quot;,</span>
+        <span class="c1"># &quot;Violin&quot;,</span>
+    <span class="p">]:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">RebalanceMusicDataset</span><span class="p">(</span>
+            <span class="n">_root_path</span><span class="p">,</span>
+            <span class="n">_music_tracks_file</span><span class="p">,</span>
+            <span class="n">target_source</span><span class="p">,</span>
+            <span class="n">split</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">,</span>
+            <span class="n">random_track_mix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">random_segments</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">segment_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
