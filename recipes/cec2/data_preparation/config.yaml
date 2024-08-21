@@ -124,6 +124,8 @@ render_params:
 hydra:
   run:
     dir: .
+  job:
+    chdir: True
 
 defaults:
   - override hydra/launcher: cec2_submitit_local

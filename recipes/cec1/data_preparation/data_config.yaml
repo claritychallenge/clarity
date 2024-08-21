@@ -20,3 +20,5 @@ hydra:
   output_subdir: Null
   run:
     dir: .
+  job:
+    chdir: True

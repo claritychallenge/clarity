@@ -231,7 +231,7 @@ def train_amp(cfg, ear):
     torch.save(amp_module.model.state_dict(), str(exp_dir / "best_model.pth"))
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     logger.info("Begin training left ear enhancement module.")
     train_den(cfg, ear="left")

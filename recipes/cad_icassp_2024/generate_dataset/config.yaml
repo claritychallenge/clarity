@@ -22,3 +22,5 @@ scene_listener:
 hydra:
   run:
     dir: .
+  job:
+    chdir: True

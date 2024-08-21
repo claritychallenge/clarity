@@ -14,3 +14,5 @@ compute_haspi:
 hydra:
   run:
     dir: exp
+  job:
+    chdir: True
