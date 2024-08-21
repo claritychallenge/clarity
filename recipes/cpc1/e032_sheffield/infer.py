@@ -11,6 +11,7 @@ from omegaconf import DictConfig
 from scipy.spatial.distance import cosine
 from speechbrain.utils.distributed import run_on_main
 from tqdm import tqdm
+
 from transformer_cpc1_decoder import S2STransformerBeamSearch  # pylint: disable=E0401
 
 logger = logging.getLogger(__name__)
@@ -219,7 +220,7 @@ def compute_similarity(left_proc_path, wrd, asr_model, bos_index, tokenizer):
     return enc_similarity[0].numpy(), dec_similarity[0].numpy()
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"

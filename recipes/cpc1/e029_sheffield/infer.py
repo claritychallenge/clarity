@@ -10,6 +10,7 @@ from hyperpyyaml import load_hyperpyyaml
 from omegaconf import DictConfig
 from speechbrain.utils.distributed import run_on_main
 from tqdm import tqdm
+
 from transformer_cpc1_ensemble_decoder import (  # pylint: disable=E0401
     S2STransformerBeamSearch,
 )
@@ -140,7 +141,7 @@ def compute_uncertainty(left_proc_path, asr_model, bos_index, _tokenizer):
     return conf, neg_ent
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"

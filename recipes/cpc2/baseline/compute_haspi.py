@@ -76,7 +76,7 @@ def compute_haspi_for_signal(signal_name: str, path: dict) -> float:
 
 
 # pylint: disable = no-value-for-parameter
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run_calculate_haspi(cfg: DictConfig) -> None:
     """Run the HASPI score computation."""
     # Load the set of signal for which we need to compute scores

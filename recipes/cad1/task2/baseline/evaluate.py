@@ -136,7 +136,7 @@ def evaluate_scene(
     return aq_score_l, aq_score_r
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def run_calculate_audio_quality(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI metric."""
 

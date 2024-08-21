@@ -16,7 +16,7 @@ from recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def enhance(cfg: DictConfig) -> None:
     """Run the dummy enhancement."""
 

@@ -71,7 +71,7 @@ def make_disjoint_train_set(
 
 
 # pylint: disable = no-value-for-parameter
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def predict(cfg: DictConfig):
     """Predict intelligibility from HASPI scores."""
 

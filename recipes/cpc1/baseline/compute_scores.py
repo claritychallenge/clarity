@@ -81,7 +81,7 @@ def read_data(pred_csv: Path, label_json: Path):
     return data
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     logger.info("Run evaluation on the closed set.")
     data_tr = read_data(

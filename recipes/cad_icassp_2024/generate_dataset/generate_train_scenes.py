@@ -105,7 +105,7 @@ def generate_scene_listener(cfg: DictConfig) -> None:
         json.dump(scene_listeners, f, indent=4)
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     """Module generates the scenes and scene-listeners metadata files for training."""
     generate_scenes(cfg)
