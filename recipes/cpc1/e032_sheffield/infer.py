@@ -11,7 +11,6 @@ from omegaconf import DictConfig
 from scipy.spatial.distance import cosine
 from speechbrain.utils.distributed import run_on_main
 from tqdm import tqdm
-
 from transformer_cpc1_decoder import S2STransformerBeamSearch  # pylint: disable=E0401
 
 logger = logging.getLogger(__name__)

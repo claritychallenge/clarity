@@ -1,9 +1,9 @@
 import json
 import logging
 
+import hydra
 from omegaconf import DictConfig
 
-import hydra
 from clarity.data.scene_renderer_cec2 import SceneRenderer
 
 logger = logging.getLogger(__name__)

@@ -1,9 +1,9 @@
 import logging
 from pathlib import Path
 
+import hydra
 from omegaconf import DictConfig
 
-import hydra
 from clarity.data.scene_builder_cec2 import RoomBuilder, SceneBuilder, set_random_seed
 
 logger = logging.getLogger(__name__)
