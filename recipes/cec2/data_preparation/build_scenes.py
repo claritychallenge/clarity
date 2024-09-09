@@ -44,7 +44,7 @@ def instantiate_scenes(cfg):
             logger.info(f"scenes.{dataset}.json exists, skip")
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     logger.info("Building rooms")
     build_rooms_from_rpf(cfg)

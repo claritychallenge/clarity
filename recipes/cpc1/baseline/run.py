@@ -153,7 +153,7 @@ def run_calculate_SI(cfg, path) -> None:
             csv_writer.writerow(line)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     logger.info("Prediction with MSGB + MBSTOI for train set")
     run_HL_processing(cfg, cfg.train_path)

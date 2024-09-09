@@ -152,7 +152,7 @@ def _evaluate_song_listener(
     return float(combined_score), per_instrument_score
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def run_calculate_aq(config: DictConfig) -> None:
     """Evaluate the enhanced signals using the HAAQI-RMS metric."""
     # Load test songs

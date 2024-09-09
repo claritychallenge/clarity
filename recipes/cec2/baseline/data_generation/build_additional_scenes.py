@@ -32,7 +32,7 @@ def instantiate_scenes(cfg):
             logger.info(f"scenes.{dataset}.json has existed, skip")
 
 
-@hydra.main(config_path=".", config_name="additional_data_config")
+@hydra.main(config_path=".", config_name="additional_data_config", version_base=None)
 def run(cfg: DictConfig) -> None:
     logger.info("Instantiating scenes for additional training data")
     instantiate_scenes(cfg)

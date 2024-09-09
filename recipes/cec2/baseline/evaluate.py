@@ -27,7 +27,7 @@ def read_csv_scores(file: Path) -> Dict[str, float]:
     return score_dict
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run_calculate_SI(cfg: DictConfig) -> None:
     with Path(cfg.path.scenes_listeners_file).open("r", encoding="utf-8") as fp:
         scenes_listeners = json.load(fp)

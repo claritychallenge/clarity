@@ -44,7 +44,7 @@ def prepare_data(
             )
 
 
-@hydra.main(config_path=".", config_name="data_config")
+@hydra.main(config_path=".", config_name="data_config", version_base=None)
 def run(cfg: DictConfig) -> None:
     for dataset in cfg["datasets"]:
         prepare_data(

@@ -15,7 +15,7 @@ from clarity.utils.audiogram import Listener
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def enhance(cfg: DictConfig) -> None:
     enhanced_folder = Path(cfg.path.exp_folder) / "enhanced_signals"
     enhanced_folder.mkdir(parents=True, exist_ok=True)

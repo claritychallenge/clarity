@@ -101,3 +101,5 @@ hydra:
   # output_subdir: ${path.exp_folder}.hydra
   run:
     dir: ${path.exp_folder}
+  job:
+    chdir: True
