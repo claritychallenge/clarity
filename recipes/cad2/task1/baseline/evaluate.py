@@ -391,6 +391,7 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         max_whisper = np.max([whisper_left, whisper_right])
+        mean_haaqi = np.mean(haaqi_scores)
         results_file.add_result(
             {
                 "scene": scene_id,
@@ -401,12 +402,12 @@ def run_compute_scores(config: DictConfig) -> None:
                 "hypothesis_right": lyrics_text["hypothesis_right"],
                 "haaqi_left": haaqi_scores[0],
                 "haaqi_right": haaqi_scores[1],
-                "haaqi_avg": np.mean(haaqi_scores),
+                "haaqi_avg": mean_haaqi,
                 "whisper_left": whisper_left,
                 "whisper_rigth": whisper_right,
                 "whisper_be": max_whisper,
                 "alpha": alpha,
-                "score": alpha * max_whisper + (1 - alpha) * np.mean(haaqi_scores),
+                "score": alpha * max_whisper + (1 - alpha) * mean_haaqi,
             }
         )
 
