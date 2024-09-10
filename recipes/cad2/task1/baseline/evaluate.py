@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from pathlib import Path
@@ -23,6 +24,13 @@ from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 
 logger = logging.getLogger(__name__)
+
+
+def set_song_seed(song: str) -> None:
+    """Set a seed that is unique for the given song"""
+    song_encoded = hashlib.md5(song.encode("utf-8")).hexdigest()
+    song_md5 = int(song_encoded, 16) % (10**8)
+    np.random.seed(song_md5)
 
 
 def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
@@ -316,6 +324,10 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
+
+        # Set the random seed for the scene
+        if config.evaluate.set_random_seed:
+            set_song_seed(scene_id)
 
         # Load scene details
         scene = scenes[scene_id]
