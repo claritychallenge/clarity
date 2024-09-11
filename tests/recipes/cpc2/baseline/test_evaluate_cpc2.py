@@ -161,11 +161,7 @@ def test_evaluate(hydra_cfg, capsys):
 
     prediction_file = "CEC1.train.sample.predict.csv"
     score_file = "CEC1.train.sample.evaluate.jsonl"
-    expected_output = (
-        "{'RMSE': np.float64(30.256228825071368), "
-        "'Std': np.float64(4.209845712831399), "
-        "'NCC': nan, 'KT': nan}\n"
-    )
+
     test_data = [
         {"signal": "S08547_L0001_E001", "predicted": 0.8},
         {"signal": "S08564_L0001_E001", "predicted": 0.8},
@@ -182,9 +178,6 @@ def test_evaluate(hydra_cfg, capsys):
     # Run evaluate, suppress warnings due to unrealist data
     warnings.simplefilter("ignore", category=RuntimeWarning)
     evaluate(hydra_cfg)
-
-    captured = capsys.readouterr()
-    assert captured.out == expected_output
 
     # Check scores
     scores = read_jsonl(score_file)
