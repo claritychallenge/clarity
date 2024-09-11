@@ -10,7 +10,7 @@ path:
   scene_listeners_file: ${path.metadata_dir}/scene_listeners.valid.json
   exp_folder: ./exp_${separator.causality} # folder to store enhanced signals and final results
 
-input_sample_rate: 44100   # sample rate of the input mixture
+input_sample_rate: 44100  # sample rate of the input mixture
 remix_sample_rate: 44100  # sample rate for the output remixed signal
 HAAQI_sample_rate: 24000  # sample rate for computing HAAQI score
 
