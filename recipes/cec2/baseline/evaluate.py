@@ -3,7 +3,6 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Dict
 
 import hydra
 import numpy as np
@@ -17,7 +16,7 @@ from clarity.utils.audiogram import Listener
 logger = logging.getLogger(__name__)
 
 
-def read_csv_scores(file: Path) -> Dict[str, float]:
+def read_csv_scores(file: Path) -> dict[str, float]:
     score_dict = {}
     with file.open("r", encoding="utf-8") as fp:
         reader = csv.reader(fp)

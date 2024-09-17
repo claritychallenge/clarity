@@ -23,7 +23,7 @@ repos:
     rev: v3.17.0
     hooks:
       - id: pyupgrade
-        args: [--py38-plus]
+        args: [--py39-plus]
 
   - repo: https://github.com/psf/black
     rev: 24.8.0
@@ -71,8 +71,7 @@ repos:
         args:
           - --explicit-package-bases
         additional_dependencies:
-          - 'types-PyYAML'
-
+          - "types-PyYAML"
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.

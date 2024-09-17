@@ -32,7 +32,7 @@ def test_torch_msbg_stoi_non_xeon_e5_2673_cpu(regtest):
     estoi_loss = estoi_loss.forward(x.cpu(), y.cpu()).mean()
 
     regtest.write(
-        f"Torch MSBG STOILoss {stoi_loss:0.5f}, ESTOILoss {estoi_loss:0.5f}\n"
+        f"Torch MSBG STOILoss {stoi_loss:0.5f}, ESTOILoss {estoi_loss:0.4f}\n"
     )
 
 

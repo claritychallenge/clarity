@@ -37,6 +37,18 @@ def make_random_matrix():
     return _random_matrix
 
 
+@pytest.fixture
+def abs_tolerance():
+    """Fixture for absolute tolerance value."""
+    return 1e-7
+
+
+@pytest.fixture
+def rel_tolerance():
+    """Fixture for relative tolerance value."""
+    return 1e-7
+
+
 def pytest_configure() -> None:
     """Configure custom variables for pytest.
 
