@@ -16,6 +16,7 @@ import pandas as pd
 from omegaconf import DictConfig
 from scipy.io import wavfile
 
+from clarity.evaluator.ha import HaaqiV1
 from clarity.evaluator.haaqi import compute_haaqi
 from clarity.utils.audiogram import Listener
 from clarity.utils.flac_encoder import read_flac_signal
@@ -47,6 +48,8 @@ def make_song_listener_list(
 def _evaluate_song_listener(
     song: str,
     listener: Listener,
+    haaqi_left: HaaqiV1,
+    haaqi_right: HaaqiV1,
     config: DictConfig,
     split_dir: str,
     enhanced_folder: Path,
@@ -118,31 +121,27 @@ def _evaluate_song_listener(
                 f"The sample rate of the reference signal is not {config.sample_rate}"
             )
 
-        per_instrument_score[f"left_{instrument}"] = compute_haaqi(
-            processed_signal=left_enhanced_signal,
-            reference_signal=resample(
+        per_instrument_score[f"left_{instrument}"] = haaqi_left.process(
+            reference=resample(
                 reference_signal[:, 0],
                 sample_rate_reference_signal,
                 config.stem_sample_rate,
             ),
-            processed_sample_rate=config.stem_sample_rate,
             reference_sample_rate=config.stem_sample_rate,
-            audiogram=listener.audiogram_left,
-            equalisation=1,
+            enhanced=left_enhanced_signal,
+            enhanced_sample_rate=config.stem_sample_rate,
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 0])),
         )
 
-        per_instrument_score[f"right_{instrument}"] = compute_haaqi(
-            processed_signal=right_enhanced_signal,
-            reference_signal=resample(
+        per_instrument_score[f"right_{instrument}"] = haaqi_right.process(
+            reference=resample(
                 reference_signal[:, 1],
                 sample_rate_reference_signal,
                 config.stem_sample_rate,
             ),
-            processed_sample_rate=config.stem_sample_rate,
             reference_sample_rate=config.stem_sample_rate,
-            audiogram=listener.audiogram_right,
-            equalisation=1,
+            enhanced=right_enhanced_signal,
+            enhanced_sample_rate=config.stem_sample_rate,
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, 1])),
         )
 
@@ -199,14 +198,24 @@ def run_calculate_aq(config: DictConfig) -> None:
         config.evaluate.batch :: config.evaluate.batch_size
     ]
 
+    ear_model_kwargs = {"signals_same_size": True}
+    haaqi_left = HaaqiV1(equalisation=1, ear_model_kwargs=ear_model_kwargs)
+    haaqi_right = HaaqiV1(equalisation=1, ear_model_kwargs=ear_model_kwargs)
+
     for song, listener_id in song_listener_pair:
         split_dir = "train"
         if songs_df[songs_df["Track Name"] == song]["Split"].tolist()[0] == "test":
             split_dir = "test"
+
         listener = listener_dict[listener_id]
+        haaqi_left.set_audiogram(listener.audiogram_left)
+        haaqi_right.set_audiogram(listener.audiogram_right)
+
         combined_score, per_instrument_score = _evaluate_song_listener(
             song=song,
             listener=listener,
+            haaqi_left=haaqi_left,
+            haaqi_right=haaqi_right,
             config=config,
             split_dir=split_dir,
             enhanced_folder=enhanced_folder,
