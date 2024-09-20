@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cad2.task1.ConvTasNet.local.musdb18_dataset module &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cad2.task1.ConvTasNet.local.system module" href="recipes.cad2.task1.ConvTasNet.local.system.html" />
+    <link rel="prev" title="recipes.cad2.task1.ConvTasNet.local package" href="recipes.cad2.task1.ConvTasNet.local.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-recipes.cad2.task1.ConvTasNet.local.musdb18_dataset">
+<span id="recipes-cad2-task1-convtasnet-local-musdb18-dataset-module"></span><h1>recipes.cad2.task1.ConvTasNet.local.musdb18_dataset module<a class="headerlink" href="#module-recipes.cad2.task1.ConvTasNet.local.musdb18_dataset" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.Compose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.</span></span><span class="sig-name descname"><span class="pre">Compose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task1/ConvTasNet/local/musdb18_dataset.html#Compose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.Compose" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Composes several augmentation transforms.
+:param augmentations: list of augmentations to compose.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.</span></span><span class="sig-name descname"><span class="pre">MUSDB18Dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix_background=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix='.wav'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split='train'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_tracks=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_per_track=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_segments=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_track_mix=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_augmentations=&lt;function</span> <span class="pre">MUSDB18Dataset.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate=44100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task1/ConvTasNet/local/musdb18_dataset.html#MUSDB18Dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<p>MUSDB18 music separation dataset</p>
+<p>The dataset consists of 150 full lengths music tracks (~10h duration) of
+different genres along with their isolated stems:</p>
+<blockquote>
+<div><p><cite>drums</cite>, <cite>bass</cite>, <cite>vocals</cite> and <cite>others</cite>.</p>
+</div></blockquote>
+<p>Out-of-the-box, asteroid does only support MUSDB18-HQ which comes as
+uncompressed WAV files. To use the MUSDB18, please convert it to WAV first:</p>
+<ul class="simple">
+<li><p>MUSDB18 HQ: <a class="reference external" href="https://zenodo.org/record/3338373">https://zenodo.org/record/3338373</a></p></li>
+<li><p>MUSDB18     <a class="reference external" href="https://zenodo.org/record/1117372">https://zenodo.org/record/1117372</a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The datasets are hosted on Zenodo and require that users
+request access, since the tracks can only be used for academic purposes.
+We manually check this requests.</p>
+</div>
+<p>This dataset asssumes music tracks in (sub)folders where each folder
+has a fixed number of sources (defaults to 4). For each track, a list
+of <cite>sources</cite> and a common <cite>suffix</cite> can be specified.
+A linear mix is performed on the fly by summing up the sources</p>
+<p>Due to the fact that all tracks comprise the exact same set
+of sources, random track mixing can be used can be used,
+where sources from different tracks are mixed together.</p>
+<dl>
+<dt>Folder Structure:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#train/1/vocals.wav ---------|</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#train/1/drums.wav ----------+--&gt; input (mix), output[target]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#train/1/bass.wav -----------|</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#train/1/other.wav ---------/</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<em>str</em>) – Root path of dataset</p></li>
+<li><p><strong>sources</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – List of source names
+that composes the mixture.
+Defaults to MUSDB18 4 stem scenario: <cite>vocals</cite>, <cite>drums</cite>, <cite>bass</cite>, <cite>other</cite>.</p></li>
+<li><p><strong>targets</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>List of source names to be used as
+targets. If None, a dict with the 4 stems is returned.</p>
+<blockquote>
+<div><p>If e.g [<cite>vocals</cite>, <cite>drums</cite>], a tensor with stacked <cite>vocals</cite> and
+<cite>drums</cite> is returned instead of a dict. Defaults to None.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – Filename suffix, defaults to <cite>.wav</cite>.</p></li>
+<li><p><strong>split</strong> (<em>str</em><em>, </em><em>optional</em>) – Dataset subfolder, defaults to <cite>train</cite>.</p></li>
+<li><p><strong>subset</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – Selects a specific of
+list of tracks to be loaded, defaults to <cite>None</cite> (loads all tracks).</p></li>
+<li><p><strong>segment</strong> (<em>float</em><em>, </em><em>optional</em>) – Duration of segments in seconds,
+defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> which loads the full-length audio tracks.</p></li>
+<li><p><strong>samples_per_track</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of samples yielded from each track, can be used to increase
+dataset size, defaults to <cite>1</cite>.</p></li>
+<li><p><strong>random_segments</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Enables random offset for track segments.</p></li>
+<li><p><strong>boolean</strong> (<em>random_track_mix</em>) – enables mixing of random sources from
+different tracks to assemble mix.</p></li>
+<li><p><strong>source_augmentations</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">callable</span></code>) – list of augmentation
+function names, defaults to no-op augmentations (input = output)</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em><em>, </em><em>optional</em>) – Samplerate of files in dataset.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.root" title="Link to this definition">¶</a></dt>
+<dd><p>Root path of dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.sources">
+<span class="sig-name descname"><span class="pre">sources</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.sources" title="Link to this definition">¶</a></dt>
+<dd><p>List of source names.
+Defaults to MUSDB18 4 stem scenario: <cite>vocals</cite>, <cite>drums</cite>, <cite>bass</cite>, <cite>other</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.suffix">
+<span class="sig-name descname"><span class="pre">suffix</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.suffix" title="Link to this definition">¶</a></dt>
+<dd><p>Filename suffix, defaults to <cite>.wav</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.split">
+<span class="sig-name descname"><span class="pre">split</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.split" title="Link to this definition">¶</a></dt>
+<dd><p>Dataset subfolder, defaults to <cite>train</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.subset">
+<span class="sig-name descname"><span class="pre">subset</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.subset" title="Link to this definition">¶</a></dt>
+<dd><p>Selects a specific of
+list of tracks to be loaded, defaults to <cite>None</cite> (loads all tracks).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.segment">
+<span class="sig-name descname"><span class="pre">segment</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.segment" title="Link to this definition">¶</a></dt>
+<dd><p>Duration of segments in seconds,
+defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> which loads the full-length audio tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.samples_per_track">
+<span class="sig-name descname"><span class="pre">samples_per_track</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.samples_per_track" title="Link to this definition">¶</a></dt>
+<dd><p>Number of samples yielded from each track, can be used to increase
+dataset size, defaults to <cite>1</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.random_segments">
+<span class="sig-name descname"><span class="pre">random_segments</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.random_segments" title="Link to this definition">¶</a></dt>
+<dd><p>Enables random offset for track segments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>boolean, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">random_track_mix</span> <span class="pre">boolean</span></span></dt>
+<dd><p>enables mixing of random sources from
+different tracks to assemble mix.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.source_augmentations">
+<span class="sig-name descname"><span class="pre">source_augmentations</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.source_augmentations" title="Link to this definition">¶</a></dt>
+<dd><p>list of augmentation
+function names, defaults to no-op augmentations (input = output)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">callable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.sample_rate">
+<span class="sig-name descname"><span class="pre">sample_rate</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.sample_rate" title="Link to this definition">¶</a></dt>
+<dd><p>Samplerate of files in dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.tracks">
+<span class="sig-name descname"><span class="pre">tracks</span></span><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.tracks" title="Link to this definition">¶</a></dt>
+<dd><p>List of track metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="simple">
+<dt>References</dt><dd><p>“The 2018 Signal Separation Evaluation Campaign” Stoter et al. 2018.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is a modified versions of the MUSDB18 dataset from the version
+in Asteroid. It extend the Asteroid version to allow for targets
+<code class="docutils literal notranslate"><span class="pre">`vocals`</span></code> and <code class="docutils literal notranslate"><span class="pre">`background`</span></code>. The background is the sum of all
+sources except vocals. This is useful for training models that
+separate vocals from background.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.dataset_name">
+<span class="sig-name descname"><span class="pre">dataset_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MUSDB18'</span></em><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.dataset_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.get_infos">
+<span class="sig-name descname"><span class="pre">get_infos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task1/ConvTasNet/local/musdb18_dataset.html#MUSDB18Dataset.get_infos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.get_infos" title="Link to this definition">¶</a></dt>
+<dd><p>Get dataset infos (for publishing models).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict, dataset infos with keys <cite>dataset</cite>, <cite>task</cite> and <cite>licences</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.get_tracks">
+<span class="sig-name descname"><span class="pre">get_tracks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task1/ConvTasNet/local/musdb18_dataset.html#MUSDB18Dataset.get_tracks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.MUSDB18Dataset.get_tracks" title="Link to this definition">¶</a></dt>
+<dd><p>Loads input and output tracks</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.augment_channelswap">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.</span></span><span class="sig-name descname"><span class="pre">augment_channelswap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task1/ConvTasNet/local/musdb18_dataset.html#augment_channelswap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.augment_channelswap" title="Link to this definition">¶</a></dt>
+<dd><p>Randomly swap channels of stereo sources</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.augment_gain">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.</span></span><span class="sig-name descname"><span class="pre">augment_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task1/ConvTasNet/local/musdb18_dataset.html#augment_gain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.augment_gain" title="Link to this definition">¶</a></dt>
+<dd><p>Applies a random gain to each source between <cite>low</cite> and <cite>high</cite></p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cad2.html">recipes.cad2 package</a><ul>
+  <li><a href="recipes.cad2.task1.html">recipes.cad2.task1 package</a><ul>
+  <li><a href="recipes.cad2.task1.ConvTasNet.html">recipes.cad2.task1.ConvTasNet package</a><ul>
+  <li><a href="recipes.cad2.task1.ConvTasNet.local.html">recipes.cad2.task1.ConvTasNet.local package</a><ul>
+      <li>Previous: <a href="recipes.cad2.task1.ConvTasNet.local.html" title="previous chapter">recipes.cad2.task1.ConvTasNet.local package</a></li>
+      <li>Next: <a href="recipes.cad2.task1.ConvTasNet.local.system.html" title="next chapter">recipes.cad2.task1.ConvTasNet.local.system module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cad2.task1.ConvTasNet.local.musdb18_dataset.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
