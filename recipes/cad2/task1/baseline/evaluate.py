@@ -11,7 +11,7 @@ import numpy as np
 import pyloudnorm as pyln
 import torch.nn
 import whisper
-from alt_eval import compute_metrics
+from alt_eval import compute_metrics, normalize_lyrics
 from omegaconf import DictConfig
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
@@ -93,6 +93,7 @@ def compute_intelligibility(
     )
 
     reference = segment_metadata["text"]
+    reference = normalize_lyrics(reference)
     lyrics["reference"] = reference
 
     # Compute left ear
@@ -106,10 +107,11 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    hypothesis = normalize_lyrics(hypothesis)
     lyrics["hypothesis_left"] = hypothesis
 
     left_results = compute_metrics(
-        reference, hypothesis, languages="en", include_other=False
+        [reference], [hypothesis], languages="en", include_other=False
     )
 
     # Compute right ear
@@ -123,10 +125,11 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
+    hypothesis = normalize_lyrics(hypothesis)
     lyrics["hypothesis_right"] = hypothesis
 
     right_results = compute_metrics(
-        reference, hypothesis, languages="en", include_other=False
+        [reference], [hypothesis], languages="en", include_other=False
     )
 
     # Compute the average score for both ears
