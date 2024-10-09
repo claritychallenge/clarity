@@ -90,6 +90,7 @@ def compute_intelligibility(
     ear = Ear(
         equiv_0db_spl=equiv_0db_spl,
         sample_rate=sample_rate,
+        verbose=False,
     )
 
     reference = segment_metadata["text"]
