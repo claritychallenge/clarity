@@ -126,7 +126,6 @@ def compute_intelligibility(
     hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
     lyrics["hypothesis_right"] = hypothesis
 
-
     right_results = compute_metrics(
         [reference], [hypothesis], languages="en", include_other=False
     )
