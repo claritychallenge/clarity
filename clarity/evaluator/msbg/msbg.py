@@ -40,7 +40,7 @@ class Ear:
         sample_rate: float = 44100.0,
         equiv_0db_spl: float = 100.0,
         ahr: float = 20.0,
-        verbose: bool = False,
+        verbose: bool = True,
     ) -> None:
         """
         Constructor for the Ear class.
