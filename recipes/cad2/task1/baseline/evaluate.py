@@ -58,7 +58,7 @@ def compute_intelligibility(
     save_intermediate: bool = False,
     path_intermediate: str | Path | None = None,
     equiv_0db_spl: float = 100,
-) -> tuple[float, float]:
+) -> tuple[float, float, dict]:
     """
     Compute the Intelligibility score for the enhanced signal
     using the Whisper model.
@@ -79,6 +79,9 @@ def compute_intelligibility(
     Returns:
         The intelligibility score for the left and right channels
     """
+
+    lyrics = {}
+
     if path_intermediate is None:
         path_intermediate = Path.cwd()
     if isinstance(path_intermediate, str):
@@ -102,7 +105,9 @@ def compute_intelligibility(
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(left_path, fp16=False)["text"]
+    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    lyrics["hypothesis_left"] = hypothesis
+
     left_results = compute_metrics(
         [reference], [hypothesis], languages="en", include_other=False
     )
@@ -118,6 +123,8 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(right_path, fp16=False)["text"]
+    lyrics["hypothesis_right"] = hypothesis
+
     right_results = compute_metrics(
         [reference], [hypothesis], languages="en", include_other=False
     )
@@ -141,7 +148,11 @@ def compute_intelligibility(
     Path(left_path).unlink()
     Path(right_path).unlink()
 
-    return left_results["hits"] / total_words, right_results["hits"] / total_words
+    return (
+        left_results["hits"] / total_words,
+        right_results["hits"] / total_words,
+        lyrics,
+    )
 
 
 def compute_quality(
@@ -259,6 +270,9 @@ def run_compute_scores(config: DictConfig) -> None:
         "scene",
         "song",
         "listener",
+        "lyrics",
+        "hypothesis_left",
+        "hypothesis_right",
         "haaqi_left",
         "haaqi_right",
         "haaqi_avg",
@@ -368,7 +382,7 @@ def run_compute_scores(config: DictConfig) -> None:
 
         # Compute the HAAQI and Whisper scores
         haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)
-        whisper_scores = compute_intelligibility(
+        whisper_left, whisper_right, lyrics_text = compute_intelligibility(
             enhanced_signal=enhanced_signal,
             segment_metadata=songs[scene["segment_id"]],
             scorer=intelligibility_scorer,
@@ -379,22 +393,23 @@ def run_compute_scores(config: DictConfig) -> None:
             / f"{scene_id}_{listener_id}_A{alpha}_remix_hl.flac",
             equiv_0db_spl=config.evaluate.equiv_0db_spl,
         )
-
+        max_whisper = np.max([whisper_left, whisper_right])
         results_file.add_result(
             {
                 "scene": scene_id,
                 "song": songs[scene["segment_id"]]["track_name"],
                 "listener": listener_id,
+                "lyrics": lyrics_text["reference"],
+                "hypothesis_left": lyrics_text["hypothesis_left"],
+                "hypothesis_right": lyrics_text["hypothesis_right"],
                 "haaqi_left": haaqi_scores[0],
                 "haaqi_right": haaqi_scores[1],
                 "haaqi_avg": np.mean(haaqi_scores),
-                "whisper_left": whisper_scores[0],
-                "whisper_rigth": whisper_scores[1],
-                "whisper_be": np.max(whisper_scores),
+                "whisper_left": whisper_left,
+                "whisper_rigth": whisper_right,
+                "whisper_be": max_whisper,
                 "alpha": alpha,
-                "score": alpha * np.max(whisper_scores) + (1 - alpha) * np.mean(
-                    haaqi_scores
-                ),
+                "score": alpha * max_whisper + (1 - alpha) * np.mean(haaqi_scores),
             }
         )
 
