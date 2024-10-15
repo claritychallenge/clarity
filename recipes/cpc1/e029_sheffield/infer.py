@@ -140,7 +140,7 @@ def compute_uncertainty(left_proc_path, asr_model, bos_index, _tokenizer):
     return conf, neg_ent
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"

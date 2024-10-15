@@ -1,5 +1,5 @@
 path:
-  root: ?? # Set to the root of the dataset
+  root: ???  # Set to the root of the dataset
   metadata_dir: ${path.root}/metadata
   music_dir: ${path.root}/audio
   gains_file: ${path.metadata_dir}/gains.json

@@ -219,7 +219,7 @@ def compute_similarity(left_proc_path, wrd, asr_model, bos_index, tokenizer):
     return enc_similarity[0].numpy(), dec_similarity[0].numpy()
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"

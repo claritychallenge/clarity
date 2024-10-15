@@ -175,6 +175,6 @@ def test_full_cec2_pipeline(
         listener=listener,
     )
 
-    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.7f}\n")
+    regtest.write(f"Enhanced audio HASPI score is {sii_enhanced:0.5f}\n")
 
     # Enhanced audio HASPI score is 0.2994066

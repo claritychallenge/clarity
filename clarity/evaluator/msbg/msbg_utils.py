@@ -10,8 +10,8 @@ from typing import Final, TypedDict
 
 import numpy as np
 import scipy
-import scipy.signal
 from numpy import ndarray
+from scipy.signal.windows import hamming, kaiser
 
 # measure rms parameters
 WIN_SECS: Final = 0.01
@@ -167,7 +167,7 @@ def firwin2(
     order = n_taps - 1
 
     if window_type == "kaiser":
-        window_shape = scipy.signal.kaiser(n_taps, window_param)
+        window_shape = kaiser(n_taps, window_param)
 
     if window_shape is None:
         filter_coef, _ = fir2(order, frequencies, filter_gains)
@@ -203,7 +203,7 @@ def fir2(
     filter_length += 1
 
     if window_shape is None:
-        window_shape = scipy.signal.hamming(filter_length)
+        window_shape = hamming(filter_length)
 
     n_interpolate = (
         2 ** np.ceil(math.log(filter_length) / math.log(2.0))
@@ -358,6 +358,7 @@ def generate_key_percent(
     threshold_db: float,
     window_length: int,
     percent_to_track: float | None = None,
+    verbose: bool = False,
 ) -> tuple[ndarray, float]:
     """Generate key percent.
     Locates frames above some energy threshold or tracks a certain percentage
@@ -370,6 +371,7 @@ def generate_key_percent(
         window_length (int): length of window in samples.
         percent_to_track (float, optional): Track a percentage of frames.
             Default is None
+        verbose (bool, optional): Print verbose output. Default is False.
 
     Raises:
         ValueError: percent_to_track is set too high.
@@ -393,10 +395,11 @@ def generate_key_percent(
 
     expected = threshold_db
     # new Dec 2003. Possibly track percentage of frames rather than fixed threshold
-    if percent_to_track is not None:
-        logging.info("tracking %s percentage of frames", percent_to_track)
-    else:
-        logging.info("tracking fixed threshold")
+    if verbose:
+        if percent_to_track is not None:
+            logging.info("tracking %s percentage of frames", percent_to_track)
+        else:
+            logging.info("tracking fixed threshold")
 
     # put floor into histogram distribution
     non_zero = np.power(10, (expected - 30) / 10)
@@ -466,6 +469,7 @@ def measure_rms(
     sample_rate: float,
     db_rel_rms: float,
     percent_to_track: float | None = None,
+    verbose: bool = False,
 ) -> tuple[float, ndarray, float, float]:
     """Measure Root Mean Square.
 
@@ -481,6 +485,7 @@ def measure_rms(
         db_rel_rms (float): threshold for frames to track.
         percent_to_track (float, optional): track percentage of frames,
             rather than threshold (default: {None})
+        verbose (bool, optional): Print verbose output. Default is False.
     Returns:
         (tuple): tuple containing
         - rms (float): overall calculated rms (linear)
@@ -500,6 +505,7 @@ def measure_rms(
         key_thr_db,
         round(WIN_SECS * sample_rate),
         percent_to_track=percent_to_track,
+        verbose=verbose,
     )
 
     idx = key.astype(int)  # move into generate_key_percent

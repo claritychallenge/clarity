@@ -12,7 +12,7 @@ import numpy as np
 import pyloudnorm as pyln
 import torch.nn
 import whisper
-from jiwer import compute_measures
+from alt_eval import compute_metrics
 from omegaconf import DictConfig
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
@@ -98,6 +98,7 @@ def compute_intelligibility(
     ear = Ear(
         equiv_0db_spl=equiv_0db_spl,
         sample_rate=sample_rate,
+        verbose=False,
     )
 
     reference = segment_metadata["text"]
@@ -116,7 +117,9 @@ def compute_intelligibility(
     hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
     lyrics["hypothesis_left"] = hypothesis
 
-    left_results = compute_measures(reference, hypothesis)
+    left_results = compute_metrics(
+        [reference], [hypothesis], languages="en", include_other=False
+    )
 
     # Compute right ear
     ear.set_audiogram(listener.audiogram_right)
@@ -131,7 +134,10 @@ def compute_intelligibility(
     hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
     lyrics["hypothesis_right"] = hypothesis
 
-    right_results = compute_measures(reference, hypothesis)
+    right_results = compute_metrics(
+        [reference], [hypothesis], languages="en", include_other=False
+    )
+ 
 
     # Compute the average score for both ears
     total_words = (
@@ -403,7 +409,6 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         max_whisper = np.max([whisper_left, whisper_right])
-        mean_haaqi = np.mean(haaqi_scores)
         results_file.add_result(
             {
                 "scene": scene_id,
@@ -414,12 +419,14 @@ def run_compute_scores(config: DictConfig) -> None:
                 "hypothesis_right": lyrics_text["hypothesis_right"],
                 "haaqi_left": haaqi_scores[0],
                 "haaqi_right": haaqi_scores[1],
-                "haaqi_avg": mean_haaqi,
+                "haaqi_avg": np.mean(haaqi_scores),
                 "whisper_left": whisper_left,
                 "whisper_rigth": whisper_right,
                 "whisper_be": max_whisper,
                 "alpha": alpha,
-                "score": alpha * max_whisper + (1 - alpha) * mean_haaqi,
+                "score": alpha * max_whisper + (1 - alpha) * np.mean(haaqi_scores),
+
+
             }
         )
 

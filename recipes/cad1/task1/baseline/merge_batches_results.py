@@ -5,7 +5,7 @@ import pandas as pd
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def join_batches(config: DictConfig) -> None:
     """
     Join batches scores into a single file.

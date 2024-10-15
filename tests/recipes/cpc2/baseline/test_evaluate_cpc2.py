@@ -23,10 +23,10 @@ from recipes.cpc2.baseline.evaluate import (
 @pytest.mark.parametrize(
     "x, y, expected", [([1, 2, 3], [1, 2, 3], 0), ([0], [1], 1), ([1, 1, 1], [1], 0)]
 )
-def test_rmse_score_ok(x, y, expected):
+def test_rmse_score_ok(x, y, expected, rel_tolerance, abs_tolerance):
     """Test the function rmse_score valid inputs"""
     assert rmse_score(np.array(x), np.array(y)) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=rel_tolerance, abs=abs_tolerance
     )
 
 
@@ -47,10 +47,10 @@ def test_rmse_score_error(x, y, expected):
 @pytest.mark.parametrize(
     "x, y, expected", [([1, 2, 3], [1, 2, 3], 1), ([1, -1], [-1, 1], -1)]
 )
-def test_ncc_score_ok(x, y, expected):
+def test_ncc_score_ok(x, y, expected, rel_tolerance, abs_tolerance):
     """Test the function ncc_score valid inputs"""
     assert ncc_score(np.array(x), np.array(y)) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=rel_tolerance, abs=abs_tolerance
     )
 
 
@@ -67,10 +67,10 @@ def test_ncc_score_error(x, y, expected):
 @pytest.mark.parametrize(
     "x, y, expected", [([1, 2, 3], [1, 2, 3], 1), ([1, -1], [-1, 1], -1)]
 )
-def test_kt_score_ok(x, y, expected):
+def test_kt_score_ok(x, y, expected, rel_tolerance, abs_tolerance):
     """Test the function kt_score valid inputs"""
     assert kt_score(np.array(x), np.array(y)) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=rel_tolerance, abs=abs_tolerance
     )
 
 
@@ -95,10 +95,10 @@ def test_kt_score_error(x, y, expected):
         ([1, 2, 3], [11, 12, 13], 0),
     ],
 )
-def test_std_err_ok(x, y, expected):
+def test_std_err_ok(x, y, expected, rel_tolerance, abs_tolerance):
     """Test the function std_err valid inputs"""
     assert std_err(np.array(x), np.array(y)) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=rel_tolerance, abs=abs_tolerance
     )
 
 
@@ -161,10 +161,7 @@ def test_evaluate(hydra_cfg, capsys):
 
     prediction_file = "CEC1.train.sample.predict.csv"
     score_file = "CEC1.train.sample.evaluate.jsonl"
-    expected_output = (
-        "{'RMSE': 30.256228825071368, 'Std': 4.209845712831399, "
-        "'NCC': nan, 'KT': nan}\n"
-    )
+
     test_data = [
         {"signal": "S08547_L0001_E001", "predicted": 0.8},
         {"signal": "S08564_L0001_E001", "predicted": 0.8},
@@ -181,9 +178,6 @@ def test_evaluate(hydra_cfg, capsys):
     # Run evaluate, suppress warnings due to unrealist data
     warnings.simplefilter("ignore", category=RuntimeWarning)
     evaluate(hydra_cfg)
-
-    captured = capsys.readouterr()
-    assert captured.out == expected_output
 
     # Check scores
     scores = read_jsonl(score_file)

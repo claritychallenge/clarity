@@ -162,8 +162,9 @@ def generate_data_split(
             if if_msbg:
                 wav_file = orig_signal_folder / f"{snt_id}_HL-output.wav"
             elif if_ref:
-                wav_file = orig_signal_folder / (
-                    f"../../scenes/{snt_id.split('_')[0]}_target_anechoic.wav"
+                wav_file = (
+                    orig_signal_folder
+                    / f"../../scenes/{snt_id.split('_')[0]}_target_anechoic.wav"
                 )
             else:
                 wav_file = orig_signal_folder / f"{snt_id}.wav"
@@ -293,7 +294,7 @@ def run_signal_generation_test(cfg, track):
     )
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"

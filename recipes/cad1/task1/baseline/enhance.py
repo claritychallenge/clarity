@@ -347,7 +347,7 @@ def save_flac_signal(
     FlacEncoder().encode(signal, output_sample_rate, filename)
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def enhance(config: DictConfig) -> None:
     """
     Run the music enhancement.
