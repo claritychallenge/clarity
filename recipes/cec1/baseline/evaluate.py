@@ -40,7 +40,7 @@ def listen(ear, signal: ndarray, listener: Listener):
     return np.concatenate([out_l, out_r]).T
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run_HL_processing(cfg: DictConfig) -> None:
     output_path = Path(cfg.path.exp_folder) / "eval_signals"
     output_path.mkdir(parents=True, exist_ok=True)

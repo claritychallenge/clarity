@@ -94,6 +94,7 @@ def compute_intelligibility(
     )
 
     reference = segment_metadata["text"]
+    lyrics["reference"] = reference
 
     # Compute left ear
     ear.set_audiogram(listener.audiogram_left)
@@ -124,6 +125,7 @@ def compute_intelligibility(
     )
     hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
     lyrics["hypothesis_right"] = hypothesis
+
 
     right_results = compute_metrics(
         [reference], [hypothesis], languages="en", include_other=False
@@ -219,14 +221,14 @@ def load_reference_signal(
 
 
 def normalise_luft(
-    signal: np.ndarray, sample_rate: float, target_luft=-40
+    signal: np.ndarray, sample_rate: float, target_luft: float = -40.0
 ) -> np.ndarray:
     """
     Normalise the signal to a target loudness level.
     Args:
         signal: input signal to normalise
         sample_rate: sample rate of the signal
-        target_luft: target loudness level in LUFS
+        target_luft: target loudness level in LUFS.
 
     Returns:
         np.ndarray: normalised signal

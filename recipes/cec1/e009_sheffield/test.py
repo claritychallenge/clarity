@@ -14,7 +14,7 @@ from clarity.enhancer.dnn.mc_conv_tasnet import ConvTasNet
 from clarity.enhancer.dsp.filter import AudiometricFIR
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     exp_folder = Path(cfg.path.exp_folder)
     output_folder = exp_folder / f"enhanced_{cfg.listener.id}"

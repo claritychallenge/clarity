@@ -83,7 +83,7 @@ def get_random_snr(min_snr, max_snr, round_to=4) -> float:
     return float(np.round(np.random.uniform(min_snr, max_snr, 1), round_to))
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     """Main function to generate metadata for the scenes in the CAD-1 Task-2 challenge.
 

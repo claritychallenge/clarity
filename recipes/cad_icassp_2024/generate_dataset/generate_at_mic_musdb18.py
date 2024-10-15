@@ -127,7 +127,7 @@ def find_precreated_samples(source_dir: str | Path) -> list[str]:
     return previous_tracks
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     """Main function of the script."""
 

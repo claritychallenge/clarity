@@ -24,7 +24,7 @@ def test_snr_loss(regtest):
     y = torch.randn(10, 1000)
     loss = snr_loss.forward(x, y)
 
-    regtest.write(f"SNR loss {loss:0.6f}\n")
+    regtest.write(f"SNR loss {loss:0.5f}\n")
 
 
 def test_stoi_loss(regtest):

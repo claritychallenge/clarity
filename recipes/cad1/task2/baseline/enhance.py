@@ -92,7 +92,7 @@ def enhance_song(
     return out_left, out_right
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def enhance(config: DictConfig) -> None:
     """
     Run the music enhancement.

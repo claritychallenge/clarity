@@ -10,8 +10,8 @@ from typing import Final, TypedDict
 
 import numpy as np
 import scipy
-import scipy.signal
 from numpy import ndarray
+from scipy.signal.windows import hamming, kaiser
 
 # measure rms parameters
 WIN_SECS: Final = 0.01
@@ -167,7 +167,7 @@ def firwin2(
     order = n_taps - 1
 
     if window_type == "kaiser":
-        window_shape = scipy.signal.kaiser(n_taps, window_param)
+        window_shape = kaiser(n_taps, window_param)
 
     if window_shape is None:
         filter_coef, _ = fir2(order, frequencies, filter_gains)
@@ -203,7 +203,7 @@ def fir2(
     filter_length += 1
 
     if window_shape is None:
-        window_shape = scipy.signal.hamming(filter_length)
+        window_shape = hamming(filter_length)
 
     n_interpolate = (
         2 ** np.ceil(math.log(filter_length) / math.log(2.0))

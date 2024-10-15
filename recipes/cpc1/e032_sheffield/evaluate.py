@@ -85,7 +85,7 @@ def read_data(pred_json: Path, label_json: Path):
     return np.array(prediction), np.array(label)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"

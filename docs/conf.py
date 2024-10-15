@@ -7,7 +7,6 @@
 import os
 import sys
 from importlib.metadata import version
-from typing import Dict
 
 # -*- coding: utf-8 -*-
 #
@@ -157,7 +156,7 @@ HTMLHELP_BASENAME = "claritydoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements: Dict[str, str] = {
+latex_elements: dict[str, str] = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',

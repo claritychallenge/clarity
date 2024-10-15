@@ -180,7 +180,7 @@ def process_remix_for_listener(
     return np.stack([left_output, right_output], axis=1)
 
 
-@hydra.main(config_path="", config_name="config")
+@hydra.main(config_path="", config_name="config", version_base=None)
 def enhance(config: DictConfig) -> None:
     """
     Run the music enhancement.

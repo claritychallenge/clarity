@@ -27,3 +27,5 @@ evaluate:
 hydra:
   run:
     dir: ${path.exp_folder}
+  job:
+    chdir: True

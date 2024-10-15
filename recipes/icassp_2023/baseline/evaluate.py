@@ -94,7 +94,7 @@ def make_scene_listener_list(scenes_listeners, small_test=False):
     return scene_listener_pairs
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run_calculate_si(cfg: DictConfig) -> None:
     """Evaluate the enhanced signals using a combination of HASPI and HASQI metrics"""
 

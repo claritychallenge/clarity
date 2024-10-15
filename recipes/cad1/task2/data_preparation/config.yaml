@@ -19,3 +19,5 @@ valid_seed: 2023
 hydra:
   run:
     dir: .
+  job:
+    chdir: True
