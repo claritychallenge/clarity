@@ -40,6 +40,7 @@ class Ear:
         sample_rate: float = 44100.0,
         equiv_0db_spl: float = 100.0,
         ahr: float = 20.0,
+        verbose: bool = True,
     ) -> None:
         """
         Constructor for the Ear class.
@@ -48,7 +49,9 @@ class Ear:
             sample_rate (float): sample frequency.
             equiv_0db_spl (): ???
             ahr (): ???
+            verbose (): ???
         """
+        self.verbose = verbose
         self.sample_rate = sample_rate
         self.src_correction = self.get_src_correction(src_pos)
         self.equiv_0db_spl = equiv_0db_spl
@@ -62,7 +65,7 @@ class Ear:
                 "Impairment too severe: Suggest you limit audiogram max to"
                 "80-90 dB HL, otherwise things go wrong/unrealistic."
             )
-        self.cochlea = Cochlea(audiogram=audiogram)
+        self.cochlea = Cochlea(audiogram=audiogram, verbose=self.verbose)
 
     @staticmethod
     def get_src_correction(src_pos: str) -> ndarray:
@@ -92,6 +95,7 @@ class Ear:
         src_correction: ndarray,
         sample_rate: float,
         backward: bool = False,
+        verbose: bool = True,
     ) -> ndarray:
         """Simulate middle and outer ear transfer functions.
 
@@ -109,12 +113,14 @@ class Ear:
                 or ITU
             sample_rate (int): sampling frequency
             backward (bool, optional): if true then cochlea to src (default: False)
+            verbose (bool, optional): print verbose output (default: True)
 
         Returns:
             np.ndarray: the processed signal
 
         """
-        logging.info("performing outer/middle ear corrections")
+        if verbose:
+            logging.info("performing outer/middle ear corrections")
 
         # make sure that response goes only up to sample_frequency/2
         nyquist = int(sample_rate / 2.0)
@@ -204,7 +210,8 @@ class Ear:
             )
             raise ValueError("Invalid sampling frequency, valid value is 44100")
 
-        logging.info("Processing {len(chans)} samples")
+        if self.verbose:
+            logging.info("Processing {len(chans)} samples")
 
         # Need to know file RMS, and then call that a certain level in SPL:
         # needs some form of pre-measuring.
@@ -219,7 +226,7 @@ class Ear:
 
         # Measure RMS where 3rd arg is dB_rel_rms (how far below)
         calculated_rms, idx, _rel_db_thresh, _active = measure_rms(
-            signal[0], sample_rate, -12
+            signal[0], sample_rate, -12, verbose=self.verbose
         )
 
         # Rescale input data and check level after rescaling
@@ -229,11 +236,11 @@ class Ear:
         new_rms_db = equiv_0db_spl + 10 * np.log10(
             np.mean(np.power(signal[0][idx], 2.0))
         )
-        logging.info(
-            "Rescaling: "
-            f"leveldBSPL was {level_db_spl:3.1f} dB SPL, now {new_rms_db:3.1f} dB SPL. "
-            f" Target SPL is {target_spl:3.1f} dB SPL."
-        )
+        if self.verbose:
+            logging.info(
+                f"Rescaling: leveldBSPL was {level_db_spl:3.1f} dB SPL, now"
+                f" {new_rms_db:3.1f} dB SPL.  Target SPL is {target_spl:3.1f} dB SPL."
+            )
 
         # Add calibration signal at target SPL dB
         if add_calibration is True:
@@ -247,11 +254,17 @@ class Ear:
             signal = np.concatenate((pre_calibration, signal, post_calibration), axis=1)
 
         # Transform from src pos to cochlea, simulate cochlea, transform back to src pos
-        signal = Ear.src_to_cochlea_filt(signal, self.src_correction, sample_rate)
+        signal = Ear.src_to_cochlea_filt(
+            signal, self.src_correction, sample_rate, verbose=self.verbose
+        )
         if self.cochlea is not None:
             signal = np.array([self.cochlea.simulate(x, equiv_0db_spl) for x in signal])
         signal = Ear.src_to_cochlea_filt(
-            signal, self.src_correction, sample_rate, backward=True
+            signal,
+            self.src_correction,
+            sample_rate,
+            backward=True,
+            verbose=self.verbose,
         )
 
         # Implement low-pass filter at top end of audio range: flat to Cutoff freq,
