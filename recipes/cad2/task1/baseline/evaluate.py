@@ -137,7 +137,6 @@ def compute_intelligibility(
     right_results = compute_metrics(
         [reference], [hypothesis], languages="en", include_other=False
     )
- 
 
     # Compute the average score for both ears
     total_words = (
@@ -425,8 +424,6 @@ def run_compute_scores(config: DictConfig) -> None:
                 "whisper_be": max_whisper,
                 "alpha": alpha,
                 "score": alpha * max_whisper + (1 - alpha) * np.mean(haaqi_scores),
-
-
             }
         )
 
