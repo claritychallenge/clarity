@@ -122,7 +122,7 @@ def compute_intelligibility(
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(right_path, fp16=False)["text"]
+    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
     lyrics["hypothesis_right"] = hypothesis
 
     right_results = compute_metrics(
@@ -393,6 +393,7 @@ def run_compute_scores(config: DictConfig) -> None:
             / f"{scene_id}_{listener_id}_A{alpha}_remix_hl.flac",
             equiv_0db_spl=config.evaluate.equiv_0db_spl,
         )
+
         max_whisper = np.max([whisper_left, whisper_right])
         results_file.add_result(
             {
