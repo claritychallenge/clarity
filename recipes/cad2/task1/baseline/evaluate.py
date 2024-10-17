@@ -109,12 +109,14 @@ def compute_intelligibility(
     enhanced_left = ear.process(enhanced_signal[:, 0])[0]
     left_path = Path(f"{path_intermediate.as_posix()}_left.flac")
     save_flac_signal(
-        enhanced_signal,
+        enhanced_left,
         left_path,
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False, temperature=0)[
+        "text"
+    ]
     lyrics["hypothesis_left"] = hypothesis
 
     left_results = compute_metrics(
@@ -126,12 +128,14 @@ def compute_intelligibility(
     enhanced_right = ear.process(enhanced_signal[:, 1])[0]
     right_path = Path(f"{path_intermediate.as_posix()}_right.flac")
     save_flac_signal(
-        enhanced_signal,
+        enhanced_right,
         right_path,
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
+    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False, temperature=0)[
+        "text"
+    ]
     lyrics["hypothesis_right"] = hypothesis
 
     right_results = compute_metrics(
