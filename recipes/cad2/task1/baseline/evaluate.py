@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from pathlib import Path
@@ -11,7 +12,7 @@ import numpy as np
 import pyloudnorm as pyln
 import torch.nn
 import whisper
-from jiwer import compute_measures
+from alt_eval import compute_metrics
 from omegaconf import DictConfig
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
@@ -23,6 +24,13 @@ from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 
 logger = logging.getLogger(__name__)
+
+
+def set_song_seed(song: str) -> None:
+    """Set a seed that is unique for the given song"""
+    song_encoded = hashlib.md5(song.encode("utf-8")).hexdigest()
+    song_md5 = int(song_encoded, 16) % (10**8)
+    np.random.seed(song_md5)
 
 
 def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
@@ -90,6 +98,7 @@ def compute_intelligibility(
     ear = Ear(
         equiv_0db_spl=equiv_0db_spl,
         sample_rate=sample_rate,
+        verbose=False,
     )
 
     reference = segment_metadata["text"]
@@ -100,30 +109,38 @@ def compute_intelligibility(
     enhanced_left = ear.process(enhanced_signal[:, 0])[0]
     left_path = Path(f"{path_intermediate.as_posix()}_left.flac")
     save_flac_signal(
-        enhanced_signal,
+        enhanced_left,
         left_path,
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False, temperature=0)[
+        "text"
+    ]
     lyrics["hypothesis_left"] = hypothesis
 
-    left_results = compute_measures(reference, hypothesis)
+    left_results = compute_metrics(
+        [reference], [hypothesis], languages="en", include_other=False
+    )
 
     # Compute right ear
     ear.set_audiogram(listener.audiogram_right)
     enhanced_right = ear.process(enhanced_signal[:, 1])[0]
     right_path = Path(f"{path_intermediate.as_posix()}_right.flac")
     save_flac_signal(
-        enhanced_signal,
+        enhanced_right,
         right_path,
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
+    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False, temperature=0)[
+        "text"
+    ]
     lyrics["hypothesis_right"] = hypothesis
 
-    right_results = compute_measures(reference, hypothesis)
+    right_results = compute_metrics(
+        [reference], [hypothesis], languages="en", include_other=False
+    )
 
     # Compute the average score for both ears
     total_words = (
@@ -316,6 +333,10 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
+
+        # Set the random seed for the scene
+        if config.evaluate.set_random_seed:
+            set_song_seed(scene_id)
 
         # Load scene details
         scene = scenes[scene_id]
