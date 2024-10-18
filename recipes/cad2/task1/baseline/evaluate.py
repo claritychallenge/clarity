@@ -70,7 +70,6 @@ def compute_intelligibility(
     save_intermediate: bool = False,
     path_intermediate: str | Path | None = None,
     equiv_0db_spl: float = 100,
-    whisper_temperature: float = 0.0,
 ) -> tuple[float, float, dict]:
     """
     Compute the Intelligibility score for the enhanced signal
@@ -88,7 +87,6 @@ def compute_intelligibility(
         save_intermediate: Save the intermediate signal
         path_intermediate: The path to save the intermediate signal
         equiv_0db_spl: The equivalent 0 dB SPL
-        whisper_temperature: The temperature for the Whisper model
 
     Returns:
         The intelligibility score for the left and right channels
@@ -120,9 +118,9 @@ def compute_intelligibility(
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(
-        left_path.as_posix(), fp16=False, temperature=whisper_temperature
-    )["text"]
+    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False, temperature=0.0)[
+        "text"
+    ]
     lyrics["hypothesis_left"] = hypothesis
 
     left_results = compute_metrics(
@@ -139,9 +137,9 @@ def compute_intelligibility(
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(
-        right_path.as_posix(), fp16=False, temperature=whisper_temperature
-    )["text"]
+    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False, temperature=0.0)[
+        "text"
+    ]
     lyrics["hypothesis_right"] = hypothesis
 
     right_results = compute_metrics(
@@ -442,7 +440,6 @@ def run_compute_scores(config: DictConfig) -> None:
             path_intermediate=enhanced_signal_path.parent
             / f"{scene_id}_{listener_id}_A{alpha}_remix_hl.flac",
             equiv_0db_spl=config.evaluate.equiv_0db_spl,
-            whisper_temperature=config.evaluate.whisper_temperature,
         )
 
         max_whisper = np.max([whisper_left, whisper_right])
