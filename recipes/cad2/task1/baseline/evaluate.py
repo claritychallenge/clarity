@@ -121,7 +121,7 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(
-        left_path.as_posix(), fp16=False, temperature=whisper_temperature, beam_size=1
+        left_path.as_posix(), fp16=False, temperature=whisper_temperature
     )["text"]
     lyrics["hypothesis_left"] = hypothesis
 
@@ -140,7 +140,7 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(
-        right_path.as_posix(), fp16=False, temperature=whisper_temperature, beam_size=1
+        right_path.as_posix(), fp16=False, temperature=whisper_temperature
     )["text"]
     lyrics["hypothesis_right"] = hypothesis
 
