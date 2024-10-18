@@ -66,6 +66,7 @@ def compute_intelligibility(
     save_intermediate: bool = False,
     path_intermediate: str | Path | None = None,
     equiv_0db_spl: float = 100,
+    whisper_temperature: float = 0.0,
 ) -> tuple[float, float, dict]:
     """
     Compute the Intelligibility score for the enhanced signal
@@ -83,6 +84,7 @@ def compute_intelligibility(
         save_intermediate: Save the intermediate signal
         path_intermediate: The path to save the intermediate signal
         equiv_0db_spl: The equivalent 0 dB SPL
+        whisper_temperature: The temperature for the Whisper model
 
     Returns:
         The intelligibility score for the left and right channels
@@ -114,9 +116,9 @@ def compute_intelligibility(
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False, temperature=0)[
-        "text"
-    ]
+    hypothesis = scorer.transcribe(
+        left_path.as_posix(), fp16=False, temperature=whisper_temperature
+    )["text"]
     lyrics["hypothesis_left"] = hypothesis
 
     left_results = compute_metrics(
@@ -133,9 +135,9 @@ def compute_intelligibility(
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False, temperature=0)[
-        "text"
-    ]
+    hypothesis = scorer.transcribe(
+        right_path.as_posix(), fp16=False, temperature=whisper_temperature
+    )["text"]
     lyrics["hypothesis_right"] = hypothesis
 
     right_results = compute_metrics(
@@ -172,9 +174,23 @@ def compute_quality(
     reference_signal: np.ndarray,
     enhanced_signal: np.ndarray,
     listener: Listener,
-    config: DictConfig,
+    reference_sample_rate: int,
+    enhanced_sample_rate: int,
+    HAAQI_sample_rate: int,
 ) -> tuple[float, float]:
-    """Compute the HAAQI score for the left and right channels"""
+    """Compute the HAAQI score for the left and right channels
+
+    Args:
+        reference_signal: The reference signal
+        enhanced_signal: The enhanced signal
+        listener: The listener
+        reference_sample_rate: The sample rate of the reference signal
+        enhanced_sample_rate: The sample rate of the enhanced signal
+        HAAQI_sample_rate: The sample rate for the HAAQI computation
+
+    Returns:
+        The HAAQI score for the left and right channels
+    """
     scores = []
 
     for channel in range(2):
@@ -184,16 +200,16 @@ def compute_quality(
         s = compute_haaqi(
             processed_signal=resample(
                 enhanced_signal[:, channel],
-                config.remix_sample_rate,
-                config.HAAQI_sample_rate,
+                enhanced_sample_rate,
+                HAAQI_sample_rate,
             ),
             reference_signal=resample(
                 reference_signal[:, channel],
-                config.input_sample_rate,
-                config.HAAQI_sample_rate,
+                reference_sample_rate,
+                HAAQI_sample_rate,
             ),
-            processed_sample_rate=config.HAAQI_sample_rate,
-            reference_sample_rate=config.HAAQI_sample_rate,
+            processed_sample_rate=HAAQI_sample_rate,
+            reference_sample_rate=HAAQI_sample_rate,
             audiogram=audiogram,
             equalisation=2,
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, channel])),
@@ -398,7 +414,15 @@ def run_compute_scores(config: DictConfig) -> None:
         # COMPUTE SCORES
 
         # Compute the HAAQI and Whisper scores
-        haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)
+        haaqi_scores = compute_quality(
+            reference_signal=reference,
+            enhanced_signal=enhanced_signal,
+            listener=listener,
+            reference_sample_rate=config.input_sample_rate,
+            enhanced_sample_rate=config.remix_sample_rate,
+            HAAQI_sample_rate=config.HAAQI_sample_rate,
+        )
+
         whisper_left, whisper_right, lyrics_text = compute_intelligibility(
             enhanced_signal=enhanced_signal,
             segment_metadata=songs[scene["segment_id"]],
@@ -409,6 +433,7 @@ def run_compute_scores(config: DictConfig) -> None:
             path_intermediate=enhanced_signal_path.parent
             / f"{scene_id}_{listener_id}_A{alpha}_remix_hl.flac",
             equiv_0db_spl=config.evaluate.equiv_0db_spl,
+            whisper_temperature=config.evaluate.whisper_temperature,
         )
 
         max_whisper = np.max([whisper_left, whisper_right])

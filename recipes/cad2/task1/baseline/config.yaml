@@ -33,6 +33,7 @@ soft_clip: False
 
 evaluate:
   whisper_version: base.en
+  whisper_temperature: 0.0
   set_random_seed: True
   small_test: False
   save_intermediate: False
