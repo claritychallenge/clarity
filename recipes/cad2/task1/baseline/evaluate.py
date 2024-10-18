@@ -32,6 +32,10 @@ def set_song_seed(song: str) -> None:
     song_md5 = int(song_encoded, 16) % (10**8)
     np.random.seed(song_md5)
 
+    torch.manual_seed(song_md5)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(song_md5)
+
 
 def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
     """Make the list of scene-listener pairing to process
@@ -117,7 +121,7 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(
-        left_path.as_posix(), fp16=False, temperature=whisper_temperature
+        left_path.as_posix(), fp16=False, temperature=whisper_temperature, beam_size=1
     )["text"]
     lyrics["hypothesis_left"] = hypothesis
 
@@ -136,7 +140,7 @@ def compute_intelligibility(
         sample_rate,
     )
     hypothesis = scorer.transcribe(
-        right_path.as_posix(), fp16=False, temperature=whisper_temperature
+        right_path.as_posix(), fp16=False, temperature=whisper_temperature, beam_size=1
     )["text"]
     lyrics["hypothesis_right"] = hypothesis
 
@@ -337,6 +341,11 @@ def run_compute_scores(config: DictConfig) -> None:
         sample_rate=config.input_sample_rate,
     )
 
+    # Configure backend for determinism
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
+    # Load the Whisper model
     intelligibility_scorer = whisper.load_model(config.evaluate.whisper_version)
 
     # Loop over the scene-listener pairs
