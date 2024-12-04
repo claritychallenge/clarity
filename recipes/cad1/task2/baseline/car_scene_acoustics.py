@@ -221,7 +221,7 @@ class CarSceneAcoustics:
         self,
         signal: np.ndarray,
         reference_signal: np.ndarray,
-        snr: float | None = 0,
+        snr: float = 0.0,
     ) -> np.ndarray:
         """
         Scales the target signal to the desired SNR.
@@ -232,7 +232,6 @@ class CarSceneAcoustics:
             target_signal (np.ndarray): The target signal to scale.
             reference_signal (np.ndarray): The reference signal.
             snr (float): The desired SNR gain in dB.
-                If None, the target signal is scaled to the reference signal.
 
         Returns:
             np.ndarray: The scaled target signal.
