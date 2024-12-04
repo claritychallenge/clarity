@@ -213,6 +213,13 @@ def run_calculate_aq(config: DictConfig) -> None:
         reference_mixture = remix_stems(reference_stems)
         reference_mixture = adjust_level(reference_mixture, gains[scene["gain"]])
 
+        start = songs[song_name]["mixture"]["start"]
+        end = start + songs[song_name]["mixture"]["duration"]
+        reference_mixture = reference_mixture[
+            int(start * config.input_sample_rate) : int(end * config.input_sample_rate),
+            :,
+        ]
+
         # Set the random seed for the scene
         if config.evaluate.set_random_seed:
             set_song_seed(scene_id)
