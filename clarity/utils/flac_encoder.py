@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import logging
 import tempfile
-
 # pylint: disable=import-error, protected-access
 from pathlib import Path
 
@@ -143,7 +142,11 @@ class FileDecoder(pf.decoder.FileDecoder):
 
         self.finish()
         self.__output.close()
-        return sf.read(str(self.__output_file), always_2d=False, dtype="int16")
+        signal, sample_rate = sf.read(
+            str(self.__output_file), always_2d=False, dtype="int16"
+        )
+        self.__output_file.unlink()
+        return signal, sample_rate
 
 
 class FlacEncoder:
