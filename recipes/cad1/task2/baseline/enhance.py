@@ -1,4 +1,4 @@
-""" Run the dummy enhancement. """
+"""Run the dummy enhancement."""
 
 # pylint: disable=too-many-locals
 # pylint: disable=import-error

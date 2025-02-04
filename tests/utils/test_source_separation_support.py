@@ -1,4 +1,4 @@
-""" Test module for the source separation support"""
+"""Test module for the source separation support"""
 
 # pylint: disable=import-error
 from pathlib import Path

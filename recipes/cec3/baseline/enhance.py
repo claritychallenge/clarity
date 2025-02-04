@@ -1,4 +1,4 @@
-""" Run the dummy enhancement. """
+"""Run the dummy enhancement."""
 
 import json
 import logging

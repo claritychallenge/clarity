@@ -1,4 +1,4 @@
-""" Run the baseline enhancement. """
+"""Run the baseline enhancement."""
 
 from __future__ import annotations
 
