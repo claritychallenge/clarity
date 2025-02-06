@@ -20,20 +20,20 @@ repos:
       - id: check-toml
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.0
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
         args: [--py39-plus]
 
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 25.1.0
     hooks:
       - id: black
         types: [python]
         additional_dependencies: ["click==8.0.4"]
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.15.0
+    rev: v0.17.2
     hooks:
       - id: markdownlint-cli2
 
@@ -45,7 +45,7 @@ repos:
         types: [python]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 6.0.0
     hooks:
       - id: isort
         name: isort (python)
@@ -65,7 +65,7 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.14.1
     hooks:
       - id: mypy
         args:
@@ -75,13 +75,13 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.8.1"
+    rev: "v0.9.4"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v3.3.2
+    rev: v3.3.4
     hooks:
       - id: pylint
         args:

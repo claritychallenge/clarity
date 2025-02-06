@@ -1,4 +1,4 @@
-""""Module for the Compressor class."""
+""" "Module for the Compressor class."""
 
 from __future__ import annotations
 

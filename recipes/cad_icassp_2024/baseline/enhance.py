@@ -1,4 +1,4 @@
-""" Run the dummy enhancement. """
+"""Run the dummy enhancement."""
 
 from __future__ import annotations
 

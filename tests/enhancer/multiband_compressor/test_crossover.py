@@ -1,4 +1,4 @@
-""" Tests for the CrossoverTwoOrMore class """
+"""Tests for the CrossoverTwoOrMore class"""
 
 import numpy as np
 import pytest

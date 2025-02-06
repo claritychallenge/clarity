@@ -1,4 +1,4 @@
-""" Compute the HASPI scores. """
+"""Compute the HASPI scores."""
 
 from __future__ import annotations
 
