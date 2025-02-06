@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CAD2-TASK2 target instrument/accompaniment separation model &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="cad2-task2-target-instrument-accompaniment-separation-model">
+<h1>CAD2-TASK2 target instrument/accompaniment separation model<a class="headerlink" href="#cad2-task2-target-instrument-accompaniment-separation-model" title="Link to this heading">¶</a></h1>
+<p>This recipe contains the necessary content to replicate the separation models used in CAD2-Task1.</p>
+<ul class="simple">
+<li><p>The system is based on Asteroid Source Separation system.</p></li>
+<li><p>ConvTasNet implementation is based on stereo adaptation by Alexandre Defossez <a class="reference external" href="https://github.com/facebookresearch/demucs/blob/v1/demucs/tasnet.py">https://github.com/facebookresearch/demucs/blob/v1/demucs/tasnet.py</a></p></li>
+</ul>
+<p>You can replicate the Causal and Non-Causal model by running:</p>
+<ul class="simple">
+<li><p><strong>To replicate the Non-Causal model</strong></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--exp_dir<span class="w"> </span>/path/to/save/exps<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--batch_size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--aggregate<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--lr<span class="w"> </span><span class="m">0</span>.0005<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--root<span class="w"> </span>/path/to/MUSDB18<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_rate<span class="w"> </span><span class="m">44100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--segment<span class="w"> </span><span class="m">5</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--samples_per_track<span class="w"> </span><span class="m">64</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>To replicate the Causal model</strong></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--exp_dir<span class="w"> </span>/path/to/save/exps<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--batch_size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--aggregate<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--lr<span class="w"> </span><span class="m">0</span>.0005<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--root<span class="w"> </span>/path/to/MUSDB18<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sample_rate<span class="w"> </span><span class="m">44100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--segment<span class="w"> </span><span class="m">4</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--samples_per_track<span class="w"> </span><span class="m">64</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--causal<span class="w"> </span>True<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--n_src<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--norm_type<span class="w"> </span>cLN
+</pre></div>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../../_sources/recipes/cad2/task2/ConvTasNet/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

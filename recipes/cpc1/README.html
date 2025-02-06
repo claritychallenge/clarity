@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The 1st Clarity Prediction Challenge (CPC1) &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction" href="e029_sheffield/README.html" />
+    <link rel="prev" title="The 2nd Clarity Enhancement Challenge (CEC2)" href="../cec2/README.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-1st-clarity-prediction-challenge-cpc1">
+<h1>The 1st Clarity Prediction Challenge (CPC1)<a class="headerlink" href="#the-1st-clarity-prediction-challenge-cpc1" title="Link to this heading">¶</a></h1>
+<p>Clarity challenge code for the 1st prediction challenge (CPC1).</p>
+<p>There are two traks in CPC1:</p>
+<ul class="simple">
+<li><p><strong>closed-set</strong>: the evaluation systems and listeners are covered in the training set, the signals and listener repsonses are provieded in <code class="docutils literal notranslate"><span class="pre">CPC1.train.json</span></code></p></li>
+<li><p><strong>open-set</strong>: the evaluation systems and listeners are not seen in the training set, the signals and listener responses are provieded in <code class="docutils literal notranslate"><span class="pre">CPC1_indep.train.json</span></code></p></li>
+</ul>
+<p>For more information about the CPC1 please visit <a class="reference external" href="https://claritychallenge.org/docs/cpc1/cpc1_intro">claritychallenge.org/docs/cpc1/cpc1_intro</a>.</p>
+<section id="data-structure">
+<h2>Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<p>To download the CPC1 data, please visit <a class="reference external" href="https://mab.to/R6H84YNf74p5U">here</a>.</p>
+<p><strong>clarity_CPC1_data.v1_1</strong> contains the training data:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+|
+└───HA_outputs
+|   |
+|   └───train 3.8G
+|   |
+|   └───train_indep 2.8G
+|
+└───scenes 12.1G
+
+metadata
+    |CPC1.train.json
+    |CPC1.train_indep.json
+    |listener_data.CPC1_train.xlsx
+    listeners.CPC1_train.json
+    |scenes.CPC1_train.json
+</pre></div>
+</div>
+<p><strong>clarity_CPC1_data.test.v1</strong> follows the same structure as <strong>clarity_CPC1_data.v1_1</strong>, except that the listener responses (i.e. test labels) are not included. The test listener responses are in the <code class="docutils literal notranslate"><span class="pre">test_listener_responses</span></code>.</p>
+</section>
+<section id="baseline">
+<h2>Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>The baseline folder provides the code of the Cambridge Auditory Group MSBG hearing loss model and MBSTOI, see <a class="reference internal" href="#../cec1/baseline"><span class="xref myst">CEC1</span></a>. Run <code class="docutils literal notranslate"><span class="pre">run.py</span></code> to generate the predicted intelligibility, and then run <code class="docutils literal notranslate"><span class="pre">compute_scores.py</span></code> to apply logistic fitting and compute the evaluation scores, including RMSE, normalised cross-correlation, Kendall’s Tau coefficient.</p>
+</section>
+<section id="citing-cpc1">
+<h2>Citing CPC1<a class="headerlink" href="#citing-cpc1" title="Link to this heading">¶</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@inproceedings{barker2022the,
+  title={The 1st Clarity Prediction Challenge: A machine learning challenge for hearing aid intelligibility prediction},
+  author={Jon Barker, Michael Akeroyd, Trevor J. Cox, John F. Culling, Jennifer Firth, Simone Graetzer, Holly Griffiths, Lara Harris, Graham Naylor, Zuzanna Podwinska, Eszter Porter and Rhoddy Viveros Munoz},
+  year={2022}
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../../recipes_doc.html">Recipes</a><ul>
+      <li>Previous: <a href="../cec2/README.html" title="previous chapter">The 2nd Clarity Enhancement Challenge (CEC2)</a></li>
+      <li>Next: <a href="e029_sheffield/README.html" title="next chapter">E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/recipes/cpc1/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

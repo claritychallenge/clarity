@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The 1st Clarity Enhancement Challenge &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="CLARITY CEC1 Baseline" href="baseline/README.html" />
+    <link rel="prev" title="Recipes" href="../../recipes_doc.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-1st-clarity-enhancement-challenge">
+<h1>The 1st Clarity Enhancement Challenge<a class="headerlink" href="#the-1st-clarity-enhancement-challenge" title="Link to this heading">¶</a></h1>
+<p>Clarity challenge code for the first enhancement challenge (CEC1).</p>
+<p>Please visit the <a class="reference external" href="https://claritychallenge.github.io/clarity_CC_doc/docs/cec1/cec1_intro">Clarity Challenge website</a> for CEC1 information, and the <a class="reference external" href="https://claritychallenge.github.io/clarity2021-workshop/results.html">Clarity Workshop website</a> for CEC1 results.</p>
+<section id="data-structure">
+<h2>Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<p>To download data, please visit <a class="reference external" href="https://mab.to/bavGDV87BZISg">here</a>. The data is split into two packages: <code class="docutils literal notranslate"><span class="pre">clarity_CEC1_data.train.tgz</span></code> [192 GB], <code class="docutils literal notranslate"><span class="pre">clarity_CEC1_data.dev_eval_metadata.tgz</span></code> [163 GB]. Please also download and unpack <code class="docutils literal notranslate"><span class="pre">clarity_CEC1_data.anechoic.v1_3.tgz</span></code> [11.4 GB], which contains the correct version of anechoic signals for reference, and replace the old anechoic signals within the train.tgz and dev_eval_metadata.tgz.</p>
+<p>Unpack packages under the same root directory using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>&lt;PACKAGE_NAME&gt;
+</pre></div>
+</div>
+<p><strong>Train</strong> contains the training data:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+|
+└───train
+    └───interferers
+    |   |    nosie 3.9G
+    |   |    speech 4.5G
+    |
+    └───rooms
+    |   |    ac 48M
+    |   |    brir 46G
+    |   |    rpf 379M
+    |
+    └───scenes 166G
+    |
+    └───targets 2.8G
+</pre></div>
+</div>
+<p><strong>Dev_Eval_Metadata</strong> contains development set, evaluation set (eval2 is the processed evaluation data by the baseline), and metadata,</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+|
+└───dev
+|   └───interferers
+|   |   |    nosie 587M
+|   |   |    speech 1.4G
+|   |
+|   └───rooms
+|   |   |    ac 20M
+|   |   |    brir 20G
+|   |   |    rpf 158M
+|   |
+|   └───scenes 72G
+|   |
+|   └───targets 1.3G
+|
+└───eval
+|   |   |    nosie 675M
+|   |   |    speech 1.3G
+|   |
+|   └───rooms
+|   |   |    ac 12M
+|   |   |    brir 12G
+|   |   |    rpf 95M
+|   |
+|   └───scenes 58G
+|   |
+|   └───targets 749M
+|
+└───eval2/scenes 21G
+</pre></div>
+</div>
+</section>
+<section id="data-preparation">
+<h2>Data preparation<a class="headerlink" href="#data-preparation" title="Link to this heading">¶</a></h2>
+<p>In this folder, we provide the code for generating train &amp; scenes. If you simply tends to use the CEC1 data, please download with the link above.</p>
+</section>
+<section id="baseline">
+<h2>Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>In the baseline, the baseline enhancement code using OpenMHA is provided. The evaluation code using the Cambridge Auditory Group MSBG hearing loss model and MBSTOI is also provided.</p>
+</section>
+<section id="refernces">
+<h2>Refernces<a class="headerlink" href="#refernces" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>[1] Kayser, Hendrik, et al. “Open community platform for hearing aid algorithm research: open Master Hearing Aid (openMHA).” SoftwareX 17 (2022): 100953.</p></li>
+<li><p>[2] Baer, Thomas, and Brian CJ Moore. “Effects of spectral smearing on the intelligibility of sentences in noise.” The Journal of the Acoustical Society of America 94.3 (1993): 1229-1241.</p></li>
+<li><p>[3] Baer, Thomas, and Brian CJ Moore. “Effects of spectral smearing on the intelligibility of sentences in the presence of interfering speech.” The Journal of the Acoustical Society of America 95.4 (1994): 2277-2280.</p></li>
+<li><p>[4] Moore, Brian CJ, and Brian R. Glasberg. “Simulation of the effects of loudness recruitment and threshold elevation on the intelligibility of speech in quiet and in a background of speech.” The Journal of the Acoustical Society of America 94.4 (1993): 2050-2062.</p></li>
+<li><p>[5] Stone, Michael A., and Brian CJ Moore. “Tolerable hearing aid delays. I. Estimation of limits imposed by the auditory path alone using simulated hearing losses.” Ear and Hearing 20.3 (1999): 182-192.</p></li>
+<li><p>[6] Andersen, Asger Heidemann, et al. “Refinement and validation of the binaural short time objective intelligibility measure for spatially diverse conditions.” Speech Communication 102 (2018): 1-13.</p></li>
+</ul>
+</section>
+<section id="citing-cec1">
+<h2>Citing CEC1<a class="headerlink" href="#citing-cec1" title="Link to this heading">¶</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@inproceedings{graetzer2021clarity,
+  title={Clarity-2021 challenges: Machine learning challenges for advancing hearing aid processing},
+  author={Graetzer, SN and Barker, Jon and Cox, Trevor J and Akeroyd, Michael and Culling, John F and Naylor, Graham and Porter, Eszter and Viveros Munoz, R and others},
+  booktitle={INTERSPEECH},
+  volume={2},
+  pages={686--690},
+  year={2021},
+  organization={International Speech Communication Association (ISCA)}
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../../recipes_doc.html">Recipes</a><ul>
+      <li>Previous: <a href="../../recipes_doc.html" title="previous chapter">Recipes</a></li>
+      <li>Next: <a href="baseline/README.html" title="next chapter">CLARITY CEC1 Baseline</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/recipes/cec1/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

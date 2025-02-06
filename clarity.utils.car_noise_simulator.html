@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.utils.car_noise_simulator package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes package" href="recipes.html" />
+    <link rel="prev" title="clarity.utils package" href="clarity.utils.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-utils-car-noise-simulator-package">
+<h1>clarity.utils.car_noise_simulator package<a class="headerlink" href="#clarity-utils-car-noise-simulator-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-clarity.utils.car_noise_simulator.carnoise_parameters_generator">
+<span id="clarity-utils-car-noise-simulator-carnoise-parameters-generator-module"></span><h2>clarity.utils.car_noise_simulator.carnoise_parameters_generator module<a class="headerlink" href="#module-clarity.utils.car_noise_simulator.carnoise_parameters_generator" title="Link to this heading">¶</a></h2>
+<p>Class to generate random parameters for the Car noise signal generation</p>
+<p>These are 2 separated class to keep the logic separated</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.car_noise_simulator.carnoise_parameters_generator.</span></span><span class="sig-name descname"><span class="pre">CarNoiseParametersGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primary_filter_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_filter_constant_hz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.86</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_filter_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_filter_constant_hz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_parameters_generator.html#CarNoiseParametersGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to generate noise parameters for a car.
+The constructor takes a boolean flag to indicate whether some
+parameters should be randomized or not.</p>
+<p>The method <cite>gen_parameters</cite> takes a speed in kilometers per hour
+and returns a dictionary of noise parameters.</p>
+<p>The global variables <cite>GEAR_LOOKUP</cite> and <cite>RPM_LOOKUP</cite>
+are used to determine the gear and RPM for a given speed.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">car_noise_parameters</span> <span class="o">=</span> <span class="n">CarNoiseParameters</span><span class="p">(</span><span class="n">random_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">car_noise_parameters</span><span class="o">.</span><span class="n">gen_parameters</span><span class="p">(</span><span class="n">speed_kph</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span>
+<span class="go">{</span>
+<span class="go">&quot;speed&quot;: 70,</span>
+<span class="go">&quot;gear&quot;: 4,</span>
+<span class="go">&quot;rpm&quot;: 1890.0,</span>
+<span class="go">&quot;primary_filter&quot;: {</span>
+<span class="go">    &quot;order&quot;: 1,</span>
+<span class="go">    &quot;btype&quot;: &quot;lowpass&quot;,</span>
+<span class="go">    &quot;cutoff_hz&quot;: 12.685320000000003,</span>
+<span class="go">},</span>
+<span class="go">&quot;secondary_filter&quot;: {</span>
+<span class="go">    &quot;order&quot;: 2,</span>
+<span class="go">    &quot;btype&quot;: &quot;lowpass&quot;,</span>
+<span class="go">    &quot;cutoff_hz&quot;: 276.22400000000005,</span>
+<span class="go">},</span>
+<span class="go">&quot;bump&quot;: {&quot;order&quot;: 1, &quot;btype&quot;: &quot;bandpass&quot;, &quot;cutoff_hz&quot;: [34, 66.64000000000001]},</span>
+<span class="go">&quot;dip_low&quot;: {&quot;order&quot;: 1, &quot;btype&quot;: &quot;lowpass&quot;, &quot;cutoff_hz&quot;: 90},</span>
+<span class="go">&quot;dip_high&quot;: {&quot;order&quot;: 1, &quot;btype&quot;: &quot;highpass&quot;, &quot;cutoff_hz&quot;: 220.12494775682322},</span>
+</pre></div>
+</div>
+<p>}</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.GEAR_LOOKUP">
+<span class="sig-name descname"><span class="pre">GEAR_LOOKUP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{50:</span> <span class="pre">[3],</span> <span class="pre">60:</span> <span class="pre">[4],</span> <span class="pre">75:</span> <span class="pre">[4,</span> <span class="pre">5],</span> <span class="pre">85:</span> <span class="pre">[5],</span> <span class="pre">100:</span> <span class="pre">[5,</span> <span class="pre">6],</span> <span class="pre">110:</span> <span class="pre">[6]}</span></em><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.GEAR_LOOKUP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.REFERENCE_CONSTANT_DB">
+<span class="sig-name descname"><span class="pre">REFERENCE_CONSTANT_DB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></em><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.REFERENCE_CONSTANT_DB" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.RPM_LOOKUP">
+<span class="sig-name descname"><span class="pre">RPM_LOOKUP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{3:</span> <span class="pre">0.6,</span> <span class="pre">4:</span> <span class="pre">0.45,</span> <span class="pre">5:</span> <span class="pre">0.34,</span> <span class="pre">6:</span> <span class="pre">0.28}</span></em><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.RPM_LOOKUP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.gen_parameters">
+<span class="sig-name descname"><span class="pre">gen_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed_kph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_parameters_generator.html#CarNoiseParametersGenerator.gen_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.gen_parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a dictionary of noise parameters for a given speed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>speed_kph</strong> (<em>float</em>) – The speed of the car in kilometers per hour between 50 and 120 km/h.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>parameters</strong> – A dictionary of noise parameters.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.set_new_randomisation_range_freq_multiplier">
+<span class="sig-name descname"><span class="pre">set_new_randomisation_range_freq_multiplier</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_parameters_generator.html#CarNoiseParametersGenerator.set_new_randomisation_range_freq_multiplier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.set_new_randomisation_range_freq_multiplier" title="Link to this definition">¶</a></dt>
+<dd><p>Set a new frequency multiplier use in the
+primary and secondary filters</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.car_noise_simulator.carnoise_signal_generator">
+<span id="clarity-utils-car-noise-simulator-carnoise-signal-generator-module"></span><h2>clarity.utils.car_noise_simulator.carnoise_signal_generator module<a class="headerlink" href="#module-clarity.utils.car_noise_simulator.carnoise_signal_generator" title="Link to this heading">¶</a></h2>
+<p>Class to generate the car noise signal.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.car_noise_simulator.carnoise_signal_generator.</span></span><span class="sig-name descname"><span class="pre">CarNoiseSignalGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_secs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to generate car noise signal.</p>
+<p>The constructor takes the sample_rate and duration of
+the generated signals.</p>
+<p>The method <cite>generate_car_noise</cite> takes parameters for the
+noise and generates the signal. These parameters
+can be generated by the CarNoiseParameters class.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">car_noise_parameters</span> <span class="o">=</span> <span class="n">CarNoiseParameters</span><span class="p">(</span><span class="n">random_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">car_noise_parameters</span><span class="o">.</span><span class="n">gen_parameters</span><span class="p">(</span><span class="n">speed_kph</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">car_noise</span> <span class="o">=</span> <span class="n">CarNoiseGenerator</span><span class="p">(</span><span class="n">sample_rate</span><span class="o">=</span><span class="mi">44100</span><span class="p">,</span> <span class="n">duration_secs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="go">        random_flag=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">car_noise_signal</span> <span class="o">=</span> <span class="n">car_noise</span><span class="o">.</span><span class="n">generate_car_noise</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.FINAl_MULTIPLIER">
+<span class="sig-name descname"><span class="pre">FINAl_MULTIPLIER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0005</span></em><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.FINAl_MULTIPLIER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.REFERENCE_CONSTANT_DB">
+<span class="sig-name descname"><span class="pre">REFERENCE_CONSTANT_DB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></em><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.REFERENCE_CONSTANT_DB" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.apply_commonness">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_commonness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coherence_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commonness_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator.apply_commonness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.apply_commonness" title="Link to this definition">¶</a></dt>
+<dd><p>Function to apply correlation between the target signal
+using the coherence signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_signal</strong> (<em>np.ndarray</em>) – Target signal</p></li>
+<li><p><strong>coherence_signal</strong> (<em>np.ndarray</em>) – Coherence signal</p></li>
+<li><p><strong>commonness_factor</strong> (<em>float</em>) – Commonness factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Target signal with the coherence signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>target_signal (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_car_noise">
+<span class="sig-name descname"><span class="pre">generate_car_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noise_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_noise_sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commonness_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator.generate_car_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_car_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Method that generates the car noise signal.
+It organizes the parameters and calls the methods to generate the independent
+parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>noise_parameters</strong> (<em>dict</em>) – Dictionary with the parameters for the noise
+as generated by the CarNoiseParameters class.</p></li>
+<li><p><strong>number_noise_sources</strong> (<em>int</em>) – Number of noise sources. First source is the
+engine noise. Following sources are other noise sources.</p></li>
+<li><p><strong>commonness_factor</strong> (<em>float</em>) – Commonness factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Car noise signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_engine_noise">
+<span class="sig-name descname"><span class="pre">generate_engine_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rpm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_level_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_num_harmonics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator.generate_engine_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_engine_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Method that generates the noise of the engine.
+:param speed: Speed of the car in km/h
+:type speed: float
+:param rpm: RPM of the engine
+:type rpm: float
+:param reference_level_db: Reference level in dB
+:type reference_level_db: float
+:param engine_num_harmonics: Number of harmonics of the engine
+:type engine_num_harmonics: int
+:param primary_filter: Primary filter
+:type primary_filter: Dict[str, np.ndarray]
+:param secondary_filter: Secondary filter
+:type secondary_filter: Dict[str, np.ndarray]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Noise of the engine</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_source_noise">
+<span class="sig-name descname"><span class="pre">generate_source_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_level_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bump_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dip_low_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dip_high_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator.generate_source_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_source_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Method that generates the noise of a single source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_level_db</strong> (<em>float</em>) – Reference level in dB</p></li>
+<li><p><strong>primary_filter</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Primary filter</p></li>
+<li><p><strong>secondary_filter</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Secondary filter</p></li>
+<li><p><strong>bump_filter</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Bump filter</p></li>
+<li><p><strong>dip_low_filter</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Low dip filter</p></li>
+<li><p><strong>dip_high_filter</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – High dip filter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Noise of a single source</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_bump_params">
+<span class="sig-name descname"><span class="pre">get_bump_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_level_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator.get_bump_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_bump_params" title="Link to this definition">¶</a></dt>
+<dd><p>Method that gets the parameters of the bump noise
+:param reference_level_db: Reference level in dB
+:type reference_level_db: float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Standard deviation of the low pass noise
+bump_gaussian_std (float): Standard deviation of the bump noise</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>lowpass_noise_gaussian_std (float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_engine_params">
+<span class="sig-name descname"><span class="pre">get_engine_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rpm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_level_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_num_harmonics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/car_noise_simulator/carnoise_signal_generator.html#CarNoiseSignalGenerator.get_engine_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_engine_params" title="Link to this definition">¶</a></dt>
+<dd><p>Method that gets the parameters of the engine noise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>float</em>) – Speed of the car in km/h</p></li>
+<li><p><strong>rpm</strong> (<em>float</em>) – RPM of the engine</p></li>
+<li><p><strong>reference_level_db</strong> (<em>float</em>) – Reference level in dB</p></li>
+<li><p><strong>engine_num_harmonics</strong> (<em>int</em>) – Number of harmonics of the engine</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Frequency of the harmonic complex
+harmoniccomplex_ntones (int): Number of tones of the harmonic complex
+harmoniccomplex_power_db (np.ndarray): Power of the harmonic complex</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>harmoniccomplex_freqs_hz (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.car_noise_simulator">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.utils.car_noise_simulator" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.utils.html">clarity.utils package</a><ul>
+      <li>Previous: <a href="clarity.utils.html" title="previous chapter">clarity.utils package</a></li>
+      <li>Next: <a href="recipes.html" title="next chapter">recipes package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.utils.car_noise_simulator.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
