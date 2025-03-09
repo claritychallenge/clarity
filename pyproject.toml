@@ -124,6 +124,7 @@ testpaths = ["tests"]
 filterwarnings = ["ignore::UserWarning"]
 
 [tool.coverage.run]
+branch = true
 source = ["clarity"]
 omit = ["*conftest.py", "*tests*", "**/__init__*", "clarity/_version.py"]
 
