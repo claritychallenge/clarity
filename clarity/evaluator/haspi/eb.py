@@ -21,6 +21,7 @@ from scipy.signal import (
 
 from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram
+from clarity.utils.filterbanks import Gammatone
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -723,62 +724,21 @@ def gammatone_basilar_membrane(
     Cosine/sine loop speed increased, 9 August 2013.
     Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
     """
-    # Filter Equivalent Rectangular Bandwidth from Moore and Glasberg (1983)
-    # doi: 10.1121/1.389861
-    erb = min_bandwidth + (center_freq / ear_q)
-
     # Check the lengths of the two signals and trim to shortest
     min_sample = min(len(reference), len(processed))
     x = reference[:min_sample]
     y = processed[:min_sample]
 
-    # Filter the first signal
-    # Initialize the filter coefficients
-    tpt = 2 * np.pi / freq_sample
-    tpt_bw = reference_bandwidth * tpt * erb * 1.019
-    a = np.exp(-tpt_bw)
-    a_1 = 4.0 * a
-    a_2 = -6.0 * a * a
-    a_3 = 4.0 * a * a * a
-    a_4 = -a * a * a * a
-    a_5 = 4.0 * a * a
-    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
-
-    # Initialize the complex demodulation
-    npts = len(x)
-    sincf, coscf = gammatone_bandwidth_demodulation(
-        npts, tpt, center_freq, np.zeros(npts), np.zeros(npts)
+    filter = Gammatone(
+        center_freq,
+        freq_sample,
+        ear_q,
+        min_bandwidth,
     )
 
-    # Filter the real and imaginary parts of the signal
-    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * coscf)
-    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], x * sincf)
-    assert isinstance(ureal, np.ndarray)  # lfilter can return different types
-    assert isinstance(uimag, np.ndarray)
+    reference_basilar_membrane, reference_envelope = filter(x, reference_bandwidth)
 
-    # Extract the BM velocity and the envelope
-    reference_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-    reference_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
-
-    # Filter the second signal using the existing cosine and sine sequences
-    tpt_bw = processed_bandwidth * tpt * erb * 1.019
-    a = np.exp(-tpt_bw)
-    a_1 = 4.0 * a
-    a_2 = -6.0 * a * a
-    a_3 = 4.0 * a * a * a
-    a_4 = -a * a * a * a
-    a_5 = 4.0 * a * a
-    gain = 2.0 * (1 - a_1 - a_2 - a_3 - a_4) / (1 + a_1 + a_5)
-
-    # Filter the real and imaginary parts of the signal
-    ureal = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * coscf)
-    uimag = lfilter([1, a_1, a_5], [1, -a_1, -a_2, -a_3, -a_4], y * sincf)
-    assert isinstance(ureal, np.ndarray)
-    assert isinstance(uimag, np.ndarray)
-
-    # Extract the BM velocity and the envelope
-    processed_basilar_membrane = gain * (ureal * coscf + uimag * sincf)
-    processed_envelope = gain * np.sqrt(ureal * ureal + uimag * uimag)
+    processed_basilar_membrane, processed_envelope = filter(y, processed_bandwidth)
 
     return (
         reference_envelope,
@@ -786,46 +746,6 @@ def gammatone_basilar_membrane(
         processed_envelope,
         processed_basilar_membrane,
     )
-
-
-@njit
-def gammatone_bandwidth_demodulation(
-    npts: int,
-    tpt: float,
-    center_freq: float,
-    center_freq_cos: np.ndarray,
-    center_freq_sin: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Create the carriers for demodulaton, using the 2d Rotation method from
-      https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html
-    to generate the sin and cos components.  More efficient, perhaps, than
-    calculating the sin and cos at each point in time.
-
-    Arguments:
-        npts (): How many points are needed.
-        tpt (): Phase change (2pi/T) due to each sample time.
-        center_freq (): The carrier frequency
-        center_freq_cos (): Array to overwrite for the output.
-        center_freq_sin (): Array to overwrite for the output.
-
-    Returns:
-        sincf (): Samples of the carrier frequency in sin phase.
-        coscf (): Samples of the carrier frequency in cos phase.
-    """
-    cos_n = np.cos(tpt * center_freq)
-    sin_n = np.sin(tpt * center_freq)
-    cold = 1.0
-    sold = 0.0
-    center_freq_cos[0] = cold
-    center_freq_sin[0] = sold
-    for n in range(1, npts):
-        arg = cold * cos_n + sold * sin_n
-        sold = sold * cos_n - cold * sin_n
-        cold = arg
-        center_freq_cos[n] = cold
-        center_freq_sin[n] = sold
-
-    return center_freq_sin, center_freq_cos
 
 
 def bandwidth_adjust(
