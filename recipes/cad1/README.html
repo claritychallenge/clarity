@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The First Cadenza Challenge &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-first-cadenza-challenge">
+<h1>The First Cadenza Challenge<a class="headerlink" href="#the-first-cadenza-challenge" title="Link to this heading">¶</a></h1>
+<p>Cadenza challenge code for the First Cadenza Challenge (CAD1).
+For more information please visit the <a class="reference external" href="https://cadenzachallenge.org/docs/cadenza1/cc1_intro">challenge website</a>.</p>
+<p>In the directories <code class="docutils literal notranslate"><span class="pre">task</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">task</span> <span class="pre">2</span></code>, you will find the code for the baseline for each system
+and the instruction on how to obtain the data.</p>
+<section id="learning-resources">
+<h2>Learning Resources<a class="headerlink" href="#learning-resources" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="http://cadenzachallenge.org/docs/learning_resources/learning_intro">Learning Resources</a> are available on the challenge homepage. Specific topics include…</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://colab.research.google.com/drive/1m2EvNyBmaZT5njbWkHOUAIvPKyxR8iRc?usp=sharing">Installation</a></p></li>
+<li><p><a class="reference external" href="https://colab.research.google.com/drive/1XtoMp8Vv_6ZtU4AE9OmQj7uRbsCzw_ZY?usp=sharing">Interacting with Metadata</a></p></li>
+<li><p><a class="reference external" href="https://colab.research.google.com/drive/1j8L2dBo8rTQsbKzPTxAymVvDMgHtgtnK?usp=sharing">Baseline system CAD1 - Task1</a></p></li>
+<li><p><a class="reference external" href="https://colab.research.google.com/drive/1fgvnrgCUiylUHL26ElShp6egIZiU_vNz?usp=sharing">Baseline system CAD1 - Task2</a></p></li>
+</ul>
+</section>
+<section id="baseline-results">
+<h2>Baseline Results<a class="headerlink" href="#baseline-results" title="Link to this heading">¶</a></h2>
+<p>The performance of each system on the validation set is reported below.</p>
+<section id="task-1-listening-music-via-headphones">
+<h3>Task 1 - Listening music via headphones<a class="headerlink" href="#task-1-listening-music-via-headphones" title="Link to this heading">¶</a></h3>
+<p>The overall HAAQI score is:</p>
+<ul class="simple">
+<li><p>Demucs: <strong>0.2592</strong></p></li>
+<li><p>Open-Unmix: <strong>0.2273</strong></p></li>
+</ul>
+<section id="average-haaqi-score-per-song">
+<h4>Average HAAQI score per song<a class="headerlink" href="#average-haaqi-score-per-song" title="Link to this heading">¶</a></h4>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th style="text-align: left;">Song</th>
+<th style="text-align: center;">Demucs</th>
+<th style="text-align: center;">Open-UnMix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Actions - One Minute Smile</td>
+<td style="text-align: center;">0.2485</td>
+<td style="text-align: center;">0.2257</td>
+</tr>
+<tr>
+<td style="text-align: left;">Alexander Ross - Goodbye Bolero</td>
+<td style="text-align: center;">0.3084</td>
+<td style="text-align: center;">0.2574</td>
+</tr>
+<tr>
+<td style="text-align: left;">ANiMAL - Rockshow</td>
+<td style="text-align: center;">0.1843</td>
+<td style="text-align: center;">0.1864</td>
+</tr>
+<tr>
+<td style="text-align: left;">Clara Berry And Wooldog - Waltz For My Victims</td>
+<td style="text-align: center;">0.3094</td>
+<td style="text-align: center;">0.2615</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fergessen - Nos Palpitants</td>
+<td style="text-align: center;">0.3542</td>
+<td style="text-align: center;">0.2592</td>
+</tr>
+<tr>
+<td style="text-align: left;">James May - On The Line</td>
+<td style="text-align: center;">0.2778</td>
+<td style="text-align: center;">0.2398</td>
+</tr>
+<tr>
+<td style="text-align: left;">Johnny Lokke - Promises &amp; Lies</td>
+<td style="text-align: center;">0.2544</td>
+<td style="text-align: center;">0.2261</td>
+</tr>
+<tr>
+<td style="text-align: left;">Leaf - Summerghost</td>
+<td style="text-align: center;">0.2513</td>
+<td style="text-align: center;">0.2105</td>
+</tr>
+<tr>
+<td style="text-align: left;">Meaxic - Take A Step</td>
+<td style="text-align: center;">0.2455</td>
+<td style="text-align: center;">0.2239</td>
+</tr>
+<tr>
+<td style="text-align: left;">Patrick Talbot - A Reason To Leave</td>
+<td style="text-align: center;">0.2673</td>
+<td style="text-align: center;">0.2331</td>
+</tr>
+<tr>
+<td style="text-align: left;">Skelpolu - Human Mistakes</td>
+<td style="text-align: center;">0.2123</td>
+<td style="text-align: center;">0.1951</td>
+</tr>
+<tr>
+<td style="text-align: left;">Traffic Experiment - Sirens</td>
+<td style="text-align: center;">0.2558</td>
+<td style="text-align: center;">0.2339</td>
+</tr>
+<tr>
+<td style="text-align: left;">Triviul - Angelsaint</td>
+<td style="text-align: center;">0.2101</td>
+<td style="text-align: center;">0.1955</td>
+</tr>
+<tr>
+<td style="text-align: left;">Young Griffo - Pennies</td>
+<td style="text-align: center;">0.2499</td>
+<td style="text-align: center;">0.2297</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="task-2-listening-music-in-a-car-with-presence-of-noise">
+<h3>Task 2 - Listening music in a car with presence of noise<a class="headerlink" href="#task-2-listening-music-in-a-car-with-presence-of-noise" title="Link to this heading">¶</a></h3>
+<p><strong>The overall HAAQI score is 0.1423.</strong></p>
+<section id="average-haaqi-score-per-genre">
+<h4>Average HAAQI score per genre<a class="headerlink" href="#average-haaqi-score-per-genre" title="Link to this heading">¶</a></h4>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th style="text-align: left;">Genre</th>
+<th style="text-align: center;">HAAQI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Classical</td>
+<td style="text-align: center;">0.1365</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hip-Hop</td>
+<td style="text-align: center;">0.1462</td>
+</tr>
+<tr>
+<td style="text-align: left;">Instrumental</td>
+<td style="text-align: center;">0.1416</td>
+</tr>
+<tr>
+<td style="text-align: left;">International</td>
+<td style="text-align: center;">0.1432</td>
+</tr>
+<tr>
+<td style="text-align: left;">Orchestral</td>
+<td style="text-align: center;">0.1329</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pop</td>
+<td style="text-align: center;">0.1498</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rock</td>
+<td style="text-align: center;">0.1460</td>
+</tr>
+</tbody>
+</table></section>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/recipes/cad1/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

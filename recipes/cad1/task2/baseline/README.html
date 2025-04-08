@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The First Cadenza Challenge (CAD1) - Task 2: Listening music in a car &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-first-cadenza-challenge-cad1-task-2-listening-music-in-a-car">
+<h1>The First Cadenza Challenge (CAD1) - Task 2: Listening music in a car<a class="headerlink" href="#the-first-cadenza-challenge-cad1-task-2-listening-music-in-a-car" title="Link to this heading">¶</a></h1>
+<p>Cadenza challenge code for the First Cadenza Challenge (CAD1) Task2.</p>
+<p>For more information please visit the <a class="reference external" href="https://cadenzachallenge.org/docs/cadenza1/cc1_intro">challenge website</a>.</p>
+<section id="data-structure">
+<h2>1. Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<section id="obtaining-the-cad1-task2-data">
+<h3>1.1 Obtaining the CAD1 - Task2 data<a class="headerlink" href="#obtaining-the-cad1-task2-data" title="Link to this heading">¶</a></h3>
+<p>The music dataset for the First Cadenza Challenge - Task 2 is based on the small subset of the FMA [<a class="reference internal" href="#4-references"><span class="xref myst">2</span></a>] dataset
+(FMA-small) and the MTG-Jamendo dataset [<a class="reference internal" href="#4-references"><span class="xref myst">4</span></a>]. The dataset contains 1000 samples from seven musical genres,
+totalling 7000 songs with a distribution of 80% / 10% / 10% for <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">valid</span></code> and <code class="docutils literal notranslate"><span class="pre">test</span></code>.</p>
+<p>From FMA small:</p>
+<ul class="simple">
+<li><p>Hip-Hop</p></li>
+<li><p>Instrumental</p></li>
+<li><p>International</p></li>
+<li><p>Pop</p></li>
+<li><p>Rock</p></li>
+</ul>
+<p>From MTG-Jamendo:</p>
+<ul class="simple">
+<li><p>Classical</p></li>
+<li><p>Orchestral</p></li>
+</ul>
+<p>The HRTFs data is based on the eBrIRD - ELOSPHERES binaural room impulse response database.</p>
+<p>To download the data, please visit <a class="reference external" href="https://forms.gle/9L5ncYKe2YhD5c828">here</a>.</p>
+<p>The data will download into a package file called <code class="docutils literal notranslate"><span class="pre">cadenza_cad1_task2_core.v1_1.tar.gz</span></code>.</p>
+<p>Unpack this package using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>cadenza_cad1_task2_core.v1_1.tar.gz
+</pre></div>
+</div>
+<p>Once unpacked the directory structure will be as follows</p>
+<p><strong>cadenza_cad1_task2_core.v1.0</strong> contains the training and validation data:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clarity_CPC2_data
+└──<span class="w"> </span>cadenza_data
+<span class="w">   </span>└──<span class="w"> </span>cad1<span class="w">  </span><span class="c1"># The hearing aid output signals</span>
+<span class="w">        </span>└──<span class="w"> </span>taks2
+<span class="w">            </span>├──<span class="w"> </span>audio
+<span class="w">            </span><span class="p">|</span><span class="w">   </span>├──<span class="w"> </span>eBrird<span class="w">  </span><span class="c1"># HRTFs directory</span>
+<span class="w">            </span><span class="p">|</span><span class="w">   </span>└──<span class="w"> </span>music
+<span class="w">            </span><span class="p">|</span><span class="w">       </span>├──<span class="w"> </span>training
+<span class="w">            </span><span class="p">|</span><span class="w">       </span>└──<span class="w"> </span>validation
+<span class="w">            </span>├──<span class="w"> </span>metadata<span class="w">  </span><span class="c1"># Metadata</span>
+<span class="w">            </span>└──<span class="w"> </span>manifest<span class="w">  </span><span class="c1"># Lists the package contents</span>
+</pre></div>
+</div>
+</section>
+<section id="demo-data">
+<h3>1.2 Demo data<a class="headerlink" href="#demo-data" title="Link to this heading">¶</a></h3>
+<p>To help you to start with the challenge, we provide a small subset of the data.
+The <code class="docutils literal notranslate"><span class="pre">demo_data</span></code> folder contains a single song and two listeners from the validation set.</p>
+<p>To use the demo data, simply download the package <code class="docutils literal notranslate"><span class="pre">cadenza_task2_data_demo.tar.tar.xz</span></code>
+from <a class="reference external" href="https://drive.google.com/drive/folders/1On5Bv7Sd6zLZWfA76jdkM-FmGS61Mbi-?usp=share_link">here</a>
+and unpack it under <code class="docutils literal notranslate"><span class="pre">recipes/cad1/task2/</span></code>, i.e., one level above the baseline directory.
+Note that the <code class="docutils literal notranslate"><span class="pre">root.path</span></code> variable in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> is already set to the demo data by default.</p>
+<p>To unpack the demo data, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvf<span class="w"> </span>cadenza_data_demo.tar.xz
+</pre></div>
+</div>
+</section>
+</section>
+<section id="baseline">
+<h2>2. Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>In the <code class="docutils literal notranslate"><span class="pre">baseline/</span></code> folder, we provide code for running the baseline enhancement system and performing
+the objective evaluation. Note that we use <a class="reference external" href="https://hydra.cc/docs/intro/">hydra</a> for config handling.</p>
+<p>The baseline uses librosa to read the MP3 audio files. Librosa will raise error is libsoundfile and ffmpeg are not installed.
+If you have an Anaconda or Miniconda environment, you can install them as:</p>
+<ul class="simple">
+<li><p>conda install -c conda-forge ffmpeg</p></li>
+<li><p>conda install -c conda-forge libsndfile</p></li>
+</ul>
+<section id="enhancement">
+<h3>2.1 Enhancement<a class="headerlink" href="#enhancement" title="Link to this heading">¶</a></h3>
+<p>The objective of the enhancement stage is takes a song and optimise it to a listener hearing characteristics
+knowing metadata information about the car noise scenario (note that you won’t have access to noise signal), head
+rotation of the listener and the SNR of the enhanced music and the noise at the hearing aid microphones.</p>
+<p>In the baseline, we attenuate the song according to the average hearing loss. The output are stereo signals
+that we save usi ng 32000 Hertz sample rate, 16bit precision, and we encoded it using the lossless FLAC compression.
+This attenuation prevents some clipping in the hearing aid output signal.</p>
+<p>The resulting signals are used for both, the objective (HAAQI) and subjective (listening panel) evaluation.</p>
+<p>To run the baseline enhancement system first, make sure that <code class="docutils literal notranslate"><span class="pre">paths.root</span></code> in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> points to
+where you have installed the Cadenza data foer the task2. This parameter defaults to one level above the recipe
+for the demo data. You can also define your own <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code> to store enhanced and evaluated signal results.</p>
+<p>Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py
+</pre></div>
+</div>
+<p>Alternatively, you can provide the root variable on the command line, e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py<span class="w"> </span>path.root<span class="o">=</span>/full/path/to/my/cadenza_data
+</pre></div>
+</div>
+<p>To get a full list of the parameters, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">enhanced_signals</span></code> will appear in the <code class="docutils literal notranslate"><span class="pre">exp</span></code> folder.</p>
+</section>
+<section id="evaluation">
+<h3>2.2 Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">evaluate.py</span></code> module takes the enhanced signals and adds the room impulses and the car noise using
+the expected SNR. It then passes that signal through a fixed hearing aid. The hearing aid is composed of
+NAL-R [<a class="reference internal" href="#4-references"><span class="xref myst">1</span></a>] prescription and compression. The hearing aid output signal and
+the reference song are used to compute the HAAQI [<a class="reference internal" href="#4-references"><span class="xref myst">2</span></a>] score.</p>
+<p>To run the evaluation stage, make sure that <code class="docutils literal notranslate"><span class="pre">path.root</span></code> is set in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file and then run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evaluate.py
+</pre></div>
+</div>
+<p>A csv file containing the HAAQI scores for each ear and the average of both will be generated in
+the <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code>.</p>
+<p>To check the HAAQI code, see <a class="reference internal" href="#../../../../clarity/evaluator/haaqi"><span class="xref myst">here</span></a>.</p>
+<p>Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined
+(in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).
+As there are random noises generated within HAAQI, but the differences should be sufficiently small.</p>
+<p>The overall HAAQI score for baseline is <strong>0.1423</strong>.</p>
+</section>
+</section>
+<section id="references">
+<h2>4. References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>[1] Byrne, Denis, and Harvey Dillon. “The National Acoustic Laboratories’(NAL) new procedure for selecting the gain and frequency response of a hearing aid.” Ear and hearing 7.4 (1986): 257-265. <a class="reference external" href="https://doi.org/10.1097/00003446-198608000-00007">doi:10.1097/00003446-198608000-00007</a></p></li>
+<li><p>[2] Kates J M, Arehart K H. “The Hearing-Aid Audio Quality Index (HAAQI)”. IEEE/ACM transactions on audio, speech, and language processing, 24(2), 354–365. <a class="reference external" href="https://doi.org/10.1109%2FTASLP.2015.2507858">doi:10.1109/TASLP.2015.2507858</a></p></li>
+<li><p>[3] Defferrard, M., Benzi, K., Vandergheynst, P., &amp; Bresson, X. (2016). “FMA: A dataset for music analysis”. arXiv preprint arXiv:1612.01840. <a class="reference external" href="https://doi.org/10.48550/arXiv.1612.01840">doi:10.48550/arXiv.1612.01840</a></p></li>
+<li><p>[4] Bogdanov, D., Won, M., Tovstogan, P., Porter, A., &amp; Serra, X. (2019). The MTG-Jamendo dataset for automatic music tagging. ICML.</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../../_sources/recipes/cad1/task2/baseline/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

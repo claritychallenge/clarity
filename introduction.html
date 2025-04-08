@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Introduction &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to pyClarity’s documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+<p>pyClarity is core data used across all <a class="reference external" href="https://claritychallenge.org/">Clarity Challenges</a> and provides baselines,
+toolkits and systems for working with the challenge data. It can be used for scene generation, hearing aid modelling and
+HASPI speech intelligibility model to evaluate solutions.</p>
+<section id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading">¶</a></h2>
+<p>A series of Jupyter Notebooks are available on Colab to help you learn how to use the tools made available within this
+package. To access these please refer to the <a class="reference external" href="https://claritychallenge.org/tutorials">Clarity Tutorials</a>.</p>
+</section>
+<section id="challenges">
+<h2>Challenges<a class="headerlink" href="#challenges" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://claritychallenge.org/docs/cec2/cec2_intro">2nd Clarity Enhancement Challenge (CEC2)</a> (<a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec2">GitHub Recipes</a>)</p></li>
+<li><p><a class="reference external" href="https://claritychallenge.org/docs/cec1/cec1_intro">1st Clarity Enhancement Challenge (CEC1)</a> (<a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec1">GitHub Recipes</a>)</p></li>
+<li><p><a class="reference external" href="https://claritychallenge.org/docs/cpc1/cpc1_intro">1st Clarity Prediction Challenge (CPC1)</a> (<a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cpc1">GitHub Recipes</a>)</p></li>
+</ul>
+</section>
+<section id="workshops">
+<h2>Workshops<a class="headerlink" href="#workshops" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://claritychallenge.org/clarity2021-workshop/">Clarity 2021</a></p></li>
+<li><p><a class="reference external" href="https://claritychallenge.org/clarity2022-workshop/">Clarity 2022</a></p></li>
+</ul>
+</section>
+<section id="tools">
+<h2>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h2>
+<p>A number of tools are included in this repository</p>
+<ul class="simple">
+<li><p><strong>Hearing loss simulation</strong></p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/clarity/evaluator/msbg">Cambridge MSBG hearing loss simulator</a>: descriptions can be found in the <a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec1">CEC1 description</a>; an usage example can be found in the <a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec1/baseline">CEC1 baseline</a> evaluation script <code class="docutils literal notranslate"><span class="pre">evaluate.py</span></code>.</p></li>
+</ul>
+</li>
+<li><p><strong>Objective intelligibility measurement</strong></p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/clarity/evaluator/mbstoi/mbstoi.py">Modified binaural STOI (MBSTOI)</a>: a python implementation of MBSTOI. It is jointly used with the MSBG hearing loss model in the <a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec1/baseline">CEC1 baseline</a>. The official matlab implementation can be found here: <a class="reference external" href="http://ah-andersen.net/code/">http://ah-andersen.net/code/</a></p></li>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/clarity/evaluator/haspi/haspi.py">Hearing-aid speech perception index (HASPI)</a>: a python implementation of HASPI Version 2, and the better-ear HASPI for binaural speech signals. For official matlab implementation, request here: <a class="reference external" href="https://www.colorado.edu/lab/hearlab/resources">https://www.colorado.edu/lab/hearlab/resources</a></p></li>
+</ul>
+</li>
+<li><p><strong>Hearing aid enhancement</strong></p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/clarity/enhancer/gha/gainrule_camfit.py">Cambridge hearing aid fitting (CAMFIT)</a>: a python implementation of CAMFIT, translated from the <a class="reference external" href="http://www.openmha.org/about/">HörTech Open Master Hearing Aid (OpenMHA)</a>; the CAMFIT is used together with OpenMHA enhancement as the <a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec1/baseline">CEC1 baseline</a>, see <code class="docutils literal notranslate"><span class="pre">enhance.py</span></code>.</p></li>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/clarity/enhancer/nalr.py">NAL-R hearing aid fitting</a>: a python implementation of NAL-R prescription fitting. It is used as the <a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec2/baseline">CEC2 baseline</a>, see <code class="docutils literal notranslate"><span class="pre">enhance.py</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p>In addition, differentiable approximation to some tools are provided:</p>
+<ul class="simple">
+<li><p>[x] <a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/clarity/predictor/torch_msbg.py">Differentiable MSBG hearing loss model</a>. See also the BUT implementation: <a class="reference external" href="https://github.com/BUTSpeechFIT/torch_msbg_mbstoi">https://github.com/BUTSpeechFIT/torch_msbg_mbstoi</a></p></li>
+<li><p>[ ] Differentiable HASPI (coming)</p></li>
+</ul>
+</section>
+<section id="open-source-systems">
+<h2>Open-source systems<a class="headerlink" href="#open-source-systems" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>CPC1:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cpc1/e032_sheffield">Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners</a></p></li>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cpc1/e029_sheffield">Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction</a></p></li>
+</ul>
+</li>
+<li><p>CEC1:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/claritychallenge/clarity/tree/main/recipes/cec1/e009_sheffield">A Two-Stage End-to-End System for Speech-in-Noise Hearing Aid Processing</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to pyClarity’s documentation</a></li>
+      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/introduction.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

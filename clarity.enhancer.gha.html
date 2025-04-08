@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.enhancer.gha package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.enhancer.multiband_compressor package" href="clarity.enhancer.multiband_compressor.html" />
+    <link rel="prev" title="clarity.enhancer.dsp package" href="clarity.enhancer.dsp.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-enhancer-gha-package">
+<h1>clarity.enhancer.gha package<a class="headerlink" href="#clarity-enhancer-gha-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-clarity.enhancer.gha.gainrule_camfit">
+<span id="clarity-enhancer-gha-gainrule-camfit-module"></span><h2>clarity.enhancer.gha.gainrule_camfit module<a class="headerlink" href="#module-clarity.enhancer.gha.gainrule_camfit" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gainrule_camfit.compute_proportion_overlap">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gainrule_camfit.</span></span><span class="sig-name descname"><span class="pre">compute_proportion_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gainrule_camfit.html#compute_proportion_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gainrule_camfit.compute_proportion_overlap" title="Link to this definition">¶</a></dt>
+<dd><p>Compute proportion of overlap of two ranges.</p>
+<p>For ranges (a1, a2) and (b1, b2), express the extent of the overlap
+in the range as a proportion of the extent of range (b1, b2)</p>
+<p>e.g (4, 9) and (6, 15) -&gt; overlap (6,9), so proportion is (9-6)/(15-6)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gainrule_camfit.gainrule_camfit_compr">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gainrule_camfit.</span></span><span class="sig-name descname"><span class="pre">gainrule_camfit_compr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audiogram_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sFitmodel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#clarity.enhancer.gha.gha_utils.FittingParams" title="clarity.enhancer.gha.gha_utils.FittingParams"><span class="pre">FittingParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegatelevels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">45.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegateslope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_output_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gainrule_camfit.html#gainrule_camfit_compr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gainrule_camfit.gainrule_camfit_compr" title="Link to this definition">¶</a></dt>
+<dd><p>Applies compressive Cambridge rule for hearing aid fittings ‘CAMFIT’.</p>
+<p>Translation of OpenMHA gainrule_camfit_compr.m.
+Applies compressive Cambridge rule for
+hearing aid fittings ‘CAMFIT’. Computes gains for compression according to Moore
+et al. (1999) “Use of a loudness model for hearing aid fitting: II. Hearing aids
+with multi-channel compression.” Brit. J. Audiol. (33) 157-170</p>
+<p>The gain rule limits the gains so that in each band 100 dB output level is
+not exceeded. This function assumes audiogram frequencies are identical for the
+two ears. In this implementation, any negative gains are set to 0 dB.</p>
+<p>The original function is part of the HörTech Open Master Hearing Aid (openMHA)
+Copyright © 2007 2009 2011 2013 2015 2017 2018 HörTech gGmbH
+openMHA is free software: see licencing conditions at <a class="reference external" href="http://www.openmha.org/">http://www.openmha.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>audiogram_left</strong> (<a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><em>Audiogram</em></a>) – the audiogram for the left ear</p></li>
+<li><p><strong>audiogram_right</strong> (<a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><em>Audiogram</em></a>) – the audiogram for the right ear</p></li>
+<li><p><strong>sFitmodel</strong> (<em>dict</em>) – contains the center frequencies for the amplification
+bands and input levels in SPL for which to compute the gains</p></li>
+<li><p><strong>noisegatelevels</strong> (<em>ndarray</em>) – compression threshold levels for each frequency
+band (default: 45)</p></li>
+<li><p><strong>noisegateslope</strong> (<em>int</em>) – determines slope of gains below compression threshold</p></li>
+<li><p><strong>level</strong> (<em>int</em>) – input level in each band for compression rate calculation
+(default: 0 for variable level depending on insertion gains)</p></li>
+<li><p><strong>max_output_level</strong> (<em>int</em>) – maximum output level in dB</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>containing gain table, noise gate, and noise</dt><dd><p>gate expansion slope</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gainrule_camfit.gainrule_camfit_linear">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gainrule_camfit.</span></span><span class="sig-name descname"><span class="pre">gainrule_camfit_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audiogram_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sFitmodel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#clarity.enhancer.gha.gha_utils.FittingParams" title="clarity.enhancer.gha.gha_utils.FittingParams"><span class="pre">FittingParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegatelevels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">45.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegateslope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_output_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gainrule_camfit.html#gainrule_camfit_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gainrule_camfit.gainrule_camfit_linear" title="Link to this definition">¶</a></dt>
+<dd><p>Apply linear Cambridge rule for hearing aid fittings ‘CAMFIT’.</p>
+<p>Based on OpenMHA gainrule_camfit_linear.m. Applies linear Cambridge rule for
+hearing aid fittings ‘CAMFIT’. Implemented as described in B. Moore and B.
+Glasberg (1998), “Use of a loudness model for hearing-aid fitting. I. Linear
+hearing aids” Brit. J. Audiol. (32) 317-335.</p>
+<p>The gain rule limits the gains so that in each band 100 dB output level
+is not exceeded.
+The Cambridge formula defines intercepts only up to 5 kHz. Because the
+intercepts do not vary much between 1kHz and 5kHz anyway (these are all
+within 0dB +/- 1dB), we extend the last intercept of +1dB at 5kHz to all higher
+frequencies. This function assumes audiogram frequencies are identical for
+two ears.</p>
+<p>The original function is part of the HörTech Open Master Hearing Aid (openMHA)
+Copyright © 2007 2009 2011 2013 2015 2017 2018 HörTech gGmbH
+openMHA is free software: see licencing conditions at <a class="reference external" href="http://www.openmha.org/">http://www.openmha.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sAud</strong> (<em>dict</em>) – contains the subject-specific hearing threshold levels in
+dB HL for the left and right ears, and the audiogram frequencies</p></li>
+<li><p><strong>sFitmodel</strong> (<em>dict</em>) – contains the center frequencies for the amplification
+bands and input levels in SPL for which to compute the gains</p></li>
+<li><p><strong>noisegatelevels</strong> (<em>ndarray</em>) – compression threshold levels for each frequency
+band (default: 45)</p></li>
+<li><p><strong>noisegateslope</strong> (<em>int</em>) – determines slope of gains below compression threshold
+(default: 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>containing gain table, noise gate, and noise</dt><dd><p>gate expansion slope</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gainrule_camfit.gains">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gainrule_camfit.</span></span><span class="sig-name descname"><span class="pre">gains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compr_thr_inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compr_thr_gains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression_ratios</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gainrule_camfit.html#gains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gainrule_camfit.gains" title="Link to this definition">¶</a></dt>
+<dd><p>Based on OpenMHA gains subfunction of gainrule_camfit_compr.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compr_thr_inputs</strong> (<em>ndarray</em>) – levels for speech in dynamic compression (dc)
+bands minus minima distance (38 dB)</p></li>
+<li><p><strong>compr_thr_gains</strong> (<em>ndarray</em>) – interpolated audiogram levels plus conversion
+factors of HL thresholds to SPL thresholds (output of isothr) minus
+compr_thr_inputs</p></li>
+<li><p><strong>compression_ratios</strong> (<em>ndarray</em>) – compression ratios according to CAMFIT compressive</p></li>
+<li><p><strong>levels</strong> (<em>ndarray</em>) – set of levels over which to calculate gains e.g. -10:110 dB</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>set of uncorrected gains as 2-d numpy array</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gainrule_camfit.isothr">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gainrule_camfit.</span></span><span class="sig-name descname"><span class="pre">isothr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vsDesF</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gainrule_camfit.html#isothr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gainrule_camfit.isothr" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate conversion factors of HL thresholds to SPL thresholds.</p>
+<p>Translation of OpenMHA isothr.m. Calculates conversion factors of HL
+thresholds to SPL thresholds. Values from 20 Hz to 12500 Hz are taken
+from ISO 226:2003(E). Values from 14000 Hz to 18000 Hz are taken from ISO
+389-7:2005 (reference thresholds of hearing for free field listening).
+Values at 0 and 20000 Hz are not taken from the ISO Threshold contour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vsDesF</strong> (<em>list</em>) – centre frequencies for the amplification bands as 177,
+297, 500, 841,  1414,  2378, 4000, 6727, 11314 Hz</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>conversion factors</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.enhancer.gha.gha_interface">
+<span id="clarity-enhancer-gha-gha-interface-module"></span><h2>clarity.enhancer.gha.gha_interface module<a class="headerlink" href="#module-clarity.enhancer.gha.gha_interface" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_interface.GHAHearingAid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gha_interface.</span></span><span class="sig-name descname"><span class="pre">GHAHearingAid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ahr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prerelease_combination4_smooth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_gate_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_gate_slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cr_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_output_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equiv_0db_spl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_nbits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_interface.html#GHAHearingAid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_interface.GHAHearingAid" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_interface.GHAHearingAid.create_HA_inputs">
+<span class="sig-name descname"><span class="pre">create_HA_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_interface.html#GHAHearingAid.create_HA_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_interface.GHAHearingAid.create_HA_inputs" title="Link to this definition">¶</a></dt>
+<dd><p>Create input signal for baseline hearing aids.</p>
+<p>The baseline hearing aid takes a 4-channel wav file as input. This is
+constructed from the left and right signals of the front (CH1) and
+rear (CH3) microphones that are available in the Clarity data.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>infile_names (list[str]): Names of file to read
+merged_file_name (str): Name of file to write</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If input channel names are inconsistent</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_interface.GHAHearingAid.create_configured_cfgfile">
+<span class="sig-name descname"><span class="pre">create_configured_cfgfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted_sGt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg_template_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_interface.html#GHAHearingAid.create_configured_cfgfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_interface.GHAHearingAid.create_configured_cfgfile" title="Link to this definition">¶</a></dt>
+<dd><p>Using Jinja2, generates cfg file for given configuration.</p>
+<p>Creates template output file and configures with correct filenames, peak level
+out and DC gaintable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> (<em>str</em>) – file to process</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) – file in which to store processed file</p></li>
+<li><p><strong>formatted_sGt</strong> (<em>ndarray</em>) – gaintable formatted for input into cfg file</p></li>
+<li><p><strong>cfg_template_file</strong> – configuration file template</p></li>
+<li><p><strong>ahr</strong> (<em>int</em>) – amplification headroom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>cfg filename</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cfg_filename (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_interface.GHAHearingAid.process_files">
+<span class="sig-name descname"><span class="pre">process_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_interface.html#GHAHearingAid.process_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_interface.GHAHearingAid.process_files" title="Link to this definition">¶</a></dt>
+<dd><p>Process a set of input signals and generate an output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile_names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of input wav files. One stereo wav
+file for each hearing device channel</p></li>
+<li><p><strong>outfile_name</strong> (<em>str</em>) – File in which to store output wav files</p></li>
+<li><p><strong>dry_run</strong> (<em>bool</em>) – perform dry run only</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.enhancer.gha.gha_utils">
+<span id="clarity-enhancer-gha-gha-utils-module"></span><h2>clarity.enhancer.gha.gha_utils module<a class="headerlink" href="#module-clarity.enhancer.gha.gha_utils" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.FittingParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gha_utils.</span></span><span class="sig-name descname"><span class="pre">FittingParams</span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_utils.html#FittingParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.FittingParams" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Fitting parameters for gaintable calculation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.FittingParams.channels">
+<span class="sig-name descname"><span class="pre">channels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.FittingParams.channels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.FittingParams.edge_frequencies">
+<span class="sig-name descname"><span class="pre">edge_frequencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.FittingParams.edge_frequencies" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.FittingParams.frequencies">
+<span class="sig-name descname"><span class="pre">frequencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.FittingParams.frequencies" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.FittingParams.levels">
+<span class="sig-name descname"><span class="pre">levels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.FittingParams.levels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.FittingParams.side">
+<span class="sig-name descname"><span class="pre">side</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.FittingParams.side" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gha_utils.</span></span><span class="sig-name descname"><span class="pre">Gaintable</span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_utils.html#Gaintable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Gaintable for a given audiogram.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.channels">
+<span class="sig-name descname"><span class="pre">channels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.channels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.frequencies">
+<span class="sig-name descname"><span class="pre">frequencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.frequencies" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.levels">
+<span class="sig-name descname"><span class="pre">levels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.levels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.noisegatelevel">
+<span class="sig-name descname"><span class="pre">noisegatelevel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.noisegatelevel" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.noisegateslope">
+<span class="sig-name descname"><span class="pre">noisegateslope</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.noisegateslope" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.sGt">
+<span class="sig-name descname"><span class="pre">sGt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.sGt" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.Gaintable.sGt_uncorr">
+<span class="sig-name descname"><span class="pre">sGt_uncorr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.Gaintable.sGt_uncorr" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.format_gaintable">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gha_utils.</span></span><span class="sig-name descname"><span class="pre">format_gaintable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaintable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#clarity.enhancer.gha.gha_utils.Gaintable" title="clarity.enhancer.gha.gha_utils.Gaintable"><span class="pre">Gaintable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegate_corr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_utils.html#format_gaintable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.format_gaintable" title="Link to this definition">¶</a></dt>
+<dd><p>Format gaintable for insertion into cfg file as long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gaintable</strong> (<em>ndarray</em>) – The gaintable to format</p></li>
+<li><p><strong>noisegate_corr</strong> (<em>boolean</em><em>, </em><em>optional</em>) – apply noisegate correction or do not
+(default: True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>gaintable formatted for insertion into OpenMHA</dt><dd><p>cfg file</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.get_gaintable">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gha_utils.</span></span><span class="sig-name descname"><span class="pre">get_gaintable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audiogram_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegate_levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegate_slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cr_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_output_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#clarity.enhancer.gha.gha_utils.Gaintable" title="clarity.enhancer.gha.gha_utils.Gaintable"><span class="pre">Gaintable</span></a></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_utils.html#get_gaintable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.get_gaintable" title="Link to this definition">¶</a></dt>
+<dd><p>Compute a gaintable for a given audiogram.</p>
+<p>Replaces MATLAB GUI interface of original OpenMHA software for
+gaintable_camfit_compr table calculation. Assumes two channels and
+that audiogram frequencies are identical at two ears.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>audiogram_left</strong> (<a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><em>Audiogram</em></a>) – the audiogram for the left ear</p></li>
+<li><p><strong>audiogram_right</strong> (<a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><em>Audiogram</em></a>) – the audiogram for the right ear</p></li>
+<li><p><strong>audf</strong> (<em>list</em>) – audiogram frequencies for fitting</p></li>
+<li><p><strong>noisegatelevels</strong> (<em>ndarray</em>) – compression threshold levels for each frequency band</p></li>
+<li><p><strong>noisegateslope</strong> (<em>float</em>) – determines slope of gains below compression threshold</p></li>
+<li><p><strong>cr_level</strong> (<em>int</em>) – overall input level in dB for calculation of compression ratios</p></li>
+<li><p><strong>max_output_level</strong> (<em>int</em>) – maximum output level in dB</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dim ndarray of gains</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.gha.gha_utils.multifit_apply_noisegate">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.gha.gha_utils.</span></span><span class="sig-name descname"><span class="pre">multifit_apply_noisegate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gain_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sFit_model_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sFit_model_levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegate_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisegate_slope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/gha/gha_utils.html#multifit_apply_noisegate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.gha.gha_utils.multifit_apply_noisegate" title="Link to this definition">¶</a></dt>
+<dd><p>Apply noisegate to the gain table</p>
+<p>Based on OpenMHA subfunction of libmultifit.m.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gain_table</strong> (<em>ndarray</em>) – gain array</p></li>
+<li><p><strong>sFit_model_frequencies</strong> (<em>list</em>) – FFT filterbank frequencies</p></li>
+<li><p><strong>sFit_model_levels</strong> (<em>ndarray</em>) – levels at which to calculate gains</p></li>
+<li><p><strong>noisegate_level</strong> (<em>ndarray</em>) – chosen compression threshold</p></li>
+<li><p><strong>noisegate_slope</strong> (<em>ndarray</em>) – determines slope below compression threshold</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>gain table with noisegate applied</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.enhancer.gha">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.enhancer.gha" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.enhancer.html">clarity.enhancer package</a><ul>
+      <li>Previous: <a href="clarity.enhancer.dsp.html" title="previous chapter">clarity.enhancer.dsp package</a></li>
+      <li>Next: <a href="clarity.enhancer.multiband_compressor.html" title="next chapter">clarity.enhancer.multiband_compressor package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.enhancer.gha.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
