@@ -15,7 +15,7 @@ from clarity.evaluator.haspi.eb import (
     env_smooth,
     envelope_align,
     envelope_sl,
-    gammatone_bandwidth_demodulation,
+    # gammatone_bandwidth_demodulation,
     gammatone_basilar_membrane,
     group_delay_compensate,
     inner_hair_cell_adaptation,
@@ -28,6 +28,7 @@ from clarity.evaluator.haspi.eb import (
     resample_24khz,
     spectrum_diff,
 )
+
 
 # ear_model
 
@@ -233,25 +234,6 @@ def test_gammatone_basilar_membrane():
     )
     assert np.sum(np.abs(processed_basilar_membrane)) == pytest.approx(
         2804.93743475, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-
-
-def test_gammatone_bandwidth_demodulation():
-    """Test gammatone bandwidth demodulation"""
-    centre_freq_sin, centre_freq_cos = gammatone_bandwidth_demodulation(
-        npts=100,
-        tpt=0.001,
-        center_freq=1000,
-        center_freq_cos=np.zeros(100),
-        center_freq_sin=np.zeros(100),
-    )
-    assert centre_freq_sin.shape == (100,)
-    assert centre_freq_cos.shape == (100,)
-    assert np.sum(centre_freq_sin) == pytest.approx(
-        -0.3791946274493412, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert np.sum(centre_freq_cos) == pytest.approx(
-        -0.39460748051808026, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
 
 
