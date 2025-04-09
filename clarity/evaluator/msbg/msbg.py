@@ -219,7 +219,7 @@ class Ear:
             )
             raise ValueError("Invalid sampling frequency, valid value is 44100")
 
-        if verbose:
+        if self.verbose:
             logging.info("Processing {len(chans)} samples")
 
         # Need to know file RMS, and then call that a certain level in SPL:
@@ -245,7 +245,7 @@ class Ear:
         new_rms_db = equiv_0db_spl + 10 * np.log10(
             np.mean(np.power(signal[0][idx], 2.0))
         )
-        if verbose:
+        if self.verbose:
             logging.info(
                 "Rescaling: "
                 f"leveldBSPL was {level_db_spl:3.1f} dB SPL, now {new_rms_db:3.1f} dB SPL. "

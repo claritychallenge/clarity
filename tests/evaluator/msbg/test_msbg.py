@@ -192,8 +192,8 @@ def test_ear_process(
     np.random.seed(0)
 
     signal = np.random.rand(500)
-    signal2 = np.random.rand(500, 2)
-    signal1 = np.random.rand(500, 1)
+    signal = np.random.rand(500, 2)
+    signal = np.random.rand(500, 1)
     signal = np.random.rand(500)
 
     ear = Ear()
