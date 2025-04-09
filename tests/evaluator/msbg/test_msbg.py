@@ -132,7 +132,7 @@ def test_ear_process_2(
 ):
     """Test ear.process"""
     np.random.seed(0)
-    signal = np.random.rand(500)  # Generate to replicate previous tests
+    signal = np.random.rand(500)  # type: ignore
     signal2 = np.random.rand(500, 2)
 
     ear = Ear()
@@ -161,8 +161,8 @@ def test_ear_process_2(
 def test_ear_process_3(apply_smear, out_size, out):
     np.random.seed(0)
 
-    signal = np.random.rand(500)
-    signal2 = np.random.rand(500, 2)
+    signal = np.random.rand(500)  # type: ignore
+    signal2 = np.random.rand(500, 2)  # type: ignore
     signal1 = np.random.rand(500, 1)
 
     ear = Ear()
