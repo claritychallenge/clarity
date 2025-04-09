@@ -1,5 +1,7 @@
 """Module for generating filter banks for audio processing."""
 
+from __future__ import annotations
+
 from collections import OrderedDict
 
 import numpy as np
@@ -85,7 +87,7 @@ class Filterbank:
 
     def __init__(
         self,
-        center_frequencies: list | float,  # type: ignore
+        center_frequencies: list | float,
         sample_rate: float,
         filter_type: str = "gammatone",
     ):
@@ -141,8 +143,8 @@ def gammatone_bandwidth_demodulation(
     npts: int,
     tpt: float,
     center_freq: float,
-    center_freq_cos: ndarray | None = None,  # type: ignore
-    center_freq_sin: ndarray | None = None,  # type: ignore
+    center_freq_cos: ndarray | None = None,
+    center_freq_sin: ndarray | None = None,
 ) -> tuple[ndarray, ndarray]:
     """Create the carriers for demodulaton, using the 2d Rotation method from
       https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html
