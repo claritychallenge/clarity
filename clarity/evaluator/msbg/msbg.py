@@ -72,7 +72,9 @@ class Ear:
                 "Impairment too severe: Suggest you limit audiogram max to"
                 "80-90 dB HL, otherwise things go wrong/unrealistic."
             )
-        self.cochlea = Cochlea(audiogram=audiogram, verbose=self.verbose, apply_smear=apply_smear)
+        self.cochlea = Cochlea(
+            audiogram=audiogram, verbose=self.verbose, apply_smear=apply_smear
+        )
 
     @staticmethod
     def get_src_correction(src_pos: str) -> ndarray:
