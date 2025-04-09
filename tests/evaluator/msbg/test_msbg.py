@@ -191,9 +191,9 @@ def test_ear_process(
     """Test ear.process"""
     np.random.seed(0)
 
-    signal = np.random.rand(500)  # noqa: F841
-    signal = np.random.rand(500, 2)  # noqa: F841
-    signal = np.random.rand(500, 1)  # noqa: F841
+    signal = np.random.rand(500)  # type: ignore
+    signal = np.random.rand(500, 2)  # type: ignore
+    signal = np.random.rand(500, 1)  # type: ignore
     signal = np.random.rand(500)
 
     ear = Ear()
