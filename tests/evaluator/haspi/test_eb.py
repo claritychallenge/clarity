@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from clarity.evaluator.haspi.eb import (
+from clarity.evaluator.haspi.eb import (  # gammatone_bandwidth_demodulation,
     ave_covary2,
     bandwidth_adjust,
     basilar_membrane_add_noise,
@@ -15,7 +15,6 @@ from clarity.evaluator.haspi.eb import (
     env_smooth,
     envelope_align,
     envelope_sl,
-    # gammatone_bandwidth_demodulation,
     gammatone_basilar_membrane,
     group_delay_compensate,
     inner_hair_cell_adaptation,
@@ -28,7 +27,6 @@ from clarity.evaluator.haspi.eb import (
     resample_24khz,
     spectrum_diff,
 )
-
 
 # ear_model
 

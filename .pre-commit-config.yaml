@@ -38,14 +38,14 @@ repos:
       - id: markdownlint-cli2
 
   - repo: https://github.com/pycqa/flake8.git
-    rev: 7.1.1
+    rev: 7.2.0
     hooks:
       - id: flake8
         additional_dependencies: [flake8-print, Flake8-pyproject]
         types: [python]
 
   - repo: https://github.com/pycqa/isort
-    rev: 6.0.0
+    rev: 6.0.1
     hooks:
       - id: isort
         name: isort (python)
@@ -65,7 +65,7 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.1
+    rev: v1.15.0
     hooks:
       - id: mypy
         args:
@@ -75,13 +75,13 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.9.4"
+    rev: "v0.11.4"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v3.3.4
+    rev: v3.3.6
     hooks:
       - id: pylint
         args:
