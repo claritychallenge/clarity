@@ -134,39 +134,44 @@ def test_recruitment():
 
 
 @pytest.mark.parametrize(
-    "levels, severity, has_smearer",
+    "levels, severity, apply_smear, has_smearer",
     [
-        (np.array([30, 40, 10]), "NOTHING", False),
-        (np.array([30, 40, 20]), "MILD", True),
-        (np.array([30, 40, 40]), "MODERATE", True),
-        (np.array([30, 40, 80]), "SEVERE", True),
+        (np.array([30, 40, 10]), "NOTHING", True, False),
+        (np.array([30, 40, 20]), "MILD", True, True),
+        (np.array([30, 40, 40]), "MODERATE", True, True),
+        (np.array([30, 40, 80]), "SEVERE", True, True),
+        (np.array([30, 40, 10]), "NOTHING", False, False),  # Off Smearer
+        (np.array([30, 40, 20]), "MILD", False, False),  # Off Smearer
+        (np.array([30, 40, 40]), "MODERATE", False, False),  # Off Smearer
+        (np.array([30, 40, 80]), "SEVERE", False, False),  # Off Smearer
     ],
 )
-def test_cochlea(levels, severity, has_smearer):
+def test_cochlea(levels, severity, apply_smear, has_smearer):
     """Test Cochlea class"""
     audiogram_cfs = np.array([250, 500, 2000])
     audiogram = Audiogram(levels=levels, frequencies=audiogram_cfs)
     assert audiogram.severity == severity
 
-    cochlea = Cochlea(audiogram=audiogram)
+    cochlea = Cochlea(audiogram=audiogram, apply_smear=apply_smear)
     assert (cochlea.smearer is not None) == has_smearer
 
 
 @pytest.mark.parametrize(
-    "levels, expected, n_samples_out",
+    "apply_smear, levels, expected, n_samples_out",
     [
-        (np.array([30, 40, 10]), 140.40357187610562, 1000),
-        (np.array([30, 40, 40]), 42.38705275894786, 1216),  # smearer adds samples
+        (True, np.array([30, 40, 10]), 140.40357187610562, 1000),
+        (True, np.array([30, 40, 40]), 42.38705275894786, 1216),  # smearer adds samples
+        (False, np.array([30, 40, 40]), 41.16347361022456, 1000),  # Deactivate smearer
     ],
 )
-def test_cochlea_simulate(levels, expected, n_samples_out):
+def test_cochlea_simulate(apply_smear, levels, expected, n_samples_out):
     """Test Cochlea class"""
     np.random.seed(0)
     signal = np.random.random(1000)
     audiogram_cfs = np.array([250, 500, 2000])
     audiogram = Audiogram(levels=levels, frequencies=audiogram_cfs)
 
-    cochlea = Cochlea(audiogram=audiogram)
+    cochlea = Cochlea(audiogram=audiogram, apply_smear=apply_smear)
     result = cochlea.simulate(coch_sig=signal, equiv_0dB_file_SPL=100.0)
     assert result.shape == (n_samples_out,)
     assert np.sum(np.abs(result)) == pytest.approx(
