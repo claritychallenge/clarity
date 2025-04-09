@@ -85,7 +85,7 @@ class Filterbank:
 
     def __init__(
         self,
-        center_frequencies: list | float,
+        center_frequencies: list | float,  # type: ignore
         sample_rate: float,
         filter_type: str = "gammatone",
     ):
@@ -109,10 +109,10 @@ class Filterbank:
             if filter_type == "gammatone":
                 self.filters[cf] = Gammatone(cf, sample_rate)
             else:
-                raise f"Filter {filter_type} not supported."
+                raise Exception(f"Filter {filter_type} not supported.")
 
     def __call__(
-        self, signal: ndarray, bandwidth: float | list
+        self, signal: ndarray, bandwidth: float | list  # type: ignore
     ) -> tuple[ndarray, ndarray]:
         """Compute the filterbank.
 
@@ -141,8 +141,8 @@ def gammatone_bandwidth_demodulation(
     npts: int,
     tpt: float,
     center_freq: float,
-    center_freq_cos: ndarray | None = None,
-    center_freq_sin: ndarray | None = None,
+    center_freq_cos: ndarray | None = None,  # type: ignore
+    center_freq_sin: ndarray | None = None,  # type: ignore
 ) -> tuple[ndarray, ndarray]:
     """Create the carriers for demodulaton, using the 2d Rotation method from
       https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html
@@ -153,14 +153,14 @@ def gammatone_bandwidth_demodulation(
         npts (): How many points are needed.
         tpt (): Phase change (2pi/T) due to each sample time.
         center_freq (): The carrier frequency
-        center_freq_cos (): Array to overwrite for the output.
-        center_freq_sin (): Array to overwrite for the output.
+        center_freq_cos (ndarray | None): Array to overwrite for the output.
+        center_freq_sin (ndarray | None): Array to overwrite for the output.
 
     Returns:
         sincf (): Samples of the carrier frequency in sin phase.
         coscf (): Samples of the carrier frequency in cos phase.
     """
-    if center_freq_cos is None and center_freq_sin is None:
+    if center_freq_cos is None or center_freq_sin is None:
         center_freq_cos = np.zeros(npts)
         center_freq_sin = np.zeros(npts)
 
