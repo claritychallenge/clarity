@@ -46,8 +46,8 @@ class Ear:
         Args:
             src_pos (str): Position of the source.
             sample_rate (float): sample frequency.
-            equiv_0db_spl (): ???
-            ahr (): ???
+            equiv_0db_spl (float, optional): ???
+            ahr (float, optional): ???
         """
         self.sample_rate = sample_rate
         self.src_correction = self.get_src_correction(src_pos)
@@ -55,14 +55,19 @@ class Ear:
         self.ahr = ahr
         self.cochlea: Cochlea | None = None
 
-    def set_audiogram(self, audiogram: Audiogram) -> None:
-        """Set the audiogram to be used."""
+    def set_audiogram(self, audiogram: Audiogram, apply_smear: bool = True) -> None:
+        """Set the audiogram to be used.
+
+        Args:
+            audiogram (Audiogram): Audiogram to use.
+            apply_smear (bool, optional): whether to apply smearing. True by default
+        """
         if np.max(audiogram.levels[audiogram.levels is not None]) > 80:
             logging.warning(
                 "Impairment too severe: Suggest you limit audiogram max to"
                 "80-90 dB HL, otherwise things go wrong/unrealistic."
             )
-        self.cochlea = Cochlea(audiogram=audiogram)
+        self.cochlea = Cochlea(audiogram=audiogram, apply_smear=apply_smear)
 
     @staticmethod
     def get_src_correction(src_pos: str) -> ndarray:
