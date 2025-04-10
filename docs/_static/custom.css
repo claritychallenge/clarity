@@ -1,0 +1,17 @@
+
+/* Move the sidebar (navigation) to the left */
+@media (min-width: 768px) {
+    .docside-nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 250px; /* You can adjust this value */
+        z-index: 100;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    }
+
+    .main-content {
+        margin-left: 250px; /* Match the width of the sidebar */
+    }
+}
