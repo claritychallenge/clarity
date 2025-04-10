@@ -1,0 +1,3 @@
+sphinx
+furo  # or your theme
+sphinx-rtd-theme
