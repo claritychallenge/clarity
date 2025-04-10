@@ -23,21 +23,30 @@ Example:
 Multiband Dynamic Range Compressor
 ----------------------------------
 
-Compressor
-^^^^^^^^^^
-
-.. autoclass:: clarity.enhancer.multiband_compressor.compressor_qmul.Compressor
-   :members:
-   :undoc-members:
-
-Crossover
-^^^^^^^^^
-
-.. autoclass:: clarity.enhancer.multiband_compressor.crossover.Crossover
-   :members:
-
 MultibandCompressor
 ^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: clarity.enhancer.multiband_compressor.multiband_compressor.MultibandCompressor
    :members:
+   :special-members: __call__
+   :undoc-members:
+   :show-inheritance:
+
+Compressor
+^^^^^^^^^^
+
+.. autoclass:: clarity.enhancer.multiband_compressor.compressor_qmul.Compressor
+   :members:
+   :special-members: __call__
+   :undoc-members:
+   :show-inheritance:
+
+Crossover
+^^^^^^^^^
+
+.. automodule:: clarity.enhancer.multiband_compressor.crossover
+   :members:
+   :special-members: __call__
+   :undoc-members:
+   :show-inheritance:
+
