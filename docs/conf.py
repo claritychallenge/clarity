@@ -13,25 +13,27 @@ release = "v0.6.3"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+autosummary_generate = True
 
-extensions = []
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",  # for Google or NumPy-style docstrings
+    "sphinx.ext.viewcode",  # optional: adds links to source code
+]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
+autoclass_content = "both"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 
 html_theme_options = {
-    "navigation_with_keys": True,  # This enables keyboard navigation
+    "style_nav_header_background": "white",
+    "version_selector": True,
 }
-
-html_css_files = [
-    "custom.css",  # Link to your custom CSS file
-]
-
-html_logo = "images/earfinal_clarity_customColour.png"
+html_logo = "images/challenges.png"
