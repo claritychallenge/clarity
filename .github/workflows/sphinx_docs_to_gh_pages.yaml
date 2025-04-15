@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - grd-pyclarity-doc
+      - main
 
 jobs:
   sphinx_docs_to_gh-pages:
