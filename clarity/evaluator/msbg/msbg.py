@@ -40,6 +40,8 @@ class Ear:
         sample_rate: float = 44100.0,
         equiv_0db_spl: float = 100.0,
         ahr: float = 20.0,
+        apply_smear: bool = True,
+        apply_loudness_recruitment: bool = True,
         verbose: bool = True,
     ) -> None:
         """
@@ -53,6 +55,9 @@ class Ear:
             ahr (): ???
             verbose (bool, optional): verbose mode. Default is True
         """
+        # Set up the parameters for the simulation
+        self.apply_smear = apply_smear
+        self.apply_loudness_recruitment = apply_loudness_recruitment
         self.verbose = verbose
         self.sample_rate = sample_rate
         self.src_correction = self.get_src_correction(src_pos)
@@ -60,7 +65,7 @@ class Ear:
         self.ahr = ahr
         self.cochlea: Cochlea | None = None
 
-    def set_audiogram(self, audiogram: Audiogram, apply_smear: bool = True) -> None:
+    def set_audiogram(self, audiogram: Audiogram) -> None:
         """Set the audiogram to be used.
 
         Args:
@@ -73,7 +78,10 @@ class Ear:
                 "80-90 dB HL, otherwise things go wrong/unrealistic."
             )
         self.cochlea = Cochlea(
-            audiogram=audiogram, verbose=self.verbose, apply_smear=apply_smear
+            audiogram=audiogram,
+            verbose=self.verbose,
+            apply_smear=self.apply_smear,
+            apply_loudness_recruitment=self.apply_loudness_recruitment,
         )
 
     @staticmethod
@@ -269,6 +277,7 @@ class Ear:
         )
         if self.cochlea is not None:
             signal = np.array([self.cochlea.simulate(x, equiv_0db_spl) for x in signal])
+
         signal = Ear.src_to_cochlea_filt(
             signal,
             self.src_correction,

@@ -15,6 +15,7 @@ from clarity.evaluator.msbg.msbg_utils import read_gtf_file
 from clarity.evaluator.msbg.smearing import Smearer
 from clarity.utils.audiogram import Audiogram
 
+
 # TODO: Fix power overflow error when (expansion_ratios[ixch] - 1) < 0
 
 
@@ -229,6 +230,7 @@ class Cochlea:
         catch_up_level: float = 105.0,
         fs: float = 44100.0,
         apply_smear: bool = True,
+        apply_loudness_recruitment: bool = True,
         verbose: bool = True,
     ) -> None:
         """Cochlea constructor.
@@ -239,6 +241,8 @@ class Cochlea:
                 Default is 105 dB
             fs (float, optional): sampling frequency
             apply_smear (bool, optional): whether to apply smearing. True by default
+            apply_loudness_recruitment (bool, optional): whether to apply loudness
+                recruitment. True by default
             verbose (bool, optional): verbose mode. Default is True
 
 
@@ -255,6 +259,11 @@ class Cochlea:
         self.cf_expansion, self.eq_loud_db_catch_up = compute_recruitment_parameters(
             np.array(self.gtfbank_params["GTn_CentFrq"]), audiogram, catch_up_level
         )
+
+        self.apply_loudness_recruitment = apply_loudness_recruitment
+
+        if apply_loudness_recruitment is False:
+            self.eq_loud_db_catch_up = np.ones_like(self.eq_loud_db_catch_up)
 
         # Set-up the smearer
         self.smearer = None
