@@ -33,7 +33,4 @@ jobs:
           sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb'
           sphinxapiopts: '--separate -o . ../'
           sphinxopts: ''
-          multiversion: true
-          multiversion_redirect: 'grd-pyclarity-doc'
-          multiversionopts: ''
 
