@@ -209,7 +209,7 @@ epub_exclude_files = ["search.html"]
 
 # -- Extension configuration -------------------------------------------------
 
-# autosummary_generate = True
+autosummary_generate = True
 # # Only build the main branch and tags 0.6.3 and 0.5
 # smv_branch_whitelist = r"^main$"
 # smv_tag_whitelist = r"^0\.6\.3$|^0\.5$"
