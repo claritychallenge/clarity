@@ -79,7 +79,6 @@ docs = [
     "sphinxcontrib-mermaid",
     "sphinxcontrib-napoleon",
     "sphinx-multiversion",
-    "sphinx-apiauto",
     "sphinxcontrib-bibtex",
     "numpydoc"
 
