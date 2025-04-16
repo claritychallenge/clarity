@@ -41,7 +41,6 @@ class Ear:
         equiv_0db_spl: float = 100.0,
         ahr: float = 20.0,
         apply_smear: bool = True,
-        apply_loudness_recruitment: bool = True,
         verbose: bool = True,
     ) -> None:
         """
@@ -57,7 +56,6 @@ class Ear:
         """
         # Set up the parameters for the simulation
         self.apply_smear = apply_smear
-        self.apply_loudness_recruitment = apply_loudness_recruitment
         self.verbose = verbose
         self.sample_rate = sample_rate
         self.src_correction = self.get_src_correction(src_pos)
@@ -81,7 +79,6 @@ class Ear:
             audiogram=audiogram,
             verbose=self.verbose,
             apply_smear=self.apply_smear,
-            apply_loudness_recruitment=self.apply_loudness_recruitment,
         )
 
     @staticmethod
@@ -240,6 +237,12 @@ class Ear:
         calib_db_spl = level_db_spl
         target_spl = level_db_spl
         ref_rms_db = calib_db_spl - equiv_0db_spl
+
+        REF_RMSdB = -30.2
+        CALIB_dBSPL = 75
+
+        equiv_0db_spl = CALIB_dBSPL - REF_RMSdB
+        target_spl = CALIB_dBSPL
 
         # Measure RMS where 3rd arg is dB_rel_rms (how far below)
         calculated_rms, idx, _rel_db_thresh, _active = measure_rms(
