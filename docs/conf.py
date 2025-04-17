@@ -6,7 +6,7 @@
 #
 import os
 import sys
-from importlib.metadata import version
+from importlib.metadata import version as get_version
 
 # -*- coding: utf-8 -*-
 #
@@ -36,12 +36,12 @@ autodoc_mock_imports = [
 
 # -- Project information -----------------------------------------------------
 
-PROJECT = "pyClarity"
-COPYRIGHT = "2020-2025, pyClarity authors"
-AUTHOR = "pyClarity authors"
-RELEASE = version("pyclarity")
+project = "pyClarity"
+copyright = "2020-2025, pyClarity authors"
+author = "pyClarity authors"
+release = get_version("pyclarity")
 # for example take major/minor
-VERSION = ".".join(RELEASE.split(".")[:2])
+version = ".".join(release.split(".")[:2])
 
 
 # -- General configuration ---------------------------------------------------
@@ -66,7 +66,7 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_parsers = {".md": "recommonmark.parsers.CommonMarkParser"}
+# source_parsers = {".md": "recommonmark.parsers.CommonMarkParser"} deprecated
 source_suffix = {
     ".rst": "restructuredtext",
     ".txt": "restructuredtext",
@@ -84,7 +84,13 @@ LANGUAGE = "en"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "requirements.txt",
+    "recipe_rsync_exclude.txt",
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 PYGMENTS_STYLE = None
@@ -97,7 +103,7 @@ PYGMENTS_STYLE = None
 # html_theme = 'sphinx_rtd_theme'
 # html_theme = "haiku"
 # html_theme = "renku"
-HTML_THEME = "sphinx_rtd_theme"
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -126,8 +132,8 @@ html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 
 html_theme_options = {
-    "style_nav_header_background": "white",
-    "version_selector": True,
+    # "style_nav_header_background": "white",
+    # "version_selector": True,
 }
 html_logo = "images/challenges.png"
 
@@ -149,26 +155,26 @@ HTMLHELP_BASENAME = "claritydoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements: dict[str, str] = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
+# latex_elements: dict[str, str] = {
+#     # The paper size ('letterpaper' or 'a4paper').
+#     #
+#     # 'papersize': 'letterpaper',
+#     # The font size ('10pt', '11pt' or '12pt').
+#     #
+#     # 'pointsize': '10pt',
+#     # Additional stuff for the LaTeX preamble.
+#     #
+#     # 'preamble': '',
+#     # Latex figure (float) alignment
+#     #
+#     # 'figure_align': 'htbp',
+# }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (MASTER_DOC, "clarity.tex", "clarity Documentation", [AUTHOR], "manual"),
+    (MASTER_DOC, "clarity.tex", "clarity Documentation", [author], "manual"),
 ]
 
 
@@ -176,7 +182,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(MASTER_DOC, "clarity", "Clarity Documentation", [AUTHOR], 1)]
+man_pages = [(MASTER_DOC, "clarity", "Clarity Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -185,14 +191,14 @@ man_pages = [(MASTER_DOC, "clarity", "Clarity Documentation", [AUTHOR], 1)]
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (MASTER_DOC, "Clarity", "Clarity Documentation", AUTHOR, "Clarity", "", ""),
+    (MASTER_DOC, "Clarity", "Clarity Documentation", author, "Clarity", "", ""),
 ]
 
 
 # -- Options for Epub output -------------------------------------------------
 
 # Bibliographic Dublin Core info.
-EPUB_TITLE = PROJECT
+epub_title = project
 
 # The unique identifier of the text. This can be a ISBN number
 # or the project homepage.
