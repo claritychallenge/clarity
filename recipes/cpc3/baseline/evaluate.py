@@ -49,7 +49,12 @@ def evaluate(cfg: DictConfig) -> None:
     """Evaluate the predictions against the ground truth correctness values"""
 
     # Load the intelligibility dataset records
-    dataset_filename = Path(cfg.path.metadata_dir) / f"CPC3.{cfg.split}.json"
+    dataset_filename = (
+        Path(cfg.clarity_data_root)
+        / cfg.dataset
+        / "metadata"
+        / f"CPC3.{cfg.split}.json"
+    )
     with open(dataset_filename, encoding="utf-8") as fp:
         records = json.load(fp)
     record_index = {record["signal"]: record for record in records}
@@ -68,7 +73,7 @@ def evaluate(cfg: DictConfig) -> None:
         fp.write(json.dumps(scores) + "\n")
 
     # Output the scores to the console
-    print(scores)
+    print(json.dumps(scores, indent=2))
 
 
 if __name__ == "__main__":

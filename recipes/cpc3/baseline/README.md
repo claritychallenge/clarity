@@ -1,7 +1,5 @@
 # The 3rd Clarity Prediction Challenge (CPC3) baseline code
 
-TODO: update this
-
 Code to support the 3rd Clarity Prediction Challenge (CPC3).
 
 For more information about the CPC3 please [visit](https://claritychallenge.org/)
@@ -75,6 +73,8 @@ Compute the HASPI scores over the training data set and store results
 ```bash
 python compute_haspi.py dataset=clarity_demo_data split=train
 ```
+
+(Use `dataset=clarity_data` to run over the full dataset.)
 
 This will generate the output file containing HASPI scores. This file will be called `exp/<DATASET>.haspi.jsonl` where `<DATASET>` is the name specified on the commandline.
 

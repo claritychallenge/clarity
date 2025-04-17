@@ -76,7 +76,12 @@ def predict(cfg: DictConfig):
     """Predict intelligibility from HASPI scores."""
 
     # Load the intelligibility dataset records
-    dataset_filename = Path(cfg.path.metadata_dir) / f"CPC3.{cfg.split}.json"
+    dataset_filename = (
+        Path(cfg.clarity_data_root)
+        / cfg.dataset
+        / "metadata"
+        / f"CPC3.{cfg.split}.json"
+    )
     with dataset_filename.open("r", encoding="utf-8") as fp:
         records = json.load(fp)
 
@@ -104,7 +109,6 @@ def predict(cfg: DictConfig):
         # disjoint set of data, i.e. we define a training data set that does not
         # contain systems, listeners or signals that appear in the test data sample.
 
-        print(records_df)
         train_df = make_disjoint_train_set(records_df, test_df)
 
         model = LogisticModel()

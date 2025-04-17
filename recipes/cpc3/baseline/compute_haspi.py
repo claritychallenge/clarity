@@ -99,9 +99,9 @@ def compute_haspi_for_signal(signal_name: str, data_root: str, split: str) -> fl
 
     with open(Path(data_root) / "metadata" / "listeners.csv", encoding="utf8") as f:
         listener_dict = csv.DictReader(f)
-    listener_severity_dict = {
-        row["listener_id"]: row["severity"] for row in listener_dict
-    }
+        listener_severity_dict = {
+            row["listener_id"]: row["severity"] for row in listener_dict
+        }
 
     listener_severity = listener_severity_dict[listener_id]
     listener_data = listener_data_dict[listener_severity]
@@ -133,12 +133,17 @@ def compute_haspi_for_signal(signal_name: str, data_root: str, split: str) -> fl
 def run_calculate_haspi(cfg: DictConfig) -> None:
     """Run the HASPI score computation."""
     # Load the set of signal for which we need to compute scores
-    dataset_filename = Path(cfg.path.metadata_dir) / f"CPC3.{cfg.split}.json"
+    dataset_filename = (
+        Path(cfg.clarity_data_root)
+        / cfg.dataset
+        / "metadata"
+        / f"CPC3.{cfg.split}.json"
+    )
 
     with dataset_filename.open("r", encoding="utf-8") as fp:
         records = json.load(fp)
 
-    dataroot = Path(cfg.path.clarity_data_dir) / cfg.dataset
+    dataroot = Path(cfg.clarity_data_root) / cfg.dataset
 
     # Load existing results file if present
     batch_str = (
