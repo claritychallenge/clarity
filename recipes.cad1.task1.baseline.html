@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cad1.task1.baseline package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cad1.task2 package" href="recipes.cad1.task2.html" />
+    <link rel="prev" title="recipes.cad1.task1 package" href="recipes.cad1.task1.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="recipes-cad1-task1-baseline-package">
+<h1>recipes.cad1.task1.baseline package<a class="headerlink" href="#recipes-cad1-task1-baseline-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cad1.task1.baseline.enhance">
+<span id="recipes-cad1-task1-baseline-enhance-module"></span><h2>recipes.cad1.task1.baseline.enhance module<a class="headerlink" href="#module-recipes.cad1.task1.baseline.enhance" title="Link to this heading">¶</a></h2>
+<p>Run the dummy enhancement.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.apply_baseline_ha">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">apply_baseline_ha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enhancer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.nalr.NALR" title="clarity.enhancer.nalr.NALR"><span class="pre">NALR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.compressor.Compressor" title="clarity.enhancer.compressor.Compressor"><span class="pre">Compressor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_compressor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#apply_baseline_ha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.apply_baseline_ha" title="Link to this definition">¶</a></dt>
+<dd><p>Apply NAL-R prescription hearing aid to a signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enhancer</strong> – A NALR object that enhances the signal.</p></li>
+<li><p><strong>compressor</strong> – A Compressor object that compresses the signal.</p></li>
+<li><p><strong>signal</strong> – An ndarray representing the audio signal.</p></li>
+<li><p><strong>audiogram</strong> – An Audiogram object representing the listener’s audiogram.</p></li>
+<li><p><strong>apply_compressor</strong> – A boolean indicating whether to include the compressor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An ndarray representing the processed signal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.decompose_signal">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">decompose_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#decompose_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.decompose_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Decompose signal into 8 stems.</p>
+<p>The left and right audiograms are ignored by the baseline system as it
+is performing personalised decomposition.
+Instead, it performs a standard music decomposition using the
+HDEMUCS model trained on the MUSDB18 dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Torch model.</p></li>
+<li><p><strong>model_sample_rate</strong> (<em>int</em>) – Sample rate of the model.</p></li>
+<li><p><strong>signal</strong> (<em>ndarray</em>) – Signal to be decomposed.</p></li>
+<li><p><strong>signal_sample_rate</strong> (<em>int</em>) – Sample frequency.</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – Torch device to use for processing.</p></li>
+<li><p><strong>sources_list</strong> (<em>list</em>) – List of strings used to index dictionary.</p></li>
+<li><p><strong>listener</strong> (<a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><em>Listener</em></a>) – Listener object.</p></li>
+<li><p><strong>normalise</strong> – Whether to normalise the signal.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.enhance">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">enhance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#enhance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.enhance" title="Link to this definition">¶</a></dt>
+<dd><p>Run the music enhancement.
+The system decomposes the music into vocal, drums, bass, and other stems.
+Then, the NAL-R prescription procedure is applied to each stem.
+:param config: Dictionary of configuration options for enhancing music.
+:type config: dict</p>
+<dl class="simple">
+<dt>Returns 8 stems for each song:</dt><dd><ul class="simple">
+<li><p>left channel vocal, drums, bass, and other stems</p></li>
+<li><p>right channel vocal, drums, bass, and other stems</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.get_device">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">get_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#get_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.get_device" title="Link to this definition">¶</a></dt>
+<dd><p>Get the Torch device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<em>str</em>) – device type, e.g. “cpu”, “gpu0”, “gpu1”, etc.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.device() appropiate to the hardware available.
+str: device type selected, e.g. “cpu”, “cuda”.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.device</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.map_to_dict">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">map_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#map_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.map_to_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Map sources to a dictionary separating audio into left and right channels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sources</strong> (<em>ndarray</em>) – Signal to be mapped to dictionary.</p></li>
+<li><p><strong>sources_list</strong> (<em>list</em>) – List of strings used to index dictionary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of separated source audio split into channels.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.process_stems_for_listener">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">process_stems_for_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enhancer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.nalr.NALR" title="clarity.enhancer.nalr.NALR"><span class="pre">NALR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.compressor.Compressor" title="clarity.enhancer.compressor.Compressor"><span class="pre">Compressor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_compressor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#process_stems_for_listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.process_stems_for_listener" title="Link to this definition">¶</a></dt>
+<dd><p>Process the stems from sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stems</strong> (<em>dict</em>) – Dictionary of stems</p></li>
+<li><p><strong>enhancer</strong> (<a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.nalr.NALR" title="clarity.enhancer.nalr.NALR"><em>NALR</em></a>) – NAL-R prescription hearing aid</p></li>
+<li><p><strong>compressor</strong> (<a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.compressor.Compressor" title="clarity.enhancer.compressor.Compressor"><em>Compressor</em></a>) – Compressor</p></li>
+<li><p><strong>listener</strong> (<a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><em>Listener</em></a>) – Listener object.</p></li>
+<li><p><strong>apply_compressor</strong> (<em>bool</em>) – Whether to apply the compressor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of processed stems</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>processed_sources (dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.remix_signal">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">remix_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#remix_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.remix_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Function to remix signal. It takes the eight stems
+and combines them into a stereo signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stems</strong> (<em>dict</em>) – Dictionary of stems</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Remixed signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.save_flac_signal">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">save_flac_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_clip_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_soft_clip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_scale_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#save_flac_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.save_flac_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Function to save output signals.</p>
+<ul class="simple">
+<li><p>The output signal will be resample to <code class="docutils literal notranslate"><span class="pre">output_sample_rate</span></code></p></li>
+<li><dl class="simple">
+<dt>The output signal will be clipped to [-1, 1] if <code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is True</dt><dd><p>and use soft clipped if <code class="docutils literal notranslate"><span class="pre">do_soft_clip</span></code> is True. Note that if
+<code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is False, <code class="docutils literal notranslate"><span class="pre">do_soft_clip</span></code> will be ignored.
+Note that if <code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is True, <code class="docutils literal notranslate"><span class="pre">do_scale_signal</span></code> will be ignored.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The output signal will be scaled to [-1, 1] if <code class="docutils literal notranslate"><span class="pre">do_scale_signal</span></code> is True.</dt><dd><p>If signal is scale, the scale factor will be saved in a TXT file.
+Note that if <code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is True, <code class="docutils literal notranslate"><span class="pre">do_scale_signal</span></code> will be ignored.</p>
+</dd>
+</dl>
+</li>
+<li><p>The output signal will be saved as a FLAC file.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to save</p></li>
+<li><p><strong>filename</strong> (<em>Path</em>) – Path to save signal</p></li>
+<li><p><strong>signal_sample_rate</strong> (<em>int</em>) – Sample rate of the input signal</p></li>
+<li><p><strong>output_sample_rate</strong> (<em>int</em>) – Sample rate of the output signal</p></li>
+<li><p><strong>do_clip_signal</strong> (<em>bool</em>) – Whether to clip signal</p></li>
+<li><p><strong>do_soft_clip</strong> (<em>bool</em>) – Whether to apply soft clipping</p></li>
+<li><p><strong>do_scale_signal</strong> (<em>bool</em>) – Whether to scale signal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.enhance.separate_sources">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.enhance.</span></span><span class="sig-name descname"><span class="pre">separate_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.nn.Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.device</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/enhance.html#separate_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.enhance.separate_sources" title="Link to this definition">¶</a></dt>
+<dd><p>Apply model to a given mixture.
+Use fade, and add segments together in order to add model segment by segment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – model to use for separation</p></li>
+<li><p><strong>mix</strong> (<em>torch.Tensor</em>) – mixture to separate, shape (batch, channels, time)</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – sampling rate of the mixture</p></li>
+<li><p><strong>segment</strong> (<em>float</em>) – segment length in seconds</p></li>
+<li><p><strong>overlap</strong> (<em>float</em>) – overlap between segments, between 0 and 1</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em><em>, </em><em>str</em><em>, or </em><em>None</em>) – if provided, device on which to
+execute the computation, otherwise <cite>mix.device</cite> is assumed.
+When <cite>device</cite> is different from <cite>mix.device</cite>, only local computations will
+be on <cite>device</cite>, while the entire tracks will be stored on <cite>mix.device</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>estimated sources</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+<p>Based on <a class="reference external" href="https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html">https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html</a></p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad1.task1.baseline.evaluate">
+<span id="recipes-cad1-task1-baseline-evaluate-module"></span><h2>recipes.cad1.task1.baseline.evaluate module<a class="headerlink" href="#module-recipes.cad1.task1.baseline.evaluate" title="Link to this heading">¶</a></h2>
+<p>Evaluate the enhanced signals using the HAAQI metric.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.evaluate.make_song_listener_list">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">make_song_listener_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">songs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listeners</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/evaluate.html#make_song_listener_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.evaluate.make_song_listener_list" title="Link to this definition">¶</a></dt>
+<dd><p>Make the list of scene-listener pairing to process</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.evaluate.run_calculate_aq">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">run_calculate_aq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/evaluate.html#run_calculate_aq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.evaluate.run_calculate_aq" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate the enhanced signals using the HAAQI-RMS metric.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.evaluate.set_song_seed">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">set_song_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/evaluate.html#set_song_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.evaluate.set_song_seed" title="Link to this definition">¶</a></dt>
+<dd><p>Set a seed that is unique for the given song</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad1.task1.baseline.merge_batches_results">
+<span id="recipes-cad1-task1-baseline-merge-batches-results-module"></span><h2>recipes.cad1.task1.baseline.merge_batches_results module<a class="headerlink" href="#module-recipes.cad1.task1.baseline.merge_batches_results" title="Link to this heading">¶</a></h2>
+<p>Join batches scores into a single file.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.merge_batches_results.join_batches">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.merge_batches_results.</span></span><span class="sig-name descname"><span class="pre">join_batches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/merge_batches_results.html#join_batches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.merge_batches_results.join_batches" title="Link to this definition">¶</a></dt>
+<dd><p>Join batches scores into a single file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>DictConfig</em>) – Dictionary of configuration options.
+The <cite>.evaluate.batch_size</cite> is extracted to determine how many
+batches there are to combine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad1.task1.baseline.test">
+<span id="recipes-cad1-task1-baseline-test-module"></span><h2>recipes.cad1.task1.baseline.test module<a class="headerlink" href="#module-recipes.cad1.task1.baseline.test" title="Link to this heading">¶</a></h2>
+<p>Run the baseline enhancement.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.test.enhance">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.test.</span></span><span class="sig-name descname"><span class="pre">enhance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/test.html#enhance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.test.enhance" title="Link to this definition">¶</a></dt>
+<dd><p>Run the music enhancement.
+The system decomposes the music into vocal, drums, bass, and other stems.
+Then, the NAL-R prescription procedure is applied to each stem.
+:param config: Dictionary of configuration options for enhancing music.
+:type config: dict</p>
+<dl class="simple">
+<dt>Returns 8 stems for each song:</dt><dd><ul class="simple">
+<li><p>left channel vocal, drums, bass, and other stems</p></li>
+<li><p>right channel vocal, drums, bass, and other stems</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task1.baseline.test.pack_submission">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task1.baseline.test.</span></span><span class="sig-name descname"><span class="pre">pack_submission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task1/baseline/test.html#pack_submission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task1.baseline.test.pack_submission" title="Link to this definition">¶</a></dt>
+<dd><p>Pack the submission files into an archive file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team_id</strong> (<em>str</em>) – Team ID.</p></li>
+<li><p><strong>root_dir</strong> (<em>str</em><em> | </em><em>Path</em>) – Root directory of the archived file.</p></li>
+<li><p><strong>base_dir</strong> (<em>str</em><em> | </em><em>Path</em>) – Base directory to archive. Defaults to “.”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad1.task1.baseline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cad1.task1.baseline" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cad1.html">recipes.cad1 package</a><ul>
+  <li><a href="recipes.cad1.task1.html">recipes.cad1.task1 package</a><ul>
+      <li>Previous: <a href="recipes.cad1.task1.html" title="previous chapter">recipes.cad1.task1 package</a></li>
+      <li>Next: <a href="recipes.cad1.task2.html" title="next chapter">recipes.cad1.task2 package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cad1.task1.baseline.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tests.recipes.cpc1.baseline package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="tests-recipes-cpc1-baseline-package">
+<h1>tests.recipes.cpc1.baseline package<a class="headerlink" href="#tests-recipes-cpc1-baseline-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-tests.recipes.cpc1.baseline.test_compute_scores">
+<span id="tests-recipes-cpc1-baseline-test-compute-scores-module"></span><h2>tests.recipes.cpc1.baseline.test_compute_scores module<a class="headerlink" href="#module-tests.recipes.cpc1.baseline.test_compute_scores" title="Link to this heading">¶</a></h2>
+<p>Tests for cpc1 compute_scores module</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_compute_scores.hydra_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_compute_scores.</span></span><span class="sig-name descname"><span class="pre">hydra_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_compute_scores.html#hydra_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_compute_scores.hydra_cfg" title="Link to this definition">¶</a></dt>
+<dd><p>Fixture for hydra config.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_compute_scores.test_run">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_compute_scores.</span></span><span class="sig-name descname"><span class="pre">test_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_compute_scores.html#test_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_compute_scores.test_run" title="Link to this definition">¶</a></dt>
+<dd><p>Test run function.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.recipes.cpc1.baseline.test_run">
+<span id="tests-recipes-cpc1-baseline-test-run-module"></span><h2>tests.recipes.cpc1.baseline.test_run module<a class="headerlink" href="#module-tests.recipes.cpc1.baseline.test_run" title="Link to this heading">¶</a></h2>
+<p>Tests for cpc1 run module</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.hydra_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">hydra_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#hydra_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.hydra_cfg" title="Link to this definition">¶</a></dt>
+<dd><p>Fixture for hydra config.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.not_tqdm">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">not_tqdm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#not_tqdm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.not_tqdm" title="Link to this definition">¶</a></dt>
+<dd><p>Replacement for tqdm that just passes back the iterable.</p>
+<p>Useful for silencing <cite>tqdm</cite> in tests.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.test_calculate_SI">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">test_calculate_SI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#test_calculate_SI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.test_calculate_SI" title="Link to this definition">¶</a></dt>
+<dd><p>Test calculate_SI function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.test_listen">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">test_listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#test_listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.test_listen" title="Link to this definition">¶</a></dt>
+<dd><p>Test listen function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.test_run">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">test_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_calculate_SI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_run_HL_processing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#test_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.test_run" title="Link to this definition">¶</a></dt>
+<dd><p>Test run function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.test_run_HL_processing">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">test_run_HL_processing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#test_run_HL_processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.test_run_HL_processing" title="Link to this definition">¶</a></dt>
+<dd><p>Test run_HL_processing function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc1.baseline.test_run.truncated_read_signal">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc1.baseline.test_run.</span></span><span class="sig-name descname"><span class="pre">truncated_read_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="_modules/tests/recipes/cpc1/baseline/test_run.html#truncated_read_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc1.baseline.test_run.truncated_read_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Replacement for wavfile read signal function.</p>
+<p>Returns first 1 second of the signal</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.recipes.cpc1.baseline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests.recipes.cpc1.baseline" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/tests.recipes.cpc1.baseline.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

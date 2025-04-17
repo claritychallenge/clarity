@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.evaluator.mbstoi package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.evaluator.msbg package" href="clarity.evaluator.msbg.html" />
+    <link rel="prev" title="clarity.evaluator.hasqi package" href="clarity.evaluator.hasqi.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-evaluator-mbstoi-package">
+<h1>clarity.evaluator.mbstoi package<a class="headerlink" href="#clarity-evaluator-mbstoi-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-clarity.evaluator.mbstoi.mbstoi">
+<span id="clarity-evaluator-mbstoi-mbstoi-module"></span><h2>clarity.evaluator.mbstoi.mbstoi module<a class="headerlink" href="#module-clarity.evaluator.mbstoi.mbstoi" title="Link to this heading">¶</a></h2>
+<p>Modified Binaural Short-Time Objective Intelligibility (MBSTOI) Measure</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi.mbstoi">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.mbstoi.</span></span><span class="sig-name descname"><span class="pre">mbstoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_ear_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_ear_noisy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_noisy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridcoarseness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft_size_in_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_third_octave_bands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre_freq_first_third_octave_hz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dyn_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6.5e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_epsilon_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_0_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0016</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_shift_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi.html#mbstoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi.mbstoi" title="Link to this definition">¶</a></dt>
+<dd><p>The Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_ear_clean</strong> (<em>ndarray</em>) – Clean speech signal from left ear.</p></li>
+<li><p><strong>right_ear_clean</strong> (<em>ndarray</em>) – Clean speech signal from right ear.</p></li>
+<li><p><strong>left_ear_noisy</strong> (<em>ndarray</em>) – Noisy/processed speech signal from left ear.</p></li>
+<li><p><strong>right_ear_noisy</strong> (<em>ndarray</em>) – Noisy/processed speech signal from right ear.</p></li>
+<li><p><strong>fs_signal</strong> (<em>int</em>) – Frequency sample rate of signal.</p></li>
+<li><p><strong>gridcoarseness</strong> (<em>int</em>) – Grid coarseness as denominator of ntaus and ngammas.
+Defaults to 1.</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – Sample Rate.</p></li>
+<li><p><strong>n_frame</strong> (<em>int</em>) – Number of Frames.</p></li>
+<li><p><strong>fft_size_in_samples</strong> (<em>int</em>) – ??? size in samples.</p></li>
+<li><p><strong>n_third_octave_bands</strong> (<em>int</em>) – Number of third octave bands.</p></li>
+<li><p><strong>centre_freq_first_third_octave_hz</strong> (<em>int</em>) – 150,</p></li>
+<li><p><strong>n_frames</strong> (<em>int</em>) – Number of Frames.</p></li>
+<li><p><strong>dyn_range</strong> (<em>int</em>) – Dynamic Range.</p></li>
+<li><p><strong>tau_min</strong> (<em>float</em>) – Min Tau the ???</p></li>
+<li><p><strong>tau_max</strong> (<em>float</em>) – Max Tau the ???</p></li>
+<li><p><strong>gamma_min</strong> (<em>int</em>) – Minimum gamma the ???</p></li>
+<li><p><strong>gamma_max</strong> (<em>int</em>) – Maximum gamma the ???</p></li>
+<li><p><strong>sigma_delta_0</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+<li><p><strong>sigma_epsilon_0</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+<li><p><strong>alpha_0_db</strong> (<em>int</em>) – <p>???</p>
+</p></li>
+<li><p><strong>tau_0</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+<li><p><strong>level_shift_deviation</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>mbstoi index d.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the
+original Matlab software are owned by oticon a/s and/or Aalborg University.
+Please see <cite>http://ah-andersen.net/code/&lt;http://ah-andersen.net/code/&gt;</cite></p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>A. H. Andersen, J. M. de Haan, Z.-H. Tan, and J. Jensen (2018) Refinement and
+validation of the binaural short time objective intelligibility measure for
+spatially diverse conditions. Speech Communication vol. 102, pp. 1-13
+doi:10.1016/j.specom.2018.06.001 &lt;https://doi.org/10.1016/j.specom.2018.06.001&gt;</p>
+</aside>
+</aside>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.mbstoi.mbstoi_utils">
+<span id="clarity-evaluator-mbstoi-mbstoi-utils-module"></span><h2>clarity.evaluator.mbstoi.mbstoi_utils module<a class="headerlink" href="#module-clarity.evaluator.mbstoi.mbstoi_utils" title="Link to this heading">¶</a></h2>
+<p>Utilities for MBSTOI processing.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi_utils.equalisation_cancellation">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.mbstoi_utils.</span></span><span class="sig-name descname"><span class="pre">equalisation_cancellation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_ear_clean_hat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_clean_hat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_ear_noisy_hat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_noisy_hat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_third_octave_bands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency_band_edges_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">taus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_taus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gammas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_gammas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_intelligibility_measure_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_ec_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi_utils.html#equalisation_cancellation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi_utils.equalisation_cancellation" title="Link to this definition">¶</a></dt>
+<dd><p>Run the equalisation-cancellation (EC) stage of the MBSTOI metric.</p>
+<p>The EC loop evaluates one huge equation in every iteration (see referenced notes
+for details). The left and right ear signals are level adjusted by gamma (in dB) and
+time shifted by tau relative to one-another and are thereafter subtracted. The
+processed signals are treated similarly. To obtain performance similar to that of
+humans,the EC stage adds jitter. We are searching for the level and time adjustments
+that maximise the intermediate correlation coefficients d. Could add location of
+source and interferer to this to reduce search space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_ear_clean_hat</strong> (<em>np.ndarray</em>) – Clean left ear short-time DFT coefficients
+(single-sided) per frequency bin and frame.</p></li>
+<li><p><strong>right_ear_clean_hat</strong> (<em>np.ndarray</em>) – Clean right ear short-time DFT coefficients
+(single-sided) per frequency bin and frame.</p></li>
+<li><p><strong>left_ear_noisy_hat</strong> (<em>np.ndarray</em>) – Noisy/processed left ear short-time DFT
+coefficients (single-sided) per frequency bin and frame.</p></li>
+<li><p><strong>right_ear_noisy_hat</strong> (<em>np.ndarray</em>) – Noisy/processed right eat short-time DFT
+coefficients (single-sided) per frequency bin and frame.</p></li>
+<li><p><strong>n_third_octave_bands</strong> (<em>int</em>) – Number of one-third octave bands.</p></li>
+<li><p><strong>n_frames</strong> (<em>int</em>) – Number of frames for intermediate intelligibility measure.</p></li>
+<li><p><strong>fids</strong> (<em>np.ndarray</em>) – Indices of frequency band edges.</p></li>
+<li><p><strong>cf</strong> (<em>np.ndarray</em>) – Centre frequencies.</p></li>
+<li><p><strong>taus</strong> (<em>np.ndarray</em>) – Interaural delay (tau) values.</p></li>
+<li><p><strong>n_taus</strong> (<em>int</em>) – Number of tau values.</p></li>
+<li><p><strong>gammas</strong> (<em>np.ndarray</em>) – Interaural level difference (gamma) values.</p></li>
+<li><p><strong>ngammas</strong> (<em>int</em>) – Number of gamma values.</p></li>
+<li><p><strong>intermediate_intelligibility_measure_grid</strong> (<em>np.ndarray</em>) – Grid for intermediate
+intelligibility measure.</p></li>
+<li><p><strong>p_ec_max</strong> (<em>np.ndarray</em>) – Empty grid for maximum values.</p></li>
+<li><p><strong>sigma_epsilon</strong> (<em>np.ndarray</em>) – Jitter for gammas.</p></li>
+<li><p><strong>sigma_delta</strong> (<em>np.ndarray</em>) – Jitter for taus.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>updated grid for</dt><dd><p>intermediate intelligibility measure</p>
+</dd>
+</dl>
+<p>p_ec_max (np.ndarray) : grid containing maximum values.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>intermediate_intelligibility_measure_grid (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi_utils.find_delay_impulse">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.mbstoi_utils.</span></span><span class="sig-name descname"><span class="pre">find_delay_impulse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ddf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi_utils.html#find_delay_impulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi_utils.find_delay_impulse" title="Link to this definition">¶</a></dt>
+<dd><p>Find binaural delay in signal ddf.</p>
+<p>Finds delay given initial location of unit impulse, initial_value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ddf</strong> (<em>np.ndarray</em>)</p></li>
+<li><p><strong>initial_value</strong> – (int) : Initial value (default: 22050)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Binaural delay.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>delay (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi_utils.remove_silent_frames">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.mbstoi_utils.</span></span><span class="sig-name descname"><span class="pre">remove_silent_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_ear_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_ear_noisy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_noisy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi_utils.html#remove_silent_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi_utils.remove_silent_frames" title="Link to this definition">¶</a></dt>
+<dd><p>Remove silent frames of x and y based on x</p>
+<p>A frame is excluded if its energy is lower than max(energy) - dyn_range
+The frame exclusion is based solely on x, the clean speech signal
+Based on mpariente/pystoi/utils.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_ear_clean</strong> (<em>np.ndarray</em>) – Clean input signal left channel.</p></li>
+<li><p><strong>right_ear_clean</strong> (<em>np.ndarray</em>) – Clean input signal right channel.</p></li>
+<li><p><strong>left_ear_noisy</strong> (<em>np.ndarray</em>) – Degraded/processed signal left channel.</p></li>
+<li><p><strong>right_ear_noisy</strong> (<em>np.ndarray</em>) – Degraded/processed signal right channel.</p></li>
+<li><p><strong>dyn_range</strong> (<em>np.ndarray</em>) – Range, energy range to determine which frame is silent
+Default is 40.</p></li>
+<li><p><strong>framelen</strong> (<em>int</em>) – Window size for energy evaluation (default : 256).</p></li>
+<li><p><strong>hop</strong> (<em>int</em>) – Hop size for energy evaluation (default : 128).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns :</dt><dd><p>xl_sil (np.ndarray): left_ear_clean without the silent frames.
+xr_sil (np.ndarray): right_ear_clean without the silent frames.
+yl_sil (np.ndarray): left_ear_noisy without the silent frames in xl_sil.
+yr_sil (np.ndarray): right_ear_noisy without the silent frames in rl_sil.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi_utils.stft">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.mbstoi_utils.</span></span><span class="sig-name descname"><span class="pre">stft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi_utils.html#stft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi_utils.stft" title="Link to this definition">¶</a></dt>
+<dd><p>Short-time Fourier transform based on MBSTOI Matlab code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – Input signal</p></li>
+<li><p><strong>win_size</strong> (<em>int</em>) – The size of the window and the signal frames.</p></li>
+<li><p><strong>fft_size</strong> (<em>int</em>) – The size of the fft in samples (zero-padding or not).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The short-time Fourier transform of signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>stft_out (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi_utils.thirdoct">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.mbstoi_utils.</span></span><span class="sig-name descname"><span class="pre">thirdoct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfft</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi_utils.html#thirdoct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi_utils.thirdoct" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the 1/3 octave band matrix and its center frequencies
+based on mpariente/pystoi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_rate</strong> (<em>float</em>) – Frequency sampling rate.</p></li>
+<li><p><strong>n_fft</strong> (<em>int</em>) – Number of FFT. FFT == ???</p></li>
+<li><p><strong>num_bands</strong> (<em>int</em>) – Number of one-third octave bands.</p></li>
+<li><p><strong>min_freq</strong> (<em>int</em>) – Center frequencey of the lowest one-third octave band.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>centre_frequencies (np.ndarray) : Centre frequencies.
+frequency_band_edges_indices (np.ndarray) : Indices of Frequency Band Edges
+freq_low (float) : Lowest frequency.
+freq_high (float) : Highest frequency</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>octave_band_matrix (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.mbstoi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.evaluator.mbstoi" title="Link to this heading">¶</a></h2>
+<p>Modified Binaural Short-Time Objective Intelligibility Evaluator</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.mbstoi.mbstoi">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.mbstoi.</span></span><span class="sig-name descname"><span class="pre">mbstoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_ear_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_ear_noisy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_ear_noisy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridcoarseness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft_size_in_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_third_octave_bands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre_freq_first_third_octave_hz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dyn_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6.5e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_epsilon_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_0_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0016</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_shift_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/mbstoi/mbstoi.html#mbstoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.mbstoi.mbstoi" title="Link to this definition">¶</a></dt>
+<dd><p>The Modified Binaural Short-Time Objective Intelligibility (mbstoi) measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_ear_clean</strong> (<em>ndarray</em>) – Clean speech signal from left ear.</p></li>
+<li><p><strong>right_ear_clean</strong> (<em>ndarray</em>) – Clean speech signal from right ear.</p></li>
+<li><p><strong>left_ear_noisy</strong> (<em>ndarray</em>) – Noisy/processed speech signal from left ear.</p></li>
+<li><p><strong>right_ear_noisy</strong> (<em>ndarray</em>) – Noisy/processed speech signal from right ear.</p></li>
+<li><p><strong>fs_signal</strong> (<em>int</em>) – Frequency sample rate of signal.</p></li>
+<li><p><strong>gridcoarseness</strong> (<em>int</em>) – Grid coarseness as denominator of ntaus and ngammas.
+Defaults to 1.</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – Sample Rate.</p></li>
+<li><p><strong>n_frame</strong> (<em>int</em>) – Number of Frames.</p></li>
+<li><p><strong>fft_size_in_samples</strong> (<em>int</em>) – ??? size in samples.</p></li>
+<li><p><strong>n_third_octave_bands</strong> (<em>int</em>) – Number of third octave bands.</p></li>
+<li><p><strong>centre_freq_first_third_octave_hz</strong> (<em>int</em>) – 150,</p></li>
+<li><p><strong>n_frames</strong> (<em>int</em>) – Number of Frames.</p></li>
+<li><p><strong>dyn_range</strong> (<em>int</em>) – Dynamic Range.</p></li>
+<li><p><strong>tau_min</strong> (<em>float</em>) – Min Tau the ???</p></li>
+<li><p><strong>tau_max</strong> (<em>float</em>) – Max Tau the ???</p></li>
+<li><p><strong>gamma_min</strong> (<em>int</em>) – Minimum gamma the ???</p></li>
+<li><p><strong>gamma_max</strong> (<em>int</em>) – Maximum gamma the ???</p></li>
+<li><p><strong>sigma_delta_0</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+<li><p><strong>sigma_epsilon_0</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+<li><p><strong>alpha_0_db</strong> (<em>int</em>) – <p>???</p>
+</p></li>
+<li><p><strong>tau_0</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+<li><p><strong>level_shift_deviation</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>mbstoi index d.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>All title, copyrights and pending patents pertaining to mbtsoi[1]_ in and to the
+original Matlab software are owned by oticon a/s and/or Aalborg University.
+Please see <cite>http://ah-andersen.net/code/&lt;http://ah-andersen.net/code/&gt;</cite></p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>A. H. Andersen, J. M. de Haan, Z.-H. Tan, and J. Jensen (2018) Refinement and
+validation of the binaural short time objective intelligibility measure for
+spatially diverse conditions. Speech Communication vol. 102, pp. 1-13
+doi:10.1016/j.specom.2018.06.001 &lt;https://doi.org/10.1016/j.specom.2018.06.001&gt;</p>
+</aside>
+</aside>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.evaluator.html">clarity.evaluator package</a><ul>
+      <li>Previous: <a href="clarity.evaluator.hasqi.html" title="previous chapter">clarity.evaluator.hasqi package</a></li>
+      <li>Next: <a href="clarity.evaluator.msbg.html" title="next chapter">clarity.evaluator.msbg package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.evaluator.mbstoi.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

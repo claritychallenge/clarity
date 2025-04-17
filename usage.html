@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Usage &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Recipes" href="recipes_doc.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
+<p>Before getting started you should ensure you have installed pyClarity within a virtual environment, if you’ve not
+already done so please refer to the <a class="reference internal" href="installation.html"><span class="std std-doc">installation instructions</span></a>.</p>
+<p>To check run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">pyclarity</span></code> and you should get some information about the installed version.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Version:<span class="w"> </span><span class="m">0</span>.1.0
+Summary:<span class="w"> </span>Tools<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Clarity<span class="w"> </span>Challenge
+Home-page:<span class="w"> </span>https://github.com/claritychallenge/clarity
+Author:<span class="w"> </span>The<span class="w"> </span>PyClarity<span class="w"> </span>team
+Author-email:<span class="w"> </span>clarity-group@sheffield.ac.uk
+License:<span class="w"> </span>MIT
+Location:<span class="w"> </span>/home/usera/work/projects/claritychallenge/clarity
+Requires:<span class="w"> </span>audioread,<span class="w"> </span>hydra-core,<span class="w"> </span>hydra-submitit-launcher,<span class="w"> </span>importlib-metadata,<span class="w"> </span>librosa,<span class="w"> </span>matplotlib,<span class="w"> </span>numpy,<span class="w"> </span>omegaconf,<span class="w"> </span>pandas,<span class="w"> </span>pyloudnorm,<span class="w"> </span>scikit-learn,<span class="w"> </span>scipy,<span class="w"> </span>SoundFile,<span class="w"> </span>tqdm
+Required-by:
+</pre></div>
+</div>
+<p>If you don’t see similar to the above then check that you have activated the Virtual Environment you made the install
+under, if the package still isn’t found then you should go through the installation process again within your Virtual
+Environment.</p>
+<section id="jupyter-notebooks">
+<h2>Jupyter Notebooks<a class="headerlink" href="#jupyter-notebooks" title="Link to this heading">¶</a></h2>
+<p>These tutorials are available as Jupyter Notebooks <a class="reference external" href="https://claritychallenge.org/tutorials">pyClarity Tutorials</a> that
+run in Google CoLab.</p>
+<p>The examples and code below take you through the using the pyClarity tools using smaller demo datasets which are
+provided under <code class="docutils literal notranslate"><span class="pre">clarity.data.demo_data</span></code> and have specific functions for loading.</p>
+</section>
+<section id="installing-pyclarity-and-using-metadata">
+<h2>01 Installing pyClarity and Using Metadata<a class="headerlink" href="#installing-pyclarity-and-using-metadata" title="Link to this heading">¶</a></h2>
+<p>This demonstration uses only the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> datasets and it is downloaded to the <code class="docutils literal notranslate"><span class="pre">clarity_data/demo/metadata/</span></code> directory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">clarity.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">demo_data</span>
+
+<span class="n">demo_data</span><span class="o">.</span><span class="n">get_metadata_demo</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will have created a directory called <code class="docutils literal notranslate"><span class="pre">clarity_data</span></code> containing the metadata files that have been downloaded.</p>
+<section id="the-structure-of-the-metadata-files">
+<h3>The structure of the metadata files<a class="headerlink" href="#the-structure-of-the-metadata-files" title="Link to this heading">¶</a></h3>
+<p>There are four metadata files</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rooms</span></code> - geometry of the rooms used for the simulations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scenes</span></code> - information about the sound scene that is playing in the room</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">listeners</span></code> - audiometric data for the hearing-impaired listeners who will listen to the scenes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scenes_listeners</span></code> - a mapping assigning specific listeners to specific scenes (in the evaluation, each scene will be listened to by three separate listeners)</p></li>
+</ul>
+<p>Information about <em>individual</em> rooms, scenes, listeners etc is stored as a <a class="reference external" href="https://www.tutorialspoint.com/python/python_dictionary.htm">dictionary</a>. The complete collections are then stored as either a <a class="reference external" href="https://www.tutorialspoint.com/python/python_lists.htm">list</a> or dict depending on how the collection is mostly conveniently indexed. The datastructure of the four datatypes is summarized below.</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Structure</th>
+<th>Index</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rooms</code></td>
+<td>list of dicts</td>
+<td><code>int</code></td>
+</tr>
+<tr>
+<td><code>scenes</code></td>
+<td>list of dicts</td>
+<td><code>int</code></td>
+</tr>
+<tr>
+<td><code>listener</code></td>
+<td>dict of dicts</td>
+<td><code>LISTENER_ID</code></td>
+</tr>
+<tr>
+<td><code>scenes_listeners</code></td>
+<td>dict of lists</td>
+<td><code>LISTENED_ID</code></td>
+</tr>
+</tbody>
+</table>
+<p>Data is stored in <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">JavaScript Object Notation (JSON) format</a> and the components
+<code class="docutils literal notranslate"><span class="pre">scenes</span></code>, <code class="docutils literal notranslate"><span class="pre">rooms</span></code>, <code class="docutils literal notranslate"><span class="pre">listeners</span></code> and <code class="docutils literal notranslate"><span class="pre">scene_listeners</span></code> can be loaded with the following.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/scenes.demo.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">scenes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/rooms.demo.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">rooms</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/listeners.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">listeners</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/scenes_listeners.dev.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">scenes_listeners</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Elements of a list are accessed using the numerical index (starting at <code class="docutils literal notranslate"><span class="pre">0</span></code>). Whilst elements of a dictionary are
+accessed using the keys. We extract the first (<code class="docutils literal notranslate"><span class="pre">0</span></code>th) scene and inspect the <code class="docutils literal notranslate"><span class="pre">SNR</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scene_0</span> <span class="o">=</span> <span class="n">scenes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keys for scene_0         : </span><span class="si">{</span><span class="n">scene_0</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Value of SNR for scene_0 : </span><span class="si">{</span><span class="n">scene_0</span><span class="p">[</span><span class="s2">&quot;SNR&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># Directly...</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Value of SNR for scene_0 : </span><span class="si">{</span><span class="n">scenes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;SNR&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="processing-collections-of-scenes">
+<h3>Processing Collections of Scenes<a class="headerlink" href="#processing-collections-of-scenes" title="Link to this heading">¶</a></h3>
+<p>Processes can be run over the complete list of scenes using standard Python iteration tools such as <code class="docutils literal notranslate"><span class="pre">for</span></code> and in
+particular <a class="reference external" href="https://realpython.com/list-comprehension-python/">list</a> and <a class="reference external" href="https://realpython.com/iterate-through-dictionary-python/#using-comprehensions">dictionary
+comprehension</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+
+<span class="c1"># Get list of SNRs of scenes</span>
+<span class="n">snr_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;SNR&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scenes</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot histogram</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">snr_values</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Histogram of SNR values&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;SNR (dB)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get list of number of interferers in scenes</span>
+<span class="n">n_interferers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scenes</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+
+<span class="c1"># Prepare data for boxplot</span>
+<span class="n">snr_comparison_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">snr_values</span><span class="p">,</span> <span class="n">n_interferers</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">snr_values</span><span class="p">,</span> <span class="n">n_interferers</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">3</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="c1"># Plot boxplot</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">snr_comparison_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Number of interferers&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;SNR (dB)&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="associations-between-metadata-types">
+<h3>Associations between metadata types<a class="headerlink" href="#associations-between-metadata-types" title="Link to this heading">¶</a></h3>
+<p>There are various associations between the metadata types which sometime require cross referencing from one collection
+to another.</p>
+<p>For example, room dimensions are stored in the room dict rather than directly in the scene dict. So to get the room
+dimensions for a given scene, you need to first look at the room ID field in the scene to find the correct room.</p>
+<p>One approach to doing this is shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">room_id</span> <span class="o">=</span> <span class="n">scene_0</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span>
+<span class="c1"># Iterate through rooms to find the one named `room_id`</span>
+<span class="n">room</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">rooms</span> <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">room_id</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">])</span>
+
+</pre></div>
+</div>
+<p>This approach uses a linear search and is therefore not very efficient. If you are going to be doing this often you
+might want to convert the list of rooms into a dictionary indexed by room ID, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">room_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">room</span> <span class="k">for</span> <span class="n">room</span> <span class="ow">in</span> <span class="n">rooms</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>You can now look up the dimensions of a scene’s room more efficiently,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">room_id</span> <span class="o">=</span> <span class="n">scene_0</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span>
+<span class="n">room_dict</span><span class="p">[</span><span class="n">room_id</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="example-locating-information-about-the-scene-s-listener">
+<h3>Example: Locating information about the scene’s listener<a class="headerlink" href="#example-locating-information-about-the-scene-s-listener" title="Link to this heading">¶</a></h3>
+<p>We will now use these ideas to plot the audiograms of one of the listeners associated with a specific scene. The code also prints out some information about the target and listener locations that are stored in the scene’s associated room dict.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scene_no</span> <span class="o">=</span> <span class="mi">32</span>  <span class="c1"># this is just an arbitrary index. try any from 0 - 49</span>
+
+<span class="n">scene</span> <span class="o">=</span> <span class="n">scenes</span><span class="p">[</span><span class="n">scene_no</span><span class="p">]</span>
+
+<span class="n">room</span> <span class="o">=</span> <span class="n">room_dict</span><span class="p">[</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]]</span>
+<span class="n">current_listeners</span> <span class="o">=</span> <span class="n">scenes_listeners</span><span class="p">[</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;scene&quot;</span><span class="p">]]</span>
+
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Scene number </span><span class="si">{</span><span class="n">scene_no</span><span class="si">}</span><span class="s1">  (ID </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;scene&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">) has room dimensions of </span><span class="si">{</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Simulated listeners for scene </span><span class="si">{</span><span class="n">scene_no</span><span class="si">}</span><span class="s1"> have spatial attributes: </span><span class="se">\n</span><span class="si">{</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Audiograms for listeners in Scene ID </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;scene&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_listeners</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Hearing level (dB)&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">current_listeners</span><span class="p">):</span>
+    <span class="n">listener_data</span> <span class="o">=</span> <span class="n">listeners</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">left_ag</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">listener_data</span><span class="p">[</span><span class="s2">&quot;audiogram_cfs&quot;</span><span class="p">],</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listener_data</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_l&quot;</span><span class="p">]),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;left audiogram&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="p">(</span><span class="n">right_ag</span><span class="p">,)</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">listener_data</span><span class="p">[</span><span class="s2">&quot;audiogram_cfs&quot;</span><span class="p">],</span>
+        <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listener_data</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_r&quot;</span><span class="p">]),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;right audiogram&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Listener </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Hz&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">[</span><span class="n">left_ag</span><span class="p">,</span> <span class="n">right_ag</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="running-the-cec2-baseline-from-the-command-line">
+<h2>02 Running the CEC2 Baseline from the command line<a class="headerlink" href="#running-the-cec2-baseline-from-the-command-line" title="Link to this heading">¶</a></h2>
+<p>Python comes with a <em>Read, Eval, Print, Loop</em> (REPL) interactive shell that can be started from within your Virtual
+Environment by typing <code class="docutils literal notranslate"><span class="pre">python</span></code>. Many users prefer the improved <a class="reference external" href="https://ipython.org/index.html">iPython</a> shell which can
+be installed with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ipython</span></code> and invoked with <code class="docutils literal notranslate"><span class="pre">ipython</span></code>. Either shell works with the following.</p>
+<section id="install-demo-data">
+<h3>Install Demo Data<a class="headerlink" href="#install-demo-data" title="Link to this heading">¶</a></h3>
+<p>In a shell navigate to the location where you have cloned the pyClarity repository and start an iPython shell</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/path/to/where/pyclarity/is/cloned
+$<span class="w"> </span><span class="nv">BASE_DIR</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+$<span class="w"> </span>ipython
+Python<span class="w"> </span><span class="m">3</span>.10.5<span class="w"> </span><span class="o">(</span>main,<span class="w"> </span>Jun<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">2022</span>,<span class="w"> </span><span class="m">18</span>:49:26<span class="o">)</span><span class="w"> </span><span class="o">[</span>GCC<span class="w"> </span><span class="m">12</span>.1.0<span class="o">]</span>
+Type<span class="w"> </span><span class="s1">&#39;copyright&#39;</span>,<span class="w"> </span><span class="s1">&#39;credits&#39;</span><span class="w"> </span>or<span class="w"> </span><span class="s1">&#39;license&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>more<span class="w"> </span>information
+IPython<span class="w"> </span><span class="m">8</span>.4.0<span class="w"> </span>--<span class="w"> </span>An<span class="w"> </span>enhanced<span class="w"> </span>Interactive<span class="w"> </span>Python.<span class="w"> </span>Type<span class="w"> </span><span class="s1">&#39;?&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>help.
+
+In<span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="o">]</span>:
+</pre></div>
+</div>
+<p>You can now get the demo data with…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">clarity.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">demo_data</span>
+
+<span class="n">demo_data</span><span class="o">.</span><span class="n">get_metadata_demo</span><span class="p">()</span>
+<span class="n">demo_data</span><span class="o">.</span><span class="n">get_scenes_demo</span><span class="p">()</span>
+<span class="n">exit</span>
+</pre></div>
+</div>
+<p>Now you have exited to your shell you can change working directory to the location of the shell scripts you wish to run
+and see what files have been downloaded.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>clarity/recipes/cec2/baseline
+<span class="nb">pwd</span>
+ls<span class="w"> </span>-lha
+</pre></div>
+</div>
+</section>
+</section>
+<section id="inspecting-existing-configuration">
+<h2>Inspecting Existing Configuration<a class="headerlink" href="#inspecting-existing-configuration" title="Link to this heading">¶</a></h2>
+<p>All of the included shell scripts take configurable variables from the yaml files in the same directory as the shell script.Typically these are named <code>config.yaml</code>, however, other names may be used if more than one shell script is in a directory.</p>
+<p>We can inspect the contents of the config file using <code>!cat</code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p>The general organisation of the config files is hierarchical, with property labels depending on the script in
+question. The config file for the enhance and evaluate recipes contains configurable paramaters for both scripts. These
+include:</p>
+<ul class="simple">
+<li><p>Paths for the locations of audio files, metadata and the export location for generated files</p></li>
+<li><p>Paramaters for the NAL-R fitting</p></li>
+<li><p>Paramaters for the automatic gain control (AGC) compressor used in the baseline enhancer</p></li>
+<li><p>Parameters for the challenge evaluator</p></li>
+<li><p>Parameters necessary for Hydra to run</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">path.root</span></code> parameter defaults to a null value (<code class="docutils literal notranslate"><span class="pre">???</span></code>) and must be overriden with a dataset root path when the
+Python script is called in the command line, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>user:~$<span class="w"> </span>python<span class="w"> </span>mypythonscript.py<span class="w"> </span>path.root<span class="o">=</span><span class="s1">&#39;/path/to/project&#39;</span>
+</pre></div>
+</div>
+<p>Note the lack of slash at the end of the <code>path.root</code> argument string. If you inspect a variable such as <code>path.metadata_dir</code> you will see that this slash is already included in the line.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">path</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+<span class="w">  </span><span class="nt">metadata_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${path.root}/clarity_data/metadata</span>
+</pre></div>
+</div>
+<p>The general form for overriding a parameter in the CLI is dot indexed. For the following entry in a <code>config.yaml</code> file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">A</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">B</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">parameter_0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value</span>
+<span class="w">    </span><span class="nt">parameter_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_other_value</span>
+</pre></div>
+</div>
+<p>The CLI syntax to override those values would be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>myscript.py<span class="w"> </span>A.B.parameter_0<span class="o">=</span><span class="s2">&quot;new_value&quot;</span><span class="w"> </span>A.B.parameter_1<span class="o">=</span><span class="s2">&quot;another_new_value&quot;</span>
+</pre></div>
+</div>
+<p>We are now ready to run the prepared Python script <code class="docutils literal notranslate"><span class="pre">recipes/cec2/baseline/enhance.py</span></code> to enhance the audio. However, the
+standard configuration is designed to work with the full clarity dataset. We can redirect the script to the correct
+folders to use the demo data we have downloaded by overriding the appropriate configuration parameters.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py<span class="w"> </span><span class="se">\</span>
+path.root<span class="o">=</span><span class="si">${</span><span class="nv">BASE_DIR</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+path.metadata_dir<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.root\}/clarity_data/demo/metadata&quot;</span><span class="w"> </span><span class="se">\</span>
+path.scenes_listeners_file<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.metadata_dir\}/scenes_listeners.demo.json&quot;</span><span class="w"> </span><span class="se">\</span>
+path.listeners_file<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.metadata_dir\}/listeners.json&quot;</span><span class="w"> </span><span class="se">\</span>
+path.scenes_folder<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.root\}/clarity_data/demo/scenes&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ipd</span>
+
+<span class="n">audio_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;exp/exp/enhanced_signals&quot;</span><span class="p">)</span>
+<span class="n">audio_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">audio_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/*.wav&quot;</span><span class="p">))</span>
+
+<span class="c1"># Listen to a single file</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">audio_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ipd</span><span class="o">.</span><span class="n">Audio</span><span class="p">(</span><span class="n">audio_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>You can now use the <code class="docutils literal notranslate"><span class="pre">recipes/cec2/baseline/evaluate.py</span></code> script to generate HASPI scores for the signals. The evaluation
+is run in the same manner as the enhancement script.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evaluate.py<span class="w"> </span><span class="se">\</span>
+path.root<span class="o">=</span><span class="si">${</span><span class="nv">BASE_DIR</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+path.metadata_dir<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.root\}/clarity_data/demo/metadata&quot;</span><span class="w"> </span><span class="se">\</span>
+path.scenes_listeners_file<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.metadata_dir\}/scenes_listeners.demo.json&quot;</span><span class="w"> </span><span class="se">\</span>
+path.listeners_file<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.metadata_dir\}/listeners.json&quot;</span><span class="w"> </span><span class="se">\</span>
+path.scenes_folder<span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">\{path.root\}/clarity_data/demo/scenes&quot;</span>
+</pre></div>
+</div>
+<p>Now the HASPI scores have been generated, it is possible to plot the results to assess the improvement imparted by the
+signal processing. Start a Python shell (<code class="docutils literal notranslate"><span class="pre">python</span></code> or <code class="docutils literal notranslate"><span class="pre">ipython</span></code>) and paste the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">unprocessed_si</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;exp/exp/si.csv&quot;</span><span class="p">)</span>
+
+<span class="n">processed_si</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;exp/exp/si_unproc.csv&quot;</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">processed_si</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;haspi&quot;</span><span class="p">],</span> <span class="n">unprocessed_si</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;haspi&quot;</span><span class="p">]])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;HASPI Scores&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Unprocessed&quot;</span><span class="p">,</span> <span class="s2">&quot;Processed&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="running-the-cec2-baseline-from-python">
+<h2>03 Running the CEC2 Baseline from Python<a class="headerlink" href="#running-the-cec2-baseline-from-python" title="Link to this heading">¶</a></h2>
+<p>We will be using scene audio and associated metadata. This can be downloaded using the Clarity package’s <code class="docutils literal notranslate"><span class="pre">demo_data</span></code> module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">clarity.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">demo_data</span>
+
+<span class="n">demo_data</span><span class="o">.</span><span class="n">get_metadata_demo</span><span class="p">()</span>
+<span class="n">demo_data</span><span class="o">.</span><span class="n">get_scenes_demo</span><span class="p">()</span>
+
+
+</pre></div>
+</div>
+<p>By default, the demo data will have been downloaded into a directory called <code class="docutils literal notranslate"><span class="pre">clarity_data</span></code>.</p>
+</section>
+<section id="running-the-baseline">
+<h2>Running the baseline<a class="headerlink" href="#running-the-baseline" title="Link to this heading">¶</a></h2>
+<section id="importing-the-baseline-nalr-and-compressor-components">
+<h3>Importing the baseline NALR and Compressor components<a class="headerlink" href="#importing-the-baseline-nalr-and-compressor-components" title="Link to this heading">¶</a></h3>
+<p>The baseline enhancer is based on <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/3743918/">NAL-R prescription fitting</a>. Since output
+signals are required to be in 16-bit integer format, a slow acting automatic gain control is implemented to reduce
+clipping of the signal introduced by the NAL-R fitting for audiograms which represent more severe hearing loss. The AGC
+is followed by a soft-clip function.</p>
+<p>The NAL-R and AGC (compressor) classes can be accessed by importing them from the <code class="docutils literal notranslate"><span class="pre">clarity.enhancer</span></code> module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.compressor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Compressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.nalr</span><span class="w"> </span><span class="kn">import</span> <span class="n">NALR</span>
+</pre></div>
+</div>
+</section>
+<section id="configuring-the-nalr-and-compressor-components">
+<h3>Configuring the NALR and Compressor components<a class="headerlink" href="#configuring-the-nalr-and-compressor-components" title="Link to this heading">¶</a></h3>
+<p>To allow for scalable and flexible running on both local and HPC platforms, many Clarity challenge CEC2 scripts and
+tools depend on <a class="reference external" href="https://hydra.cc/">hydra</a> and <a class="reference external" href="https://github.com/facebookincubator/submitit">submitit</a> for the
+configuration of Python code, for the setting of environment variables such as dataset directories, and for enabling
+parallelisation of Python on both HPC and local machines. (A full description of how
+<a class="reference external" href="https://hydra.cc/docs/intro/">hydra</a> and <a class="reference external" href="https://github.com/facebookincubator/submitit">submitit</a> is used in the
+Clarity challenges is out of the scope of this tutorial).</p>
+<p>In this tutorial, we will be importing the baseline configuration file directly using <code class="docutils literal notranslate"><span class="pre">omegaconf</span></code>. The module can read a
+configuration file in YAML format and return a DictConfig object storing the configuration data.</p>
+<p>The configuration is included under the <code class="docutils literal notranslate"><span class="pre">clarity/recipes/cec2/baseline/config.yaml</span></code> from when you installed the
+`pyclarity** package.</p>
+</section>
+<section id="important">
+<h3>IMPORTANT<a class="headerlink" href="#important" title="Link to this heading">¶</a></h3>
+<p>The location of the <code class="docutils literal notranslate"><span class="pre">recipes</span></code> needs a little figuring out and will depend on how you have installed <code class="docutils literal notranslate"><span class="pre">pyclarity</span></code>.</p>
+<p>If you installed from PyPI using <code class="docutils literal notranslate"><span class="pre">pip</span></code> under a Miniconda virtual environment called <code class="docutils literal notranslate"><span class="pre">clarity</span></code> configured to
+store the virtual environments in the default location of <code class="docutils literal notranslate"><span class="pre">~/miniconda3/</span></code>  then the <code class="docutils literal notranslate"><span class="pre">recipes</span></code> directory will be under
+<code class="docutils literal notranslate"><span class="pre">~/.miniconda/envs/clarity/lib/python-&lt;version&gt;/recipes/</span></code>.</p>
+<p>If you used a more traditional Virtual Environment which is configured to save environments under <code class="docutils literal notranslate"><span class="pre">~/.virtualenv</span></code> and
+called your environment <code class="docutils literal notranslate"><span class="pre">pyclarity</span></code> then the location will be
+<code class="docutils literal notranslate"><span class="pre">~/.virtualenv/pyclarity/lib/python&lt;version&gt;/site-packages/recipes/</span></code>.</p>
+<p>If you have installed pyclarity from GitHub then the recipes will be under <code class="docutils literal notranslate"><span class="pre">clarity/recipes/</span></code> in the cloned directory.</p>
+<p>If you are unsure where to find the files and are on a UNIX like operating system you can search for them with the
+following…</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>~/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-iname<span class="w"> </span><span class="s2">&quot;config.yaml&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>recipes
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span>
+
+<span class="c1"># IMPORTANT - Modify the following line to reflect where the recipes are located, see notes above</span>
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;/home/&lt;username&gt;/.virtualenv/pyclarity/lib/python3.10/site-packages/recipes/cec2/baseline/config.yaml&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>We will need to override some of the standard paths provided in the baseline <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> to enable us to run the
+baseline on the demo data in this tutorial environment.</p>
+<p>We need to supply:</p>
+<ul class="simple">
+<li><p>The root directory of the project data and metadata</p></li>
+<li><p>The directory of the metadata</p></li>
+<li><p>The directory of the audio data</p></li>
+</ul>
+<p>The default configuration can be overridden by changing the values in the <code class="docutils literal notranslate"><span class="pre">cfg</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;clarity_data/demo&quot;</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="s2">&quot;metadata_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{path.root}</span><span class="s2">/metadata&quot;</span>
+<span class="n">cfg</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="s2">&quot;scenes_folder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{path.root}</span><span class="s2">/scenes&quot;</span>
+</pre></div>
+</div>
+<p>(Side note: the Clarity tools come with higher level <code class="docutils literal notranslate"><span class="pre">recipe</span></code> scripts that are designed to be used from the command line. When working with these, default configurations can be overriden by passing command line arguments.)</p>
+<p>With the configuration modified, we can now instantiate our <code class="docutils literal notranslate"><span class="pre">NALR</span></code> and <code class="docutils literal notranslate"><span class="pre">Compressor</span></code> objects.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enhancer</span> <span class="o">=</span> <span class="n">NALR</span><span class="p">(</span><span class="o">**</span><span class="n">cfg</span><span class="o">.</span><span class="n">nalr</span><span class="p">)</span>
+<span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span><span class="o">**</span><span class="n">cfg</span><span class="o">.</span><span class="n">compressor</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+<section id="selecting-a-scene-and-a-listener">
+<h3>Selecting a scene and a listener<a class="headerlink" href="#selecting-a-scene-and-a-listener" title="Link to this heading">¶</a></h3>
+<p>NAL-R fitting involves creating a complementary filterbank that is tuned to the audiogram of a specific listener.</p>
+<p>For each scene in the Clarity data set, there are three associated listeners that have been randomly selected, i.e., you are told which listeners to process each scene for. Using the right listeners is particularly important when processing the development (and evaluation) data, i.e., to ensure that your results are comparable with those of others.</p>
+<p>The listener audiogram data and the scene-listener associations are defined in the Clarity metadata.</p>
+<p>We will first load the scene, targets, listeners and scene_listeners data from the JSON files in which they are stored:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/scenes.demo.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">scene_metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/listeners.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">listeners_metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;clarity_data/demo/metadata/scenes_listeners.dev.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">scene_listeners_metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, we will select an individual scene from <code class="docutils literal notranslate"><span class="pre">scenes_metadata</span></code>, find its associated listener’s and then find the
+listener’s audiogram data.</p>
+<p>So we first choose a scene the the <code class="docutils literal notranslate"><span class="pre">scene_metadata</span></code> list using a <code class="docutils literal notranslate"><span class="pre">scene_index</span></code>, i.e.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scene_index</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">scene</span> <span class="o">=</span> <span class="n">scene_metadata</span><span class="p">[</span><span class="n">scene_index</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We find the scene’s listeners by looking them up in the <code class="docutils literal notranslate"><span class="pre">scene_listeners_metadata</span></code> dict using the scene’s <code class="docutils literal notranslate"><span class="pre">scene_id</span></code> as the key.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scene_id</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;scene&quot;</span><span class="p">]</span>
+<span class="n">scene_listeners</span> <span class="o">=</span> <span class="n">scene_listeners_metadata</span><span class="p">[</span><span class="n">scene_id</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">scene_listeners</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>This provides us with the list of <code class="docutils literal notranslate"><span class="pre">listener_id</span></code>s for this scene.</p>
+<p>We will select one <code class="docutils literal notranslate"><span class="pre">listener_id</span></code> from this list and use it as the key to select the required listener metadata.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener_choice</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">listener_id</span> <span class="o">=</span> <span class="n">scene_listeners</span><span class="p">[</span><span class="n">listener_choice</span><span class="p">]</span>
+<span class="n">listener</span> <span class="o">=</span> <span class="n">listeners_metadata</span><span class="p">[</span><span class="n">listener_id</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Each listener metadata entry is a dict containing:</p>
+<ul class="simple">
+<li><p>Listener ID</p></li>
+<li><p>Audiogram centre frequencies</p></li>
+<li><p>Left ear audiogram hearing levels (dBHL)</p></li>
+<li><p>Right ear audiogram hearing levels (dBHL)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="loading-the-signals-to-process">
+<h3>Loading the signals to process<a class="headerlink" href="#loading-the-signals-to-process" title="Link to this heading">¶</a></h3>
+<p>Next we will load in the scene audio for the scene that we want to process.</p>
+<p>The path to the scenes audio data is stored in the <code class="docutils literal notranslate"><span class="pre">cfg.path.scenes_folder</span></code> variable and the audio files are named with the scene_id as the prefix and using the format.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;SCENE_ID&gt;_&lt;TYPE&gt;_&lt;CHANNEL&gt;.wav
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">TYPE</span></code> can be <code class="docutils literal notranslate"><span class="pre">mix</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>, <code class="docutils literal notranslate"><span class="pre">interferer</span></code> or <code class="docutils literal notranslate"><span class="pre">interferer_anechoic</span></code>, and <code class="docutils literal notranslate"><span class="pre">CHANNEL</span></code> can be <code class="docutils literal notranslate"><span class="pre">CH1</span></code>, <code class="docutils literal notranslate"><span class="pre">CH2</span></code>, <code class="docutils literal notranslate"><span class="pre">CH3</span></code> or <code class="docutils literal notranslate"><span class="pre">CH0</span></code>.</p>
+<p>The baseline system just uses <code class="docutils literal notranslate"><span class="pre">CH1</span></code> (the front microphone of the hearing aid).</p>
+<p>Finally, signals are stored as 16-bit integer audio and must be converted to floating point (between -1.0 and 1.0) before use, i.e. by dividing by 2**15.</p>
+<p>So, using the <code class="docutils literal notranslate"><span class="pre">wavfile</span></code> module from <code class="docutils literal notranslate"><span class="pre">scipy.io</span></code> to read the file, we have,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">wavfile</span>
+
+<span class="n">fs</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">scenes_folder</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scene_id</span><span class="si">}</span><span class="s2">_mix_CH1.wav&quot;</span><span class="p">)</span>
+
+
+<span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span> <span class="o">/</span> <span class="mf">32768.0</span>
+</pre></div>
+</div>
+<p>We can plot the signal to check it looks OK,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pylab</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="applying-the-nalr-and-compressor-components">
+<h3>Applying the NALR and Compressor components<a class="headerlink" href="#applying-the-nalr-and-compressor-components" title="Link to this heading">¶</a></h3>
+<p>We will now build the NALR filterbank according to the audiograms of the listener we have selected and apply the filter to the scene signal. This is done separately for the left and right ear (i.e., for each channel of the stereo scene signal).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">nalr_fir</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_l&quot;</span><span class="p">],</span> <span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_cfs&quot;</span><span class="p">])</span>
+<span class="n">out_l</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">nalr_fir</span><span class="p">,</span> <span class="n">signal</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">nalr_fir</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_r&quot;</span><span class="p">],</span> <span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_cfs&quot;</span><span class="p">])</span>
+<span class="n">out_r</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">nalr_fir</span><span class="p">,</span> <span class="n">signal</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">out_l</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Following this, slow AGC is applied and a clip detection pass is performed. A tanh function is applied to remove high frequency distortion components from cliipped samples and the files are converted back to 16-bit integer format for saving.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out_l</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">compressor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">out_l</span><span class="p">)</span>
+<span class="n">out_r</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">compressor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">out_r</span><span class="p">)</span>
+
+<span class="n">enhanced_audio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">out_l</span><span class="p">,</span> <span class="n">out_r</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">enhanced_audio</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Finally, the signals are placed through a tanh function which provides a soft-clipping to handle any transient segments that have not been dealt with by the ACG.</p>
+<p>The final signals are then converted back into 16-bit format.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_clipped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">enhanced_audio</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">n_clipped</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_clipped</span><span class="si">}</span><span class="s2"> samples clipped&quot;</span><span class="p">)</span>
+<span class="n">enhanced_audio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">enhanced_audio</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">enhanced_audio</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">enhanced_audio</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">enhanced_audio</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note, processed signals will be submitted as 16-bit wav-file format, i.e. by first converting back to 16-bit integer format and then saving to file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">signal_16</span> <span class="o">=</span> <span class="p">(</span><span class="mf">32768.0</span> <span class="o">*</span> <span class="n">enhanced_audio</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The standard filename for the processed audio is constructed as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;scene&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">listener</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_HA-output.wav&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="evaluating-outputs-using-haspi">
+<h2>Evaluating outputs using HASPI<a class="headerlink" href="#evaluating-outputs-using-haspi" title="Link to this heading">¶</a></h2>
+<p>Enhanced scores can now be evaluated using the HASPI speech intelligibility prediction metric and compared to the
+unenhanced audio.</p>
+<p>HASPI scores are calculated using a ‘better ear’ approach where left and right signals are acalculated and the higher
+score used as the output. The ‘better ear’ haspi function (<code class="docutils literal notranslate"><span class="pre">haspi_v2_be</span></code>) is imported from <code class="docutils literal notranslate"><span class="pre">clarity.evaluator.haspi</span></code>.</p>
+<p>HASPI is an intrusive metric and requires an uncorrupted reference signal. These are provided in the scenes audio data as files with the naming convention <code class="docutils literal notranslate"><span class="pre">SXXXX_target_CHX.wav</span></code>. CH1 is used as the reference transducer for this challenge. We load the file and convert to floating point as before.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.haspi</span><span class="w"> </span><span class="kn">import</span> <span class="n">haspi_v2_be</span>
+
+<span class="n">fs</span><span class="p">,</span> <span class="n">reference</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">scenes_folder</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scene_id</span><span class="si">}</span><span class="s2">_target_CH1.wav&quot;</span><span class="p">)</span>
+
+<span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span> <span class="o">/</span> <span class="mf">32768.0</span>
+</pre></div>
+</div>
+<p>We provide the function <code class="docutils literal notranslate"><span class="pre">haspi_v2_be</span></code> with the left and right references, the left and right signals, the sample rate and the audiogram information for the given listener.</p>
+<p>Below, we first compute the HASPI score for the unprocessed signal and then for the enhanced signal. We can compute the benefit of the processing by calculating the difference.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sii_unprocessed</span> <span class="o">=</span> <span class="n">haspi_v2_be</span><span class="p">(</span>
+    <span class="n">xl</span><span class="o">=</span><span class="n">reference</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">xr</span><span class="o">=</span><span class="n">reference</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">yl</span><span class="o">=</span><span class="n">signal</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">yr</span><span class="o">=</span><span class="n">signal</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">fs_signal</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+    <span class="n">audiogram_l</span><span class="o">=</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_l&quot;</span><span class="p">],</span>
+    <span class="n">audiogram_r</span><span class="o">=</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_r&quot;</span><span class="p">],</span>
+    <span class="n">audiogram_cfs</span><span class="o">=</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_cfs&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">sii_enhanced</span> <span class="o">=</span> <span class="n">haspi_v2_be</span><span class="p">(</span>
+    <span class="n">xl</span><span class="o">=</span><span class="n">reference</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">xr</span><span class="o">=</span><span class="n">reference</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">yl</span><span class="o">=</span><span class="n">enhanced_audio</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">yr</span><span class="o">=</span><span class="n">enhanced_audio</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">fs_signal</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+    <span class="n">audiogram_l</span><span class="o">=</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_l&quot;</span><span class="p">],</span>
+    <span class="n">audiogram_r</span><span class="o">=</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_levels_r&quot;</span><span class="p">],</span>
+    <span class="n">audiogram_cfs</span><span class="o">=</span><span class="n">listener</span><span class="p">[</span><span class="s2">&quot;audiogram_cfs&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original audio HASPI score is </span><span class="si">{</span><span class="n">sii_unprocessed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Enhanced audio HASPI score is </span><span class="si">{</span><span class="n">sii_enhanced</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Improvement from processing is </span><span class="si">{</span><span class="n">sii_enhanced</span><span class="o">-</span><span class="n">sii_unprocessed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For the scene and listener we have selected the original HASPI score should be about <code class="docutils literal notranslate"><span class="pre">0.081</span></code> and the score after
+enhancement should be about <code class="docutils literal notranslate"><span class="pre">0.231</span></code>. Note, HASPI uses internal masking noise and because we have not set the random
+seed, scores may vary a little from run to run - the variation should not be more than <code class="docutils literal notranslate"><span class="pre">+-0.0005</span></code> and often much less.</p>
+<p>Note also that the ‘enhanced’ score is still very low - this is not surprising given that the processing is only
+amplying amplification and compression. There is no noise cancellation, no multichannel processing, etc, etc. The
+purpose of the enhancement challenge is to add these components in order to try and improve on this baseline.</p>
+<p>Good luck!</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="recipes_doc.html" title="next chapter">Recipes</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/usage.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

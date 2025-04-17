@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>E032 - Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Contributing to pyClarity" href="../../../CONTRIBUTING.html" />
+    <link rel="prev" title="E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction" href="../e029_sheffield/README.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="e032-exploiting-hidden-representations-from-a-dnn-based-speech-recogniser-for-speech-intelligibility-prediction-in-hearing-impaired-listeners">
+<h1>E032 - Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners<a class="headerlink" href="#e032-exploiting-hidden-representations-from-a-dnn-based-speech-recogniser-for-speech-intelligibility-prediction-in-hearing-impaired-listeners" title="Link to this heading">¶</a></h1>
+<p>The implementation of <a class="reference external" href="https://arxiv.org/abs/2204.04287">“Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners”</a>, accepted to InterSpeech 2022. For the 1st Clarity Prediction Challenge (CPC1) programme and details, please see <a class="reference external" href="https://claritychallenge.github.io/clarity2022-workshop/programme.html">here</a>.</p>
+<p>Please note: This code provides the implementation of the LS(LibriSpeech) + CPC1 model, as shown in the third row of Table 2 in the paper. Since the generation of CLS data (LS train-clean-100 set added with noises from the training set in CEC1) and the training with CLS data are over-complicated, the scripts are not provided here. Anyway, the improvement with CLS is limited…</p>
+<p>As only the training data is provided in CPC1, we split the training data into a <code class="docutils literal notranslate"><span class="pre">train</span> <span class="pre">set</span></code> and <code class="docutils literal notranslate"><span class="pre">dev</span> <span class="pre">set</span></code>. The train set is used for ASR training, and the dev set is used for optimizing the logistic fitting function.</p>
+<section id="run-the-scripts">
+<h2>Run the scripts<a class="headerlink" href="#run-the-scripts" title="Link to this heading">¶</a></h2>
+<section id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>torch==1.10.0
+torchaudio==0.10.0
+speechbrain==0.5.9
+fastdtw==0.3.4
+</pre></div>
+</div>
+<p>You probably need a GPU as well…</p>
+</section>
+<section id="prepare-asr-data">
+<h3>Prepare ASR data<a class="headerlink" href="#prepare-asr-data" title="Link to this heading">¶</a></h3>
+<p>To train the ASR model and generate the hidden representations from it, the CPC1 data needs to be processed first. This part of code will (1) randomly split train and dev set; (2) run MSBG hearing loss simulation to all signals in <code class="docutils literal notranslate"><span class="pre">clarity_data/HA_output</span></code>; (3) resample signals to 16kHz and generate csv files for SpeechBrain ASR model training.</p>
+<ol class="arabic simple">
+<li><p>Download <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data.v1_1.tgz</span></code> and <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data.test.v1.tgz</span></code>, untar them into <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_train</span></code> and <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_test</span></code>, respectively. See recipes/cpc1/baseline/README.</p></li>
+<li><p>Specify <code class="docutils literal notranslate"><span class="pre">root</span></code> in config.yaml. Both <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_train</span></code> and <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_test</span></code> should be in your root folder. You could also specify your own <code class="docutils literal notranslate"><span class="pre">exp_folder</span> <span class="pre">(e032</span> <span class="pre">by</span> <span class="pre">default)</span></code>.</p></li>
+<li><p>Specify <code class="docutils literal notranslate"><span class="pre">cpc1_track</span></code> as ‘open’ or ‘closed’.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">prepare_data.py</span></code> (Note, same as data preparation for the <code class="docutils literal notranslate"><span class="pre">e029_sheffield</span> <span class="pre">recipe</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cpc1_asr_data</span></code> which contains the processed train &amp; test CPC1 data and their csv files, and <code class="docutils literal notranslate"><span class="pre">data_split</span></code> which contains the train set and dev set scenes, will appear in your <code class="docutils literal notranslate"><span class="pre">exp_folder</span> <span class="pre">(e032</span> <span class="pre">by</span> <span class="pre">default)</span></code>.</p></li>
+</ol>
+</section>
+<section id="train-asr">
+<h3>Train ASR<a class="headerlink" href="#train-asr" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Create your <code class="docutils literal notranslate"><span class="pre">transformer_cpc1</span></code> folder to save ASR models &amp; results</p></li>
+<li><p>Specify output_folder &amp; data_folder in transformer_cpc1.yaml:
+<code class="docutils literal notranslate"><span class="pre">output_folder:</span> <span class="pre">!ref</span> <span class="pre">your_path/transformer_cpc1</span></code> &amp;
+<code class="docutils literal notranslate"><span class="pre">data_folder:</span> <span class="pre">!ref</span> <span class="pre">your_path/e032/cpc1_asr_data</span>&#160; <span class="pre">#</span> <span class="pre">for</span> <span class="pre">closed-set</span></code>
+OR
+<code class="docutils literal notranslate"><span class="pre">data_folder:</span> <span class="pre">!ref</span> <span class="pre">your_path/e032/cpc1_asr_data_indep</span>&#160; <span class="pre">#</span> <span class="pre">for</span> <span class="pre">open-set</span></code></p></li>
+<li><p>Download the <code class="docutils literal notranslate"><span class="pre">save</span></code> folder (i.e. ASR transformer checkpoint) from: <a class="reference external" href="https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7">https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7</a>, and place it under your <code class="docutils literal notranslate"><span class="pre">transformer_cpc1</span></code> folder</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">train_asr.py</span> <span class="pre">transformer_cpc1.yaml</span></code></p></li>
+<li><p>The trained ASR model checkpoint will appear in <code class="docutils literal notranslate"><span class="pre">your_path/transformer_cpc1/save</span></code></p></li>
+</ol>
+</section>
+<section id="infer-hidden-representation-similarity">
+<h3>Infer hidden representation similarity<a class="headerlink" href="#infer-hidden-representation-similarity" title="Link to this heading">¶</a></h3>
+<p>This part generates the similarities of encoder representations and decoder representations between the MSBG processed signals and reference signals.</p>
+<ol class="arabic simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">infer.py</span></code>. Four json files <code class="docutils literal notranslate"><span class="pre">dev_dec_similarity.json</span></code>, <code class="docutils literal notranslate"><span class="pre">dev_enc_similarity.json</span></code>, <code class="docutils literal notranslate"><span class="pre">test_dec_similarity.json</span></code>, <code class="docutils literal notranslate"><span class="pre">test_enc_similarity.json</span></code> will be generated in you <code class="docutils literal notranslate"><span class="pre">exp_folder</span></code>.</p></li>
+</ol>
+</section>
+<section id="evaluation">
+<h3>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h3>
+<p>This part optimize a logistic fitting function with the dev set similarities and dev set labels, and applies the fitting function to the test set similarities for scaled predicted test set prediction. And the evaluation results of RMSE, Std, NCC and KT will be computed and stored in the <code class="docutils literal notranslate"><span class="pre">results.json</span></code>.</p>
+<ol class="arabic simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">evaluate.py</span></code></p></li>
+</ol>
+</section>
+</section>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading">¶</a></h2>
+<p>If you use this code for your research, please cite:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@inproceedings{tu2022exploiting,
+  title={Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners},
+  author={Tu, Zehai and Ma, Ning and Barker, Jon},
+  booktitle={INTERSPEECH 2022},
+  year={2022}
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../recipes_doc.html">Recipes</a><ul>
+      <li>Previous: <a href="../e029_sheffield/README.html" title="previous chapter">E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction</a></li>
+      <li>Next: <a href="../../../CONTRIBUTING.html" title="next chapter">Contributing to pyClarity</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../_sources/recipes/cpc1/e032_sheffield/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

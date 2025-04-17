@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The 2nd Clarity Prediction Challenge (CPC2) baseline code &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-2nd-clarity-prediction-challenge-cpc2-baseline-code">
+<h1>The 2nd Clarity Prediction Challenge (CPC2) baseline code<a class="headerlink" href="#the-2nd-clarity-prediction-challenge-cpc2-baseline-code" title="Link to this heading">¶</a></h1>
+<p>Code to support the 2nd Clarity Prediction Challenge (CPC2).</p>
+<p>For more information about the CPC2 please <a class="reference external" href="https://claritychallenge.org/">visit</a></p>
+<section id="data-structure">
+<h2>1. Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<section id="obtaining-the-cpc2-data">
+<h3>1.1 Obtaining the CPC2 data<a class="headerlink" href="#obtaining-the-cpc2-data" title="Link to this heading">¶</a></h3>
+<p>To download the CPC2 data, please follow the instructions on the <a class="reference external" href="https://claritychallenge.org/docs/cpc2/taking_part/cpc2_download">download page</a> of the challenge website.</p>
+<p>The data will download into a package file called <code class="docutils literal notranslate"><span class="pre">clarity_CPC2_data.v1_1.tar.gz</span></code>.</p>
+<p>Unpack this package using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>clarity_CPC2_data.v1_1.tar.gz
+</pre></div>
+</div>
+<p>Once unpacked the directory structure will be as follows</p>
+<p><strong>clarity_CPC2_data.v1_1</strong> contains the training data:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clarity_CPC2_data
+├──<span class="w"> </span>clarity_data
+│<span class="w">   </span>├──<span class="w"> </span>HA_outputs<span class="w">  </span><span class="c1"># The hearing aid output signals</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>signals
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>CEC1
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>CEC2
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>train.1
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>CEC1
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>CEC2
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>train.2
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>CEC1
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>CEC2
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>train.3
+│<span class="w">   </span>│<span class="w">       </span>├──<span class="w"> </span>CEC1
+│<span class="w">   </span>│<span class="w">       </span>└──<span class="w"> </span>CEC2
+│<span class="w">   </span>├──<span class="w"> </span>metadata<span class="w">    </span><span class="c1"># Metadata including the intelligibility scores</span>
+│<span class="w">   </span>└──<span class="w"> </span>scenes<span class="w">      </span><span class="c1"># Contains reference signals</span>
+│<span class="w">       </span>├──<span class="w"> </span>CEC1
+│<span class="w">       </span>└──<span class="w"> </span>CEC2
+└──<span class="w"> </span>manifest<span class="w">        </span><span class="c1"># Lists the package contents</span>
+</pre></div>
+</div>
+</section>
+<section id="demo-data">
+<h3>1.2 Demo data<a class="headerlink" href="#demo-data" title="Link to this heading">¶</a></h3>
+<p>Running the baseline code over the full dataset can be quite time consuming. To allow you to easily try out the code with a small amount of data, we have provided a small subset of demo data containing 30 signals.</p>
+<p>To use the demo data download the file <code class="docutils literal notranslate"><span class="pre">clarity_CPC2_data_demo.v1_1.tar.gz</span></code> using the following <a class="reference external" href="https://drive.google.com/file/d/1oLlo9w9Z7A2NP35IntJsRySIPl-oUajU/view?usp=sharing">Google Drive link</a>.</p>
+<p>Unpack this package under this directory, i.e., under <code class="docutils literal notranslate"><span class="pre">recipes/cpc2/baseline</span></code> using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>clarity_CPC2_data_demo.v1_1.tar.gz
+</pre></div>
+</div>
+<p>Note, the <code class="docutils literal notranslate"><span class="pre">root.path</span></code> variable in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> is already set to point to the demo data by default.</p>
+<p>The demo data only contains one training set split, <code class="docutils literal notranslate"><span class="pre">train.1</span></code> and <code class="docutils literal notranslate"><span class="pre">CEC2</span></code> data. It has the following structure,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clarity_CPC2_data_demo
+├──<span class="w"> </span>clarity_data
+│<span class="w">   </span>├──<span class="w"> </span>HA_outputs
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>signals
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>CEC2
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>train.1
+│<span class="w">   </span>│<span class="w">       </span>└──<span class="w"> </span>CEC2
+│<span class="w">   </span>├──<span class="w"> </span>metadata
+│<span class="w">   </span>└──<span class="w"> </span>scenes
+│<span class="w">       </span>└──<span class="w"> </span>CEC2
+└──<span class="w"> </span>manifest
+</pre></div>
+</div>
+</section>
+</section>
+<section id="baseline">
+<h2>2. Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>The baseline prediction model is a simple logistic regression model that maps HASPI scores [<a class="reference internal" href="#references"><span class="xref myst">1</span></a>] onto the sentence correctness values.</p>
+<section id="computing-the-haspi-scores">
+<h3>2.1 Computing the HASPI scores<a class="headerlink" href="#computing-the-haspi-scores" title="Link to this heading">¶</a></h3>
+<p>Compute the HASPI scores over the training data set and store results</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>compute_haspi.py<span class="w"> </span><span class="nv">dataset</span><span class="o">=</span>CEC2.train.1
+</pre></div>
+</div>
+<p>This will generate the output file containing HASPI scores. This file will be called <code class="docutils literal notranslate"><span class="pre">exp/&lt;DATASET&gt;.haspi.jsonl</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;DATASET&gt;</span></code> is the name specified on the commandline.</p>
+<p>Note, if the results file is already present, the script will only compute the scores for the signals that are not already present in the file. These missing results will be appended to the output file. This allows the script to be halted and restarted.</p>
+</section>
+<section id="making-intelligibility-predictions">
+<h3>2.2 Making intelligibility predictions<a class="headerlink" href="#making-intelligibility-predictions" title="Link to this heading">¶</a></h3>
+<p>The baseline intelligibility predictions are made by using a logistic fitting to map the HASPI scores onto the sentence correctness values. This is done using <code class="docutils literal notranslate"><span class="pre">predict.py</span></code> which will produce a <code class="docutils literal notranslate"><span class="pre">csv</span></code> file named <code class="docutils literal notranslate"><span class="pre">exp/&lt;DATASET&gt;.predict.jsonl</span></code> containing the predictions in the format that is required for submission to the challenge.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>predict.py<span class="w"> </span><span class="nv">dataset</span><span class="o">=</span>CEC2.train.1
+</pre></div>
+</div>
+</section>
+<section id="evaluating-the-predictions">
+<h3>2.3 Evaluating the predictions<a class="headerlink" href="#evaluating-the-predictions" title="Link to this heading">¶</a></h3>
+<p>Finally, the <code class="docutils literal notranslate"><span class="pre">evaluate.py</span></code> script will compare the provided predictions with the ground truth and compute the error metrics.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evaluate.py<span class="w"> </span><span class="nv">dataset</span><span class="o">=</span>CEC2.train.1
+</pre></div>
+</div>
+<p>Results will be displayed on the terminal and saved to the file <code class="docutils literal notranslate"><span class="pre">exp/&lt;DATASET&gt;.evaluate.jsonl</span></code>.</p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>[1] Kates, J.M. and Arehart, K.H., 2021. The hearing-aid speech perception index (HASPI) version 2. Speech Communication, 131, pp.35-46.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../_sources/recipes/cpc2/baseline/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

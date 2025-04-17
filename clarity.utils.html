@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.utils package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.utils.car_noise_simulator package" href="clarity.utils.car_noise_simulator.html" />
+    <link rel="prev" title="clarity.predictor package" href="clarity.predictor.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-utils-package">
+<h1>clarity.utils package<a class="headerlink" href="#clarity-utils-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.utils.car_noise_simulator.html">clarity.utils.car_noise_simulator package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#module-clarity.utils.car_noise_simulator.carnoise_parameters_generator">clarity.utils.car_noise_simulator.carnoise_parameters_generator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator"><code class="docutils literal notranslate"><span class="pre">CarNoiseParametersGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.GEAR_LOOKUP"><code class="docutils literal notranslate"><span class="pre">CarNoiseParametersGenerator.GEAR_LOOKUP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.REFERENCE_CONSTANT_DB"><code class="docutils literal notranslate"><span class="pre">CarNoiseParametersGenerator.REFERENCE_CONSTANT_DB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.RPM_LOOKUP"><code class="docutils literal notranslate"><span class="pre">CarNoiseParametersGenerator.RPM_LOOKUP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.gen_parameters"><code class="docutils literal notranslate"><span class="pre">CarNoiseParametersGenerator.gen_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_parameters_generator.CarNoiseParametersGenerator.set_new_randomisation_range_freq_multiplier"><code class="docutils literal notranslate"><span class="pre">CarNoiseParametersGenerator.set_new_randomisation_range_freq_multiplier()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#module-clarity.utils.car_noise_simulator.carnoise_signal_generator">clarity.utils.car_noise_simulator.carnoise_signal_generator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.FINAl_MULTIPLIER"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.FINAl_MULTIPLIER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.REFERENCE_CONSTANT_DB"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.REFERENCE_CONSTANT_DB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.apply_commonness"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.apply_commonness()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_car_noise"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.generate_car_noise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_engine_noise"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.generate_engine_noise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_source_noise"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.generate_source_noise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_bump_params"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.get_bump_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_engine_params"><code class="docutils literal notranslate"><span class="pre">CarNoiseSignalGenerator.get_engine_params()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clarity.utils.car_noise_simulator.html#module-clarity.utils.car_noise_simulator">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-clarity.utils.audiogram">
+<span id="clarity-utils-audiogram-module"></span><h2>clarity.utils.audiogram module<a class="headerlink" href="#module-clarity.utils.audiogram" title="Link to this heading">¶</a></h2>
+<p>Dataclass to represent a monaural audiogram</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Audiogram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.audiogram.</span></span><span class="sig-name descname"><span class="pre">Audiogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">levels:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequencies:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/audiogram.html#Audiogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.audiogram.Audiogram" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dataclass to represent an audiogram.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Audiogram.levels">
+<span class="sig-name descname"><span class="pre">levels</span></span><a class="headerlink" href="#clarity.utils.audiogram.Audiogram.levels" title="Link to this definition">¶</a></dt>
+<dd><p>The audiometric levels in dB HL</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Audiogram.frequencies">
+<span class="sig-name descname"><span class="pre">frequencies</span></span><a class="headerlink" href="#clarity.utils.audiogram.Audiogram.frequencies" title="Link to this definition">¶</a></dt>
+<dd><p>The frequencies at which the levels are measured</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">frequencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Audiogram.has_frequencies">
+<span class="sig-name descname"><span class="pre">has_frequencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/clarity/utils/audiogram.html#Audiogram.has_frequencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.audiogram.Audiogram.has_frequencies" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the audiogram has the given frequencies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frequencies</strong> (<em>ndarray</em>) – The frequencies to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the audiogram has the given frequencies</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">levels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Audiogram.resample">
+<span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></span><a class="reference internal" href="_modules/clarity/utils/audiogram.html#Audiogram.resample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.audiogram.Audiogram.resample" title="Link to this definition">¶</a></dt>
+<dd><p>Resample the audiogram to a new set of frequencies.</p>
+<p>Interpolates linearly on a (by default) log frequency axis. If
+linear_frequencies is set True then interpolation is done on a linear
+frequency axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_frequencies</strong> (<em>ndarray</em>) – The new frequencies to resample to</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New audiogram with resampled frequencies</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram">Audiogram</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Audiogram.severity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">severity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#clarity.utils.audiogram.Audiogram.severity" title="Link to this definition">¶</a></dt>
+<dd><p>Categorise HL severity level for the audiogram.</p>
+<p>Note that this categorisation is different from that of the British
+Society of Audiology, which recommends descriptors mild, moderate,
+severe and profound for average hearing threshold levels at 250, 500,
+1000, 2000 and 4000 Hz of 21-40 dB HL, 41-70 dB HL, 71-95 dB HL
+and &gt; 95 dB HL, respectively (BSA Pure-tone air-conduction and
+bone-conduction threshold audiometry with and without masking
+2018).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str – severity level, one of SEVERE, MODERATE, MILD, NOTHING</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Listener">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.audiogram.</span></span><span class="sig-name descname"><span class="pre">Listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audiogram_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/audiogram.html#Listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.audiogram.Listener" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dataclass to represent a Listener.</p>
+<p>The listener is currently defined by their left and right ear
+audiogram. In later versions, this may be extended to include
+further audiometric data.</p>
+<p>The class provides methods for reading metadata files which
+will also include some basic validation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Listener.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#clarity.utils.audiogram.Listener.id" title="Link to this definition">¶</a></dt>
+<dd><p>The ID of the listener</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Listener.audiogram_left">
+<span class="sig-name descname"><span class="pre">audiogram_left</span></span><a class="headerlink" href="#clarity.utils.audiogram.Listener.audiogram_left" title="Link to this definition">¶</a></dt>
+<dd><p>The audiogram for the left ear</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram">Audiogram</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Listener.audiogram_right">
+<span class="sig-name descname"><span class="pre">audiogram_right</span></span><a class="headerlink" href="#clarity.utils.audiogram.Listener.audiogram_right" title="Link to this definition">¶</a></dt>
+<dd><p>The audiogram for the right ear</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram">Audiogram</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">audiogram_left</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">audiogram_right</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></em><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Listener.from_dict">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listener_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></span><a class="reference internal" href="_modules/clarity/utils/audiogram.html#Listener.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.audiogram.Listener.from_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Create a Listener from a dict.</p>
+<p>The dict structure and fields are based on those used
+in the Clarity metadata files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>listener_dict</strong> (<em>dict</em>) – The listener dict</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The listener</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener">Listener</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.audiogram.Listener.load_listener_dict">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_listener_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/audiogram.html#Listener.load_listener_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.audiogram.Listener.load_listener_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Read a Clarity Listener dict file.</p>
+<p>The standard Clarity metadata files presents listeners as a
+dictionary of listeners, keyed by listener ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>Path</em>) – The path to the listener dict file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict of listeners keyed by id</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, <a class="reference internal" href="#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener">Listener</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.file_io">
+<span id="clarity-utils-file-io-module"></span><h2>clarity.utils.file_io module<a class="headerlink" href="#module-clarity.utils.file_io" title="Link to this heading">¶</a></h2>
+<p>File I/O functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.file_io.read_jsonl">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.file_io.</span></span><span class="sig-name descname"><span class="pre">read_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/clarity/utils/file_io.html#read_jsonl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.file_io.read_jsonl" title="Link to this definition">¶</a></dt>
+<dd><p>Read a jsonl file into a list of dictionaries.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.file_io.read_signal">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.file_io.</span></span><span class="sig-name descname"><span class="pre">read_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_is_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_resample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/file_io.html#read_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.file_io.read_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Read a wav format audio file and return as numpy array of floats.</p>
+<p>The returned value will be a numpy array of floats of shape (n_samples,
+n_channels) for n_channels &gt;= 2, and shape (n_samples,) for n_channels = 1.</p>
+<p>If n_samples is set to a value other than -1, the specified number of samples
+will be read, or until the end of the file. An ‘offset’ can be set to start
+reading from a specified sample or time (in seconds).</p>
+<p>The expected number of channels can be specified. If the file has a different
+number of channels, an error will be raised.</p>
+<p>The expected sample rate can be specified. If the file has a different sample
+the file will be resampled to the expected sample rate, unless
+‘allow_resample’ is set to False, in which case an error will be raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em><em>|</em><em>Path</em>) – Name of file to read</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em>) – The expected sample rate (default: 0.0 = any rate OK)</p></li>
+<li><p><strong>offset</strong> (<em>int</em><em>, </em><em>optional</em>) – Offset in samples or seconds (from start).
+Default is 0.</p></li>
+<li><p><strong>n_samples</strong> (<em>int</em>) – Number of samples.</p></li>
+<li><p><strong>n_channels</strong> (<em>int</em>) – expected number of channel (default: 0 = any number OK)</p></li>
+<li><p><strong>offset_is_samples</strong> (<em>bool</em>) – is offset measured in samples, (True) or
+seconds (False) (default: False)</p></li>
+<li><p><strong>allow_resample</strong> (<em>bool</em>) – allow resampling if sample rate is different
+from expected rate. Else raise error (default: True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>audio signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.file_io.write_jsonl">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.file_io.</span></span><span class="sig-name descname"><span class="pre">write_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clarity/utils/file_io.html#write_jsonl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.file_io.write_jsonl" title="Link to this definition">¶</a></dt>
+<dd><p>Write a list of dictionaries to a jsonl file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.file_io.write_signal">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.file_io.</span></span><span class="sig-name descname"><span class="pre">write_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floating_point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clarity/utils/file_io.html#write_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.file_io.write_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Write a signal as fixed or floating point wav file.</p>
+<p>Signals are passed as numpy arrays of floats of shape (n_samples, n_channels)
+for n_channels &gt;= 1 or (n_samples,) for n_channels = 1.</p>
+<p>Signals are floating point in the range [-1.0 to 1.0) but can be written
+as wav file with either 16 bit integers or floating point. In the former,
+the signals are scaled to map to the range -32768 to 32767 and clipped
+if necessary.</p>
+<p>NB: setting ‘strict’ to True will raise error on overflow. This would be
+a more natural default but it would break existing code that did not
+check for overflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em><em>|</em><em>Path</em>) – name of file in to write to.</p></li>
+<li><p><strong>signal</strong> (<em>ndarray</em>) – signal to write.</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em>) – sampling frequency.</p></li>
+<li><p><strong>floating_point</strong> (<em>bool</em>) – write as floating point else an ints (default: True).</p></li>
+<li><p><strong>strict</strong> (<em>bool</em>) – raise error if signal out of range for int16 (default: False).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.flac_encoder">
+<span id="clarity-utils-flac-encoder-module"></span><h2>clarity.utils.flac_encoder module<a class="headerlink" href="#module-clarity.utils.flac_encoder" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Class for encoding and decoding audio signals</dt><dd><p>using flac compression.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.FileDecoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.flac_encoder.</span></span><span class="sig-name descname"><span class="pre">FileDecoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#FileDecoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.FileDecoder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FileDecoder</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.FileDecoder.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#FileDecoder.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.FileDecoder.process" title="Link to this definition">¶</a></dt>
+<dd><p>Overwritten version of the process method from the pyflac decoder.
+Original process returns stereo signals in float64 format.</p>
+<p>In this version, the data is returned using the original number
+of channels and in in16 format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A tuple of the decoded numpy audio array, and the sample rate</dt><dd><p>of the audio data.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(tuple)</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>DecoderProcessException</strong> – if any fatal read, write, or memory allocation
+    error occurred (meaning decoding must stop)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.FlacEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.flac_encoder.</span></span><span class="sig-name descname"><span class="pre">FlacEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#FlacEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.FlacEncoder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for encoding and decoding audio signals using FLAC</p>
+<p>It uses the pyflac library to encode and decode the audio data.
+And offers convenient methods for encoding and decoding audio data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.FlacEncoder.decode">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#FlacEncoder.decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.FlacEncoder.decode" title="Link to this definition">¶</a></dt>
+<dd><p>Method to decode a flac file to wav audio data.</p>
+<p>It uses the pyflac library to decode the flac file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_filename</strong> (<em>pathlib.Path</em><em> | </em><em>str</em>) – Path to the input FLAC file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The raw audio data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(np.ndarray)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the flac file to decode does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.FlacEncoder.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#FlacEncoder.encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.FlacEncoder.encode" title="Link to this definition">¶</a></dt>
+<dd><p>Method to encode the audio data using FLAC compressor.</p>
+<p>It creates a WavEncoder object and uses it to encode the audio data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – The raw audio data to be compressed.</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – The sample rate of the audio data.</p></li>
+<li><p><strong>output_file</strong> (<em>str</em><em> | </em><em>Path</em>) – Path to where to
+save the output FLAC file. If not specified, a temporary file
+will be created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The FLAC encoded audio signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(bytes)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the audio signal is not in <cite>np.int16</cite> format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.WavEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.flac_encoder.</span></span><span class="sig-name descname"><span class="pre">WavEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">streamable_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#WavEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.WavEncoder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Encoder</span></code></p>
+<p>Class offers an adaptation of the pyflac.encoder.FileEncoder
+to work directly with WAV signals as input.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.WavEncoder.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#WavEncoder.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.WavEncoder.process" title="Link to this definition">¶</a></dt>
+<dd><p>Process the audio data from the WAV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The FLAC encoded bytes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(bytes)</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>EncoderProcessException</strong> – if an error occurs when processing the samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.read_flac_signal">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.flac_encoder.</span></span><span class="sig-name descname"><span class="pre">read_flac_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#read_flac_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.read_flac_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Read a FLAC signal and return it as a numpy array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>Path</em>) – The path to the FLAC file to read.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decoded signal.
+sample_rate (float): The sample rate of the signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>signal (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.flac_encoder.save_flac_signal">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.flac_encoder.</span></span><span class="sig-name descname"><span class="pre">save_flac_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_clip_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_soft_clip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_scale_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clarity/utils/flac_encoder.html#save_flac_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.flac_encoder.save_flac_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Function to save output signals.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The output signal will be resample to <code class="docutils literal notranslate"><span class="pre">output_sample_rate</span></code>.</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">output_sample_rate</span></code> is None, the output signal will have
+the same sample rate as the input signal.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The output signal will be clipped to [-1, 1] if <code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is True</dt><dd><p>and use soft clipped if <code class="docutils literal notranslate"><span class="pre">do_soft_clip</span></code> is True. Note that if
+<code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is False, <code class="docutils literal notranslate"><span class="pre">do_soft_clip</span></code> will be ignored.
+Note that if <code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is True, <code class="docutils literal notranslate"><span class="pre">do_scale_signal</span></code> will be ignored.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The output signal will be scaled to [-1, 1] if <code class="docutils literal notranslate"><span class="pre">do_scale_signal</span></code> is True.</dt><dd><p>If signal is scale, the scale factor will be saved in a TXT file.
+Note that if <code class="docutils literal notranslate"><span class="pre">do_clip_signal</span></code> is True, <code class="docutils literal notranslate"><span class="pre">do_scale_signal</span></code> will be ignored.</p>
+</dd>
+</dl>
+</li>
+<li><p>The output signal will be saved as a FLAC file.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to save</p></li>
+<li><p><strong>filename</strong> (<em>Path</em>) – Path to save signal</p></li>
+<li><p><strong>signal_sample_rate</strong> (<em>int</em>) – Sample rate of the input signal</p></li>
+<li><p><strong>output_sample_rate</strong> (<em>int</em>) – Sample rate of the output signal</p></li>
+<li><p><strong>do_clip_signal</strong> (<em>bool</em>) – Whether to clip signal</p></li>
+<li><p><strong>do_soft_clip</strong> (<em>bool</em>) – Whether to apply soft clipping</p></li>
+<li><p><strong>do_scale_signal</strong> (<em>bool</em>) – Whether to scale signal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.results_support">
+<span id="clarity-utils-results-support-module"></span><h2>clarity.utils.results_support module<a class="headerlink" href="#module-clarity.utils.results_support" title="Link to this heading">¶</a></h2>
+<p>Dataclass to save challenges results to a CSV file.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.utils.results_support.ResultsFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.utils.results_support.</span></span><span class="sig-name descname"><span class="pre">ResultsFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/results_support.html#ResultsFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.results_support.ResultsFile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A utility class for writing results to a CSV file.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.results_support.ResultsFile.file_name">
+<span class="sig-name descname"><span class="pre">file_name</span></span><a class="headerlink" href="#clarity.utils.results_support.ResultsFile.file_name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the file to write results to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.results_support.ResultsFile.header_columns">
+<span class="sig-name descname"><span class="pre">header_columns</span></span><a class="headerlink" href="#clarity.utils.results_support.ResultsFile.header_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The columns to write to the CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.utils.results_support.ResultsFile.append_results">
+<span class="sig-name descname"><span class="pre">append_results</span></span><a class="headerlink" href="#clarity.utils.results_support.ResultsFile.append_results" title="Link to this definition">¶</a></dt>
+<dd><p>Whether to append results to an existing file.
+If False, a new file will be created and the header row will be written.
+Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.utils.results_support.ResultsFile.add_result">
+<span class="sig-name descname"><span class="pre">add_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/results_support.html#ResultsFile.add_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.results_support.ResultsFile.add_result" title="Link to this definition">¶</a></dt>
+<dd><p>Add a result to the CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>row_values</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em> | </em><em>float</em><em>]</em>) – The values to write to the CSV file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">append_results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">file_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">header_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.signal_processing">
+<span id="clarity-utils-signal-processing-module"></span><h2>clarity.utils.signal_processing module<a class="headerlink" href="#module-clarity.utils.signal_processing" title="Link to this heading">¶</a></h2>
+<p>Signal processing utilities.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.signal_processing.clip_signal">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.signal_processing.</span></span><span class="sig-name descname"><span class="pre">clip_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soft_clip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/signal_processing.html#clip_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.signal_processing.clip_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Clip the signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to be clipped and saved.</p></li>
+<li><p><strong>soft_clip</strong> (<em>bool</em>) – Whether to use soft clipping.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Clipped signal.
+n_clipped (int): Number of samples clipped.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>signal (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.signal_processing.compute_rms">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.signal_processing.</span></span><span class="sig-name descname"><span class="pre">compute_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/utils/signal_processing.html#compute_rms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.signal_processing.compute_rms" title="Link to this definition">¶</a></dt>
+<dd><p>Compute RMS of signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>signal</strong> – Signal to compute RMS of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>RMS of the signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.signal_processing.denormalize_signals">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.signal_processing.</span></span><span class="sig-name descname"><span class="pre">denormalize_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/signal_processing.html#denormalize_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.signal_processing.denormalize_signals" title="Link to this definition">¶</a></dt>
+<dd><p>Scale signals back to the original scale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sources</strong> (<em>ndarray</em>) – Source to be scaled.</p></li>
+<li><p><strong>ref</strong> (<em>ndarray</em>) – Original sources to be used for reverting scaling.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Signal rescaled back to its original.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.signal_processing.normalize_signal">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.signal_processing.</span></span><span class="sig-name descname"><span class="pre">normalize_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/utils/signal_processing.html#normalize_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.signal_processing.normalize_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Standardize the signal to have zero mean and unit variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>signal</strong> – The signal to be standardized.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The standardized signal and the reference signal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.signal_processing.resample">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.signal_processing.</span></span><span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'soxr'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/signal_processing.html#resample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.signal_processing.resample" title="Link to this definition">¶</a></dt>
+<dd><p>Resample a signal to a new sample rate.</p>
+<p>This is a simple wrapper around  soxr and scipy.signal.resample with the resampling
+expressed in terms of input and output sampling rates.</p>
+<p>It also ensures that for multichannel signals, resampling is in the time
+domain, i.e. down the columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> – The signal to be resampled.</p></li>
+<li><p><strong>sample_rate</strong> – The original sample rate.</p></li>
+<li><p><strong>new_sample_rate</strong> – The new sample rate.</p></li>
+<li><p><strong>method</strong> – determine the approach use.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The resampled signal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.signal_processing.to_16bit">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.signal_processing.</span></span><span class="sig-name descname"><span class="pre">to_16bit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/clarity/utils/signal_processing.html#to_16bit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.signal_processing.to_16bit" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the signal to 16 bit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to be converted.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Converted signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>signal (np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils.source_separation_support">
+<span id="clarity-utils-source-separation-support-module"></span><h2>clarity.utils.source_separation_support module<a class="headerlink" href="#module-clarity.utils.source_separation_support" title="Link to this heading">¶</a></h2>
+<p>Module that contains functions for source separation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.source_separation_support.get_device">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.source_separation_support.</span></span><span class="sig-name descname"><span class="pre">get_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/clarity/utils/source_separation_support.html#get_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.source_separation_support.get_device" title="Link to this definition">¶</a></dt>
+<dd><p>Get the Torch device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<em>str</em>) – device type, e.g. “cpu”, “gpu0”, “gpu1”, etc.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.device() appropiate to the hardware available.
+str: device type selected, e.g. “cpu”, “cuda”.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.device</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.utils.source_separation_support.separate_sources">
+<span class="sig-prename descclassname"><span class="pre">clarity.utils.source_separation_support.</span></span><span class="sig-name descname"><span class="pre">separate_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.nn.Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.device</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/utils/source_separation_support.html#separate_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.utils.source_separation_support.separate_sources" title="Link to this definition">¶</a></dt>
+<dd><p>Apply model to a given mixture.
+Use fade, and add segments together in order to add model segment by segment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – model to use for separation</p></li>
+<li><p><strong>mix</strong> (<em>torch.Tensor</em>) – mixture to separate, shape (batch, channels, time)</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – sampling rate of the mixture</p></li>
+<li><p><strong>segment</strong> (<em>float</em>) – segment length in seconds</p></li>
+<li><p><strong>overlap</strong> (<em>float</em>) – overlap between segments, between 0 and 1</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em><em>, </em><em>str</em><em>, or </em><em>None</em>) – if provided, device on which to
+execute the computation, otherwise <cite>mix.device</cite> is assumed.
+When <cite>device</cite> is different from <cite>mix.device</cite>, only local computations will
+be on <cite>device</cite>, while the entire tracks will be stored on <cite>mix.device</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>estimated sources</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+<p>Based on <a class="reference external" href="https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html">https://pytorch.org/audio/main/tutorials/hybrid_demucs_tutorial.html</a></p>
+</dd></dl>
+
+</section>
+<section id="module-clarity.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.utils" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+      <li>Previous: <a href="clarity.predictor.html" title="previous chapter">clarity.predictor package</a></li>
+      <li>Next: <a href="clarity.utils.car_noise_simulator.html" title="next chapter">clarity.utils.car_noise_simulator package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
