@@ -38,7 +38,7 @@ repos:
       - id: markdownlint-cli2
 
   - repo: https://github.com/pycqa/flake8.git
-    rev: 7.1.2
+    rev: 7.2.0
     hooks:
       - id: flake8
         additional_dependencies: [flake8-print, Flake8-pyproject]
@@ -75,13 +75,13 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.9.10"
+    rev: "v0.11.6"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v3.3.4
+    rev: v3.3.6
     hooks:
       - id: pylint
         args:

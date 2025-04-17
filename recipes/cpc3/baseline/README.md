@@ -12,60 +12,56 @@ For more information about the CPC3 please [visit](https://claritychallenge.org/
 
 To download the CPC3 data, please follow the instructions on the [download page](https://claritychallenge.org/docs/cpc3/taking_part/cpc3_download) of the challenge website.
 
-The data will download into a package file called `clarity_CPC3_data.v1_0.tar.gz`.
+The data will download into two package files called `clarity_CPC3_data.v1_1.tar.gz` and `clarity_CPC3_data.dev.v1_0.tar.gz.
 
-Unpack this package using
+Unpack these packages under the same root using
 
 ```bash
-tar -xvzf clarity_CPC3_data.v1_0.tar.gz
+tar -xvzf clarity_CPC3_data.v1_1.tar.gz
+tar -xvzf clarity_CPC3_data.dev.v1_0.tar.gz
 ```
+
+(Ignore any warnings about overwriting files, this is expected.)
 
 Once unpacked the directory structure will be as follows
 
-**clarity_CPC2_data.v1_1** contains the training data:
-
 ```bash
-clarity_CPC3_data
-├── clarity_data
-│   ├── HA_outputs  # The hearing aid output signals
-│   │   ├── signals
-│
-│   ├── metadata    # Metadata including the intelligibility scores
-│   └── scenes      # Contains reference signals
-│       ├── CEC1
-│       └── CEC2
-└── manifest        # Lists the package contents
+clarity_CPC3_data/
+├── clarity_data/
+│   ├── metadata/  # Listener responses and characteristics
+│   ├── train/
+│   │   ├── references/  # Reference signals for intelligibility prediction
+│   │   └── signals/     # Hearing aid output signals
+│   └── dev/
+│       ├── references/
+│       └── signals/
+└── manifest/
 ```
 
 ### 1.2 Demo data
 
 Running the baseline code over the full dataset can be quite time consuming. To allow you to easily try out the code with a small amount of data, we have provided a small subset of demo data containing 30 signals.
 
-TODO
-To use the demo data download the file `clarity_CPC3_data_demo.v1_0.tar.gz` using the following [Google Drive link](https://drive.google.com/file/d/1oLlo9w9Z7A2NP35IntJsRySIPl-oUajU/view?usp=sharing).  UPDATE
+To use the demo data download the file `clarity_CPC3_demo_data.v1_0.tar.gz` which can be found at the same download sites as the full dataset. ([See our website](https://claritychallenge.org/docs/cpc3/cpc3_download) for details of how to obtain the data.)
 
 Unpack this package under this directory, i.e., under `recipes/cpc3/baseline` using
 
 ```bash
-tar -xvzf clarity_CPC3_data_demo.v1_0.tar.gz
+tar -xvzf clarity_CPC3_demo_data.v1_0.tar.gz
 ```
 
 Note, the `root.path` variable in `config.yaml` is already set to point to the demo data by default.
 
-The demo data only contains one training set split, `train.1` and `CEC2` data. It has the following structure,
+The demo data only contains has the following structure,
 
 ```bash
-clarity_CPC2_data_demo
-├── clarity_data
-│   ├── HA_outputs
-│   │   ├── signals
-│   │   │   └── CEC2
-│   │   └── train.1
-│   │       └── CEC2
-│   ├── metadata
-│   └── scenes
-│       └── CEC2
-└── manifest
+clarity_CPC3_data/
+├── clarity_demo_data/
+│   ├── metadata/  # Listener responses and characteristics
+│   └─── train/
+│       ├── references/  # Reference signals for intelligibility prediction
+│       └── signals/
+└── manifest/
 ```
 
 ## 2. Baseline
@@ -77,7 +73,7 @@ The baseline prediction model is a simple logistic regression model that maps HA
 Compute the HASPI scores over the training data set and store results
 
 ```bash
-python compute_haspi.py dataset=CEC2.train.1
+python compute_haspi.py dataset=clarity_demo_data split=train
 ```
 
 This will generate the output file containing HASPI scores. This file will be called `exp/<DATASET>.haspi.jsonl` where `<DATASET>` is the name specified on the commandline.
@@ -86,10 +82,10 @@ Note, if the results file is already present, the script will only compute the s
 
 ### 2.2 Making intelligibility predictions
 
-The baseline intelligibility predictions are made by using a logistic fitting to map the HASPI scores onto the sentence correctness values. This is done using `predict.py` which will produce a `csv` file named `exp/<DATASET>.predict.jsonl` containing the predictions in the format that is required for submission to the challenge.
+The baseline intelligibility predictions are made by using a logistic fitting to map the HASPI scores onto the sentence correctness values. This is done using `predict.py` which will produce a `csv` file named `exp/<DATASET>.predict.csv` containing the predictions in the format that is required for submission to the challenge.
 
 ```bash
-python predict.py dataset=CEC2.train.1
+python predict.py dataset=clarity_demo_data split=train
 ```
 
 ### 2.3 Evaluating the predictions
@@ -97,7 +93,7 @@ python predict.py dataset=CEC2.train.1
 Finally, the `evaluate.py` script will compare the provided predictions with the ground truth and compute the error metrics.
 
 ```bash
-python evaluate.py dataset=CEC2.train.1
+python evaluate.py dataset=clarity_demo_data split=train
 ```
 
 Results will be displayed on the terminal and saved to the file `exp/<DATASET>.evaluate.jsonl`.

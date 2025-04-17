@@ -1,0 +1,16 @@
+split: train
+dataset: clarity_demo_data
+path:
+  clarity_data_dir: /Users/jon/shared/research/projects/active/2019-Clarity/software/clarity/recipes/cpc3/baseline/clarity_CPC3_data
+  metadata_dir: ${path.clarity_data_dir}/${dataset}/metadata
+
+compute_haspi:
+  batch: 1
+  n_batches: 1
+  set_random_seed: True
+
+hydra:
+  run:
+    dir: exp
+  job:
+    chdir: True
