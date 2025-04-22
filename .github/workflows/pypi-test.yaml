@@ -1,0 +1,32 @@
+name: Publish package to PyPi
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    name: Publish package to PyPi
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: 3.9
+      - name: Installing the package
+        run: |
+          pip3 install .
+          pip3 install .[pypi]
+      - name: Check Git Access
+        run: |
+          git status
+          git describe --tags
+      - name: Build package
+        run: |
+          pip3 install --upgrade setuptools
+          export DEB_PYTHON_INSTALL_LAYOUT=deb_system
+          python -m build --no-isolation
