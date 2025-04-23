@@ -71,17 +71,19 @@ def parse_signal_name(signal_name: str) -> dict:
     return info
 
 
-def compute_haspi_for_signal(signal_name: str, data_root: str, split: str) -> float:
+def compute_haspi_for_signal(record: dict, data_root: str, split: str) -> float:
     """Compute the HASPI score for a given signal.
 
     Args:
-        signal (str): name of the signal to process
+        record (dict): the metadata dict for the signal
         signal_dir (str): paths to where the HA output signals are stored
         ref_dir (str): path to where the reference signals are stored
 
     Returns:
         float: HASPI score
     """
+
+    signal_name = record["signal"]
 
     signal_dir = Path(data_root) / split / "signals"
     ref_dir = Path(data_root) / split / "references"
@@ -92,24 +94,32 @@ def compute_haspi_for_signal(signal_name: str, data_root: str, split: str) -> fl
         "Moderately severe": MOD_SEV_LISTENER,
     }
 
-    signal_parts = parse_signal_name(signal_name)
-    listener_id = signal_parts["listener"]
-    scene = signal_parts["scene"]
-    cec = signal_parts["cec"]
+    if "hearing_loss" in record:
+        # For DEV DATA the hearing loss is directly in the metadata...
+        listener_severity = record["hearing_loss"]
+        # ... and a simple one-to-one mapping between signal name and reference signal
+        ref_signal = f"{signal_name}_ref"
+    else:
+        # For the TRAINING DATA it needs to be looked up from listeners.csv
+        signal_parts = parse_signal_name(signal_name)
+        listener_id = signal_parts["listener"]
+        scene = signal_parts["scene"]
+        cec = signal_parts["cec"]
+        with open(Path(data_root) / "metadata" / "listeners.csv", encoding="utf8") as f:
+            listener_dict = csv.DictReader(f)
+            listener_severity_dict = {
+                row["listener_id"]: row["severity"] for row in listener_dict
+            }
+        listener_severity = listener_severity_dict[listener_id]
+        # ... and the reference signal name is formed as follows.
+        ref_signal = f"{cec}_{scene}_ref"
 
-    with open(Path(data_root) / "metadata" / "listeners.csv", encoding="utf8") as f:
-        listener_dict = csv.DictReader(f)
-        listener_severity_dict = {
-            row["listener_id"]: row["severity"] for row in listener_dict
-        }
-
-    listener_severity = listener_severity_dict[listener_id]
     listener_data = listener_data_dict[listener_severity]
     listener = Listener.from_dict(listener_data)
 
     # Retrieve signals and convert to float32 between -1 and 1
     sr_proc, proc = wavfile.read(Path(signal_dir) / f"{signal_name}.wav")
-    sr_ref, ref = wavfile.read(Path(ref_dir) / f"{cec}_{scene}_ref.wav")
+    sr_ref, ref = wavfile.read(Path(ref_dir) / f"{ref_signal}.wav")
     assert sr_ref == sr_proc
 
     proc = proc / 32768.0
@@ -151,7 +161,7 @@ def run_calculate_haspi(cfg: DictConfig) -> None:
         if cfg.compute_haspi.n_batches > 1
         else ""
     )
-    results_file = Path(f"{cfg.dataset}.haspi{batch_str}.jsonl")
+    results_file = Path(f"{cfg.dataset}.{cfg.split}.haspi{batch_str}.jsonl")
     results = read_jsonl(str(results_file)) if results_file.exists() else []
     results_index = {result["signal"]: result for result in results}
 
@@ -167,7 +177,7 @@ def run_calculate_haspi(cfg: DictConfig) -> None:
         signal_name = record["signal"]
         if cfg.compute_haspi.set_random_seed:
             set_seed_with_string(signal_name)
-        haspi = compute_haspi_for_signal(signal_name, dataroot, cfg.split)
+        haspi = compute_haspi_for_signal(record, dataroot, cfg.split)
 
         # Results are appended to the results file to allow interruption
         result = {"signal": signal_name, "haspi": haspi}

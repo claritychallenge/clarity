@@ -61,7 +61,9 @@ def evaluate(cfg: DictConfig) -> None:
 
     # Load the predictions
     df = pd.read_csv(
-        f"{cfg.dataset}.predict.csv", names=["signal", "predicted"], header=0
+        f"{cfg.dataset}.{cfg.split}.predict.csv",
+        names=["signal", "predicted"],
+        header=0,
     )
 
     df["correctness"] = [record_index[signal]["correctness"] for signal in df.signal]
