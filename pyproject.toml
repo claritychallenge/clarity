@@ -35,6 +35,8 @@ dependencies = [
     "omegaconf>=2.1.1",
     "pandas>=2.2.2",
     "pyflac",
+    "pylint>=3.2.7",
+    "pylint-pytest>=1.1.7",
     "pyloudnorm>=0.1.0",
     "pystoi",
     "pytorch-lightning",
@@ -128,6 +130,7 @@ testpaths = ["tests"]
 filterwarnings = ["ignore::UserWarning"]
 
 [tool.coverage.run]
+branch = true
 source = ["clarity"]
 omit = ["*conftest.py", "*tests*", "**/__init__*", "clarity/_version.py"]
 

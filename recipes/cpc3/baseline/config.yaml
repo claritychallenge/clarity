@@ -1,0 +1,14 @@
+clarity_data_root: ../clarity_CPC3_data # relative to the exp/ directory
+dataset: clarity_demo_data # For testing - use 'clarity_data' for full dataset
+split: train # When using the training set
+
+compute_haspi:
+  batch: 1
+  n_batches: 1
+  set_random_seed: True
+
+hydra:
+  run:
+    dir: exp
+  job:
+    chdir: True
