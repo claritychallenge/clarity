@@ -1,0 +1,164 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generate music dataset for the ICASSP 2024 Cadenza Challenge &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Generate music dataset for the ICASSP 2024 Cadenza Challenge</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/recipes/cad_icassp_2024/generate_dataset/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="generate-music-dataset-for-the-icassp-2024-cadenza-challenge">
+<h1>Generate music dataset for the ICASSP 2024 Cadenza Challenge<a class="headerlink" href="#generate-music-dataset-for-the-icassp-2024-cadenza-challenge" title="Link to this heading"></a></h1>
+<p>The ICASSP 2024 Cadenza Challenge music dataset is based on the MUSDB18-HQ dataset.</p>
+<p>Steps:</p>
+<ol class="arabic simple">
+<li><p>Download <code class="docutils literal notranslate"><span class="pre">cadenza_cad1_task1_core_musdb18hq.tar.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">cadenza_cad1_task1_core_metadata.tar.gz</span></code>
+packages from the <a class="reference external" href="https://cadenza-challenge.github.io/">Cadenza Challenge website</a>.</p></li>
+<li><p>Unpack packages under the same root directory.</p></li>
+<li><p>Run the script</p></li>
+</ol>
+<section id="unpack-the-data">
+<h2>Unpack the data<a class="headerlink" href="#unpack-the-data" title="Link to this heading"></a></h2>
+<p>To unpack the data run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>&lt;PACKAGE_NAME&gt;
+</pre></div>
+</div>
+</section>
+<section id="generate-the-dataset">
+<h2>Generate the dataset<a class="headerlink" href="#generate-the-dataset" title="Link to this heading"></a></h2>
+<p>To generate the dataset, set the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> parameter in the <code class="docutils literal notranslate"><span class="pre">generate_dataset/config.yaml</span></code>
+to where you unpacked the data. Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>generates_at_mic_musdb18.py
+</pre></div>
+</div>
+<p>or, run the script with the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> parameter:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>generates_at_mic_musdb18.py<span class="w"> </span>path.root<span class="w"> </span>&lt;PATH_TO_UNPACKED_DATA&gt;
+</pre></div>
+</div>
+<p>The script will generate the dataset in the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> directory.</p>
+<p>The script should create the <code class="docutils literal notranslate"><span class="pre">at_mic_microphone</span></code> where all music samples
+picked up by the microphones (at the mic) are saved.</p>
+<p>In the next example, <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">Classic</span> <span class="pre">Education</span> <span class="pre">-</span> <span class="pre">NightOwl-hp_0103</span></code> corresponds to the
+song <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">Classic</span> <span class="pre">Education</span> <span class="pre">-</span> <span class="pre">NightOwl</span></code> with the <code class="docutils literal notranslate"><span class="pre">hp_0103</span></code> head position.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cadenza_data
+├───audio
+|   ├───at_mic_music
+|   |   └───train (80.8 GB)
+|   |       ├───A Classic Education - NightOwl-hp_0103
+|   |       |   |  bass.wav
+|   |       |   |  drums.wav
+|   |       |   |  other.wav
+|   |       |   |  vocals.wav
+|   |       |   |  mixture.wav
+|   |       |
+|   |       ├───A Classic Education - NightOwl-hp_0138
+|   |       |   ....
+|   |
+|   ├───hrtf (336 kB)
+|   |
+|   └───music
+|       └───train (20.2 GB)
+|
+└───metadata  (328 kB)
+|  gains.json
+    |  at_mic_music.train.json
+    |  ...
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

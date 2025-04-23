@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clarity.evaluator.hasqi package &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyClarity
+              <img src="_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">clarity.evaluator.hasqi package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/clarity.evaluator.hasqi.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="clarity-evaluator-hasqi-package">
+<h1>clarity.evaluator.hasqi package<a class="headerlink" href="#clarity-evaluator-hasqi-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-clarity.evaluator.hasqi.hasqi">
+<span id="clarity-evaluator-hasqi-hasqi-module"></span><h2>clarity.evaluator.hasqi.hasqi module<a class="headerlink" href="#module-clarity.evaluator.hasqi.hasqi" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.hasqi.hasqi.hasqi_v2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.hasqi.hasqi.</span></span><span class="sig-name descname"><span class="pre">hasqi_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">equalisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silence_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_covariance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/hasqi/hasqi.html#hasqi_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.hasqi.hasqi.hasqi_v2" title="Link to this definition"></a></dt>
+<dd><p>Function to compute the HASQI version 2 quality index using the
+auditory model followed by computing the envelope cepstral
+correlation and BM vibration average short-time coherence signals.
+The reference signal presentation level for NH listeners is assumed
+to be 65 dB SPL. The same model is used for both normal and
+impaired hearing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – Clear input reference speech signal with no noise or
+distortion. If a hearing loss is specified, NAL-R equalization is optional</p></li>
+<li><p><strong>reference_sample_Rate</strong> (<em>int</em>) – Sampling rate in Hz for reference signal.</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – Output signal with noise, distortion, HA gain, and/or
+processing.</p></li>
+<li><p><strong>processed_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for processed signal.</p></li>
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – vector of hearing loss at the 6 audiometric
+frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.</p></li>
+<li><p><strong>equalisation</strong> (<em>int</em>) – Mode to use when equalising the reference signal:
+1 = no EQ has been provided, the function will add NAL-R
+2 = NAL-R EQ has already been added to the reference signal</p></li>
+<li><p><strong>level1</strong> – Optional input specifying level in dB SPL that corresponds to a
+signal RMS = 1. Default is 65 dB SPL if argument not provided.</p></li>
+<li><p><strong>silence_threshold</strong> (<em>float</em>) – Silence threshold sum across bands, dB above audio
+threshold. Default: 2.5</p></li>
+<li><p><strong>add_noise</strong> (<em>float</em>) – Additive noise in dB SL to conditional cross-covariance.
+Default is 0.0</p></li>
+<li><p><strong>segment_covariance</strong> (<em>int</em>) – Segment size for the covariance calculation.
+Default is 16</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>tuple(Combined, Nonlin, Linear, raw)</dt><dd><p>Combined: Quality estimate is the product of the nonlinear and linear terms
+Nonlin: Nonlinear quality component = (cepstral corr)^2 x seg BM coherence
+Linear: Linear quality component = std of spectrum and spectrum slope
+raw: Vector of raw values = [CepCorr, BMsync5, Dloud, Dslope]</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<p>James M. Kates, 5 August 2013.
+Translated from MATLAB to Python by Gerardo Roa Dabike, October 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.hasqi.hasqi.hasqi_v2_better_ear">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.hasqi.hasqi.</span></span><span class="sig-name descname"><span class="pre">hasqi_v2_better_ear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/hasqi/hasqi.html#hasqi_v2_better_ear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.hasqi.hasqi.hasqi_v2_better_ear" title="Link to this definition"></a></dt>
+<dd><p>Better ear HASQI.</p>
+<p>Calculates HASQI for left and right ear and selects the better result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_left</strong> (<em>np.ndarray</em>) – left channel of reference signal</p></li>
+<li><p><strong>reference_right</strong> (<em>np.ndarray</em>) – right channel of reference signal</p></li>
+<li><p><strong>reference_left</strong> – left channel of processed signal</p></li>
+<li><p><strong>reference_right</strong> – right channel of processed signal</p></li>
+<li><p><strong>sample_rate</strong> – sampling rate for both signal</p></li>
+<li><p><strong>audiogram_l</strong> – left ear audiogram</p></li>
+<li><p><strong>audiogram_r</strong> – right ear audiogram</p></li>
+<li><p><strong>level</strong> – level in dB SPL corresponding to RMS=1</p></li>
+<li><p><strong>audiogram_freq</strong> – selected frequencies to use for audiogram</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>beHASQI score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>Gerardo Roa Dabike, November 2022</p>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.hasqi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.evaluator.hasqi" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.hasqi.hasqi_v2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.hasqi.</span></span><span class="sig-name descname"><span class="pre">hasqi_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">equalisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silence_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_covariance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/hasqi/hasqi.html#hasqi_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.hasqi.hasqi_v2" title="Link to this definition"></a></dt>
+<dd><p>Function to compute the HASQI version 2 quality index using the
+auditory model followed by computing the envelope cepstral
+correlation and BM vibration average short-time coherence signals.
+The reference signal presentation level for NH listeners is assumed
+to be 65 dB SPL. The same model is used for both normal and
+impaired hearing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – Clear input reference speech signal with no noise or
+distortion. If a hearing loss is specified, NAL-R equalization is optional</p></li>
+<li><p><strong>reference_sample_Rate</strong> (<em>int</em>) – Sampling rate in Hz for reference signal.</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – Output signal with noise, distortion, HA gain, and/or
+processing.</p></li>
+<li><p><strong>processed_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for processed signal.</p></li>
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – vector of hearing loss at the 6 audiometric
+frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.</p></li>
+<li><p><strong>equalisation</strong> (<em>int</em>) – Mode to use when equalising the reference signal:
+1 = no EQ has been provided, the function will add NAL-R
+2 = NAL-R EQ has already been added to the reference signal</p></li>
+<li><p><strong>level1</strong> – Optional input specifying level in dB SPL that corresponds to a
+signal RMS = 1. Default is 65 dB SPL if argument not provided.</p></li>
+<li><p><strong>silence_threshold</strong> (<em>float</em>) – Silence threshold sum across bands, dB above audio
+threshold. Default: 2.5</p></li>
+<li><p><strong>add_noise</strong> (<em>float</em>) – Additive noise in dB SL to conditional cross-covariance.
+Default is 0.0</p></li>
+<li><p><strong>segment_covariance</strong> (<em>int</em>) – Segment size for the covariance calculation.
+Default is 16</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>tuple(Combined, Nonlin, Linear, raw)</dt><dd><p>Combined: Quality estimate is the product of the nonlinear and linear terms
+Nonlin: Nonlinear quality component = (cepstral corr)^2 x seg BM coherence
+Linear: Linear quality component = std of spectrum and spectrum slope
+raw: Vector of raw values = [CepCorr, BMsync5, Dloud, Dslope]</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<p>James M. Kates, 5 August 2013.
+Translated from MATLAB to Python by Gerardo Roa Dabike, October 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.hasqi.hasqi_v2_better_ear">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.hasqi.</span></span><span class="sig-name descname"><span class="pre">hasqi_v2_better_ear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/hasqi/hasqi.html#hasqi_v2_better_ear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.hasqi.hasqi_v2_better_ear" title="Link to this definition"></a></dt>
+<dd><p>Better ear HASQI.</p>
+<p>Calculates HASQI for left and right ear and selects the better result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_left</strong> (<em>np.ndarray</em>) – left channel of reference signal</p></li>
+<li><p><strong>reference_right</strong> (<em>np.ndarray</em>) – right channel of reference signal</p></li>
+<li><p><strong>reference_left</strong> – left channel of processed signal</p></li>
+<li><p><strong>reference_right</strong> – right channel of processed signal</p></li>
+<li><p><strong>sample_rate</strong> – sampling rate for both signal</p></li>
+<li><p><strong>audiogram_l</strong> – left ear audiogram</p></li>
+<li><p><strong>audiogram_r</strong> – right ear audiogram</p></li>
+<li><p><strong>level</strong> – level in dB SPL corresponding to RMS=1</p></li>
+<li><p><strong>audiogram_freq</strong> – selected frequencies to use for audiogram</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>beHASQI score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>Gerardo Roa Dabike, November 2022</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

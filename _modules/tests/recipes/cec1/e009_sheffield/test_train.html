@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.recipes.cec1.e009_sheffield.test_train &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../../../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tests.recipes.cec1.e009_sheffield.test_train</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tests.recipes.cec1.e009_sheffield.test_train</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for cec1 e009 train module&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hydra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">recipes.cec1.e009_sheffield.train</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_amp</span><span class="p">,</span> <span class="n">train_den</span>
+
+
+<div class="viewcode-block" id="test_run">
+<a class="viewcode-back" href="../../../../../tests.recipes.cec1.e009_sheffield.html#tests.recipes.cec1.e009_sheffield.test_train.test_run">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">slow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_run</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test for the run function.&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">hydra</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">global_hydra</span><span class="o">.</span><span class="n">GlobalHydra</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">hydra</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span>
+        <span class="n">config_path</span><span class="o">=</span><span class="s2">&quot;../../../../recipes/cec1/e009_sheffield&quot;</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s2">&quot;test_cec1_e009&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pytorch_lightning&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+    <span class="n">hydra_cfg</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span>
+        <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">,</span>
+        <span class="c1"># Override settings to make a fast training test</span>
+        <span class="n">overrides</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;path.cec1_root=tests/test_data/recipes/cec1/e009_sheffield&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;path.exp_folder=</span><span class="si">{</span><span class="n">tmp_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="c1"># Disable multiprocessing for testing (faster)</span>
+            <span class="s2">&quot;train_loader.num_workers=0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dev_loader.num_workers=0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;test_loader.num_workers=0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;train_loader.batch_size=1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;train_dataset.wav_sample_len=1.0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;den_trainer.epochs=1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;amp_trainer.epochs=1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fir.nfir=32&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mc_conv_tasnet.H=64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mc_conv_tasnet.B=32&quot;</span><span class="p">,</span>
+            <span class="c1"># The validation sanity check step is slow, so disable it</span>
+            <span class="s2">&quot;amp_trainer.num_sanity_val_steps=0&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">train_den</span><span class="p">(</span><span class="n">hydra_cfg</span><span class="p">,</span> <span class="n">ear</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+    <span class="n">hydra_cfg</span><span class="o">.</span><span class="n">downsample_factor</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">train_amp</span><span class="p">(</span><span class="n">hydra_cfg</span><span class="p">,</span> <span class="n">ear</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+
+    <span class="n">expected_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;left_amp/checkpoints/epoch=0-step=1.ckpt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_amp/best_k_models.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_amp/best_model.pth&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_den/checkpoints/epoch=0-step=1.ckpt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_den/best_k_models.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_den/best_model.pth&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">expected_files</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

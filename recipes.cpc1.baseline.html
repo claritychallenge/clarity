@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>recipes.cpc1.baseline package &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyClarity
+              <img src="_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">recipes.cpc1.baseline package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/recipes.cpc1.baseline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="recipes-cpc1-baseline-package">
+<h1>recipes.cpc1.baseline package<a class="headerlink" href="#recipes-cpc1-baseline-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-recipes.cpc1.baseline.compute_scores">
+<span id="recipes-cpc1-baseline-compute-scores-module"></span><h2>recipes.cpc1.baseline.compute_scores module<a class="headerlink" href="#module-recipes.cpc1.baseline.compute_scores" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.Model" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to represent the mapping from mbstoi parameters to intelligibility scores.
+The mapping uses a simple logistic function scaled between 0 and 100.
+The mapping parameters need to fit first using mbstoi, intelligibility score pairs,
+using fit(). Once the fit has been made predictions can be made by calling predict()</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.Model.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#Model.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.Model.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit a mapping betweeen mbstoi scores and intelligibility scores.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.Model.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.Model.params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.Model.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#Model.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.Model.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict intelligilbity scores from mbstoi scores.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.compute_scores">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">compute_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#compute_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.compute_scores" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.kt_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">kt_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#kt_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.kt_score" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.ncc_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">ncc_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#ncc_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.ncc_score" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.read_data">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.read_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.rmse_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">rmse_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#rmse_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.rmse_score" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.run">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.compute_scores.std_err">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.compute_scores.</span></span><span class="sig-name descname"><span class="pre">std_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/compute_scores.html#std_err"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.compute_scores.std_err" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-recipes.cpc1.baseline.run">
+<span id="recipes-cpc1-baseline-run-module"></span><h2>recipes.cpc1.baseline.run module<a class="headerlink" href="#module-recipes.cpc1.baseline.run" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.run.listen">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.run.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/run.html#listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.run.listen" title="Link to this definition"></a></dt>
+<dd><p>Generate MSBG processed signal
+:param ear: MSBG ear
+:param signal: binaural signal
+:param listener: listener - the listener characteristics to simulate
+:return: binaural signal</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.run.run">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.run.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cpc1/baseline/run.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.run.run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.run.run_HL_processing">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.run.</span></span><span class="sig-name descname"><span class="pre">run_HL_processing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/baseline/run.html#run_HL_processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.run.run_HL_processing" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.baseline.run.run_calculate_SI">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.baseline.run.</span></span><span class="sig-name descname"><span class="pre">run_calculate_SI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cpc1/baseline/run.html#run_calculate_SI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.baseline.run.run_calculate_SI" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-recipes.cpc1.baseline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cpc1.baseline" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

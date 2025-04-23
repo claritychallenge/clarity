@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>recipes.cad2.task2.baseline package &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyClarity
+              <img src="_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">recipes.cad2.task2.baseline package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/recipes.cad2.task2.baseline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="recipes-cad2-task2-baseline-package">
+<h1>recipes.cad2.task2.baseline package<a class="headerlink" href="#recipes-cad2-task2-baseline-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="recipes-cad2-task2-baseline-enhance-module">
+<h2>recipes.cad2.task2.baseline.enhance module<a class="headerlink" href="#recipes-cad2-task2-baseline-enhance-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-recipes.cad2.task2.baseline.evaluate">
+<span id="recipes-cad2-task2-baseline-evaluate-module"></span><h2>recipes.cad2.task2.baseline.evaluate module<a class="headerlink" href="#module-recipes.cad2.task2.baseline.evaluate" title="Link to this heading"></a></h2>
+<p>Evaluate the enhanced signals using the HAAQI metric.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.adjust_level">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">adjust_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gains_scene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#adjust_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.adjust_level" title="Link to this definition"></a></dt>
+<dd><p>Adjust the level of the signal to compensate the effect of amplifying the
+sources</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.apply_gains">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">apply_gains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#apply_gains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.apply_gains" title="Link to this definition"></a></dt>
+<dd><p>Apply gain to the signal by using LUFS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stems</strong> (<em>dict</em>) – Dictionary of stems.</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em>) – Sample rate of the signal.</p></li>
+<li><p><strong>gains</strong> (<em>dict</em>) – Dictionary of gains.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of stems with applied gains.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.load_reference_stems">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">load_reference_stems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">music_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#load_reference_stems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.load_reference_stems" title="Link to this definition"></a></dt>
+<dd><p>Load the reference stems for a given scene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>music_dir</strong> (<em>str</em><em> | </em><em>Path</em>) – Path to the music directory.</p></li>
+<li><p><strong>stems</strong> (<em>dict</em>) – Dictionary of stems</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of reference stems.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.make_scene_listener_list">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">make_scene_listener_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenes_listeners</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small_test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#make_scene_listener_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.make_scene_listener_list" title="Link to this definition"></a></dt>
+<dd><p>Make the list of scene-listener pairing to process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scenes_listeners</strong> (<em>dict</em>) – Dictionary of scenes and listeners.</p></li>
+<li><p><strong>small_test</strong> (<em>bool</em>) – Whether to use a small test set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of scene-listener pairings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.remix_stems">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">remix_stems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#remix_stems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.remix_stems" title="Link to this definition"></a></dt>
+<dd><p>Remix the stems into a stereo signal.</p>
+<p>The remixing is done by summing the stems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stems</strong> (<em>dict</em>) – Dictionary of stems.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Stereo signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.run_calculate_aq">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">run_calculate_aq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#run_calculate_aq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.run_calculate_aq" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the enhanced signals using the HAAQI metric.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.evaluate.set_song_seed">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">set_song_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/evaluate.html#set_song_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.evaluate.set_song_seed" title="Link to this definition"></a></dt>
+<dd><p>Set a seed that is unique for the given song</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad2.task2.baseline.merge_batches_results">
+<span id="recipes-cad2-task2-baseline-merge-batches-results-module"></span><h2>recipes.cad2.task2.baseline.merge_batches_results module<a class="headerlink" href="#module-recipes.cad2.task2.baseline.merge_batches_results" title="Link to this heading"></a></h2>
+<p>Join batches scores into a single file.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.baseline.merge_batches_results.join_batches">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.baseline.merge_batches_results.</span></span><span class="sig-name descname"><span class="pre">join_batches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/baseline/merge_batches_results.html#join_batches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.baseline.merge_batches_results.join_batches" title="Link to this definition"></a></dt>
+<dd><p>Join batches scores into a single file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>DictConfig</em>) – Dictionary of configuration options.
+The <cite>.evaluate.batch_size</cite> is extracted to determine how many
+batches there are to combine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad2.task2.baseline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cad2.task2.baseline" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

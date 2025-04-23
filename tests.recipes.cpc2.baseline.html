@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.recipes.cpc2.baseline package &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyClarity
+              <img src="_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">tests.recipes.cpc2.baseline package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tests.recipes.cpc2.baseline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tests-recipes-cpc2-baseline-package">
+<h1>tests.recipes.cpc2.baseline package<a class="headerlink" href="#tests-recipes-cpc2-baseline-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.recipes.cpc2.baseline.test_compute_haspi">
+<span id="tests-recipes-cpc2-baseline-test-compute-haspi-module"></span><h2>tests.recipes.cpc2.baseline.test_compute_haspi module<a class="headerlink" href="#module-tests.recipes.cpc2.baseline.test_compute_haspi" title="Link to this heading"></a></h2>
+<p>Tests for the haspi computation functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_compute_haspi.hydra_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_compute_haspi.</span></span><span class="sig-name descname"><span class="pre">hydra_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_compute_haspi.html#hydra_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_compute_haspi.hydra_cfg" title="Link to this definition"></a></dt>
+<dd><p>Fixture for hydra config.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_compute_haspi.not_tqdm">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_compute_haspi.</span></span><span class="sig-name descname"><span class="pre">not_tqdm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_compute_haspi.html#not_tqdm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_compute_haspi.not_tqdm" title="Link to this definition"></a></dt>
+<dd><p>Replacement for tqdm that just passes back the iterable.</p>
+<p>Useful for silencing <cite>tqdm</cite> in tests.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_compute_haspi.test_parse_cec2_signal_name_error">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_compute_haspi.</span></span><span class="sig-name descname"><span class="pre">test_parse_cec2_signal_name_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_compute_haspi.html#test_parse_cec2_signal_name_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_compute_haspi.test_parse_cec2_signal_name_error" title="Link to this definition"></a></dt>
+<dd><p>Test the parse_CEC2_signal_name function for invalid inputs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_compute_haspi.test_parse_cec2_signal_name_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_compute_haspi.</span></span><span class="sig-name descname"><span class="pre">test_parse_cec2_signal_name_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_compute_haspi.html#test_parse_cec2_signal_name_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_compute_haspi.test_parse_cec2_signal_name_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the parse_CEC2_signal_name function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_compute_haspi.test_run_calculate_haspi">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_compute_haspi.</span></span><span class="sig-name descname"><span class="pre">test_run_calculate_haspi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_compute_haspi.html#test_run_calculate_haspi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_compute_haspi.test_run_calculate_haspi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_compute_haspi.test_set_seed_with_string_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_compute_haspi.</span></span><span class="sig-name descname"><span class="pre">test_set_seed_with_string_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_compute_haspi.html#test_set_seed_with_string_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_compute_haspi.test_set_seed_with_string_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the set_seed_with_string function.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.recipes.cpc2.baseline.test_evaluate_cpc2">
+<span id="tests-recipes-cpc2-baseline-test-evaluate-cpc2-module"></span><h2>tests.recipes.cpc2.baseline.test_evaluate_cpc2 module<a class="headerlink" href="#module-tests.recipes.cpc2.baseline.test_evaluate_cpc2" title="Link to this heading"></a></h2>
+<p>Tests for the CPC2 evaluation functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.hydra_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">hydra_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#hydra_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.hydra_cfg" title="Link to this definition"></a></dt>
+<dd><p>Fixture for hydra config.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_compute_scores_error">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_compute_scores_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_compute_scores_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_compute_scores_error" title="Link to this definition"></a></dt>
+<dd><p>Test the function compute_scores for invalid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_compute_scores_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_compute_scores_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_compute_scores_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_compute_scores_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the function compute_scores for valid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_evaluate">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capsys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_evaluate" title="Link to this definition"></a></dt>
+<dd><p>Test evaluate function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_kt_score_error">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_kt_score_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_kt_score_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_kt_score_error" title="Link to this definition"></a></dt>
+<dd><p>Test the function kt_score for invalid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_kt_score_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_kt_score_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tolerance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_kt_score_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_kt_score_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the function kt_score valid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_ncc_score_error">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_ncc_score_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_ncc_score_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_ncc_score_error" title="Link to this definition"></a></dt>
+<dd><p>Test the function ncc_score for invalid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_ncc_score_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_ncc_score_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tolerance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_ncc_score_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_ncc_score_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the function ncc_score valid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_rmse_score_error">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_rmse_score_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_rmse_score_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_rmse_score_error" title="Link to this definition"></a></dt>
+<dd><p>Test the function rmse_score for invalid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_rmse_score_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_rmse_score_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tolerance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_rmse_score_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_rmse_score_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the function rmse_score valid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_std_err_error">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_std_err_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_std_err_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_std_err_error" title="Link to this definition"></a></dt>
+<dd><p>Test the function std_err for invalid inputs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_std_err_ok">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_evaluate_cpc2.</span></span><span class="sig-name descname"><span class="pre">test_std_err_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tolerance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_evaluate_cpc2.html#test_std_err_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_evaluate_cpc2.test_std_err_ok" title="Link to this definition"></a></dt>
+<dd><p>Test the function std_err valid inputs</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.recipes.cpc2.baseline.test_predict">
+<span id="tests-recipes-cpc2-baseline-test-predict-module"></span><h2>tests.recipes.cpc2.baseline.test_predict module<a class="headerlink" href="#module-tests.recipes.cpc2.baseline.test_predict" title="Link to this heading"></a></h2>
+<p>Tests for the CPC2 predict functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_predict.hydra_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_predict.</span></span><span class="sig-name descname"><span class="pre">hydra_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_predict.html#hydra_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_predict.hydra_cfg" title="Link to this definition"></a></dt>
+<dd><p>Fixture for hydra config.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_predict.model">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_predict.</span></span><span class="sig-name descname"><span class="pre">model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_predict.html#model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_predict.model" title="Link to this definition"></a></dt>
+<dd><p>Return a LogisticModel instance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_predict.test_logistic_model_extremes">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_predict.</span></span><span class="sig-name descname"><span class="pre">test_logistic_model_extremes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_predict.html#test_logistic_model_extremes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_predict.test_logistic_model_extremes" title="Link to this definition"></a></dt>
+<dd><p>Test the LogisticModel class .</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_predict.test_logistic_model_symmetry">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_predict.</span></span><span class="sig-name descname"><span class="pre">test_logistic_model_symmetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipes.cpc2.baseline.html#recipes.cpc2.baseline.predict.LogisticModel" title="recipes.cpc2.baseline.predict.LogisticModel"><span class="pre">LogisticModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_predict.html#test_logistic_model_symmetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_predict.test_logistic_model_symmetry" title="Link to this definition"></a></dt>
+<dd><p>Test the LogisticModel is symmetric.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_predict.test_make_disjoint_train_set_empty">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_predict.</span></span><span class="sig-name descname"><span class="pre">test_make_disjoint_train_set_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_predict.html#test_make_disjoint_train_set_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_predict.test_make_disjoint_train_set_empty" title="Link to this definition"></a></dt>
+<dd><p>Test the make_disjoint_train_set function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.recipes.cpc2.baseline.test_predict.test_predict">
+<span class="sig-prename descclassname"><span class="pre">tests.recipes.cpc2.baseline.test_predict.</span></span><span class="sig-name descname"><span class="pre">test_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydra_cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/recipes/cpc2/baseline/test_predict.html#test_predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.recipes.cpc2.baseline.test_predict.test_predict" title="Link to this definition"></a></dt>
+<dd><p>Test predict function.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.recipes.cpc2.baseline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests.recipes.cpc2.baseline" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The 1st Clarity Prediction Challenge (CPC1) &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">The 1st Clarity Prediction Challenge (CPC1)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/recipes/cpc1/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-1st-clarity-prediction-challenge-cpc1">
+<h1>The 1st Clarity Prediction Challenge (CPC1)<a class="headerlink" href="#the-1st-clarity-prediction-challenge-cpc1" title="Link to this heading"></a></h1>
+<p>Clarity challenge code for the 1st prediction challenge (CPC1).</p>
+<p>There are two traks in CPC1:</p>
+<ul class="simple">
+<li><p><strong>closed-set</strong>: the evaluation systems and listeners are covered in the training set, the signals and listener repsonses are provieded in <code class="docutils literal notranslate"><span class="pre">CPC1.train.json</span></code></p></li>
+<li><p><strong>open-set</strong>: the evaluation systems and listeners are not seen in the training set, the signals and listener responses are provieded in <code class="docutils literal notranslate"><span class="pre">CPC1_indep.train.json</span></code></p></li>
+</ul>
+<p>For more information about the CPC1 please visit <a class="reference external" href="https://claritychallenge.org/docs/cpc1/cpc1_intro">claritychallenge.org/docs/cpc1/cpc1_intro</a>.</p>
+<section id="data-structure">
+<h2>Data structure<a class="headerlink" href="#data-structure" title="Link to this heading"></a></h2>
+<p>To download the CPC1 data, please visit <a class="reference external" href="https://mab.to/R6H84YNf74p5U">here</a>.</p>
+<p><strong>clarity_CPC1_data.v1_1</strong> contains the training data:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+|
+└───HA_outputs
+|   |
+|   └───train 3.8G
+|   |
+|   └───train_indep 2.8G
+|
+└───scenes 12.1G
+
+metadata
+    |CPC1.train.json
+    |CPC1.train_indep.json
+    |listener_data.CPC1_train.xlsx
+    listeners.CPC1_train.json
+    |scenes.CPC1_train.json
+</pre></div>
+</div>
+<p><strong>clarity_CPC1_data.test.v1</strong> follows the same structure as <strong>clarity_CPC1_data.v1_1</strong>, except that the listener responses (i.e. test labels) are not included. The test listener responses are in the <code class="docutils literal notranslate"><span class="pre">test_listener_responses</span></code>.</p>
+</section>
+<section id="baseline">
+<h2>Baseline<a class="headerlink" href="#baseline" title="Link to this heading"></a></h2>
+<p>The baseline folder provides the code of the Cambridge Auditory Group MSBG hearing loss model and MBSTOI, see <a class="reference internal" href="#../cec1/baseline"><span class="xref myst">CEC1</span></a>. Run <code class="docutils literal notranslate"><span class="pre">run.py</span></code> to generate the predicted intelligibility, and then run <code class="docutils literal notranslate"><span class="pre">compute_scores.py</span></code> to apply logistic fitting and compute the evaluation scores, including RMSE, normalised cross-correlation, Kendall’s Tau coefficient.</p>
+</section>
+<section id="citing-cpc1">
+<h2>Citing CPC1<a class="headerlink" href="#citing-cpc1" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@inproceedings{barker2022the,
+  title={The 1st Clarity Prediction Challenge: A machine learning challenge for hearing aid intelligibility prediction},
+  author={Jon Barker, Michael Akeroyd, Trevor J. Cox, John F. Culling, Jennifer Firth, Simone Graetzer, Holly Griffiths, Lara Harris, Graham Naylor, Zuzanna Podwinska, Eszter Porter and Rhoddy Viveros Munoz},
+  year={2022}
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

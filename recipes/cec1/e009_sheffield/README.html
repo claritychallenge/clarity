@@ -1,0 +1,133 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E009 - Implementation of the Sheffield entry for the first Clarity enhancement challenge (CEC1) &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">E009 - Implementation of the Sheffield entry for the first Clarity enhancement challenge (CEC1)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/recipes/cec1/e009_sheffield/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="e009-implementation-of-the-sheffield-entry-for-the-first-clarity-enhancement-challenge-cec1">
+<h1>E009 - Implementation of the Sheffield entry for the first Clarity enhancement challenge (CEC1)<a class="headerlink" href="#e009-implementation-of-the-sheffield-entry-for-the-first-clarity-enhancement-challenge-cec1" title="Link to this heading"></a></h1>
+<p>This repository contains the PyTorch implementation of “<a class="reference external" href="https://claritychallenge.github.io/clarity2021-workshop/papers/Clarity_2021_paper_tu.pdf">A Two-Stage End-to-End System for Speech-in-Noise Hearing Aid Processing</a>”, the Sheffield entry E009 for the first <a class="reference external" href="https://claritychallenge.github.io/clarity2021-workshop/results.html">Clarity enhancement challenge (CEC1)</a>. The system consists of a <a class="reference external" href="https://github.com/kaituoxu/Conv-TasNet">Conv-TasNet</a> based denoising module, and a finite-inpulse-response (FIR) filter based amplification module. A differentiable approximation to the <a class="reference external" href="https://github.com/claritychallenge/clarity_CEC1/tree/master/projects/MSBG">Cambridge MSBG model</a> released in the CEC1 is used in the loss function.</p>
+<section id="train">
+<h2>Train<a class="headerlink" href="#train" title="Link to this heading"></a></h2>
+<p>To build the overall system, the multi-channel Conv-TasNet based denoising module is trained in the first stage, and the FIR based amplification module is trained in the second stage. The FIR amplification module is dependent on the listener ID. To run the script, specify <code class="docutils literal notranslate"><span class="pre">path.cec1_root</span></code> as the CEC1 data path, and <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code> as the experiment directory.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>[1] Luo Y, Mesgarani N. Conv-tasnet: Surpassing ideal time–frequency magnitude masking for speech separation[J]. IEEE/ACM transactions on audio, speech, and language processing, 2019, 27(8): 1256-1266.</p></li>
+<li><p>[2] Andersen A H, de Haan J M, Tan Z H, et al. Refinement and validation of the binaural short time objective intelligibility measure for spatially diverse conditions[J]. Speech Communication, 2018, 102: 1-13.</p></li>
+<li><p>[3] Taal, C. H., Hendriks, R. C., Heusdens, R., &amp; Jensen, J. An algorithm for intelligibility prediction of time–frequency weighted noisy speech. IEEE Transactions on Audio, Speech, and Language Processing, 19(7), 2125-2136.</p></li>
+<li><p>[4] Zhang, J., Zorilă, C., Doddipatla, R., &amp; Barker, J. On end-to-end multi-channel time domain speech separation in reverberant environments. In ICASSP 2020-2020 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) (pp. 6389-6393). IEEE.</p></li>
+</ul>
+</section>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading"></a></h2>
+<p>If you use this work, please cite:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">tutwo</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{A Two-Stage End-to-End System for Speech-in-Noise Hearing Aid Processing}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Tu, Zehai and Zhang, Jisi and Ma, Ning and Barker, Jon}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2021}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">booktitle</span><span class="p">=</span><span class="s">{The Clarity Workshop on Machine Learning Challenges for Hearing Aids (Clarity-2021)}</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

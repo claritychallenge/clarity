@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/recipes/cpc1/e029_sheffield/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="e029-unsupervised-uncertainty-measures-of-automatic-speech-recognition-for-non-intrusive-speech-intelligibility-prediction">
+<h1>E029 - Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction<a class="headerlink" href="#e029-unsupervised-uncertainty-measures-of-automatic-speech-recognition-for-non-intrusive-speech-intelligibility-prediction" title="Link to this heading"></a></h1>
+<p>The implementation of <a class="reference external" href="https://arxiv.org/abs/2204.04288">“Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction”</a>, accepted to InterSpeech 2022. For the 1st Clarity Prediction Challenge (CPC1) programme and details, please see <a class="reference external" href="https://claritychallenge.github.io/clarity2022-workshop/programme.html">here</a>.</p>
+<p>Please note: This code provides the implementation of the LS(LibriSpeech) + CPC1 model. The training with LS train-clean-100 added with CEC1 noise data is not provided here, as it is a bit over-complicated.</p>
+<section id="run-the-scripts">
+<h2>Run the scripts<a class="headerlink" href="#run-the-scripts" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>torch==1.10.0
+torchaudio==0.10.0
+speechbrain==0.5.9
+</pre></div>
+</div>
+</section>
+<section id="prepare-asr-data">
+<h3>Prepare ASR data<a class="headerlink" href="#prepare-asr-data" title="Link to this heading"></a></h3>
+<p>Same as e032_sheffield:</p>
+<p>To train the ASR model and generate the hidden representations from it, the CPC1 data needs to be processed first. This part of code will (1) randomly split train and dev set; (2) run MSBG hearing loss simulation to all signals in <code class="docutils literal notranslate"><span class="pre">clarity_data/HA_output</span></code>; (3) resample signals to 16kHz and generate csv files for SpeechBrain ASR model training.</p>
+<ul class="simple">
+<li><p>Download <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data.v1_1.tgz</span></code> and <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data.test.v1.tgz</span></code>, untar them into <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_train</span></code> and <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_test</span></code>, respectively. See recipes/cpc1/baseline/README.</p></li>
+<li><p>Specify <code class="docutils literal notranslate"><span class="pre">root</span></code> in config.yaml. Both <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_train</span></code> and <code class="docutils literal notranslate"><span class="pre">clarity_CPC1_data_test</span></code> should be in your root folder. You could also specify your own <code class="docutils literal notranslate"><span class="pre">exp_folder</span></code>.</p></li>
+<li><p>Specify <code class="docutils literal notranslate"><span class="pre">cpc1_track</span></code> as ‘open’ or ‘closed’.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">prepare_data.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cpc1_asr_data</span></code> which contains the processed train &amp; test CPC1 data and their csv files, and <code class="docutils literal notranslate"><span class="pre">data_split</span></code> which contains the train set and dev set scenes, will appear in your <code class="docutils literal notranslate"><span class="pre">exp_folder</span></code>.</p></li>
+</ul>
+</section>
+<section id="train-asr-models">
+<h3>Train ASR models<a class="headerlink" href="#train-asr-models" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Create your <code class="docutils literal notranslate"><span class="pre">transformer_cpc1</span></code> folder to save ASR models. As we need an ensemble of ASR models, we need to train them separately. Therefore, create <code class="docutils literal notranslate"><span class="pre">N</span></code> sub-folders <code class="docutils literal notranslate"><span class="pre">asr0</span></code>, <code class="docutils literal notranslate"><span class="pre">asr1</span></code>, …, <code class="docutils literal notranslate"><span class="pre">asrN</span></code> under <code class="docutils literal notranslate"><span class="pre">transformer_cpc1</span></code>.</p></li>
+<li><p>Specify output_folder &amp; data_folder in transformer_cpc1.yaml:
+<code class="docutils literal notranslate"><span class="pre">data_folder:</span> <span class="pre">!ref</span> <span class="pre">your_path/e029/cpc1_asr_data</span>&#160; <span class="pre">#</span> <span class="pre">for</span> <span class="pre">closed-set</span></code>
+OR
+<code class="docutils literal notranslate"><span class="pre">data_folder:</span> <span class="pre">!ref</span> <span class="pre">your_path/e029/cpc1_asr_data_indep</span>&#160; <span class="pre">#</span> <span class="pre">for</span> <span class="pre">open-set</span></code></p></li>
+<li><p>Download the <code class="docutils literal notranslate"><span class="pre">save</span></code> folder (i.e. ASR transformer checkpoint) from: <a class="reference external" href="https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7">https://drive.google.com/drive/folders/1ZudxqMWb8VNCJKvY2Ws5oNY3WI1To0I7</a>, and place it under your <code class="docutils literal notranslate"><span class="pre">transformer_cpc1/asr0/</span></code>, <code class="docutils literal notranslate"><span class="pre">transformer_cpc1/asr1/</span></code>, …, <code class="docutils literal notranslate"><span class="pre">transformer_cpc1/asrN/</span></code> folder</p></li>
+<li><p>Train the ASR models, run:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>train_asr.py<span class="w"> </span>transformer_cpc1.yaml<span class="w"> </span>--seed<span class="w"> </span><span class="m">0000</span><span class="w"> </span>--output_folder<span class="w"> </span>your_path/transformer_cpc1/asr0
+python<span class="w"> </span>train_asr.py<span class="w"> </span>transformer_cpc1.yaml<span class="w"> </span>--seed<span class="w"> </span><span class="m">0001</span><span class="w"> </span>--output_folder<span class="w"> </span>your_path/transformer_cpc1/asr1
+python<span class="w"> </span>train_asr.py<span class="w"> </span>transformer_cpc1.yaml<span class="w"> </span>--seed<span class="w"> </span><span class="m">0002</span><span class="w"> </span>--output_folder<span class="w"> </span>your_path/transformer_cpc1/asr2
+...
+python<span class="w"> </span>train_asr.py<span class="w"> </span>transformer_cpc1.yaml<span class="w"> </span>--seed<span class="w"> </span>000N<span class="w"> </span>--output_folder<span class="w"> </span>your_path/transformer_cpc1/asrN
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Put all the trained ASR models in the same folder <code class="docutils literal notranslate"><span class="pre">asr_ensemble</span></code>. The eventual structure will look like:</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>your_path
+|
+└───transformer_cpc1
+     |  asr0/save/
+     |  asr1/save/
+     |  asr2/save/
+     |  ...
+     |  asrN/save/
+     |
+     └───asr_ensemble
+            └───save
+               |  CKPT+xxxxx/ (from asr0)
+               |  CKPT+xxxxx/ (from asr1)
+               |  CKPT+xxxxx/ (from asr2)
+               |  ...
+               |  CKPT+xxxxx/ (from asrN)
+               |  5000_unigram.model
+               |  lm.ckpt
+               |  lm_model.ckpt
+               |  tokenizer.ckpt
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Specify <code class="docutils literal notranslate"><span class="pre">output_folder</span></code> in transformer_cpc1.yaml as <code class="docutils literal notranslate"><span class="pre">your_path/e029/transformer_cpc1/asr_ensemble</span></code>. Specify <code class="docutils literal notranslate"><span class="pre">n_ensembles</span></code>  in transformer_cpc1.yaml as the number of ASR models.</p></li>
+</ul>
+</section>
+<section id="infer-uncertainty">
+<h3>Infer uncertainty<a class="headerlink" href="#infer-uncertainty" title="Link to this heading"></a></h3>
+<p>This part generates the uncertainties, including the confidence and negative entropy.</p>
+<ul class="simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">infer.py</span></code>. Four json files <code class="docutils literal notranslate"><span class="pre">dev_conf.json</span></code>, <code class="docutils literal notranslate"><span class="pre">dev_negent.json</span></code>, <code class="docutils literal notranslate"><span class="pre">test_conf.json</span></code>, <code class="docutils literal notranslate"><span class="pre">test_negent.json</span></code> will be generated in your <code class="docutils literal notranslate"><span class="pre">exp_folder</span></code>.</p></li>
+</ul>
+</section>
+<section id="evaluation">
+<h3>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading"></a></h3>
+<p>Same as e032_sheffield:</p>
+<p>This part optimize a logistic fitting function with the dev set similarities and dev set labels, and applies the fitting function to the test set similarities for scaled predicted test set prediction. And the evaluation results of RMSE, Std, NCC and KT will be computed and stored in the <code class="docutils literal notranslate"><span class="pre">results.json</span></code>.</p>
+<ul class="simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">evaluate.py</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading"></a></h2>
+<p>If you use this code for your research, please cite:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@inproceedings{tu2022unsupervised,
+  title={Unsupervised Uncertainty Measures of Automatic Speech Recognition for Non-intrusive Speech Intelligibility Prediction},
+  author={Tu, Zehai and Ma, Ning and Barker, Jon},
+  booktitle={INTERSPEECH 2022},
+  year={2022}
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

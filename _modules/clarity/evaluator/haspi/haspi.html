@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clarity.evaluator.haspi.haspi &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">clarity.evaluator.haspi.haspi</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for clarity.evaluator.haspi.haspi</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;HASPI intelligibility Index&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Final</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.haspi.eb</span><span class="w"> </span><span class="kn">import</span> <span class="n">ear_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.haspi.ebm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cepstral_correlation_coef</span><span class="p">,</span>
+    <span class="n">env_filter</span><span class="p">,</span>
+    <span class="n">fir_modulation_filter</span><span class="p">,</span>
+    <span class="n">modulation_cross_correlation</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.haspi.ip</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_neural_net</span><span class="p">,</span> <span class="n">nn_feed_forward_ensemble</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Audiogram</span><span class="p">,</span> <span class="n">Listener</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndarray</span>
+
+
+<span class="c1"># HASPI assumes the following audiogram frequencies:</span>
+<span class="n">HASPI_AUDIOGRAM_FREQUENCIES</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="haspi_v2">
+<a class="viewcode-back" href="../../../../clarity.evaluator.haspi.html#clarity.evaluator.haspi.haspi.haspi_v2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">haspi_v2</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments too-many-locals</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">reference_sample_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">processed</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">processed_sample_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">audiogram</span><span class="p">:</span> <span class="n">Audiogram</span><span class="p">,</span>
+    <span class="n">level1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">65.0</span><span class="p">,</span>
+    <span class="n">f_lp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">320.0</span><span class="p">,</span>
+    <span class="n">itype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the HASPI intelligibility index using the</span>
+<span class="sd">    auditory model followed by computing the envelope cepstral</span>
+<span class="sd">    correlation and BM vibration high-level covariance. The reference</span>
+<span class="sd">    signal presentation level for NH listeners is assumed to be 65 dB</span>
+<span class="sd">    SPL. The same model is used for both normal and impaired hearing. This</span>
+<span class="sd">    version of HASPI uses a modulation filterbank followed by an ensemble of</span>
+<span class="sd">    neural networks to compute the estimated intelligibility.</span>
+
+<span class="sd">    **NB** - The original HASPI model derivation included a bug which meant that</span>
+<span class="sd">    although the &#39;shift&#39; parameter used in band centre frequency calculations was set to</span>
+<span class="sd">    &#39;0.02&#39; it was never actually applied. To replicate this behaviour ear_model is</span>
+<span class="sd">    called with &#39;shift&#39; set to None.  For discussion please refer to the discussion in</span>
+<span class="sd">    `Issue #105 &lt;https://github.com/claritychallenge/clarity/issues/105&gt;`</span>
+<span class="sd">    for further details.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reference (np.ndarray): Clear input reference speech signal with no noise or</span>
+<span class="sd">            distortion. If a hearing loss is specified, no amplification should be</span>
+<span class="sd">            provided.</span>
+<span class="sd">        reference_sample_rate (int): Sampling rate in Hz for signal x</span>
+<span class="sd">        processed (np.ndarray): Output signal with noise, distortion, HA gain, and/or</span>
+<span class="sd">            processing.</span>
+<span class="sd">        processed_sample_rate (int): Sampling rate in Hz for signal y.</span>
+<span class="sd">        hearing_loss (np.ndarray): (1,6) vector of hearing loss at the 6 audiometric</span>
+<span class="sd">            frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.</span>
+<span class="sd">        level1 (int): Optional input specifying level in dB SPL that corresponds to a</span>
+<span class="sd">            signal RMS = 1. Default is 65 dB SPL if argument not provided.</span>
+<span class="sd">        f_lp (int):</span>
+<span class="sd">        itype (int): Intelligibility model</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple(Intel: float, raw: nd-array)</span>
+<span class="sd">        Intel: Intelligibility estimated by passing the cepstral coefficients</span>
+<span class="sd">              through a modulation filterbank followed by an ensemble of</span>
+<span class="sd">              neural networks.</span>
+<span class="sd">        raw: vector of 10 cep corr modulation filterbank outputs, averaged</span>
+<span class="sd">              over basis functions 2-6.</span>
+
+<span class="sd">    Updates:</span>
+<span class="sd">        James M. Kates, 5 August 2013.</span>
+<span class="sd">        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">audiogram</span><span class="o">.</span><span class="n">has_frequencies</span><span class="p">(</span><span class="n">HASPI_AUDIOGRAM_FREQUENCIES</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;Audiogram does not have all HASPI frequency measurements&quot;</span>
+            <span class="s2">&quot;Measurements will be interpolated&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Adjust audiogram to match the standard frequencies</span>
+    <span class="n">audiogram</span> <span class="o">=</span> <span class="n">audiogram</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">HASPI_AUDIOGRAM_FREQUENCIES</span><span class="p">)</span>
+
+    <span class="c1"># Auditory model for intelligibility</span>
+    <span class="c1"># Reference is no processing, normal hearing</span>
+    <span class="n">reference_env</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">processed_env</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fsamp</span> <span class="o">=</span> <span class="n">ear_model</span><span class="p">(</span>
+        <span class="n">reference</span><span class="p">,</span>
+        <span class="n">reference_sample_rate</span><span class="p">,</span>
+        <span class="n">processed</span><span class="p">,</span>
+        <span class="n">processed_sample_rate</span><span class="p">,</span>
+        <span class="n">audiogram</span><span class="o">.</span><span class="n">levels</span><span class="p">,</span>
+        <span class="n">itype</span><span class="p">,</span>
+        <span class="n">level1</span><span class="p">,</span>
+        <span class="c1"># shift=0.02 # See comment in docstring</span>
+        <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Envelope modulation features</span>
+
+    <span class="c1"># LP filter and subsample the envelope</span>
+    <span class="n">fsub</span> <span class="o">=</span> <span class="mf">8.0</span> <span class="o">*</span> <span class="n">f_lp</span>  <span class="c1"># subsample to span 2 octaves above the cutoff frequency</span>
+    <span class="n">reference_lp</span><span class="p">,</span> <span class="n">processed_lp</span> <span class="o">=</span> <span class="n">env_filter</span><span class="p">(</span>
+        <span class="n">reference_env</span><span class="p">,</span> <span class="n">processed_env</span><span class="p">,</span> <span class="n">f_lp</span><span class="p">,</span> <span class="n">fsub</span><span class="p">,</span> <span class="n">fsamp</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute the cepstral coefficients as a function of subsampled time</span>
+    <span class="n">nbasis</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># Use 6 basis functions</span>
+    <span class="n">thr</span> <span class="o">=</span> <span class="mf">2.5</span>  <span class="c1"># Silence threshold in dB SL</span>
+    <span class="n">dither</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># Dither in dB RMS to add to envelope signals</span>
+    <span class="n">reference_cep</span><span class="p">,</span> <span class="n">processed_cep</span> <span class="o">=</span> <span class="n">cepstral_correlation_coef</span><span class="p">(</span>
+        <span class="n">reference_lp</span><span class="p">,</span> <span class="n">processed_lp</span><span class="p">,</span> <span class="n">thr</span><span class="p">,</span> <span class="n">dither</span><span class="p">,</span> <span class="n">nbasis</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Cepstral coefficients filtered at each modulation rate</span>
+    <span class="c1"># Band center frequencies [2, 6, 10, 16, 25, 40, 64, 100, 160, 256] Hz</span>
+    <span class="c1"># Band edges [0, 4, 8, 12.5, 20.5, 30.5, 52.4, 78.1, 128, 200, 328] Hz</span>
+    <span class="n">reference_mod</span><span class="p">,</span> <span class="n">processed_mod</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fir_modulation_filter</span><span class="p">(</span>
+        <span class="n">reference_cep</span><span class="p">,</span> <span class="n">processed_cep</span><span class="p">,</span> <span class="n">fsub</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Cross-correlation between the cepstral coefficients for the degraded and</span>
+    <span class="c1"># ref signals at each modulation rate, averaged over basis functions 2-6</span>
+    <span class="n">average_correlation_matrix</span> <span class="o">=</span> <span class="n">modulation_cross_correlation</span><span class="p">(</span>
+        <span class="n">reference_mod</span><span class="p">,</span> <span class="n">processed_mod</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Intelligibility prediction</span>
+    <span class="c1"># Get the neural network parameters and the weights for an ensemble of 10 networks</span>
+    <span class="p">(</span>
+        <span class="n">neural_net_params</span><span class="p">,</span>
+        <span class="n">weights_hidden</span><span class="p">,</span>
+        <span class="n">weights_out</span><span class="p">,</span>
+        <span class="n">normalization_factor</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">get_neural_net</span><span class="p">()</span>
+
+    <span class="c1"># Average the neural network outputs for the modulation filterbank values</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">nn_feed_forward_ensemble</span><span class="p">(</span>
+        <span class="n">average_correlation_matrix</span><span class="p">,</span> <span class="n">neural_net_params</span><span class="p">,</span> <span class="n">weights_hidden</span><span class="p">,</span> <span class="n">weights_out</span>
+    <span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span> <span class="o">/</span> <span class="n">normalization_factor</span>
+
+    <span class="c1"># Return the intelligibility estimate and raw modulation filter outputs</span>
+    <span class="k">return</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">average_correlation_matrix</span></div>
+
+
+
+<div class="viewcode-block" id="haspi_v2_be">
+<a class="viewcode-back" href="../../../../clarity.evaluator.haspi.html#clarity.evaluator.haspi.haspi.haspi_v2_be">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">haspi_v2_be</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+    <span class="n">reference_left</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">reference_right</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">processed_left</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">processed_right</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">listener</span><span class="p">:</span> <span class="n">Listener</span><span class="p">,</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Better ear HASPI.</span>
+
+<span class="sd">    Calculates HASPI for left and right ear and selects the better result.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ref_left (np.ndarray): left channel of reference signal</span>
+<span class="sd">        ref_right (np.ndarray): right channel of reference signal</span>
+<span class="sd">        proc_left (np.ndarray): left channel of processed signal</span>
+<span class="sd">        proc_right (np.ndarray): right channel of processed signal</span>
+<span class="sd">        sample_rate (int): sampling rate for both signal</span>
+<span class="sd">        audiogram_left (): left ear audiogram</span>
+<span class="sd">        audiogram_right (): right ear audiogram</span>
+<span class="sd">        level: level in dB SPL corresponding to RMS=1</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: beHASPI score</span>
+
+<span class="sd">    Updates:</span>
+<span class="sd">        Zuzanna Podwinska, March 2022</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">score_left</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">haspi_v2</span><span class="p">(</span>
+        <span class="n">reference_left</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">,</span>
+        <span class="n">processed_left</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">,</span>
+        <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_left</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">score_right</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">haspi_v2</span><span class="p">(</span>
+        <span class="n">reference_right</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">,</span>
+        <span class="n">processed_right</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">,</span>
+        <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_right</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">score_left</span><span class="p">,</span> <span class="n">score_right</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

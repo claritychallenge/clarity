@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clarity.engine package &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyClarity
+              <img src="_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">clarity.engine package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/clarity.engine.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="clarity-engine-package">
+<h1>clarity.engine package<a class="headerlink" href="#clarity-engine-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-clarity.engine.losses">
+<span id="clarity-engine-losses-module"></span><h2>clarity.engine.losses module<a class="headerlink" href="#module-clarity.engine.losses" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.engine.losses.SISNRLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.engine.losses.</span></span><span class="sig-name descname"><span class="pre">SISNRLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#SISNRLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.SISNRLoss" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.SISNRLoss.cal_sisnr">
+<span class="sig-name descname"><span class="pre">cal_sisnr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#SISNRLoss.cal_sisnr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.SISNRLoss.cal_sisnr" title="Link to this definition"></a></dt>
+<dd><p>Arguments:
+x: separated signal, N x S tensor
+s: reference signal, N x S tensor
+Return:
+sisnr: N tensor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.SISNRLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#SISNRLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.SISNRLoss.forward" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.engine.losses.SNRLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.engine.losses.</span></span><span class="sig-name descname"><span class="pre">SNRLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#SNRLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.SNRLoss" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.SNRLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#SNRLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.SNRLoss.forward" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.SNRLoss.l2norm">
+<span class="sig-name descname"><span class="pre">l2norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#SNRLoss.l2norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.SNRLoss.l2norm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILevelLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.engine.losses.</span></span><span class="sig-name descname"><span class="pre">STOILevelLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#STOILevelLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.STOILevelLoss" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILevelLoss.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#clarity.engine.losses.STOILevelLoss.alpha" title="Link to this definition"></a></dt>
+<dd><p>rms measurement</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILevelLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#STOILevelLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.STOILevelLoss.forward" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILevelLoss.gamma_a">
+<span class="sig-name descname"><span class="pre">gamma_a</span></span><a class="headerlink" href="#clarity.engine.losses.STOILevelLoss.gamma_a" title="Link to this definition"></a></dt>
+<dd><p>mse</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILevelLoss.measure_loudness">
+<span class="sig-name descname"><span class="pre">measure_loudness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#STOILevelLoss.measure_loudness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.STOILevelLoss.measure_loudness" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.engine.losses.</span></span><span class="sig-name descname"><span class="pre">STOILoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#STOILoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.STOILoss" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.losses.STOILoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/losses.html#STOILoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.losses.STOILoss.forward" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.engine.system">
+<span id="clarity-engine-system-module"></span><h2>clarity.engine.system module<a class="headerlink" href="#module-clarity.engine.system" title="Link to this heading"></a></h2>
+<p>Adopted from Asteroid
+<a class="reference external" href="https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py">https://github.com/asteroid-team/asteroid/blob/master/asteroid/engine/system.py</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.engine.system.System">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.engine.system.</span></span><span class="sig-name descname"><span class="pre">System</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LightningModule</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.common_step">
+<span class="sig-name descname"><span class="pre">common_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_nb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.common_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.common_step" title="Link to this definition"></a></dt>
+<dd><p>Common forward step between training and validation.
+The function of this method is to unpack the data given by the loader,
+forward the batch through the model and compute the loss.
+Pytorch-lightning handles all the rest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> – the object returned by the loader (a list of torch.Tensor
+in most cases) but can be something else.</p></li>
+<li><p><strong>_batch_nb</strong> (<em>int</em>) – The number of the batch in the epoch.</p></li>
+<li><p><strong>_train</strong> (<em>bool</em>) – Whether in training mode. Needed only if the training
+and validation steps are fundamentally different, otherwise,
+pytorch-lightning handles the usual differences.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loss value on this batch.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is typically the method to overwrite when subclassing
+<code class="docutils literal notranslate"><span class="pre">System</span></code>. If the training and validation steps are somehow
+different (except for <code class="docutils literal notranslate"><span class="pre">loss.backward()</span></code> and <code class="docutils literal notranslate"><span class="pre">optimzer.step()</span></code>),
+the argument <code class="docutils literal notranslate"><span class="pre">train</span></code> can be used to switch behavior.
+Otherwise, <code class="docutils literal notranslate"><span class="pre">training_step</span></code> and <code class="docutils literal notranslate"><span class="pre">validation_step</span></code> can be overwriten.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.configure_optimizers">
+<span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.configure_optimizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.configure_optimizers" title="Link to this definition"></a></dt>
+<dd><p>Initialize optimizers, batch-wise and epoch-wise schedulers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.forward" title="Link to this definition"></a></dt>
+<dd><p>Applies forward pass of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.on_save_checkpoint">
+<span class="sig-name descname"><span class="pre">on_save_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.on_save_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.on_save_checkpoint" title="Link to this definition"></a></dt>
+<dd><p>Overwrite if you want to save more things in the checkpoint.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.on_validation_epoch_end">
+<span class="sig-name descname"><span class="pre">on_validation_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.on_validation_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.on_validation_epoch_end" title="Link to this definition"></a></dt>
+<dd><p>Log hp_metric to tensorboard for hparams selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.train_dataloader">
+<span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.train_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.train_dataloader" title="Link to this definition"></a></dt>
+<dd><p>Training dataloader</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.training_step">
+<span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.training_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.training_step" title="Link to this definition"></a></dt>
+<dd><p>Pass data through the model and compute the loss.
+Backprop is <strong>not</strong> performed (meaning PL will do it for you).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> – the object returned by the loader (a list of torch.Tensor
+in most cases) but can be something else.</p></li>
+<li><p><strong>batch_nb</strong> (<em>int</em>) – The number of the batch in the epoch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor, the value of the loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.val_dataloader">
+<span class="sig-name descname"><span class="pre">val_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.val_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.val_dataloader" title="Link to this definition"></a></dt>
+<dd><p>Validation dataloader</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.engine.system.System.validation_step">
+<span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/engine/system.html#System.validation_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.engine.system.System.validation_step" title="Link to this definition"></a></dt>
+<dd><p>Need to overwrite PL validation_step to do validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> – the object returned by the loader (a list of torch.Tensor
+in most cases) but can be something else.</p></li>
+<li><p><strong>batch_nb</strong> (<em>int</em>) – The number of the batch in the epoch.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.engine">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.engine" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

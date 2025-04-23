@@ -1,0 +1,124 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLARITY CEC1 Baseline &mdash; pyClarity 0.7.1.post21 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5cc28f93"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pyClarity
+              <img src="../../../_static/challenges.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pyClarity</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CLARITY CEC1 Baseline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/recipes/cec1/baseline/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="clarity-cec1-baseline">
+<h1>CLARITY CEC1 Baseline<a class="headerlink" href="#clarity-cec1-baseline" title="Link to this heading"></a></h1>
+<p>In <code class="docutils literal notranslate"><span class="pre">data_config.yaml</span></code>, specify <code class="docutils literal notranslate"><span class="pre">path.root</span></code> folder in which you unpack the data; speciy <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code> which will store intermediate signals and final results. Please be carefull if you want to change the parameters in the config file.</p>
+<section id="hearing-aid-baseline-system">
+<h2>1. Hearing aid baseline system<a class="headerlink" href="#hearing-aid-baseline-system" title="Link to this heading"></a></h2>
+<p>THe openMHA software is used as the baseline hearing aid system. You need to <a class="reference external" href="http://www.openmha.org/download/">download</a> and install openMHA to run <code class="docutils literal notranslate"><span class="pre">enhance.py</span></code>, which generates enhanced scenes.</p>
+</section>
+<section id="evaluation">
+<h2>2. Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading"></a></h2>
+<p>The combination of MSBG hearing loss model and MBSTOI.  In <code class="docutils literal notranslate"><span class="pre">evaluate.py</span></code>, <code class="docutils literal notranslate"><span class="pre">run_HL_processing</span></code> runs MSBG hearing loss simulation, and <code class="docutils literal notranslate"><span class="pre">run_calculate_SI</span></code> computes MBSTOI scores. The intermediate signals and final scores will be saved. Note: if there are not <code class="docutils literal notranslate"><span class="pre">enhanced_signals</span></code>, the evaluation will be done with the original scene <code class="docutils literal notranslate"><span class="pre">mixed_CH0</span></code>.</p>
+</section>
+<section id="information-on-default-parameter-values">
+<h2>3.Information on default parameter values<a class="headerlink" href="#information-on-default-parameter-values" title="Link to this heading"></a></h2>
+<p>The default sampling rate is 44.1 kHz. The default output gain constant is 1. The default pre-duration and post-duration interferer periods are 2.0 and 1.0 (s), repectively. This means that the interferer starts 2 seconds before the target speech, and ends 1 second afterwards. The reverberation tail duration is 0.2 (s). The default duration of the ramp into and out of the interferer signal sampled for each scene is 0.5 (s).</p>
+<p>The GHA and MSBG modules have parameter settings as follows: the default centre frequencies for the audiograms are [250, 500, 1000, 2000, 3000, 4000, 6000, 8000], as these are used in the listener data provided.</p>
+<p>In our implementation, the CAMFIT prescription used in the GHA module sets parameter noisegatelevels (compression thresholds) to the band levels for a speech-shaped noise signal with an overall level of 45 dB SPL: [38, 38, 36, 37, 32, 26, 23, 22, 8]. There is a one-to-one input-output gain relationship below the compression threshold, hence for GHA parameter noisegateslope is set to 0. The input level for compression ratio calculation, parameter cr_level, is set to 0, indicating that it varies depending on insertion gains. The prescription is set to have a maximum output level, parameter max_output_level, of 100 dB SPL. The default configuration file for GHA is set to ‘prerelease_combination3_smooth’.</p>
+<p>In the baseline, a convention is used to estimate the level of signals as they pass through the pipeline: that a +/-1 square wave has RMS = 0dB (full scale or FS). Further, up to the point of signals being produced by the GHA module, the convention is that 0 dB FS is equal to 100 dB SPL. See parameter equiv0dBSPL. From that point onwards, as GHA provides 20 dB of amplification headroom (parameter ahr), the convention is that 0 dB FS is equal to 120 dB SPL. The MSBG signal processing relies on knowing the true input level in dB SPL.</p>
+<p>In the creation of the provided scene metadata, signal-to-noise ratios (SNRs) were pseudo- randomly sampled from the ranges [0,12] dB for speech interferers, and [-6,6] dB for non- speech interferers. Three listeners are assigned to each scene.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2025, pyClarity authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
