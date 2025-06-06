@@ -94,7 +94,7 @@ def generate_toctree_content(config_data):
     toctree_blocks = []
     for category_name, items in config_data.items():
         toctree_blocks.append(f"\n.. toctree::")
-        toctree_blocks.append(f"   :maxdepth: 4")  # You can change this maxdepth
+        toctree_blocks.append(f"   :maxdepth: 1")  # You can change this maxdepth
         toctree_blocks.append(f"   :caption: {category_name}:")
         toctree_blocks.append(f"")  # Blank line after caption
 

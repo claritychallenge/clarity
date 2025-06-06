@@ -31,3 +31,5 @@ clean:
 	@rm -rf "$(SOURCEDIR)/automenu"
 	@rm -rf "$(SOURCEDIR)/generated"
 	@rm -rf "$(SOURCEDIR)/recipes"
+	@rm -rf "$(SOURCEDIR)/api_docs"
+	@rm -rf "$(SOURCEDIR)/recipe_docs"

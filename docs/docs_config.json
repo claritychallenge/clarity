@@ -2,14 +2,14 @@
     "API Documentation": [
         {
             "path": "clarity/enhancer",
-            "levels": 3,
+            "levels": 1,
             "output_dir_name": "api_docs/enhancer",
             "output_file_name": "enhancer",
             "top_level_title": "Enhancer"
         },
         {
             "path": "clarity/evaluator",
-            "levels": 3,
+            "levels": 1,
             "output_dir_name": "api_docs/evaluator",
             "output_file_name": "evaluator",
             "top_level_title": "Evaluator"

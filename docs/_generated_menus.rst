@@ -1,6 +1,6 @@
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    :caption: API Documentation:
 
    api_docs/enhancer/enhancer
@@ -13,7 +13,7 @@
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    :caption: Cadenza Challenge Recipes:
 
    recipe_docs/cad1/cad1
@@ -23,7 +23,7 @@
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    :caption: Clarity Recipes:
 
    recipe_docs/cec1/cec1
