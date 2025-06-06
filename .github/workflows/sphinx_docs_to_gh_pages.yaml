@@ -22,6 +22,9 @@ jobs:
       - name: Installing the Documentation requirements
         run: |
           pip3 install .[docs]
+      - name: Generate Recipe Documentation RST files
+        run: |
+          python docs/gen_recipes.py
       - name: Copying recipe README.md
         run: |
          rsync -av --exclude-from="docs/recipe_rsync_exclude.txt" recipes docs/.
