@@ -18,8 +18,7 @@ GENERATOR_SCRIPT_NAME = (
 )
 GENERATOR_SCRIPT_PATH = os.path.join(DOCS_ROOT, GENERATOR_SCRIPT_NAME)
 
-BEGIN_MARKER = "# --- BEGIN GENERATED MENUS ---"
-END_MARKER = "# --- END GENERATED MENUS ---"
+GENERATED_MENUS_RST_PATH = os.path.join(DOCS_ROOT, "_generated_menus.rst")
 
 # --- Helper Functions ---
 
@@ -115,28 +114,12 @@ def generate_toctree_content(config_data):
     return "\n".join(toctree_blocks)
 
 
-def update_index_rst(generated_content):
-    """Reads index.rst, inserts generated content, and writes it back."""
-    print(f"\nUpdating {INDEX_RST_PATH}...")
-    with open(INDEX_RST_PATH, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    output_lines = []
-    in_generated_block = False
-    for line in lines:
-        if BEGIN_MARKER in line:
-            output_lines.append(line)
-            output_lines.append(generated_content)
-            in_generated_block = True
-        elif END_MARKER in line:
-            in_generated_block = False
-            output_lines.append(line)
-        elif not in_generated_block:
-            output_lines.append(line)
-
-    with open(INDEX_RST_PATH, "w", encoding="utf-8") as f:
-        f.writelines(output_lines)
-    print("index.rst updated successfully.")
+def write_generated_menus_rst(generated_content):
+    """Writes the generated toctree content to a dedicated _generated_menus.rst file."""
+    print(f"\nWriting generated menus to {GENERATED_MENUS_RST_PATH}...")
+    with open(GENERATED_MENUS_RST_PATH, "w", encoding="utf-8") as f:
+        f.write(generated_content)  # Write the string directly
+    print("_generated_menus.rst updated successfully.")
 
 
 # --- Main Execution ---
@@ -166,8 +149,8 @@ if __name__ == "__main__":
     # 4. Generate the RST content for index.rst
     generated_toctree_content = generate_toctree_content(config_data)
 
-    # 5. Update index.rst
-    update_index_rst(generated_toctree_content)
+    # 5. Write the generated content to the new file
+    write_generated_menus_rst(generated_toctree_content)
 
     print(
         "\nFull documentation generation process finished. Now run 'make html' from your docs/ directory."

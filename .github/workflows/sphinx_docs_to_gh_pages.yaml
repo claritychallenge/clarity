@@ -22,7 +22,7 @@ jobs:
       - name: Installing the Documentation requirements
         run: |
           pip3 install .[docs]
-      - name: Generate Recipe Documentation RST files
+      - name: Generate RST files from docs_config.json
         run: |
           python docs/generate_full_docs.py
       - name: Copying recipe README.md
