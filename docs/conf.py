@@ -34,6 +34,7 @@ except Exception:
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+root_doc = "index"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
@@ -43,13 +44,9 @@ extensions = [
 autosummary_generate = True
 
 autodoc_default_options = {
-    "members": True,  # Document members (functions, classes, methods)
-    "undoc-members": (
-        True
-    ),  # Document members without docstrings (optional, but can be useful)
-    "inherited-members": (
-        False
-    ),  # Set to True if you want docstrings inherited from base classes
+    "members": True,
+    "undoc-members": True,
+    "inherited-members": False,
     "show-inheritance": True,  # Show base classes of classes
     # 'private-members': False, # Usually keep this False unless specifically needed
     # 'special-members': False, # Usually keep this False unless specifically needed (e.g., __call__)
@@ -75,13 +72,9 @@ autodoc_mock_imports = [
 ]
 
 html_theme_options = {
-    "collapse_navigation": False,  # Keep the navigation fully expanded
-    "sticky_navigation": (
-        True
-    ),  # (Optional) Keep the navigation pane fixed when scrolling
-    "navigation_depth": (
-        4
-    ),  # (Optional) Set a deeper level for navigation items to appear
+    "collapse_navigation": False,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
     # 'includehidden': True,       # (Optional) Show toctree entries that are hidden by default
 }
 
