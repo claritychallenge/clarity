@@ -69,6 +69,10 @@ autodoc_mock_imports = [
     "transformer_cpc1_ensemble_decoder",
     "transformer_cpc1_decoder",
     "jiwer",
+    "huggingface_hub",
+    "museval",
+    "musdb",
+    "car_noise_simulator",
 ]
 
 html_theme_options = {
