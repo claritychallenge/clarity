@@ -4,17 +4,16 @@ from collections import defaultdict
 
 # --- Configuration ---
 script_dir = os.path.dirname(__file__)  # Path to the 'docs/' directory
-project_root = os.path.abspath(
-    os.path.join(script_dir, "../..")
-)  # Path to the project root
-recipes_package_path = os.path.join(
-    project_root, "recipes"
-)  # Path to the actual 'recipes' source directory
 
-output_base_dir = os.path.join(
-    script_dir, "recipes_api"
-)  # Output directory within docs/
-main_index_file_name = "recipes_index.rst"  # Default index file name for each directory
+# Path to the project root
+project_root = os.path.abspath(os.path.join(script_dir, ".."))
+# Path to the actual 'recipes' source directory
+recipes_package_path = os.path.join(project_root, "recipes")
+
+# Output directory within docs/
+output_base_dir = os.path.join(script_dir, "recipes_api")
+# Default index file name for each directory
+main_index_file_name = "recipes_index.rst"
 
 # Data structure to hold content grouped by category and then by full relative path within that category
 # Example:
@@ -157,7 +156,7 @@ def generate_nested_docs(
 
     # Add YAML content if present at this exact level (i.e., under the '.' key)
     if yaml_files_here:
-        # rst_lines.append(".. rubric:: Configuration Files\n\n")
+        rst_lines.append(".. rubric:: Configuration Files\n\n")
         for y_file_rel_from_project_root in yaml_files_here:
             full_yaml_path = os.path.join(project_root, y_file_rel_from_project_root)
             yaml_title = os.path.basename(full_yaml_path)

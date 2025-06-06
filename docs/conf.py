@@ -13,7 +13,7 @@ import sys
 
 import numpy as np
 
-sys.path.insert(0, os.path.abspath("../../"))
+sys.path.insert(0, os.path.abspath(".."))
 
 project = "pyClarity"
 copyright = "2020-2025, pyClarity authors"
