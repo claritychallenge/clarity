@@ -24,7 +24,7 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Clarity Recipes:
+   :caption: Clarity Challenge Recipes:
 
    recipe_docs/cec1/cec1
    recipe_docs/cec2/cec2

@@ -40,6 +40,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
+    "sphinx_multiversion",
 ]
 autosummary_generate = True
 
@@ -93,3 +94,18 @@ html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
 ]
+
+# --- sphinx-multiversion configuration ---
+
+# Build only the 'main' branch
+smv_branch_whitelist = r"^(main)$"
+
+# Build only the specified tags
+# The 'r' before the string denotes a raw string, useful for regex.
+# The '^' and '$' anchor the match to the start and end of the tag name.
+# The '|' acts as an OR operator.
+smv_tag_whitelist = r"^(0\.7\.1|0\.6\.4|0\.5\.0|0\.4\.1|0\.3\.4|0\.2\.1|0\.1\.1)$"
+
+# Optional: The version to show as "latest" in the version selector dropdown.
+# You might want this to be 'main' or your latest stable tag (e.g., '0.7.1').
+smv_latest_version = "main"  # Or '0.7.1' if that's your most recent stable release
