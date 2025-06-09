@@ -18,23 +18,29 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "pyClarity"
 copyright = "2020-2025, pyClarity authors"
 author = "pyClarity authors"
+
+_default_release = "0.0.0+unknown"
+_default_version = "0.0"
+
 try:
     from importlib.metadata import version as get_version
 
-    _full_release = get_version(
-        "pyClarity"
-    )  # Replace 'pyClarity' with your actual package name if different
-    release = str(_full_release)
-    version = str(".".join(release.split(".")[:2]))
+    _full_release = get_version("pyclarity")
+    release = _full_release
+    version = ".".join(release.split(".")[:2])
 except Exception:
     # Fallback if package is not installed or version cannot be found
-    release = "0.0.0+unknown"
-    version = "0.0"
+    release = _default_release
+    version = _default_version
+
+release = str(release)
+version = str(version)
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 root_doc = "index"
+master_doc = "index"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
@@ -101,10 +107,11 @@ html_css_files = [
 smv_branch_whitelist = r"^(main)$"
 
 # Build only the specified tags
-# The 'r' before the string denotes a raw string, useful for regex.
+# The 'r' before the string
+# denotes a raw string, useful for regex.
 # The '^' and '$' anchor the match to the start and end of the tag name.
 # The '|' acts as an OR operator.
-smv_tag_whitelist = r"^(0\.7\.1|0\.6\.4|0\.5\.0|0\.4\.1|0\.3\.4|0\.2\.1|0\.1\.1)$"
+smv_tag_whitelist = r"^(0\.7\.1|0\.6\.3|0\.5\.0|0\.4\.1|0\.3\.4|0\.2\.1|0\.1\.1)$"
 
 # Optional: The version to show as "latest" in the version selector dropdown.
 # You might want this to be 'main' or your latest stable tag (e.g., '0.7.1').

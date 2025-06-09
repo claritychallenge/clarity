@@ -6,6 +6,8 @@ on:
     branches:
       - grd-pyclarity-doc
       - main
+    tags:
+      - 'v*'
 
 jobs:
   sphinx_docs_to_gh-pages:
