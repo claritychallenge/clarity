@@ -100,14 +100,14 @@
             "levels": 3,
             "output_dir_name": "recipe_docs/cpc2",
             "output_file_name": "cpc2",
-            "top_level_title": "CEC2"
+            "top_level_title": "CPC2"
         },
        {
             "path": "recipes/cpc3",
             "levels": 3,
             "output_dir_name": "recipe_docs/cpc3",
             "output_file_name": "cpc3",
-            "top_level_title": "CEC3"
+            "top_level_title": "CPC3"
         },
        {
             "path": "recipes/icassp_2023",
