@@ -11,8 +11,6 @@
 import os
 import sys
 
-import numpy as np
-
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../clarity/enhancer"))
 
@@ -58,7 +56,6 @@ autodoc_default_options = {
     "inherited-members": False,
     "show-inheritance": True,
 }
-np.float_ = np.float64
 autodoc_mock_imports = [
     "speechbrain",
     "asteroid",
@@ -66,7 +63,6 @@ autodoc_mock_imports = [
     "local",
     "infer",
     "train",
-    "eval",
     "enhance",
     "evaluate",
     "eval",
@@ -78,7 +74,6 @@ autodoc_mock_imports = [
     "huggingface_hub",
     "museval",
     "musdb",
-    "car_noise_simulator",
 ]
 
 html_theme_options = {
