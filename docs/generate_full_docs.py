@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     # 1. Load configuration
     try:
-        with open(JSON_CONFIG_PATH, "r", encoding="utf-8") as f:
+        with open(JSON_CONFIG_PATH, encoding="utf-8") as f:
             config_data = json.load(f)
         print(f"Loaded configuration from {JSON_CONFIG_PATH}")
     except FileNotFoundError:
