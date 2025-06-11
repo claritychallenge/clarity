@@ -6,8 +6,6 @@ on:
     branches:
       - grd-pyclarity-doc
       - main
-    tags:
-      - 'v*'
 
 jobs:
   sphinx_docs_to_gh-pages:
@@ -20,7 +18,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4.3.0
         with:
-          python-version: 3.9
+          python-version: 3.11
       - name: Installing the Documentation requirements
         run: |
           pip3 install .[docs]
