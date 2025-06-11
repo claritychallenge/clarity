@@ -17,6 +17,7 @@
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
+[![Documentation](https://img.shields.io/badge/Documentation-View_Docs-informational)](https://claritychallenge.org/clarity/index.html)
 
 [![PyPI](https://img.shields.io/static/v1?label=CPC3%20Challenge%20-%20pypi&message=v0.7.1&color=orange)](https://pypi.org/project/pyclarity/0.7.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CAD2%20Challenge%20-%20pypi&message=v0.6.0&color=orange)](https://pypi.org/project/pyclarity/0.6.0/)
