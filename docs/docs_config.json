@@ -1,120 +1,120 @@
 {
-    "API Documentation": [
-        {
-            "path": "clarity/enhancer",
-            "levels": 1,
-            "output_dir_name": "api_docs/enhancer",
-            "output_file_name": "enhancer",
-            "top_level_title": "Enhancer"
-        },
-        {
-            "path": "clarity/evaluator",
-            "levels": 1,
-            "output_dir_name": "api_docs/evaluator",
-            "output_file_name": "evaluator",
-            "top_level_title": "Evaluator"
-        },
-        {
-            "path": "clarity/predictor",
-            "levels": 3,
-            "output_dir_name": "api_docs/predictor",
-            "output_file_name": "predictor",
-            "top_level_title": "Predictor"
-        },
-        {
-            "path": "clarity/data",
-            "levels": 3,
-            "output_dir_name": "api_docs/data",
-            "output_file_name": "data",
-            "top_level_title": "Data"
-        },
-      {
-            "path": "clarity/dataset",
-            "levels": 3,
-            "output_dir_name": "api_docs/dataset",
-            "output_file_name": "dataset",
-            "top_level_title": "Dataset"
-        },
-      {
-            "path": "clarity/utils",
-            "levels": 3,
-            "output_dir_name": "api_docs/utils",
-            "output_file_name": "utils",
-            "top_level_title": "Utils"
-        }
-    ],
-   "Cadenza Challenge Recipes": [
-      {
-            "path": "recipes/cad1",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cad1",
-            "output_file_name": "cad1",
-            "top_level_title": "CAD1"
-        },
-        {
-            "path": "recipes/cad_icassp_2024",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cadicassp24",
-            "output_file_name": "icassp24",
-            "top_level_title": "ICASSP 2024"
-        },
-      {
-            "path": "recipes/cad2",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cad2",
-            "output_file_name": "cad2",
-            "top_level_title": "CAD2"
-        }
-    ],
-    "Clarity Challenge Recipes": [
-        {
-            "path": "recipes/cec1",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cec1",
-            "output_file_name": "cec1",
-            "top_level_title": "CEC1"
-        },
-        {
-            "path": "recipes/cec2",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cec2",
-            "output_file_name": "cec2",
-            "top_level_title": "CEC2"
-        },
-      {
-            "path": "recipes/cec3",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cec3",
-            "output_file_name": "cec3",
-            "top_level_title": "CEC3"
-        },
-      {
-            "path": "recipes/cpc1",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cpc1",
-            "output_file_name": "cpc1",
-            "top_level_title": "CPC1"
-        },
-      {
-            "path": "recipes/cpc2",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cpc2",
-            "output_file_name": "cpc2",
-            "top_level_title": "CPC2"
-        },
-       {
-            "path": "recipes/cpc3",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/cpc3",
-            "output_file_name": "cpc3",
-            "top_level_title": "CPC3"
-        },
-       {
-            "path": "recipes/icassp_2023",
-            "levels": 3,
-            "output_dir_name": "recipe_docs/icassp2023",
-            "output_file_name": "icassp2023",
-            "top_level_title": "ICASSP 2023"
-        }
-    ]
+  "API Documentation": [
+    {
+      "path": "clarity/enhancer",
+      "levels": 1,
+      "output_dir_name": "api_docs/enhancer",
+      "output_file_name": "enhancer",
+      "top_level_title": "Enhancer"
+    },
+    {
+      "path": "clarity/evaluator",
+      "levels": 1,
+      "output_dir_name": "api_docs/evaluator",
+      "output_file_name": "evaluator",
+      "top_level_title": "Evaluator"
+    },
+    {
+      "path": "clarity/predictor",
+      "levels": 3,
+      "output_dir_name": "api_docs/predictor",
+      "output_file_name": "predictor",
+      "top_level_title": "Predictor"
+    },
+    {
+      "path": "clarity/data",
+      "levels": 3,
+      "output_dir_name": "api_docs/data",
+      "output_file_name": "data",
+      "top_level_title": "Data"
+    },
+    {
+      "path": "clarity/dataset",
+      "levels": 3,
+      "output_dir_name": "api_docs/dataset",
+      "output_file_name": "dataset",
+      "top_level_title": "Dataset"
+    },
+    {
+      "path": "clarity/utils",
+      "levels": 3,
+      "output_dir_name": "api_docs/utils",
+      "output_file_name": "utils",
+      "top_level_title": "Utils"
+    }
+  ],
+  "Cadenza Challenge Recipes": [
+    {
+      "path": "recipes/cad2",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cad2",
+      "output_file_name": "cad2",
+      "top_level_title": "CAD2"
+    },
+    {
+      "path": "recipes/cad_icassp_2024",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cadicassp24",
+      "output_file_name": "icassp24",
+      "top_level_title": "ICASSP 2024"
+    },
+    {
+      "path": "recipes/cad1",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cad1",
+      "output_file_name": "cad1",
+      "top_level_title": "CAD1"
+    }
+  ],
+  "Clarity Challenge Recipes": [
+    {
+      "path": "recipes/cpc3",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cpc3",
+      "output_file_name": "cpc3",
+      "top_level_title": "CPC3"
+    },
+    {
+      "path": "recipes/cec3",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cec3",
+      "output_file_name": "cec3",
+      "top_level_title": "CEC3"
+    },
+    {
+      "path": "recipes/cpc2",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cpc2",
+      "output_file_name": "cpc2",
+      "top_level_title": "CPC2"
+    },
+    {
+      "path": "recipes/icassp_2023",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/icassp2023",
+      "output_file_name": "icassp2023",
+      "top_level_title": "ICASSP 2023"
+    },
+    {
+      "path": "recipes/cec2",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cec2",
+      "output_file_name": "cec2",
+      "top_level_title": "CEC2"
+    },
+    {
+      "path": "recipes/cpc1",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cpc1",
+      "output_file_name": "cpc1",
+      "top_level_title": "CPC1"
+    },
+    {
+      "path": "recipes/cec1",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cec1",
+      "output_file_name": "cec1",
+      "top_level_title": "CEC1"
+    }
+  ]
 }

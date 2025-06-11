@@ -14,6 +14,8 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath("../clarity/enhancer"))
+
 
 project = "pyClarity"
 copyright = "2020-2025, pyClarity authors"
@@ -46,7 +48,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
-    "sphinx_multiversion",
+    "myst_parser",
 ]
 autosummary_generate = True
 
@@ -54,10 +56,7 @@ autodoc_default_options = {
     "members": True,
     "undoc-members": True,
     "inherited-members": False,
-    "show-inheritance": True,  # Show base classes of classes
-    # 'private-members': False, # Usually keep this False unless specifically needed
-    # 'special-members': False, # Usually keep this False unless specifically needed (e.g., __call__)
-    # 'no-value': True,       # Don't display default values for attributes
+    "show-inheritance": True,
 }
 np.float_ = np.float64
 autodoc_mock_imports = [
@@ -100,19 +99,7 @@ html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
 ]
-
-# --- sphinx-multiversion configuration ---
-
-# Build only the 'main' branch
-smv_branch_whitelist = r"^(main)$"
-
-# Build only the specified tags
-# The 'r' before the string
-# denotes a raw string, useful for regex.
-# The '^' and '$' anchor the match to the start and end of the tag name.
-# The '|' acts as an OR operator.
-smv_tag_whitelist = r"^(0\.7\.1|0\.6\.3|0\.5\.0|0\.4\.1|0\.3\.4|0\.2\.1|0\.1\.1)$"
-
-# Optional: The version to show as "latest" in the version selector dropdown.
-# You might want this to be 'main' or your latest stable tag (e.g., '0.7.1').
-smv_latest_version = "main"  # Or '0.7.1' if that's your most recent stable release
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",  # Add this line for Markdown files
+}

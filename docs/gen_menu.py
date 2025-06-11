@@ -317,6 +317,9 @@ scan_root_content = content_tree.get(".", {"modules": [], "yaml_files": []})
 modules_at_scan_root = sorted(scan_root_content["modules"])
 yaml_files_at_scan_root = sorted(scan_root_content["yaml_files"])
 
+# ADD THIS DEBUG PRINT HERE
+print(f"DEBUG: modules_at_scan_root before autosummary loop: {modules_at_scan_root}")
+print(f"DEBUG: direct_sub_dirs_of_scan_root: {direct_sub_dirs_of_scan_root}")
 
 # Add content directly at the scanned root if any
 if modules_at_scan_root:
@@ -351,6 +354,12 @@ if yaml_files_at_scan_root:
 
 # Add sub-directories of the scanned root to its main index.rst
 if direct_sub_dirs_of_scan_root:
+    top_level_rst_lines.append(".. toctree::\n")  # Start of toctree
+    top_level_rst_lines.append("   :maxdepth: 2\n")
+    top_level_rst_lines.append(
+        "   :caption: Sub-sections:\n\n"
+    )  # Or appropriate caption
+
     for key in direct_sub_dirs_of_scan_root:
         top_level_rst_lines.append(
             f"   {key}/{main_index_file_name.replace('.rst', '')}\n"
