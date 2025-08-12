@@ -11,38 +11,44 @@ project_root = os.path.abspath(
 
 # --- Argument Parsing ---
 parser = argparse.ArgumentParser(
-    description="Generate Sphinx RST files for a specified content root within the project."
+    description="Generate Sphinx RST files for a specified content "
+                "root within the project."
 )
 parser.add_argument(
     "--path",
     type=str,
     required=True,
-    help="Relative path from project root to the content directory to scan (e.g., 'recipes', 'recipes/cad1', 'clarity/evaluator').",
+    help="Relative path from project root to the content directory to scan "
+         "(e.g., 'recipes', 'recipes/cad1', 'clarity/evaluator').",
 )
 parser.add_argument(
     "--levels",
     type=int,
     default=1,
-    help="Number of menu levels (N) to display in the left doctree. The last level (N-1) will show all its children with relative paths.",
+    help="Number of menu levels (N) to display in the left doctree. "
+         "The last level (N-1) will show all its children with relative paths.",
 )
 parser.add_argument(
     "--output_dir_name",
     type=str,
     default="automenu",  # Can be customized, e.g., 'clarity_docs'
-    help="Name of the output directory within 'docs/' where generated RST files will be placed.",
+    help="Name of the output directory within 'docs/' where generated "
+         "RST files will be placed.",
 )
 parser.add_argument(
     "--output_file_name",
     type=str,
     default="index.rst",  # Can be customized, e.g., 'clarity_docs'
-    help="Name of the output directory within 'docs/' where generated RST files will be placed.",
+    help="Name of the output directory within 'docs/'"
+         " where generated RST files will be placed.",
 )
 parser.add_argument(
     "--top_level_title",
     type=str,
     default=None,  # Default to None, meaning it will be derived if not provided
-    help="Optional: Custom title for the very top-level generated RST file (e.g., 'My API Overview'). "
-    "If not provided, the title is derived from the --path argument.",
+    help="Optional: Custom title for the very top-level"
+         " generated RST file (e.g., 'My API Overview'). "
+         "If not provided, the title is derived from the --path argument.",
 )
 
 args = parser.parse_args()
@@ -67,7 +73,7 @@ output_base_dir = os.path.join(script_dir, output_base_dir_name)
 
 # Data structure to hold content as a hierarchical tree
 # This will replace 'categorized_content' from the old script logic
-content_tree = {}  # Root of the generated documentation tree
+content_tree: dict = {}  # Root of the generated documentation tree
 
 # --- Discover and Categorize Content (Modules and YAMLs) ---
 if not os.path.isdir(base_scan_path):
@@ -121,7 +127,8 @@ for root, dirs, files in os.walk(base_scan_path):
             current_node["."]["yaml_files"].append(rel_yaml_path_from_project_root)
 
 
-# --- Function to recursively generate nested directories and RST files for sub-nodes ---
+# --- Function to recursively generate nested directories
+#     and RST files for sub-nodes ---
 def generate_nested_docs(
     node_content_tree,
     current_output_physical_path,
@@ -131,7 +138,8 @@ def generate_nested_docs(
     custom_top_level_title_arg,
 ):
     # Determine the title for this index.rst file
-    # If it's the root of the scanned path, title is based on the input_root_path_from_project_root
+    # If it's the root of the scanned path, title is based on the
+    # input_root_path_from_project_root
     # This is the very first (root) index.rst for the scanned path
     if not logical_path_segments:
         if custom_top_level_title_arg:  # Use custom title if provided
@@ -170,10 +178,11 @@ def generate_nested_docs(
         rst_lines.append(".. rubric:: Python Modules\n\n")
         rst_lines.append(".. autosummary::\n")
 
-        # Path to 'generated/' directory relative to the current RST file being written
+        # Path to 'generated/' directory relative to the current RST file
+        # being written
         rel_path_to_generated = os.path.relpath(
             os.path.join(script_dir, "generated"),  # Path to docs/generated/
-            current_output_physical_path,  # Path to where current RST file is being written
+            current_output_physical_path,  # Path to where curr RST being written
         ).replace(
             os.sep, "/"
         )  # Use forward slashes for Sphinx paths
@@ -220,7 +229,8 @@ def generate_nested_docs(
             )  # Or customize based on logical_path_segments
             rst_lines.append(f"   :caption: {caption_text}\n\n")
         elif current_depth == max_menu_levels - 1:
-            # This is the last menu level. Show all descendants (modules, yamls, deeper dirs).
+            # This is the last menu level. Show all descendants
+            # (modules, yamls, deeper dirs).
             rst_lines.append("   :maxdepth: -1\n")  # -1 means show all descendants
             caption_text = (
                 f"{logical_path_segments[-1].replace('_', ' ').title()} Details:"
@@ -275,11 +285,13 @@ if os.path.exists(output_base_dir):
 os.makedirs(output_base_dir, exist_ok=True)
 
 
-# Generate the main index file for the specified input root (e.g., docs/recipes_api/recipes_index.rst)
+# Generate the main index file for the specified input root
+# (e.g., docs/recipes_api/recipes_index.rst)
 # This serves as the top-level entry point for the generated documentation tree.
 
 # Determine title for the top-level index file
-# This is the block where top_level_title gets its value (either from custom_top_level_title
+# This is the block where top_level_title gets its value
+# (either from custom_top_level_title
 # or by deriving it from the path)
 if custom_top_level_title:
     top_level_title = custom_top_level_title
@@ -293,7 +305,8 @@ else:
         top_level_title = " ".join(top_level_title_parts)
 
 # Construct the full path for the top-level index file
-# This assumes output_file_name_base is what you get from --output_file_name (e.g., 'icassp24')
+# This assumes output_file_name_base is what you get from
+# --output_file_name (e.g., 'icassp24')
 top_level_index_path = os.path.join(output_base_dir, f"{main_index_file_name}.rst")
 
 top_level_index_path = os.path.join(output_base_dir, main_index_file_name)

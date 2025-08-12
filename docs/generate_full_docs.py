@@ -12,7 +12,8 @@ DOCS_ROOT = os.path.dirname(
 PROJECT_ROOT = os.path.abspath(os.path.join(DOCS_ROOT, ".."))  # One level up
 JSON_CONFIG_PATH = os.path.join(DOCS_ROOT, "docs_config.json")
 INDEX_RST_PATH = os.path.join(DOCS_ROOT, "index.rst")
-# Ensure this matches the name of your generator script (e.g., gen_recipes.py or gen_menu.py)
+# Ensure this matches the name of your generator script
+# (e.g., gen_recipes.py or gen_menu.py)
 GENERATOR_SCRIPT_NAME = (
     "gen_menu.py"  # <-- IMPORTANT: CHANGE THIS IF YOUR SCRIPT IS NAMED gen_menu.py
 )
@@ -93,10 +94,10 @@ def generate_toctree_content(config_data):
     """Generates the RST content for the toctrees to be inserted into index.rst."""
     toctree_blocks = []
     for category_name, items in config_data.items():
-        toctree_blocks.append(f"\n.. toctree::")
-        toctree_blocks.append(f"   :maxdepth: 1")  # You can change this maxdepth
+        toctree_blocks.append("\n.. toctree::")
+        toctree_blocks.append("   :maxdepth: 1")  # You can change this maxdepth
         toctree_blocks.append(f"   :caption: {category_name}:")
-        toctree_blocks.append(f"")  # Blank line after caption
+        toctree_blocks.append("")  # Blank line after caption
 
         for item_params in items:
             output_dir = item_params.get(
@@ -109,7 +110,7 @@ def generate_toctree_content(config_data):
             toctree_blocks.append(
                 f"   {output_dir}/{output_file}"
             )  # No .rst extension in toctree
-        toctree_blocks.append(f"\n")  # Blank line after each toctree block
+        toctree_blocks.append("\n")  # Blank line after each toctree block
 
     return "\n".join(toctree_blocks)
 

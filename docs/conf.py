@@ -80,7 +80,7 @@ html_theme_options = {
     "collapse_navigation": False,
     "sticky_navigation": True,
     "navigation_depth": 4,
-    # 'includehidden': True,       # (Optional) Show toctree entries that are hidden by default
+    # 'includehidden': True,  # (Opt) Show toctree entries that are hidden by default
 }
 
 templates_path = ["_templates"]
