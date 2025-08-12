@@ -12,43 +12,43 @@ project_root = os.path.abspath(
 # --- Argument Parsing ---
 parser = argparse.ArgumentParser(
     description="Generate Sphinx RST files for a specified content "
-                "root within the project."
+    "root within the project."
 )
 parser.add_argument(
     "--path",
     type=str,
     required=True,
     help="Relative path from project root to the content directory to scan "
-         "(e.g., 'recipes', 'recipes/cad1', 'clarity/evaluator').",
+    "(e.g., 'recipes', 'recipes/cad1', 'clarity/evaluator').",
 )
 parser.add_argument(
     "--levels",
     type=int,
     default=1,
     help="Number of menu levels (N) to display in the left doctree. "
-         "The last level (N-1) will show all its children with relative paths.",
+    "The last level (N-1) will show all its children with relative paths.",
 )
 parser.add_argument(
     "--output_dir_name",
     type=str,
     default="automenu",  # Can be customized, e.g., 'clarity_docs'
     help="Name of the output directory within 'docs/' where generated "
-         "RST files will be placed.",
+    "RST files will be placed.",
 )
 parser.add_argument(
     "--output_file_name",
     type=str,
     default="index.rst",  # Can be customized, e.g., 'clarity_docs'
     help="Name of the output directory within 'docs/'"
-         " where generated RST files will be placed.",
+    " where generated RST files will be placed.",
 )
 parser.add_argument(
     "--top_level_title",
     type=str,
     default=None,  # Default to None, meaning it will be derived if not provided
     help="Optional: Custom title for the very top-level"
-         " generated RST file (e.g., 'My API Overview'). "
-         "If not provided, the title is derived from the --path argument.",
+    " generated RST file (e.g., 'My API Overview'). "
+    "If not provided, the title is derived from the --path argument.",
 )
 
 args = parser.parse_args()
