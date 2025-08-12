@@ -4,7 +4,6 @@ name: Sphinx docs to gh-pages
 on:
   push:
     branches:
-      - grd-pyclarity-doc
       - main
 
 jobs:
@@ -31,7 +30,7 @@ jobs:
       - name: Running Sphinx to gh-pages Action
         uses: ns-rse/action-sphinx-docs-to-gh-pages@main
         with:
-          branch: grd-pyclarity-doc # Test on branch, switch to main when working
+          branch: main # Test on branch, switch to main when working
           dir_docs: docs
           sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb'
           sphinxapiopts: '--separate -o . ../'
