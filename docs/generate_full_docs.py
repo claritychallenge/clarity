@@ -143,7 +143,7 @@ if __name__ == "__main__":
     clean_generated_directories(config_data)
 
     # 3. Run the generator script for each item in the config
-    for category_name, items in config_data.items():
+    for _, items in config_data.items():
         for item_params in items:
             run_generator_script(item_params)
 
@@ -154,6 +154,7 @@ if __name__ == "__main__":
     write_generated_menus_rst(generated_toctree_content)
 
     print(
-        "\nFull documentation generation process finished. Now run 'make html' from your docs/ directory."
+        "\nFull documentation generation process finished. "
+        "Now run 'make html' from your docs/ directory."
     )
     print("Example: cd docs/ && make html")

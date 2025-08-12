@@ -104,13 +104,15 @@ for root, dirs, files in os.walk(base_scan_path):
     for segment in path_segments:
         current_node = current_node.setdefault(segment, {})
 
-    # The actual content (modules/yamls) is stored under a special '.' key at the leaf node
+    # The actual content (modules/yamls) is stored under a special
+    # '.' key at the leaf node
     current_node.setdefault(".", {"modules": [], "yaml_files": []})
 
     for file in files:
         full_file_path = os.path.join(root, file)
 
-        # Calculate module path relative to the project root (for Sphinx autodoc import)
+        # Calculate module path relative to the project root
+        # (for Sphinx autodoc import)
         if file.endswith(".py") and file != "__init__.py":
             module_path = (
                 os.path.relpath(full_file_path, project_root)
