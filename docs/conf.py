@@ -8,7 +8,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-# pylint: disable=C0103
+
 import os
 import sys
 
@@ -29,7 +29,7 @@ try:
     _full_release = get_version("pyclarity")
     release = _full_release
     version = ".".join(release.split(".")[:2])
-except Exception:
+except ImportError:
     # Fallback if package is not installed or version cannot be found
     release = _default_release
     version = _default_version
