@@ -1,3 +1,5 @@
+"""Module to generate menu"""
+
 import argparse
 import os
 import sys
@@ -139,6 +141,20 @@ def generate_nested_docs(
     max_menu_levels,  # User defined N
     custom_top_level_title_arg,
 ):
+    """
+    Recursively generate RST files and directories for the content tree.
+
+    Args:
+        node_content_tree:
+        current_output_physical_path:
+        logical_path_segments:
+        current_depth:
+        max_menu_levels:
+        custom_top_level_title_arg:
+
+    Returns:
+
+    """
     # Determine the title for this index.rst file
     # If it's the root of the scanned path, title is based on the
     # input_root_path_from_project_root

@@ -1,3 +1,4 @@
+"""Module to generate full documentation """
 # docs/generate_full_docs.py
 import json
 import os
