@@ -1,5 +1,0 @@
-engines:
-  pylint:
-    enabled: true
-    exclude_paths:
-      - docs/**
