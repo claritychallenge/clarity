@@ -39,13 +39,9 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
 
 ## Current Events
 
-- The 2nd Cadenza Challenge is now open :fire::fire:
-  - Visit the [cadenza website](https://cadenzachallenge.org/docs/cadenza2/intro) for more details.
+- The ICASSP 2026 Cadenza Challenge: Predicting Lyric Intelligibility is now open :fire::fire:
+  - Visit the [cadenza website](https://cadenzachallenge.org/docs/clip1/intro) for more details.
   - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
-- The 3rd Clarity Prediction Challenge is now open. :fire::fire:
-  - Visit the [challenge website](https://claritychallenge.org/docs/cpc3/cpc3_intro) for more details.
-  - Join the [Clarity Challenge Group](https://groups.google.com/g/clarity-challenge) to keep up-to-date on developments.
-- The 5th Clarity Workshop will be held as a satellite event of Interspeech 2025. For details visit the [workshop website](https://claritychallenge.org/clarity2025-workshop/).
 
 ## Installation
 
@@ -89,11 +85,12 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
-- [The 3rd Clarity Prediction Challenge](./recipes/cpc3)
-- [The 2nd Cadenza Challege](./recipes/cad2)
+- [The ICASSP 2026 Cadenza Challege](./recipes/cad_icassp_2026)
 
 Previous challenges
 
+- [The 3rd Clarity Prediction Challenge](./recipes/cpc3)
+- [The 2nd Cadenza Challege](./recipes/cad2)
 - [The 3rd Clarity Enhancement Challenge](./recipes/cec3)
 - [The ICASSP 2024 Cadenza Challenge](./recipes/cad_icassp_2024)
 - [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)
