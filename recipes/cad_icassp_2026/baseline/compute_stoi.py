@@ -99,6 +99,7 @@ def compute_single_stoi(
 @hydra.main(config_path="configs", config_name="config", version_base=None)
 def run_compute_stoi(cfg: DictConfig) -> None:
     """Run the STOI score computation."""
+    assert cfg.baseline.name == "stoi"
 
     logger.info(f"Running {cfg.baseline.system} baseline on {cfg.split} set...")
 
@@ -118,9 +119,8 @@ def run_compute_stoi(cfg: DictConfig) -> None:
         else ""
     )
 
-    results_file = (
-        Path(cfg.precomputations)
-        / f"{cfg.data.dataset}.{cfg.split}.{cfg.baseline.system}{batch_str}.jsonl"
+    results_file = Path(
+        f"{cfg.data.dataset}.{cfg.split}.{cfg.baseline.system}{batch_str}.jsonl"
     )
     results = read_jsonl(str(results_file)) if results_file.exists() else []
     results_index = {result["signal"]: result for result in results}

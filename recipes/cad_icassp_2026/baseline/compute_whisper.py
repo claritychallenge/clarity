@@ -195,9 +195,8 @@ def run_compute_whisper(cfg: DictConfig) -> None:
         else ""
     )
 
-    results_file = (
-        Path(cfg.precomputations)
-        / f"{cfg.data.dataset}.{cfg.split}.{cfg.baseline.system}{batch_str}.jsonl"
+    results_file = Path(
+        f"{cfg.data.dataset}.{cfg.split}.{cfg.baseline.system}{batch_str}.jsonl"
     )
     results = read_jsonl(str(results_file)) if results_file.exists() else []
     results_index = {result["signal"]: result for result in results}
