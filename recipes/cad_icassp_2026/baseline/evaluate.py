@@ -44,7 +44,7 @@ def compute_scores(predictions, labels) -> dict:
 
 
 # pylint: disable = no-value-for-parameter
-@hydra.main(config_path=".", config_name="config", version_base=None)
+@hydra.main(config_path="configs", config_name="config", version_base=None)
 def evaluate(cfg: DictConfig) -> None:
     """Evaluate the predictions against the ground truth correctness values"""
 
@@ -61,18 +61,22 @@ def evaluate(cfg: DictConfig) -> None:
 
     # Load the predictions
     df = pd.read_csv(
-        f"{cfg.data.dataset}.stoi.{cfg.split}.predict.csv",
+        f"{cfg.data.dataset}.{cfg.baseline.system}.{cfg.split}.predict.csv",
         names=["signal", "predicted"],
         header=0,
     )
 
+    # Add intelligibility scores to predictions dataframe
     df["correctness"] = [record_index[signal]["correctness"] for signal in df.signal]
 
     # Compute and report the scores
     scores = compute_scores(df["predicted"], df["correctness"])
 
+    # Save the scores to a JSONL file
     with open(
-        f"{cfg.data.dataset}.{cfg.split}.evaluate.jsonl", "a", encoding="utf-8"
+        f"{cfg.data.dataset}.{cfg.baseline.system}.{cfg.split}.evaluate.jsonl",
+        "a",
+        encoding="utf-8",
     ) as fp:
         fp.write(json.dumps(scores) + "\n")
 

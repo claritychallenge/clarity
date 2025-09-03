@@ -7,38 +7,42 @@ import logging
 import hydra
 from omegaconf import DictConfig
 
-from shared_predict_utils import (
+from recipes.cad_icassp_2026.baseline.shared_predict_utils import (
     LogisticModel,
-    load_dataset_with_stoi,
+    load_dataset_with_score,
 )
 
 log = logging.getLogger(__name__)
 
 
 # pylint: disable = no-value-for-parameter
-@hydra.main(config_path=".", config_name="config", version_base=None)
+@hydra.main(config_path="configs", config_name="config", version_base=None)
 def predict_dev(cfg: DictConfig):
-    """Predict intelligibility from HASPI scores."""
+    """Predict intelligibility for baselines.
 
-    # Load the data
+    Set config.baseline to ```stoi``` or ```whisper_mixture``` or ```whisper_vocals```
+    depending on which baseline you want to run.
+    """
+
+    # Load the metadata file for the dataset
     log.info("Loading dataset...")
-    records_train_df = load_dataset_with_stoi(cfg, "train")
-    records_valid_df = load_dataset_with_stoi(cfg, "valid")
+
+    records_train_df = load_dataset_with_score(cfg, "train")
+    records_valid_df = load_dataset_with_score(cfg, "valid")
 
     # Compute the logistic fit
     log.info("Making the fitting model...")
     model = LogisticModel()
-    model.fit(records_train_df[f"stoi_score"], records_train_df.correctness)
+    model.fit(records_train_df[f"{cfg.baseline.system}"], records_train_df.correctness)
 
     # Make predictions for all items in the dev data
     log.info("Starting predictions...")
     records_valid_df["predicted_correctness"] = model.predict(
-        records_valid_df[f"stoi_score"]
+        records_valid_df[f"{cfg.baseline.system}"]
     )
 
     # Save results to CSV file
-
-    output_file = f"{cfg.data.dataset}.stoi.valid.predict.csv"
+    output_file = f"{cfg.data.dataset}.{cfg.baseline.system}.valid.predict.csv"
     records_valid_df[["signal", "predicted_correctness"]].to_csv(
         output_file,
         index=False,
