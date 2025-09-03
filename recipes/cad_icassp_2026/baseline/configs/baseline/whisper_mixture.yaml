@@ -1,0 +1,10 @@
+
+name: whisper
+system: whisper.mixture
+mode: mixture  # Transcribe the mixture directly using ASR
+whisper_version: base.en
+contractions_file: "../contractions.csv"
+batch: 1
+n_batches: 1
+
+reference: processed
