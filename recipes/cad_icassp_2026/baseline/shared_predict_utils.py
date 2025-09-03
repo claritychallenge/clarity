@@ -15,8 +15,7 @@ from scipy.optimize import curve_fit
 from scipy.signal import correlate
 from torch.nn import Module
 
-from clarity.utils.file_io import read_jsonl
-from clarity.utils.flac_encoder import read_flac_signal, save_flac_signal
+from clarity.utils.file_io import read_jsonl, read_signal, write_signal
 from clarity.utils.signal_processing import resample
 from clarity.utils.source_separation_support import separate_sources
 
@@ -155,6 +154,45 @@ def estimate_vocals(
     return estimated_vocals
 
 
+def load_mixture(
+    dataroot: Path, record: dict, cfg: DictConfig
+) -> tuple[np.ndarray, float]:
+    """Load the mixture signal for a given record.
+
+    Args:
+
+        dataroot (Path): Root path to the dataset.
+        record (dict): Record containing signal metadata.
+        cfg (DictConfig): Configuration object.
+
+    Returns:
+
+        tuple[np.ndarray, int]: Mixture signal and its sample rate.
+    """
+    signal_name = record["signal"]
+
+    if cfg.baseline.reference == "processed":
+        mix_signal_path = (
+            dataroot / "audio" / cfg.split / "signals" / f"{signal_name}.flac"
+        )
+    elif cfg.baseline.reference == "unprocessed":
+        mix_signal_path = (
+            dataroot
+            / "audio"
+            / cfg.split
+            / "unprocessed"
+            / f"{signal_name}_unproc.flac"
+        )
+    else:
+        raise ValueError(f"Unknown reference type: {cfg.baseline.reference}")
+
+    mixture = read_signal(
+        mix_signal_path,
+        sample_rate=cfg.data.sample_rate,
+    )
+    return mixture, cfg.data.sample_rate
+
+
 def load_vocals(
     dataroot: Path, record: dict, cfg: DictConfig, separation_model, device="cpu"
 ) -> np.ndarray:
@@ -173,32 +211,42 @@ def load_vocals(
 
     signal_name = record["signal"]
 
-    unproc_signal_path = (
-        dataroot / "audio" / cfg.split / "unprocessed" / f"{signal_name}_unproc.flac"
-    )
     vocals_path = Path("est_vocals") / cfg.split / f"{signal_name}_est_vocals.wav"
     if not vocals_path.exists():
-        unproc_signal, unproc_sr = read_flac_signal(unproc_signal_path)
-        if unproc_sr != cfg.data.sample_rate:
-            logger.info(f"resampling {unproc_signal_path} to {cfg.data.sample_rate} Hz")
-            unproc_signal = resample(unproc_signal, unproc_sr, cfg.data.sample_rate)
+        signal, signal_sr = load_mixture(dataroot, record, cfg)
+        if signal_sr != cfg.data.sample_rate:
+            logger.info(f"resampling mixture signal to {cfg.data.sample_rate} Hz")
+            signal = resample(signal, signal_sr, cfg.data.sample_rate)
 
         # Estimate vocals to create a processed signal
         estimated_vocals = estimate_vocals(
-            unproc_signal.T, cfg.separator.sample_rate, separation_model, device=device
+            signal.T,
+            cfg.baseline.separator.sample_rate,
+            separation_model,
+            device=device,
         ).T
 
-        if cfg.separator.keep_vocals:
+        if cfg.baseline.separator.keep_vocals:
             vocals_path.parent.mkdir(parents=True, exist_ok=True)
-            save_flac_signal(estimated_vocals, vocals_path, cfg.data.sample_rate)
+            write_signal(vocals_path, estimated_vocals, cfg.data.sample_rate)
     else:
-        estimated_vocals, _ = read_flac_signal(vocals_path)
+        estimated_vocals = read_signal(vocals_path, cfg.data.sample_rate)
 
     return estimated_vocals
 
 
-def load_dataset_with_stoi(cfg, split: str) -> pd.DataFrame:
-    """Load dataset and add STOI or SASTOI scores."""
+def load_dataset_with_score(cfg, split: str) -> pd.DataFrame:
+    """Load dataset and add prediction scores.
+
+    Args:
+
+        cfg (DictConfig): Configuration object.
+        split (str): Dataset split to load ('train' or 'valid')
+
+    Returns:
+
+        pd.DataFrame: DataFrame containing dataset records with added scores.
+    """
     dataset_filename = (
         Path(cfg.data.cadenza_data_root)
         / cfg.data.dataset
@@ -208,13 +256,16 @@ def load_dataset_with_stoi(cfg, split: str) -> pd.DataFrame:
     with dataset_filename.open("r", encoding="utf-8") as fp:
         records = json.load(fp)
 
-    # Load STOI or SASTOI scores and add them to the records
-    stoi_path = (
-        Path("..") / "precomputed_stoi" / f"{cfg.data.dataset}.{split}.stoi.jsonl"
+    # Load STOI or Whisper scores and add them to the records
+    system_path = (
+        Path(cfg.precomputations)
+        / f"{cfg.data.dataset}.{split}.{cfg.baseline.system}.jsonl"
     )
-    stoi_score = read_jsonl(str(stoi_path))
-    stoi_score_index = {record["signal"]: record["stoi"] for record in stoi_score}
+    system_score = read_jsonl(str(system_path))
+    system_score_index = {
+        record["signal"]: record[cfg.baseline.system] for record in system_score
+    }
     for record in records:
-        record["stoi_score"] = stoi_score_index[record["signal"]]
+        record[f"{cfg.baseline.system}"] = system_score_index[record["signal"]]
 
     return pd.DataFrame(records)
