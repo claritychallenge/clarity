@@ -257,10 +257,7 @@ def load_dataset_with_score(cfg, split: str) -> pd.DataFrame:
         records = json.load(fp)
 
     # Load STOI or Whisper scores and add them to the records
-    system_path = (
-        Path(cfg.precomputations)
-        / f"{cfg.data.dataset}.{split}.{cfg.baseline.system}.jsonl"
-    )
+    system_path = f"{cfg.data.dataset}.{split}.{cfg.baseline.system}.jsonl"
     system_score = read_jsonl(str(system_path))
     system_score_index = {
         record["signal"]: record[cfg.baseline.system] for record in system_score
