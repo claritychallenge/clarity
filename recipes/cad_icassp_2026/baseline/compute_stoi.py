@@ -17,7 +17,7 @@ from tqdm import tqdm
 from clarity.utils.file_io import read_jsonl, write_jsonl
 from clarity.utils.flac_encoder import read_flac_signal
 from clarity.utils.signal_processing import resample
-from recipes.cad_icassp_2026.baseline_stoi.shared_predict_utils import (
+from recipes.cad_icassp_2026.baseline.shared_predict_utils import (
     input_align,
     load_vocals,
 )
@@ -56,10 +56,16 @@ def compute_stoi_for_signal(
 
     # Compute STOI score
     stoi_score_left = compute_single_stoi(
-        estimated_vocals[:, 0], signal[:, 0], proc_sr, cfg.compute.stoi_sample_rate
+        estimated_vocals[:, 0],
+        signal[:, 0],
+        cfg.data.sample_rate,
+        cfg.baseline.stoi_sample_rate,
     )
     stoi_score_right = compute_single_stoi(
-        estimated_vocals[:, 1], signal[:, 1], proc_sr, cfg.compute.stoi_sample_rate
+        estimated_vocals[:, 1],
+        signal[:, 1],
+        cfg.data.sample_rate,
+        cfg.baseline.stoi_sample_rate,
     )
 
     return np.max([stoi_score_left, stoi_score_right])
@@ -90,9 +96,12 @@ def compute_single_stoi(
 
 
 # pylint: disable = no-value-for-parameter
-@hydra.main(config_path=".", config_name="config", version_base=None)
+@hydra.main(config_path="configs", config_name="config", version_base=None)
 def run_compute_stoi(cfg: DictConfig) -> None:
     """Run the STOI score computation."""
+
+    logger.info(f"Running {cfg.baseline.system} baseline on {cfg.split} set...")
+
     # Load the set of signal for which we need to compute scores
     dataroot = Path(cfg.data.cadenza_data_root) / cfg.data.dataset
 
@@ -104,15 +113,14 @@ def run_compute_stoi(cfg: DictConfig) -> None:
     total_records = len(records)
     # Load existing results file if present
     batch_str = (
-        f".{cfg.compute.batch}_{cfg.compute.n_batches}"
-        if cfg.compute.n_batches > 1
+        f".{cfg.baseline.batch}_{cfg.baseline.n_batches}"
+        if cfg.baseline.n_batches > 1
         else ""
     )
 
     results_file = (
-        Path("..")
-        / "precomputed_stoi"
-        / f"{cfg.data.dataset}.{cfg.split}.stoi{batch_str}.jsonl"
+        Path(cfg.precomputations)
+        / f"{cfg.data.dataset}.{cfg.split}.{cfg.baseline.system}{batch_str}.jsonl"
     )
     results = read_jsonl(str(results_file)) if results_file.exists() else []
     results_index = {result["signal"]: result for result in results}
@@ -121,7 +129,7 @@ def run_compute_stoi(cfg: DictConfig) -> None:
     records = [
         record for record in records if record["signal"] not in results_index.keys()
     ]
-    records = records[cfg.compute.batch - 1 :: cfg.compute.n_batches]
+    records = records[cfg.baseline.batch - 1 :: cfg.baseline.n_batches]
 
     # Prepare audio source separation model
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -132,7 +140,7 @@ def run_compute_stoi(cfg: DictConfig) -> None:
 
     # Iterate over the signals that need scoring
     logger.info(f"Computing scores for {len(records)} out of {total_records} signals")
-    if cfg.separator.keep_vocals:
+    if cfg.baseline.separator.keep_vocals:
         logger.info(f"Saving estimated vocals. If exist, they will not be recomputed.")
 
     for record in tqdm(records):
@@ -144,7 +152,7 @@ def run_compute_stoi(cfg: DictConfig) -> None:
         stoi = compute_stoi_for_signal(cfg, record, dataroot, estimated_vocals)
 
         # Results are appended to the results file to allow interruption
-        result = {"signal": signal_name, "stoi": stoi}
+        result = {"signal": signal_name, f"{cfg.baseline.system}": stoi}
         write_jsonl(str(results_file), [result])
 
 
