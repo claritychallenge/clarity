@@ -45,6 +45,13 @@
   ],
   "Cadenza Challenge Recipes": [
     {
+      "path": "recipes/cad_icassp_2026",
+      "levels": 3,
+      "output_dir_name": "recipe_docs/cadicassp_2026",
+      "output_file_name": "icassp2026",
+      "top_level_title": "ICASSP 2026"
+    },
+    {
       "path": "recipes/cad2",
       "levels": 3,
       "output_dir_name": "recipe_docs/cad2",
