@@ -64,6 +64,9 @@ class LogisticModel:
 def input_align(
     reference: np.ndarray, processed: np.ndarray, fsamp: float = 10000
 ) -> tuple[np.ndarray, np.ndarray]:
+    """Align the processed signal to the reference signal.
+    Code based on the `evaluator.haspi.eb` but for variable sampling rate
+    """
     # Match the length of the processed output to the reference for the purposes
     # of computing the cross-covariance
     reference_n = len(reference)

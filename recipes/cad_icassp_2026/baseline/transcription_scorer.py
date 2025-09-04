@@ -1,3 +1,5 @@
+"""Module for scoring transcriptions with normalization and handling of contractions."""
+
 import logging
 import re
 from collections import defaultdict
@@ -22,7 +24,11 @@ logger = logging.getLogger(__name__)
 
 
 class NormalizeNumbers(AbstractTransform):
+    """Class to normalize numbers in a string."""
+
     def process_string(self, s: str):
+        """Convert all numbers in a string to their spoken equivalent."""
+
         def replace_decimal(match):
             num_str = match.group(0)
             whole, decimal = num_str.split(".")
@@ -57,7 +63,7 @@ class Contractions(AbstractTransform):
 
     def __init__(self, alternative_file: str):
         self.alternative_dict = defaultdict(list)
-        with open(alternative_file) as f:
+        with open(alternative_file, "r") as f:
             for line in f:
                 parts = [x.strip() for x in line.strip().split(",", 1)]
                 if len(parts) == 1:
@@ -96,7 +102,10 @@ class Contractions(AbstractTransform):
 
 
 class SentenceScorer:
+    """Class to score sentences with normalization and handling of contractions."""
+
     def __init__(self, contractions_file=None):
+        """Initialize the SentenceScorer with a contractions file."""
         self.transformation = Compose(
             [
                 MyRemovePunctuation(";!*#,.′’‘_()"),
@@ -116,9 +125,11 @@ class SentenceScorer:
         )
 
     def get_word_sequence(self, sentence):
+        """Get the normalized word sequence from a sentence."""
         return self.transformation(sentence)
 
     def score(self, ref, hyp):
+        """Score a hypothesis against a reference, considering all contraction forms."""
         if isinstance(ref, str):
             _ref_form = [ref]
         else:
@@ -137,7 +148,7 @@ class SentenceScorer:
         for ref_form in _ref_form:
             ref_forms.append(self.transformation(ref_form))
 
-        alternatives = [(x, y) for x, y in product(hyp_forms, ref_forms)]
+        alternatives = list(product(hyp_forms, ref_forms))
 
         measures = [
             process_words(
