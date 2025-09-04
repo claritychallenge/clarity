@@ -43,7 +43,7 @@ class NormalizeNumbers(AbstractTransform):
 
 
 class MyRemovePunctuation(AbstractTransform):
-    """Replacement fo%pip listr jiwer's remove punctuation that allows more control."""
+    """Replacement for jiwer's remove punctuation that allows more control."""
 
     def __init__(self, symbols):
         self.substitutions = f"[{symbols}]"

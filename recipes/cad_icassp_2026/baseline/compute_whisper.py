@@ -12,7 +12,6 @@ import torch
 import whisper
 from omegaconf import DictConfig
 from torch.nn import Module
-from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
 from tqdm import tqdm
 
 from clarity.utils.file_io import read_jsonl, write_jsonl, write_signal
@@ -140,6 +139,13 @@ def run_asr_from_vocals(
         results_file (Path): path to the results file
         cfg (DictConfig): configuration object
     """
+
+    try:
+        from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
+    except ImportError:
+        raise ImportError(
+            "torchaudio is not installed. Please install torchaudio to use the separation model."
+        )
     # Prepare dnn models
     device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info(f"Using device: {device}")

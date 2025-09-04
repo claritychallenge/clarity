@@ -50,8 +50,8 @@ Note, you need to set the `root.path` variable to the parent directory of `caden
 
 ### 1.3 Precomputed Scores
 
-For convenience, precomputed STOI and Whisper correctness scores are provided in the `precomputed` directory.
-These scores are stored in JSONL files and can be used directly without running the `compute_stoi.py` or `compute_whisper` scripts.
+For convenience, precomputed STOI and Whisper correctness scores are provided in the `precomputed` directory. 
+These scores are stored in JSONL files and can be used directly without running the `compute_stoi.py` or `compute_whisper` scripts. 
 The files are named as follows:
 
 - `cadenza_data.train.stoi.jsonl`: Contains precomputed STOI scores for the training set.
@@ -61,7 +61,7 @@ The files are named as follows:
 - `cadenza_data.train.whisper.vocals.jsonl`: Contains precomputed Whisper correctness scores from the estimated vocals for the training set.
 - `cadenza_data.valid.whisper.vocals.jsonl`: Contains precomputed Whisper correctness scores from the estimated vocals for the validation set.
 
-To use these precomputed scores, copy the relevant file to the `exp/` directory and rename it to match the expected output of the `compute_stoi.py` or `compute_whisper.py` scripts.
+To use these precomputed scores, copy the relevant file to the `exp/` directory and rename it to match the expected output of the `compute_stoi.py` or `compute_whisper.py` scripts. 
 For example, to copy the precomputed STOI scores for the training set, run:
 
 ```bash
@@ -72,7 +72,7 @@ This allows you to skip the computation step and proceed directly to making inte
 
 ## 2. Baseline
 
-The baseline prediction model is a simple logistic regression model that maps STOI or Whisper correctness scores onto the sentence correctness values.
+The baseline prediction model is a simple logistic regression model that maps STOI or Whisper correctness scores onto the sentence correctness values. 
 
 There are three baselines:
 
@@ -113,16 +113,16 @@ python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent sp
 For Whisper using the estimated vocals as input:
 ```bash
 python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=whisper.vocals
-```
+``` 
 
-This will generate an output file containing the corresponding scores.
+This will generate an output file containing the corresponding scores. 
 The file will be saved in the `exp/` directory and named `<DATASET>.train.<BASELINE SYSTEM>.jsonl`, where `<DATASET>` is the dataset name specified in the command (e.g., `clarity_data` or `clarity_demo_data`).
 
 To run the same commands for the validation set, simply change the `split` argument to `valid`.
 
 ### 3.2 Making intelligibility predictions
 
-The baseline intelligibility predictions are made by using a logistic fitting to map the corresponding scores onto the sentence correctness values.
+The baseline intelligibility predictions are made by using a logistic fitting to map the corresponding scores onto the sentence correctness values. 
 This is done using `predict.py`, which will produce a CSV file named `exp/<DATASET>.train.<BASELINE SYSTEM>.predict.csv` containing the predictions in the format required for submission to the challenge.
 
 For example, to make predictions for the validation set using the STOI-based baseline, run:
@@ -144,5 +144,5 @@ These predictions are intended for submission to the leaderboard for evaluation.
 
 ### 3.4 Evaluating the predictions
 
-Unlike for the training data set, the validation set ground truth is not provided, but once predictions are made they can be submitted to the leaderboard for evaluation.
+Unlike for the training data set, the validation set ground truth is not provided, but once predictions are made they can be submitted to the leaderboard for evaluation. 
 See the challenge website for details of how to submit your predictions.
