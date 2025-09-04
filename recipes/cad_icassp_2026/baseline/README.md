@@ -58,8 +58,6 @@ The files are named as follows:
 - `cadenza_data.valid.stoi.jsonl`: Contains precomputed STOI scores for the validation set.
 - `cadenza_data.train.whisper.mixture.jsonl`: Contains precomputed Whisper correctness scores from the mixture for the training set.
 - `cadenza_data.valid.whisper.mixture.jsonl`: Contains precomputed Whisper correctness scores from the mixture for the validation set.
-- `cadenza_data.train.whisper.vocals.jsonl`: Contains precomputed Whisper correctness scores from the estimated vocals for the training set.
-- `cadenza_data.valid.whisper.vocals.jsonl`: Contains precomputed Whisper correctness scores from the estimated vocals for the validation set.
 
 To use these precomputed scores, copy the relevant file to the `exp/` directory and rename it to match the expected output of the `compute_stoi.py` or `compute_whisper.py` scripts.
 For example, to copy the precomputed STOI scores for the training set, run:
@@ -74,11 +72,10 @@ This allows you to skip the computation step and proceed directly to making inte
 
 The baseline prediction model is a simple logistic regression model that maps STOI or Whisper correctness scores onto the sentence correctness values.
 
-There are three baselines:
+There are two baselines:
 
 1. STOI-based baseline
 2. Whisper-based baseline using the mixture as input
-3. Whisper-based baseline using the estimated vocals as input
 
 ### 2.1 STOI-Based baseline
 
@@ -88,10 +85,8 @@ For reference signal, it estimates the vocals from the unprocessed signal.
 ### 2.2 Whisper-Based baseline
 
 The Whisper-based baseline uses OpenAI's Whisper model to transcribe the audio signals and compute a correctness score.
-There are two variants of the Whisper-based baseline:
-
-1. Using the mixture signal as input to Whisper.
-2. Using the estimated vocals from the processed signal as input to Whisper.
+It uses the processed signal as input to Whisper and computes the `hits/total_words` as score.
+The transcription and ground truth are normalised and contractions expanded before computing the correctness.
 
 ## 3. Running the Baseline
 
@@ -105,20 +100,14 @@ For stoi:
 python compute_stoi.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=stoi
 ```
 
-For Whisper using the mixture as input:
+For Whisper:
 
 ```bash
-python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=whisper.mixture
-```
-
-For Whisper using the estimated vocals as input:
-
-```bash
-python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=whisper.vocals
+python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=whisper
 ```
 
 This will generate an output file containing the corresponding scores.
-The file will be saved in the `exp/` directory and named `<DATASET>.train.<BASELINE SYSTEM>.jsonl`, where `<DATASET>` is the dataset name specified in the command (e.g., `clarity_data` or `clarity_demo_data`).
+The file will be saved in the `exp/` directory and named `<DATASET>.train.<BASELINE SYSTEM>.jsonl`, where `<DATASET>` is the dataset name specified in the command (e.g., `cadenza_data`).
 
 To run the same commands for the validation set, simply change the `split` argument to `valid`.
 
