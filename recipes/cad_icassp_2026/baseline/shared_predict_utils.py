@@ -28,7 +28,7 @@ class LogisticModel:
     Fits a logistic mapping from input values x to output values y.
     """
 
-    params: Union[np.ndarray, None] = None  # The model params
+    params: np.ndarray | None = None  # The model params
 
     def _logistic_mapping(self, x, x_0, k):
         """Logistic function

@@ -7,7 +7,6 @@ from inflect import engine as inflect_engine
 from jiwer import (
     AbstractTransform,
     Compose,
-    process_words,
     ReduceToListOfListOfWords,
     ReduceToSingleSentence,
     RemoveKaldiNonWords,
@@ -15,6 +14,7 @@ from jiwer import (
     RemoveWhiteSpace,
     Strip,
     ToUpperCase,
+    process_words,
 )
 
 p = inflect_engine()
@@ -57,7 +57,7 @@ class Contractions(AbstractTransform):
 
     def __init__(self, alternative_file: str):
         self.alternative_dict = defaultdict(list)
-        with open(alternative_file, "r") as f:
+        with open(alternative_file) as f:
             for line in f:
                 parts = [x.strip() for x in line.strip().split(",", 1)]
                 if len(parts) == 1:
