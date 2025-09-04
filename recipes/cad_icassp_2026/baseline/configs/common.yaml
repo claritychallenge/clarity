@@ -1,9 +1,8 @@
 data:
-  cadenza_data_root: /media/gerardoroadabike/Extreme SSD1/Challenges/CAD3/CLIP/dataset
+  cadenza_data_root: ???
   dataset: cadenza_data
   sample_rate: 44100  # Sample rate of the audio files
 
-precomputations: ../precomputed
 
 # Hydra parameters
 hydra:
