@@ -140,12 +140,8 @@ def run_asr_from_vocals(
         cfg (DictConfig): configuration object
     """
 
-    try:
-        from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
-    except ImportError:
-        raise ImportError(
-            "torchaudio is not installed. Please install torchaudio to use the separation model."
-        )
+    from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
+
     # Prepare dnn models
     device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info(f"Using device: {device}")
@@ -177,8 +173,10 @@ def run_asr_from_vocals(
 def run_compute_whisper(cfg: DictConfig) -> None:
     """Run the Whisper to compute correctness hits/tootal words.
 
-    Set cfg.baseline.mode to ```mixture``` to compute correctness on the mixture signal.
-    Set cfg.baseline.mode to ```vocals``` to compute correctness on the estimated vocals.
+    Set cfg.baseline.mode to ```mixture``` to compute
+        correctness on the mixture signal.
+    Set cfg.baseline.mode to ```vocals``` to compute
+        correctness on the estimated vocals.
 
     """
     assert cfg.baseline.name == "whisper"
