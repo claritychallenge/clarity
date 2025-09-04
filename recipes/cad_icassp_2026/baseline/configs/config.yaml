@@ -1,5 +1,5 @@
 defaults:
   - common
-  - baseline: stoi  # default baseline (can be overridden via CLI)
+  - baseline: stoi  # stoi or whisper
 
 split: valid
