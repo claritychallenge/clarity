@@ -141,7 +141,7 @@ def run_compute_stoi(cfg: DictConfig) -> None:
     # Iterate over the signals that need scoring
     logger.info(f"Computing scores for {len(records)} out of {total_records} signals")
     if cfg.baseline.separator.keep_vocals:
-        logger.info(f"Saving estimated vocals. If exist, they will not be recomputed.")
+        logger.info("Saving estimated vocals. If exist, they will not be recomputed.")
 
     for record in tqdm(records):
         signal_name = record["signal"]

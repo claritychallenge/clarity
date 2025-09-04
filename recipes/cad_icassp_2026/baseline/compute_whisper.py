@@ -79,7 +79,7 @@ def compute_correctness(
         float: correctness score.
     """
     scorer = SentenceScorer(contraction_file)
-    path_temp = Path(f"temp.flac")
+    path_temp = Path("temp.flac")
     write_signal(
         filename=path_temp, signal=signal, sample_rate=sample_rate, floating_point=False
     )

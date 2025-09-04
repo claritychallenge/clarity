@@ -95,22 +95,24 @@ There are two variants of the Whisper-based baseline:
 
 ## 3. Running the Baseline
 
-
 ### 3.1 Computing scores
 
 To compute the scores for the training data set, run the following commands:
 
 For stoi:
+
 ```bash
 python compute_stoi.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=stoi
 ```
 
 For Whisper using the mixture as input:
+
 ```bash
 python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=whisper.mixture
 ```
 
 For Whisper using the estimated vocals as input:
+
 ```bash
 python compute_whisper.py data.cadenza_data_root=/path/to/cadenza_data/parent split=train baseline.system=whisper.vocals
 ```
@@ -126,6 +128,7 @@ The baseline intelligibility predictions are made by using a logistic fitting to
 This is done using `predict.py`, which will produce a CSV file named `exp/<DATASET>.train.<BASELINE SYSTEM>.predict.csv` containing the predictions in the format required for submission to the challenge.
 
 For example, to make predictions for the validation set using the STOI-based baseline, run:
+
 ```bash
 python predict.py data.cadenza_data_root=/path/to/cadenza_data/parent split=valid baseline.system=stoi
 ```
