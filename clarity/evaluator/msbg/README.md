@@ -1,5 +1,5 @@
 # MSBG Hearing Loss Simulator
-This distribution is an implementation of the MSBG (Moore, Stone, Baer, and Glasberg ) hearing-loss simulator from Cambridge University. For more details see this 
+This distribution is an implementation of the MSBG (Moore, Stone, Baer, and Glasberg ) hearing-loss simulator from Cambridge University. For more details see this
 [blog post](https://claritychallenge.org/blog/Hearing%20loss%20simulation).
 
 # History
@@ -50,16 +50,16 @@ modified by MAS, Oct08 to try to get more consistent results, for accessibility 
 modified by MAStone, Nov 2013 to remove previous dependency on C executables to perform filterbank and recruitment.
 this was originaly done because of computer euqipment available in the early 1990s.
 Now all included as MATLAB scripts.  Should lead to less problems with head- (and floor-) room and more clarity in calibration
-Also modified the whole software package to move reference-to-eardrum filtering (eg ff/df/ITU) into this script.  
+Also modified the whole software package to move reference-to-eardrum filtering (eg ff/df/ITU) into this script.
 
 PROCESSING SUMMARY JAN 2025
-(1) take wav file from "IpFileNames" variable, measure RMS and adjust to reference calibration level as well as incorporating 
+(1) take wav file from "IpFileNames" variable, measure RMS and adjust to reference calibration level as well as incorporating
 any required change in input level from 65 dB SPL reference eg uif sijmulating at a different input level, prepend calibration
 tone and calibration speech-spectrum-shaped noise at start of each channel signal for each audiogram in array "Audiogram_Master",
 & process file........
 (2) send to MATLAB function that applies linear filtering to simulate passage from ITU/diffuse/free-field to cochlea
          (mainly a bass cut and a mid-range boost, does not usually increase signal level)
-(3) [obsolete 2013] write cochlea-referenced signal as 16 bit binary file for processing by DOS executable called by batch file 
+(3) [obsolete 2013] write cochlea-referenced signal as 16 bit binary file for processing by DOS executable called by batch file
 (4) impairment simulation is done in two stages: spectral smearing (optional switch to include this now provided in function call)
     and  recruitment simulation (obligatory)
 (5) re-call MATLAB function of (2) above so as to apply INVERSE linear filtering from that in (2)
