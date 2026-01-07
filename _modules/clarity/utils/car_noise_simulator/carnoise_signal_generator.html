@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.utils.car_noise_simulator.carnoise_signal_generator &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.utils.car_noise_simulator.carnoise_signal_generator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Class to generate the car noise signal.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">butter</span><span class="p">,</span> <span class="n">lfilter</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_butter_filter</span><span class="p">(</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cutoff_hz</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">btype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that creates a butter filter</span>
+<span class="sd">    Args:</span>
+<span class="sd">        order (int): Order of the filter</span>
+<span class="sd">        cutoff_hz (list or np.ndarray): Cutoff frequency of the filter</span>
+<span class="sd">        btype (str): Type of the filter</span>
+<span class="sd">        sample_rate (int): Sampling frequency</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        numer (np.ndarray): Numerator of the filter</span>
+<span class="sd">        denom (np.ndarray): Denominator of the filter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_hz</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">cutoff_hz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cutoff_hz</span><span class="p">)</span>
+    <span class="n">numer</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span>
+        <span class="n">order</span><span class="p">,</span> <span class="n">cutoff_hz</span> <span class="o">/</span> <span class="p">(</span><span class="n">sample_rate</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">btype</span><span class="o">=</span><span class="n">btype</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;ba&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">numer</span><span class="p">,</span> <span class="n">denom</span>
+
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CarNoiseSignalGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to generate car noise signal.</span>
+
+<span class="sd">    The constructor takes the sample_rate and duration of</span>
+<span class="sd">    the generated signals.</span>
+
+<span class="sd">    The method `generate_car_noise` takes parameters for the</span>
+<span class="sd">    noise and generates the signal. These parameters</span>
+<span class="sd">    can be generated by the CarNoiseParameters class.</span>
+
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; car_noise_parameters = CarNoiseParameters(random_flag=True)</span>
+<span class="sd">        &gt;&gt;&gt; parameters = car_noise_parameters.gen_parameters(speed_kph=100)</span>
+
+<span class="sd">        &gt;&gt;&gt; car_noise = CarNoiseGenerator(sample_rate=44100, duration_secs=5,</span>
+<span class="sd">                random_flag=True)</span>
+<span class="sd">        &gt;&gt;&gt; car_noise_signal = car_noise.generate_car_noise(parameters, 3, 0.5)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">REFERENCE_CONSTANT_DB</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">FINAl_MULTIPLIER</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2000</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">duration_secs</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">random_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor takes the sample_rate and duration of the generated signals.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sample_rate (int): Sample rate of the generated signal</span>
+<span class="sd">            duration_secs (float): Duration of the generated signal</span>
+<span class="sd">            random_flag (bool, optional): Flag to indicate whether add some randomness</span>
+<span class="sd">            to the output signals. Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration_secs</span> <span class="o">=</span> <span class="n">duration_secs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_flag</span> <span class="o">=</span> <span class="n">random_flag</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampleduration_secs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_secs</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timevector_ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampleduration_secs</span>
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator.generate_car_noise">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_car_noise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_car_noise</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">noise_parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">number_noise_sources</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">commonness_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that generates the car noise signal.</span>
+<span class="sd">        It organizes the parameters and calls the methods to generate the independent</span>
+<span class="sd">        parts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            noise_parameters (dict): Dictionary with the parameters for the noise</span>
+<span class="sd">                as generated by the CarNoiseParameters class.</span>
+<span class="sd">            number_noise_sources (int): Number of noise sources. First source is the</span>
+<span class="sd">                engine noise. Following sources are other noise sources.</span>
+<span class="sd">            commonness_factor (float): Commonness factor</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Car noise signal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># .. reference level = no speed dependence  plus a small randomization</span>
+        <span class="n">referencelevel_db</span> <span class="o">=</span> <span class="n">noise_parameters</span><span class="p">[</span><span class="s2">&quot;reference_level_db&quot;</span><span class="p">]</span>
+
+        <span class="n">filter_numer_denom</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">filter_type</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;primary_filter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;secondary_filter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bump&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dip_low&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dip_high&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">if</span> <span class="n">filter_type</span> <span class="ow">in</span> <span class="n">noise_parameters</span><span class="p">:</span>
+                <span class="n">filter_numer_denom</span><span class="p">[</span><span class="n">filter_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">numer</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">_butter_filter</span><span class="p">(</span>
+                    <span class="o">**</span><span class="n">noise_parameters</span><span class="p">[</span><span class="n">filter_type</span><span class="p">],</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span>
+                <span class="p">)</span>
+                <span class="n">filter_numer_denom</span><span class="p">[</span><span class="n">filter_type</span><span class="p">][</span><span class="s2">&quot;numer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numer</span>
+                <span class="n">filter_numer_denom</span><span class="p">[</span><span class="n">filter_type</span><span class="p">][</span><span class="s2">&quot;denom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">denom</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter for filter </span><span class="si">{</span><span class="n">filter_type</span><span class="si">}</span><span class="s2"> are mandatory.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># initialise waveform matrix</span>
+        <span class="c1"># global_noise = Main array storing the different sources</span>
+        <span class="c1"># extra_noise_for_coherence = Array to add some correlation between sources</span>
+        <span class="n">car_noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_noise_sources</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span><span class="p">))</span>
+        <span class="n">extra_noise_for_coherence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span><span class="p">))</span>
+
+        <span class="c1"># Generate Engine Noise</span>
+        <span class="c1"># stored in index 0 in source_noise</span>
+        <span class="n">engine_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_engine_noise</span><span class="p">(</span>
+            <span class="n">speed</span><span class="o">=</span><span class="n">noise_parameters</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">],</span>
+            <span class="n">rpm</span><span class="o">=</span><span class="n">noise_parameters</span><span class="p">[</span><span class="s2">&quot;rpm&quot;</span><span class="p">],</span>
+            <span class="n">engine_num_harmonics</span><span class="o">=</span><span class="n">noise_parameters</span><span class="p">[</span><span class="s2">&quot;engine_num_harmonics&quot;</span><span class="p">],</span>
+            <span class="n">reference_level_db</span><span class="o">=</span><span class="n">referencelevel_db</span><span class="p">,</span>
+            <span class="n">primary_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;primary_filter&quot;</span><span class="p">],</span>
+            <span class="n">secondary_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;secondary_filter&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">car_noise</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">engine_noise</span>
+
+        <span class="c1"># Generate Noise for N sources</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_noise_sources</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">source_n_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_source_noise</span><span class="p">(</span>
+                <span class="n">reference_level_db</span><span class="o">=</span><span class="n">referencelevel_db</span><span class="p">,</span>
+                <span class="n">primary_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;primary_filter&quot;</span><span class="p">],</span>
+                <span class="n">secondary_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;secondary_filter&quot;</span><span class="p">],</span>
+                <span class="n">bump_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;bump&quot;</span><span class="p">],</span>
+                <span class="n">dip_low_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;dip_low&quot;</span><span class="p">],</span>
+                <span class="n">dip_high_filter</span><span class="o">=</span><span class="n">filter_numer_denom</span><span class="p">[</span><span class="s2">&quot;dip_high&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">number_noise_sources</span><span class="p">:</span>
+                <span class="n">car_noise</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">source_n_noise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">extra_noise_for_coherence</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">source_n_noise</span>
+
+        <span class="c1"># Add some correlation between sources</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_noise_sources</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">car_noise</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_commonness</span><span class="p">(</span>
+                <span class="n">car_noise</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:],</span> <span class="n">extra_noise_for_coherence</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">commonness_factor</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">car_noise</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">FINAl_MULTIPLIER</span></div>
+
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator.generate_source_noise">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_source_noise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_source_noise</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">reference_level_db</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">primary_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">secondary_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">bump_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">dip_low_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">dip_high_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that generates the noise of a single source.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            reference_level_db (float): Reference level in dB</span>
+<span class="sd">            primary_filter (Dict[str, np.ndarray]): Primary filter</span>
+<span class="sd">            secondary_filter (Dict[str, np.ndarray]): Secondary filter</span>
+<span class="sd">            bump_filter (Dict[str, np.ndarray]): Bump filter</span>
+<span class="sd">            dip_low_filter (Dict[str, np.ndarray]): Low dip filter</span>
+<span class="sd">            dip_high_filter (Dict[str, np.ndarray]): High dip filter</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Noise of a single source</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lowpasslevel_db</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">reference_level_db</span> <span class="o">+</span> <span class="mi">35</span>
+        <span class="p">)</span>  <span class="c1"># puts it slightly quieter than the tones</span>
+        <span class="n">lowpassnoise_gaussianstd</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">lowpasslevel_db</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="n">source_noise</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">lowpassnoise_gaussianstd</span>
+        <span class="p">)</span>
+
+        <span class="n">source_noise</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">primary_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span> <span class="n">primary_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span> <span class="n">source_noise</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add bump to the noise</span>
+        <span class="c1"># Get Bump noise parameters</span>
+        <span class="n">lowpassnoise_gaussianstd</span><span class="p">,</span> <span class="n">bump_gaussianstd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bump_params</span><span class="p">(</span>
+            <span class="n">reference_level_db</span>
+        <span class="p">)</span>
+        <span class="n">bump_waveform</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">bump_gaussianstd</span>
+        <span class="n">bump_waveform</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">bump_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span> <span class="n">bump_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span> <span class="n">bump_waveform</span>
+        <span class="p">)</span>
+
+        <span class="n">source_noise</span> <span class="o">=</span> <span class="n">source_noise</span> <span class="o">+</span> <span class="n">bump_waveform</span>
+
+        <span class="c1"># Add dip to the noise</span>
+        <span class="n">dip_lowerpart</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">dip_low_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span> <span class="n">dip_low_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span> <span class="n">source_noise</span>
+        <span class="p">)</span>
+        <span class="n">dip_upperpart</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">dip_high_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span> <span class="n">dip_high_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span> <span class="n">source_noise</span>
+        <span class="p">)</span>
+        <span class="n">source_noise</span> <span class="o">=</span> <span class="n">dip_lowerpart</span> <span class="o">+</span> <span class="n">dip_upperpart</span>
+
+        <span class="c1"># final secondary filter</span>
+        <span class="n">source_noise</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">secondary_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span> <span class="n">secondary_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span> <span class="n">source_noise</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">source_noise</span></div>
+
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator.generate_engine_noise">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.generate_engine_noise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_engine_noise</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">rpm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">reference_level_db</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">engine_num_harmonics</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">primary_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">secondary_filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that generates the noise of the engine.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            speed (float): Speed of the car in km/h</span>
+<span class="sd">            rpm (float): RPM of the engine</span>
+<span class="sd">            reference_level_db (float): Reference level in dB</span>
+<span class="sd">            engine_num_harmonics (int): Number of harmonics of the engine</span>
+<span class="sd">            primary_filter (Dict[str, np.ndarray]): Primary filter</span>
+<span class="sd">            secondary_filter (Dict[str, np.ndarray]): Secondary filter</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Noise of the engine</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Creating butter filters for engine noise</span>
+
+        <span class="p">(</span>
+            <span class="n">harmonic_complex_freqs_hz</span><span class="p">,</span>
+            <span class="n">harmonic_complex_power_db</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine_params</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">rpm</span><span class="p">,</span> <span class="n">reference_level_db</span><span class="p">,</span> <span class="n">engine_num_harmonics</span><span class="p">)</span>
+
+        <span class="n">engine_noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_samples</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">engine_num_harmonics</span><span class="p">):</span>
+            <span class="n">component</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># set amplitude of tone</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;amplitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">harmonic_complex_power_db</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+            <span class="c1"># set random phase</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;phase_rads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+            <span class="c1"># set angular frequency</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;angularfreq_rads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">harmonic_complex_freqs_hz</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+            <span class="c1"># make :-)</span>
+            <span class="n">component_waveform</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;amplitude&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span>
+                <span class="n">component</span><span class="p">[</span><span class="s2">&quot;angularfreq_rads&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">timevector_ms</span>
+                <span class="o">+</span> <span class="n">component</span><span class="p">[</span><span class="s2">&quot;phase_rads&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># store</span>
+            <span class="n">engine_noise</span> <span class="o">+=</span> <span class="n">component_waveform</span>
+
+        <span class="c1"># Applies Primary and Secondary filters</span>
+        <span class="n">engine_noise</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">primary_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span>
+            <span class="n">primary_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span>
+            <span class="n">engine_noise</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">engine_noise</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span>
+            <span class="n">secondary_filter</span><span class="p">[</span><span class="s2">&quot;numer&quot;</span><span class="p">],</span>
+            <span class="n">secondary_filter</span><span class="p">[</span><span class="s2">&quot;denom&quot;</span><span class="p">],</span>
+            <span class="n">engine_noise</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">engine_noise</span></div>
+
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator.get_bump_params">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_bump_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bump_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference_level_db</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that gets the parameters of the bump noise</span>
+<span class="sd">        Args:</span>
+<span class="sd">            reference_level_db (float): Reference level in dB</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            lowpass_noise_gaussian_std (float): Standard deviation of the low pass noise</span>
+<span class="sd">            bump_gaussian_std (float): Standard deviation of the bump noise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lowpasslevel_db</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">reference_level_db</span> <span class="o">+</span> <span class="mi">35</span>
+        <span class="p">)</span>  <span class="c1"># puts it slightly quieter than the tones</span>
+        <span class="n">lowpass_noise_gaussian_std</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">lowpasslevel_db</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="n">bump_level_db</span> <span class="o">=</span> <span class="n">lowpasslevel_db</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_flag</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">bump_gaussian_std</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">bump_level_db</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lowpass_noise_gaussian_std</span><span class="p">,</span> <span class="n">bump_gaussian_std</span></div>
+
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator.get_engine_params">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.get_engine_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_engine_params</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">rpm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">reference_level_db</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">engine_num_harmonics</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that gets the parameters of the engine noise</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speed (float): Speed of the car in km/h</span>
+<span class="sd">            rpm (float): RPM of the engine</span>
+<span class="sd">            reference_level_db (float): Reference level in dB</span>
+<span class="sd">            engine_num_harmonics (int): Number of harmonics of the engine</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            harmoniccomplex_freqs_hz (np.ndarray): Frequency of the harmonic complex</span>
+<span class="sd">            harmoniccomplex_ntones (int): Number of tones of the harmonic complex</span>
+<span class="sd">            harmoniccomplex_power_db (np.ndarray): Power of the harmonic complex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">harmoniccomplex_f0</span> <span class="o">=</span> <span class="n">rpm</span> <span class="o">/</span> <span class="mi">60</span>
+
+        <span class="n">harmoniccomplex_freqs_hz</span> <span class="o">=</span> <span class="n">harmoniccomplex_f0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="n">engine_num_harmonics</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="n">tone_speeddependence_level_dbperkph</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">0.067</span>
+        <span class="n">toneconstant_db</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span>
+
+        <span class="n">harmoniccomplex_power_db</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">engine_num_harmonics</span><span class="p">)</span>
+
+        <span class="c1"># Generating power levels for each component</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">engine_num_harmonics</span><span class="p">):</span>
+            <span class="n">harmoniccomplex_power_db</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">reference_level_db</span>
+                <span class="o">+</span> <span class="n">toneconstant_db</span>
+                <span class="o">+</span> <span class="n">tone_speeddependence_level_dbperkph</span> <span class="o">*</span> <span class="n">speed</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+                        <span class="mi">0</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_flag</span> <span class="k">else</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="mi">0</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_flag</span> <span class="k">else</span> <span class="mf">2.1</span><span class="p">,</span>
+                        <span class="mf">0.1</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">23</span><span class="p">]:</span>
+                    <span class="n">harmoniccomplex_power_db</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.333</span><span class="p">:</span>
+                    <span class="n">harmoniccomplex_power_db</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">harmoniccomplex_freqs_hz</span><span class="p">,</span>
+            <span class="n">harmoniccomplex_power_db</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CarNoiseSignalGenerator.apply_commonness">
+<a class="viewcode-back" href="../../../../clarity.utils.car_noise_simulator.html#clarity.utils.car_noise_simulator.carnoise_signal_generator.CarNoiseSignalGenerator.apply_commonness">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_commonness</span><span class="p">(</span>
+        <span class="n">target_signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">coherence_signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">commonness_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to apply correlation between the target signal</span>
+<span class="sd">        using the coherence signal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target_signal (np.ndarray): Target signal</span>
+<span class="sd">            coherence_signal (np.ndarray): Coherence signal</span>
+<span class="sd">            commonness_factor (float): Commonness factor</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            target_signal (np.ndarray): Target signal with the coherence signal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_signal</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">-</span> <span class="n">commonness_factor</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="n">target_signal</span> <span class="o">+</span> <span class="n">commonness_factor</span> <span class="o">*</span> <span class="n">coherence_signal</span>
+
+        <span class="c1"># correct amplitude for the sum of two gaussians</span>
+        <span class="n">correctionfactor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">commonness_factor</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">commonness_factor</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">target_signal</span> <span class="o">*</span> <span class="n">correctionfactor</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

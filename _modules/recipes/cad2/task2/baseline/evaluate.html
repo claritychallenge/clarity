@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>recipes.cad2.task2.baseline.evaluate &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for recipes.cad2.task2.baseline.evaluate</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Evaluate the enhanced signals using the HAAQI metric.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="c1"># pylint: disable=import-error</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hydra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyloudnorm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pyln</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndarray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.multiband_compressor</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultibandCompressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.haaqi</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_haaqi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Listener</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.flac_encoder</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_flac_signal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.results_support</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.signal_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rms</span><span class="p">,</span> <span class="n">resample</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="apply_gains">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.apply_gains">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_gains</span><span class="p">(</span><span class="n">stems</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gains</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply gain to the signal by using LUFS.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stems (dict): Dictionary of stems.</span>
+<span class="sd">        sample_rate (float): Sample rate of the signal.</span>
+<span class="sd">        gains (dict): Dictionary of gains.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary of stems with applied gains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meter</span> <span class="o">=</span> <span class="n">pyln</span><span class="o">.</span><span class="n">Meter</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">))</span>
+
+    <span class="n">stems_gain</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">stem_str</span><span class="p">,</span> <span class="n">stem_signal</span> <span class="ow">in</span> <span class="n">stems</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">stem_signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">stem_signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">stem_signal</span> <span class="o">=</span> <span class="n">stem_signal</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">stem_lufs</span> <span class="o">=</span> <span class="n">meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">stem_signal</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stem_lufs</span> <span class="o">==</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+            <span class="n">stem_lufs</span> <span class="o">=</span> <span class="o">-</span><span class="mi">80</span>
+
+        <span class="n">gain</span> <span class="o">=</span> <span class="n">stem_lufs</span> <span class="o">+</span> <span class="n">gains</span><span class="p">[</span><span class="n">stem_str</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span>
+                <span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Possible clipped samples in output&quot;</span>
+            <span class="p">)</span>
+            <span class="n">stems_gain</span><span class="p">[</span><span class="n">stem_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyln</span><span class="o">.</span><span class="n">normalize</span><span class="o">.</span><span class="n">loudness</span><span class="p">(</span><span class="n">stem_signal</span><span class="p">,</span> <span class="n">stem_lufs</span><span class="p">,</span> <span class="n">gain</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stems_gain</span></div>
+
+
+
+<div class="viewcode-block" id="remix_stems">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.remix_stems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remix_stems</span><span class="p">(</span><span class="n">stems</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remix the stems into a stereo signal.</span>
+
+<span class="sd">    The remixing is done by summing the stems.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stems (dict): Dictionary of stems.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ndarray: Stereo signal.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">remix_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">stems</span><span class="p">[</span><span class="s2">&quot;source_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">stem_signal</span> <span class="ow">in</span> <span class="n">stems</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">remix_signal</span> <span class="o">+=</span> <span class="n">stem_signal</span>
+    <span class="k">return</span> <span class="n">remix_signal</span></div>
+
+
+
+<div class="viewcode-block" id="make_scene_listener_list">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.make_scene_listener_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_scene_listener_list</span><span class="p">(</span><span class="n">scenes_listeners</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">small_test</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make the list of scene-listener pairing to process</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scenes_listeners (dict): Dictionary of scenes and listeners.</span>
+<span class="sd">        small_test (bool): Whether to use a small test set.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: List of scene-listener pairings.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scene_listener_pairs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">listener</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">scenes_listeners</span>
+        <span class="k">for</span> <span class="n">listener</span> <span class="ow">in</span> <span class="n">scenes_listeners</span><span class="p">[</span><span class="n">scene</span><span class="p">]</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Can define a standard &#39;small_test&#39; with just 1/50 of the data</span>
+    <span class="k">if</span> <span class="n">small_test</span><span class="p">:</span>
+        <span class="n">scene_listener_pairs</span> <span class="o">=</span> <span class="n">scene_listener_pairs</span><span class="p">[::</span><span class="mi">400</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">scene_listener_pairs</span></div>
+
+
+
+<div class="viewcode-block" id="set_song_seed">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.set_song_seed">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_song_seed</span><span class="p">(</span><span class="n">song</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set a seed that is unique for the given song&quot;&quot;&quot;</span>
+    <span class="n">song_encoded</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">song</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="n">song_md5</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">song_encoded</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">song_md5</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_reference_stems">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.load_reference_stems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_reference_stems</span><span class="p">(</span><span class="n">music_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">stems</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the reference stems for a given scene.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        music_dir (str | Path): Path to the music directory.</span>
+<span class="sd">        stems (dict): Dictionary of stems</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary of reference stems.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reference_stems</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">source_data</span> <span class="ow">in</span> <span class="n">stems</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">source_id</span> <span class="o">==</span> <span class="s2">&quot;mixture&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">stem</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">read_flac_signal</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">music_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">source_data</span><span class="p">[</span><span class="s2">&quot;track&quot;</span><span class="p">])</span>
+        <span class="n">reference_stems</span><span class="p">[</span><span class="n">source_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">stem</span>
+
+    <span class="k">return</span> <span class="n">reference_stems</span></div>
+
+
+
+<div class="viewcode-block" id="adjust_level">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.adjust_level">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">adjust_level</span><span class="p">(</span><span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">gains_scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adjust the level of the signal to compensate the effect of amplifying the</span>
+<span class="sd">    sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dbi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">gains_scene</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="n">dbn</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">dbi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">))</span> <span class="o">/</span> <span class="n">dbi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">signal</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">dbn</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="run_calculate_aq">
+<a class="viewcode-back" href="../../../../../recipes.cad2.task2.baseline.html#recipes.cad2.task2.baseline.evaluate.run_calculate_aq">[docs]</a>
+<span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">config_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="n">version_base</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_calculate_aq</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate the enhanced signals using the HAAQI metric.&quot;&quot;&quot;</span>
+
+    <span class="n">enhanced_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;enhanced_signals&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluating from </span><span class="si">{</span><span class="n">enhanced_folder</span><span class="si">}</span><span class="s2"> directory&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load listener audiograms and songs</span>
+    <span class="n">listener_dict</span> <span class="o">=</span> <span class="n">Listener</span><span class="o">.</span><span class="n">load_listener_dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">listeners_file</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">gains_file</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">gains</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">scenes_file</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">scenes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">scene_listeners_file</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">scenes_listeners</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">music_file</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">songs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="c1"># Load compressor params</span>
+    <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">enhancer_params_file</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">enhancer_params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="n">enhancer</span> <span class="o">=</span> <span class="n">MultibandCompressor</span><span class="p">(</span>
+        <span class="n">crossover_frequencies</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">enhancer</span><span class="o">.</span><span class="n">crossover_frequencies</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">input_sample_rate</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">scores_headers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;scene&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;song&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;listener&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_haaqi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;right_haaqi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;avg_haaqi&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">results_file</span> <span class="o">=</span> <span class="n">ResultsFile</span><span class="p">(</span>
+            <span class="s2">&quot;scores.csv&quot;</span><span class="p">,</span>
+            <span class="n">header_columns</span><span class="o">=</span><span class="n">scores_headers</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">results_file</span> <span class="o">=</span> <span class="n">ResultsFile</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;scores_</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">batch</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span>
+            <span class="n">header_columns</span><span class="o">=</span><span class="n">scores_headers</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">scene_listener_pairs</span> <span class="o">=</span> <span class="n">make_scene_listener_list</span><span class="p">(</span>
+        <span class="n">scenes_listeners</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">small_test</span>
+    <span class="p">)</span>
+    <span class="n">scene_listener_pairs</span> <span class="o">=</span> <span class="n">scene_listener_pairs</span><span class="p">[</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">batch</span> <span class="p">::</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">batch_size</span>
+    <span class="p">]</span>
+    <span class="n">num_scenes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scene_listener_pairs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">scene_listener_pair</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scene_listener_pairs</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">scene_id</span><span class="p">,</span> <span class="n">listener_id</span> <span class="o">=</span> <span class="n">scene_listener_pair</span>
+
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">scenes</span><span class="p">[</span><span class="n">scene_id</span><span class="p">]</span>
+        <span class="n">song_name</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;music&quot;</span><span class="p">]</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">num_scenes</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">] &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Evaluating </span><span class="si">{</span><span class="n">scene_id</span><span class="si">}</span><span class="s2"> for listener </span><span class="si">{</span><span class="n">listener_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Load reference signals</span>
+        <span class="n">reference_stems</span> <span class="o">=</span> <span class="n">load_reference_stems</span><span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">music_dir</span><span class="p">),</span> <span class="n">songs</span><span class="p">[</span><span class="n">song_name</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">reference_stems</span> <span class="o">=</span> <span class="n">apply_gains</span><span class="p">(</span>
+            <span class="n">reference_stems</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">input_sample_rate</span><span class="p">,</span> <span class="n">gains</span><span class="p">[</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;gain&quot;</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="n">reference_mixture</span> <span class="o">=</span> <span class="n">remix_stems</span><span class="p">(</span><span class="n">reference_stems</span><span class="p">)</span>
+        <span class="n">reference_mixture</span> <span class="o">=</span> <span class="n">adjust_level</span><span class="p">(</span><span class="n">reference_mixture</span><span class="p">,</span> <span class="n">gains</span><span class="p">[</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;gain&quot;</span><span class="p">]])</span>
+
+        <span class="c1"># Set the random seed for the scene</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">:</span>
+            <span class="n">set_song_seed</span><span class="p">(</span><span class="n">scene_id</span><span class="p">)</span>
+
+        <span class="c1"># Evaluate listener</span>
+        <span class="n">listener</span> <span class="o">=</span> <span class="n">listener_dict</span><span class="p">[</span><span class="n">listener_id</span><span class="p">]</span>
+
+        <span class="c1"># Compressor params</span>
+        <span class="n">mbc_params_listener</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+
+        <span class="k">for</span> <span class="n">ear</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">]:</span>
+            <span class="n">mbc_params_listener</span><span class="p">[</span><span class="n">ear</span><span class="p">][</span><span class="s2">&quot;release&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">enhancer</span><span class="o">.</span><span class="n">release</span>
+            <span class="n">mbc_params_listener</span><span class="p">[</span><span class="n">ear</span><span class="p">][</span><span class="s2">&quot;attack&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">enhancer</span><span class="o">.</span><span class="n">attack</span>
+            <span class="n">mbc_params_listener</span><span class="p">[</span><span class="n">ear</span><span class="p">][</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">enhancer</span><span class="o">.</span><span class="n">threshold</span>
+        <span class="n">mbc_params_listener</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">][</span><span class="s2">&quot;ratio&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enhancer_params</span><span class="p">[</span><span class="n">listener_id</span><span class="p">][</span><span class="s2">&quot;cr_l&quot;</span><span class="p">]</span>
+        <span class="n">mbc_params_listener</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s2">&quot;ratio&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enhancer_params</span><span class="p">[</span><span class="n">listener_id</span><span class="p">][</span><span class="s2">&quot;cr_r&quot;</span><span class="p">]</span>
+        <span class="n">mbc_params_listener</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">][</span><span class="s2">&quot;makeup_gain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enhancer_params</span><span class="p">[</span><span class="n">listener_id</span><span class="p">][</span>
+            <span class="s2">&quot;gain_l&quot;</span>
+        <span class="p">]</span>
+        <span class="n">mbc_params_listener</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s2">&quot;makeup_gain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enhancer_params</span><span class="p">[</span><span class="n">listener_id</span><span class="p">][</span>
+            <span class="s2">&quot;gain_r&quot;</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Get set directory</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">scene_id</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">&lt;</span> <span class="mi">49999</span><span class="p">:</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;train&quot;</span>
+        <span class="k">elif</span> <span class="mi">50000</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">scene_id</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">&lt;</span> <span class="mi">59999</span><span class="p">:</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;valid&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
+
+        <span class="c1"># Load enhanced signal</span>
+        <span class="n">enhanced_signal</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">read_flac_signal</span><span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">enhanced_folder</span><span class="p">)</span> <span class="o">/</span> <span class="n">dataset_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scene_id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">listener</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_remix.flac&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Apply hearing aid to reference signals</span>
+        <span class="n">enhancer</span><span class="o">.</span><span class="n">set_compressors</span><span class="p">(</span><span class="o">**</span><span class="n">mbc_params_listener</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">])</span>
+        <span class="n">left_reference</span> <span class="o">=</span> <span class="n">enhancer</span><span class="p">(</span>
+            <span class="n">signal</span><span class="o">=</span><span class="n">reference_mixture</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">enhancer</span><span class="o">.</span><span class="n">set_compressors</span><span class="p">(</span><span class="o">**</span><span class="n">mbc_params_listener</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">])</span>
+        <span class="n">right_reference</span> <span class="o">=</span> <span class="n">enhancer</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">reference_mixture</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Compute the scores</span>
+        <span class="n">left_score</span> <span class="o">=</span> <span class="n">compute_haaqi</span><span class="p">(</span>
+            <span class="n">processed_signal</span><span class="o">=</span><span class="n">resample</span><span class="p">(</span>
+                <span class="n">enhanced_signal</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">remix_sample_rate</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">reference_signal</span><span class="o">=</span><span class="n">resample</span><span class="p">(</span>
+                <span class="n">left_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">config</span><span class="o">.</span><span class="n">input_sample_rate</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span>
+            <span class="p">),</span>
+            <span class="n">processed_sample_rate</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span><span class="p">,</span>
+            <span class="n">reference_sample_rate</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span><span class="p">,</span>
+            <span class="n">audiogram</span><span class="o">=</span><span class="n">listener</span><span class="o">.</span><span class="n">audiogram_left</span><span class="p">,</span>
+            <span class="n">equalisation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">level1</span><span class="o">=</span><span class="mi">65</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">compute_rms</span><span class="p">(</span><span class="n">reference_mixture</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])),</span>
+        <span class="p">)</span>
+
+        <span class="n">right_score</span> <span class="o">=</span> <span class="n">compute_haaqi</span><span class="p">(</span>
+            <span class="n">processed_signal</span><span class="o">=</span><span class="n">resample</span><span class="p">(</span>
+                <span class="n">enhanced_signal</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">remix_sample_rate</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">reference_signal</span><span class="o">=</span><span class="n">resample</span><span class="p">(</span>
+                <span class="n">right_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">config</span><span class="o">.</span><span class="n">input_sample_rate</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span>
+            <span class="p">),</span>
+            <span class="n">processed_sample_rate</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span><span class="p">,</span>
+            <span class="n">reference_sample_rate</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">HAAQI_sample_rate</span><span class="p">,</span>
+            <span class="n">audiogram</span><span class="o">=</span><span class="n">listener</span><span class="o">.</span><span class="n">audiogram_right</span><span class="p">,</span>
+            <span class="n">equalisation</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">level1</span><span class="o">=</span><span class="mi">65</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">compute_rms</span><span class="p">(</span><span class="n">reference_mixture</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Save scores</span>
+        <span class="n">results_file</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;scene&quot;</span><span class="p">:</span> <span class="n">scene_id</span><span class="p">,</span>
+                <span class="s2">&quot;song&quot;</span><span class="p">:</span> <span class="n">song_name</span><span class="p">,</span>
+                <span class="s2">&quot;listener&quot;</span><span class="p">:</span> <span class="n">listener</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s2">&quot;left_haaqi&quot;</span><span class="p">:</span> <span class="n">left_score</span><span class="p">,</span>
+                <span class="s2">&quot;right_haaqi&quot;</span><span class="p">:</span> <span class="n">right_score</span><span class="p">,</span>
+                <span class="s2">&quot;avg_haaqi&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">left_score</span><span class="p">,</span> <span class="n">right_score</span><span class="p">])),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># pylint: disable = no-value-for-parameter</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">run_calculate_aq</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

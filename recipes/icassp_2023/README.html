@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The ICASSP 2023 Clarity Enhancement Challenge (CEC_ICASSP2023) &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-icassp-2023-clarity-enhancement-challenge-cec-icassp2023">
+<h1>The ICASSP 2023 Clarity Enhancement Challenge (CEC_ICASSP2023)<a class="headerlink" href="#the-icassp-2023-clarity-enhancement-challenge-cec-icassp2023" title="Link to this heading">¶</a></h1>
+<p>Clarity challenge code for the ICASSP 2023 Clarity Enhancement Challenge.</p>
+<p>For more information please visit the <a class="reference external" href="https://claritychallenge.org/docs/icassp2023/icassp2023_intro">challenge website</a>.</p>
+<p>Clarity tutorials are <a class="reference external" href="https://claritychallenge.github.io/clarity_CC_doc/tutorials">now available</a>. The tutorials introduce the Clarity installation, how to interact with Clarity metadata, and also provide examples of baseline systems and evaluation tools.</p>
+<section id="data-structure">
+<h2>Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<p>The ICASSP 2023 Clarity Enhancement Challenge is using the Clarity CEC2 dataset. To download data, please visit <a class="reference external" href="https://mab.to/KjXsa3EskhQuU">here</a>. The data is split into three packages: <code class="docutils literal notranslate"><span class="pre">clarity_CEC2_core.v1_1.tgz</span></code> [28 GB], <code class="docutils literal notranslate"><span class="pre">clarity_CEC2_train.v1_1.tgz</span></code> [69 GB] and <code class="docutils literal notranslate"><span class="pre">clarity_CEC2_hoairs.v1_0.tgz</span></code> [144 GB].</p>
+<p>Unpack packages under the same root directory using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>&lt;PACKAGE_NAME&gt;
+</pre></div>
+</div>
+<p><strong>Core</strong> contains metadata and development set signals, which can be used for validate existing systems</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+|   hrir/HRIRs_MAT 167M
+|
+└───dev
+|   └───rooms
+|   |   |   ac 20M
+|   |   |   rpf 79M
+|   |
+|   └───interferers
+|   |   |   music 5.8G
+|   |   |   noise 587M
+|   |   |   speech 1.4G
+|   |
+|   └───scenes 39G
+|   |
+|   └───targets 1.3G
+|   |
+|   └───speaker_adapt 20M
+|
+└───metadata
+    |   scenes.train.json
+    |   scenes.dev.json
+    |   rooms.train.json
+    |   rooms.dev.json
+    |   masker_music_list.json
+    |   masker_nonspeech_list.json
+    |   masker_speech_list.json
+    |   target_speech_list.json
+    |   hrir_data.json
+    |   listeners.json
+    |   scenes_listeners.dev.json
+    |   ...
+</pre></div>
+</div>
+<p><strong>Train</strong> contains training set, which can be used to optimise a system</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+└───train
+    └───rooms
+    |   |   ac 48M
+    |   |   rpf 190M
+    |
+    └───interferers
+    |   |   music 16GG
+    |   |   noise 3.9M
+    |   |   speech 4.5G
+    |
+    └───scenes 89G
+    |
+    └───targets 2.8G
+</pre></div>
+</div>
+<p><strong>HOA_IRs</strong> contains impulse responses for reproducing the scenes or for rendering more training data (scenes).</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+└───train/rooms/HOA_IRs 117G
+|
+└───dev/rooms/HOA_IRs 49G
+</pre></div>
+</div>
+</section>
+<section id="baseline">
+<h2>Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>In the `baseline/’ folder, we provide code for running the baseline enhancement system and performing the objective evaluation.</p>
+<section id="enhancement">
+<h3>Enhancement<a class="headerlink" href="#enhancement" title="Link to this heading">¶</a></h3>
+<p>The baseline enhancement simply takes the 6 channel hearing aid inputs and reduces this to a stereo hearing aid output by passing through the ‘front’ microphone signal of the left and right ear.</p>
+<p>To run the baseline enhancement system, firstly specify <code class="docutils literal notranslate"><span class="pre">root</span></code> in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> to point to where you have installed the clarity data. You can also define your own <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code> to store enhanced signals and evaluated results.</p>
+<p>Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py
+</pre></div>
+</div>
+<p>Alternatively, you can provide the root variable on the command line, e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py<span class="w"> </span>path.root<span class="o">=</span>/Volumes/data/clarity_CEC2_data
+</pre></div>
+</div>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">enhanced_signals</span></code> will appear in the <code class="docutils literal notranslate"><span class="pre">exp</span></code> folder.</p>
+</section>
+<section id="evaluation">
+<h3>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">evaluate.py</span></code>  will first pass signals through a provided hearing aid amplification stage using a NAL-R [<a class="reference internal" href="#references"><span class="xref myst">1</span></a>] fitting amplification and a simple automatic gain compressor. The amplification is determined by the audiograms defined by the scene-listener pairs in <code class="docutils literal notranslate"><span class="pre">clarity_data/metadata/scenes_listeners.dev.json</span></code> for the development set. After amplification, the evaluate function calculates the better-ear HASPI  [<a class="reference internal" href="#references"><span class="xref myst">2</span></a>] and better-ear HASQI  [<a class="reference internal" href="#references"><span class="xref myst">3</span></a>] scores. The average of these two is computed and returned for each signal.</p>
+<p>To run the evaluation stage, make sure that <code class="docutils literal notranslate"><span class="pre">path.root</span></code> is set in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file and then run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evaluate.py
+</pre></div>
+</div>
+<p>The full evaluation set is 7500 scene-listener pairs and will take a long time to run. A standard small set which uses 1/15 of the data has been defined and can be run with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evaluate.py<span class="w"> </span>evaluate.small_test<span class="o">=</span>True
+</pre></div>
+</div>
+<p>A csv file containing the HASPI, HASQI and combined scores will be generated in the <code class="docutils literal notranslate"><span class="pre">exp_folder</span></code>.</p>
+<p>When computing HASPI and HASQI, the <code class="docutils literal notranslate"><span class="pre">_target_anechoic_CH1.wav</span></code> is used as the reference, with its level normalised to match that of the corresponding <code class="docutils literal notranslate"><span class="pre">_target_CH1.wav</span></code>.</p>
+</section>
+<section id="reporting-results">
+<h3>Reporting results<a class="headerlink" href="#reporting-results" title="Link to this heading">¶</a></h3>
+<p>Once the evaluation script has completed, the final result can be reported with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>report_score.py
+</pre></div>
+</div>
+<p>Or if you have run the small evaluation</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>report_score.py<span class="w"> </span>evaluate.small_test<span class="o">=</span>True
+</pre></div>
+</div>
+<p>The score for the baseline enhancement is 0.185 overall (0.239 HASPI; 0.132 HASQI).</p>
+<p>Please note: HASPI and HASQI employ random thresholding noise so you will not get identical scores unless the random seed is set (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). However, if the seed is not set the differences between runs should be small (order of 1e-6).</p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>[1] Byrne, Denis, and Harvey Dillon. “The National Acoustic Laboratories’(NAL) new procedure for selecting the gain and frequency response of a hearing aid.” Ear and hearing 7.4 (1986): 257-265.</p></li>
+<li><p>[2] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI) J. Speech Communication, 2014, 65: 75-93.</p></li>
+<li><p>[3] Kates, J.M. and Arehart, K.H., 2014. “The hearing-aid speech quality index (HASQI) version 2”. Journal of the Audio Engineering Society. 62 (3): 99–117.</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/recipes/icassp_2023/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

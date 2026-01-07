@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.data.scene_renderer_cec2 &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.data.scene_renderer_cec2</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Clarity ambisonic scene rendering.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># from clarity_core import signal as ccs</span>
+<span class="c1"># from clarity_core.signal import SPEECH_FILTER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">loadmat</span><span class="p">,</span> <span class="n">wavfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">convolve</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">clarity.data.HOA_tools_cec2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hoa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.data.HOA_tools_cec2</span><span class="w"> </span><span class="kn">import</span> <span class="n">HOARotator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.data.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPEECH_FILTER</span><span class="p">,</span> <span class="n">better_ear_speechweighted_snr</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">SPEED_SOUND</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">344</span>  <span class="c1"># in m/s at 21 degrees C</span>
+<span class="n">SAMPLE_RATE</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">44100</span>
+
+
+<div class="viewcode-block" id="two_point_rotation">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.two_point_rotation">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">two_point_rotation</span><span class="p">(</span><span class="n">rotation</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform rotation defined by two control points.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rotation (dict): rotation object from scene definition</span>
+<span class="sd">        origin (ndarray): origin view vector</span>
+<span class="sd">        duration (int): total number of samples to generate for</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: sequence of theta values per sample</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angle_origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">angle_origin</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rotation</span><span class="p">]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;angles=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">angles</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">hoa</span><span class="o">.</span><span class="n">compute_rotation_vector</span><span class="p">(</span>
+        <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">duration</span><span class="p">,</span> <span class="n">rotation</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;sample&quot;</span><span class="p">],</span> <span class="n">rotation</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;sample&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">theta</span></div>
+
+
+
+<div class="viewcode-block" id="pad_signal_start_end">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.pad_signal_start_end">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pad_signal_start_end</span><span class="p">(</span><span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pad signal at start and end.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (array-like): ambisonic signals</span>
+<span class="sd">        delay (int): number of zeros to pad at start</span>
+<span class="sd">        duration (int): desired duration after start and end padding</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array-like: padded signals</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time_after_signal</span> <span class="o">=</span> <span class="n">duration</span> <span class="o">-</span> <span class="n">delay</span> <span class="o">-</span> <span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">time_after_signal</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Signal is too long, so we need to truncate it</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[:</span><span class="n">time_after_signal</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">time_after_signal</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">signal_pad_front</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">delay</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">signal_pad_back</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">time_after_signal</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">padded_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal_pad_front</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">signal_pad_back</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">padded_signal</span></div>
+
+
+
+<div class="viewcode-block" id="SceneRenderer">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SceneRenderer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ambisonic scene rendering class.</span>
+
+<span class="sd">    Contains methods for generating signals from pseudorandom datasets for CEC2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">paths</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">ambisonic_order</span><span class="p">,</span>
+        <span class="n">equalise_loudness</span><span class="p">,</span>
+        <span class="n">reference_channel</span><span class="p">,</span>
+        <span class="n">channel_norms</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise SceneRenderer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            paths ():</span>
+<span class="sd">            metadata ():</span>
+<span class="sd">            ambisonic_order ():</span>
+<span class="sd">            equalise_loudness ():</span>
+<span class="sd">            reference_channel ():</span>
+<span class="sd">            channel_norms ():</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="n">paths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ambisonic_order</span> <span class="o">=</span> <span class="n">ambisonic_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">equalise_loudness</span> <span class="o">=</span> <span class="n">equalise_loudness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_channel</span> <span class="o">=</span> <span class="n">reference_channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_norms</span> <span class="o">=</span> <span class="n">channel_norms</span>
+
+        <span class="c1"># Build the HOA rotator object with precomputed rotation matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hoa_rotator</span> <span class="o">=</span> <span class="n">HOARotator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ambisonic_order</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="c1"># Build dictionary for looking up room data</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">room_definitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">rooms</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">room_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">room</span> <span class="k">for</span> <span class="n">room</span> <span class="ow">in</span> <span class="n">rooms</span><span class="p">}</span>
+
+        <span class="c1"># Fixed hrir metadata for hrir sets being used</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">hrir_metadata</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">hrir_metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SceneRenderer.make_interferer_filename">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.make_interferer_filename">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_interferer_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interferer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct filename for an interferer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interferer (dict):</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Filename for an interferer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+        <span class="n">stem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">interferers</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">interferer</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.prepare_interferer_paths">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.prepare_interferer_paths">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_interferer_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make list of full path filenames for interferers in scene.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scene ():</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of full path filenames for interferers in scene.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;number of interferers: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]))</span>
+        <span class="n">interferer_filenames</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">make_interferer_filename</span><span class="p">(</span><span class="n">interferer</span><span class="p">,</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">interferer_filenames</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.load_interferer_hoairs">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.load_interferer_hoairs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_interferer_hoairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads and returns the interferer hoa irs for given scene.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scene ():</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of inferior hoa irs for the given scene.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">room_id</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span>
+        <span class="n">n_interferers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">])</span>
+
+        <span class="n">hoair_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">hoairs</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">])</span>
+        <span class="n">interferer_hoairs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hoair_path</span><span class="si">}</span><span class="s2">/HOA_</span><span class="si">{</span><span class="n">room_id</span><span class="si">}</span><span class="s2">_i</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">.wav&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_interferers</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">irs</span> <span class="o">=</span> <span class="p">[</span><span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">interferer_hoairs</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">irs</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.load_interferer_signals">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.load_interferer_signals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_interferer_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads and returns interferer signals for given scene.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scene ():</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of signals.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">interferer_audio_paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_interferer_paths</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+        <span class="c1"># NOTE: all interferer signals are assumed to by at the Clarity sr = 44100 Hz</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="c1"># Suppress annoying warning generated by librosa when reading mp3 files</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+            <span class="n">signals</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">signal_path</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">signal_path</span> <span class="ow">in</span> <span class="n">interferer_audio_paths</span>
+            <span class="p">]</span>
+        <span class="n">signal_starts</span> <span class="o">=</span> <span class="p">[</span><span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]]</span>
+        <span class="n">signal_lengths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;time_end&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;time_start&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="n">signals</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">signal</span><span class="p">[</span><span class="n">ss</span> <span class="p">:</span> <span class="p">(</span><span class="n">ss</span> <span class="o">+</span> <span class="n">sl</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">ss</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="n">signal_starts</span><span class="p">,</span> <span class="n">signal_lengths</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">signals</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.make_hoa_target_anechoic">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.make_hoa_target_anechoic">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_hoa_target_anechoic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">room</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make the HOA anechoic target.</span>
+
+<span class="sd">        Applies an anechoic HOA IR that models a source straight in front of the</span>
+<span class="sd">        listener. The signal is delayed to match the propagation delay of the room.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target ():</span>
+<span class="sd">            room (dict):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: The delay does not appear to correctly align the signals as expected</span>
+        <span class="n">t_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">])</span>
+        <span class="n">l_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">])</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">t_pos</span> <span class="o">-</span> <span class="n">l_pos</span><span class="p">)</span>
+        <span class="n">samples_delay</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">distance</span> <span class="o">/</span> <span class="n">SPEED_SOUND</span> <span class="o">*</span> <span class="n">SAMPLE_RATE</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">room</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">],</span> <span class="n">room</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">])</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;target signal delay = </span><span class="si">%s</span><span class="s2"> samples </span><span class="si">%s</span><span class="s2"> m)&quot;</span><span class="p">,</span> <span class="n">samples_delay</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+
+        <span class="c1"># Values below for a source directly ahead of the listener</span>
+        <span class="n">anechoic_ir</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.7320509</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.1180342</span><span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.9364915</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.6201853</span><span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.09165</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.125</span><span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.6770511</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.2185302</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span>
+                    <span class="mf">1.6056539</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="o">-</span><span class="mf">1.7343045</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="mf">2.326814</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.1267347</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.6327935</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.7886358</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.4209614</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+                <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.601086</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.6638975</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.839508</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">20.63472</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">n_chans</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ambisonic_order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">anechoic_ir</span> <span class="o">=</span> <span class="n">anechoic_ir</span><span class="p">[:</span><span class="n">n_chans</span><span class="p">]</span>
+        <span class="n">hoa_target_anechoic</span> <span class="o">=</span> <span class="n">hoa</span><span class="o">.</span><span class="n">ambisonic_convolve</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">anechoic_ir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ambisonic_order</span>
+        <span class="p">)</span>
+        <span class="c1"># prepend with zeros to match the propagation delay</span>
+        <span class="n">hoa_target_anechoic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">samples_delay</span><span class="p">,</span> <span class="n">n_chans</span><span class="p">)),</span> <span class="n">hoa_target_anechoic</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">anechoic_ir</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">hoa_target_anechoic</span><span class="o">.</span><span class="n">shape</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">hoa_target_anechoic</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.generate_hoa_signals">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.generate_hoa_signals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_hoa_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates HOA signals.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scene (dict): scene definitions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">room_id</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span>
+        <span class="n">room</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">room_dict</span><span class="p">[</span><span class="n">room_id</span><span class="p">]</span>
+
+        <span class="c1"># Make HOA target signal</span>
+        <span class="c1"># NOTE: Target signals assumed to be at the Clarity sample_rate = 44100 Hz</span>
+        <span class="n">target_audio_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">])</span>
+        <span class="n">target_audio_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_audio_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="n">target</span><span class="p">,</span> <span class="n">_sample_rate</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target_audio_path</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># TODO: set target to a fixed reference level??</span>
+        <span class="n">target_filt</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">SPEECH_FILTER</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fft&quot;</span><span class="p">)</span>
+        <span class="c1"># rms of the target after speech weighted filter</span>
+        <span class="n">target_rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">target_filt</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;target rms: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target_rms</span><span class="p">)</span>
+        <span class="n">target_hoair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">hoairs</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">])</span>
+        <span class="n">target_hoair</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_hoair</span><span class="si">}</span><span class="s2">/HOA_</span><span class="si">{</span><span class="n">room_id</span><span class="si">}</span><span class="s2">_t.wav&quot;</span>
+        <span class="n">_sample_rate</span><span class="p">,</span> <span class="n">ir</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">target_hoair</span><span class="p">)</span>
+
+        <span class="n">hoa_target</span> <span class="o">=</span> <span class="n">hoa</span><span class="o">.</span><span class="n">ambisonic_convolve</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ambisonic_order</span><span class="p">)</span>
+
+        <span class="n">hoa_target</span> <span class="o">=</span> <span class="n">pad_signal_start_end</span><span class="p">(</span>
+            <span class="n">hoa_target</span><span class="p">,</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;time_start&quot;</span><span class="p">],</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Make anechoic HOA target signal</span>
+        <span class="n">hoa_target_anechoic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_hoa_target_anechoic</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">room</span><span class="p">)</span>
+
+        <span class="n">hoa_target_anechoic</span> <span class="o">=</span> <span class="n">pad_signal_start_end</span><span class="p">(</span>
+            <span class="n">hoa_target_anechoic</span><span class="p">,</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;time_start&quot;</span><span class="p">],</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Make HOA interferer signals</span>
+        <span class="n">irs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_interferer_hoairs</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+        <span class="n">interferers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_interferer_signals</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+
+        <span class="n">hoa_interferers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">hoa</span><span class="o">.</span><span class="n">ambisonic_convolve</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">ir</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ambisonic_order</span><span class="p">)</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">ir</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">interferers</span><span class="p">,</span> <span class="n">irs</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="n">padded_interferers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pad_signal_start_end</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;time_start&quot;</span><span class="p">],</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">signal</span><span class="p">,</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hoa_interferers</span><span class="p">,</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">])</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">equalise_loudness</span><span class="p">:</span>
+            <span class="n">padded_interferers</span> <span class="o">=</span> <span class="n">hoa</span><span class="o">.</span><span class="n">equalise_rms_levels</span><span class="p">(</span><span class="n">padded_interferers</span><span class="p">)</span>
+
+        <span class="n">flat_hoa_interferers</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">padded_interferers</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;hoa_target.shape=</span><span class="si">%s</span><span class="s2">; flat_hoa_interferers.shape=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">hoa_target</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+            <span class="c1"># flat_hoa_interferers.shape,</span>
+            <span class="n">flat_hoa_interferers</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">th</span> <span class="o">=</span> <span class="n">two_point_rotation</span><span class="p">(</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">][</span><span class="s2">&quot;rotation&quot;</span><span class="p">],</span>
+            <span class="n">room</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">][</span><span class="s2">&quot;view_vector&quot;</span><span class="p">],</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">hoa_target_anechoic_rotated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hoa_rotator</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">hoa_target_anechoic</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span>
+        <span class="n">hoa_target_rotated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hoa_rotator</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">hoa_target</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span>
+        <span class="n">flat_hoa_interferers_rotated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hoa_rotator</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">flat_hoa_interferers</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">hoa_target_rotated</span><span class="p">,</span>
+            <span class="n">flat_hoa_interferers_rotated</span><span class="p">,</span>
+            <span class="n">hoa_target_anechoic_rotated</span><span class="p">,</span>
+            <span class="n">th</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.save_signal_16bit">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.save_signal_16bit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_signal_16bit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">norm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves a signal to a 16 bit wav file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (string): filename</span>
+<span class="sd">            signal (np.array): signal</span>
+<span class="sd">            norm (float): normalisation factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signal</span> <span class="o">/=</span> <span class="n">norm</span>
+        <span class="n">n_clipped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_clipped</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Writing </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> samples clipped&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_clipped</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">signal</span><span class="p">)</span>
+        <span class="n">signal_16</span> <span class="o">=</span> <span class="p">(</span><span class="mi">32767</span> <span class="o">*</span> <span class="n">signal</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+        <span class="n">wavfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">SAMPLE_RATE</span><span class="p">,</span> <span class="n">signal_16</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.generate_binaural_signals">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.generate_binaural_signals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_binaural_signals</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">hoa_target</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">hoa_interferer</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">hoa_target_anechoic</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and write binaural signals.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scene (dict): scene definitions</span>
+<span class="sd">            hoa_target (ndarray): target signal in HOA domain</span>
+<span class="sd">            hoa_interferer (ndarray): interferer signal in HOA domain</span>
+<span class="sd">            hoa_target_anechoic (ndarray): anechoic target signal in HOA domain</span>
+<span class="sd">            out_path (string): output path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ref_chan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_channel</span>  <span class="c1"># channel at which SNR is computed</span>
+
+        <span class="c1"># Load all hrirs - one for each microphone pair</span>
+        <span class="n">hrir_filenames</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">hrirs</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.mat&quot;</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">][</span><span class="s2">&quot;hrir_filename&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="n">hrirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loadmat</span><span class="p">(</span><span class="n">hrir_filename</span><span class="p">)</span> <span class="k">for</span> <span class="n">hrir_filename</span> <span class="ow">in</span> <span class="n">hrir_filenames</span><span class="p">]</span>
+
+        <span class="c1"># Target and (flattened) interferer mixed down to binaural using each</span>
+        <span class="c1"># set of hrirs</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">hoa</span><span class="o">.</span><span class="n">binaural_mixdown</span><span class="p">(</span><span class="n">hoa_target</span><span class="p">,</span> <span class="n">hrir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">hrir_metadata</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">hrir</span> <span class="ow">in</span> <span class="n">hrirs</span>
+        <span class="p">]</span>
+        <span class="n">interferers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">hoa</span><span class="o">.</span><span class="n">binaural_mixdown</span><span class="p">(</span><span class="n">hoa_interferer</span><span class="p">,</span> <span class="n">hrir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">hrir_metadata</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">hrir</span> <span class="ow">in</span> <span class="n">hrirs</span>
+        <span class="p">]</span>
+
+        <span class="n">target_anechoic</span> <span class="o">=</span> <span class="n">hoa</span><span class="o">.</span><span class="n">binaural_mixdown</span><span class="p">(</span>
+            <span class="n">hoa_target_anechoic</span><span class="p">,</span>
+            <span class="n">hrirs</span><span class="p">[</span><span class="n">ref_chan</span><span class="p">],</span>  <span class="c1"># Uses the reference channel&#39;s HRIR</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">hrir_metadata</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Measure pre-scaled SNR at reference channel</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;time_start&quot;</span><span class="p">]</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;time_end&quot;</span><span class="p">]</span>
+        <span class="n">sw_snr</span> <span class="o">=</span> <span class="n">better_ear_speechweighted_snr</span><span class="p">(</span>
+            <span class="n">targets</span><span class="p">[</span><span class="n">ref_chan</span><span class="p">][</span><span class="n">start_time</span><span class="p">:</span><span class="n">end_time</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="n">interferers</span><span class="p">[</span><span class="n">ref_chan</span><span class="p">][</span><span class="n">start_time</span><span class="p">:</span><span class="n">end_time</span><span class="p">,</span> <span class="p">:],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Scale interferers to achieve desired SNR at reference channel</span>
+        <span class="n">desired_snr</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;SNR&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">interferers</span><span class="p">:</span>
+            <span class="n">interferer</span> <span class="o">*=</span> <span class="n">sw_snr</span> <span class="o">*</span> <span class="n">hoa</span><span class="o">.</span><span class="n">dB_to_gain</span><span class="p">(</span><span class="o">-</span><span class="n">desired_snr</span><span class="p">)</span>
+
+        <span class="c1"># Make mixture by summing target and interferers</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">interferers</span><span class="p">)]</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mix</span><span class="p">)</span>
+
+        <span class="c1"># Save all signal types for all channels</span>
+        <span class="n">norms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_norms</span>
+        <span class="n">out_path</span> <span class="o">=</span> <span class="n">out_path</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">])</span>
+        <span class="n">file_stem</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;scene&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">channel</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">interferers</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">norms</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="n">sig_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="s2">&quot;interferer&quot;</span><span class="p">,</span> <span class="s2">&quot;mix&quot;</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_signal_16bit</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_stem</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">sig_type</span><span class="si">}</span><span class="s2">_CH</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span> <span class="n">sig</span><span class="p">,</span> <span class="n">norm</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Save the anechoic reference signal. Level normalised to abs max 1.0</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">target_anechoic</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_signal_16bit</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_stem</span><span class="si">}</span><span class="s2">_target_anechoic_CH</span><span class="si">{</span><span class="n">ref_chan</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span> <span class="n">target_anechoic</span><span class="p">,</span> <span class="n">norm</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneRenderer.render_scenes">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec2.SceneRenderer.render_scenes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_scenes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Renders scenes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scenes (dict): scene definitions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make all necessary output directories</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">scenes</span>
+        <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="p">{</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scenes</span><span class="p">}:</span>
+            <span class="n">full_output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">full_output_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">full_output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">scenes</span><span class="p">):</span>
+            <span class="c1"># Stage 1: Generate the rotated signals in the HOA domain</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">interferers</span><span class="p">,</span> <span class="n">anechoic</span><span class="p">,</span> <span class="n">head_turn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_hoa_signals</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+
+            <span class="c1"># Save the head rotation signal</span>
+            <span class="n">head_turn</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">head_turn</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+            <span class="n">file_stem</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">output_path</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;scene&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">wavfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_stem</span><span class="si">}</span><span class="s2">_hr.wav&quot;</span><span class="p">,</span> <span class="mi">44100</span><span class="p">,</span> <span class="n">head_turn</span><span class="p">)</span>
+
+            <span class="c1"># Stage 2: Mix down to the binaural domain</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_binaural_signals</span><span class="p">(</span>
+                <span class="n">scene</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">interferers</span><span class="p">,</span> <span class="n">anechoic</span><span class="p">,</span> <span class="n">output_path</span>
+            <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

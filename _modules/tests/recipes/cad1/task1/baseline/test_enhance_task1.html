@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tests.recipes.cad1.task1.baseline.test_enhance_task1 &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tests.recipes.cad1.task1.baseline.test_enhance_task1</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for the enhance module&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=import-error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchaudio.pipelines</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDEMUCS_HIGH_MUSDB</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.compressor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Compressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.nalr</span><span class="w"> </span><span class="kn">import</span> <span class="n">NALR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Audiogram</span><span class="p">,</span> <span class="n">Listener</span>
+
+<span class="c1"># pylint: disable=import-error, no-name-in-module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">recipes.cad1.task1.baseline.enhance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">apply_baseline_ha</span><span class="p">,</span>
+    <span class="n">clip_signal</span><span class="p">,</span>
+    <span class="n">decompose_signal</span><span class="p">,</span>
+    <span class="n">get_device</span><span class="p">,</span>
+    <span class="n">map_to_dict</span><span class="p">,</span>
+    <span class="n">process_stems_for_listener</span><span class="p">,</span>
+    <span class="n">separate_sources</span><span class="p">,</span>
+    <span class="n">to_16bit</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+<span class="n">RESOURCES</span> <span class="o">=</span> <span class="n">BASE_DIR</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;resources&quot;</span> <span class="o">/</span> <span class="s2">&quot;recipes&quot;</span> <span class="o">/</span> <span class="s2">&quot;cad1&quot;</span> <span class="o">/</span> <span class="s2">&quot;task1&quot;</span>
+
+
+<div class="viewcode-block" id="test_map_to_dict">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_map_to_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_map_to_dict</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test that the map_to_dict returns the expected mapping&quot;&quot;&quot;</span>
+    <span class="n">sources</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+    <span class="n">sources_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">map_to_dict</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">sources_list</span><span class="p">)</span>
+    <span class="n">expected_output</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;left_a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;right_a&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;left_b&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">&quot;right_b&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">&quot;left_c&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;right_c&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">assert</span> <span class="n">output</span> <span class="o">==</span> <span class="n">expected_output</span></div>
+
+
+
+<div class="viewcode-block" id="test_decompose_signal">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_decompose_signal">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">xfail</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Github issue downloading from torch hub&quot;</span><span class="p">)</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;separation_model,normalise&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s2">&quot;demucs&quot;</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s2">&quot;openunmix&quot;</span><span class="p">,</span> <span class="n">marks</span><span class="o">=</span><span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">slow</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_decompose_signal</span><span class="p">(</span><span class="n">separation_model</span><span class="p">,</span> <span class="n">normalise</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Takes a signal and decomposes it into VDBO sources using the HDEMUCS model&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123456789</span><span class="p">)</span>
+    <span class="c1"># Load Separation Model</span>
+    <span class="n">separation_model</span> <span class="o">=</span> <span class="n">separation_model</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">separation_model</span> <span class="o">==</span> <span class="s2">&quot;demucs&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">HDEMUCS_HIGH_MUSDB</span><span class="o">.</span><span class="n">get_model</span><span class="p">()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">separation_model</span> <span class="o">==</span> <span class="s2">&quot;openunmix&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">hub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sigsep/open-unmix-pytorch&quot;</span><span class="p">,</span> <span class="s2">&quot;umxhq&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown separation model: </span><span class="si">{</span><span class="n">separation_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="c1"># Create a mock signal to decompose</span>
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">)))</span>
+
+    <span class="c1"># Call the decompose_signal function and check that the output has the expected keys</span>
+    <span class="n">cfs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">])</span>
+    <span class="n">audiogram</span> <span class="o">=</span> <span class="n">Audiogram</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">frequencies</span><span class="o">=</span><span class="n">cfs</span><span class="p">)</span>
+    <span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">audiogram</span><span class="p">,</span> <span class="n">audiogram</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">decompose_signal</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">model_sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span>
+        <span class="n">signal</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span>
+        <span class="n">signal_sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">sources_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;drums&quot;</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="s2">&quot;vocals&quot;</span><span class="p">],</span>
+        <span class="n">listener</span><span class="o">=</span><span class="n">listener</span><span class="p">,</span>
+        <span class="n">normalise</span><span class="o">=</span><span class="n">normalise</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">expected_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+        <span class="n">RESOURCES</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;test_enhance.test_decompose_signal_</span><span class="si">{</span><span class="n">separation_model</span><span class="si">}</span><span class="s2">.npy&quot;</span><span class="p">,</span>
+        <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)[()]</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">expected_results</span><span class="p">[</span><span class="n">key</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="test_apply_baseline_ha">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_apply_baseline_ha">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_apply_baseline_ha</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test the behaviour of the CAD1 - Task1 - baseline hearing aid&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">987654321</span><span class="p">)</span>
+    <span class="c1"># Create mock inputs</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">44100</span><span class="p">)</span>
+    <span class="n">listener_audiogram</span> <span class="o">=</span> <span class="n">Audiogram</span><span class="p">(</span>
+        <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+        <span class="n">frequencies</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Create mock objects for enhancer and compressor</span>
+    <span class="n">enhancer</span> <span class="o">=</span> <span class="n">NALR</span><span class="p">(</span><span class="n">nfir</span><span class="o">=</span><span class="mi">220</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">44100</span><span class="p">)</span>
+    <span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">attenuation</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rms_buffer_size</span><span class="o">=</span><span class="mf">0.064</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Call the apply_nalr function and check that the output is as expected</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">apply_baseline_ha</span><span class="p">(</span><span class="n">enhancer</span><span class="p">,</span> <span class="n">compressor</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">listener_audiogram</span><span class="p">)</span>
+
+    <span class="n">expected_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+        <span class="n">RESOURCES</span> <span class="o">/</span> <span class="s2">&quot;test_enhance.test_apply_baseline_ha.npy&quot;</span><span class="p">,</span>
+        <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_results</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_process_stems_for_listener">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_process_stems_for_listener">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_process_stems_for_listener</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Takes 2 stems and applies the baseline processing using a listeners audiograms&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12357</span><span class="p">)</span>
+    <span class="c1"># Create mock inputs</span>
+    <span class="n">stems</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;l_source1&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">16000</span><span class="p">),</span>
+        <span class="s2">&quot;r_source1&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">16000</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">audiogram</span> <span class="o">=</span> <span class="n">Audiogram</span><span class="p">(</span>
+        <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+        <span class="n">frequencies</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]),</span>
+    <span class="p">)</span>
+    <span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">audiogram_left</span><span class="o">=</span><span class="n">audiogram</span><span class="p">,</span> <span class="n">audiogram_right</span><span class="o">=</span><span class="n">audiogram</span><span class="p">)</span>
+    <span class="c1"># Create mock objects for enhancer and compressor</span>
+    <span class="n">enhancer</span> <span class="o">=</span> <span class="n">NALR</span><span class="p">(</span><span class="n">nfir</span><span class="o">=</span><span class="mi">220</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">)</span>
+    <span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">attenuation</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rms_buffer_size</span><span class="o">=</span><span class="mf">0.064</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Call the process_stems_for_listener function and check output is as expected</span>
+    <span class="n">output_stems</span> <span class="o">=</span> <span class="n">process_stems_for_listener</span><span class="p">(</span>
+        <span class="n">stems</span><span class="p">,</span> <span class="n">enhancer</span><span class="p">,</span> <span class="n">compressor</span><span class="p">,</span> <span class="n">listener</span><span class="o">=</span><span class="n">listener</span>
+    <span class="p">)</span>
+    <span class="n">expected_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+        <span class="n">RESOURCES</span> <span class="o">/</span> <span class="s2">&quot;test_enhance.test_process_stems_for_listener.npy&quot;</span><span class="p">,</span>
+        <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)[()]</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">output_stems</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">expected_results</span><span class="p">[</span><span class="n">key</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="test_separate_sources">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_separate_sources">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_separate_sources</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test that the separate_sources function returns the expected output&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123456789</span><span class="p">)</span>
+
+    <span class="c1"># Create a dummy model</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">DummyModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dummy source separation model&quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sources</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;dummy init&quot;&quot;&quot;</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">sources</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;dummy forward&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">),</span> <span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Set up some dummy input data</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">num_channels</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">16000</span>
+    <span class="n">sources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;vocals&quot;</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">]</span>
+    <span class="n">mix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">length</span> <span class="o">*</span> <span class="n">sample_rate</span><span class="p">)</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create a dummy model</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">DummyModel</span><span class="p">(</span><span class="n">sources</span><span class="p">)</span>
+
+    <span class="c1"># Call separate_sources</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">separate_sources</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="n">expected_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+        <span class="n">RESOURCES</span> <span class="o">/</span> <span class="s2">&quot;test_enhance.test_separate_sources.npy&quot;</span><span class="p">,</span>
+        <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Check that the output has the correct shape</span>
+    <span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">expected_results</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_results</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_get_device">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_get_device">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_get_device</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test the correct device selection given the inputs&quot;&quot;&quot;</span>
+    <span class="c1"># Test default case (no argument passed)</span>
+    <span class="n">device</span><span class="p">,</span> <span class="n">device_type</span> <span class="o">=</span> <span class="n">get_device</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">device</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+        <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">device_type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="test_to_16bit">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_to_16bit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_to_16bit</span><span class="p">():</span>
+    <span class="c1"># Generate a random signal</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">signal_16bit</span> <span class="o">=</span> <span class="n">to_16bit</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">signal_16bit</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">32768</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_clip_signal">
+<a class="viewcode-back" href="../../../../../../tests.recipes.cad1.task1.baseline.html#tests.recipes.cad1.task1.baseline.test_enhance_task1.test_clip_signal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_clip_signal</span><span class="p">():</span>
+    <span class="c1"># Generate a random signal</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Test with soft clipping</span>
+    <span class="n">clipped_signal</span><span class="p">,</span> <span class="n">n_clipped</span> <span class="o">=</span> <span class="n">clip_signal</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">soft_clip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">clipped_signal</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+    <span class="k">assert</span> <span class="n">n_clipped</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="c1"># Test without soft clipping</span>
+    <span class="n">clipped_signal</span><span class="p">,</span> <span class="n">n_clipped</span> <span class="o">=</span> <span class="n">clip_signal</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">soft_clip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">clipped_signal</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+    <span class="k">assert</span> <span class="n">n_clipped</span> <span class="o">==</span> <span class="mi">22</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tests.recipes.cad_icassp_2024.baseline.test_evaluate &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tests.recipes.cad_icassp_2024.baseline.test_evaluate</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for the enhance module&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint:: disable=import-error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyloudnorm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pyln</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">wavfile</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.compressor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Compressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.nalr</span><span class="w"> </span><span class="kn">import</span> <span class="n">NALR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Audiogram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">recipes.cad_icassp_2024.baseline.evaluate</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">apply_gains</span><span class="p">,</span>
+    <span class="n">apply_ha</span><span class="p">,</span>
+    <span class="n">level_normalisation</span><span class="p">,</span>
+    <span class="n">load_reference_stems</span><span class="p">,</span>
+    <span class="n">make_scene_listener_list</span><span class="p">,</span>
+    <span class="n">remix_stems</span><span class="p">,</span>
+    <span class="n">set_song_seed</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="test_apply_ha">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_apply_ha">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;apply_compressor,expected_result&quot;</span><span class="p">,</span>
+    <span class="p">[(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">5130.70234905519</span><span class="p">),</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mf">11039.797138690315</span><span class="p">)],</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_apply_ha</span><span class="p">(</span><span class="n">apply_compressor</span><span class="p">,</span> <span class="n">expected_result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test apply_ha&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2024</span><span class="p">)</span>
+
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))</span>
+
+    <span class="n">audiogram</span> <span class="o">=</span> <span class="n">Audiogram</span><span class="p">(</span>
+        <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span>
+        <span class="n">frequencies</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]),</span>
+    <span class="p">)</span>
+    <span class="n">enhancer</span> <span class="o">=</span> <span class="n">NALR</span><span class="p">(</span><span class="n">nfir</span><span class="o">=</span><span class="mi">220</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">)</span>
+    <span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">attenuation</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rms_buffer_size</span><span class="o">=</span><span class="mf">0.064</span>
+    <span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">apply_ha</span><span class="p">(</span><span class="n">enhancer</span><span class="p">,</span> <span class="n">compressor</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">audiogram</span><span class="p">,</span> <span class="n">apply_compressor</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="n">expected_result</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_apply_gains">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_apply_gains">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;gains,expected_result&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">88207.89862265925</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">135801.06478181464</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">135716.2197962051</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">136040.5632722622</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="mf">136003.7152825283</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">110114.28261802963</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">97288.123734263</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">81779.59153364039</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">77228.6986292428</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;vocals&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mf">73157.61801048138</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_apply_gains</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">gains</span><span class="p">,</span> <span class="n">expected_result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test apply_gains</span>
+<span class="sd">    It test the 4 different gains for the 4 different stems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2024</span><span class="p">)</span>
+
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="k">for</span> <span class="n">stem</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vocals&quot;</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="s2">&quot;mixture&quot;</span><span class="p">]:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">wavfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+
+    <span class="n">stems</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_reference_stems</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">apply_gains</span><span class="p">(</span><span class="n">stems</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">gains</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">stem_signal</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stem_signal</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="n">expected_result</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_level_normalisation">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_level_normalisation">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_level_normalisation</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test level_normalisation&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2024</span><span class="p">)</span>
+
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="n">reference_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+
+    <span class="n">meter</span> <span class="o">=</span> <span class="n">pyln</span><span class="o">.</span><span class="n">Meter</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">))</span>
+
+    <span class="n">normed_signal</span> <span class="o">=</span> <span class="n">level_normalisation</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">reference_signal</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">normed_signal</span><span class="p">)</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">10899.6694813693</span><span class="p">)</span>
+
+    <span class="n">normed_signal_lufs</span> <span class="o">=</span> <span class="n">meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">normed_signal</span><span class="p">)</span>
+    <span class="n">reference_signal_lufs</span> <span class="o">=</span> <span class="n">meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">reference_signal</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">normed_signal_lufs</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="n">reference_signal_lufs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_remix_stems">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_remix_stems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_remix_stems</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test remix_stems&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2024</span><span class="p">)</span>
+
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="k">for</span> <span class="n">stem</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vocals&quot;</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="s2">&quot;mixture&quot;</span><span class="p">]:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))</span>
+        <span class="n">wavfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+
+    <span class="n">stems</span><span class="p">,</span> <span class="n">mixture</span> <span class="o">=</span> <span class="n">load_reference_stems</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+    <span class="n">remix</span> <span class="o">=</span> <span class="n">remix_stems</span><span class="p">(</span><span class="n">stems</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">remix</span><span class="p">)</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">21950.335598725396</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_make_scene_listener_list">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_make_scene_listener_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_make_scene_listener_list</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test make_scene_listener_list&quot;&quot;&quot;</span>
+    <span class="n">song_list</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;my favorite song&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;list1&quot;</span><span class="p">,</span> <span class="s2">&quot;list2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;another song&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;list3&quot;</span><span class="p">,</span> <span class="s2">&quot;list4&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+    <span class="n">expected_output</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;my favorite song&quot;</span><span class="p">,</span> <span class="s2">&quot;list1&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;my favorite song&quot;</span><span class="p">,</span> <span class="s2">&quot;list2&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;another song&quot;</span><span class="p">,</span> <span class="s2">&quot;list3&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;another song&quot;</span><span class="p">,</span> <span class="s2">&quot;list4&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="k">assert</span> <span class="n">make_scene_listener_list</span><span class="p">(</span><span class="n">song_list</span><span class="p">)</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="n">expected_output</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_set_song_seed">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_set_song_seed">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;song,expected_result&quot;</span><span class="p">,</span>
+    <span class="p">[(</span><span class="s2">&quot;my favorite song&quot;</span><span class="p">,</span> <span class="mi">83</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;another song&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_set_song_seed</span><span class="p">(</span><span class="n">song</span><span class="p">,</span> <span class="n">expected_result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thest the function set_song_seed using 2 different inputs&quot;&quot;&quot;</span>
+    <span class="c1"># Set seed for the same song</span>
+    <span class="n">set_song_seed</span><span class="p">(</span><span class="n">song</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="n">expected_result</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_load_reference_stems">
+<a class="viewcode-back" href="../../../../../tests.recipes.cad_icassp_2024.baseline.html#tests.recipes.cad_icassp_2024.baseline.test_evaluate.test_load_reference_stems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_load_reference_stems</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test load_reference_stems&quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2024</span><span class="p">)</span>
+
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="k">for</span> <span class="n">stem</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vocals&quot;</span><span class="p">,</span> <span class="s2">&quot;drums&quot;</span><span class="p">,</span> <span class="s2">&quot;bass&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="s2">&quot;mixture&quot;</span><span class="p">]:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))</span>
+        <span class="n">wavfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+
+    <span class="n">stems</span><span class="p">,</span> <span class="n">mixture</span> <span class="o">=</span> <span class="n">load_reference_stems</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">stems</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stems</span><span class="p">[</span><span class="s2">&quot;vocals&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">11040.05074128</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stems</span><span class="p">[</span><span class="s2">&quot;drums&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">10970.61284548</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stems</span><span class="p">[</span><span class="s2">&quot;bass&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">11062.77053343</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stems</span><span class="p">[</span><span class="s2">&quot;other&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">11058.65518849</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mixture</span><span class="p">)</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">11046.02394025</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

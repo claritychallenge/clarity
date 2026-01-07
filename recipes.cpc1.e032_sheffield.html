@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cpc1.e032_sheffield package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cpc1.test_listener_responses package" href="recipes.cpc1.test_listener_responses.html" />
+    <link rel="prev" title="recipes.cpc1.e029_sheffield package" href="recipes.cpc1.e029_sheffield.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="recipes-cpc1-e032-sheffield-package">
+<h1>recipes.cpc1.e032_sheffield package<a class="headerlink" href="#recipes-cpc1-e032-sheffield-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cpc1.e032_sheffield.evaluate">
+<span id="recipes-cpc1-e032-sheffield-evaluate-module"></span><h2>recipes.cpc1.e032_sheffield.evaluate module<a class="headerlink" href="#module-recipes.cpc1.e032_sheffield.evaluate" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.Model" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to represent the mapping from mbstoi parameters to intelligibility scores.
+The mapping uses a simple logistic function scaled between 0 and 100.
+The mapping parameters need to fit first using mbstoi, intelligibility score
+pairs, using fit().
+Once the fit has been made predictions can be made by calling predict()</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.Model.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#Model.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.Model.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fit a mapping betweeen mbstoi scores and intelligibility scores.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.Model.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.Model.params" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.Model.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#Model.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.Model.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Predict intelligilbity scores from mbstoi scores.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.compute_scores">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">compute_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#compute_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.compute_scores" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.kt_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">kt_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#kt_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.kt_score" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.ncc_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">ncc_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#ncc_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.ncc_score" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.read_data">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.read_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.rmse_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">rmse_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#rmse_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.rmse_score" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.run">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cpc1.e032_sheffield.evaluate.std_err">
+<span class="sig-prename descclassname"><span class="pre">recipes.cpc1.e032_sheffield.evaluate.</span></span><span class="sig-name descname"><span class="pre">std_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cpc1/e032_sheffield/evaluate.html#std_err"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cpc1.e032_sheffield.evaluate.std_err" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="recipes-cpc1-e032-sheffield-infer-module">
+<h2>recipes.cpc1.e032_sheffield.infer module<a class="headerlink" href="#recipes-cpc1-e032-sheffield-infer-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="recipes-cpc1-e032-sheffield-prepare-data-module">
+<h2>recipes.cpc1.e032_sheffield.prepare_data module<a class="headerlink" href="#recipes-cpc1-e032-sheffield-prepare-data-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="recipes-cpc1-e032-sheffield-train-asr-module">
+<h2>recipes.cpc1.e032_sheffield.train_asr module<a class="headerlink" href="#recipes-cpc1-e032-sheffield-train-asr-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="recipes-cpc1-e032-sheffield-transformer-cpc1-decoder-module">
+<h2>recipes.cpc1.e032_sheffield.transformer_cpc1_decoder module<a class="headerlink" href="#recipes-cpc1-e032-sheffield-transformer-cpc1-decoder-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cpc1.e032_sheffield">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cpc1.e032_sheffield" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cpc1.html">recipes.cpc1 package</a><ul>
+      <li>Previous: <a href="recipes.cpc1.e029_sheffield.html" title="previous chapter">recipes.cpc1.e029_sheffield package</a></li>
+      <li>Next: <a href="recipes.cpc1.test_listener_responses.html" title="next chapter">recipes.cpc1.test_listener_responses package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cpc1.e032_sheffield.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.data.HOA_tools_cec2 &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.data.HOA_tools_cec2</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tools to support higher order ambisonic processing.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>  <span class="c1"># type: ignore # &lt;-- silence mypy no attribute error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numba.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">TypedList</span>  <span class="c1"># pylint: disable=no-name-in-module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndarray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">convolve</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span> <span class="k">as</span> <span class="n">R</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">comb</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="convert_a_to_b_format">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.convert_a_to_b_format">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_a_to_b_format</span><span class="p">(</span>
+    <span class="n">front_left_up</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">front_right_down</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">back_left_down</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">back_right_up</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts 1st order A format audio into 1st order B format.</span>
+<span class="sd">    For more information on ambisonic formats see Gerzon, Michael A.</span>
+<span class="sd">    “Ambisonics. Part two: Studio techniques.” (1975).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        front_left_up (np.ndarray): Front-left-up audio</span>
+<span class="sd">        front_right_down (np.ndarray): Front-right-down audio</span>
+<span class="sd">        back_left_down (np.ndarray): Back-left-down audio</span>
+<span class="sd">        back_right_up (np.ndarray): Back-right-up audio</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: input must be numpy array</span>
+<span class="sd">        ValueError: all inputs must have same dimensions</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        nd.array: 4xN array containing B-format audio. indexed w,x,y,z</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">front_left_up</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">front_right_down</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">back_left_down</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">back_right_up</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All inputs need to have same dimensions&quot;</span><span class="p">)</span>
+
+    <span class="n">w</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="n">front_left_up</span><span class="p">,</span> <span class="n">front_right_down</span><span class="p">,</span> <span class="n">back_left_down</span><span class="p">,</span> <span class="n">back_right_up</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">front_left_up</span> <span class="o">-</span> <span class="n">back_left_down</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">front_right_down</span> <span class="o">-</span> <span class="n">back_right_up</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">front_left_up</span> <span class="o">-</span> <span class="n">back_right_up</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">front_right_down</span> <span class="o">-</span> <span class="n">back_left_down</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">front_left_up</span> <span class="o">-</span> <span class="n">back_left_down</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">back_right_up</span> <span class="o">-</span> <span class="n">front_right_down</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span></div>
+
+
+
+<span class="c1"># Code for generation ambisonic rotation matrices</span>
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_rotation_matrix</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">foa_rotmat</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a rotation matrix to rotate HOA soundfield.</span>
+
+<span class="sd">    Based on [1]_ and [2]_. Operates on HOA of a given order rotates by azimuth theta</span>
+<span class="sd">    and elevation phi.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        order (int): order of ambisonic soundfield</span>
+<span class="sd">        foa_rotmat (arraylike): rotation matrix to expand</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: HOA rotation matrix</span>
+
+<span class="sd">    References:</span>
+<span class="sd">    .. [1] Ivanic J, Ruedenberg K (1996) Rotation Matrices for Real Spherical Harmonics.</span>
+<span class="sd">           Direct Determination J. Phys. Chem. 1996, 100(15):6342–6347. Available at</span>
+<span class="sd">           &lt;https://pubs.acs.org/doi/10.1021/jp953350u&gt; and</span>
+<span class="sd">           &lt;https://doi.org/10.1021/JP9833350&gt;</span>
+
+<span class="sd">    .. [2] Gorzel M, Allen A, Kelly I, Kammerl J, Gungormusler, A, Yeh H, Boland F</span>
+<span class="sd">           Efficient Encoding and Decoding of Binaural Sound with Resonance Audio</span>
+<span class="sd">           In Proc. of the AES International Conference on Immersive and Interactive</span>
+<span class="sd">           Audio, March 2019. Available at</span>
+<span class="sd">           &lt;https://www.aes.org/e-lib/browse.cfm?elib=20446&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="c1"># construct rotamat for given order</span>
+    <span class="n">n_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">rot_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">rot_mat</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">foa_rotmat</span>
+    <span class="n">upper_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_vector</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lower_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">upper_index</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lower_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">sub_matrices</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">sub_matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">foa_rotmat</span>
+    <span class="n">typed_sub_matrices</span> <span class="o">=</span> <span class="n">TypedList</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sub_matrices</span><span class="p">:</span>
+        <span class="n">typed_sub_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">rot_mat</span><span class="p">,</span> <span class="n">typed_sub_matrices</span> <span class="o">=</span> <span class="n">compute_band_rotation</span><span class="p">(</span>
+                <span class="n">i</span><span class="p">,</span> <span class="n">typed_sub_matrices</span><span class="p">,</span> <span class="n">rot_mat</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rot_mat</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">centred_element</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">col</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get value from centered element indexing.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reference (matrix): reference input matrix</span>
+<span class="sd">        row (int): row index</span>
+<span class="sd">        col (int): column index</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Any: matrix element</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">row</span> <span class="o">&gt;</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">col</span> <span class="o">&gt;</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">row</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">col</span> <span class="o">+</span> <span class="n">offset</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">output</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">P</span><span class="p">(</span>
+    <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">rotation_matrices</span><span class="p">:</span> <span class="n">TypedList</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypedList</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;P function for rotation matrix calculation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i (int): index</span>
+<span class="sd">        a (int): &#39;a&#39; value</span>
+<span class="sd">        b (int): &#39;b&#39; value</span>
+<span class="sd">        order (int): order</span>
+<span class="sd">        r (list(matrix)): rotation matrices</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: P value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="n">order</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="o">*</span> <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+            <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="o">*</span> <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="o">-</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">b</span> <span class="o">==</span> <span class="o">-</span><span class="n">order</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="o">*</span> <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="o">-</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="o">*</span> <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">centred_element</span><span class="p">(</span><span class="n">rotation_matrices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">centred_element</span><span class="p">(</span>
+            <span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">U</span><span class="p">(</span>
+    <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">rotation_matrices</span><span class="p">:</span> <span class="n">TypedList</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypedList</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;U coefficient initialiser for rotation matrix calculation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rotation_degree (int): Upper parameters of spherical harmonic</span>
+<span class="sd">                               component Y and n the lower.</span>
+<span class="sd">        n (int): index</span>
+<span class="sd">        order (int): order</span>
+<span class="sd">        rotation_matrices (list(matrix)): rotation matrices</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: U value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">P</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">V</span><span class="p">(</span>
+    <span class="n">degree</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">rotation_matrices</span><span class="p">:</span> <span class="n">TypedList</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypedList</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;V coefficient initialiser for rotation matrix calculation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        degree (int): valid inputs are `int(|m|) &lt;= order`.</span>
+<span class="sd">        n (int): index</span>
+<span class="sd">        order (int): order</span>
+<span class="sd">        rotation_matrices (list(matrix)): rotation matrices</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: V value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">degree</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">v_coeff</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">degree</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">degree</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">v_coeff</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">degree</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">v_coeff</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v_coeff</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">W</span><span class="p">(</span><span class="n">degree</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">:</span> <span class="n">TypedList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypedList</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;W coefficient initialiser for rotation matrix calculation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        degree (int): degree</span>
+<span class="sd">        n (int): index</span>
+<span class="sd">        order (int): order</span>
+<span class="sd">        rotation_matrices (list(matrix)): rotation matrices</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: W value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">degree</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">w_value</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">elif</span> <span class="n">degree</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">w_value</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">w_value</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">w_value</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_UVW_coefficients</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute U, V and W coefficients for rotation matrix calculation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        m (index): degree</span>
+<span class="sd">        n (index): index</span>
+<span class="sd">        el (index): order</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: u, v, w</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">degree</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">float</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">order</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="n">order</span>
+        <span class="k">else</span> <span class="nb">float</span><span class="p">((</span><span class="n">order</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">order</span> <span class="o">-</span> <span class="n">n</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="n">inverse_denom</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">denom</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">float</span><span class="p">((</span><span class="n">order</span> <span class="o">+</span> <span class="n">degree</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">order</span> <span class="o">-</span> <span class="n">degree</span><span class="p">))</span> <span class="o">*</span> <span class="n">inverse_denom</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">0.5</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
+            <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">degree</span><span class="p">)))</span>
+            <span class="o">*</span> <span class="n">inverse_denom</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mf">0.5</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">order</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">order</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">degree</span><span class="p">))</span>
+            <span class="o">*</span> <span class="n">inverse_denom</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_band_rotation</span><span class="p">(</span><span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">:</span> <span class="n">TypedList</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute submatrix for rotation matrix.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        order (int): order of submatrix</span>
+<span class="sd">        rotationmatrices (list(matrix)): previous and current submatrices</span>
+<span class="sd">        output (matrix): output destination</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        matrix: rotation submatrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print(f&#39;entering band rotation with l = {el}&#39;)</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">compute_UVW_coefficients</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">*=</span> <span class="n">U</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">*=</span> <span class="n">V</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">w</span> <span class="o">*=</span> <span class="n">W</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">rotation_matrices</span><span class="p">)</span>
+            <span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span><span class="p">][</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">v</span> <span class="o">+</span> <span class="n">w</span>
+
+    <span class="n">starting_index</span> <span class="o">=</span> <span class="n">order</span> <span class="o">*</span> <span class="n">order</span>
+
+    <span class="n">output</span><span class="p">[</span>
+        <span class="n">starting_index</span> <span class="p">:</span> <span class="p">(</span><span class="n">starting_index</span> <span class="o">+</span> <span class="p">(</span><span class="n">order</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="n">starting_index</span> <span class="p">:</span> <span class="p">(</span><span class="n">starting_index</span> <span class="o">+</span> <span class="p">(</span><span class="n">order</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">rotation_matrices</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">rotation_matrices</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps np.dot for numba #@njit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        A (Array)</span>
+<span class="sd">        B (Array)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Array: output</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="HOARotator">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.HOARotator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HOARotator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides methods for rotating ambisonics.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">resolution</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize HOARotator.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span>
+
+        <span class="n">thetas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+        <span class="n">n_channels</span> <span class="o">=</span> <span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">thetas</span><span class="p">),</span> <span class="n">n_channels</span><span class="p">,</span> <span class="n">n_channels</span><span class="p">))</span>
+
+        <span class="c1"># NOTE: We are rotating about &quot;z&quot; but construct the rotation matrix</span>
+        <span class="c1"># with from_euler(&quot;y&quot;,...) because compute_rotation_matrix</span>
+        <span class="c1"># is based on Google Resonance Audio code that is y-up.</span>
+        <span class="c1">#</span>
+        <span class="c1"># NOTE: the inv is only there to reverse the direction and could</span>
+        <span class="c1"># be done more easily using -x_value.  The reverse is needed because</span>
+        <span class="c1"># turning the head 10 degrees to the right is equiv to rotating the room</span>
+        <span class="c1"># 10 degrees to the left. i.e. rotations given as head movements but</span>
+        <span class="c1"># are being effected as room movements.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">thetas</span><span class="p">):</span>
+            <span class="n">foa_rotmat</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
+            <span class="n">foa_rotmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">foa_rotmat</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rotmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">compute_rotation_matrix</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">foa_rotmat</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HOARotator.rotate">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.HOARotator.rotate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">rotation_vector</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply rotation to HOA signals using precomputed rotation matrices.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (array-like): ambisonic signals</span>
+<span class="sd">            rotation_vector (array-like): rotation vector (in radians)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            array-like: transformed ambisonic signals</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert to lookup table indices</span>
+        <span class="c1"># NOTE: Using generators below - using list comprehensions is *much* slower</span>
+        <span class="n">theta_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">rotation_vector</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span>  <span class="c1"># convert to index</span>
+        <span class="n">theta_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">theta_i</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">n_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotmat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># size of table</span>
+        <span class="n">t_r0</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotmat</span><span class="p">[</span><span class="n">t</span> <span class="o">%</span> <span class="n">n_entries</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta_0</span><span class="p">)</span>
+        <span class="n">t_r1</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotmat</span><span class="p">[(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_entries</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta_0</span><span class="p">)</span>
+        <span class="c1"># Interpolate between the two nearest rotation matrices</span>
+        <span class="n">t_interp</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">t_r0_</span> <span class="o">+</span> <span class="n">alpha_</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_r1_</span> <span class="o">-</span> <span class="n">t_r0_</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">t_r0_</span><span class="p">,</span> <span class="n">t_r1_</span><span class="p">,</span> <span class="n">alpha_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t_r0</span><span class="p">,</span> <span class="n">t_r1</span><span class="p">,</span> <span class="n">theta_i</span> <span class="o">-</span> <span class="n">theta_0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># Apply the interpolated rotation matrices to the signal</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_t_interp</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">_t_interp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">t_interp</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">signal</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="binaural_mixdown">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.binaural_mixdown">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">binaural_mixdown</span><span class="p">(</span>
+    <span class="n">ambisonic_signals</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">hrir</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">hrir_metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform binaural mixdown of ambisonic signals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ambisonic_signals (array-like): inputs</span>
+<span class="sd">        hrir_filename (string): name of HRIR file</span>
+<span class="sd">        hrir_metadata (dict): data for channel selection and ambisonic decoding</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: stereo audio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># weights = np.array(hrir_metadata[&quot;weights&quot;])</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hrir_metadata</span><span class="p">[</span><span class="s2">&quot;matrix&quot;</span><span class="p">])</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decoding signal with shape </span><span class="si">{</span><span class="n">ambisonic_signals</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Decoding to </span><span class="si">{matrix.shape[0]}</span><span class="s2"> positions&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Decode to loudspeaker positions</span>
+
+    <span class="c1"># # No need to apply max-rE weights given we are using</span>
+    <span class="c1"># # virtual speakers and headphones</span>
+    <span class="c1"># y = np.dot(ambisonic_signals * weights, inv_matrix)</span>
+
+    <span class="n">n_chans</span> <span class="o">=</span> <span class="n">ambisonic_signals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">inv_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_chans</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ambisonic_signals</span><span class="p">,</span> <span class="n">inv_matrix</span><span class="p">)</span>
+
+    <span class="n">stereo_audio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">hrir</span><span class="p">[</span><span class="s2">&quot;M_data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">hrir_data</span> <span class="o">=</span> <span class="n">hrir</span><span class="p">[</span><span class="s2">&quot;M_data&quot;</span><span class="p">][:,</span> <span class="n">hrir_metadata</span><span class="p">[</span><span class="s2">&quot;selected_channels&quot;</span><span class="p">],</span> <span class="p">:]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">stereo_audio</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">hrir_data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">stereo_audio</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">hrir_data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">stereo_audio</span></div>
+
+
+
+<div class="viewcode-block" id="ambisonic_convolve">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.ambisonic_convolve">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ambisonic_convolve</span><span class="p">(</span>
+    <span class="n">signal</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">hoa_impulse_responses</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convolve HOA Impulse Responses with signals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (ndarray[samples]): the signal to convole</span>
+<span class="sd">        hoa_impulse_response (ndarray[samples, channels]): the HOA impulse responses</span>
+<span class="sd">        order (int, optional): ambisonic order.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray[samples, channels]: the convolved signal</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">hoa_impulse_responses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Number of channels in impulse response (</span><span class="si">{</span><span class="n">hoa_impulse_responses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; must be &gt;= number of channels required for order </span><span class="si">{</span><span class="n">order</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">convolve</span><span class="p">(</span><span class="n">impulse_response</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">impulse_response</span> <span class="ow">in</span> <span class="n">hoa_impulse_responses</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
+
+
+
+<div class="viewcode-block" id="compute_rms">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.compute_rms">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_rms</span><span class="p">(</span><span class="n">input_signal</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute rms values along a given axis.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        input_signal (np.ndarray): Input signal</span>
+<span class="sd">        axis (int): Axis along which to compute the Root Mean Square. 0 (default) or 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Root Mean Square for the given axis.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">input_signal</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="equalise_rms_levels">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.equalise_rms_levels">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">equalise_rms_levels</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Equalise RMS levels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        inputs (array): signals</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: normalised signals</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rms</span> <span class="o">=</span> <span class="n">compute_rms</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="n">rms</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rms</span><span class="p">)</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">input</span> <span class="o">/</span> <span class="n">level</span> <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="nb">input</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">outputs</span></div>
+
+
+
+<div class="viewcode-block" id="dB_to_gain">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.dB_to_gain">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dB_to_gain</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert dB to gain.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (float):</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">        float:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="smoothstep">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.smoothstep">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">smoothstep</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">x_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">x_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply the smoothstep function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (np.ndarray): input</span>
+<span class="sd">        x_min (float, optional): clamp minimum. Defaults to 0.</span>
+<span class="sd">        x_max (float, optional): clamp maximum. Defaults to 1.</span>
+<span class="sd">        N (int, optional): smoothing factor. Defaults to 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: smoothstep values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_max</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+        <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">*=</span> <span class="n">x</span> <span class="o">**</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="rotation_control_vector">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.rotation_control_vector">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotation_control_vector</span><span class="p">(</span>
+    <span class="n">array_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">smoothness</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate mapped rotation control vector for values of theta.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        array_length (int): Length of array</span>
+<span class="sd">        start_index (int): Start position</span>
+<span class="sd">        end_index (int)</span>
+<span class="sd">        smoothness (int, optional) Defaults to 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        array: mapped rotation control vector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># assert end_idx &gt; start_idx</span>
+    <span class="c1"># assert array_length &gt; end_idx</span>
+    <span class="k">if</span> <span class="n">start_index</span> <span class="o">&gt;</span> <span class="n">end_index</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;start_index (</span><span class="si">{</span><span class="n">start_index</span><span class="si">}</span><span class="s2">) &gt; end_index (</span><span class="si">{</span><span class="n">end_index</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">end_index</span> <span class="o">&gt;</span> <span class="n">array_length</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;array_length (</span><span class="si">{</span><span class="n">array_length</span><span class="si">}</span><span class="s2">) &gt; end_index </span><span class="si">{</span><span class="n">end_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">array_length</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">smoothstep</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="n">start_index</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="n">end_index</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">smoothness</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">idx</span> <span class="o">*</span> <span class="p">(</span><span class="n">array_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="compute_rotation_vector">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.HOA_tools_cec2.compute_rotation_vector">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_rotation_vector</span><span class="p">(</span>
+    <span class="n">start_angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">end_angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">signal_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">start_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">end_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the rotation vector.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        start_angle (float)</span>
+<span class="sd">        end_angle (float)</span>
+<span class="sd">        signal_length (int)</span>
+<span class="sd">        start_idx (int)</span>
+<span class="sd">        end_idx (int)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: _description_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">turn_direction</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">start_angle</span> <span class="o">-</span> <span class="n">end_angle</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
+        <span class="n">increment</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">start_angle</span> <span class="o">-</span> <span class="n">end_angle</span><span class="p">)</span> <span class="o">/</span> <span class="n">signal_length</span><span class="p">)</span> <span class="o">*</span> <span class="n">turn_direction</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start_angle</span><span class="p">,</span> <span class="n">end_angle</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">rotation_control_vector</span><span class="p">(</span><span class="n">signal_length</span><span class="p">,</span> <span class="n">start_idx</span><span class="p">,</span> <span class="n">end_idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

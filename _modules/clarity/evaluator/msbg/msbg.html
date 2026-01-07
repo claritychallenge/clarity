@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.evaluator.msbg.msbg &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.evaluator.msbg.msbg</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Implementation of the MSBG hearing loss model.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndarray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">firwin</span><span class="p">,</span> <span class="n">lfilter</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.msbg.cochlea</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cochlea</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.evaluator.msbg.msbg_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DF_ED</span><span class="p">,</span>
+    <span class="n">FF_ED</span><span class="p">,</span>
+    <span class="n">HZ</span><span class="p">,</span>
+    <span class="n">ITU_ERP_DRP</span><span class="p">,</span>
+    <span class="n">ITU_HZ</span><span class="p">,</span>
+    <span class="n">MIDEAR</span><span class="p">,</span>
+    <span class="n">firwin2</span><span class="p">,</span>
+    <span class="n">gen_eh2008_speech_noise</span><span class="p">,</span>
+    <span class="n">gen_tone</span><span class="p">,</span>
+    <span class="n">measure_rms</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Audiogram</span>
+
+<span class="c1"># Cut off frequency of low-pass filter at end of simulations:</span>
+<span class="c1"># prevents possible excessive processing noise at high frequencies.</span>
+<span class="n">UPPER_CUTOFF_HZ</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">18000</span>
+
+
+<div class="viewcode-block" id="Ear">
+<a class="viewcode-back" href="../../../../clarity.evaluator.msbg.html#clarity.evaluator.msbg.msbg.Ear">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Ear</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Representation of a pairs of ears.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">src_pos</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ff&quot;</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">44100.0</span><span class="p">,</span>
+        <span class="n">equiv_0db_spl</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span>
+        <span class="n">ahr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for the Ear class.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            src_pos (str): Position of the source.</span>
+<span class="sd">            sample_rate (float): sample frequency.</span>
+<span class="sd">            equiv_0db_spl (): ???</span>
+<span class="sd">            ahr (): ???</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_correction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_src_correction</span><span class="p">(</span><span class="n">src_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">equiv_0db_spl</span> <span class="o">=</span> <span class="n">equiv_0db_spl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ahr</span> <span class="o">=</span> <span class="n">ahr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cochlea</span><span class="p">:</span> <span class="n">Cochlea</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Ear.set_audiogram">
+<a class="viewcode-back" href="../../../../clarity.evaluator.msbg.html#clarity.evaluator.msbg.msbg.Ear.set_audiogram">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_audiogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audiogram</span><span class="p">:</span> <span class="n">Audiogram</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the audiogram to be used.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">audiogram</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">audiogram</span><span class="o">.</span><span class="n">levels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Impairment too severe: Suggest you limit audiogram max to&quot;</span>
+                <span class="s2">&quot;80-90 dB HL, otherwise things go wrong/unrealistic.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cochlea</span> <span class="o">=</span> <span class="n">Cochlea</span><span class="p">(</span><span class="n">audiogram</span><span class="o">=</span><span class="n">audiogram</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ear.get_src_correction">
+<a class="viewcode-back" href="../../../../clarity.evaluator.msbg.html#clarity.evaluator.msbg.msbg.Ear.get_src_correction">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_src_correction</span><span class="p">(</span><span class="n">src_pos</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select relevant external field to eardrum correction.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            src_pos (str): Position of src. One of ff, df or ITU</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">src_pos</span> <span class="o">==</span> <span class="s2">&quot;ff&quot;</span><span class="p">:</span>
+            <span class="n">src_correction</span> <span class="o">=</span> <span class="n">FF_ED</span>
+        <span class="k">elif</span> <span class="n">src_pos</span> <span class="o">==</span> <span class="s2">&quot;df&quot;</span><span class="p">:</span>
+            <span class="n">src_correction</span> <span class="o">=</span> <span class="n">DF_ED</span>
+        <span class="k">elif</span> <span class="n">src_pos</span> <span class="o">==</span> <span class="s2">&quot;ITU&quot;</span><span class="p">:</span>  <span class="c1"># transfer to same grid</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">ITU_HZ</span><span class="p">,</span> <span class="n">ITU_ERP_DRP</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+            <span class="n">src_correction</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">HZ</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid src position (</span><span class="si">{</span><span class="n">src_pos</span><span class="si">}</span><span class="s2">). Must be one of ff, df or ITU&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid src position&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">src_correction</span></div>
+
+
+<div class="viewcode-block" id="Ear.src_to_cochlea_filt">
+<a class="viewcode-back" href="../../../../clarity.evaluator.msbg.html#clarity.evaluator.msbg.msbg.Ear.src_to_cochlea_filt">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">src_to_cochlea_filt</span><span class="p">(</span>
+        <span class="n">input_signal</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">src_correction</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">backward</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulate middle and outer ear transfer functions.</span>
+
+<span class="sd">        Made more general, Mar2012, to include diffuse field as well as ITU reference</span>
+<span class="sd">        points, that were included in DOS-versions of recruitment simulator, released</span>
+<span class="sd">        ca 1999-2001, and on hearing group website, Mar2012 variable [src_pos] takes one</span>
+<span class="sd">        of 3 values: &#39;ff&#39;, &#39;df&#39; and &#39;ITU&#39; free-field to cochlea filter forwards or</span>
+<span class="sd">        backward direction, depends on &#39;backward&#39; switch. NO LONGER via 2 steps. ff to</span>
+<span class="sd">        eardrum and then via middle ear: use same length FIR 5-12-97.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_signal (ndarray): signal to process</span>
+<span class="sd">            src_correction (np.ndarray): correction to make for src position as an array</span>
+<span class="sd">                returned by get_src_correction(src_pos) where src_pos is one of ff, df</span>
+<span class="sd">                or ITU</span>
+<span class="sd">            sample_rate (int): sampling frequency</span>
+<span class="sd">            backward (bool, optional): if true then cochlea to src (default: False)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: the processed signal</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;performing outer/middle ear corrections&quot;</span><span class="p">)</span>
+
+        <span class="c1"># make sure that response goes only up to sample_frequency/2</span>
+        <span class="n">nyquist</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">ixf_useful</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">HZ</span> <span class="o">&lt;</span> <span class="n">nyquist</span><span class="p">)</span>
+
+        <span class="n">hz_used</span> <span class="o">=</span> <span class="n">HZ</span><span class="p">[</span><span class="n">ixf_useful</span><span class="p">]</span>
+        <span class="n">hz_used</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hz_used</span><span class="p">,</span> <span class="n">nyquist</span><span class="p">)</span>
+
+        <span class="c1"># sig from free field to cochlea: 0 dB at 1kHz</span>
+        <span class="n">correction</span> <span class="o">=</span> <span class="n">src_correction</span> <span class="o">-</span> <span class="n">MIDEAR</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">HZ</span><span class="p">,</span> <span class="n">correction</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+        <span class="n">last_correction</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">nyquist</span><span class="p">)</span>  <span class="c1"># generate synthetic response at Nyquist</span>
+
+        <span class="n">correction_used</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">ixf_useful</span><span class="p">],</span> <span class="n">last_correction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">backward</span><span class="p">:</span>  <span class="c1"># ie. coch-&gt;src rather than src-&gt;coch</span>
+            <span class="n">correction_used</span> <span class="o">=</span> <span class="o">-</span><span class="n">correction_used</span>
+        <span class="n">correction_used</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="n">correction_used</span><span class="p">))</span>
+
+        <span class="n">correction_used</span> <span class="o">=</span> <span class="n">correction_used</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="c1"># Create filter with 23 msec window to do reasonable job down to about 100 Hz</span>
+        <span class="c1"># Scales with fs, fails with longer windows in fir2 in original MATLAB version</span>
+        <span class="n">n_wdw</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">sample_rate</span> <span class="o">/</span> <span class="mf">16e3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">368</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">hz_used</span> <span class="o">=</span> <span class="n">hz_used</span> <span class="o">/</span> <span class="n">nyquist</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">firwin2</span><span class="p">(</span><span class="n">n_wdw</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hz_used</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">correction_used</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;kaiser&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="n">output_signal</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">input_signal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output_signal</span></div>
+
+
+<div class="viewcode-block" id="Ear.make_calibration_signal">
+<a class="viewcode-back" href="../../../../clarity.evaluator.msbg.html#clarity.evaluator.msbg.msbg.Ear.make_calibration_signal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_calibration_signal</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ref_rms_db</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the calibration signal to the start of the signal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ref_rms_db (float): reference rms level in dB</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[ndarray, ndarray] - pre and post calibration signals</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calibration noise and tone with same RMS as original speech,</span>
+        <span class="c1"># Tone at nearest channel centre frequency to 500 Hz</span>
+        <span class="c1"># For testing, ref_rms_dB must be equal to -31.2</span>
+
+        <span class="n">noise_burst</span> <span class="o">=</span> <span class="n">gen_eh2008_speech_noise</span><span class="p">(</span>
+            <span class="n">duration</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">ref_rms_db</span>
+        <span class="p">)</span>
+        <span class="n">tone_burst</span> <span class="o">=</span> <span class="n">gen_tone</span><span class="p">(</span>
+            <span class="n">freq</span><span class="o">=</span><span class="mi">520</span><span class="p">,</span>
+            <span class="n">duration</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">ref_rms_db</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">silence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">))</span>  <span class="c1"># 50 ms duration</span>
+
+        <span class="n">pre_calibration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">silence</span><span class="p">,</span> <span class="n">tone_burst</span><span class="p">,</span> <span class="n">silence</span><span class="p">,</span> <span class="n">noise_burst</span><span class="p">,</span> <span class="n">silence</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Repeat signals for the desired number of channels</span>
+        <span class="n">post_calibration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">silence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="p">(</span><span class="n">n_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">pre_calibration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">pre_calibration</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="p">(</span><span class="n">n_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">pre_calibration</span><span class="p">,</span> <span class="n">post_calibration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ear.process">
+<a class="viewcode-back" href="../../../../clarity.evaluator.msbg.html#clarity.evaluator.msbg.msbg.Ear.process">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">add_calibration</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the hearing loss simulation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (ndarray): signal to process, shape either N, Nx1, Nx2</span>
+<span class="sd">            add_calibration (bool): prepend calibration tone and speech-shaped noise</span>
+<span class="sd">                (default: False)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: the processed signal</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># signals as rows</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+        <span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">44100</span>  <span class="c1"># This is the only sampling frequency that can be used</span>
+        <span class="k">if</span> <span class="n">sample_rate</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Warning: only a sampling frequency of 44.1kHz can be used by MSBG.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid sampling frequency, valid value is 44100&quot;</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processing {len(chans)} samples&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Need to know file RMS, and then call that a certain level in SPL:</span>
+        <span class="c1"># needs some form of pre-measuring.</span>
+        <span class="n">signal_rms_level_db</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">equiv_0db_spl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">equiv_0db_spl</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ahr</span>
+
+        <span class="n">level_db_spl</span> <span class="o">=</span> <span class="n">equiv_0db_spl</span> <span class="o">+</span> <span class="n">signal_rms_level_db</span>
+        <span class="n">calib_db_spl</span> <span class="o">=</span> <span class="n">level_db_spl</span>
+        <span class="n">target_spl</span> <span class="o">=</span> <span class="n">level_db_spl</span>
+        <span class="n">ref_rms_db</span> <span class="o">=</span> <span class="n">calib_db_spl</span> <span class="o">-</span> <span class="n">equiv_0db_spl</span>
+
+        <span class="c1"># Measure RMS where 3rd arg is dB_rel_rms (how far below)</span>
+        <span class="n">calculated_rms</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_rel_db_thresh</span><span class="p">,</span> <span class="n">_active</span> <span class="o">=</span> <span class="n">measure_rms</span><span class="p">(</span>
+            <span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="o">-</span><span class="mi">12</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Rescale input data and check level after rescaling</span>
+        <span class="c1"># This is to ensure that the following processing steps are applied correctly</span>
+        <span class="n">change_db</span> <span class="o">=</span> <span class="n">target_spl</span> <span class="o">-</span> <span class="p">(</span><span class="n">equiv_0db_spl</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">calculated_rms</span><span class="p">))</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">change_db</span><span class="p">)</span>
+        <span class="n">new_rms_db</span> <span class="o">=</span> <span class="n">equiv_0db_spl</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Rescaling: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;leveldBSPL was </span><span class="si">{</span><span class="n">level_db_spl</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2"> dB SPL, now </span><span class="si">{</span><span class="n">new_rms_db</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2"> dB SPL. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; Target SPL is </span><span class="si">{</span><span class="n">target_spl</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2"> dB SPL.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add calibration signal at target SPL dB</span>
+        <span class="k">if</span> <span class="n">add_calibration</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">pre_calibration</span><span class="p">,</span> <span class="n">post_calibration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_calibration_signal</span><span class="p">(</span>
+                <span class="n">ref_rms_db</span><span class="p">,</span> <span class="n">n_channels</span><span class="o">=</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># signal = [</span>
+            <span class="c1">#    np.concatenate((calibration_signal[0], x, #calibration_signal[1]))</span>
+            <span class="c1">#    for x in signal</span>
+            <span class="c1"># ]</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">pre_calibration</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">post_calibration</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Transform from src pos to cochlea, simulate cochlea, transform back to src pos</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">Ear</span><span class="o">.</span><span class="n">src_to_cochlea_filt</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_correction</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cochlea</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">cochlea</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">equiv_0db_spl</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">signal</span><span class="p">])</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">Ear</span><span class="o">.</span><span class="n">src_to_cochlea_filt</span><span class="p">(</span>
+            <span class="n">signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_correction</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">backward</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Implement low-pass filter at top end of audio range: flat to Cutoff freq,</span>
+        <span class="c1"># tails below -80 dB. Suitable lpf for signals later converted to MP3, flat to</span>
+        <span class="c1"># 15 kHz. Small window to design low-pass FIR, to cut off high freq processing</span>
+        <span class="c1"># noise low-pass to something sensible, prevents exaggeration of &gt; 15 kHz</span>
+        <span class="n">winlen</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">0.0015</span> <span class="o">*</span> <span class="n">sample_rate</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">lpf44d1</span> <span class="o">=</span> <span class="n">firwin</span><span class="p">(</span>
+            <span class="n">winlen</span><span class="p">,</span> <span class="n">UPPER_CUTOFF_HZ</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;kaiser&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">signal_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">lfilter</span><span class="p">(</span><span class="n">lpf44d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">signal</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">signal_list</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

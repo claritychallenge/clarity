@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.evaluator.haspi.ip &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.evaluator.haspi.ip</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions for HASPI neural network stage.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="get_neural_net">
+<a class="viewcode-back" href="../../../../clarity.evaluator.haspi.html#clarity.evaluator.haspi.ip.get_neural_net">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_neural_net</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provide the weights derived for the ensemble of ten neural</span>
+<span class="sd">    networks used for the HASPI_v2 intelligibility model. The neural networks</span>
+<span class="sd">    have ten inputs, 4 neurons in the hidden layer, and one output neuron.</span>
+<span class="sd">    The logsig activation function is used.</span>
+
+<span class="sd">    Arguments: None</span>
+
+<span class="sd">    Returned values:</span>
+<span class="sd">        neural_net_params (dict): parameters defining the neural network</span>
+<span class="sd">        weights_hidden (): cell array 10 x 1 for the weights linking the input to the</span>
+<span class="sd">        hidden layer. Each cell is a 11 x 4 matrix of weights</span>
+<span class="sd">        weights_out (): call array 5 x 1 for the weights linking the hidden to the</span>
+<span class="sd">            output layer. Each cell is a 5 x 1 vector of weights.</span>
+<span class="sd">        normalization_factor (): normalization so that the maximum neural net output is</span>
+<span class="sd">            exactly 1.</span>
+
+<span class="sd">    Updates:</span>
+<span class="sd">        James M. Kates, 8 October 2019.</span>
+<span class="sd">        Version for new neural network using actual TFS scores, 24 October 2019.</span>
+<span class="sd">        Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set up the neural network parameters</span>
+    <span class="n">neural_net_params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;input_layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Number of neurons in the input layer</span>
+    <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;hidden_layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of neurons in the hidden layer</span>
+    <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;output_layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Number of neurons in the output layer</span>
+    <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;activation_function&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Activation function is logsig</span>
+    <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;offset_activation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># No offset for the activation function</span>
+    <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;maximum_activation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Maximum activation function value</span>
+
+    <span class="c1"># Input to hidden layer weights</span>
+    <span class="n">weights_hidden</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 1</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">4.9980</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.0590</span><span class="p">,</span> <span class="mf">9.5478</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.6760</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">18.9793</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.5842</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.6974</span><span class="p">,</span> <span class="mf">8.0382</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">37.8234</span><span class="p">,</span> <span class="mf">26.9420</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.6279</span><span class="p">,</span> <span class="mf">2.6069</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">4.1423</span><span class="p">,</span> <span class="mf">5.2106</span><span class="p">,</span> <span class="mf">10.3397</span><span class="p">,</span> <span class="mf">9.4643</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">13.8839</span><span class="p">,</span> <span class="mf">3.1211</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.7794</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.9207</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">17.0784</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.5065</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.7409</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.6916</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.0696</span><span class="p">,</span> <span class="o">-</span><span class="mf">19.9487</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.9734</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.3328</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">10.5754</span><span class="p">,</span> <span class="mf">15.5461</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.9137</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0726</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">4.7145</span><span class="p">,</span> <span class="mf">5.0427</span><span class="p">,</span> <span class="mf">10.5728</span><span class="p">,</span> <span class="mf">28.7840</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">21.0595</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.8171</span><span class="p">,</span> <span class="mf">2.2084</span><span class="p">,</span> <span class="mf">2.1929</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">17.2857</span><span class="p">,</span> <span class="mf">16.7562</span><span class="p">,</span> <span class="o">-</span><span class="mf">27.3290</span><span class="p">,</span> <span class="mf">1.1543</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 2</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">11.8283</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.3466</span><span class="p">,</span> <span class="mf">8.8198</span><span class="p">,</span> <span class="mf">5.6027</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">8.3142</span><span class="p">,</span> <span class="mf">6.2553</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.1575</span><span class="p">,</span> <span class="mf">13.7958</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">27.6080</span><span class="p">,</span> <span class="mf">3.3801</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.9607</span><span class="p">,</span> <span class="o">-</span><span class="mf">33.7865</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">1.3185</span><span class="p">,</span> <span class="mf">5.7276</span><span class="p">,</span> <span class="mf">8.3761</span><span class="p">,</span> <span class="mf">0.8153</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">4.0206</span><span class="p">,</span> <span class="mf">3.4737</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.0282</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.8338</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">7.3265</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0271</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.3923</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.5861</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">17.9111</span><span class="p">,</span> <span class="o">-</span><span class="mf">23.1330</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.2176</span><span class="p">,</span> <span class="mf">0.2218</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">15.0623</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.9181</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3266</span><span class="p">,</span> <span class="o">-</span><span class="mf">21.2808</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">1.0537</span><span class="p">,</span> <span class="mf">34.5512</span><span class="p">,</span> <span class="mf">8.7196</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.7648</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">5.0357</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3610</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3678</span><span class="p">,</span> <span class="mf">31.4586</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">20.8312</span><span class="p">,</span> <span class="mf">7.8687</span><span class="p">,</span> <span class="o">-</span><span class="mf">28.9087</span><span class="p">,</span> <span class="mf">19.4417</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 3</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">9.5379</span><span class="p">,</span> <span class="mf">4.4994</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.1308</span><span class="p">,</span> <span class="mf">0.9024</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">3.9544</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.4002</span><span class="p">,</span> <span class="mf">2.6777</span><span class="p">,</span> <span class="mf">22.9810</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">30.9452</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.2645</span><span class="p">,</span> <span class="mf">15.2613</span><span class="p">,</span> <span class="o">-</span><span class="mf">23.8526</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">3.1327</span><span class="p">,</span> <span class="mf">18.3449</span><span class="p">,</span> <span class="mf">7.4923</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3167</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">4.3189</span><span class="p">,</span> <span class="mf">6.5696</span><span class="p">,</span> <span class="mf">2.5123</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.6430</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">4.3704</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.0506</span><span class="p">,</span> <span class="mf">2.0855</span><span class="p">,</span> <span class="o">-</span><span class="mf">19.4876</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">9.6746</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.9613</span><span class="p">,</span> <span class="o">-</span><span class="mf">30.5541</span><span class="p">,</span> <span class="mf">3.4877</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">5.7179</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.4015</span><span class="p">,</span> <span class="mf">9.3838</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.9651</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">5.0717</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.2980</span><span class="p">,</span> <span class="mf">26.6210</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.7466</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">8.5857</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.5345</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.3236</span><span class="p">,</span> <span class="mf">18.1852</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">3.1709</span><span class="p">,</span> <span class="o">-</span><span class="mf">41.1078</span><span class="p">,</span> <span class="mf">6.7127</span><span class="p">,</span> <span class="mf">11.5747</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 4</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">9.3527</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.3654</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.1263</span><span class="p">,</span> <span class="mf">5.1205</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">9.4885</span><span class="p">,</span> <span class="mf">1.9584</span><span class="p">,</span> <span class="mf">21.8489</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.0495</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">32.0886</span><span class="p">,</span> <span class="mf">16.0934</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.0956</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9466</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">4.9347</span><span class="p">,</span> <span class="mf">6.1343</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7237</span><span class="p">,</span> <span class="mf">21.6024</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">7.2456</span><span class="p">,</span> <span class="mf">6.2478</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.2268</span><span class="p">,</span> <span class="mf">8.1160</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">5.9809</span><span class="p">,</span> <span class="mf">0.7872</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.7517</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.8755</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">7.6038</span><span class="p">,</span> <span class="o">-</span><span class="mf">32.4284</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3817</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.7850</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">5.5069</span><span class="p">,</span> <span class="mf">11.0813</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.9053</span><span class="p">,</span> <span class="o">-</span><span class="mf">18.0625</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">8.9225</span><span class="p">,</span> <span class="mf">27.1473</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.8270</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.0454</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">7.4362</span><span class="p">,</span> <span class="o">-</span><span class="mf">19.8990</span><span class="p">,</span> <span class="mf">12.3480</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.7305</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.3910</span><span class="p">,</span> <span class="mf">7.1670</span><span class="p">,</span> <span class="mf">11.7919</span><span class="p">,</span> <span class="o">-</span><span class="mf">38.1848</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 5</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">12.0509</span><span class="p">,</span> <span class="mf">8.7151</span><span class="p">,</span> <span class="mf">12.9841</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.7563</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">8.0669</span><span class="p">,</span> <span class="mf">18.9493</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.1899</span><span class="p">,</span> <span class="mf">7.8737</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">20.6577</span><span class="p">,</span> <span class="o">-</span><span class="mf">35.4767</span><span class="p">,</span> <span class="o">-</span><span class="mf">18.5397</span><span class="p">,</span> <span class="mf">2.8544</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.0629</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.5786</span><span class="p">,</span> <span class="mf">10.9516</span><span class="p">,</span> <span class="mf">9.3709</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">5.0354</span><span class="p">,</span> <span class="o">-</span><span class="mf">18.6275</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5501</span><span class="p">,</span> <span class="mf">1.3219</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">21.0090</span><span class="p">,</span> <span class="o">-</span><span class="mf">21.7111</span><span class="p">,</span> <span class="mf">5.1285</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5481</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">8.3379</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.0779</span><span class="p">,</span> <span class="mf">8.1280</span><span class="p">,</span> <span class="o">-</span><span class="mf">29.8252</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">19.6124</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.0156</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1799</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.3723</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.8287</span><span class="p">,</span> <span class="mf">4.5828</span><span class="p">,</span> <span class="mf">16.1024</span><span class="p">,</span> <span class="mf">40.0935</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">30.5649</span><span class="p">,</span> <span class="mf">10.5307</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.8234</span><span class="p">,</span> <span class="mf">0.4014</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">9.4186</span><span class="p">,</span> <span class="mf">15.6892</span><span class="p">,</span> <span class="o">-</span><span class="mf">44.0505</span><span class="p">,</span> <span class="mf">1.4371</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 6</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">8.9905</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.4000</span><span class="p">,</span> <span class="mf">13.3395</span><span class="p">,</span> <span class="mf">8.9068</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">11.0010</span><span class="p">,</span> <span class="mf">11.3797</span><span class="p">,</span> <span class="mf">14.8502</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.2547</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">23.8174</span><span class="p">,</span> <span class="mf">4.4221</span><span class="p">,</span> <span class="o">-</span><span class="mf">34.6896</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.9423</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">8.1285</span><span class="p">,</span> <span class="mf">4.0386</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.7528</span><span class="p">,</span> <span class="mf">7.6275</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">17.7683</span><span class="p">,</span> <span class="mf">3.2188</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4409</span><span class="p">,</span> <span class="mf">3.8280</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">14.2883</span><span class="p">,</span> <span class="mf">2.4917</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.7262</span><span class="p">,</span> <span class="mf">13.1258</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">5.8409</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.2882</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.2047</span><span class="p">,</span> <span class="mf">22.9793</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">1.7396</span><span class="p">,</span> <span class="mf">4.2947</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.9206</span><span class="p">,</span> <span class="mf">4.2493</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">7.8760</span><span class="p">,</span> <span class="mf">21.4827</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.9673</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3899</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.7850</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.3356</span><span class="p">,</span> <span class="mf">18.5928</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.0981</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">7.4116</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0622</span><span class="p">,</span> <span class="mf">4.7621</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.2684</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 7</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">13.2736</span><span class="p">,</span> <span class="mf">9.9119</span><span class="p">,</span> <span class="mf">3.4659</span><span class="p">,</span> <span class="mf">2.8783</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.4675</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8187</span><span class="p">,</span> <span class="mf">0.3497</span><span class="p">,</span> <span class="mf">20.7397</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">17.4133</span><span class="p">,</span> <span class="o">-</span><span class="mf">27.7575</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.4997</span><span class="p">,</span> <span class="o">-</span><span class="mf">23.8363</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">3.9760</span><span class="p">,</span> <span class="mf">4.8989</span><span class="p">,</span> <span class="mf">15.8285</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.6393</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">7.6936</span><span class="p">,</span> <span class="mf">1.1009</span><span class="p">,</span> <span class="mf">5.0979</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.8340</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.2380</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.6432</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.9580</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.8548</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">31.1510</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.2219</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.0122</span><span class="p">,</span> <span class="mf">3.0247</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">9.6552</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.9702</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.6836</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.9456</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">25.9963</span><span class="p">,</span> <span class="mf">6.3569</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.0912</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.4249</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">15.9809</span><span class="p">,</span> <span class="mf">9.4330</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.4158</span><span class="p">,</span> <span class="mf">15.9834</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.1126</span><span class="p">,</span> <span class="mf">0.1713</span><span class="p">,</span> <span class="o">-</span><span class="mf">43.7492</span><span class="p">,</span> <span class="mf">14.7425</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 8</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">11.6727</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.7084</span><span class="p">,</span> <span class="mf">9.9095</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.3946</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">4.4142</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.4821</span><span class="p">,</span> <span class="mf">10.9888</span><span class="p">,</span> <span class="mf">0.0966</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.4298</span><span class="p">,</span> <span class="mf">25.5445</span><span class="p">,</span> <span class="o">-</span><span class="mf">32.7311</span><span class="p">,</span> <span class="mf">4.1951</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">8.4468</span><span class="p">,</span> <span class="mf">16.3594</span><span class="p">,</span> <span class="mf">7.0755</span><span class="p">,</span> <span class="mf">7.2817</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">2.5481</span><span class="p">,</span> <span class="mf">15.7296</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.2159</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.5490</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">3.2812</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6972</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.1754</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7216</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">19.5254</span><span class="p">,</span> <span class="o">-</span><span class="mf">25.2440</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.6636</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.0124</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">2.3548</span><span class="p">,</span> <span class="mf">8.5716</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.7492</span><span class="p">,</span> <span class="mf">3.8422</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">26.9615</span><span class="p">,</span> <span class="mf">6.6441</span><span class="p">,</span> <span class="mf">3.1680</span><span class="p">,</span> <span class="mf">15.6611</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">6.6129</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.7791</span><span class="p">,</span> <span class="mf">9.3453</span><span class="p">,</span> <span class="mf">2.7809</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">3.6429</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8727</span><span class="p">,</span> <span class="mf">0.2410</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7045</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 9</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">13.9106</span><span class="p">,</span> <span class="mf">3.1943</span><span class="p">,</span> <span class="mf">8.7525</span><span class="p">,</span> <span class="mf">7.8378</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">4.1210</span><span class="p">,</span> <span class="mf">0.4603</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.2471</span><span class="p">,</span> <span class="mf">16.2216</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">9.3064</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.8093</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.4721</span><span class="p">,</span> <span class="o">-</span><span class="mf">34.2848</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">11.6147</span><span class="p">,</span> <span class="mf">17.6926</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5339</span><span class="p">,</span> <span class="mf">2.6700</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">5.3305</span><span class="p">,</span> <span class="mf">4.0299</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.0022</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.3827</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">3.5035</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.2305</span><span class="p">,</span> <span class="mf">6.8711</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.6676</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">25.5936</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.8940</span><span class="p">,</span> <span class="mf">10.5552</span><span class="p">,</span> <span class="mf">2.4690</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">7.7159</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.8905</span><span class="p">,</span> <span class="mf">6.5517</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.6486</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">26.7162</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.0092</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5613</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0383</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">11.7304</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.5251</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.2616</span><span class="p">,</span> <span class="mf">19.8528</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">3.2551</span><span class="p">,</span> <span class="o">-</span><span class="mf">35.4889</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.2133</span><span class="p">,</span> <span class="mf">6.7308</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>  <span class="c1"># 10</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">13.5754</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.4585</span><span class="p">,</span> <span class="mf">2.5816</span><span class="p">,</span> <span class="mf">7.5809</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">9.7189</span><span class="p">,</span> <span class="mf">7.6225</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0220</span><span class="p">,</span> <span class="mf">17.7773</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">25.6273</span><span class="p">,</span> <span class="mf">4.1225</span><span class="p">,</span> <span class="mf">4.2090</span><span class="p">,</span> <span class="o">-</span><span class="mf">35.4511</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">5.3909</span><span class="p">,</span> <span class="mf">11.0694</span><span class="p">,</span> <span class="mf">15.5337</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.3336</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">1.2964</span><span class="p">,</span> <span class="mf">5.5829</span><span class="p">,</span> <span class="mf">6.9950</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.9642</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">10.1510</span><span class="p">,</span> <span class="mf">2.2819</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.6950</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.6332</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">12.5032</span><span class="p">,</span> <span class="o">-</span><span class="mf">31.1403</span><span class="p">,</span> <span class="o">-</span><span class="mf">13.2782</span><span class="p">,</span> <span class="mf">0.1385</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">2.6178</span><span class="p">,</span> <span class="mf">6.8453</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.5308</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.9705</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">2.5462</span><span class="p">,</span> <span class="mf">30.2576</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5750</span><span class="p">,</span> <span class="mf">1.3910</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">6.2286</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.7841</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.3953</span><span class="p">,</span> <span class="mf">17.8740</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">15.8615</span><span class="p">,</span> <span class="mf">3.6023</span><span class="p">,</span> <span class="o">-</span><span class="mf">40.9104</span><span class="p">,</span> <span class="mf">7.7481</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Hidden to output layer weights</span>
+    <span class="n">weights_out</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.1316</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.5182</span><span class="p">,</span> <span class="mf">1.6401</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.2093</span><span class="p">,</span> <span class="mf">1.7924</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 1</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.1653</span><span class="p">,</span> <span class="mf">1.7375</span><span class="p">,</span> <span class="mf">1.5526</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.2349</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.2877</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 2</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.1847</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1987</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.4941</span><span class="p">,</span> <span class="mf">2.7106</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.8048</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 3</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.3962</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.2952</span><span class="p">,</span> <span class="mf">3.0003</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.2602</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3269</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 4</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.0646</span><span class="p">,</span> <span class="mf">1.3288</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.4087</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0046</span><span class="p">,</span> <span class="mf">1.8565</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 5</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.3676</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.4129</span><span class="p">,</span> <span class="mf">1.6895</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.8913</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5595</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 6</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8124</span><span class="p">,</span> <span class="mf">2.7171</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0867</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3310</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3657</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 7</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.2743</span><span class="p">,</span> <span class="mf">1.4949</span><span class="p">,</span> <span class="mf">0.7896</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0589</span><span class="p">,</span> <span class="mf">1.1257</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 8</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.1307</span><span class="p">,</span> <span class="mf">2.2788</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3633</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5073</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.9985</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 9</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.1024</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9517</span><span class="p">,</span> <span class="mf">2.2123</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.4008</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1655</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># 10</span>
+    <span class="p">]</span>
+
+    <span class="n">normalization_factor</span> <span class="o">=</span> <span class="mf">0.9508</span>
+
+    <span class="k">return</span> <span class="n">neural_net_params</span><span class="p">,</span> <span class="n">weights_hidden</span><span class="p">,</span> <span class="n">weights_out</span><span class="p">,</span> <span class="n">normalization_factor</span></div>
+
+
+
+<div class="viewcode-block" id="nn_feed_forward_ensemble">
+<a class="viewcode-back" href="../../../../clarity.evaluator.haspi.html#clarity.evaluator.haspi.ip.nn_feed_forward_ensemble">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nn_feed_forward_ensemble</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">neural_net_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">weights_hidden</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">weights_out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to compute the neural network ensemble response to a set of</span>
+<span class="sd">    inputs. The neural network is defined in NNfeedforwardZ.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    data (np.ndarray): array of features input to the neural network</span>
+<span class="sd">    neural_net_params (dict): vector of neural network parameters</span>
+<span class="sd">    weights_hidden (list): cell array of hidden layer weights for each network</span>
+<span class="sd">    weights_out (list): cell array of output layer weights for each network</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    model     neural network output vector averaged over the ensemble</span>
+
+<span class="sd">    Updates:</span>
+<span class="sd">    James M. Kates, 20 September 2011.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Data and network parameters</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">ncond</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Number of conditions in the input data</span>
+    <span class="n">n_networks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights_hidden</span><span class="p">)</span>  <span class="c1"># Number of networks in the ensemble</span>
+
+    <span class="c1"># Ensemble average of predictions over set of neural networks used for training</span>
+    <span class="n">predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ncond</span><span class="p">,</span> <span class="n">n_networks</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_networks</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncond</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">nn_feed_forward</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:],</span> <span class="n">neural_net_params</span><span class="p">,</span> <span class="n">weights_hidden</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">weights_out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">predict</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">predict</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
+<div class="viewcode-block" id="nn_feed_forward">
+<a class="viewcode-back" href="../../../../clarity.evaluator.haspi.html#clarity.evaluator.haspi.ip.nn_feed_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nn_feed_forward</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">neural_net_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">weights_hidden</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">weights_out</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the outputs at each layer of a neural network given</span>
+<span class="sd">    the input to the network and the weights. The activation function is an</span>
+<span class="sd">    offset logistic function that gives either a logsig or hyperbolic</span>
+<span class="sd">    tangent; the outputs from each layer have been reduced by the offset. The</span>
+<span class="sd">    structure of the network is an input layer, one hidden layer, and an</span>
+<span class="sd">    output layer. The first values in vectors hidden and output are set to 1</span>
+<span class="sd">    by the function, and the remaining values correspond to the outputs at</span>
+<span class="sd">    each neuron in the layer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    data (np.ndarray): feature vector input to the neural network.</span>
+<span class="sd">    neural_net_params (dict): network parameters from get_neural_net().</span>
+<span class="sd">    weights_hidden (list): matrix of weights for the hidden layer.</span>
+<span class="sd">    weights_out (list): matrix of weights for the output layer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    hidden (): vector of outputs from the hidden layer.</span>
+<span class="sd">    output (): vector of outputs from the output layer.</span>
+
+<span class="sd">    Updates:</span>
+<span class="sd">    James M. Kates, 26 October 2010.</span>
+<span class="sd">    Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Correct Wout shape</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights_out</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">weights_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">weights_out</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the array storage</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;input_layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">hidden</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;hidden_layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;output_layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the nodes used for constants</span>
+    <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Input layer</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;input_layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Response of the hidden layer</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;hidden_layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">sumhid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights_hidden</span><span class="p">[:,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">hidden</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;maximum_activation&quot;</span><span class="p">]</span>
+            <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;activation_function&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">sumhid</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">-</span> <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;offset_activation&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Response of the output layer</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;output_layer&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">sumout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights_out</span><span class="p">[:,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;maximum_activation&quot;</span><span class="p">]</span>
+            <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;activation_function&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">sumout</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">-</span> <span class="n">neural_net_params</span><span class="p">[</span><span class="s2">&quot;offset_activation&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">output</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

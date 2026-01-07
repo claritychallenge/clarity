@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cad1.task2.data_preparation package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cad2 package" href="recipes.cad2.html" />
+    <link rel="prev" title="recipes.cad1.task2.baseline package" href="recipes.cad1.task2.baseline.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="recipes-cad1-task2-data-preparation-package">
+<h1>recipes.cad1.task2.data_preparation package<a class="headerlink" href="#recipes-cad1-task2-data-preparation-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cad1.task2.data_preparation.build_scene_metadata">
+<span id="recipes-cad1-task2-data-preparation-build-scene-metadata-module"></span><h2>recipes.cad1.task2.data_preparation.build_scene_metadata module<a class="headerlink" href="#module-recipes.cad1.task2.data_preparation.build_scene_metadata" title="Link to this heading">¶</a></h2>
+<p>Module to Generate the metadata for the scenes in the CAD-1 Task-2 challenge.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.data_preparation.build_scene_metadata.get_random_car_params">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.data_preparation.build_scene_metadata.</span></span><span class="sig-name descname"><span class="pre">get_random_car_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">120</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/data_preparation/build_scene_metadata.html#get_random_car_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.data_preparation.build_scene_metadata.get_random_car_params" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a dictionary with the parameters for a car noise.
+These parameters are generated randomly, based on the car speed.
+The parameters are to be used by the CarNoiseSignalGeneration class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_speed</strong> (<em>-</em>) – The minimum speed that can be returned (default 50).</p></li>
+<li><p><strong>max_speed</strong> (<em>-</em>) – The maximum speed that can be returned (default 120).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing parameters needed by CarNoiseSignalGeneration class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.data_preparation.build_scene_metadata.get_random_head_rotation">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.data_preparation.build_scene_metadata.</span></span><span class="sig-name descname"><span class="pre">get_random_head_rotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/data_preparation/build_scene_metadata.html#get_random_head_rotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.data_preparation.build_scene_metadata.get_random_head_rotation" title="Link to this definition">¶</a></dt>
+<dd><p>Selects a random head rotation degree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_dict</strong> (<em>dict</em>) – A dictionary where keys are bird IDs and values are bird
+data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A random item from the input dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.data_preparation.build_scene_metadata.get_random_snr">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.data_preparation.build_scene_metadata.</span></span><span class="sig-name descname"><span class="pre">get_random_snr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_snr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_snr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/data_preparation/build_scene_metadata.html#get_random_snr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.data_preparation.build_scene_metadata.get_random_snr" title="Link to this definition">¶</a></dt>
+<dd><p>Function to get a random SNR value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_snr</strong> (<em>float</em>) – The minimum SNR value.</p></li>
+<li><p><strong>max_snr</strong> (<em>float</em>) – The maximum SNR value.</p></li>
+<li><p><strong>round_to</strong> (<em>int</em>) – The number of decimals to round the SNR value to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A random SNR value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.data_preparation.build_scene_metadata.read_json">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.data_preparation.build_scene_metadata.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_file</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/data_preparation/build_scene_metadata.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.data_preparation.build_scene_metadata.read_json" title="Link to this definition">¶</a></dt>
+<dd><p>Function the read a json file and return the data as a dictionary
+or only the keys if <code class="docutils literal notranslate"><span class="pre">`return_keys`</span></code> is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path_file</strong> (<em>str</em>) – Path to the json file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.data_preparation.build_scene_metadata.run">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.data_preparation.build_scene_metadata.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/data_preparation/build_scene_metadata.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.data_preparation.build_scene_metadata.run" title="Link to this definition">¶</a></dt>
+<dd><p>Main function to generate metadata for the scenes in the CAD-1 Task-2 challenge.</p>
+<p>This function relies on a random seed to generate the metadata.
+The seed is set to 2023 by default and it should always be present.
+This ensures all participant have access to the same initial scenes.
+However, participants can augment the number of scenes by adding more seeds
+in the config file. Note the first seed must always be 2023 and cannot be change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>DictConfig</em>) – The configuration object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad1.task2.data_preparation.build_scene_metadata.set_seed">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad1.task2.data_preparation.build_scene_metadata.</span></span><span class="sig-name descname"><span class="pre">set_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad1/task2/data_preparation/build_scene_metadata.html#set_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad1.task2.data_preparation.build_scene_metadata.set_seed" title="Link to this definition">¶</a></dt>
+<dd><p>Set the seed for the random number generator.</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad1.task2.data_preparation">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cad1.task2.data_preparation" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cad1.html">recipes.cad1 package</a><ul>
+  <li><a href="recipes.cad1.task2.html">recipes.cad1.task2 package</a><ul>
+      <li>Previous: <a href="recipes.cad1.task2.baseline.html" title="previous chapter">recipes.cad1.task2.baseline package</a></li>
+      <li>Next: <a href="recipes.cad2.html" title="next chapter">recipes.cad2 package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cad1.task2.data_preparation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

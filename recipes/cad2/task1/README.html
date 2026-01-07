@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The Second Cadenza Challenge (CAD2) - Task 1: Lyrics Intelligibility &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-second-cadenza-challenge-cad2-task-1-lyrics-intelligibility">
+<h1>The Second Cadenza Challenge (CAD2) - Task 1: Lyrics Intelligibility<a class="headerlink" href="#the-second-cadenza-challenge-cad2-task-1-lyrics-intelligibility" title="Link to this heading">¶</a></h1>
+<p>Cadenza code for the Second Cadenza Challenge (CAD2) Task1.</p>
+<p>For more information please visit the <a class="reference external" href="https://cadenzachallenge.org/docs/cadenza2/intro">challenge website</a>.</p>
+<section id="data-structure">
+<h2>1. Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<p>The Second Cadenza Challenge - task 1 is using the transcribed version of the MUSDB18-HQ dataset.
+This extension comprises 96 manual transcriptions of English songs by
+non-native English speakers, following the same split for training, validation and test as museval,
+totalling 366 minutes of audio.</p>
+<p>To download the data, please visit <a class="reference external" href="https://forms.gle/BzGrtdzqLvdjH6ja8">here</a>.
+The data is contained in the package <code class="docutils literal notranslate"><span class="pre">cadenza_cad2_task1_train.v1_0.tar.gz</span></code>.
+The package contains the transcribe version of the MUSDB18-HQ dataset in FLAC format
+and the metadata for the systems.</p>
+<p>Unpack packages under the same root directory using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>&lt;PACKAGE_NAME&gt;
+</pre></div>
+</div>
+<section id="necessary-data">
+<h3>1.1 Necessary data<a class="headerlink" href="#necessary-data" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Music</strong> contains the MUSDB18-HQ music dataset for training, validation and evaluation.</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cadenza_data
+└───cad2
+    └───task1
+        └───audio
+            └───musdb18hq
+                └───train
+                     ├───audio
+                     └───lyrics
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Metadata</strong> contains the metadata for the systems.</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cadenza_data
+└───cad2
+    └───task1
+        └───metadata
+            ├───alpha.json
+            ├───compressor_params.train.json
+            ├───compressor_params.valid.json
+            ├───listeners.train.json
+            ├───listeners.valid.json
+            ├───music.train.json
+            ├───music.valid.json
+            ├───scene.train.json
+            ├───scene.valid.json
+            ├───scene_listeners.train.json
+            └───scene_listeners.valid.json
+</pre></div>
+</div>
+</section>
+</section>
+<section id="baseline">
+<h2>2. Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>In the <code class="docutils literal notranslate"><span class="pre">baseline/</span></code> folder, we provide code for running the baseline enhancement system
+and performing the objective evaluation.
+Note that we use <a class="reference external" href="https://hydra.cc/docs/intro/">hydra</a> for config handling.</p>
+<section id="enhancement">
+<h3>2.1 Enhancement<a class="headerlink" href="#enhancement" title="Link to this heading">¶</a></h3>
+<p>The enhancement system uses an audio source separation model to separate the vocals from the music.
+Next, using the alpha parameter, it changes the levels of the vocals and music to
+simulate different mixing scenarios. Then, uses a multiband dynamic range compressor to
+amplify the audio signal. The final signals is saved in FLAC, 44100 Hz, 16-bit format.</p>
+<p>The audio source separation model correspond to a ConvTasNet model trained on the MUSDB18-HQ dataset
+to separate the vocals from the background.</p>
+<p>To run the baseline enhancement system first, make sure that <code class="docutils literal notranslate"><span class="pre">paths.root</span></code> in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> points to
+where you have installed the Cadenza data. You can also define your own <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code>
+to store the enhanced signals and evaluated results.</p>
+<p>You can modify the code to add your own enhancement system or your own remixing strategy
+using the alpha parameter.</p>
+<p>Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py
+</pre></div>
+</div>
+<p>Alternatively, you can provide the root variable on the command line, e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py<span class="w"> </span>path.root<span class="o">=</span>/full/path/to/my/cadenza_data
+</pre></div>
+</div>
+<p>To get a full list of the parameters, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">enhanced_signals</span></code> will appear in the <code class="docutils literal notranslate"><span class="pre">exp</span></code> folder.</p>
+</section>
+<section id="evaluation">
+<h3>2.2 Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h3>
+<p>A csv file containing the HAAQI scores and Whisper correct transcribed words will be generated in the <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code>.</p>
+<p>To check the HAAQI code, see <a class="reference internal" href="#../../../../clarity/evaluator/haaqi"><span class="xref myst">here</span></a>.</p>
+<p>Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined.
+This is due to the  random noises generated within HAAQI, but the differences should be sufficiently small.
+For reproducibility, in the given recipe, the random seed for each signal is set as the last eight digits
+of the song md5.</p>
+</section>
+<section id="convtasnet-source-separation">
+<h3>2.3 ConvTasNet Source Separation<a class="headerlink" href="#convtasnet-source-separation" title="Link to this heading">¶</a></h3>
+<p>In directory <code class="docutils literal notranslate"><span class="pre">ConvTasNet/</span></code> we provide the code to train the ConvTasNet model
+on the MUSDB18-HQ dataset.</p>
+<p>This recipe is based on the stereo modification of the ConvTasNet done by Alexandre Defossez
+and available in Demucs’ branch <a class="reference external" href="https://github.com/facebookresearch/demucs/blob/110f8fee0815d4c0d4ed3e2d478e37df247cd269/demucs/tasnet.py"><code class="docutils literal notranslate"><span class="pre">v1</span></code></a></p>
+<p>The training is based in an Asteroid recipe.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../_sources/recipes/cad2/task1/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

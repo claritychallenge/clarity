@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Contributing to pyClarity &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributor Covenant Code of Conduct" href="CODE_OF_CONDUCT.html" />
+    <link rel="prev" title="E032 - Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners" href="recipes/cpc1/e032_sheffield/README.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="contributing-to-pyclarity">
+<h1>Contributing to pyClarity<a class="headerlink" href="#contributing-to-pyclarity" title="Link to this heading">¶</a></h1>
+<p>We welcome and encourage you to contribute to the development of the pyClarity code base. These guidelines outline how you
+can do so.</p>
+<section id="using-pyclarity">
+<h2>Using pyClarity<a class="headerlink" href="#using-pyclarity" title="Link to this heading">¶</a></h2>
+<p>You can contribute to the development of pyClarity simply by using it. If something isn’t clear then please do ask
+questions in the <a class="reference external" href="https://github.com/claritychallenge/clarity/discussions">Discussion</a>. If you find errors when running the code then please report them using the <a class="reference external" href="https://github.com/claritychallenge/clarity/issues/new?assignees=&amp;amp;labels=bug%2C+question&amp;amp;template=bug_report.md&amp;amp;title=%5BBUG%5D">Issues Bug
+Template</a>, or if there is a feature or improvement you think pyClarity would benefit from then suggest it using the
+<a class="reference external" href="https://github.com/claritychallenge/clarity/issues/new?assignees=&amp;amp;labels=enhancement&amp;amp;template=feature_request.md&amp;amp;title=%5BFEATURE%5D">Issues Feature Template</a>.</p>
+<p>If you are new to GitHub and working collaboratively you may find the <a class="reference external" href="https://docs.github.com/en/issues">GitHub Issues</a>
+documentation useful.</p>
+</section>
+<section id="contributing-code">
+<h2>Contributing Code<a class="headerlink" href="#contributing-code" title="Link to this heading">¶</a></h2>
+<p>If you have algorithms or code that you would like to contribute then please get in touch by emailing us at
+<a class="reference external" href="mailto:claritychallengecontact&#37;&#52;&#48;gmail&#46;com">claritychallengecontact<span>&#64;</span>gmail<span>&#46;</span>com</a>. We will be happy to help you integrate
+your contribution into the pyClarity framework; we can even help translate contributions from other languages, e.g. MATLAB.</p>
+<p>You are also very welcome to <a class="reference external" href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">fork</a> the repository and address bugs
+and features yourself and then create a <a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">pull request from the
+fork</a>.
+However, there are a number of practices and standards we ask that you adhere to in order to maintain the quality and
+maintainability of the code base.</p>
+<section id="use-a-virtual-environment">
+<h3>Use a Virtual Environment<a class="headerlink" href="#use-a-virtual-environment" title="Link to this heading">¶</a></h3>
+<p>It is recommended that you use a <a class="reference external" href="https://realpython.com/python-virtual-environments-a-primer/">Virtual Environment</a> to
+undertake development.</p>
+</section>
+<section id="install-development-dependencies">
+<h3>Install Development Dependencies<a class="headerlink" href="#install-development-dependencies" title="Link to this heading">¶</a></h3>
+<p>Before undertaking development you should install the development requirements defined by pyClarity.  To do so you can do one
+of the following</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install from Pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>pyclarity.<span class="o">[</span>dev<span class="o">]</span>
+<span class="c1"># Install from GitHub using Pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+ssh://github.com:claritychallenge/clarity.<span class="o">[</span>dev<span class="o">]</span>
+<span class="c1"># Install from local cloned Git repository</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;.[dev]&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="create-an-issue">
+<h3>Create an issue<a class="headerlink" href="#create-an-issue" title="Link to this heading">¶</a></h3>
+<p>Before undertaking any development please create an <a class="reference external" href="https://github.com/claritychallenge/clarity/issues">Issue</a> for it
+here on the pyClarity repository. There are templates for <a class="reference external" href="https://github.com/claritychallenge/clarity/issues/new?assignees=&amp;amp;labels=bug&amp;amp;template=bug_report.md&amp;amp;title=%5BBUG%5D">Bug
+Reports</a>
+and <a class="reference external" href="https://github.com/claritychallenge/clarity/issues/new?assignees=&amp;amp;labels=enhancement&amp;amp;template=feature_request.md&amp;amp;title=%5BFEATURE%5D">Feature
+Requests</a>. This
+allows maintainers to keep an overview of what work is being undertaken and gives you the opportunity to discuss with
+them your intended solutions.</p>
+</section>
+<section id="create-a-fork">
+<h3>Create a Fork<a class="headerlink" href="#create-a-fork" title="Link to this heading">¶</a></h3>
+<p>Once you have created an issue you can
+<a class="reference external" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks">fork</a> the
+pyClarity repository to your own account and create a branch on which to undertake development.</p>
+</section>
+</section>
+<section id="coding-style">
+<h2>Coding Style<a class="headerlink" href="#coding-style" title="Link to this heading">¶</a></h2>
+<p>We ask that you adhere to the <a class="reference external" href="https://pep8.org/">PEP8</a> coding style when writing your code. To facilitate this we use a
+number of linting tools.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://flake8.pycqa.org/en/latest/">flake8</a></p></li>
+<li><p><a class="reference external" href="https://black.readthedocs.io/en/stable/index.html">black</a></p></li>
+<li><p><a class="reference external" href="https://pycqa.github.io/isort/">isort</a></p></li>
+<li><p><a class="reference external" href="https://mypy.readthedocs.io/en/stable/">mypy</a></p></li>
+<li><p><a class="reference internal" href="#pylint.org"><span class="xref myst">pylint</span></a></p></li>
+</ul>
+<section id="pre-commit">
+<h3>pre-commit<a class="headerlink" href="#pre-commit" title="Link to this heading">¶</a></h3>
+<p>To ensure these coding conventions are applied to code that is submitted to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch PyClarity uses
+<a class="reference external" href="https://pre-commit.com/"><code class="docutils literal notranslate"><span class="pre">pre-commit</span></code></a> and <a class="reference external" href="https://pre-commit.ci"><code class="docutils literal notranslate"><span class="pre">pre-commit.ci</span></code></a> which run Git Hooks before each
+commit is made (the former locally, the latter on pull requests) for the above linting (and more e.g. Markdown style is
+also checked).</p>
+<p>Whilst the <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> Python package will have been installed in your environment when you <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.[dev]</span></code> you
+need to install the configured hooks (which are defined in
+<a class="reference external" href="https://github.com/claritychallenge/clarity/blob/main/.pre-commit-config.yaml"><code class="docutils literal notranslate"><span class="pre">.precommit-config.yaml</span></code></a>) in your local
+copy of the PyClarity repository. To do so run the following from the <code class="docutils literal notranslate"><span class="pre">clarity</span></code> directory…</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>This installs <code class="docutils literal notranslate"><span class="pre">.git/hooks/pre-commit</span></code> commit hook which is triggered each time you make a new commit.</p>
+<p>If your commit fails to pass the checks please read the error messages carefully. Some changes are fixed automatically
+(e.g. <code class="docutils literal notranslate"><span class="pre">black</span></code> will format files in place where it can), but not all changes can be fixed and you should read the output
+carefully  to find out what you need to manually fix.</p>
+</section>
+<section id="pathlib-over-os">
+<h3><code class="docutils literal notranslate"><span class="pre">pathlib</span></code> over <code class="docutils literal notranslate"><span class="pre">os</span></code><a class="headerlink" href="#pathlib-over-os" title="Link to this heading">¶</a></h3>
+<p>PyClarity uses the object-orientated package <a class="reference external" href="https://docs.python.org/3/library/pathlib.html"><code class="docutils literal notranslate"><span class="pre">pathlib</span></code></a>
+throughout the code base for any operations involving the file system and path components as it makes code easier to
+read. We ask that any contributions follow this convention and use <code class="docutils literal notranslate"><span class="pre">pathlib</span></code> rather than <code class="docutils literal notranslate"><span class="pre">os</span></code>. For more on <code class="docutils literal notranslate"><span class="pre">pathlib</span></code> see
+<a class="reference external" href="https://treyhunner.com/2018/12/why-you-should-be-using-pathlib/">1</a> and <a class="reference external" href="https://treyhunner.com/2019/01/no-really-pathlib-is-great/">2</a>.</p>
+</section>
+<section id="ides">
+<h3>IDEs<a class="headerlink" href="#ides" title="Link to this heading">¶</a></h3>
+<p>Most popular Integrated Development Environments (IDEs) include plugins that will apply <code class="docutils literal notranslate"><span class="pre">flake8</span></code> / <code class="docutils literal notranslate"><span class="pre">black</span></code> to your code
+on saving a file.</p>
+<p>For information on how to configure some popular IDEs see the following links.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://code.visualstudio.com/docs/python/linting">Linting Python in Visual Studio Code</a></p></li>
+<li><p><a class="reference external" href="https://plugins.jetbrains.com/plugin/11563-flake8-support">Flake8 support - PyCharm Plugin</a></p></li>
+<li><p><a class="reference external" href="https://github.com/purcell/flymake-python-pyflakes/">Emacs flymake-python-pyflakes</a></p></li>
+</ul>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">¶</a></h2>
+<p>All new code should be covered by <a class="reference external" href="https://carpentries-incubator.github.io/python-testing/04-units/index.html">unit
+tests</a> with at least 70% coverage and where
+appropriate <a class="reference external" href="https://carpentries-incubator.github.io/python-testing/07-integration/index.html">regression tests</a>. This
+includes bug fixes, when a test should be added that captures the bug.</p>
+<p>The <a class="reference external" href="https://docs.pytest.org/en/7.1.x/">pytest</a> framework is used and the conventions are followed under
+pyClarity. Tests reside under the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory (and optionally within a module directory), fixtures should be defined
+in <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> files whilst resources used should be placed under <code class="docutils literal notranslate"><span class="pre">tests/resources</span></code>.</p>
+<p>The Continuous Integration in place on GitHub Actions runs <code class="docutils literal notranslate"><span class="pre">pytest</span></code> on newly created pull-requests and these have to
+pass successfully before merging so it is useful to ensure they pass before you create pull requests at the very
+least. Sometimes it may be sensible to run them against commits too.</p>
+<p>To run the tests you should install the additional dependencies and then call <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from the root of the project
+folder.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>tests<span class="o">]</span>
+pytest
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="recipes/cpc1/e032_sheffield/README.html" title="previous chapter">E032 - Exploiting Hidden Representations from a DNN-based Speech Recogniser for Speech Intelligibility Prediction in Hearing-impaired Listeners</a></li>
+      <li>Next: <a href="CODE_OF_CONDUCT.html" title="next chapter">Contributor Covenant Code of Conduct</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/CONTRIBUTING.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

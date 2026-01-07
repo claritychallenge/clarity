@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>recipes.cad1.task2.baseline.car_scene_acoustics &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for recipes.cad1.task2.baseline.car_scene_acoustics</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A class for the car acoustic environment.&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=import-error</span>
+<span class="c1"># pylint: disable=too-many-instance-attributes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyloudnorm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pyln</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">wavfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">lfilter</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.compressor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Compressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.nalr</span><span class="w"> </span><span class="kn">import</span> <span class="n">NALR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Audiogram</span><span class="p">,</span> <span class="n">Listener</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.car_noise_simulator.carnoise_signal_generator</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CarNoiseSignalGenerator</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">recipes.cad1.task2.baseline.audio_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">AudioManager</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CarSceneAcoustics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for the car acoustic environment.</span>
+
+<span class="sd">    Constants:</span>
+<span class="sd">        ANECHOIC_HRTF_FOR_NOISE (dict): A dictionary containing the names of the</span>
+<span class="sd">            anechoic BRIRs for the following directions:</span>
+<span class="sd">                0 degrees: front</span>
+<span class="sd">                    - 000_left: The left channel of the BRIR for 0 degrees.</span>
+<span class="sd">                    - 000_right: The right channel of the BRIR for 0 degrees.</span>
+<span class="sd">                -90 degrees: left</span>
+<span class="sd">                    - m90_left: The left channel of the BRIR for -90 degrees.</span>
+<span class="sd">                    - m90_right: The right channel of the BRIR for -90 degrees.</span>
+<span class="sd">                90 degrees: right</span>
+<span class="sd">                    - p90_left: The left channel of the BRIR for 90 degrees.</span>
+<span class="sd">                    - p90_right: The right channel of the BRIR for 90 degrees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ANECHOIC_HRTF_FOR_NOISE</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;000_left&quot;</span><span class="p">:</span> <span class="s2">&quot;HR36_E02_CH1_Left.wav&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;000_right&quot;</span><span class="p">:</span> <span class="s2">&quot;HR36_E02_CH1_Right.wav&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;m90_left&quot;</span><span class="p">:</span> <span class="s2">&quot;HR0_E02_CH1_Left.wav&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;m90_right&quot;</span><span class="p">:</span> <span class="s2">&quot;HR0_E02_CH1_Right.wav&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;p90_left&quot;</span><span class="p">:</span> <span class="s2">&quot;HR72_E02_CH1_Left.wav&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;p90_right&quot;</span><span class="p">:</span> <span class="s2">&quot;HR72_E02_CH1_Right.wav&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">track_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">hrtf_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">config_nalr</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">config_compressor</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">extend_noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the CarSceneAcoustics object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        track_duration (int): The duration of the audio track in seconds..</span>
+<span class="sd">        sample_rate (int): The sample rate of the audio in Hz.</span>
+<span class="sd">        hrtf_dir (str): The path to the directory containing the BRIR files.</span>
+<span class="sd">        config_nalr (dict): The configuration for the NALR enhancer.</span>
+<span class="sd">        config_compressor (dict): The configuration for the compressor.</span>
+<span class="sd">        extend_noise (float): The factor by which to extend the duration of the car</span>
+<span class="sd">            noise generated by the CarNoiseGenerator. Defaults to 0.2.</span>
+<span class="sd">            This is to prevent the car noise from being shorter than the audio track.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_duration</span> <span class="o">=</span> <span class="n">track_duration</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">extend_noise</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hrtf_dir</span> <span class="o">=</span> <span class="n">hrtf_dir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">preload_anechoic_hrtf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrtf_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enhancer</span> <span class="o">=</span> <span class="n">NALR</span><span class="p">(</span><span class="o">**</span><span class="n">config_nalr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span><span class="o">**</span><span class="n">config_compressor</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">carnoise</span> <span class="o">=</span> <span class="n">CarNoiseSignalGenerator</span><span class="p">(</span>
+            <span class="n">duration_secs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">track_duration</span><span class="p">,</span>
+            <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loudness_meter</span> <span class="o">=</span> <span class="n">pyln</span><span class="o">.</span><span class="n">Meter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CarSceneAcoustics.preload_anechoic_hrtf">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.preload_anechoic_hrtf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preload_anechoic_hrtf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hrtf_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the Anechoic BRIRs from the eBrird database for the given directions.</span>
+<span class="sd">        Using the following directions:</span>
+<span class="sd">            0 degrees: front</span>
+<span class="sd">            -90 degrees: left</span>
+<span class="sd">            90 degrees: right</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            brird_dir (str): The path to the directory containing the BRIR files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">anechoic_hrtf_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">hrtf_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;Anechoic&quot;</span> <span class="o">/</span> <span class="s2">&quot;audio&quot;</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ANECHOIC_HRTF_FOR_NOISE</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">anechoic_hrtf_dir</span> <span class="o">/</span> <span class="n">item</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.apply_hearing_aid">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.apply_hearing_aid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_hearing_aid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">audiogram</span><span class="p">:</span> <span class="n">Audiogram</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the hearing aid:</span>
+<span class="sd">        It consists in NALR prescription and Compressor</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (np.ndarray): The audio signal to be enhanced.</span>
+<span class="sd">            audiogram (Audiogram): The audiogram of the listener.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: The enhanced audio signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nalr_fir</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enhancer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">audiogram</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enhancer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">nalr_fir</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+        <span class="n">signal</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">signal</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.add_anechoic_hrtf_to_noise">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.add_anechoic_hrtf_to_noise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_anechoic_hrtf_to_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the Anechoic HRTF to the noise signal.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            noise_signal: A numpy array representing the different components</span>
+<span class="sd">                of the car noise signal.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: The noise signal with the Anechoic HRTF applied.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Apply Anechoic HRTF to the noise signal</span>
+        <span class="c1"># Engine first</span>
+        <span class="n">out_left</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="s2">&quot;000_left&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">our_right</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="s2">&quot;000_right&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="c1"># noise processing hardwired for 2 noises</span>
+        <span class="n">out_left</span> <span class="o">+=</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="s2">&quot;m90_left&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">our_right</span> <span class="o">+=</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="s2">&quot;m90_right&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="c1"># swap HRIR so this noise is on the other side</span>
+        <span class="n">out_left</span> <span class="o">+=</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="s2">&quot;p90_left&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">our_right</span> <span class="o">+=</span> <span class="n">lfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrir_for_noise</span><span class="p">[</span><span class="s2">&quot;p90_right&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">noise_signal</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">out_left</span><span class="p">,</span> <span class="n">our_right</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.get_car_noise">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.get_car_noise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_car_noise</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">car_noise_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates car noise.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            car_noise_params (dict): Car Noise Parameters as generated by</span>
+<span class="sd">                Class CarNoiseParameterGenerator</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: A numpy array representing the different components</span>
+<span class="sd">                of the car noise signal</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">carnoise</span><span class="o">.</span><span class="n">generate_car_noise</span><span class="p">(</span>
+            <span class="n">noise_parameters</span><span class="o">=</span><span class="n">car_noise_params</span><span class="p">,</span>
+            <span class="n">number_noise_sources</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">commonness_factor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.add_hrtf_to_stereo_signal">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.add_hrtf_to_stereo_signal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_hrtf_to_stereo_signal</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">hrir</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">hrtf_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a head rotation transfer function using binaural room impulse</span>
+<span class="sd">            response (BRIR) from eBrird.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (np.ndarray): a numpy array of shape (2, n_samples) containing the</span>
+<span class="sd">                stereo audio signal.</span>
+<span class="sd">            hrir: a dictionary containing the HRIR (head-related impulse response)</span>
+<span class="sd">                filenames.</span>
+<span class="sd">            hrtf_type: the type of HRTF to use. Can be either &quot;Anechoic&quot; or &quot;Car&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A numpy array of shape (2, n_samples) containing the stereo audio signal</span>
+<span class="sd">                with the BRIR added.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">car_hrtf_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hrtf_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">hrtf_type</span> <span class="o">/</span> <span class="s2">&quot;audio&quot;</span>
+
+        <span class="c1"># HRTF from left speaker</span>
+        <span class="n">hr_ls03_ch1_left</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">car_hrtf_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hrir</span><span class="p">[</span><span class="s1">&#39;left_speaker&#39;</span><span class="p">][</span><span class="s1">&#39;left_side&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">hr_ls03_ch1_right</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">car_hrtf_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hrir</span><span class="p">[</span><span class="s1">&#39;left_speaker&#39;</span><span class="p">][</span><span class="s1">&#39;right_side&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># HRTF from right speaker</span>
+        <span class="n">hr_ls04_ch1_left</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">car_hrtf_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hrir</span><span class="p">[</span><span class="s1">&#39;right_speaker&#39;</span><span class="p">][</span><span class="s1">&#39;left_side&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">hr_ls04_ch1_right</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">car_hrtf_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hrir</span><span class="p">[</span><span class="s1">&#39;right_speaker&#39;</span><span class="p">][</span><span class="s1">&#39;right_side&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># add the BRIRs to the signal</span>
+        <span class="c1"># Left Speaker (LS03)</span>
+        <span class="n">out_left</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">hr_ls03_ch1_left</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">out_right</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">hr_ls03_ch1_right</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="c1"># Right Speaker (LS04)</span>
+        <span class="n">out_left</span> <span class="o">+=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">hr_ls04_ch1_left</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">out_right</span> <span class="o">+=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">hr_ls04_ch1_right</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">out_left</span><span class="p">,</span> <span class="n">out_right</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.scale_signal_to_snr">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.scale_signal_to_snr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale_signal_to_snr</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">reference_signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">snr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scales the target signal to the desired SNR.</span>
+<span class="sd">        We transpose channel because pylodnorm operates</span>
+<span class="sd">        on arrays with shape [n_samples, n_channels].</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target_signal (np.ndarray): The target signal to scale.</span>
+<span class="sd">            reference_signal (np.ndarray): The reference signal.</span>
+<span class="sd">            snr (float): The desired SNR gain in dB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: The scaled target signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Ensure channels are in the correct dimension</span>
+        <span class="k">if</span> <span class="n">reference_signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">reference_signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">reference_signal</span> <span class="o">=</span> <span class="n">reference_signal</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">ref_signal_lufs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mf">0.0</span>
+            <span class="k">if</span> <span class="n">reference_signal</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">loudness_meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">reference_signal</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">signal_lufs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loudness_meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+        <span class="n">target_lufs</span> <span class="o">=</span> <span class="n">ref_signal_lufs</span> <span class="o">-</span> <span class="n">snr</span>
+
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">normalised_signal</span> <span class="o">=</span> <span class="n">pyln</span><span class="o">.</span><span class="n">normalize</span><span class="o">.</span><span class="n">loudness</span><span class="p">(</span>
+                <span class="n">signal</span><span class="p">,</span> <span class="n">signal_lufs</span><span class="p">,</span> <span class="n">target_lufs</span>
+            <span class="p">)</span>
+
+        <span class="c1"># return to original shape</span>
+        <span class="k">return</span> <span class="n">normalised_signal</span><span class="o">.</span><span class="n">T</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.equalise_level">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.equalise_level">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">equalise_level</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">reference_signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Equalises the level of the target signal to the reference signal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (np.ndarray): The target signal to equalise.</span>
+<span class="sd">            reference_signal (np.ndarray): The reference signal.</span>
+<span class="sd">            max_level (float): The maximum level of the target signal.</span>
+<span class="sd">                This to prevent clipping.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: The equalised target signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signal_lufs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loudness_meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">target_lufs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loudness_meter</span><span class="o">.</span><span class="n">integrated_loudness</span><span class="p">(</span><span class="n">reference_signal</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pyln</span><span class="o">.</span><span class="n">normalize</span><span class="o">.</span><span class="n">loudness</span><span class="p">(</span>
+                <span class="n">signal</span><span class="p">,</span> <span class="n">signal_lufs</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">target_lufs</span><span class="p">,</span> <span class="n">max_level</span><span class="p">)</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.add_two_signals">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.add_two_signals">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_two_signals</span><span class="p">(</span><span class="n">signal1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">signal2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds two signals together.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal1 (np.ndarray): The first signal.</span>
+<span class="sd">            signal2 (np.ndarray): The second signal.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: The sum of the two signals.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">signal1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">signal2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">signal1</span><span class="p">[:,</span> <span class="p">:</span><span class="n">min_length</span><span class="p">]</span> <span class="o">+</span> <span class="n">signal2</span><span class="p">[:,</span> <span class="p">:</span><span class="n">min_length</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CarSceneAcoustics.apply_car_acoustics_to_signal">
+<a class="viewcode-back" href="../../../../../recipes.cad1.task2.baseline.html#recipes.cad1.task2.baseline.car_scene_acoustics.CarSceneAcoustics.apply_car_acoustics_to_signal">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_car_acoustics_to_signal</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">enh_signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">listener</span><span class="p">:</span> <span class="n">Listener</span><span class="p">,</span>
+        <span class="n">hrtf</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">audio_manager</span><span class="p">:</span> <span class="n">AudioManager</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the car acoustics to the enhanced signal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            enh_signal (np.ndarray): The enhanced signal to apply the car acoustics to.</span>
+<span class="sd">            scene (dict): The scene dictionary with the acoustics parameters.</span>
+<span class="sd">            listener (Listener): The listener characteristics.</span>
+<span class="sd">            hrtf (dict): A dictionary containing the head-related transfer functions</span>
+<span class="sd">                (HRTFs) for the listener being evaluated. This includes the left and</span>
+<span class="sd">                right HRTFs for the car and the anechoic room.</span>
+<span class="sd">            audio_manager (AudioManager): The audio manager object.</span>
+<span class="sd">            config (DictConfig): The config object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: The enhanced signal with the car acoustics applied.</span>
+<span class="sd">            np.ndarray: The reference signal normalised to enhanced level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># 1. Generates car noise and adds anechoic HRTFs to the car noise</span>
+        <span class="c1"># car_noise_anechoic = car_noise + anechoic HRTF</span>
+
+        <span class="n">car_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_car_noise</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;car_noise_parameters&quot;</span><span class="p">])</span>
+        <span class="n">car_noise_anechoic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_anechoic_hrtf_to_noise</span><span class="p">(</span><span class="n">car_noise</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">save_intermediate_wavs</span><span class="p">:</span>
+            <span class="n">audio_manager</span><span class="o">.</span><span class="n">add_audios_to_save</span><span class="p">(</span><span class="s2">&quot;car_noise_anechoic&quot;</span><span class="p">,</span> <span class="n">car_noise_anechoic</span><span class="p">)</span>
+
+        <span class="c1"># 2. Add HRTFs to enhanced signal</span>
+        <span class="c1"># processed_signal = enh_signal + car HRTF</span>
+
+        <span class="n">processed_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_hrtf_to_stereo_signal</span><span class="p">(</span>
+            <span class="n">enh_signal</span><span class="p">,</span> <span class="n">hrtf</span><span class="p">[</span><span class="s2">&quot;car&quot;</span><span class="p">],</span> <span class="s2">&quot;Car&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">save_intermediate_wavs</span><span class="p">:</span>
+            <span class="n">audio_manager</span><span class="o">.</span><span class="n">add_audios_to_save</span><span class="p">(</span><span class="s2">&quot;enh_signal_hrtf&quot;</span><span class="p">,</span> <span class="n">processed_signal</span><span class="p">)</span>
+
+        <span class="c1"># 3. Scale noise to target SNR</span>
+        <span class="c1"># car_noise_anechoic = car_noise_anechoic * scale_factor</span>
+
+        <span class="n">car_noise_anechoic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_signal_to_snr</span><span class="p">(</span>
+            <span class="n">signal</span><span class="o">=</span><span class="n">car_noise_anechoic</span><span class="p">,</span>
+            <span class="n">reference_signal</span><span class="o">=</span><span class="n">processed_signal</span><span class="p">,</span>
+            <span class="n">snr</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;snr&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">save_intermediate_wavs</span><span class="p">:</span>
+            <span class="n">audio_manager</span><span class="o">.</span><span class="n">add_audios_to_save</span><span class="p">(</span>
+                <span class="s2">&quot;car_noise_anechoic_scaled&quot;</span><span class="p">,</span> <span class="n">car_noise_anechoic</span>
+            <span class="p">)</span>
+
+        <span class="c1"># 4. Add the scaled anechoic car noise to the enhanced signal</span>
+        <span class="c1"># processed_signal = (enh_signal * car HRTF)</span>
+        <span class="c1">#   + (car_noise * Anechoic HRTF) * scale_factor</span>
+        <span class="n">processed_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_two_signals</span><span class="p">(</span><span class="n">processed_signal</span><span class="p">,</span> <span class="n">car_noise_anechoic</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">evaluate</span><span class="o">.</span><span class="n">save_intermediate_wavs</span><span class="p">:</span>
+            <span class="n">audio_manager</span><span class="o">.</span><span class="n">add_audios_to_save</span><span class="p">(</span>
+                <span class="s2">&quot;enh_signal_hrtf_plus_car_noise_anechoic&quot;</span><span class="p">,</span> <span class="n">processed_signal</span>
+            <span class="p">)</span>
+
+        <span class="c1"># 5. Apply Hearing Aid to Left and Right channels and join them</span>
+        <span class="n">processed_signal_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_hearing_aid</span><span class="p">(</span>
+            <span class="n">processed_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_left</span>
+        <span class="p">)</span>
+
+        <span class="n">processed_signal_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_hearing_aid</span><span class="p">(</span>
+            <span class="n">processed_signal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_right</span>
+        <span class="p">)</span>
+
+        <span class="n">processed_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">processed_signal_left</span><span class="p">,</span> <span class="n">processed_signal_right</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+
+        <span class="c1"># processed_signal = np.clip(processed_signal, -1.0, 1.0)</span>
+        <span class="n">n_clipped</span><span class="p">,</span> <span class="n">processed_signal</span> <span class="o">=</span> <span class="n">audio_manager</span><span class="o">.</span><span class="n">clip_audio</span><span class="p">(</span><span class="n">processed_signal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_clipped</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Scene </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;scene&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">n_clipped</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; samples clipped in evaluation signal.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">audio_manager</span><span class="o">.</span><span class="n">add_audios_to_save</span><span class="p">(</span><span class="s2">&quot;ha_processed_signal&quot;</span><span class="p">,</span> <span class="n">processed_signal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">processed_signal</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.enhancer.multiband_compressor package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.evaluator package" href="clarity.evaluator.html" />
+    <link rel="prev" title="clarity.enhancer.gha package" href="clarity.enhancer.gha.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-enhancer-multiband-compressor-package">
+<h1>clarity.enhancer.multiband_compressor package<a class="headerlink" href="#clarity-enhancer-multiband-compressor-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-clarity.enhancer.multiband_compressor.compressor_qmul">
+<span id="clarity-enhancer-multiband-compressor-compressor-qmul-module"></span><h2>clarity.enhancer.multiband_compressor.compressor_qmul module<a class="headerlink" href="#module-clarity.enhancer.multiband_compressor.compressor_qmul" title="Link to this heading">¶</a></h2>
+<p>“Module for the Compressor class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.compressor_qmul.Compressor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.compressor_qmul.</span></span><span class="sig-name descname"><span class="pre">Compressor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">makeup_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knee_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/compressor_qmul.html#Compressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.compressor_qmul.Compressor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Based in the compressor from [1].
+Code adapted from JUCE C++ source code.
+Optimization using IIR filters.</p>
+<p>References:
+[1] Giannoulis, D., Massberg, M., &amp; Reiss, J. D. (2012).
+Digital dynamic range compressor design - A tutorial and analysis.
+Journal of the Audio Engineering Society, 60(6), 399-408.</p>
+<p>Example:
+&gt;&gt;&gt; import librosa
+&gt;&gt;&gt; import matplotlib.pyplot as plt</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">librosa</span><span class="o">.</span><span class="n">ex</span><span class="p">(</span><span class="s2">&quot;brahms&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">mono</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">signal</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">threshold</span><span class="o">=-</span><span class="mf">30.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">ratio</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">attack</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">release</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">makeup_gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">sample_rate</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">knee_width</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<span class="go">...)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">compressed_signal</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">specgram</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Fs</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;original signal&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">specgram</span><span class="p">(</span><span class="n">compressed_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Fs</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Compressed signal&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sr</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compressed_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-clarity.enhancer.multiband_compressor.crossover">
+<span id="clarity-enhancer-multiband-compressor-crossover-module"></span><h2>clarity.enhancer.multiband_compressor.crossover module<a class="headerlink" href="#module-clarity.enhancer.multiband_compressor.crossover" title="Link to this heading">¶</a></h2>
+<p>Class compute crossover filter for one crossover frequency.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.Crossover">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.crossover.</span></span><span class="sig-name descname"><span class="pre">Crossover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq_crossover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#Crossover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.Crossover" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to compute crossover filter for two or more crossover frequencies.
+This is based on [1]</p>
+<p>References:
+[1] D’Appolito, J. A. (1984, October). Active realization of multiway all-pass
+crossover systems. In Audio Engineering Society Convention 76.
+Audio Engineering Society.</p>
+<p>Example:
+&gt;&gt;&gt; xover_freqs = np.array(
+…    [250, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 8000]
+…) * np.sqrt(2)
+&gt;&gt;&gt; xover = Crossover(xover_freqs)
+&gt;&gt;&gt; signal = np.random.randn(1000)
+&gt;&gt;&gt; filtered_signal = xover(signal)
+&gt;&gt;&gt; xover.plot_filter()</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.Crossover.FILTER_ORDER">
+<span class="sig-name descname"><span class="pre">FILTER_ORDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.Crossover.FILTER_ORDER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.Crossover.plot_filter">
+<span class="sig-name descname"><span class="pre">plot_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#Crossover.plot_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.Crossover.plot_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Method to plot the frequency response of the filter.
+This can help to validate the Class is generating the expected filters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.Crossover.xover_component">
+<span class="sig-name descname"><span class="pre">xover_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">len_xover_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#Crossover.xover_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.Crossover.xover_component" title="Link to this definition">¶</a></dt>
+<dd><p>Apply the crossover filter to the signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – The input signal.</p></li>
+<li><p><strong>filter_idx</strong> (<em>int</em>) – The index of the filter to apply.</p></li>
+<li><p><strong>len_xover_freqs</strong> (<em>int</em>) – The number of crossover frequencies.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – The axis along which to apply the filter.
+Default is -1. <code class="docutils literal notranslate"><span class="pre">`More</span> <span class="pre">information</span> <span class="pre">in</span> <span class="pre">scipy.signal.lfilter`</span></code>
+documentation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filtered signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.compute_coefficients">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.crossover.</span></span><span class="sig-name descname"><span class="pre">compute_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xover_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#compute_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.compute_coefficients" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the filter coefficients.
+These are independent of the signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xover_freqs</strong> (<em>ndarray</em>) – The crossover frequencies.</p></li>
+<li><p><strong>sample_rate</strong> (<em>float</em>) – The sample rate of the signal.</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – The order of the filter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>The numerator of the filter.
+astore (ndarray): The denominator of the filter.
+bstore_phi (ndarray): The phase correction for the numerator of the</p>
+<blockquote>
+<div><p>all pass filter.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>astore_phi (ndarray): The phase correction for the denominator of the</dt><dd><p>all pass filter.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bsotre (ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.linkwitz_riley">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.crossover.</span></span><span class="sig-name descname"><span class="pre">linkwitz_riley</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xover_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#linkwitz_riley"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.linkwitz_riley" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the Linkwitz-Riley filter.
+Makes a filter that is equivalent to passing through butterworth
+twice to get linkwitz-riley</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xover_freqs</strong> – The crossover frequency.</p></li>
+<li><p><strong>btype</strong> – The type of filter.</p></li>
+<li><p><strong>order</strong> – The order of the filter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The numerator and denominator of the filter.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.crossover.make_all_pass">
+<span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.crossover.</span></span><span class="sig-name descname"><span class="pre">make_all_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#make_all_pass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.crossover.make_all_pass" title="Link to this definition">¶</a></dt>
+<dd><p>Take two filters [b1,a1] and [b2,a2]
+and calculate the coefficient of a filter that is equivalent to
+passing the input through each filter in parallel and summing the result</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b1</strong> – Numerator of the first filter</p></li>
+<li><p><strong>a1</strong> – Denominator of the first filter</p></li>
+<li><p><strong>b2</strong> – Numerator of the second filter</p></li>
+<li><p><strong>a2</strong> – Denominator of the second filter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The numerator and denominator of the all pass filter.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.enhancer.multiband_compressor.multiband_compressor">
+<span id="clarity-enhancer-multiband-compressor-multiband-compressor-module"></span><h2>clarity.enhancer.multiband_compressor.multiband_compressor module<a class="headerlink" href="#module-clarity.enhancer.multiband_compressor.multiband_compressor" title="Link to this heading">¶</a></h2>
+<p>An implementation for Multiband Dynamic Range Compressor.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.multiband_compressor.MultibandCompressor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.multiband_compressor.</span></span><span class="sig-name descname"><span class="pre">MultibandCompressor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crossover_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressors_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/multiband_compressor.html#MultibandCompressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.multiband_compressor.MultibandCompressor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Multiband Compressor.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.multiband_compressor.MultibandCompressor.set_compressors">
+<span class="sig-name descname"><span class="pre">set_compressors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">makeup_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knee_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/multiband_compressor.html#MultibandCompressor.set_compressors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.multiband_compressor.MultibandCompressor.set_compressors" title="Link to this definition">¶</a></dt>
+<dd><p>Set the compressors parameters.</p>
+<p>Parameters can be a float or a list with the same length as center_frequencies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attack</strong> (<em>list</em><em> | </em><em>float</em>) – The attack time in milliseconds.</p></li>
+<li><p><strong>release</strong> (<em>list</em><em> | </em><em>float</em>) – The release time in milliseconds.</p></li>
+<li><p><strong>threshold</strong> (<em>list</em><em> | </em><em>float</em>) – The threshold in dB.</p></li>
+<li><p><strong>ratio</strong> (<em>list</em><em> | </em><em>float</em>) – The ratio.</p></li>
+<li><p><strong>gain</strong> (<em>list</em><em> | </em><em>float</em>) – The make-up gain in dB.</p></li>
+<li><p><strong>knee_width</strong> (<em>list</em><em> | </em><em>float</em>) – The knee width in dB.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The compressors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="clarity.enhancer.html#clarity.enhancer.compressor.Compressor" title="clarity.enhancer.compressor.Compressor">Compressor</a>]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the parameters are not the same length as</p></li>
+<li><p><strong>crossover frequencies + 1.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-clarity.enhancer.multiband_compressor">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.enhancer.multiband_compressor" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.Compressor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.</span></span><span class="sig-name descname"><span class="pre">Compressor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">makeup_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knee_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/compressor_qmul.html#Compressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.Compressor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Based in the compressor from [1].
+Code adapted from JUCE C++ source code.
+Optimization using IIR filters.</p>
+<p>References:
+[1] Giannoulis, D., Massberg, M., &amp; Reiss, J. D. (2012).
+Digital dynamic range compressor design - A tutorial and analysis.
+Journal of the Audio Engineering Society, 60(6), 399-408.</p>
+<p>Example:
+&gt;&gt;&gt; import librosa
+&gt;&gt;&gt; import matplotlib.pyplot as plt</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">librosa</span><span class="o">.</span><span class="n">ex</span><span class="p">(</span><span class="s2">&quot;brahms&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">mono</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">signal</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">compressor</span> <span class="o">=</span> <span class="n">Compressor</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">threshold</span><span class="o">=-</span><span class="mf">30.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">ratio</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">attack</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">release</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">makeup_gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">sample_rate</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">knee_width</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<span class="go">...)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">compressed_signal</span> <span class="o">=</span> <span class="n">compressor</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">specgram</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Fs</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;original signal&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">specgram</span><span class="p">(</span><span class="n">compressed_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Fs</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Compressed signal&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sr</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compressed_signal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.Crossover">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.</span></span><span class="sig-name descname"><span class="pre">Crossover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq_crossover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#Crossover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.Crossover" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to compute crossover filter for two or more crossover frequencies.
+This is based on [1]</p>
+<p>References:
+[1] D’Appolito, J. A. (1984, October). Active realization of multiway all-pass
+crossover systems. In Audio Engineering Society Convention 76.
+Audio Engineering Society.</p>
+<p>Example:
+&gt;&gt;&gt; xover_freqs = np.array(
+…    [250, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 8000]
+…) * np.sqrt(2)
+&gt;&gt;&gt; xover = Crossover(xover_freqs)
+&gt;&gt;&gt; signal = np.random.randn(1000)
+&gt;&gt;&gt; filtered_signal = xover(signal)
+&gt;&gt;&gt; xover.plot_filter()</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.Crossover.FILTER_ORDER">
+<span class="sig-name descname"><span class="pre">FILTER_ORDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#clarity.enhancer.multiband_compressor.Crossover.FILTER_ORDER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.Crossover.plot_filter">
+<span class="sig-name descname"><span class="pre">plot_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#Crossover.plot_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.Crossover.plot_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Method to plot the frequency response of the filter.
+This can help to validate the Class is generating the expected filters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.Crossover.xover_component">
+<span class="sig-name descname"><span class="pre">xover_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">len_xover_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/crossover.html#Crossover.xover_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.Crossover.xover_component" title="Link to this definition">¶</a></dt>
+<dd><p>Apply the crossover filter to the signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray</em>) – The input signal.</p></li>
+<li><p><strong>filter_idx</strong> (<em>int</em>) – The index of the filter to apply.</p></li>
+<li><p><strong>len_xover_freqs</strong> (<em>int</em>) – The number of crossover frequencies.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – The axis along which to apply the filter.
+Default is -1. <code class="docutils literal notranslate"><span class="pre">`More</span> <span class="pre">information</span> <span class="pre">in</span> <span class="pre">scipy.signal.lfilter`</span></code>
+documentation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filtered signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.MultibandCompressor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clarity.enhancer.multiband_compressor.</span></span><span class="sig-name descname"><span class="pre">MultibandCompressor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crossover_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressors_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/multiband_compressor.html#MultibandCompressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.MultibandCompressor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Multiband Compressor.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="clarity.enhancer.multiband_compressor.MultibandCompressor.set_compressors">
+<span class="sig-name descname"><span class="pre">set_compressors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">makeup_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knee_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clarity/enhancer/multiband_compressor/multiband_compressor.html#MultibandCompressor.set_compressors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.enhancer.multiband_compressor.MultibandCompressor.set_compressors" title="Link to this definition">¶</a></dt>
+<dd><p>Set the compressors parameters.</p>
+<p>Parameters can be a float or a list with the same length as center_frequencies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attack</strong> (<em>list</em><em> | </em><em>float</em>) – The attack time in milliseconds.</p></li>
+<li><p><strong>release</strong> (<em>list</em><em> | </em><em>float</em>) – The release time in milliseconds.</p></li>
+<li><p><strong>threshold</strong> (<em>list</em><em> | </em><em>float</em>) – The threshold in dB.</p></li>
+<li><p><strong>ratio</strong> (<em>list</em><em> | </em><em>float</em>) – The ratio.</p></li>
+<li><p><strong>gain</strong> (<em>list</em><em> | </em><em>float</em>) – The make-up gain in dB.</p></li>
+<li><p><strong>knee_width</strong> (<em>list</em><em> | </em><em>float</em>) – The knee width in dB.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The compressors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#clarity.enhancer.multiband_compressor.Compressor" title="clarity.enhancer.multiband_compressor.Compressor">Compressor</a>]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the parameters are not the same length as</p></li>
+<li><p><strong>crossover frequencies + 1.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.enhancer.html">clarity.enhancer package</a><ul>
+      <li>Previous: <a href="clarity.enhancer.gha.html" title="previous chapter">clarity.enhancer.gha package</a></li>
+      <li>Next: <a href="clarity.evaluator.html" title="next chapter">clarity.evaluator package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.enhancer.multiband_compressor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Module Index &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+
+   <h1>Python Module Index</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-c"><strong>c</strong></a> | 
+   <a href="#cap-r"><strong>r</strong></a> | 
+   <a href="#cap-t"><strong>t</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-c"><td></td><td>
+       <strong>c</strong></td><td></td></tr>
+     <tr>
+       <td><img src="_static/minus.png" class="toggler"
+              id="toggle-1" style="display: none" alt="-" /></td>
+       <td>
+       <a href="clarity.html#module-clarity"><code class="xref">clarity</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data"><code class="xref">clarity.data</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data.demo_data"><code class="xref">clarity.data.demo_data</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data.HOA_tools_cec2"><code class="xref">clarity.data.HOA_tools_cec2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data.scene_builder_cec2"><code class="xref">clarity.data.scene_builder_cec2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data.scene_renderer_cec1"><code class="xref">clarity.data.scene_renderer_cec1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data.scene_renderer_cec2"><code class="xref">clarity.data.scene_renderer_cec2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.data.html#module-clarity.data.utils"><code class="xref">clarity.data.utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.engine.html#module-clarity.engine"><code class="xref">clarity.engine</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.engine.html#module-clarity.engine.losses"><code class="xref">clarity.engine.losses</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.engine.html#module-clarity.engine.system"><code class="xref">clarity.engine.system</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.html#module-clarity.enhancer"><code class="xref">clarity.enhancer</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.html#module-clarity.enhancer.compressor"><code class="xref">clarity.enhancer.compressor</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.dnn.html#module-clarity.enhancer.dnn"><code class="xref">clarity.enhancer.dnn</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.dnn.html#module-clarity.enhancer.dnn.mc_conv_tasnet"><code class="xref">clarity.enhancer.dnn.mc_conv_tasnet</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.dsp.html#module-clarity.enhancer.dsp"><code class="xref">clarity.enhancer.dsp</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.dsp.html#module-clarity.enhancer.dsp.filter"><code class="xref">clarity.enhancer.dsp.filter</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.gha.html#module-clarity.enhancer.gha"><code class="xref">clarity.enhancer.gha</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.gha.html#module-clarity.enhancer.gha.gainrule_camfit"><code class="xref">clarity.enhancer.gha.gainrule_camfit</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.gha.html#module-clarity.enhancer.gha.gha_interface"><code class="xref">clarity.enhancer.gha.gha_interface</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.gha.html#module-clarity.enhancer.gha.gha_utils"><code class="xref">clarity.enhancer.gha.gha_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.multiband_compressor.html#module-clarity.enhancer.multiband_compressor"><code class="xref">clarity.enhancer.multiband_compressor</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.multiband_compressor.html#module-clarity.enhancer.multiband_compressor.compressor_qmul"><code class="xref">clarity.enhancer.multiband_compressor.compressor_qmul</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.multiband_compressor.html#module-clarity.enhancer.multiband_compressor.crossover"><code class="xref">clarity.enhancer.multiband_compressor.crossover</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.multiband_compressor.html#module-clarity.enhancer.multiband_compressor.multiband_compressor"><code class="xref">clarity.enhancer.multiband_compressor.multiband_compressor</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.enhancer.html#module-clarity.enhancer.nalr"><code class="xref">clarity.enhancer.nalr</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.html#module-clarity.evaluator"><code class="xref">clarity.evaluator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haaqi.html#module-clarity.evaluator.haaqi"><code class="xref">clarity.evaluator.haaqi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haaqi.html#module-clarity.evaluator.haaqi.haaqi"><code class="xref">clarity.evaluator.haaqi.haaqi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haspi.html#module-clarity.evaluator.haspi"><code class="xref">clarity.evaluator.haspi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haspi.html#module-clarity.evaluator.haspi.eb"><code class="xref">clarity.evaluator.haspi.eb</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haspi.html#module-clarity.evaluator.haspi.ebm"><code class="xref">clarity.evaluator.haspi.ebm</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haspi.html#module-clarity.evaluator.haspi.haspi"><code class="xref">clarity.evaluator.haspi.haspi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.haspi.html#module-clarity.evaluator.haspi.ip"><code class="xref">clarity.evaluator.haspi.ip</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.hasqi.html#module-clarity.evaluator.hasqi"><code class="xref">clarity.evaluator.hasqi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.hasqi.html#module-clarity.evaluator.hasqi.hasqi"><code class="xref">clarity.evaluator.hasqi.hasqi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.mbstoi.html#module-clarity.evaluator.mbstoi"><code class="xref">clarity.evaluator.mbstoi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.mbstoi.html#module-clarity.evaluator.mbstoi.mbstoi"><code class="xref">clarity.evaluator.mbstoi.mbstoi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.mbstoi.html#module-clarity.evaluator.mbstoi.mbstoi_utils"><code class="xref">clarity.evaluator.mbstoi.mbstoi_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.msbg.html#module-clarity.evaluator.msbg"><code class="xref">clarity.evaluator.msbg</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.msbg.html#module-clarity.evaluator.msbg.cochlea"><code class="xref">clarity.evaluator.msbg.cochlea</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.msbg.html#module-clarity.evaluator.msbg.msbg"><code class="xref">clarity.evaluator.msbg.msbg</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.msbg.msbg_hparams.html#module-clarity.evaluator.msbg.msbg_hparams"><code class="xref">clarity.evaluator.msbg.msbg_hparams</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.msbg.html#module-clarity.evaluator.msbg.msbg_utils"><code class="xref">clarity.evaluator.msbg.msbg_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.evaluator.msbg.html#module-clarity.evaluator.msbg.smearing"><code class="xref">clarity.evaluator.msbg.smearing</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.predictor.html#module-clarity.predictor"><code class="xref">clarity.predictor</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.predictor.html#module-clarity.predictor.torch_msbg"><code class="xref">clarity.predictor.torch_msbg</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.predictor.html#module-clarity.predictor.torch_stoi"><code class="xref">clarity.predictor.torch_stoi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils"><code class="xref">clarity.utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils.audiogram"><code class="xref">clarity.utils.audiogram</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.car_noise_simulator.html#module-clarity.utils.car_noise_simulator"><code class="xref">clarity.utils.car_noise_simulator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.car_noise_simulator.html#module-clarity.utils.car_noise_simulator.carnoise_parameters_generator"><code class="xref">clarity.utils.car_noise_simulator.carnoise_parameters_generator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.car_noise_simulator.html#module-clarity.utils.car_noise_simulator.carnoise_signal_generator"><code class="xref">clarity.utils.car_noise_simulator.carnoise_signal_generator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils.file_io"><code class="xref">clarity.utils.file_io</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils.flac_encoder"><code class="xref">clarity.utils.flac_encoder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils.results_support"><code class="xref">clarity.utils.results_support</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils.signal_processing"><code class="xref">clarity.utils.signal_processing</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="clarity.utils.html#module-clarity.utils.source_separation_support"><code class="xref">clarity.utils.source_separation_support</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-r"><td></td><td>
+       <strong>r</strong></td><td></td></tr>
+     <tr>
+       <td><img src="_static/minus.png" class="toggler"
+              id="toggle-2" style="display: none" alt="-" /></td>
+       <td>
+       <a href="recipes.html#module-recipes"><code class="xref">recipes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.html#module-recipes.cad1"><code class="xref">recipes.cad1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task1.html#module-recipes.cad1.task1"><code class="xref">recipes.cad1.task1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task1.baseline.html#module-recipes.cad1.task1.baseline"><code class="xref">recipes.cad1.task1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task1.baseline.html#module-recipes.cad1.task1.baseline.enhance"><code class="xref">recipes.cad1.task1.baseline.enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task1.baseline.html#module-recipes.cad1.task1.baseline.evaluate"><code class="xref">recipes.cad1.task1.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task1.baseline.html#module-recipes.cad1.task1.baseline.merge_batches_results"><code class="xref">recipes.cad1.task1.baseline.merge_batches_results</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task1.baseline.html#module-recipes.cad1.task1.baseline.test"><code class="xref">recipes.cad1.task1.baseline.test</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.html#module-recipes.cad1.task2"><code class="xref">recipes.cad1.task2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline"><code class="xref">recipes.cad1.task2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.audio_manager"><code class="xref">recipes.cad1.task2.baseline.audio_manager</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.baseline_utils"><code class="xref">recipes.cad1.task2.baseline.baseline_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.car_scene_acoustics"><code class="xref">recipes.cad1.task2.baseline.car_scene_acoustics</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.enhance"><code class="xref">recipes.cad1.task2.baseline.enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.evaluate"><code class="xref">recipes.cad1.task2.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.merge_batches_results"><code class="xref">recipes.cad1.task2.baseline.merge_batches_results</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.baseline.html#module-recipes.cad1.task2.baseline.test"><code class="xref">recipes.cad1.task2.baseline.test</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.data_preparation.html#module-recipes.cad1.task2.data_preparation"><code class="xref">recipes.cad1.task2.data_preparation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad1.task2.data_preparation.html#module-recipes.cad1.task2.data_preparation.build_scene_metadata"><code class="xref">recipes.cad1.task2.data_preparation.build_scene_metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.html#module-recipes.cad2"><code class="xref">recipes.cad2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task1.html#module-recipes.cad2.task1"><code class="xref">recipes.cad2.task1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task1.baseline.html#module-recipes.cad2.task1.baseline"><code class="xref">recipes.cad2.task1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task1.ConvTasNet.html#module-recipes.cad2.task1.ConvTasNet"><code class="xref">recipes.cad2.task1.ConvTasNet</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.html#module-recipes.cad2.task2"><code class="xref">recipes.cad2.task2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.baseline.html#module-recipes.cad2.task2.baseline"><code class="xref">recipes.cad2.task2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.baseline.html#module-recipes.cad2.task2.baseline.evaluate"><code class="xref">recipes.cad2.task2.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.baseline.html#module-recipes.cad2.task2.baseline.merge_batches_results"><code class="xref">recipes.cad2.task2.baseline.merge_batches_results</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.ConvTasNet.html#module-recipes.cad2.task2.ConvTasNet"><code class="xref">recipes.cad2.task2.ConvTasNet</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.process_dataset.html#module-recipes.cad2.task2.process_dataset"><code class="xref">recipes.cad2.task2.process_dataset</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.process_dataset.html#module-recipes.cad2.task2.process_dataset.generate_train_scenes"><code class="xref">recipes.cad2.task2.process_dataset.generate_train_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad2.task2.process_dataset.html#module-recipes.cad2.task2.process_dataset.process_zenodo_download"><code class="xref">recipes.cad2.task2.process_dataset.process_zenodo_download</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2024.html#module-recipes.cad_icassp_2024"><code class="xref">recipes.cad_icassp_2024</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2026.html#module-recipes.cad_icassp_2026"><code class="xref">recipes.cad_icassp_2026</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2026.baseline.html#module-recipes.cad_icassp_2026.baseline"><code class="xref">recipes.cad_icassp_2026.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2026.baseline.html#module-recipes.cad_icassp_2026.baseline.compute_stoi"><code class="xref">recipes.cad_icassp_2026.baseline.compute_stoi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2026.baseline.html#module-recipes.cad_icassp_2026.baseline.evaluate"><code class="xref">recipes.cad_icassp_2026.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2026.baseline.html#module-recipes.cad_icassp_2026.baseline.predict"><code class="xref">recipes.cad_icassp_2026.baseline.predict</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cad_icassp_2026.baseline.html#module-recipes.cad_icassp_2026.baseline.shared_predict_utils"><code class="xref">recipes.cad_icassp_2026.baseline.shared_predict_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.html#module-recipes.cec1"><code class="xref">recipes.cec1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.baseline.html#module-recipes.cec1.baseline"><code class="xref">recipes.cec1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.baseline.html#module-recipes.cec1.baseline.enhance"><code class="xref">recipes.cec1.baseline.enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.baseline.html#module-recipes.cec1.baseline.evaluate"><code class="xref">recipes.cec1.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.baseline.results.html#module-recipes.cec1.baseline.results"><code class="xref">recipes.cec1.baseline.results</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.data_preparation.html#module-recipes.cec1.data_preparation"><code class="xref">recipes.cec1.data_preparation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.data_preparation.html#module-recipes.cec1.data_preparation.prepare_cec1_data"><code class="xref">recipes.cec1.data_preparation.prepare_cec1_data</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.e009_sheffield.html#module-recipes.cec1.e009_sheffield"><code class="xref">recipes.cec1.e009_sheffield</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.e009_sheffield.html#module-recipes.cec1.e009_sheffield.test"><code class="xref">recipes.cec1.e009_sheffield.test</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec1.e009_sheffield.html#module-recipes.cec1.e009_sheffield.train"><code class="xref">recipes.cec1.e009_sheffield.train</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.html#module-recipes.cec2"><code class="xref">recipes.cec2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.baseline.html#module-recipes.cec2.baseline"><code class="xref">recipes.cec2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.baseline.html#module-recipes.cec2.baseline.enhance"><code class="xref">recipes.cec2.baseline.enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.baseline.html#module-recipes.cec2.baseline.evaluate"><code class="xref">recipes.cec2.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.baseline.exp.html#module-recipes.cec2.baseline.exp"><code class="xref">recipes.cec2.baseline.exp</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.data_preparation.html#module-recipes.cec2.data_preparation"><code class="xref">recipes.cec2.data_preparation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.data_preparation.html#module-recipes.cec2.data_preparation.build_scenes"><code class="xref">recipes.cec2.data_preparation.build_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec2.data_preparation.html#module-recipes.cec2.data_preparation.render_scenes"><code class="xref">recipes.cec2.data_preparation.render_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec3.html#module-recipes.cec3"><code class="xref">recipes.cec3</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec3.baseline.html#module-recipes.cec3.baseline"><code class="xref">recipes.cec3.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec3.baseline.html#module-recipes.cec3.baseline.enhance"><code class="xref">recipes.cec3.baseline.enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec3.baseline.html#module-recipes.cec3.baseline.evaluate"><code class="xref">recipes.cec3.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cec3.baseline.html#module-recipes.cec3.baseline.report_score"><code class="xref">recipes.cec3.baseline.report_score</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.html#module-recipes.cpc1"><code class="xref">recipes.cpc1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.baseline.html#module-recipes.cpc1.baseline"><code class="xref">recipes.cpc1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.baseline.html#module-recipes.cpc1.baseline.compute_scores"><code class="xref">recipes.cpc1.baseline.compute_scores</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.baseline.html#module-recipes.cpc1.baseline.run"><code class="xref">recipes.cpc1.baseline.run</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.e029_sheffield.html#module-recipes.cpc1.e029_sheffield"><code class="xref">recipes.cpc1.e029_sheffield</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.e029_sheffield.html#module-recipes.cpc1.e029_sheffield.evaluate"><code class="xref">recipes.cpc1.e029_sheffield.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.e032_sheffield.html#module-recipes.cpc1.e032_sheffield"><code class="xref">recipes.cpc1.e032_sheffield</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.e032_sheffield.html#module-recipes.cpc1.e032_sheffield.evaluate"><code class="xref">recipes.cpc1.e032_sheffield.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc1.test_listener_responses.html#module-recipes.cpc1.test_listener_responses"><code class="xref">recipes.cpc1.test_listener_responses</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc2.html#module-recipes.cpc2"><code class="xref">recipes.cpc2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc2.baseline.html#module-recipes.cpc2.baseline"><code class="xref">recipes.cpc2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc2.baseline.html#module-recipes.cpc2.baseline.compute_haspi"><code class="xref">recipes.cpc2.baseline.compute_haspi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc2.baseline.html#module-recipes.cpc2.baseline.evaluate"><code class="xref">recipes.cpc2.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc2.baseline.html#module-recipes.cpc2.baseline.predict"><code class="xref">recipes.cpc2.baseline.predict</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.html#module-recipes.cpc3"><code class="xref">recipes.cpc3</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.baseline.html#module-recipes.cpc3.baseline"><code class="xref">recipes.cpc3.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.baseline.html#module-recipes.cpc3.baseline.compute_haspi"><code class="xref">recipes.cpc3.baseline.compute_haspi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.baseline.html#module-recipes.cpc3.baseline.evaluate"><code class="xref">recipes.cpc3.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.baseline.html#module-recipes.cpc3.baseline.predict_dev"><code class="xref">recipes.cpc3.baseline.predict_dev</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.baseline.html#module-recipes.cpc3.baseline.predict_train"><code class="xref">recipes.cpc3.baseline.predict_train</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.cpc3.baseline.html#module-recipes.cpc3.baseline.shared_predict_utils"><code class="xref">recipes.cpc3.baseline.shared_predict_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.icassp_2023.html#module-recipes.icassp_2023"><code class="xref">recipes.icassp_2023</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.icassp_2023.baseline.html#module-recipes.icassp_2023.baseline"><code class="xref">recipes.icassp_2023.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.icassp_2023.baseline.html#module-recipes.icassp_2023.baseline.enhance"><code class="xref">recipes.icassp_2023.baseline.enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.icassp_2023.baseline.html#module-recipes.icassp_2023.baseline.evaluate"><code class="xref">recipes.icassp_2023.baseline.evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="recipes.icassp_2023.baseline.html#module-recipes.icassp_2023.baseline.report_score"><code class="xref">recipes.icassp_2023.baseline.report_score</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-t"><td></td><td>
+       <strong>t</strong></td><td></td></tr>
+     <tr>
+       <td><img src="_static/minus.png" class="toggler"
+              id="toggle-3" style="display: none" alt="-" /></td>
+       <td>
+       <a href="tests.html#module-tests"><code class="xref">tests</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.html#module-tests.conftest"><code class="xref">tests.conftest</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.html#module-tests.recipes"><code class="xref">tests.recipes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.html#module-tests.recipes.cad1"><code class="xref">tests.recipes.cad1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task1.html#module-tests.recipes.cad1.task1"><code class="xref">tests.recipes.cad1.task1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task1.baseline.html#module-tests.recipes.cad1.task1.baseline"><code class="xref">tests.recipes.cad1.task1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task1.baseline.html#module-tests.recipes.cad1.task1.baseline.test_enhance_task1"><code class="xref">tests.recipes.cad1.task1.baseline.test_enhance_task1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task1.baseline.html#module-tests.recipes.cad1.task1.baseline.test_evaluate"><code class="xref">tests.recipes.cad1.task1.baseline.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task1.baseline.html#module-tests.recipes.cad1.task1.baseline.test_merge_batches"><code class="xref">tests.recipes.cad1.task1.baseline.test_merge_batches</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.html#module-tests.recipes.cad1.task2"><code class="xref">tests.recipes.cad1.task2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline"><code class="xref">tests.recipes.cad1.task2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline.test_audio_manager"><code class="xref">tests.recipes.cad1.task2.baseline.test_audio_manager</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline.test_baseline_utils"><code class="xref">tests.recipes.cad1.task2.baseline.test_baseline_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline.test_car_scene_acoustics"><code class="xref">tests.recipes.cad1.task2.baseline.test_car_scene_acoustics</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline.test_enhance_task2"><code class="xref">tests.recipes.cad1.task2.baseline.test_enhance_task2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline.test_evaluate"><code class="xref">tests.recipes.cad1.task2.baseline.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.baseline.html#module-tests.recipes.cad1.task2.baseline.test_merge_batches"><code class="xref">tests.recipes.cad1.task2.baseline.test_merge_batches</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.data_preparation.html#module-tests.recipes.cad1.task2.data_preparation"><code class="xref">tests.recipes.cad1.task2.data_preparation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad1.task2.data_preparation.html#module-tests.recipes.cad1.task2.data_preparation.test_build_scene_metadata"><code class="xref">tests.recipes.cad1.task2.data_preparation.test_build_scene_metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad_icassp_2024.html#module-tests.recipes.cad_icassp_2024"><code class="xref">tests.recipes.cad_icassp_2024</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad_icassp_2024.baseline.html#module-tests.recipes.cad_icassp_2024.baseline"><code class="xref">tests.recipes.cad_icassp_2024.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad_icassp_2024.baseline.html#module-tests.recipes.cad_icassp_2024.baseline.test_enhance"><code class="xref">tests.recipes.cad_icassp_2024.baseline.test_enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cad_icassp_2024.baseline.html#module-tests.recipes.cad_icassp_2024.baseline.test_evaluate"><code class="xref">tests.recipes.cad_icassp_2024.baseline.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.html#module-tests.recipes.cec1"><code class="xref">tests.recipes.cec1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.baseline.html#module-tests.recipes.cec1.baseline"><code class="xref">tests.recipes.cec1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.baseline.html#module-tests.recipes.cec1.baseline.test_enhance"><code class="xref">tests.recipes.cec1.baseline.test_enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.baseline.html#module-tests.recipes.cec1.baseline.test_evaluate"><code class="xref">tests.recipes.cec1.baseline.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.data_preparation.html#module-tests.recipes.cec1.data_preparation"><code class="xref">tests.recipes.cec1.data_preparation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.data_preparation.html#module-tests.recipes.cec1.data_preparation.test_prepare_cec1_data"><code class="xref">tests.recipes.cec1.data_preparation.test_prepare_cec1_data</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.e009_sheffield.html#module-tests.recipes.cec1.e009_sheffield"><code class="xref">tests.recipes.cec1.e009_sheffield</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.e009_sheffield.html#module-tests.recipes.cec1.e009_sheffield.test_test"><code class="xref">tests.recipes.cec1.e009_sheffield.test_test</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec1.e009_sheffield.html#module-tests.recipes.cec1.e009_sheffield.test_train"><code class="xref">tests.recipes.cec1.e009_sheffield.test_train</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.html#module-tests.recipes.cec2"><code class="xref">tests.recipes.cec2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.baseline.html#module-tests.recipes.cec2.baseline"><code class="xref">tests.recipes.cec2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.baseline.data_generation.html#module-tests.recipes.cec2.baseline.data_generation"><code class="xref">tests.recipes.cec2.baseline.data_generation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.baseline.data_generation.html#module-tests.recipes.cec2.baseline.data_generation.test_build_additional_scenes"><code class="xref">tests.recipes.cec2.baseline.data_generation.test_build_additional_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.baseline.data_generation.html#module-tests.recipes.cec2.baseline.data_generation.test_render_additional_scenes"><code class="xref">tests.recipes.cec2.baseline.data_generation.test_render_additional_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.baseline.html#module-tests.recipes.cec2.baseline.test_enhance"><code class="xref">tests.recipes.cec2.baseline.test_enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.baseline.html#module-tests.recipes.cec2.baseline.test_evaluate"><code class="xref">tests.recipes.cec2.baseline.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.data_preparation.html#module-tests.recipes.cec2.data_preparation"><code class="xref">tests.recipes.cec2.data_preparation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.data_preparation.html#module-tests.recipes.cec2.data_preparation.test_build_scenes"><code class="xref">tests.recipes.cec2.data_preparation.test_build_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cec2.data_preparation.html#module-tests.recipes.cec2.data_preparation.test_render_scenes"><code class="xref">tests.recipes.cec2.data_preparation.test_render_scenes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.html#module-tests.recipes.cpc1"><code class="xref">tests.recipes.cpc1</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.baseline.html#module-tests.recipes.cpc1.baseline"><code class="xref">tests.recipes.cpc1.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.baseline.html#module-tests.recipes.cpc1.baseline.test_compute_scores"><code class="xref">tests.recipes.cpc1.baseline.test_compute_scores</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.baseline.html#module-tests.recipes.cpc1.baseline.test_run"><code class="xref">tests.recipes.cpc1.baseline.test_run</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e029_sheffield.html#module-tests.recipes.cpc1.e029_sheffield"><code class="xref">tests.recipes.cpc1.e029_sheffield</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e029_sheffield.html#module-tests.recipes.cpc1.e029_sheffield.test_evaluate"><code class="xref">tests.recipes.cpc1.e029_sheffield.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e029_sheffield.html#module-tests.recipes.cpc1.e029_sheffield.test_infer"><code class="xref">tests.recipes.cpc1.e029_sheffield.test_infer</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e029_sheffield.html#module-tests.recipes.cpc1.e029_sheffield.test_train_asr"><code class="xref">tests.recipes.cpc1.e029_sheffield.test_train_asr</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e029_sheffield.html#module-tests.recipes.cpc1.e029_sheffield.test_transformer_cpc1_ensemble_decoder"><code class="xref">tests.recipes.cpc1.e029_sheffield.test_transformer_cpc1_ensemble_decoder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e032_sheffield.html#module-tests.recipes.cpc1.e032_sheffield"><code class="xref">tests.recipes.cpc1.e032_sheffield</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e032_sheffield.html#module-tests.recipes.cpc1.e032_sheffield.test_evaluate"><code class="xref">tests.recipes.cpc1.e032_sheffield.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e032_sheffield.html#module-tests.recipes.cpc1.e032_sheffield.test_infer"><code class="xref">tests.recipes.cpc1.e032_sheffield.test_infer</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e032_sheffield.html#module-tests.recipes.cpc1.e032_sheffield.test_train_asr"><code class="xref">tests.recipes.cpc1.e032_sheffield.test_train_asr</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc1.e032_sheffield.html#module-tests.recipes.cpc1.e032_sheffield.test_transformer_cpc1_decoder"><code class="xref">tests.recipes.cpc1.e032_sheffield.test_transformer_cpc1_decoder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc2.html#module-tests.recipes.cpc2"><code class="xref">tests.recipes.cpc2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc2.baseline.html#module-tests.recipes.cpc2.baseline"><code class="xref">tests.recipes.cpc2.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc2.baseline.html#module-tests.recipes.cpc2.baseline.test_compute_haspi"><code class="xref">tests.recipes.cpc2.baseline.test_compute_haspi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc2.baseline.html#module-tests.recipes.cpc2.baseline.test_evaluate_cpc2"><code class="xref">tests.recipes.cpc2.baseline.test_evaluate_cpc2</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.cpc2.baseline.html#module-tests.recipes.cpc2.baseline.test_predict"><code class="xref">tests.recipes.cpc2.baseline.test_predict</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.icassp_2023.html#module-tests.recipes.icassp_2023"><code class="xref">tests.recipes.icassp_2023</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.icassp_2023.baseline.html#module-tests.recipes.icassp_2023.baseline"><code class="xref">tests.recipes.icassp_2023.baseline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.icassp_2023.baseline.html#module-tests.recipes.icassp_2023.baseline.test_enhance"><code class="xref">tests.recipes.icassp_2023.baseline.test_enhance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.icassp_2023.baseline.html#module-tests.recipes.icassp_2023.baseline.test_evaluate"><code class="xref">tests.recipes.icassp_2023.baseline.test_evaluate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.recipes.icassp_2023.baseline.html#module-tests.recipes.icassp_2023.baseline.test_report_score"><code class="xref">tests.recipes.icassp_2023.baseline.test_report_score</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.html#module-tests.test_import"><code class="xref">tests.test_import</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-3">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="tests.html#module-tests.test_scene_renderer_cec2"><code class="xref">tests.test_scene_renderer_cec2</code></a></td><td>
+       <em></em></td></tr>
+   </table>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

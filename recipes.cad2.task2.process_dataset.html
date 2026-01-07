@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cad2.task2.process_dataset package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cad_icassp_2024 package" href="recipes.cad_icassp_2024.html" />
+    <link rel="prev" title="recipes.cad2.task2.baseline package" href="recipes.cad2.task2.baseline.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="recipes-cad2-task2-process-dataset-package">
+<h1>recipes.cad2.task2.process_dataset package<a class="headerlink" href="#recipes-cad2-task2-process-dataset-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cad2.task2.process_dataset.generate_train_scenes">
+<span id="recipes-cad2-task2-process-dataset-generate-train-scenes-module"></span><h2>recipes.cad2.task2.process_dataset.generate_train_scenes module<a class="headerlink" href="#module-recipes.cad2.task2.process_dataset.generate_train_scenes" title="Link to this heading">¶</a></h2>
+<p>Module to generate new train scenes</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.generate_train_scenes.choose_samples">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.generate_train_scenes.</span></span><span class="sig-name descname"><span class="pre">choose_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/generate_train_scenes.html#choose_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.generate_train_scenes.choose_samples" title="Link to this definition">¶</a></dt>
+<dd><p>Choose a number of samples from a source list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.generate_train_scenes.generate_scene_listener">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.generate_train_scenes.</span></span><span class="sig-name descname"><span class="pre">generate_scene_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/generate_train_scenes.html#generate_scene_listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.generate_train_scenes.generate_scene_listener" title="Link to this definition">¶</a></dt>
+<dd><p>Generate listeners for the scenes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.generate_train_scenes.generate_scenes">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.generate_train_scenes.</span></span><span class="sig-name descname"><span class="pre">generate_scenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/generate_train_scenes.html#generate_scenes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.generate_train_scenes.generate_scenes" title="Link to this definition">¶</a></dt>
+<dd><p>Generate scenes for the training set</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.generate_train_scenes.run">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.generate_train_scenes.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/generate_train_scenes.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.generate_train_scenes.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.generate_train_scenes.set_song_seed">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.generate_train_scenes.</span></span><span class="sig-name descname"><span class="pre">set_song_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">song</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/generate_train_scenes.html#set_song_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.generate_train_scenes.set_song_seed" title="Link to this definition">¶</a></dt>
+<dd><p>Set a seed that is unique for the given song</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad2.task2.process_dataset.process_zenodo_download">
+<span id="recipes-cad2-task2-process-dataset-process-zenodo-download-module"></span><h2>recipes.cad2.task2.process_dataset.process_zenodo_download module<a class="headerlink" href="#module-recipes.cad2.task2.process_dataset.process_zenodo_download" title="Link to this heading">¶</a></h2>
+<p>Module take the data downloaded from Zenodo and rearrange the data for the challenge.</p>
+<p>The module expects the data to be downloaded from Zenodo and stored in the
+following structure:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>zenodo_download_path</dt><dd><ul>
+<li><p>EnsembleSet.zip</p></li>
+<li><p>CadenzaWoodwind.zip</p></li>
+<li><p>metadata.zip</p></li>
+<li><p>URMP.zip</p></li>
+<li><p>BACH10.zip</p></li>
+<li><p>CadenzaWoodwind.json</p></li>
+<li><p>EnsembleSet.json</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.process_zenodo_download.create_audio_train">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.process_zenodo_download.</span></span><span class="sig-name descname"><span class="pre">create_audio_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/process_zenodo_download.html#create_audio_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.process_zenodo_download.create_audio_train" title="Link to this definition">¶</a></dt>
+<dd><p>Create the audio training dataset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.process_zenodo_download.create_audio_valid">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.process_zenodo_download.</span></span><span class="sig-name descname"><span class="pre">create_audio_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/process_zenodo_download.html#create_audio_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.process_zenodo_download.create_audio_valid" title="Link to this definition">¶</a></dt>
+<dd><p>Create the audio validation dataset</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad2.task2.process_dataset.process_zenodo_download.prepare_cad2_dataset">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad2.task2.process_dataset.process_zenodo_download.</span></span><span class="sig-name descname"><span class="pre">prepare_cad2_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad2/task2/process_dataset/process_zenodo_download.html#prepare_cad2_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad2.task2.process_dataset.process_zenodo_download.prepare_cad2_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Prepare the dataset for the challenge.</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad2.task2.process_dataset">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cad2.task2.process_dataset" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cad2.html">recipes.cad2 package</a><ul>
+  <li><a href="recipes.cad2.task2.html">recipes.cad2.task2 package</a><ul>
+      <li>Previous: <a href="recipes.cad2.task2.baseline.html" title="previous chapter">recipes.cad2.task2.baseline package</a></li>
+      <li>Next: <a href="recipes.cad_icassp_2024.html" title="next chapter">recipes.cad_icassp_2024 package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cad2.task2.process_dataset.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

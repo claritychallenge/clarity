@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.data.scene_builder_cec2 &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.data.scene_builder_cec2</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Code for building the scenes.json files.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="c1"># A logger for this file</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># Get json output to round to 4 dp</span>
+<span class="n">json</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">c_make_encoder</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+
+<div class="viewcode-block" id="RoundingFloat">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoundingFloat">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RoundingFloat</span><span class="p">(</span><span class="nb">float</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Round a float to 4 decimal places.&quot;&quot;&quot;</span>
+
+    <span class="fm">__repr__</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;.4f&quot;</span><span class="p">))</span>  <span class="c1"># type: ignore</span></div>
+
+
+
+<span class="n">json</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">float</span> <span class="o">=</span> <span class="n">RoundingFloat</span>  <span class="c1"># type: ignore</span>
+
+<span class="c1"># rpf file Handling</span>
+
+<span class="n">N_SCENES</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">10000</span>  <span class="c1"># Number of scenes to expect</span>
+<span class="n">N_INTERFERERS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Default number of interferers to expect</span>
+
+
+<div class="viewcode-block" id="set_random_seed">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.set_random_seed">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_random_seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_vector">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_vector">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_vector</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a vector quantity from the rpf file.</span>
+<span class="sd">    Will read rpf vector quantities, eg.</span>
+<span class="sd">    &quot;sourceViewVectors = -0.095,-0.995, 0.000&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): string contents of the rpf file</span>
+<span class="sd">        vector_name (str): name of vector to extract (e.g. &quot;sourceViewVectors&quot;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[float]: vector as list of floats</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">findall_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.*</span><span class="si">{</span><span class="n">vector_name</span><span class="si">}</span><span class="s2">.*&quot;</span>
+    <span class="n">x_str</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">findall_str</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">x_str</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">x_str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type: ignore</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">x_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+
+<div class="viewcode-block" id="get_room_dims">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_room_dims">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_room_dims</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the room dimensions in the rpf file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): String to be searched for room dimensions (string to be searched</span>
+<span class="sd">            for is of the form &#39;ProjectName = CuboidRoom_5.9x3.4186x2.9&#39;).</span>
+
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: List of the three dimensions of the room.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Room dimensions appear in the file like this,</span>
+    <span class="c1">#    ProjectName = CuboidRoom_5.9x3.4186x2.9</span>
+    <span class="n">roomdims</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;ProjectName = .*&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">roomdims</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_room_name">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_room_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_room_name</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the room name in the rpf file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): String to be searched for room name (&#39;R&#39; followed by 5 digits).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The room name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;R\d\d\d\d\d&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="read_rpf_file">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.read_rpf_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_rpf_file</span><span class="p">(</span><span class="n">rpf_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process an rpf file and return key contents as a dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rpf_filename (str): Path to an rpf file to be read.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: dictionary of rpf file contents</span>
+<span class="sd">            {&quot;position&quot;: sourcePositions, &quot;view_vector&quot;: sourceViewVectors}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">rpf_filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">rpf_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">room_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">room_dict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_room_name</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="n">room_dict</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_room_dims</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">room_dict</span>
+
+    <span class="c1"># This hrir is not needed - added later</span>
+    <span class="c1"># rpf_dict[&quot;hrirfilename&quot;] = get_hrir_filename(text)</span>
+
+    <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="n">get_vector</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;sourcePositions&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
+        <span class="s2">&quot;view_vector&quot;</span><span class="p">:</span> <span class="n">get_vector</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;sourceViewVectors&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
+    <span class="p">}</span>
+
+    <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;receiver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="n">get_vector</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;receiverPositions&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
+        <span class="s2">&quot;view_vector&quot;</span><span class="p">:</span> <span class="n">get_vector</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;receiverViewVectors&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">rpf_dict</span></div>
+
+
+
+<div class="viewcode-block" id="build_room">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.build_room">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_room</span><span class="p">(</span><span class="n">target_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interferer_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build room json file from contents of related rpf files.</span>
+<span class="sd">    Note, there is an rpf file for each source in the scene. All of these</span>
+<span class="sd">    files are read and a single scene json file is constructed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        target_file (str): rpf file containing the target position</span>
+<span class="sd">        interferer_files (List[str]): list of files containing the interferer positions</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: dictionary representation of the scene following CEC2 scene.json format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rpf_dict</span> <span class="o">=</span> <span class="n">read_rpf_file</span><span class="p">(</span><span class="n">target_file</span><span class="p">)</span>
+
+    <span class="n">scene_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">scene_dict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">scene_dict</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">][</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span>
+    <span class="n">scene_dict</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+    <span class="n">scene_dict</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpf_dict</span><span class="p">[</span><span class="s2">&quot;receiver&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Read interferer rpf files and extract source info</span>
+    <span class="n">interferer_rpfs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">read_rpf_file</span><span class="p">(</span><span class="n">interferer_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">interferer_file</span> <span class="ow">in</span> <span class="n">interferer_files</span>
+    <span class="p">]</span>
+    <span class="n">interferers</span> <span class="o">=</span> <span class="p">[</span><span class="n">interferer_rpf</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">interferer_rpf</span> <span class="ow">in</span> <span class="n">interferer_rpfs</span><span class="p">]</span>
+    <span class="c1"># The source view vectors are removed as interferer are all omnidirectional</span>
+    <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">interferers</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;view_vector&quot;</span><span class="p">]</span>
+    <span class="n">scene_dict</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interferers</span>
+
+    <span class="k">return</span> <span class="n">scene_dict</span></div>
+
+
+
+<div class="viewcode-block" id="make_rpf_filename_dict">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.make_rpf_filename_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_rpf_filename_dict</span><span class="p">(</span>
+    <span class="n">rpf_location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scene_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n_interferers</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct dictionary storing all rpf files that will be processed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rpf_location (str): Location</span>
+<span class="sd">        scene (str): Scene (as string)</span>
+<span class="sd">        n_interferers (int): Number of interferers.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary of rpf files to be processed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rpf_filename_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{rpf_location}</span><span class="s2">/</span><span class="si">{scene_str}</span><span class="s2">_</span><span class="si">{source}</span><span class="s2">.rpf&quot;</span>
+
+    <span class="n">rpf_filedict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">rpf_filedict</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpf_filename_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">rpf_location</span><span class="o">=</span><span class="n">rpf_location</span><span class="p">,</span> <span class="n">scene_str</span><span class="o">=</span><span class="n">scene_str</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;t&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">rpf_filedict</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">rpf_filename_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">rpf_location</span><span class="o">=</span><span class="n">rpf_location</span><span class="p">,</span> <span class="n">scene_str</span><span class="o">=</span><span class="n">scene_str</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;i</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_interferers</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">rpf_filedict</span></div>
+
+
+
+<span class="c1"># target handling</span>
+<div class="viewcode-block" id="get_num_pre_samples">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_num_pre_samples">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_num_pre_samples</span><span class="p">(</span><span class="n">pre_samples_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of samples prior to target onset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pre_samples_range (list): parameters for number of samples prior to target onset</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="n">pre_samples_range</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_num_post_samples">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_num_post_samples">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_num_post_samples</span><span class="p">(</span><span class="n">post_samples_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of samples to continue player after target offsets.</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        post_samples_range (list): parameters for number of samples to continue.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="n">post_samples_range</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_this_target_to_scene">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.add_this_target_to_scene">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_this_target_to_scene</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">pre_samples_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">post_samples_range</span><span class="p">:</span> <span class="nb">list</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add the target details to the scene dict.</span>
+
+<span class="sd">    Adds given target to given scene. Target details will be taken from the target dict</span>
+<span class="sd">    but the start time will be according to the CEC2 target start time specification.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        target (dict): target dict read from target metadata file.</span>
+<span class="sd">        scene (dict): complete scene dictionary.</span>
+<span class="sd">        pre_samples_range (list): parameters for number of samples prior to target onset</span>
+<span class="sd">        post_samples_range (list): parameters for number of samples to continue</span>
+<span class="sd">            player after target offsets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scene_target</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">num_pre_samples</span> <span class="o">=</span> <span class="n">get_num_pre_samples</span><span class="p">(</span><span class="n">pre_samples_range</span><span class="p">)</span>
+    <span class="n">num_post_samples</span> <span class="o">=</span> <span class="n">get_num_post_samples</span><span class="p">(</span><span class="n">post_samples_range</span><span class="p">)</span>
+    <span class="n">scene_target</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;wavfile&quot;</span><span class="p">]</span>
+    <span class="n">scene_target</span><span class="p">[</span><span class="s2">&quot;time_start&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_pre_samples</span>
+    <span class="n">scene_target</span><span class="p">[</span><span class="s2">&quot;time_end&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_pre_samples</span> <span class="o">+</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;nsamples&quot;</span><span class="p">]</span>
+    <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scene_target</span>
+    <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_pre_samples</span> <span class="o">+</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;nsamples&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">num_post_samples</span></div>
+
+
+
+<span class="c1"># SNR handling</span>
+<div class="viewcode-block" id="generate_snr">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.generate_snr">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_snr</span><span class="p">(</span><span class="n">snr_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a random Signal Noise Ratio (SNR).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        snr_range (list): Range from which to uniformly sample SNR.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: random number from uniform distribution in given range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">snr_range</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># Interferer handling</span>
+<div class="viewcode-block" id="InterfererType">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.InterfererType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InterfererType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum for interferer types.&quot;&quot;&quot;</span>
+
+    <span class="n">SPEECH</span> <span class="o">=</span> <span class="s2">&quot;speech&quot;</span>
+    <span class="n">NOISE</span> <span class="o">=</span> <span class="s2">&quot;noise&quot;</span>
+    <span class="n">MUSIC</span> <span class="o">=</span> <span class="s2">&quot;music&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="select_interferer_types">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.select_interferer_types">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_interferer_types</span><span class="p">(</span><span class="n">allowed_n_interferers</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">InterfererType</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select the interferer types to use.</span>
+
+<span class="sd">    The number of interferer is drawn randomly from list of allowed valued.</span>
+<span class="sd">    The type of each is chosen randomly but there is not allowed to be</span>
+<span class="sd">    more than 1 music source.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        allowed_n_interferers (list): list of allowed number of interferers</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list(InterfererType): list of interferer types to use</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="n">selection</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the selection is valid.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">selection</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">InterfererType</span><span class="o">.</span><span class="n">MUSIC</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+
+    <span class="n">n_interferers</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">allowed_n_interferers</span><span class="p">)</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">(</span><span class="n">selection</span><span class="p">):</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">InterfererType</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">n_interferers</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">selection</span></div>
+
+
+
+<div class="viewcode-block" id="select_random_interferer">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.select_random_interferer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_random_interferer</span><span class="p">(</span>
+    <span class="n">interferers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">],</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required_samples</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly select an interferer.</span>
+<span class="sd">    Interferers stored as list of list. First randomly select a sublist</span>
+<span class="sd">    then randomly select an item from sublist matching constraints.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        interferers (list(list)): interferers as list of lists</span>
+<span class="sd">        dataset (str): desired data [train, dev, eval]</span>
+<span class="sd">        required_samples (int): required number of samples</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if no suitable interferer is found</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the interferer dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interferer_group</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">interferers</span><span class="p">)</span>
+    <span class="n">filtered_interferer_group</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">i</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">interferer_group</span>
+        <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dataset</span> <span class="ow">and</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;nsamples&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">required_samples</span>
+    <span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">interferer</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">filtered_interferer_group</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;No suitable interferer found for dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> and required samples&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">required_samples</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">return</span> <span class="n">interferer</span></div>
+
+
+
+<div class="viewcode-block" id="get_random_interferer_offset">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_random_interferer_offset">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_random_interferer_offset</span><span class="p">(</span><span class="n">interferer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">required_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a random offset sample for interferer.</span>
+<span class="sd">    The offset sample is the point within the masker signal at which the interferer</span>
+<span class="sd">    segment will be extracted. Randomly selected but with care for it not to start</span>
+<span class="sd">    too late, i.e. such that the required samples would overrun the end of the masker</span>
+<span class="sd">    signal will be used is taken.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        interferer (dict): the interferer metadata</span>
+<span class="sd">        required_samples (int): number of samples that is going to be required</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: a valid randomly selected offset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">masker_nsamples</span> <span class="o">=</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;nsamples&quot;</span><span class="p">]</span>
+    <span class="n">latest_start</span> <span class="o">=</span> <span class="n">masker_nsamples</span> <span class="o">-</span> <span class="n">required_samples</span>
+    <span class="k">if</span> <span class="n">latest_start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Interferer </span><span class="si">%s</span><span class="s2"> does not has enough samples.&quot;</span><span class="p">,</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">])</span>
+
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">latest_start</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+    <span class="p">)</span>  <span class="c1"># This should never happen - mean masker was too short for the scene</span>
+    <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">latest_start</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_interferer_to_scene_inner">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.add_interferer_to_scene_inner">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_interferer_to_scene_inner</span><span class="p">(</span>
+    <span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">interferers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">number</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="n">start_time_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">end_early_time_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly select interferers and add them to the given scene.</span>
+<span class="sd">    A random number of interferers is chosen, then each is given a random type</span>
+<span class="sd">    selected from the possible speech, nonspeech, music types.</span>
+<span class="sd">    Interferers are then chosen from the available lists according to the type</span>
+<span class="sd">    and also taking care to match the scenes &#39;dataset&#39; field, ie. train, dev, test.</span>
+<span class="sd">    The interferer data is supplied as a dictionary of lists of lists. The key</span>
+<span class="sd">    being &quot;speech&quot;, &quot;nonspeech&quot;, or &quot;music&quot;, and the list of list being a partitioned</span>
+<span class="sd">    list of interferers for that type.</span>
+<span class="sd">    The idea of using a list of lists is that interferers can be split by</span>
+<span class="sd">    subcondition and then the randomization draws equally from each subcondition,</span>
+<span class="sd">    e.g. for nonspeech there is &quot;washing machine&quot;, &quot;microwave&quot; etc. This ensures that</span>
+<span class="sd">    each subcondition is equally represented even if the number of exemplars of</span>
+<span class="sd">    each subcondition is different.</span>
+<span class="sd">    Note, there is no return. The scene is modified in place.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scene (dict): the scene description</span>
+<span class="sd">        interferers (dict): the interferer metadata</span>
+<span class="sd">        number (list): number of interferers</span>
+<span class="sd">        start_time_range (list): range of starting points as integers, a random number</span>
+<span class="sd">            is selected between these.</span>
+<span class="sd">        end_early_time_range (list): range of end points as integers, a random number</span>
+<span class="sd">            is selected between these.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span>
+    <span class="n">selected_interferer_types</span> <span class="o">=</span> <span class="n">select_interferer_types</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="n">n_interferers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_interferer_types</span><span class="p">)</span>
+    <span class="n">n_positions_available</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">][</span><span class="s2">&quot;interferers&quot;</span><span class="p">])</span>
+    <span class="n">available_positions</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_positions_available</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">available_positions</span><span class="p">,</span> <span class="n">n_interferers</span><span class="p">)</span>
+    <span class="n">positions</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="c1"># Make list of empty dicts match the number selected</span>
+    <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="n">position</span><span class="p">}</span> <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">]</span>
+
+    <span class="c1"># Randomly instantiate each interferer in the scene</span>
+    <span class="k">for</span> <span class="n">scene_interferer</span><span class="p">,</span> <span class="n">scene_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">],</span> <span class="n">selected_interferer_types</span>
+    <span class="p">):</span>
+        <span class="n">desired_start_time</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="n">start_time_range</span><span class="p">)</span>
+
+        <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;time_start&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">],</span> <span class="n">desired_start_time</span><span class="p">)</span>
+        <span class="n">desired_end_time</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="n">end_early_time_range</span><span class="p">)</span>
+
+        <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;time_end&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;time_start&quot;</span><span class="p">],</span> <span class="n">desired_end_time</span>
+        <span class="p">)</span>
+
+        <span class="n">required_samples</span> <span class="o">=</span> <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;time_end&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;time_start&quot;</span><span class="p">]</span>
+        <span class="n">interferer</span> <span class="o">=</span> <span class="n">select_random_interferer</span><span class="p">(</span>
+            <span class="n">interferers</span><span class="p">[</span><span class="n">scene_type</span><span class="p">],</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">required_samples</span>
+        <span class="p">)</span>
+        <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scene_type</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+        <span class="n">scene_interferer</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_random_interferer_offset</span><span class="p">(</span>
+            <span class="n">interferer</span><span class="p">,</span> <span class="n">required_samples</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="c1"># listener handlinf</span>
+
+
+<div class="viewcode-block" id="get_random_hrir_set">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.get_random_hrir_set">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_random_hrir_set</span><span class="p">(</span><span class="n">heads</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a random HRIR set.&quot;&quot;&quot;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">heads</span><span class="p">)</span>
+    <span class="n">hrir_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">head</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">hrir_names</span></div>
+
+
+
+<div class="viewcode-block" id="generate_rotation">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.generate_rotation">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_rotation</span><span class="p">(</span>
+    <span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">relative_start_time_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="n">duration_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">duration_sd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">angle_initial_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">angle_initial_sd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">angle_final_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a suitable head rotation for the given scene.</span>
+<span class="sd">    Based on behavioural studies by Hadley et al. TODO: find ref</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scene (dict): the scene description</span>
+<span class="sd">        relative_start_time_range (list): Range from which start time is</span>
+<span class="sd">            uniformly selected at random.</span>
+<span class="sd">        duration_mean (float): mean of the time offset for start of turn</span>
+<span class="sd">        duration_sd (float): standard deviation of the time offset for start of turn</span>
+<span class="sd">        angle_initial_mean (float):</span>
+<span class="sd">        angle_initial_sd (float):</span>
+<span class="sd">        angle_final_range (tuple):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list(dict): list of dicts with keys &quot;sample&quot; and &quot;view_vector&quot;</span>
+<span class="sd">        specifying the head motion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Generate the random start and end time for the head rotation</span>
+    <span class="n">start_offset</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">relative_start_time_range</span><span class="p">)</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">gauss</span><span class="p">(</span><span class="n">duration_mean</span><span class="p">,</span> <span class="n">duration_sd</span><span class="p">))</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;time_start&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">start_offset</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">duration</span>
+
+    <span class="c1"># Head initially offset to left or right at random</span>
+    <span class="n">random_sign</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># Generate the random start and end angle offsets for the head rotation</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">gauss</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle_initial_sd</span><span class="p">)</span>
+        <span class="c1"># All rotations kept within 2 sigma of the mean</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">angle_initial_sd</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">angle_initial_offset</span> <span class="o">=</span> <span class="n">random_sign</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle_initial_mean</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+    <span class="n">angle_final_offset</span> <span class="o">=</span> <span class="n">random_sign</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">angle_final_range</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Convert angle from relative to target speaker to room axes</span>
+    <span class="n">listener_pos</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">][</span><span class="s2">&quot;listener&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+    <span class="n">target_pos</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">][</span><span class="s2">&quot;target&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+    <span class="n">delta_x</span> <span class="o">=</span> <span class="n">target_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">listener_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">delta_y</span> <span class="o">=</span> <span class="n">target_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">listener_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">angle_target</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">delta_y</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">)</span>
+
+    <span class="c1"># NOTE: JSON file will store angles in degrees</span>
+    <span class="n">angle_final</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle_target</span> <span class="o">+</span> <span class="n">angle_final_offset</span><span class="p">)</span>
+    <span class="n">angle_initial</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle_target</span> <span class="o">+</span> <span class="n">angle_initial_offset</span><span class="p">)</span>
+
+    <span class="c1"># # Convert angles back to view vectors for the return object</span>
+    <span class="c1"># start_view_vector = [math.cos(angle_initial), math.sin(angle_initial), 0.0]</span>
+    <span class="c1"># end_view_vector = [math.cos(angle_final), math.sin(angle_final), 0.0]</span>
+    <span class="n">rotation</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">angle_initial</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">angle_final</span><span class="p">},</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">rotation</span></div>
+
+
+
+<div class="viewcode-block" id="RoomBuilder">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoomBuilder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RoomBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Functions for handling rooms.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the room builder.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rooms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">room_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="RoomBuilder.get_room">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoomBuilder.get_room">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_room</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a room by name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Name of room to extract.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">room_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="RoomBuilder.rebuild_dict">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoomBuilder.rebuild_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rebuild_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build room dictionary.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">room_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">room</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">room</span> <span class="k">for</span> <span class="n">room</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rooms</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="RoomBuilder.build_from_rpf">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoomBuilder.build_from_rpf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_from_rpf</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rpf_location</span><span class="p">,</span> <span class="n">n_interferers</span><span class="o">=</span><span class="n">N_INTERFERERS</span><span class="p">,</span> <span class="n">n_rooms</span><span class="o">=</span><span class="n">N_SCENES</span><span class="p">,</span> <span class="n">start_room</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a list of rooms by extracting info from RAVEN rpf files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rpf_location (str): path to where rpf files are stored</span>
+<span class="sd">            n_interferers (int, optional): number of interferer definitions to expect.</span>
+<span class="sd">              Defaults to N_INTERFERERS.</span>
+<span class="sd">            n_rooms (int, optional): number of scenes to expect. Defaults to N_SCENES.</span>
+<span class="sd">            start_room (int, optional): index of the first room to expect</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Construct all rpf filenames for given number of interferers</span>
+        <span class="n">rpf_filedicts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">make_rpf_filename_dict</span><span class="p">(</span><span class="n">rpf_location</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;R</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">05d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">n_interferers</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_room</span><span class="p">,</span> <span class="n">start_room</span> <span class="o">+</span> <span class="n">n_rooms</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Process all rpf file to generate the list of rooms dicts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rooms</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">build_room</span><span class="p">(</span><span class="n">rpf_filedict</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">rpf_filedict</span><span class="p">[</span><span class="s2">&quot;interferers&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">rpf_filedict</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">rpf_filedicts</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rebuild_dict</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="RoomBuilder.load">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoomBuilder.load">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the list of room from a JSON file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): filename to JSON file from which room data is loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rooms</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rebuild_dict</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="RoomBuilder.save_rooms">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.RoomBuilder.save_rooms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_rooms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the list of rooms to a JSON file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): filename to JSON file to which room data is saved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rooms</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SceneBuilder">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SceneBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class with methods for building a list of scenes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rb</span><span class="p">,</span>
+        <span class="n">scene_datasets</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">,</span>
+        <span class="n">interferer</span><span class="p">,</span>
+        <span class="n">snr_range</span><span class="p">,</span>
+        <span class="n">listener</span><span class="p">,</span>
+        <span class="n">shuffle_rooms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise SceneBuilder class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rb ():</span>
+<span class="sd">            scene_datasets (dict): Dictionary of parametesr for initialising scenes.</span>
+<span class="sd">            target (dict): Dictionary of parameters for adding target to scenes.</span>
+<span class="sd">            interferer (dict): Dictionary of parameters for adding interferer to scenes.</span>
+<span class="sd">            snr_range (list): Range of values from which to sample Signal Noise Ratio.</span>
+<span class="sd">            listener (dict): Dictionary of parameters for adding listener to scenes.</span>
+<span class="sd">            shuffle_rooms=None ():</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rb</span> <span class="o">=</span> <span class="n">rb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene_datasets</span> <span class="o">=</span> <span class="n">scene_datasets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interferer</span> <span class="o">=</span> <span class="n">interferer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snr_range</span> <span class="o">=</span> <span class="n">snr_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">listener</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shuffle_rooms</span> <span class="o">=</span> <span class="n">shuffle_rooms</span>
+
+<div class="viewcode-block" id="SceneBuilder.save_scenes">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.save_scenes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_scenes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the list of scenes to a JSON file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): Filename to save scenes to.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scenes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Replace the room structure with the room ID</span>
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">scenes</span><span class="p">:</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneBuilder.instantiate_scenes">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.instantiate_scenes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instantiate_scenes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate scenes with targets, interferers, SNR and listeners.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataset:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialise </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> scenes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialise_scenes</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">scene_datasets</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding targets to scenes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_target_to_scene</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding interferers to scenes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_interferer_to_scene</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">interferer</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Assigning an SNR to each scene&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_SNR_to_scene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snr_range</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding listener behaviours to scenes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_listener_details_to_scene</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneBuilder.initialise_scenes">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.initialise_scenes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialise_scenes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">n_scenes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">room_selection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scene_start_index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the scenes for a given dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataset: train, dev, or eval set</span>
+<span class="sd">            n_scenes (int): number of scenes to generate</span>
+<span class="sd">            room_selection (str): SEQUENTIAL or RANDOM</span>
+<span class="sd">            scene_start_index (int): index to start for scene IDs</span>
+
+<span class="sd">        Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rooms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rb</span><span class="o">.</span><span class="n">rooms</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shuffle_rooms</span><span class="p">:</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">rooms</span><span class="p">)</span>
+
+        <span class="c1"># Construct the scenes adding the room and dataset label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scenes</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">dataset</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_scenes</span><span class="p">)]</span>
+        <span class="c1"># Sequential mode: cycle through all available rooms</span>
+        <span class="k">if</span> <span class="n">room_selection</span> <span class="o">==</span> <span class="s2">&quot;SEQUENTIAL&quot;</span><span class="p">:</span>
+            <span class="c1"># Cycle through rooms if not enough for required number of scenes</span>
+            <span class="k">for</span> <span class="n">scene</span><span class="p">,</span> <span class="n">room</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scenes</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">rooms</span><span class="p">)):</span>
+                <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">room</span>
+        <span class="c1"># Random mode: randomly select rooms without replacement</span>
+        <span class="k">elif</span> <span class="n">room_selection</span> <span class="o">==</span> <span class="s2">&quot;RANDOM&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">scenes</span><span class="p">:</span>
+                <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;room&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">rooms</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid room selection mode: </span><span class="si">{</span><span class="n">room_selection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scenes</span><span class="p">)</span>
+
+        <span class="c1"># Set the scene ID</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">scene</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="p">,</span> <span class="n">scene_start_index</span><span class="p">):</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;scene&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S</span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s2">05d</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="SceneBuilder.add_target_to_scene">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.add_target_to_scene">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_target_to_scene</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">target_speakers</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">target_selection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pre_samples_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">post_samples_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add target info to the scenes.</span>
+
+<span class="sd">        Uses target speaker file set via config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataset (str): dataset to be added.</span>
+<span class="sd">            target_speakers (str):</span>
+<span class="sd">            target_selection (str): Type of target to be added, valid values are</span>
+<span class="sd">                &#39;SEQUENTIAL&#39; and &#39;RANDOM&#39;.</span>
+<span class="sd">            pre_samples_range (list): Parameters for number of samples prior to target</span>
+<span class="sd">                onset.</span>
+<span class="sd">            post_samples_range (list): Parameters for number of samples to continue</span>
+<span class="sd">                player after target offsets.</span>
+
+<span class="sd">        Raises: TypeError if room_selection is not SEQUENTIAL or RANDOM</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target_speakers</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">targets_dataset</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dataset</span><span class="p">]</span>
+        <span class="n">scenes_dataset</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenes</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dataset</span><span class="p">]</span>
+
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">targets_dataset</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">target_selection</span> <span class="o">==</span> <span class="s2">&quot;SEQUENTIAL&quot;</span><span class="p">:</span>
+            <span class="c1"># Sequential mode: Cycle through targets sequentially</span>
+            <span class="k">for</span> <span class="n">scene</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scenes_dataset</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">targets_dataset</span><span class="p">)):</span>
+                <span class="n">add_this_target_to_scene</span><span class="p">(</span>
+                    <span class="n">target</span><span class="p">,</span> <span class="n">scene</span><span class="p">,</span> <span class="n">pre_samples_range</span><span class="p">,</span> <span class="n">post_samples_range</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">target_selection</span> <span class="o">==</span> <span class="s2">&quot;RANDOM&quot;</span><span class="p">:</span>
+            <span class="c1"># Random mode: randomly select target with replacement</span>
+            <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">scenes_dataset</span><span class="p">:</span>
+                <span class="n">add_this_target_to_scene</span><span class="p">(</span>
+                    <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">targets_dataset</span><span class="p">),</span>
+                    <span class="n">scene</span><span class="p">,</span>
+                    <span class="n">pre_samples_range</span><span class="p">,</span>
+                    <span class="n">post_samples_range</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid room selection mode: </span><span class="si">{</span><span class="n">target_selection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneBuilder.add_SNR_to_scene">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.add_SNR_to_scene">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_SNR_to_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snr_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the Signal Noise Ratio (SNR) info to the scenes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            snr_range (list): Range of values from which SNR will be sampled.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="p">):</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;SNR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_snr</span><span class="p">(</span><span class="n">snr_range</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneBuilder.add_interferer_to_scene">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.add_interferer_to_scene">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_interferer_to_scene</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">speech_interferers</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">noise_interferers</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">music_interferers</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">number</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">start_time_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">end_early_time_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add interferer to the scene description file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speech_interferers (str): Path to speech interferer to load.</span>
+<span class="sd">            noise_interferers (str): Path to noise interferer to load.</span>
+<span class="sd">            music_interferers (str): Path to music interferer to load</span>
+<span class="sd">            number (list): Number of interefers to be added.</span>
+<span class="sd">            start_time_range (list): Range for randomly selecting start point.</span>
+<span class="sd">            end_early_time_range (list): Range for randomly selecting end point.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load and prepare speech interferer metadata</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">speech_interferers</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">interferers_speech</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">interferers_speech</span><span class="p">:</span>
+            <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;speaker&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.wav&quot;</span>
+            <span class="p">)</span>  <span class="c1"># selection require a unique &quot;ID&quot; field</span>
+        <span class="c1"># Selection process requires list of lists</span>
+        <span class="n">interferers_speech</span> <span class="o">=</span> <span class="p">[</span><span class="n">interferers_speech</span><span class="p">]</span>
+
+        <span class="c1"># Load and prepare noise (i.e. noise) interferer metadata</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">noise_interferers</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">interferers_noise</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">interferers_noise</span><span class="p">:</span>
+            <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;.wav&quot;</span>
+        <span class="n">interferer_by_type</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">interferers_noise</span><span class="p">:</span>
+            <span class="n">interferer_by_type</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">],</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interferer</span><span class="p">)</span>
+        <span class="n">interferers_noise</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">interferer_by_type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="c1"># Load and prepare music interferer metadata</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">music_interferers</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">interferers_music</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">interferer</span> <span class="ow">in</span> <span class="n">interferers_music</span><span class="p">:</span>
+            <span class="n">interferer</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interferer</span><span class="p">[</span>
+                <span class="s2">&quot;file&quot;</span>
+            <span class="p">]</span>  <span class="c1"># selection require a unique &quot;ID&quot; field</span>
+        <span class="n">interferers_music</span> <span class="o">=</span> <span class="p">[</span><span class="n">interferers_music</span><span class="p">]</span>
+
+        <span class="n">interferers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">InterfererType</span><span class="o">.</span><span class="n">SPEECH</span><span class="p">:</span> <span class="n">interferers_speech</span><span class="p">,</span>
+            <span class="n">InterfererType</span><span class="o">.</span><span class="n">NOISE</span><span class="p">:</span> <span class="n">interferers_noise</span><span class="p">,</span>
+            <span class="n">InterfererType</span><span class="o">.</span><span class="n">MUSIC</span><span class="p">:</span> <span class="n">interferers_music</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="p">):</span>
+            <span class="n">add_interferer_to_scene_inner</span><span class="p">(</span>
+                <span class="n">scene</span><span class="p">,</span> <span class="n">interferers</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">start_time_range</span><span class="p">,</span> <span class="n">end_early_time_range</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SceneBuilder.add_listener_details_to_scene">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_builder_cec2.SceneBuilder.add_listener_details_to_scene">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_listener_details_to_scene</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">heads</span><span class="p">,</span>
+        <span class="n">channels</span><span class="p">,</span>
+        <span class="n">relative_start_time_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">duration_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">duration_sd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">angle_initial_mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">angle_initial_sd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">angle_final_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the listener info to the scenes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            heads ():</span>
+<span class="sd">            channels ():</span>
+<span class="sd">            relative_start_time_range (list): Range from which start time is selected at</span>
+<span class="sd">                random.</span>
+<span class="sd">            duration_mean (float): mean of the time offset for start of turn</span>
+<span class="sd">            duration_sd (float): standard deviation of the time offset for start of turn</span>
+<span class="sd">            angle_initial_mean (float):</span>
+<span class="sd">            angle_initial_sd (float):</span>
+<span class="sd">            angle_final_range (tuple):</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenes</span><span class="p">):</span>
+            <span class="n">listener</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">listener</span><span class="p">[</span><span class="s2">&quot;rotation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_rotation</span><span class="p">(</span>
+                <span class="n">scene</span><span class="p">,</span>
+                <span class="n">relative_start_time_range</span><span class="p">,</span>
+                <span class="n">duration_mean</span><span class="p">,</span>
+                <span class="n">duration_sd</span><span class="p">,</span>
+                <span class="n">angle_initial_mean</span><span class="p">,</span>
+                <span class="n">angle_initial_sd</span><span class="p">,</span>
+                <span class="n">angle_final_range</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">listener</span><span class="p">[</span><span class="s2">&quot;hrir_filename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_random_hrir_set</span><span class="p">(</span><span class="n">heads</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;listener&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">listener</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

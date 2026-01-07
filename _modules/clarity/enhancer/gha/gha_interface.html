@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.enhancer.gha.gha_interface &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.enhancer.gha.gha_interface</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jinja2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.enhancer.gha.gha_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_gaintable</span><span class="p">,</span> <span class="n">get_gaintable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.audiogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">Listener</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.file_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_signal</span><span class="p">,</span> <span class="n">write_signal</span>
+
+
+<div class="viewcode-block" id="GHAHearingAid">
+<a class="viewcode-back" href="../../../../clarity.enhancer.gha.html#clarity.enhancer.gha.gha_interface.GHAHearingAid">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GHAHearingAid</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="o">=</span><span class="mi">44100</span><span class="p">,</span>
+        <span class="n">ahr</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">audf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cfg_file</span><span class="o">=</span><span class="s2">&quot;prerelease_combination4_smooth&quot;</span><span class="p">,</span>
+        <span class="n">noise_gate_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">noise_gate_slope</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">cr_level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">max_output_level</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">equiv_0db_spl</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">test_nbits</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">audf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">audf</span> <span class="o">=</span> <span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">noise_gate_levels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">noise_gate_levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">38</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ahr</span> <span class="o">=</span> <span class="n">ahr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audf</span> <span class="o">=</span> <span class="n">audf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg_file</span> <span class="o">=</span> <span class="n">cfg_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_gate_levels</span> <span class="o">=</span> <span class="n">noise_gate_levels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_gate_slope</span> <span class="o">=</span> <span class="n">noise_gate_slope</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cr_level</span> <span class="o">=</span> <span class="n">cr_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_output_level</span> <span class="o">=</span> <span class="n">max_output_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">equiv_0db_spl</span> <span class="o">=</span> <span class="n">equiv_0db_spl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_nbits</span> <span class="o">=</span> <span class="n">test_nbits</span>
+
+<div class="viewcode-block" id="GHAHearingAid.create_configured_cfgfile">
+<a class="viewcode-back" href="../../../../clarity.enhancer.gha.html#clarity.enhancer.gha.gha_interface.GHAHearingAid.create_configured_cfgfile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_configured_cfgfile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">formatted_sGt</span><span class="p">,</span> <span class="n">cfg_template_file</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Using Jinja2, generates cfg file for given configuration.</span>
+
+<span class="sd">        Creates template output file and configures with correct filenames, peak level</span>
+<span class="sd">        out and DC gaintable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_file (str): file to process</span>
+<span class="sd">            output_file (str): file in which to store processed file</span>
+<span class="sd">            formatted_sGt (ndarray): gaintable formatted for input into cfg file</span>
+<span class="sd">            cfg_template_file: configuration file template</span>
+<span class="sd">            ahr (int): amplification headroom</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            cfg_filename (str): cfg filename</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">!=</span> <span class="mi">44100</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Current GHA configuration requires 44.1kHz sampling rate.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Current GHA configuration requires 44.1kHz sampling rate.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">cfg_template_file</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">cfg_template_file</span><span class="p">)</span>
+
+        <span class="c1"># Define cfg filenames</span>
+        <span class="c1"># Read new file and replace any parameter values necessary</span>
+        <span class="c1"># Update peaklevel out by adding headroom</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding </span><span class="si">%s</span><span class="s2"> dB headroom&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ahr</span><span class="p">)</span>
+
+        <span class="n">peaklevel_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">equiv_0db_spl</span><span class="p">)</span>
+        <span class="n">peaklevel_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">equiv_0db_spl</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ahr</span><span class="p">)</span>
+
+        <span class="c1"># Render jinja2 template</span>
+        <span class="n">file_loader</span> <span class="o">=</span> <span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">cfg_template_file</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">file_loader</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">cfg_template_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+            <span class="n">io_in</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span>
+            <span class="n">io_out</span><span class="o">=</span><span class="n">output_file</span><span class="p">,</span>
+            <span class="n">peaklevel_in</span><span class="o">=</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">peaklevel_in</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">peaklevel_in</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">peaklevel_in</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">peaklevel_in</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="p">),</span>
+            <span class="n">peaklevel_out</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">peaklevel_out</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">peaklevel_out</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
+            <span class="n">gtdata</span><span class="o">=</span><span class="n">formatted_sGt</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="GHAHearingAid.process_files">
+<a class="viewcode-back" href="../../../../clarity.enhancer.gha.html#clarity.enhancer.gha.gha_interface.GHAHearingAid.process_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_files</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">infile_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">outfile_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">listener</span><span class="p">:</span> <span class="n">Listener</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a set of input signals and generate an output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            infile_names (list[str]): List of input wav files. One stereo wav</span>
+<span class="sd">                file for each hearing device channel</span>
+<span class="sd">            outfile_name (str): File in which to store output wav files</span>
+<span class="sd">            dry_run (bool): perform dry run only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processing </span><span class="si">%s</span><span class="s2"> with listener </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outfile_name</span><span class="p">,</span> <span class="n">listener</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Audiogram severity is </span><span class="si">%s</span><span class="s2"> (left) and </span><span class="si">%s</span><span class="s2"> (right)&quot;</span><span class="p">,</span>
+            <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_left</span><span class="o">.</span><span class="n">severity</span><span class="p">,</span>
+            <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_right</span><span class="o">.</span><span class="n">severity</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">audiogram_left</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_left</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audf</span><span class="p">)</span>
+        <span class="n">audiogram_right</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">audiogram_right</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audf</span><span class="p">)</span>
+
+        <span class="c1"># Get gain table with noisegate correction</span>
+        <span class="n">gaintable</span> <span class="o">=</span> <span class="n">get_gaintable</span><span class="p">(</span>
+            <span class="n">audiogram_left</span><span class="p">,</span>
+            <span class="n">audiogram_right</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">noise_gate_levels</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">noise_gate_slope</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cr_level</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_output_level</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">formatted_sGt</span> <span class="o">=</span> <span class="n">format_gaintable</span><span class="p">(</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">noisegate_corr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">cfg_template</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cfg_files/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg_file</span><span class="si">}</span><span class="s2">_template.cfg&quot;</span>
+
+        <span class="c1"># Merge CH1 and CH3 files. This is the baseline configuration.</span>
+        <span class="c1"># CH2 is ignored.</span>
+        <span class="n">fd_merged</span><span class="p">,</span> <span class="n">merged_filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;clarity-merged-&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.wav&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># Only need file name; must immediately close the unused file handle.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd_merged</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_HA_inputs</span><span class="p">(</span><span class="n">infile_names</span><span class="p">,</span> <span class="n">merged_filename</span><span class="p">)</span>
+
+        <span class="c1"># Create the openMHA config file from the template</span>
+        <span class="n">fd_cfg</span><span class="p">,</span> <span class="n">cfg_filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;clarity-openmha-&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.cfg&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># Again, only need file name; must immediately close the unused file handle.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd_cfg</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cfg_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_configured_cfgfile</span><span class="p">(</span>
+                    <span class="n">merged_filename</span><span class="p">,</span> <span class="n">outfile_name</span><span class="p">,</span> <span class="n">formatted_sGt</span><span class="p">,</span> <span class="n">cfg_template</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Process file using configured cfg file</span>
+        <span class="c1"># Suppressing OpenMHA output with -q - comment out when testing</span>
+        <span class="c1"># Append log of OpenMHA commands to /cfg_files/logfile</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;mha&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;-q&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;--log=logfile.txt&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;?read:</span><span class="si">{</span><span class="n">cfg_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cmd=start&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cmd=stop&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cmd=quit&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Delete temporary files.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">merged_filename</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cfg_filename</span><span class="p">)</span>
+
+        <span class="c1"># Check output signal has energy in every channel</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+            <span class="n">outfile_name</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">sig</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">sig</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Channel empty.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Rewriting as floating point</span>
+        <span class="n">write_signal</span><span class="p">(</span><span class="n">outfile_name</span><span class="p">,</span> <span class="n">sig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">floating_point</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;OpenMHA processing complete&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GHAHearingAid.create_HA_inputs">
+<a class="viewcode-back" href="../../../../clarity.enhancer.gha.html#clarity.enhancer.gha.gha_interface.GHAHearingAid.create_HA_inputs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_HA_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">merged_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create input signal for baseline hearing aids.</span>
+
+<span class="sd">        The baseline hearing aid takes a 4-channel wav file as input. This is</span>
+<span class="sd">        constructed from the left and right signals of the front (CH1) and</span>
+<span class="sd">        rear (CH3) microphones that are available in the Clarity data.</span>
+
+<span class="sd">          Args:</span>
+<span class="sd">              infile_names (list[str]): Names of file to read</span>
+<span class="sd">              merged_file_name (str): Name of file to write</span>
+
+<span class="sd">          Raises:</span>
+<span class="sd">              ValueError: If input channel names are inconsistent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">infile_names</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">infile_names</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;3&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;HA-input signal error: channel mismatch!&quot;</span><span class="p">)</span>
+
+        <span class="n">signal_CH1</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+            <span class="n">infile_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">signal_CH3</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+            <span class="n">infile_names</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="n">merged_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">signal_CH1</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+
+        <span class="c1"># channel index 0 = front microphone on the left hearing aid</span>
+        <span class="n">merged_signal</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal_CH1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># channel index 1 = front microphone on the right hearing aid</span>
+        <span class="n">merged_signal</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal_CH1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># channel index 2 = rear microphone on the left hearing aid</span>
+        <span class="n">merged_signal</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal_CH3</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># channel index 3 = rear microphone on the right hearing aid</span>
+        <span class="n">merged_signal</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal_CH3</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">write_signal</span><span class="p">(</span>
+            <span class="n">merged_filename</span><span class="p">,</span>
+            <span class="n">merged_signal</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
+            <span class="n">floating_point</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

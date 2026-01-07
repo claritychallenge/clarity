@@ -1,0 +1,10 @@
+*~
+*.csv
+*.json
+*.log
+*.py
+*.pyc
+*.sh
+*.tgz*
+*.wav
+*.yaml

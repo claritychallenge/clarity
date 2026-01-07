@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clarity.evaluator.haspi package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clarity.evaluator.hasqi package" href="clarity.evaluator.hasqi.html" />
+    <link rel="prev" title="clarity.evaluator.haaqi package" href="clarity.evaluator.haaqi.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="clarity-evaluator-haspi-package">
+<h1>clarity.evaluator.haspi package<a class="headerlink" href="#clarity-evaluator-haspi-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-clarity.evaluator.haspi.eb">
+<span id="clarity-evaluator-haspi-eb-module"></span><h2>clarity.evaluator.haspi.eb module<a class="headerlink" href="#module-clarity.evaluator.haspi.eb" title="Link to this heading">¶</a></h2>
+<p>Module for HASPI, HASQI, HAAQI EBs</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.ave_covary2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">ave_covary2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_cross_covariance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_signal_mean_square</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp_filter_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#ave_covary2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.ave_covary2" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the average cross-covariance between the reference and processed
+signals in each auditory band.</p>
+<p>The silent time-frequency tiles are removed from consideration. The
+cross-covariance is computed for each segment in each frequency band. The
+values are weighted by 1 for inclusion or 0 if the tile is below
+threshold. The sum of the covariance values across time and frequency are
+then divided by the total number of tiles above threshold. The calculation
+is a modification of Tan et al.[1]_ . The cross-covariance is also output
+with a frequency weighting that reflects the loss of IHC synchronization at high
+frequencies Johnson[2]_.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal_cross_covariance</strong> (<em>np.array</em>) – [nchan,nseg] of cross-covariance values</p></li>
+<li><p><strong>reference_signal_mean_square</strong> (<em>np.array</em>) – [nchan,nseg] of reference signal MS
+values</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>threshold_db</em>) – threshold in dB SL to include segment ave over freq in
+average</p></li>
+<li><p><strong>lp_filter</strong> (<em>list</em>) – LP filter order</p></li>
+<li><p><strong>freq_cutoff</strong> (<em>list</em>) – Cutoff frequencies in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>cross-covariance in segments averaged over time and</dt><dd><p>frequency</p>
+</dd>
+<dt>ihc_sync_covariance (): cross-covariance array, 6 different weightings for loss</dt><dd><dl class="simple">
+<dt>of IHC synchronization at high frequencies:</dt><dd><dl class="simple">
+<dt>LP Filter Order     Cutoff Freq, kHz</dt><dd><p>1              1.5
+3              2.0
+5              2.5, 3.0, 3.5, 4.0</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>average_covariance ()</p>
+</dd>
+</dl>
+<p>References:</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Tan CT, Moore, BCJ, Zacharov N, Mattila VV (2004) Predicting the Perceived
+Quality of Nonlinearly Distorted Music and Speech Signals. J Audio Eng Soc
+52(9):900-914. Available at.
+&lt;<a class="reference external" href="http://www.aes.org/e-lib/browse.cfm?elib=13013">http://www.aes.org/e-lib/browse.cfm?elib=13013</a>&gt;.</p>
+</aside>
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Johnson DH (1980) The relationship between spike rate and synchrony in
+responses of auditory‐nerve fibers to single tones J Acoustical Soc of Am
+68:1115 Available at.
+&lt;<a class="reference external" href="https://doi.org/10.1121/1.384982">https://doi.org/10.1121/1.384982</a>&gt;</p>
+</aside>
+</aside>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 28 August 2012.
+Adjusted for BM vibration in dB SL, 30 October 2012.
+Threshold for including time-freq tile modified, 30 January 2013.
+Version for different sync loss, 15 February 2013.
+Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.bandwidth_adjust">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">bandwidth_adjust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#bandwidth_adjust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.bandwidth_adjust" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the increase in auditory filter bandwidth in response to high signal
+levels.  The RMS of the control signal, a scalar, is used to set the
+bandwidth for the entire signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>level1</em>) – envelope output in the control filter band</p></li>
+<li><p><strong>(</strong><strong>)</strong> – auditory filter bandwidth computed for the loss (or NH)</p></li>
+<li><p><strong>(</strong><strong>)</strong> – auditory filter bandwidth at maximum OHC damage</p></li>
+<li><p><strong>(</strong><strong>)</strong> – RMS=1 corresponds to Level1 dB SPL</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>filter bandwidth increased for high signal levels</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bandwidth ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 21 June 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.basilar_membrane_add_noise">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">basilar_membrane_add_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#basilar_membrane_add_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.basilar_membrane_add_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Apply the IHC attenuation to the BM motion and to add a low-level Gaussian noise to
+give the auditory threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>level1</em>) – BM motion to be attenuated</p></li>
+<li><p><strong>(</strong><strong>)</strong> – additive noise level in dB re:auditory threshold</p></li>
+<li><p><strong>(</strong><strong>)</strong> – an input having RMS=1 corresponds to Level1 dB SPL</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Attenuated signal with threshold noise added</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 19 June 2012.
+Just additive noise, 2 Oct 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.bm_covary">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">bm_covary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_basilar_membrane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_basilar_membrane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#bm_covary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.bm_covary" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cross-covariance (normalized cross-correlation) between  the reference
+and processed signals in each auditory band. The signals are divided into segments
+having 50% overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>segment_size</em>) – Basilar Membrane movement, reference signal</p></li>
+<li><p><strong>(</strong><strong>)</strong> – Basilar Membrane movement, processed signal</p></li>
+<li><p><strong>(</strong><strong>)</strong> – signal segment size, msec</p></li>
+<li><p><strong>freq_sample</strong> (<em>int</em>) – sampling rate in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>[nchan,nseg] of cross-covariance values
+reference_mean_square (np.array) : [nchan,nseg] of MS input signal energy values
+processed_mean_square (np.array) : [nchan,nseg] of MS processed signal energy</p>
+<blockquote>
+<div><p>values</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>signal_cross_covariance (np.array)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 28 August 2012.
+Output amplitude adjustment added, 30 october 2012.
+Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.center_frequency">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">center_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ear_q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9.26449</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_bw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24.7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#center_frequency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.center_frequency" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the Equivalent Rectangular Bandwidth_[1] frequency spacing for the
+gammatone filter bank. The equation comes from Malcolm Slaney[2].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nchan</strong> (<em>int</em>) – number of filters in the filter bank</p></li>
+<li><p><strong>low_freq</strong> (<em>int</em>) – Low Frequency level.</p></li>
+<li><p><strong>high_freq</strong> (<em>int</em>) – High Frequency level.</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>shift</em>) – optional frequency shift of the filter bank specified as a fractional
+shift in distance along the BM. A positive shift is an increase in frequency
+(basal shift), and negative is a decrease in frequency (apical shift). The
+total length of the BM is normalized to 1. The frequency-to-distance map is
+from D.D. Greenwood[3].</p></li>
+<li><p><strong>ear_q</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_bw</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+<p>References:
+.. [1] Moore BCJ, Glasberg BR (1983) Suggested formulae for calculating</p>
+<blockquote>
+<div><p>auditory-filter bandwidths and excitation patterns. J Acoustical
+Soc America 74:750-753. Available at
+&lt;<a class="reference external" href="https://doi.org/10.1121/1.389861">https://doi.org/10.1121/1.389861</a>&gt;</p>
+</div></blockquote>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Slaney M (1993) An Efficient Implemtnation of the Patterson-
+Holdsworth Auditory Filter Bank. Available at:
+&lt;<a class="reference external" href="https://asset-pdf.scinapse.io/prod/396690109/396690109.pdf">https://asset-pdf.scinapse.io/prod/396690109/396690109.pdf</a>&gt;.</p>
+</aside>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<p>Greenwood DD (1990) A cochlear frequency-position function for
+several species–29 years later. J Acoust Soc Am 87(6):2592-
+2605. Available at
+&lt;<a class="reference external" href="https://doi.o10.1121/1.399052">https://doi.o10.1121/1.399052</a>&gt;</p>
+</aside>
+</aside>
+<p>Updates:
+James M. Kates, 25 January 2007.
+Frequency shift added 22 August 2008.
+Lower and upper frequencies fixed at 80 and 8000 Hz, 19 June 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.convert_rms_to_sl">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">convert_rms_to_sl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuated_ohc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuated_ihc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-30</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#convert_rms_to_sl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.convert_rms_to_sl" title="Link to this definition">¶</a></dt>
+<dd><p>Covert the Root Mean Square average output of the gammatone filter bank
+into dB SL. The gain is linear below the lower threshold, compressive
+with a compression ratio of CR:1 between the lower and upper thresholds,
+and reverts to linear above the upper threshold. The compressor
+assumes that auditory threshold is 0 dB SPL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>level1</em>) – analytic signal envelope (magnitude) returned by the</p></li>
+<li><p><strong>bank</strong> (<em>gammatone filter</em>)</p></li>
+<li><p><strong>level</strong> (<em>RMS average</em>)</p></li>
+<li><p><strong>(</strong><strong>)</strong> – control signal envelope</p></li>
+<li><p><strong>(</strong><strong>)</strong> – OHC attenuation at the input to the compressor</p></li>
+<li><p><strong>(</strong><strong>)</strong> – kneepoint for the low-level linear amplification</p></li>
+<li><p><strong>(</strong><strong>)</strong> – compression ratio</p></li>
+<li><p><strong>(</strong><strong>)</strong> – IHC attenuation at the input to the synapse</p></li>
+<li><p><strong>(</strong><strong>)</strong> – dB reference level: a signal having an RMS value of 1 is
+assigned to Level1 dB SPL.</p></li>
+<li><p><strong>threshold_high</strong> (<em>int</em>)</p></li>
+<li><p><strong>small</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>compressed output in dB above the impaired threshold</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>reference_db ()</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 6 August 2007.
+Version for two-tone suppression, 29 August 2008.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.ear_model">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">ear_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hearing_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m_delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#ear_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.ear_model" title="Link to this definition">¶</a></dt>
+<dd><p>Function that implements a cochlear model that includes the middle ear,
+auditory filter bank, Outer Hair Cell (OHC) dynamic-range compression,
+and Inner Hair Cell (IHC) attenuation.</p>
+<p>The inputs are the reference and processed signals that are to be
+compared. The reference is at the reference intensity (e.g. 65 dB SPL
+or with NAL-R amplification) and has no other processing. The processed
+signal is the hearing-aid output, and is assumed to have the same or
+greater group delay compared to the reference.</p>
+<p>The function outputs the envelopes of the signals after OHC compression
+and IHC loss attenuation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – reference signal: should be adjusted to 65 dB SPL
+(itype=0 or 1) or to 65 dB SPL plus NAL-R gain (itype=2)</p></li>
+<li><p><strong>reference_freq</strong> (<em>int</em>) – sampling rate for the reference signal, Hz</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – processed signal (e.g. hearing-aid output) includes
+HA gain</p></li>
+<li><p><strong>processed_freq</strong> (<em>int</em>) – sampling rate for the processed signal, Hz</p></li>
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – audiogram giving the hearing loss in dB at 6
+audiometric frequencies: [250, 500, 1000, 2000, 4000, 6000] Hz</p></li>
+<li><p><strong>itype</strong> (<em>int</em>) – <p>purpose for the calculation:
+0=intelligibility: reference is normal hearing and must not</p>
+<blockquote>
+<div><p>include NAL-R EQ</p>
+</div></blockquote>
+<p>1=quality: reference does not include NAL-R EQ
+2=quality: reference already has NAL-R EQ applied</p>
+</p></li>
+<li><p><strong>level1</strong> – level calibration: signal RMS=1 corresponds to Level1 dB SPL</p></li>
+<li><p><strong>nchan</strong> (<em>int</em>) – auditory frequency bands</p></li>
+<li><p><strong>m_delay</strong> (<em>int</em>) – Compensate for the gammatone group delay.</p></li>
+<li><p><strong>shift</strong> (<em>float</em>) – Basal shift of the basilar membrane length</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>envelope for the reference in each band
+reference_basilar_membrane (): BM motion for the reference in each band
+processed_db (): envelope for the processed signal in each band
+processed_basilar_membrane (): BM motion for the processed signal in each band
+reference_sl (): compressed RMS average reference in each band converted</p>
+<blockquote>
+<div><p>to dB SL</p>
+</div></blockquote>
+<p>processed_sl (): compressed RMS average output in each band converted to dB SL
+freq_sample (): sampling rate in Hz for the model outputs</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>reference_db ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 27 October 2011.
+Basilar Membrane added 30 Dec 2011.
+Revised 19 June 2012.
+Remove match of reference RMS level to processed 29 August 2012.
+IHC adaptation added 1 October 2012.
+Basilar Membrane envelope converted to dB SL, 2 Oct 2012.
+Filterbank group delay corrected, 14 Dec 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.
+Updated by Gerardo Roa Dabike, September 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.env_compress_basilar_membrane">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">env_compress_basilar_membrane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">envsig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attn_ohc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#env_compress_basilar_membrane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.env_compress_basilar_membrane" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cochlear compression in one auditory filter band. The gain is linear
+below the lower threshold, compressive with a compression ratio of CR:1 between the
+lower and upper thresholds, and reverts to linear above the upper threshold. The
+compressor assumes that auditory threshold is 0 dB SPL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>small</em>) – analytic signal envelope (magnitude) returned by the
+gammatone filter bank</p></li>
+<li><p><strong>(</strong><strong>)</strong> – BM motion output by the filter bank</p></li>
+<li><p><strong>(</strong><strong>)</strong> – analytic control envelope returned by the wide control
+path filter bank</p></li>
+<li><p><strong>(</strong><strong>)</strong> – OHC attenuation at the input to the compressor</p></li>
+<li><p><strong>(</strong><strong>)</strong> – kneepoint for the low-level linear amplification</p></li>
+<li><p><strong>(</strong><strong>)</strong> – compression ratio</p></li>
+<li><p><strong>(</strong><strong>)</strong> – sampling rate in Hz</p></li>
+<li><p><strong>(</strong><strong>)</strong> – dB reference level: a signal having an RMS value of 1 is
+assigned to Level1 dB SPL.</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+<li><p><strong>threshold_high</strong> – kneepoint for the high-level linear amplification</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>compressed version of the signal envelope
+compressed_basilar_membrane (): compressed version of the BM motion</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>compressed_signal ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 19 January 2007.
+LP filter added 15 Feb 2007 (Ref: Zhang et al., 2001)
+Version to compress the envelope, 20 Feb 2007.
+Change in the OHC I/O function, 9 March 2007.
+Two-tone suppression added 22 August 2008.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.env_smooth">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">env_smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">envelopes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#env_smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.env_smooth" title="Link to this definition">¶</a></dt>
+<dd><p>Function to smooth the envelope returned by the cochlear model. The
+envelope is divided into segments having a 50% overlap. Each segment is
+windowed, summed, and divided by the window sum to produce the average.
+A raised cosine window is used. The envelope sub-sampling frequency is
+2*(1000/segsize).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>envelopes</strong> (<em>np.ndarray</em>) – matrix of envelopes in each of the auditory bands</p></li>
+<li><p><strong>segment_size</strong> – averaging segment size in msec</p></li>
+<li><p><strong>freq_sample</strong> (<em>int</em>) – input envelope sampling rate in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>matrix of subsampled windowed averages in each band</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>smooth</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 26 January 2007.
+Final half segment added 27 August 2012.
+Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.envelope_align">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">envelope_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#envelope_align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.envelope_align" title="Link to this definition">¶</a></dt>
+<dd><p>Align the envelope of the processed signal to that of the reference signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>output</em>) – envelope or BM motion of the reference signal</p></li>
+<li><p><strong>(</strong><strong>)</strong> – envelope or BM motion of the output signal</p></li>
+<li><p><strong>freq_sample</strong> (<em>int</em>) – Frequency sample rate in Hz</p></li>
+<li><p><strong>corr_range</strong> (<em>int</em>) – range in msec for the correlation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>shifted output envelope to match the input</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>y ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 28 October 2011.
+Absolute value of the cross-correlation peak removed, 22 June 2012.
+Cross-correlation range reduced, 13 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.envelope_sl">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">envelope_sl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basilar_membrane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuated_ihc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-30</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#envelope_sl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.envelope_sl" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the compressed envelope returned by cochlear_envcomp to dB SL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>level1</em>) – linear envelope after compression</p></li>
+<li><p><strong>(</strong><strong>)</strong> – linear Basilar Membrane vibration after compression</p></li>
+<li><p><strong>(</strong><strong>)</strong> – IHC attenuation at the input to the synapse</p></li>
+<li><p><strong>(</strong><strong>)</strong> – level in dB SPL corresponding to 1 RMS</p></li>
+<li><p><strong>small</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>reference envelope in dB SL
+_basilar_membrane (): Basilar Membrane vibration with envelope converted to</p>
+<blockquote>
+<div><p>dB SL</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_reference ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 20 Feb 07.
+IHC attenuation added 9 March 2007.
+Basilar membrane vibration conversion added 2 October 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.gammatone_bandwidth_demodulation">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">gammatone_bandwidth_demodulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_freq_cos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_freq_sin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#gammatone_bandwidth_demodulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.gammatone_bandwidth_demodulation" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Create the carriers for demodulaton, using the 2d Rotation method from</dt><dd><p><a class="reference external" href="https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html">https://ccrma.stanford.edu/~jos/pasp/Digital_Sinusoid_Generators.html</a></p>
+</dd>
+</dl>
+<p>to generate the sin and cos components.  More efficient, perhaps, than
+calculating the sin and cos at each point in time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>center_freq_sin</em>) – How many points are needed.</p></li>
+<li><p><strong>(</strong><strong>)</strong> – Phase change (2pi/T) due to each sample time.</p></li>
+<li><p><strong>(</strong><strong>)</strong> – The carrier frequency</p></li>
+<li><p><strong>(</strong><strong>)</strong> – Array to overwrite for the output.</p></li>
+<li><p><strong>(</strong><strong>)</strong> – Array to overwrite for the output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Samples of the carrier frequency in sin phase.
+coscf (): Samples of the carrier frequency in cos phase.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sincf ()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.gammatone_basilar_membrane">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">gammatone_basilar_membrane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ear_q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9.26449</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24.7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#gammatone_basilar_membrane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.gammatone_basilar_membrane" title="Link to this definition">¶</a></dt>
+<dd><p>4th-order gammatone auditory filter. This implementation is based on the c program
+published on-line by Ning Ma, U. Sheffield, UK[1]_ that gives an implementation of
+the Martin Cooke filters[2]_: an impulse-invariant transformation of the gammatone
+filter. The signal is demodulated down to baseband using a complex exponential,
+and then passed through a cascade of four one-pole low-pass filters.</p>
+<p>This version filters two signals that have the same sampling rate and the same
+gammatone filter center frequencies. The lengths of the two signals should match;
+if they don’t, the signals are truncated to the shorter of the two lengths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>freq_sample</em>) – first sequence to be filtered</p></li>
+<li><p><strong>reference_bandwidth</strong> – bandwidth for x relative to that of a normal ear</p></li>
+<li><p><strong>(</strong><strong>)</strong> – second sequence to be filtered</p></li>
+<li><p><strong>(</strong><strong>)</strong> – bandwidth for x relative to that of a normal ear</p></li>
+<li><p><strong>(</strong><strong>)</strong> – sampling rate in Hz</p></li>
+<li><p><strong>center_frequency</strong> (<em>int</em>) – filter center frequency in Hz</p></li>
+<li><p><strong>ear_q</strong> – (float): ???</p></li>
+<li><p><strong>min_bandwidth</strong> (<em>float</em>) – <p>???</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>filter envelope output (modulated down to baseband)</dt><dd><p>1st signal</p>
+</dd>
+</dl>
+<p>reference_basilar_membrane (): Basilar Membrane for the first signal
+processed_envelope (): filter envelope output (modulated down to baseband)</p>
+<blockquote>
+<div><p>2nd signal</p>
+</div></blockquote>
+<p>processed_basilar_membrane (): Basilar Membrane for the second signal</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>reference_envelope ()</p>
+</dd>
+</dl>
+<p>References:
+.. [1] Ma N, Green P, Barker J, Coy A (2007) Exploiting correlogram</p>
+<blockquote>
+<div><p>structure for robust speech recognition with multiple speech
+sources. Speech Communication, 49 (12): 874-891. Available at
+&lt;<a class="reference external" href="https://doi.org/10.1016/j.specom.2007.05.003">https://doi.org/10.1016/j.specom.2007.05.003</a>&gt;
+&lt;<a class="reference external" href="https://staffwww.dcs.shef.ac.uk/people/N.Ma/resources/gammatone/">https://staffwww.dcs.shef.ac.uk/people/N.Ma/resources/gammatone/</a>&gt;</p>
+</div></blockquote>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Cooke, M. (1993) Modelling auditory processing and organisation.
+Cambridge University Press</p>
+</aside>
+</aside>
+<p>Updates:
+James M. Kates, 8 Jan 2007.
+Vectorized version for efficient MATLAB execution, 4 February 2007.
+Cosine and sine generation, 29 June 2011.
+Output sine and cosine sequences, 19 June 2012.
+Cosine/sine loop speed increased, 9 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.group_delay_compensate">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">group_delay_compensate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ear_q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9.26449</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24.7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#group_delay_compensate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.group_delay_compensate" title="Link to this definition">¶</a></dt>
+<dd><p>Compensate for the group delay of the gammatone filter bank. The group
+delay is computed for each filter at its center frequency. The firing
+rate output of the IHC model is then adjusted so that all outputs have
+the same group delay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xenv</strong> (<em>np.ndarray</em>) – matrix of signal envelopes or BM motion</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>freq_sample</em>) – gammatone filter bandwidths adjusted for loss</p></li>
+<li><p><strong>(</strong><strong>)</strong> – center frequencies of the bands</p></li>
+<li><p><strong>(</strong><strong>)</strong> – sampling rate for the input signal in Hz (e.g. 24,000 Hz)</p></li>
+<li><p><strong>ear_q</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_bandwidth</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>envelopes or BM motion compensated for the group delay.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>processed ()</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 28 October 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.inner_hair_cell_adaptation">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">inner_hair_cell_adaptation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_basilar_membrane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sample</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#inner_hair_cell_adaptation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.inner_hair_cell_adaptation" title="Link to this definition">¶</a></dt>
+<dd><p>Provide inner hair cell (IHC) adaptation. The adaptation is based on an
+equivalent RC circuit model, and the derivatives are mapped into
+1st-order backward differences. Rapid and short-term adaptation are
+provided. The input is the signal envelope in dB SL, with IHC attenuation
+already applied to the envelope. The outputs are the envelope in dB SL
+with adaptation providing overshoot of the long-term output level, and
+the BM motion is multiplied by a gain vs. time function that reproduces
+the adaptation. IHC attenuation and additive noise for the equivalent
+auditory threshold are provided by a subsequent call to eb_BMatten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_db</strong> (<em>np.ndarray</em>) – signal envelope in one frequency band in dB SL
+contains OHC compression and IHC attenuation</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>delta</em>) – basilar membrane vibration with OHC compression
+but no IHC attenuation</p></li>
+<li><p><strong>(</strong><strong>)</strong> – overshoot factor = delta x steady-state</p></li>
+<li><p><strong>freq_sample</strong> (<em>int</em>) – sampling rate in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>envelope in dB SL with IHC adaptation
+output_basilar_membrane (): Basilar Membrane multiplied by the IHC adaptation</p>
+<blockquote>
+<div><p>gain function</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>output_db ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 1 October 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.input_align">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">input_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#input_align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.input_align" title="Link to this definition">¶</a></dt>
+<dd><p>Approximate temporal alignment of the reference and processed output
+signals. Leading and trailing zeros are then pruned.</p>
+<p>The function assumes that the two sequences have the same sampling rate:
+call eb_Resamp24kHz for each sequence first, then call this function to
+align the signals.</p>
+<p>Arguments:
+reference (np.ndarray): input reference sequence
+processed (np.ndarray): hearing-aid output sequence</p>
+<p>Returns:
+reference (np.ndarray): pruned and shifted reference
+processed (np.ndarray): pruned and shifted hearing-aid output</p>
+<p>Updates:
+James M. Kates, 12 July 2011.
+Match the length of the processed output to the reference for the
+purposes of computing the cross-covariance
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.loss_parameters">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">loss_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hearing_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiometric_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#loss_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.loss_parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Apportion the hearing loss to the outer hair cells (OHC) and the inner
+hair cells (IHC) and to increase the bandwidth of the cochlear filters
+in proportion to the OHC fraction of the total loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – hearing loss at the 6 audiometric frequencies</p></li>
+<li><p><strong>center_freq</strong> (<em>np.ndarray</em>) – array containing the center frequencies of the
+gammatone filters arranged from low to high</p></li>
+<li><p><strong>audiometric_freq</strong> (<em>list</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>attenuation in dB for the OHC gammatone filters
+bandwidth (): OHC filter bandwidth expressed in terms of normal
+low_knee (): Lower kneepoint for the low-level linear amplification
+compression_ratio (): Ranges from 1.4:1 at 150 Hz to 3.5:1 at 8 kHz for normal</p>
+<blockquote>
+<div><p>hearing. Reduced in proportion to the OHC loss to 1:1.</p>
+</div></blockquote>
+<p>attenuated_ihc ():      attenuation in dB for the input to the IHC synapse</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>attenuated_ohc ()</p>
+</dd>
+</dl>
+<p>Updates:
+James M. Kates, 25 January 2007.
+Version for loss in dB and match of OHC loss to CR, 9 March 2007.
+Low-frequency extent changed to 80 Hz, 27 Oct 2011.
+Lower kneepoint set to 30 dB, 19 June 2012.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.mel_cepstrum_correlation">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">mel_cepstrum_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addnoise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#mel_cepstrum_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.mel_cepstrum_correlation" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cross-correlations between the input signal time-frequency
+envelope and the distortion time-frequency envelope.</p>
+<p>For each time interval, the log spectrum is fitted with a set of
+half-cosine basis functions. The spectrum weighted by the basis
+functions corresponds to Mel Cepstral Coefficients computed in the
+frequency domain. The amplitude-normalized cross-covariance between
+the time-varying basis functions for the input and output signals is
+then computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>addnoise</em>) – subsampled input signal envelope in dB SL in each critical band</p></li>
+<li><p><strong>(</strong><strong>)</strong> – subsampled distorted output signal envelope</p></li>
+<li><p><strong>(</strong><strong>)</strong> – threshold in dB SPL to include segment in calculation</p></li>
+<li><p><strong>(</strong><strong>)</strong> – additive Gaussian noise to ensure 0 cross-corr at low levels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>average cepstral correlation 2-6, input vs output
+individual_cepstral_correlations : individual cepstral correlations,</p>
+<blockquote>
+<div><p>input vs output</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>average_cepstral_correlation</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 24 October 2006.
+Difference signal removed for cochlear model, 31 January 2007.
+Absolute value added 13 May 2011.
+Changed to loudness criterion for silence threshsold, 28 August 2012.
+Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.melcor9">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">melcor9</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cepstral_coef</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#melcor9"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.melcor9" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cross-correlations between the input signal
+time-frequency envelope and the distortion time-frequency envelope. For
+each time interval, the log spectrum is fitted with a set of half-cosine
+basis functions. The spectrum weighted by the basis functions corresponds
+to mel cepstral coefficients computed in the frequency domain. The
+amplitude-normalized cross-covariance between the time-varying basis
+functions for the input and output signals is then computed for each of
+the 8 modulation frequencies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>segment_size</em>) – subsampled input signal envelope in dB SL in each critical band</p></li>
+<li><p><strong>(</strong><strong>)</strong> – subsampled distorted output signal envelope</p></li>
+<li><p><strong>(</strong><strong>)</strong> – threshold in dB SPL to include segment in calculation</p></li>
+<li><p><strong>(</strong><strong>)</strong> – additive Gaussian noise to ensure 0 cross-corr at low levels</p></li>
+<li><p><strong>(</strong><strong>)</strong> – segment size in ms used for the envelope LP filter (8 msec)</p></li>
+<li><p><strong>n_cepstral_coef</strong> (<em>int</em>) – Number of cepstral coefficients</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>average of the modulation correlations across analysis</dt><dd><p>frequency bands and modulation frequency bands, basis functions 2 -6</p>
+</dd>
+</dl>
+<p>mel_cepstral_low (): average over the four lower mod freq bands, 0 - 20 Hz
+mel_cepstral_high (): average over the four higher mod freq bands, 20 - 125 Hz
+mel_cepstral_modulation (): vector of cross-correlations by modulation</p>
+<blockquote>
+<div><p>frequency, averaged over analysis frequency band</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mel_cepstral_average ()</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 24 October 2006.
+Difference signal removed for cochlear model, 31 January 2007.
+Absolute value added 13 May 2011.
+Changed to loudness criterion for silence threshold, 28 August 2012.
+Version using envelope modulation filters, 15 July 2014.
+Modulation frequency vector output added 27 August 2014.
+Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.melcor9_crosscovmatrix">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">melcor9_crosscovmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbasis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_cep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_cep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#melcor9_crosscovmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.melcor9_crosscovmatrix" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cross-covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>ycep</em>) – <p>???</p>
+</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+<li><p><strong>(</strong><strong>)</strong> – <p>???</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>cross_covariance_matrix ()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.middle_ear">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">middle_ear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#middle_ear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.middle_ear" title="Link to this definition">¶</a></dt>
+<dd><p>Design the middle ear filters and process the input through the
+cascade of filters. The middle ear model is a 2-pole HP filter
+at 350 Hz in series with a 1-pole LP filter at 5000 Hz. The
+result is a rough approximation to the equal-loudness contour
+at threshold.</p>
+<p>Arguments:
+reference (np.ndarray):     input signal
+freq_sample (float): sampling rate in Hz</p>
+<p>Returns:
+xout (): filtered output</p>
+<p>Updates:
+James M. Kates, 18 January 2007.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.resample_24khz">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">resample_24khz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sample_hz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24000.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#resample_24khz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.resample_24khz" title="Link to this definition">¶</a></dt>
+<dd><p>Resample the input signal at 24 kHz. The input sampling rate is
+rounded to the nearest kHz to compute the sampling rate conversion
+ratio.</p>
+<p>Arguments:
+reference_signal (np.ndarray): input signal
+reference_freq (int): sampling rate for the input in Hz
+freq_sample_hz (int): Frequency sample in Hz</p>
+<p>Returns:
+reference_signal_24         signal resampled at kHz (default 24Khz)
+freq_sample_hz     output sampling rate in Hz</p>
+<p>Updates
+James M. Kates, 20 June 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.eb.spectrum_diff">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.eb.</span></span><span class="sig-name descname"><span class="pre">spectrum_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_sl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_sl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/eb.html#spectrum_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.eb.spectrum_diff" title="Link to this definition">¶</a></dt>
+<dd><p>Compute changes in the long-term spectrum and spectral slope.</p>
+<p>The metric is based on the spectral distortion metric of Moore and Tan[1]_
+(JAES, Vol 52, pp 900-914). The log envelopes in dB SL are converted to
+linear to approximate specific loudness. The outputs are the sum of the
+absolute differences, the standard deviation of the differences, and the
+maximum absolute difference. The same three outputs are provided for the
+normalized spectral difference and for the slope. The output is
+calibrated so that a processed signal having 0 amplitude produces a
+value of 1 for the spectrum difference.</p>
+<p>Abs diff: weight all deviations uniformly
+Std diff: weight larger deviations more than smaller deviations
+Max diff: only weight the largest deviation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_sl</strong> (<em>np.ndarray</em>) – reference signal spectrum in dB SL</p></li>
+<li><p><strong>processed_sl</strong> (<em>np.ndarray</em>) – degraded signal spectrum in dB SL</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[sum abs diff, std dev diff, max diff] spectra
+dnorm (np.array) : [sum abs diff, std dev diff, max diff] norm spectra
+dslope (np.array) : [sum abs diff, std dev diff, max diff] slope</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dloud (np.array)</p>
+</dd>
+</dl>
+<p>References:
+.. [1] Moore BCJ, Tan, CT (2004) Development and Validation of a Method</p>
+<blockquote>
+<div><p>for Predicting the Perceived Naturalness of Sounds Subjected to
+Spectral Distortion J Audio Eng Soc 52(9):900-914. Available at.
+&lt;<a class="reference external" href="http://www.aes.org/e-lib/browse.cfm?elib=13018">http://www.aes.org/e-lib/browse.cfm?elib=13018</a>&gt;.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 28 June 2012.
+Translated from MATLAB to Python by Gerardo Roa Dabike, September 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.haspi.ebm">
+<span id="clarity-evaluator-haspi-ebm-module"></span><h2>clarity.evaluator.haspi.ebm module<a class="headerlink" href="#module-clarity.evaluator.haspi.ebm" title="Link to this heading">¶</a></h2>
+<p>HASPI EBM module</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.add_noise">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">add_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#add_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.add_noise" title="Link to this definition">¶</a></dt>
+<dd><p>Add independent random Gaussian noise to the subsampled signal envelope
+in each auditory frequency band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>thresh_db</em>) – subsampled envelope in dB re:auditory threshold</p></li>
+<li><p><strong>(</strong><strong>)</strong> – additive noise RMS level (in dB)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>auditory threshold</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>() envelope with threshold noise added, in dB re</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 23 April 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.cepstral_correlation_coef">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">cepstral_correlation_coef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_cep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_nerve</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbasis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#cepstral_correlation_coef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.cepstral_correlation_coef" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cepstral correlation coefficients between the reference signal
+and the distorted signal log envelopes. The silence portions of the
+signals are removed prior to the calculation based on the envelope of the
+reference signal. For each time sample, the log spectrum in dB SL is
+fitted with a set of half-cosine basis functions. The cepstral coefficients
+then form the input to the cepstral correlation
+calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>)</strong> (<em>thresh_nerve</em>) – subsampled reference signal envelope in dB SL in each band</p></li>
+<li><p><strong>(</strong><strong>)</strong> – subsampled distorted output signal envelope</p></li>
+<li><p><strong>(</strong><strong>)</strong> – threshold in dB SPL to include sample in calculation</p></li>
+<li><p><strong>(</strong><strong>)</strong> – additive noise RMS for IHC firing (in dB)</p></li>
+<li><p><strong>nbasis</strong> – number of cepstral basis functions to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>refernce_cep cepstral coefficient matrix for the ref signal</dt><dd><p>(nsamp,nbasis) processed_cep cepstral coefficient matrix for the output
+signal (nsamp,nbasis) each column is a separate basis function, from low to
+high</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<dl>
+<dt>Updates:</dt><dd><p>James M. Kates, 23 April 2015.
+Gammawarp version to fit the basis functions, 11 February 2019.
+Additive noise for IHC firing rates, 24 April 2019.</p>
+<blockquote>
+<div><p>Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.env_filter">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">env_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sub_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_samp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#env_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.env_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Lowpass filter and subsample the envelope in dB SL produced by the model
+of the auditory periphery. The LP filter uses a von Hann raised cosine
+window to ensure that there are no negative envelope values produced by
+the filtering operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_db</strong> (<em>np.ndarray</em>) – env in dB SL for the ref signal in each auditory band</p></li>
+<li><p><strong>processed_db</strong> (<em>np.ndarray</em>) – env in dB SL for the degraded signal in each auditory
+band</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>freq_samp</em>) – LP filter cutoff frequency for the filtered envelope, Hz</p></li>
+<li><p><strong>(</strong><strong>)</strong> – subsampling frequency in Hz for the LP filtered envelopes</p></li>
+<li><p><strong>(</strong><strong>)</strong> – sampling rate in Hz for the signals xdB and ydB</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>reference_env - LP filtered and subsampled reference signal envelope</dt><dd><p>Each frequency band is a separate column.
+processed_env - LP filtered and subsampled degraded signal envelope</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 12 September 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.fir_modulation_filter">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">fir_modulation_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_envelope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_envelope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#fir_modulation_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.fir_modulation_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Apply a FIR modulation filterbank to the reference envelope signals
+contained in matrix reference_envelope and the processed signal envelope
+signals in matrix processed_envelope. Each column in reference_envelope
+and processed_envelope is a separate filter band or cepstral coefficient
+basis function. The modulation filters use a lowpass filter for the
+lowest modulation rate, and complex demodulation followed by a lowpass
+filter for the remaining bands. The onset and offset transients are
+removed from the FIR convolutions to temporally align the modulation
+filter outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_envelope</strong> (<em>np.ndarray</em>) – matrix containing the subsampled reference
+envelope values. Each column is a different frequency band or cepstral basis
+function arranged from low to high.</p></li>
+<li><p><strong>processed_envelope</strong> (<em>np.ndarray</em>) – matrix containing the subsampled processed
+envelope values</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>freq_sub_sampling</em>) – envelope sub-sampling rate in Hz</p></li>
+<li><p><strong>center_frequencies</strong> (<em>np.ndarray</em>) – Center Frequencies</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>reference_modulation ():  a cell array containing the reference signal</dt><dd><p>output of the modulation filterbank. reference_modulation is of size
+[nchan,nmodfilt] where nchan is the number of frequency channels or
+cepstral basis functions in reference_envelope, and nmodfilt is the
+number of modulation filters used in the analysis. Each cell contains a
+column vector of length nsamp, where nsamp is the number of samples in
+each envelope sequence contained in the columns of reference_envelope.</p>
+</dd>
+<dt>processed_modulation (): cell array containing the processed signal output</dt><dd><p>of the modulation filterbank.</p>
+</dd>
+</dl>
+<p>center_frequencies (): vector of modulation rate filter center frequencies</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 14 February 2019.
+Two matrix version of gwarp_ModFiltWindow, 19 February 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ebm.modulation_cross_correlation">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ebm.</span></span><span class="sig-name descname"><span class="pre">modulation_cross_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_modulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_modulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ebm.html#modulation_cross_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ebm.modulation_cross_correlation" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the cross-correlations between the input signal time-frequency
+envelope and the distortion time-frequency envelope. The cepstral
+coefficients or envelopes in each frequency band have been passed
+through the modulation filterbank using function ebm_ModFilt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_modulation</strong> (<em>np.array</em>) – cell array containing the reference signal
+output of the modulation filterbank. Xmod is of size [nchan,nmodfilt] where
+nchan is the number of frequency channels or cepstral basis functions in
+Xenv, and nmodfilt is the number of modulation filters used in the analysis.
+Each cell contains a column vector of length nsamp, where nsamp is the
+number of samples in each envelope sequence contained in the columns of
+Xenv.</p></li>
+<li><p><strong>processed_modulation</strong> (<em>np.ndarray</em>) – subsampled distorted output signal envelope</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Output:</dt><dd><dl class="simple">
+<dt>float: aveCM modulation correlations averaged over basis functions 2-6</dt><dd><p>vector of size nmodfilt</p>
+</dd>
+</dl>
+</dd>
+<dt>Updates:</dt><dd><p>James M. Kates, 21 February 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.haspi.haspi">
+<span id="clarity-evaluator-haspi-haspi-module"></span><h2>clarity.evaluator.haspi.haspi module<a class="headerlink" href="#module-clarity.evaluator.haspi.haspi" title="Link to this heading">¶</a></h2>
+<p>HASPI intelligibility Index</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.haspi.haspi_v2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.haspi.</span></span><span class="sig-name descname"><span class="pre">haspi_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_lp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">320.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/haspi.html#haspi_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.haspi.haspi_v2" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the HASPI intelligibility index using the
+auditory model followed by computing the envelope cepstral
+correlation and BM vibration high-level covariance. The reference
+signal presentation level for NH listeners is assumed to be 65 dB
+SPL. The same model is used for both normal and impaired hearing. This
+version of HASPI uses a modulation filterbank followed by an ensemble of
+neural networks to compute the estimated intelligibility.</p>
+<p><strong>NB</strong> - The original HASPI model derivation included a bug which meant that
+although the ‘shift’ parameter used in band centre frequency calculations was set to
+‘0.02’ it was never actually applied. To replicate this behaviour ear_model is
+called with ‘shift’ set to None.  For discussion please refer to the discussion in
+<cite>Issue #105 &lt;https://github.com/claritychallenge/clarity/issues/105&gt;</cite>
+for further details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – Clear input reference speech signal with no noise or
+distortion. If a hearing loss is specified, no amplification should be
+provided.</p></li>
+<li><p><strong>reference_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for signal x</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – Output signal with noise, distortion, HA gain, and/or
+processing.</p></li>
+<li><p><strong>processed_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for signal y.</p></li>
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – (1,6) vector of hearing loss at the 6 audiometric
+frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.</p></li>
+<li><p><strong>level1</strong> (<em>int</em>) – Optional input specifying level in dB SPL that corresponds to a
+signal RMS = 1. Default is 65 dB SPL if argument not provided.</p></li>
+<li><p><strong>f_lp</strong> (<em>int</em>)</p></li>
+<li><p><strong>itype</strong> (<em>int</em>) – Intelligibility model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>float, raw: nd-array)
+Intel: Intelligibility estimated by passing the cepstral coefficients</p>
+<blockquote>
+<div><p>through a modulation filterbank followed by an ensemble of
+neural networks.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>raw: vector of 10 cep corr modulation filterbank outputs, averaged</dt><dd><p>over basis functions 2-6.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(Intel</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 5 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.haspi.haspi_v2_be">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.haspi.</span></span><span class="sig-name descname"><span class="pre">haspi_v2_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/haspi.html#haspi_v2_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.haspi.haspi_v2_be" title="Link to this definition">¶</a></dt>
+<dd><p>Better ear HASPI.</p>
+<p>Calculates HASPI for left and right ear and selects the better result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_left</strong> (<em>np.ndarray</em>) – left channel of reference signal</p></li>
+<li><p><strong>ref_right</strong> (<em>np.ndarray</em>) – right channel of reference signal</p></li>
+<li><p><strong>proc_left</strong> (<em>np.ndarray</em>) – left channel of processed signal</p></li>
+<li><p><strong>proc_right</strong> (<em>np.ndarray</em>) – right channel of processed signal</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – sampling rate for both signal</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>audiogram_right</em>) – left ear audiogram</p></li>
+<li><p><strong>(</strong><strong>)</strong> – right ear audiogram</p></li>
+<li><p><strong>level</strong> – level in dB SPL corresponding to RMS=1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>beHASPI score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>Zuzanna Podwinska, March 2022</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.haspi.ip">
+<span id="clarity-evaluator-haspi-ip-module"></span><h2>clarity.evaluator.haspi.ip module<a class="headerlink" href="#module-clarity.evaluator.haspi.ip" title="Link to this heading">¶</a></h2>
+<p>Functions for HASPI neural network stage.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ip.get_neural_net">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ip.</span></span><span class="sig-name descname"><span class="pre">get_neural_net</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ip.html#get_neural_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ip.get_neural_net" title="Link to this definition">¶</a></dt>
+<dd><p>Provide the weights derived for the ensemble of ten neural
+networks used for the HASPI_v2 intelligibility model. The neural networks
+have ten inputs, 4 neurons in the hidden layer, and one output neuron.
+The logsig activation function is used.</p>
+<p>Arguments: None</p>
+<dl>
+<dt>Returned values:</dt><dd><p>neural_net_params (dict): parameters defining the neural network
+weights_hidden (): cell array 10 x 1 for the weights linking the input to the
+hidden layer. Each cell is a 11 x 4 matrix of weights
+weights_out (): call array 5 x 1 for the weights linking the hidden to the</p>
+<blockquote>
+<div><p>output layer. Each cell is a 5 x 1 vector of weights.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>normalization_factor (): normalization so that the maximum neural net output is</dt><dd><p>exactly 1.</p>
+</dd>
+</dl>
+</dd>
+<dt>Updates:</dt><dd><p>James M. Kates, 8 October 2019.
+Version for new neural network using actual TFS scores, 24 October 2019.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ip.nn_feed_forward">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ip.</span></span><span class="sig-name descname"><span class="pre">nn_feed_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neural_net_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_hidden</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ip.html#nn_feed_forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ip.nn_feed_forward" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the outputs at each layer of a neural network given
+the input to the network and the weights. The activation function is an
+offset logistic function that gives either a logsig or hyperbolic
+tangent; the outputs from each layer have been reduced by the offset. The
+structure of the network is an input layer, one hidden layer, and an
+output layer. The first values in vectors hidden and output are set to 1
+by the function, and the remaining values correspond to the outputs at
+each neuron in the layer.</p>
+<p>Args:
+data (np.ndarray): feature vector input to the neural network.
+neural_net_params (dict): network parameters from get_neural_net().
+weights_hidden (list): matrix of weights for the hidden layer.
+weights_out (list): matrix of weights for the output layer.</p>
+<p>Returns:
+hidden (): vector of outputs from the hidden layer.
+output (): vector of outputs from the output layer.</p>
+<p>Updates:
+James M. Kates, 26 October 2010.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.ip.nn_feed_forward_ensemble">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.ip.</span></span><span class="sig-name descname"><span class="pre">nn_feed_forward_ensemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neural_net_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_hidden</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/ip.html#nn_feed_forward_ensemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.ip.nn_feed_forward_ensemble" title="Link to this definition">¶</a></dt>
+<dd><p>Function to compute the neural network ensemble response to a set of
+inputs. The neural network is defined in NNfeedforwardZ.</p>
+<p>Args:
+data (np.ndarray): array of features input to the neural network
+neural_net_params (dict): vector of neural network parameters
+weights_hidden (list): cell array of hidden layer weights for each network
+weights_out (list): cell array of output layer weights for each network</p>
+<p>Returns:
+model     neural network output vector averaged over the ensemble</p>
+<p>Updates:
+James M. Kates, 20 September 2011.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd></dl>
+
+</section>
+<section id="module-clarity.evaluator.haspi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-clarity.evaluator.haspi" title="Link to this heading">¶</a></h2>
+<p>HASPI intelligibility index.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.haspi_v2">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.</span></span><span class="sig-name descname"><span class="pre">haspi_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audiogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Audiogram" title="clarity.utils.audiogram.Audiogram"><span class="pre">Audiogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_lp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">320.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/haspi.html#haspi_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.haspi_v2" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the HASPI intelligibility index using the
+auditory model followed by computing the envelope cepstral
+correlation and BM vibration high-level covariance. The reference
+signal presentation level for NH listeners is assumed to be 65 dB
+SPL. The same model is used for both normal and impaired hearing. This
+version of HASPI uses a modulation filterbank followed by an ensemble of
+neural networks to compute the estimated intelligibility.</p>
+<p><strong>NB</strong> - The original HASPI model derivation included a bug which meant that
+although the ‘shift’ parameter used in band centre frequency calculations was set to
+‘0.02’ it was never actually applied. To replicate this behaviour ear_model is
+called with ‘shift’ set to None.  For discussion please refer to the discussion in
+<cite>Issue #105 &lt;https://github.com/claritychallenge/clarity/issues/105&gt;</cite>
+for further details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – Clear input reference speech signal with no noise or
+distortion. If a hearing loss is specified, no amplification should be
+provided.</p></li>
+<li><p><strong>reference_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for signal x</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – Output signal with noise, distortion, HA gain, and/or
+processing.</p></li>
+<li><p><strong>processed_sample_rate</strong> (<em>int</em>) – Sampling rate in Hz for signal y.</p></li>
+<li><p><strong>hearing_loss</strong> (<em>np.ndarray</em>) – (1,6) vector of hearing loss at the 6 audiometric
+frequencies [250, 500, 1000, 2000, 4000, 6000] Hz.</p></li>
+<li><p><strong>level1</strong> (<em>int</em>) – Optional input specifying level in dB SPL that corresponds to a
+signal RMS = 1. Default is 65 dB SPL if argument not provided.</p></li>
+<li><p><strong>f_lp</strong> (<em>int</em>)</p></li>
+<li><p><strong>itype</strong> (<em>int</em>) – Intelligibility model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>float, raw: nd-array)
+Intel: Intelligibility estimated by passing the cepstral coefficients</p>
+<blockquote>
+<div><p>through a modulation filterbank followed by an ensemble of
+neural networks.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>raw: vector of 10 cep corr modulation filterbank outputs, averaged</dt><dd><p>over basis functions 2-6.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(Intel</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>James M. Kates, 5 August 2013.
+Translated from MATLAB to Python by Zuzanna Podwinska, March 2022.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clarity.evaluator.haspi.haspi_v2_be">
+<span class="sig-prename descclassname"><span class="pre">clarity.evaluator.haspi.</span></span><span class="sig-name descname"><span class="pre">haspi_v2_be</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="clarity.utils.html#clarity.utils.audiogram.Listener" title="clarity.utils.audiogram.Listener"><span class="pre">Listener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/clarity/evaluator/haspi/haspi.html#haspi_v2_be"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clarity.evaluator.haspi.haspi_v2_be" title="Link to this definition">¶</a></dt>
+<dd><p>Better ear HASPI.</p>
+<p>Calculates HASPI for left and right ear and selects the better result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_left</strong> (<em>np.ndarray</em>) – left channel of reference signal</p></li>
+<li><p><strong>ref_right</strong> (<em>np.ndarray</em>) – right channel of reference signal</p></li>
+<li><p><strong>proc_left</strong> (<em>np.ndarray</em>) – left channel of processed signal</p></li>
+<li><p><strong>proc_right</strong> (<em>np.ndarray</em>) – right channel of processed signal</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – sampling rate for both signal</p></li>
+<li><p><strong>(</strong><strong>)</strong> (<em>audiogram_right</em>) – left ear audiogram</p></li>
+<li><p><strong>(</strong><strong>)</strong> – right ear audiogram</p></li>
+<li><p><strong>level</strong> – level in dB SPL corresponding to RMS=1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>beHASPI score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Updates:</dt><dd><p>Zuzanna Podwinska, March 2022</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="clarity.html">clarity package</a><ul>
+  <li><a href="clarity.evaluator.html">clarity.evaluator package</a><ul>
+      <li>Previous: <a href="clarity.evaluator.haaqi.html" title="previous chapter">clarity.evaluator.haaqi package</a></li>
+      <li>Next: <a href="clarity.evaluator.hasqi.html" title="next chapter">clarity.evaluator.hasqi package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/clarity.evaluator.haspi.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

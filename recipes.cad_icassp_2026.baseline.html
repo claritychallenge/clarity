@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>recipes.cad_icassp_2026.baseline package &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="recipes.cec1 package" href="recipes.cec1.html" />
+    <link rel="prev" title="recipes.cad_icassp_2026 package" href="recipes.cad_icassp_2026.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="recipes-cad-icassp-2026-baseline-package">
+<h1>recipes.cad_icassp_2026.baseline package<a class="headerlink" href="#recipes-cad-icassp-2026-baseline-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cad_icassp_2026.baseline.compute_stoi">
+<span id="recipes-cad-icassp-2026-baseline-compute-stoi-module"></span><h2>recipes.cad_icassp_2026.baseline.compute_stoi module<a class="headerlink" href="#module-recipes.cad_icassp_2026.baseline.compute_stoi" title="Link to this heading">¶</a></h2>
+<p>Compute the STOI scores.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.compute_stoi.compute_single_stoi">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.compute_stoi.</span></span><span class="sig-name descname"><span class="pre">compute_single_stoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoi_fsamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/compute_stoi.html#compute_single_stoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.compute_stoi.compute_single_stoi" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the STOI score between a reference and processed signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>np.ndarray</em>) – Reference signal.</p></li>
+<li><p><strong>processed</strong> (<em>np.ndarray</em>) – Processed signal.</p></li>
+<li><p><strong>fsamp</strong> (<em>int</em>) – Sampling frequency.</p></li>
+<li><p><strong>stoi_fsamp</strong> (<em>int</em>) – Sampling frequency for STOI computation. Default is 10000 Hz.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>STOI score.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.compute_stoi.compute_stoi_for_signal">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.compute_stoi.</span></span><span class="sig-name descname"><span class="pre">compute_stoi_for_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimated_vocals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/compute_stoi.html#compute_stoi_for_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.compute_stoi.compute_stoi_for_signal" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the stoi score for a given signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> (<em>DictConfig</em>) – configuration object</p></li>
+<li><p><strong>record</strong> (<em>dict</em>) – the metadata dict for the signal</p></li>
+<li><p><strong>data_root</strong> (<em>str</em>) – root path to the dataset</p></li>
+<li><p><strong>estimated_vocals</strong> (<em>np.ndarray</em>) – estimated vocals signal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>stoi score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.compute_stoi.run_compute_stoi">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.compute_stoi.</span></span><span class="sig-name descname"><span class="pre">run_compute_stoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/compute_stoi.html#run_compute_stoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.compute_stoi.run_compute_stoi" title="Link to this definition">¶</a></dt>
+<dd><p>Run the STOI score computation.</p>
+</dd></dl>
+
+</section>
+<section id="recipes-cad-icassp-2026-baseline-compute-whisper-module">
+<h2>recipes.cad_icassp_2026.baseline.compute_whisper module<a class="headerlink" href="#recipes-cad-icassp-2026-baseline-compute-whisper-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cad_icassp_2026.baseline.evaluate">
+<span id="recipes-cad-icassp-2026-baseline-evaluate-module"></span><h2>recipes.cad_icassp_2026.baseline.evaluate module<a class="headerlink" href="#module-recipes.cad_icassp_2026.baseline.evaluate" title="Link to this heading">¶</a></h2>
+<p>Evaluate the predictions against the ground truth correctness values</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.evaluate.compute_scores">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">compute_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/evaluate.html#compute_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.evaluate.compute_scores" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the scores for the predictions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.evaluate.evaluate">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/evaluate.html#evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.evaluate.evaluate" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate the predictions against the ground truth correctness values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.evaluate.kt_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">kt_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/evaluate.html#kt_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.evaluate.kt_score" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the Kendall’s tau correlation between two arrays</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.evaluate.ncc_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">ncc_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/evaluate.html#ncc_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.evaluate.ncc_score" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the normalized cross correlation between two arrays</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.evaluate.rmse_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">rmse_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/evaluate.html#rmse_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.evaluate.rmse_score" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the root mean squared error between two arrays</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.evaluate.std_err">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.evaluate.</span></span><span class="sig-name descname"><span class="pre">std_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/evaluate.html#std_err"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.evaluate.std_err" title="Link to this definition">¶</a></dt>
+<dd><p>Compute the standard error between two arrays</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad_icassp_2026.baseline.predict">
+<span id="recipes-cad-icassp-2026-baseline-predict-module"></span><h2>recipes.cad_icassp_2026.baseline.predict module<a class="headerlink" href="#module-recipes.cad_icassp_2026.baseline.predict" title="Link to this heading">¶</a></h2>
+<p>Make intelligibility predictions from HASPI scores.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.predict.predict_dev">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.predict.</span></span><span class="sig-name descname"><span class="pre">predict_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/predict.html#predict_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.predict.predict_dev" title="Link to this definition">¶</a></dt>
+<dd><p>Predict intelligibility for baselines.</p>
+<p>Set config.baseline to <code class="docutils literal notranslate"><span class="pre">`stoi`</span></code> or <code class="docutils literal notranslate"><span class="pre">`whisper_mixture`</span></code> or <code class="docutils literal notranslate"><span class="pre">`whisper_vocals`</span></code>
+depending on which baseline you want to run.</p>
+</dd></dl>
+
+</section>
+<section id="module-recipes.cad_icassp_2026.baseline.shared_predict_utils">
+<span id="recipes-cad-icassp-2026-baseline-shared-predict-utils-module"></span><h2>recipes.cad_icassp_2026.baseline.shared_predict_utils module<a class="headerlink" href="#module-recipes.cad_icassp_2026.baseline.shared_predict_utils" title="Link to this heading">¶</a></h2>
+<p>Shared utilities for STOI baseline prediction experiments.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.shared_predict_utils.</span></span><span class="sig-name descname"><span class="pre">LogisticModel</span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#LogisticModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to represent a logistic mapping.</p>
+<p>Fits a logistic mapping from input values x to output values y.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#LogisticModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fit a mapping from x values to y values.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel.params" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#LogisticModel.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.LogisticModel.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Predict y values given x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – If the predict() method is called before fit().</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.estimate_vocals">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.shared_predict_utils.</span></span><span class="sig-name descname"><span class="pre">estimate_vocals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#estimate_vocals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.estimate_vocals" title="Link to this definition">¶</a></dt>
+<dd><p>Estimate vocals from the input signal using the pre-trained model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>torch.Tensor</em><em> | </em><em>np.ndarray</em>) – Input audio signal.</p></li>
+<li><p><strong>sample_rate</strong> (<em>int</em>) – Sample rate of the input signal.</p></li>
+<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Pre-trained source separation model.</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Device to run the model on (‘cpu’ or ‘cuda’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Estimated vocals.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.input_align">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.shared_predict_utils.</span></span><span class="sig-name descname"><span class="pre">input_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#input_align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.input_align" title="Link to this definition">¶</a></dt>
+<dd><p>Align the processed signal to the reference signal.
+Code based on the <cite>evaluator.haspi.eb</cite> but for variable sampling rate</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.load_dataset_with_score">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.shared_predict_utils.</span></span><span class="sig-name descname"><span class="pre">load_dataset_with_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#load_dataset_with_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.load_dataset_with_score" title="Link to this definition">¶</a></dt>
+<dd><p>Load dataset and add prediction scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> (<em>DictConfig</em>) – Configuration object.</p></li>
+<li><p><strong>split</strong> (<em>str</em>) – Dataset split to load (‘train’ or ‘valid’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame containing dataset records with added scores.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.load_mixture">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.shared_predict_utils.</span></span><span class="sig-name descname"><span class="pre">load_mixture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataroot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#load_mixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.load_mixture" title="Link to this definition">¶</a></dt>
+<dd><p>Load the mixture signal for a given record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataroot</strong> (<em>Path</em>) – Root path to the dataset.</p></li>
+<li><p><strong>record</strong> (<em>dict</em>) – Record containing signal metadata.</p></li>
+<li><p><strong>cfg</strong> (<em>DictConfig</em>) – Configuration object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mixture signal and its sample rate.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[np.ndarray, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="recipes.cad_icassp_2026.baseline.shared_predict_utils.load_vocals">
+<span class="sig-prename descclassname"><span class="pre">recipes.cad_icassp_2026.baseline.shared_predict_utils.</span></span><span class="sig-name descname"><span class="pre">load_vocals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataroot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separation_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/recipes/cad_icassp_2026/baseline/shared_predict_utils.html#load_vocals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recipes.cad_icassp_2026.baseline.shared_predict_utils.load_vocals" title="Link to this definition">¶</a></dt>
+<dd><p>Load or compute estimated vocals for a given record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataroot</strong> (<em>Path</em>) – Root path to the dataset.</p></li>
+<li><p><strong>record</strong> (<em>dict</em>) – Record containing signal metadata.</p></li>
+<li><p><strong>cfg</strong> (<em>DictConfig</em>) – Configuration object.</p></li>
+<li><p><strong>separation_model</strong> – Pre-trained source separation model.</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Device to run the model on (‘cpu’ or ‘cuda’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Estimated vocals signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="recipes-cad-icassp-2026-baseline-transcription-scorer-module">
+<h2>recipes.cad_icassp_2026.baseline.transcription_scorer module<a class="headerlink" href="#recipes-cad-icassp-2026-baseline-transcription-scorer-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-recipes.cad_icassp_2026.baseline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-recipes.cad_icassp_2026.baseline" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="clarity.html">clarity package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="recipes.html">recipes package</a><ul>
+  <li><a href="recipes.cad_icassp_2026.html">recipes.cad_icassp_2026 package</a><ul>
+      <li>Previous: <a href="recipes.cad_icassp_2026.html" title="previous chapter">recipes.cad_icassp_2026 package</a></li>
+      <li>Next: <a href="recipes.cec1.html" title="next chapter">recipes.cec1 package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/recipes.cad_icassp_2026.baseline.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

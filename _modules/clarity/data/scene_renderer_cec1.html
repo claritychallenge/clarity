@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.data.scene_renderer_cec1 &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.data.scene_renderer_cec1</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Scene rendering for CEC1 challenge.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">convolve</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.data.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">better_ear_speechweighted_snr</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">sum_signals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">clarity.utils.file_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_signal</span><span class="p">,</span> <span class="n">write_signal</span>
+
+
+<div class="viewcode-block" id="Renderer">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec1.Renderer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Renderer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SceneGenerator of CEC1 training and development sets. The render() function</span>
+<span class="sd">    generates all simulated signals for each scene given the parameters specified in the</span>
+<span class="sd">    metadata/scenes.train.json or metadata/scenes.dev.json file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_path</span><span class="p">,</span>
+        <span class="n">output_path</span><span class="p">,</span>
+        <span class="n">num_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">sample_rate</span><span class="o">=</span><span class="mi">44100</span><span class="p">,</span>
+        <span class="n">ramp_duration</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">tail_duration</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">pre_duration</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">post_duration</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">test_nbits</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_path</span> <span class="o">=</span> <span class="n">input_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ramp_duration</span> <span class="o">=</span> <span class="n">ramp_duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_tail</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tail_duration</span> <span class="o">*</span> <span class="n">sample_rate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_duration</span> <span class="o">=</span> <span class="n">pre_duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_duration</span> <span class="o">=</span> <span class="n">post_duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_nbits</span> <span class="o">=</span> <span class="n">test_nbits</span>
+
+        <span class="k">if</span> <span class="n">num_channels</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Generate just the initial target, masker and anechoic target signal</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># ... as above plus N hearing aid input channels plus &#39;channel 0&#39;</span>
+            <span class="c1"># (the eardrum signal). e.g. num_channel = 2  =&gt; channels [1, 2, 0]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_channels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Renderer.apply_ramp">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec1.Renderer.apply_ramp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_ramp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">ramp_duration</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply half cosine ramp into and out of signal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (np.ndarray): signal to be ramped.</span>
+<span class="sd">            ramp_duration (int): ramp duration in seconds.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Signal ramped into and out of by cosine function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ramp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="n">ramp_duration</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">ramp</span> <span class="o">=</span> <span class="p">(</span><span class="n">ramp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">signal_ramped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+        <span class="n">signal_ramped</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">ramp</span><span class="p">)]</span> <span class="o">*=</span> <span class="n">ramp</span>
+        <span class="n">signal_ramped</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">ramp</span><span class="p">)</span> <span class="p">:]</span> <span class="o">*=</span> <span class="n">ramp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">signal_ramped</span></div>
+
+
+<div class="viewcode-block" id="Renderer.apply_brir">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec1.Renderer.apply_brir">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_brir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">brir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convolve a signal with a binaural room impulse response (BRIR).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal (ndarray): The mono or stereo signal stored as array of floats</span>
+<span class="sd">            brir (ndarray): The BRIR stored a 2xN array of floats</span>
+<span class="sd">            n_tail (int): Truncate output to input signal length + n_tail</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: The convolved signals</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_tail</span>
+        <span class="n">brir</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">brir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">brir</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">signal_l</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">brir</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fft&quot;</span><span class="p">)</span>
+            <span class="n">signal_r</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">brir</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fft&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">brir</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">signal_l</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">signal</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">brir</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fft&quot;</span><span class="p">)</span>
+            <span class="n">signal_r</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">signal</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">brir</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fft&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Signal or BRIR does not have the required shape.&quot;</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">signal_l</span><span class="p">,</span> <span class="n">signal_r</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">output_len</span><span class="p">,</span> <span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="Renderer.compute_snr">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec1.Renderer.compute_snr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_snr</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pre_samples</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">post_samples</span><span class="o">=-</span><span class="mi">1</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Signal Noise Ratio (SNR).</span>
+
+<span class="sd">        Take the overlapping segment of the noise and get the speech-weighted</span>
+<span class="sd">        better ear Signal Noise Ratio. (Note, SNR is a ratio -- not in dB.)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (np.ndarray): Target signal.</span>
+<span class="sd">            noise (np.ndarray): Noise (should be same length as target)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: signal_noise_ratio for better ear.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pre_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_duration</span><span class="p">)</span>
+        <span class="n">post_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_duration</span><span class="p">)</span>
+
+        <span class="n">segment_target</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="n">pre_samples</span><span class="p">:</span><span class="o">-</span><span class="n">post_samples</span><span class="p">]</span>
+        <span class="n">segment_noise</span> <span class="o">=</span> <span class="n">noise</span><span class="p">[</span><span class="n">pre_samples</span><span class="p">:</span><span class="o">-</span><span class="n">post_samples</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment_target</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment_noise</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Target (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">segment_target</span><span class="p">)</span><span class="si">}</span><span class="s2">) &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;differs in length from Noise (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">segment_noise</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+        <span class="n">snr</span> <span class="o">=</span> <span class="n">better_ear_speechweighted_snr</span><span class="p">(</span><span class="n">segment_target</span><span class="p">,</span> <span class="n">segment_noise</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">snr</span></div>
+
+
+<div class="viewcode-block" id="Renderer.render">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec1.Renderer.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">noise_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">interferer_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">room</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">scene</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">,</span>
+        <span class="n">snr_dB</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">dataset</span><span class="p">,</span>
+        <span class="n">pre_samples</span><span class="o">=</span><span class="mi">88200</span><span class="p">,</span>
+        <span class="n">post_samples</span><span class="o">=</span><span class="mi">44100</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">brir_stem</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">/rooms/brir/brir_</span><span class="si">{</span><span class="n">room</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">anechoic_brir_stem</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">/rooms/brir/anech_brir_</span><span class="si">{</span><span class="n">room</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">target_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">/targets/</span><span class="si">{</span><span class="n">target_id</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="n">interferer_fn</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">/interferers/</span><span class="si">{</span><span class="n">noise_type</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">interferer_id</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">target</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+            <span class="n">target_fn</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">[(</span><span class="n">pre_samples</span><span class="p">,</span> <span class="n">post_samples</span><span class="p">)])</span>
+
+        <span class="n">interferer_signal</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+            <span class="n">interferer_fn</span><span class="p">,</span>
+            <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">offset_is_samples</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">interferer_signal</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Interferer signal too short&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interferer signal too short: </span><span class="si">{</span><span class="n">interferer_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Apply 500ms half-cosine ramp</span>
+        <span class="n">interferer_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_ramp</span><span class="p">(</span>
+            <span class="n">interferer_signal</span><span class="p">,</span> <span class="n">ramp_duration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ramp_duration</span>
+        <span class="p">)</span>
+
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">scene</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_target.wav&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span>
+            <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_interferer.wav&quot;</span><span class="p">,</span> <span class="n">interferer_signal</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">snr_ref</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">:</span>
+            <span class="c1"># Load scene BRIRs</span>
+            <span class="n">target_brir_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">brir_stem</span><span class="si">}</span><span class="s2">_t_CH</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+            <span class="n">interferer_brir_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">brir_stem</span><span class="si">}</span><span class="s2">_i1_CH</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">.wav&quot;</span>
+            <span class="n">target_brir</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+                <span class="n">target_brir_fn</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">interferer_brir</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+                <span class="n">interferer_brir_fn</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Apply the BRIRs</span>
+            <span class="n">target_at_ear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_brir</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">target_brir</span><span class="p">)</span>
+            <span class="n">interferer_at_ear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_brir</span><span class="p">(</span><span class="n">interferer_signal</span><span class="p">,</span> <span class="n">interferer_brir</span><span class="p">)</span>
+
+            <span class="c1"># Scale interferer to obtain SNR specified in scene description</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Scaling interferer to obtain mixture SNR = </span><span class="si">%s</span><span class="s2"> dB.&quot;</span><span class="p">,</span> <span class="n">snr_dB</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">snr_ref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># snr_ref computed for first channel in the list and then</span>
+                <span class="c1"># same scaling applied to all</span>
+                <span class="n">snr_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_snr</span><span class="p">(</span>
+                    <span class="n">target_at_ear</span><span class="p">,</span>
+                    <span class="n">interferer_at_ear</span><span class="p">,</span>
+                    <span class="n">pre_samples</span><span class="o">=</span><span class="n">pre_samples</span><span class="p">,</span>
+                    <span class="n">post_samples</span><span class="o">=</span><span class="n">post_samples</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using channel </span><span class="si">%s</span><span class="s2"> as reference.&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+
+            <span class="c1"># Apply snr_ref reference scaling to get 0 dB, then scale to target snr_dB</span>
+            <span class="n">interferer_at_ear</span> <span class="o">=</span> <span class="n">interferer_at_ear</span> <span class="o">*</span> <span class="n">snr_ref</span>
+            <span class="n">interferer_at_ear</span> <span class="o">=</span> <span class="n">interferer_at_ear</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">((</span><span class="o">-</span><span class="n">snr_dB</span><span class="p">)</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
+
+            <span class="c1"># Sum target and scaled and ramped interferer</span>
+            <span class="n">signal_at_ear</span> <span class="o">=</span> <span class="n">sum_signals</span><span class="p">([</span><span class="n">target_at_ear</span><span class="p">,</span> <span class="n">interferer_at_ear</span><span class="p">])</span>
+            <span class="n">outputs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_mixed_CH</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span> <span class="n">signal_at_ear</span><span class="p">),</span>
+                    <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_target_CH</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span> <span class="n">target_at_ear</span><span class="p">),</span>
+                    <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_interferer_CH</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span> <span class="n">interferer_at_ear</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">target_brir_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">brir_stem</span><span class="si">}</span><span class="s2">_t_CH0.wav&quot;</span>
+            <span class="n">target_brir</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+                <span class="n">target_brir_fn</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Construct the anechoic target reference signal</span>
+        <span class="n">anechoic_brir_fn</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">anechoic_brir_stem</span><span class="si">}</span><span class="s2">_t_CH1.wav&quot;</span>  <span class="c1"># CH1 used for the anechoic signal</span>
+        <span class="p">)</span>
+        <span class="n">anechoic_brir</span> <span class="o">=</span> <span class="n">read_signal</span><span class="p">(</span>
+            <span class="n">anechoic_brir_fn</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">allow_resample</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="c1"># Padding the anechoic brir very inefficient but keeps it simple</span>
+        <span class="n">anechoic_brir_pad</span> <span class="o">=</span> <span class="n">pad</span><span class="p">(</span><span class="n">anechoic_brir</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_brir</span><span class="p">))</span>
+        <span class="n">target_anechoic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_brir</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">anechoic_brir_pad</span><span class="p">)</span>
+
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_target_anechoic.wav&quot;</span><span class="p">,</span> <span class="n">target_anechoic</span><span class="p">))</span>
+
+        <span class="c1"># Write all output files</span>
+        <span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+            <span class="n">write_signal</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="check_scene_exists">
+<a class="viewcode-back" href="../../../clarity.data.html#clarity.data.scene_renderer_cec1.check_scene_exists">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_scene_exists</span><span class="p">(</span><span class="n">scene</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks correct dataset directory for full set of pre-existing files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scene (dict): dictionary defining the scene to be generated.</span>
+<span class="sd">        output_path (str): Path files should be saved to.</span>
+<span class="sd">        num_channels (int): Number of channels</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        status: boolean value indicating whether scene signals exist</span>
+<span class="sd">            or do not exist.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">num_channels</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># This will only generate the initial target, masker and anechoic target signal</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># ... as above plus N hearing aid input channels plus &#39;channel 0&#39; (the eardrum</span>
+        <span class="c1"># signal), e.g., num_channel = 2  =&gt; channels [1, 2, 0]</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_channels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;scene&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">files_to_check</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">_target.wav&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">_target_anechoic.wav&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">_interferer.wav&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+        <span class="n">files_to_check</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">_mixed_CH</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">_interferer_CH</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">_target_CH</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">.wav&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Return True if all files exist, False otherwise</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files_to_check</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

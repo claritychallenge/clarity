@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Generate music dataset for the ICASSP 2024 Cadenza Challenge &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="generate-music-dataset-for-the-icassp-2024-cadenza-challenge">
+<h1>Generate music dataset for the ICASSP 2024 Cadenza Challenge<a class="headerlink" href="#generate-music-dataset-for-the-icassp-2024-cadenza-challenge" title="Link to this heading">¶</a></h1>
+<p>The ICASSP 2024 Cadenza Challenge music dataset is based on the MUSDB18-HQ dataset.</p>
+<p>Steps:</p>
+<ol class="arabic simple">
+<li><p>Download <code class="docutils literal notranslate"><span class="pre">cadenza_cad1_task1_core_musdb18hq.tar.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">cadenza_cad1_task1_core_metadata.tar.gz</span></code>
+packages from the <a class="reference external" href="https://cadenza-challenge.github.io/">Cadenza Challenge website</a>.</p></li>
+<li><p>Unpack packages under the same root directory.</p></li>
+<li><p>Run the script</p></li>
+</ol>
+<section id="unpack-the-data">
+<h2>Unpack the data<a class="headerlink" href="#unpack-the-data" title="Link to this heading">¶</a></h2>
+<p>To unpack the data run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>&lt;PACKAGE_NAME&gt;
+</pre></div>
+</div>
+</section>
+<section id="generate-the-dataset">
+<h2>Generate the dataset<a class="headerlink" href="#generate-the-dataset" title="Link to this heading">¶</a></h2>
+<p>To generate the dataset, set the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> parameter in the <code class="docutils literal notranslate"><span class="pre">generate_dataset/config.yaml</span></code>
+to where you unpacked the data. Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>generates_at_mic_musdb18.py
+</pre></div>
+</div>
+<p>or, run the script with the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> parameter:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>generates_at_mic_musdb18.py<span class="w"> </span>path.root<span class="w"> </span>&lt;PATH_TO_UNPACKED_DATA&gt;
+</pre></div>
+</div>
+<p>The script will generate the dataset in the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> directory.</p>
+<p>The script should create the <code class="docutils literal notranslate"><span class="pre">at_mic_microphone</span></code> where all music samples
+picked up by the microphones (at the mic) are saved.</p>
+<p>In the next example, <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">Classic</span> <span class="pre">Education</span> <span class="pre">-</span> <span class="pre">NightOwl-hp_0103</span></code> corresponds to the
+song <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">Classic</span> <span class="pre">Education</span> <span class="pre">-</span> <span class="pre">NightOwl</span></code> with the <code class="docutils literal notranslate"><span class="pre">hp_0103</span></code> head position.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cadenza_data
+├───audio
+|   ├───at_mic_music
+|   |   └───train (80.8 GB)
+|   |       ├───A Classic Education - NightOwl-hp_0103
+|   |       |   |  bass.wav
+|   |       |   |  drums.wav
+|   |       |   |  other.wav
+|   |       |   |  vocals.wav
+|   |       |   |  mixture.wav
+|   |       |
+|   |       ├───A Classic Education - NightOwl-hp_0138
+|   |       |   ....
+|   |
+|   ├───hrtf (336 kB)
+|   |
+|   └───music
+|       └───train (20.2 GB)
+|
+└───metadata  (328 kB)
+|  gains.json
+    |  at_mic_music.train.json
+    |  ...
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../_sources/recipes/cad_icassp_2024/generate_dataset/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

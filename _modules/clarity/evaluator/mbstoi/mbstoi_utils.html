@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clarity.evaluator.mbstoi.mbstoi_utils &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for clarity.evaluator.mbstoi.mbstoi_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Utilities for MBSTOI processing.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_peaks</span>
+
+<span class="n">EPS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+
+<div class="viewcode-block" id="equalisation_cancellation">
+<a class="viewcode-back" href="../../../../clarity.evaluator.mbstoi.html#clarity.evaluator.mbstoi.mbstoi_utils.equalisation_cancellation">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">equalisation_cancellation</span><span class="p">(</span>
+    <span class="n">left_ear_clean_hat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">right_ear_clean_hat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">left_ear_noisy_hat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">right_ear_noisy_hat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">n_third_octave_bands</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">frequency_band_edges_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">centre_frequencies</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">taus</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">n_taus</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gammas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">n_gammas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">intermediate_intelligibility_measure_grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">p_ec_max</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">sigma_epsilon</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">sigma_delta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the equalisation-cancellation (EC) stage of the MBSTOI metric.</span>
+
+<span class="sd">    The EC loop evaluates one huge equation in every iteration (see referenced notes</span>
+<span class="sd">    for details). The left and right ear signals are level adjusted by gamma (in dB) and</span>
+<span class="sd">    time shifted by tau relative to one-another and are thereafter subtracted. The</span>
+<span class="sd">    processed signals are treated similarly. To obtain performance similar to that of</span>
+<span class="sd">    humans,the EC stage adds jitter. We are searching for the level and time adjustments</span>
+<span class="sd">    that maximise the intermediate correlation coefficients d. Could add location of</span>
+<span class="sd">    source and interferer to this to reduce search space.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        left_ear_clean_hat (np.ndarray) : Clean left ear short-time DFT coefficients</span>
+<span class="sd">            (single-sided) per frequency bin and frame.</span>
+<span class="sd">        right_ear_clean_hat (np.ndarray) : Clean right ear short-time DFT coefficients</span>
+<span class="sd">            (single-sided) per frequency bin and frame.</span>
+<span class="sd">        left_ear_noisy_hat (np.ndarray) : Noisy/processed left ear short-time DFT</span>
+<span class="sd">            coefficients (single-sided) per frequency bin and frame.</span>
+<span class="sd">        right_ear_noisy_hat (np.ndarray) : Noisy/processed right eat short-time DFT</span>
+<span class="sd">            coefficients (single-sided) per frequency bin and frame.</span>
+<span class="sd">        n_third_octave_bands (int) : Number of one-third octave bands.</span>
+<span class="sd">        n_frames (int) : Number of frames for intermediate intelligibility measure.</span>
+<span class="sd">        fids (np.ndarray) : Indices of frequency band edges.</span>
+<span class="sd">        cf (np.ndarray) : Centre frequencies.</span>
+<span class="sd">        taus (np.ndarray) : Interaural delay (tau) values.</span>
+<span class="sd">        n_taus (int) : Number of tau values.</span>
+<span class="sd">        gammas (np.ndarray) : Interaural level difference (gamma) values.</span>
+<span class="sd">        ngammas (int) : Number of gamma values.</span>
+<span class="sd">        intermediate_intelligibility_measure_grid (np.ndarray) : Grid for intermediate</span>
+<span class="sd">            intelligibility measure.</span>
+<span class="sd">        p_ec_max (np.ndarray) : Empty grid for maximum values.</span>
+<span class="sd">        sigma_epsilon (np.ndarray) : Jitter for gammas.</span>
+<span class="sd">        sigma_delta (np.ndarray) : Jitter for taus.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        intermediate_intelligibility_measure_grid (np.ndarray) : updated grid for</span>
+<span class="sd">            intermediate intelligibility measure</span>
+<span class="sd">        p_ec_max (np.ndarray) : grid containing maximum values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">taus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">taus</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sigma_delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">sigma_delta</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sigma_epsilon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">sigma_epsilon</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">gammas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">gammas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">epsexp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># per frequency band</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_third_octave_bands</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name</span>
+        <span class="n">tauexp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">centre_frequencies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">taus</span><span class="p">)</span>
+        <span class="n">tauexp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">centre_frequencies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">taus</span><span class="p">)</span>
+        <span class="n">deltexp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">centre_frequencies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">epsdelexp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+            <span class="mf">0.5</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_taus</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="o">*</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_epsilon</span><span class="o">**</span><span class="mi">2</span>
+                    <span class="o">-</span> <span class="n">centre_frequencies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="p">)</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_gammas</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># per frame</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">intermediate_intelligibility_measure_grid</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name</span>
+            <span class="n">seg_xl</span> <span class="o">=</span> <span class="n">left_ear_clean_hat</span><span class="p">[</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">j</span> <span class="p">:</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">seg_xr</span> <span class="o">=</span> <span class="n">right_ear_clean_hat</span><span class="p">[</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">j</span> <span class="p">:</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">seg_yl</span> <span class="o">=</span> <span class="n">left_ear_noisy_hat</span><span class="p">[</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">j</span> <span class="p">:</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">seg_yr</span> <span class="o">=</span> <span class="n">right_ear_noisy_hat</span><span class="p">[</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">j</span> <span class="p">:</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">),</span>
+            <span class="p">]</span>
+
+            <span class="c1"># All normalised by subtracting mean</span>
+            <span class="n">left_ear_clean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">seg_xl</span><span class="p">)</span> <span class="o">*</span> <span class="n">seg_xl</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">left_ear_clean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">left_ear_clean</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">left_ear_clean</span> <span class="o">=</span> <span class="n">left_ear_clean</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">left_ear_clean</span><span class="p">)</span>
+            <span class="n">right_ear_clean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">seg_xr</span><span class="p">)</span> <span class="o">*</span> <span class="n">seg_xr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">right_ear_clean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">right_ear_clean</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">right_ear_clean</span> <span class="o">=</span> <span class="n">right_ear_clean</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">right_ear_clean</span><span class="p">)</span>
+            <span class="n">rhox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">seg_xr</span><span class="p">)</span> <span class="o">*</span> <span class="n">seg_xl</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">rhox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">rhox</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">rhox</span> <span class="o">=</span> <span class="n">rhox</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rhox</span><span class="p">)</span>
+            <span class="n">left_ear_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">seg_yl</span><span class="p">)</span> <span class="o">*</span> <span class="n">seg_yl</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">left_ear_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">left_ear_noisy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">left_ear_noisy</span> <span class="o">=</span> <span class="n">left_ear_noisy</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">left_ear_noisy</span><span class="p">)</span>
+            <span class="n">right_ear_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">seg_yr</span><span class="p">)</span> <span class="o">*</span> <span class="n">seg_yr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">right_ear_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">right_ear_noisy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">right_ear_noisy</span> <span class="o">=</span> <span class="n">right_ear_noisy</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">right_ear_noisy</span><span class="p">)</span>
+            <span class="n">rhoy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">seg_yr</span><span class="p">)</span> <span class="o">*</span> <span class="n">seg_yl</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">rhoy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">rhoy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">rhoy</span> <span class="o">=</span> <span class="n">rhoy</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rhoy</span><span class="p">)</span>
+
+            <span class="c1"># Evaluate parts of intermediate correlation - EC stage exhaustive search</span>
+            <span class="c1"># over ITD/ILD values. These correspond to equations 7 and 8 in</span>
+            <span class="c1"># Andersen et al. 2018</span>
+
+            <span class="c1"># Calculate Exy</span>
+            <span class="n">firstpart</span> <span class="o">=</span> <span class="n">_firstpartfunc</span><span class="p">(</span>
+                <span class="n">left_ear_clean</span><span class="p">,</span>
+                <span class="n">left_ear_noisy</span><span class="p">,</span>
+                <span class="n">right_ear_clean</span><span class="p">,</span>
+                <span class="n">right_ear_noisy</span><span class="p">,</span>
+                <span class="n">n_taus</span><span class="p">,</span>
+                <span class="n">gammas</span><span class="p">,</span>
+                <span class="n">epsexp</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">secondpart</span> <span class="o">=</span> <span class="n">_secondpartfunc</span><span class="p">(</span>
+                <span class="n">left_ear_clean</span><span class="p">,</span> <span class="n">left_ear_noisy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">tauexp</span><span class="p">,</span> <span class="n">epsdelexp</span><span class="p">,</span> <span class="n">gammas</span>
+            <span class="p">)</span>
+            <span class="n">thirdpart</span> <span class="o">=</span> <span class="n">_thirdpartfunc</span><span class="p">(</span>
+                <span class="n">right_ear_clean</span><span class="p">,</span> <span class="n">right_ear_noisy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">tauexp</span><span class="p">,</span> <span class="n">epsdelexp</span><span class="p">,</span> <span class="n">gammas</span>
+            <span class="p">)</span>
+            <span class="n">fourthpart</span> <span class="o">=</span> <span class="n">_fourthpartfunc</span><span class="p">(</span><span class="n">rhox</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">tauexp2</span><span class="p">,</span> <span class="n">n_gammas</span><span class="p">,</span> <span class="n">deltexp</span><span class="p">)</span>
+            <span class="n">exy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">firstpart</span> <span class="o">-</span> <span class="n">secondpart</span> <span class="o">-</span> <span class="n">thirdpart</span> <span class="o">+</span> <span class="n">fourthpart</span><span class="p">)</span>
+
+            <span class="c1"># Calculate Exx</span>
+            <span class="n">firstpart</span> <span class="o">=</span> <span class="n">_firstpartfunc</span><span class="p">(</span>
+                <span class="n">left_ear_clean</span><span class="p">,</span>
+                <span class="n">left_ear_clean</span><span class="p">,</span>
+                <span class="n">right_ear_clean</span><span class="p">,</span>
+                <span class="n">right_ear_clean</span><span class="p">,</span>
+                <span class="n">n_taus</span><span class="p">,</span>
+                <span class="n">gammas</span><span class="p">,</span>
+                <span class="n">epsexp</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">secondpart</span> <span class="o">=</span> <span class="n">_secondpartfunc</span><span class="p">(</span>
+                <span class="n">left_ear_clean</span><span class="p">,</span> <span class="n">left_ear_clean</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">tauexp</span><span class="p">,</span> <span class="n">epsdelexp</span><span class="p">,</span> <span class="n">gammas</span>
+            <span class="p">)</span>
+            <span class="n">thirdpart</span> <span class="o">=</span> <span class="n">_thirdpartfunc</span><span class="p">(</span>
+                <span class="n">right_ear_clean</span><span class="p">,</span> <span class="n">right_ear_clean</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">tauexp</span><span class="p">,</span> <span class="n">epsdelexp</span><span class="p">,</span> <span class="n">gammas</span>
+            <span class="p">)</span>
+            <span class="n">fourthpart</span> <span class="o">=</span> <span class="n">_fourthpartfunc</span><span class="p">(</span><span class="n">rhox</span><span class="p">,</span> <span class="n">rhox</span><span class="p">,</span> <span class="n">tauexp2</span><span class="p">,</span> <span class="n">n_gammas</span><span class="p">,</span> <span class="n">deltexp</span><span class="p">)</span>
+            <span class="n">exx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">firstpart</span> <span class="o">-</span> <span class="n">secondpart</span> <span class="o">-</span> <span class="n">thirdpart</span> <span class="o">+</span> <span class="n">fourthpart</span><span class="p">)</span>
+
+            <span class="c1"># Calculate Eyy</span>
+            <span class="n">firstpart</span> <span class="o">=</span> <span class="n">_firstpartfunc</span><span class="p">(</span>
+                <span class="n">left_ear_noisy</span><span class="p">,</span>
+                <span class="n">left_ear_noisy</span><span class="p">,</span>
+                <span class="n">right_ear_noisy</span><span class="p">,</span>
+                <span class="n">right_ear_noisy</span><span class="p">,</span>
+                <span class="n">n_taus</span><span class="p">,</span>
+                <span class="n">gammas</span><span class="p">,</span>
+                <span class="n">epsexp</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">secondpart</span> <span class="o">=</span> <span class="n">_secondpartfunc</span><span class="p">(</span>
+                <span class="n">left_ear_noisy</span><span class="p">,</span> <span class="n">left_ear_noisy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">tauexp</span><span class="p">,</span> <span class="n">epsdelexp</span><span class="p">,</span> <span class="n">gammas</span>
+            <span class="p">)</span>
+            <span class="n">thirdpart</span> <span class="o">=</span> <span class="n">_thirdpartfunc</span><span class="p">(</span>
+                <span class="n">right_ear_noisy</span><span class="p">,</span> <span class="n">right_ear_noisy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">tauexp</span><span class="p">,</span> <span class="n">epsdelexp</span><span class="p">,</span> <span class="n">gammas</span>
+            <span class="p">)</span>
+            <span class="n">fourthpart</span> <span class="o">=</span> <span class="n">_fourthpartfunc</span><span class="p">(</span><span class="n">rhoy</span><span class="p">,</span> <span class="n">rhoy</span><span class="p">,</span> <span class="n">tauexp2</span><span class="p">,</span> <span class="n">n_gammas</span><span class="p">,</span> <span class="n">deltexp</span><span class="p">)</span>
+            <span class="n">eyy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">firstpart</span> <span class="o">-</span> <span class="n">secondpart</span> <span class="o">-</span> <span class="n">thirdpart</span> <span class="o">+</span> <span class="n">fourthpart</span><span class="p">)</span>
+
+            <span class="c1"># Ensure that intermediate correlation will be sensible and compute it</span>
+            <span class="c1"># If all minimum values are less than 1e-40, set d[i,jj] to -1</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">exx</span> <span class="o">*</span> <span class="n">eyy</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">1e-40</span><span class="p">:</span>
+                <span class="n">intermediate_intelligibility_measure_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="n">proportion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">exx</span><span class="p">,</span> <span class="n">eyy</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">proportion</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">idx1</span> <span class="o">=</span> <span class="n">proportion</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Return overall maximum and index</span>
+            <span class="n">p_ec_max</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">idx2</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+            <span class="n">intermediate_intelligibility_measure_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span>
+                <span class="n">exy</span><span class="p">[</span><span class="n">idx1</span><span class="p">[</span><span class="n">idx2</span><span class="p">],</span> <span class="n">idx2</span><span class="p">],</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">exx</span><span class="p">[</span><span class="n">idx1</span><span class="p">[</span><span class="n">idx2</span><span class="p">],</span> <span class="n">idx2</span><span class="p">]</span> <span class="o">*</span> <span class="n">eyy</span><span class="p">[</span><span class="n">idx1</span><span class="p">[</span><span class="n">idx2</span><span class="p">],</span> <span class="n">idx2</span><span class="p">]),</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">intermediate_intelligibility_measure_grid</span><span class="p">,</span> <span class="n">p_ec_max</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># pylint: disable=invalid-name,fixme</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_firstpartfunc</span><span class="p">(</span>
+    <span class="n">L1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">L2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">R1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">R2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">n_taus</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">gammas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">epsexp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Need a description</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        L1 (???) : ???</span>
+<span class="sd">        L2 (???) : ???</span>
+<span class="sd">        R1 (???) : ???</span>
+<span class="sd">        R2 (???) : ???</span>
+<span class="sd">        n_taus (???) : ???</span>
+<span class="sd">        gammas (???) : ???</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_taus</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="o">*</span> <span class="p">(</span>
+            <span class="mf">10.0</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">gammas</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">L1</span> <span class="o">*</span> <span class="n">L2</span><span class="p">)</span>
+            <span class="o">+</span> <span class="mf">10.0</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">gammas</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R1</span> <span class="o">*</span> <span class="n">R2</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="n">epsexp</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">L1</span> <span class="o">*</span> <span class="n">R2</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R1</span> <span class="o">*</span> <span class="n">L2</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_secondpartfunc</span><span class="p">(</span>
+    <span class="n">L1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">L2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">rho1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">rho2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">tauexp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">epsdelexp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">gammas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Need a description</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        L1 (???) : ???</span>
+<span class="sd">        L2 (???) : ???</span>
+<span class="sd">        rho1 (???) : ???</span>
+<span class="sd">        rho2 (???) : ???</span>
+<span class="sd">        tauexp (???) : ???</span>
+<span class="sd">        epsdelexp (???) : ???</span>
+<span class="sd">        gammas (???) : ???</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="mf">2.0</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">L1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rho1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tauexp</span><span class="p">))</span>
+            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">L2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rho2</span><span class="p">)</span> <span class="o">*</span> <span class="n">tauexp</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="mf">10.0</span><span class="o">**</span><span class="n">gammas</span>
+        <span class="o">*</span> <span class="n">epsdelexp</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_thirdpartfunc</span><span class="p">(</span>
+    <span class="n">R1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">R2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">rho1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">rho2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">tauexp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">epsdelexp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">gammas</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="c1"># FixMe : Complete docstring</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Need a description</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        R1 (???) : ???</span>
+<span class="sd">        R2 (???) : ???</span>
+<span class="sd">        rho1 (???) : ???</span>
+<span class="sd">        rho2 (???) : ???</span>
+<span class="sd">        tauexp (???) : ???</span>
+<span class="sd">        epsdelexp (???) : ???</span>
+<span class="sd">        gammas (???) : ???</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="mf">2.0</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rho1</span><span class="p">),</span> <span class="n">tauexp</span><span class="p">)))</span>
+            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rho2</span><span class="p">)</span> <span class="o">*</span> <span class="n">tauexp</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="n">gammas</span>
+        <span class="o">*</span> <span class="n">epsdelexp</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_fourthpartfunc</span><span class="p">(</span>
+    <span class="n">rho1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">rho2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">tauexp2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">n_gammas</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">deltexp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="c1"># FixMe : Complete docstring</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Need a description</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    rho1 (???) : ???</span>
+<span class="sd">    rho2 (???) : ???</span>
+<span class="sd">    tauexp2 (???) : ???</span>
+<span class="sd">    n_gammas (???) : ???</span>
+<span class="sd">    deltexp (???) : ???</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="mf">2.0</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rho1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rho2</span><span class="p">))))</span>
+            <span class="o">+</span> <span class="n">deltexp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rho1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rho2</span><span class="p">)</span> <span class="o">*</span> <span class="n">tauexp2</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_gammas</span><span class="p">))</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># pylint: enable=invalid-name,fixme</span>
+
+
+<div class="viewcode-block" id="stft">
+<a class="viewcode-back" href="../../../../clarity.evaluator.mbstoi.html#clarity.evaluator.mbstoi.mbstoi_utils.stft">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">stft</span><span class="p">(</span>
+    <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">win_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">fft_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Short-time Fourier transform based on MBSTOI Matlab code.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (np.ndarray) : Input signal</span>
+<span class="sd">        win_size (int) : The size of the window and the signal frames.</span>
+<span class="sd">        fft_size (int) : The size of the fft in samples (zero-padding or not).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        stft_out (np.ndarray) : The short-time Fourier transform of signal.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">win_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">-</span> <span class="n">win_size</span><span class="p">,</span> <span class="n">hop</span><span class="p">))</span>
+    <span class="n">stft_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="n">fft_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+
+    <span class="n">hanning_window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">win_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">frame</span> <span class="o">+</span> <span class="n">win_size</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">stft_out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*</span> <span class="n">hanning_window</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">fft_size</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># pylint: enable=invalid-name</span>
+
+    <span class="k">return</span> <span class="n">stft_out</span></div>
+
+
+
+<div class="viewcode-block" id="remove_silent_frames">
+<a class="viewcode-back" href="../../../../clarity.evaluator.mbstoi.html#clarity.evaluator.mbstoi.mbstoi_utils.remove_silent_frames">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_silent_frames</span><span class="p">(</span>
+    <span class="n">left_ear_clean</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">right_ear_clean</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">left_ear_noisy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">right_ear_noisy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">dynamic_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="n">frame_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+    <span class="n">hop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove silent frames of x and y based on x</span>
+
+<span class="sd">    A frame is excluded if its energy is lower than max(energy) - dyn_range</span>
+<span class="sd">    The frame exclusion is based solely on x, the clean speech signal</span>
+<span class="sd">    Based on mpariente/pystoi/utils.py</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        left_ear_clean (np.ndarray) : Clean input signal left channel.</span>
+<span class="sd">        right_ear_clean (np.ndarray) : Clean input signal right channel.</span>
+<span class="sd">        left_ear_noisy (np.ndarray) : Degraded/processed signal left channel.</span>
+<span class="sd">        right_ear_noisy (np.ndarray) : Degraded/processed signal right channel.</span>
+<span class="sd">        dyn_range (np.ndarray) : Range, energy range to determine which frame is silent</span>
+<span class="sd">            Default is 40.</span>
+<span class="sd">        framelen (int) : Window size for energy evaluation (default : 256).</span>
+<span class="sd">        hop (int) : Hop size for energy evaluation (default : 128).</span>
+
+<span class="sd">    Returns :</span>
+<span class="sd">        xl_sil (np.ndarray): left_ear_clean without the silent frames.</span>
+<span class="sd">        xr_sil (np.ndarray): right_ear_clean without the silent frames.</span>
+<span class="sd">        yl_sil (np.ndarray): left_ear_noisy without the silent frames in xl_sil.</span>
+<span class="sd">        yr_sil (np.ndarray): right_ear_noisy without the silent frames in rl_sil.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dyn_range</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dynamic_range</span><span class="p">)</span>  <span class="c1"># TODO: remove this useless line</span>
+    <span class="n">hop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hop</span><span class="p">)</span>  <span class="c1"># TODO: enforce hop to be int as parameter, callers have to cast</span>
+
+    <span class="c1"># Compute Mask</span>
+    <span class="n">hanning_window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">frame_length</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">xl_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">hanning_window</span> <span class="o">*</span> <span class="n">left_ear_clean</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_ear_clean</span><span class="p">)</span> <span class="o">-</span> <span class="n">frame_length</span><span class="p">,</span> <span class="n">hop</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">xr_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">hanning_window</span> <span class="o">*</span> <span class="n">right_ear_clean</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_ear_clean</span><span class="p">)</span> <span class="o">-</span> <span class="n">frame_length</span><span class="p">,</span> <span class="n">hop</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">yl_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">hanning_window</span> <span class="o">*</span> <span class="n">left_ear_noisy</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_ear_noisy</span><span class="p">)</span> <span class="o">-</span> <span class="n">frame_length</span><span class="p">,</span> <span class="n">hop</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">yr_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">hanning_window</span> <span class="o">*</span> <span class="n">right_ear_noisy</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_ear_noisy</span><span class="p">)</span> <span class="o">-</span> <span class="n">frame_length</span><span class="p">,</span> <span class="n">hop</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute energies in dB</span>
+    <span class="n">xl_energies</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xl_frames</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">)</span>
+    <span class="n">xr_energies</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">xr_frames</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">)</span>
+
+    <span class="c1"># Find boolean mask of energies lower than dynamic_range dB</span>
+    <span class="c1"># with respect to maximum clean speech energy frame</span>
+    <span class="n">maskxl</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xl_energies</span><span class="p">)</span> <span class="o">-</span> <span class="n">dyn_range</span> <span class="o">-</span> <span class="n">xl_energies</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="n">maskxr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xr_energies</span><span class="p">)</span> <span class="o">-</span> <span class="n">dyn_range</span> <span class="o">-</span> <span class="n">xr_energies</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">maskxl</span> <span class="o">|</span> <span class="n">maskxr</span>
+
+    <span class="c1"># Remove silent frames by masking</span>
+    <span class="n">xl_frames</span> <span class="o">=</span> <span class="n">xl_frames</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">xr_frames</span> <span class="o">=</span> <span class="n">xr_frames</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">yl_frames</span> <span class="o">=</span> <span class="n">yl_frames</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">yr_frames</span> <span class="o">=</span> <span class="n">yr_frames</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="c1"># init zero arrays to hold x, y with silent frames removed</span>
+    <span class="n">n_sil</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xl_frames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hop</span> <span class="o">+</span> <span class="n">frame_length</span>
+    <span class="n">xl_sil</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sil</span><span class="p">)</span>
+    <span class="n">xr_sil</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sil</span><span class="p">)</span>
+    <span class="n">yl_sil</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sil</span><span class="p">)</span>
+    <span class="n">yr_sil</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sil</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xl_frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">xl_sil</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">hop</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">hop</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">xl_frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">xr_sil</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">hop</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">hop</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">xr_frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">yl_sil</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">hop</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">hop</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">yl_frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">yr_sil</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">hop</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">hop</span> <span class="o">+</span> <span class="n">frame_length</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">yr_frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">xl_sil</span><span class="p">,</span> <span class="n">xr_sil</span><span class="p">,</span> <span class="n">yl_sil</span><span class="p">,</span> <span class="n">yr_sil</span></div>
+
+
+
+<div class="viewcode-block" id="thirdoct">
+<a class="viewcode-back" href="../../../../clarity.evaluator.mbstoi.html#clarity.evaluator.mbstoi.mbstoi_utils.thirdoct">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">thirdoct</span><span class="p">(</span>
+    <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">nfft</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">num_bands</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">min_freq</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the 1/3 octave band matrix and its center frequencies</span>
+<span class="sd">    based on mpariente/pystoi.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sample_rate (float) : Frequency sampling rate.</span>
+<span class="sd">        n_fft (int) : Number of FFT. FFT == ???</span>
+<span class="sd">        num_bands (int) : Number of one-third octave bands.</span>
+<span class="sd">        min_freq (int) : Center frequencey of the lowest one-third octave band.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        octave_band_matrix (np.ndarray) :</span>
+<span class="sd">        centre_frequencies (np.ndarray) : Centre frequencies.</span>
+<span class="sd">        frequency_band_edges_indices (np.ndarray) : Indices of Frequency Band Edges</span>
+<span class="sd">        freq_low (float) : Lowest frequency.</span>
+<span class="sd">        freq_high (float) : Highest frequency</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">nfft</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="n">nfft</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_bands</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="c1"># pylint: enable=invalid-name</span>
+    <span class="n">centre_frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">min_freq</span>
+    <span class="n">freq_low</span> <span class="o">=</span> <span class="n">min_freq</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="n">freq_high</span> <span class="o">=</span> <span class="n">min_freq</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="n">octave_band_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_bands</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>  <span class="c1"># a verifier</span>
+    <span class="n">frequency_band_edges_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_bands</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centre_frequencies</span><span class="p">)):</span>  <span class="c1"># pylint: disable=invalid-name</span>
+        <span class="c1"># Match 1/3 oct band freq with fft frequency bin</span>
+        <span class="n">f_bin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">freq_low</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">freq_low</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">f_bin</span><span class="p">]</span>
+        <span class="n">fl_ii</span> <span class="o">=</span> <span class="n">f_bin</span>
+        <span class="n">f_bin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">f</span> <span class="o">-</span> <span class="n">freq_high</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">freq_high</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">f_bin</span><span class="p">]</span>
+        <span class="n">fh_ii</span> <span class="o">=</span> <span class="n">f_bin</span>
+        <span class="c1"># Assign to the octave band matrix</span>
+        <span class="n">octave_band_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">fl_ii</span><span class="p">:</span><span class="n">fh_ii</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">frequency_band_edges_indices</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fl_ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fh_ii</span><span class="p">]</span>
+
+    <span class="n">centre_frequencies</span> <span class="o">=</span> <span class="n">centre_frequencies</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">octave_band_matrix</span><span class="p">,</span>
+        <span class="n">centre_frequencies</span><span class="p">,</span>
+        <span class="n">frequency_band_edges_indices</span><span class="p">,</span>
+        <span class="n">freq_low</span><span class="p">,</span>
+        <span class="n">freq_high</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="find_delay_impulse">
+<a class="viewcode-back" href="../../../../clarity.evaluator.mbstoi.html#clarity.evaluator.mbstoi.mbstoi_utils.find_delay_impulse">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_delay_impulse</span><span class="p">(</span>
+    <span class="n">ddf</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">initial_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find binaural delay in signal ddf.</span>
+
+<span class="sd">    Finds delay given initial location of unit impulse, initial_value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ddf (np.ndarray) :</span>
+<span class="sd">        initial_value: (int) : Initial value (default: 22050)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        delay (np.ndarray) : Binaural delay.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pk0</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">ddf</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">pk1</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">ddf</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pk0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># m = np.max(ddf[pk0[0], 0])</span>
+        <span class="n">pkmax0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ddf</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">delay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pkmax0</span> <span class="o">-</span> <span class="n">initial_value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in selecting peaks.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pk1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pkmax1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ddf</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">delay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pkmax1</span> <span class="o">-</span> <span class="n">initial_value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in selecting peaks.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">delay</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

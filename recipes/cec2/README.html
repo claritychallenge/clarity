@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The 2nd Clarity Enhancement Challenge (CEC2) &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="The 1st Clarity Prediction Challenge (CPC1)" href="../cpc1/README.html" />
+    <link rel="prev" title="E009 - Implementation of the Sheffield entry for the first Clarity enhancement challenge (CEC1)" href="../cec1/e009_sheffield/README.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-2nd-clarity-enhancement-challenge-cec2">
+<h1>The 2nd Clarity Enhancement Challenge (CEC2)<a class="headerlink" href="#the-2nd-clarity-enhancement-challenge-cec2" title="Link to this heading">¶</a></h1>
+<p>Clarity challenge code for the 2nd enhancement challenge (CEC2).</p>
+<p>For more information about the Clarity Challenge please visit <a class="reference external" href="https://claritychallenge.github.io/clarity_CC_doc/">https://claritychallenge.github.io/clarity_CC_doc/</a></p>
+<p>Clarity tutorials are now available in <a class="reference external" href="https://claritychallenge.github.io/clarity_CC_doc/tutorials">https://claritychallenge.github.io/clarity_CC_doc/tutorials</a>. The tutorials introduce the Clarity installation, how to interact with Clarity metadata, and also provide examples of baseline systems and evaluation tools.</p>
+<section id="data-structure">
+<h2>Data structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<p>To download data, please visit <a class="reference external" href="https://mab.to/zU7TS8jJelkoD">here</a>. The data is split into three packages: <code class="docutils literal notranslate"><span class="pre">clarity_CEC2_core.v1_0.tgz</span></code> [28 GB], <code class="docutils literal notranslate"><span class="pre">clarity_CEC2_train.v1_0.tgz</span></code> [69 GB] and <code class="docutils literal notranslate"><span class="pre">clarity_CEC2_hoairs.v1_0.tgz</span></code> [144 GB].</p>
+<p>Unpack packages under the same root directory using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>&lt;PACKAGE_NAME&gt;
+</pre></div>
+</div>
+<p><strong>Core</strong> contains metadata and development set signals, which can be used for validate existing systems</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+|   hrir/HRIRs_MAT 167M
+|
+└───dev
+|   └───rooms
+|   |   |   ac 20M
+|   |   |   rpf 79M
+|   |
+|   └───interferers
+|   |   |   music 5.8G
+|   |   |   noise 587M
+|   |   |   speech 1.4G
+|   |
+|   └───scenes 39G
+|   |
+|   └───targets 1.3G
+|   |
+|   └───speaker_adapt 20M
+|
+└───metadata
+    |   scenes.train.json
+    |   scenes.dev.json
+    |   rooms.train.json
+    |   rooms.dev.json
+    |   masker_music_list.json
+    |   masker_nonspeech_list.json
+    |   masker_speech_list.json
+    |   target_speech_list.json
+    |   hrir_data.json
+    |   listeners.json
+    |   scenes_listeners.dev.json
+    |   ...
+</pre></div>
+</div>
+<p><strong>Train</strong> contains training set, which can be used to optimise a system</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+└───train
+    └───rooms
+    |   |   ac 48M
+    |   |   rpf 190M
+    |
+    └───interferers
+    |   |   music 16GG
+    |   |   noise 3.9M
+    |   |   speech 4.5G
+    |
+    └───scenes 89G
+    |
+    └───targets 2.8G
+</pre></div>
+</div>
+<p><strong>HOA_IRs</strong> contains impulse responses for reproducing the scenes or for rendering more training data (scenes).</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clarity_data
+└───train/rooms/HOA_IRs 117G
+|
+└───dev/rooms/HOA_IRs 49G
+</pre></div>
+</div>
+</section>
+<section id="data-preparation">
+<h2>Data preparation<a class="headerlink" href="#data-preparation" title="Link to this heading">¶</a></h2>
+<p>In this folder, we provide the code used for building scenes (i.e., generating <code class="docutils literal notranslate"><span class="pre">metadata/scenes.train.json</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata/scenes.dev.json</span></code>), and rendering the scene signals dependent on the parameters in the json files. You can reproduce all the scenes with <code class="docutils literal notranslate"><span class="pre">HOA_IRs</span></code>.</p>
+<p>To reproduce the training and development set, first specify the <code class="docutils literal notranslate"><span class="pre">path.root</span></code> in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, i.e., replace <code class="docutils literal notranslate"><span class="pre">???</span></code> with <code class="docutils literal notranslate"><span class="pre">YOUR_DATA_PATH/clarity_CEC2_data</span></code>.</p>
+<p>Second run (will skip if the json files of <em>rooms</em> or <em>scenes</em> are already in <code class="docutils literal notranslate"><span class="pre">metadata/</span></code>)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>build_scenes.py
+</pre></div>
+</div>
+<p>Third run the <code class="docutils literal notranslate"><span class="pre">render_scenes.py</span></code>.</p>
+<p>If single-run locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>render_scenes.py
+</pre></div>
+</div>
+<p>The Hydra submitit feature is used for parallel multi-run, see <a class="reference external" href="https://hydra.cc/docs/plugins/submitit_launcher/">https://hydra.cc/docs/plugins/submitit_launcher/</a></p>
+<p>If multi-run locally, make sure the <code class="docutils literal notranslate"><span class="pre">override</span> <span class="pre">hydra/launcher</span></code> is set <code class="docutils literal notranslate"><span class="pre">cec2_submitit_local</span></code>, and specify the parameters in <code class="docutils literal notranslate"><span class="pre">hydra/launcher/cec2_submitit_local.yaml</span></code>, then:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 50 subjobs</span>
+python<span class="w"> </span>render_scenes.py<span class="w"> </span><span class="s1">&#39;render_starting_chunk=range(0, 500, 10)&#39;</span><span class="w"> </span>--multirun
+</pre></div>
+</div>
+<p>If multi-run on a Slurm cluster, make sure the <code class="docutils literal notranslate"><span class="pre">override</span> <span class="pre">hydra/launcher</span></code> is set <code class="docutils literal notranslate"><span class="pre">cec2_submitit_slurm</span></code>, and specify the parameters in <code class="docutils literal notranslate"><span class="pre">hydra/launcher/cec2_submitit_slurm.yaml</span></code>, then submit the <code class="docutils literal notranslate"><span class="pre">render_scenes.sh</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sbatch<span class="w"> </span>render_scenes.sh
+</pre></div>
+</div>
+</section>
+<section id="baseline">
+<h2>Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>In this folder, we provide code for generating more training data, objective evaluation with binaural HASPI [1]. The baseline system consists of the NAL-R [2] fitting amplification and a simple automatic gain compressor.</p>
+<p>UPDATE: the soft clipping to prevent before saving to 16bit signal has been modified, as the previous version violates the causal rule.</p>
+<section id="data-generation">
+<h3>Data generation<a class="headerlink" href="#data-generation" title="Link to this heading">¶</a></h3>
+<p>The method of using this is the same as for <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">preparation</span></code>. A <code class="docutils literal notranslate"><span class="pre">scenes.train_additional.json</span></code> will be generated in the <code class="docutils literal notranslate"><span class="pre">clarity_data/metadata/</span></code>, and additional training data will be generated in <code class="docutils literal notranslate"><span class="pre">clarity_data/train/additional_scenes/</span></code>.</p>
+</section>
+<section id="baseline-enhancement">
+<h3>Baseline enhancement<a class="headerlink" href="#baseline-enhancement" title="Link to this heading">¶</a></h3>
+<p>To run the baseline enhancement system, firstly specify <code class="docutils literal notranslate"><span class="pre">root</span></code> in config.yaml. You can also define your own <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code> to store enhanced signals and evaluated results. Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>enhance.py
+</pre></div>
+</div>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">enhanced_signals</span></code> will appear in the <code class="docutils literal notranslate"><span class="pre">exp</span></code> folder.</p>
+</section>
+<section id="evaluation">
+<h3>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">evaluate.py</span></code> calculates the better-ear HASPI score given the scene-listener pairs in <code class="docutils literal notranslate"><span class="pre">clarity_data/metadata/scenes_listeners.dev.json</span></code> for the development set. Specify <code class="docutils literal notranslate"><span class="pre">path.exp_folder</span></code> to store the results, and specify <code class="docutils literal notranslate"><span class="pre">evaluate.cal_unprocessed_si</span></code> to decide whether compute HASPI scores for unprocessed scenes. Then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evaluate.py
+</pre></div>
+</div>
+<p>A csv file containing the HASPI scores will be generated in the <code class="docutils literal notranslate"><span class="pre">exp_folder</span></code>.</p>
+<p>To check the HASPI code, see <a class="reference internal" href="#../../clarity/evaluator/haspi"><span class="xref myst">here</span></a>. The <code class="docutils literal notranslate"><span class="pre">_target_anechoic_CH1.wav</span></code> is used as the reference, with its level is normalised to match that of the corresponding <code class="docutils literal notranslate"><span class="pre">_target_CH1.wav</span></code>.</p>
+<p>The scores of both unprocessed signals and baseline enhanced signals are provided, whose averages are <code class="docutils literal notranslate"><span class="pre">0.1615</span></code> and <code class="docutils literal notranslate"><span class="pre">0.2492</span></code>, respectively. Please note: you will not get identical HASPI scores for the same signals if the random seed is not determined (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). As there are random noises generated within HASPI, but the differences should be sufficiently small. We ran evaluation for the baseline for five times, and the average overall score is 0.2491594 +/- 2.3366643e-6.</p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>[1] Kates J M, Arehart K H. The hearing-aid speech perception index (HASPI) J. Speech Communication, 2014, 65: 75-93.</p></li>
+<li><p>[2] Byrne, Denis, and Harvey Dillon. “The National Acoustic Laboratories’(NAL) new procedure for selecting the gain and frequency response of a hearing aid.” Ear and hearing 7.4 (1986): 257-265.</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../../recipes_doc.html">Recipes</a><ul>
+      <li>Previous: <a href="../cec1/e009_sheffield/README.html" title="previous chapter">E009 - Implementation of the Sheffield entry for the first Clarity enhancement challenge (CEC1)</a></li>
+      <li>Next: <a href="../cpc1/README.html" title="next chapter">The 1st Clarity Prediction Challenge (CPC1)</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/recipes/cec2/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
