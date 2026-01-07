@@ -1,8 +1,10 @@
 # MSBG Hearing Loss Simulator
+
 This distribution is an implementation of the MSBG (Moore, Stone, Baer, and Glasberg ) hearing-loss simulator from Cambridge University. For more details see this
 [blog post](https://claritychallenge.org/blog/Hearing%20loss%20simulation).
 
 ## History
+
 The first round of the Clarify Challenge needed an objective measure of hearing-impaired intelligibility. The aim was not to define a definitive perceptual model, but simply to have a principled way of ranking enhancement systems. The idea was to combine a hearing-loss simulation with STOI.
 
 Michael Stone and Brian Moore’s hearing-loss simulation had a MATLAB/C++ version that had been shared with several groups outside Cambridge, and Michael also had a more recent, fully MATLAB implementation. With Brian’s consent, Michael was happy to share that version for the purposes of the challenge.
@@ -12,6 +14,7 @@ Trevor Cox and Simone Graetzer translated the MATLAB code into Python. The trans
 The original MATLAB code itself was unpublished and does not have a single, definitive reference. From the comments and structure, it appears to have evolved over a long period (roughly 2005–2015, possibly later), with different components validated in different papers. We preserved all original comments in the Python version, including references to papers where specific parts of the model are mentioned.
 
 ## References
+
 Spectral smearing:
 
 T. Baer and B.C.J. Moore, Effects of spectral smearing on the intelligibility of sentences in the presence of noise, J. Acoust. Soc. Am. 94: 1229-1241 (1993). [PubMed](https://pubmed.ncbi.nlm.nih.gov/8201124/)
@@ -27,6 +30,7 @@ Filtering to equalise signal for cochlear presentation:
 M.A. Stone and B.C.J. Moore, Tolerable hearing-aid delays. I. Estimation of limits imposed by the auditory path alone using simulated hearing losses, Ear Hear. 20: 182-192 (1999). [PubMed](https://pubmed.ncbi.nlm.nih.gov/10386846/)
 
 ## Matlab Comments
+
 Here are selected parts of the header for original Matlab main control program.
 
 Hearing impairment simulator, written by members of Auditory Perception Group, University of Cambridge, ca 1991-2013.
@@ -35,7 +39,7 @@ In this version, user specifies a file in variable "IpFileNames", and this is pr
 each signal file for as many times as there are audiograms in "Audiogram_Master()" array.
 simulation is only intended for audiogram max of 80-90 dB HL, otherwise things go wrong/unrealistic')(excessive recruitment)
 
-Since 2007 this code maintained and updated by Michael A Stone, Michael.Stone@manchester.ac.uk
+Since 2007 this code maintained and updated by Michael A Stone, <Michael.Stone@manchester.ac.uk>
 Comments extended for AMToolbox version, Jan 2025
 further updated by M.A.Stone, Oct 2015 (more extensive comments)
 2013: converted to replace DOS C executables with MATLAB script. Filterbank made higher resolution than previous
@@ -44,7 +48,6 @@ Extensive header updated Jan 2011.
 modified Oct 09 to do multi-channel (stereo) processing
 modified by MAS, Jun09 for 44.1k sampling,  new executables as well: same old names
 modified by MAS, Oct08 to try to get more consistent results, for accessibility project, Feb 2007.
-
 
 ........
 modified by MAStone, Nov 2013 to remove previous dependency on C executables to perform filterbank and recruitment.
