@@ -49,8 +49,6 @@ modified Oct 09 to do multi-channel (stereo) processing
 modified by MAS, Jun09 for 44.1k sampling,  new executables as well: same old names
 modified by MAS, Oct08 to try to get more consistent results, for accessibility project, Feb 2007.
 
-
-........
 modified by MAStone, Nov 2013 to remove previous dependency on C executables to perform filterbank and recruitment.
 this was originaly done because of computer euqipment available in the early 1990s.
 Now all included as MATLAB scripts.  Should lead to less problems with head- (and floor-) room and more clarity in calibration
@@ -74,6 +72,5 @@ tone and calibration speech-spectrum-shaped noise at start of each channel signa
 In the original recruitment simulation (1990s), the filter bandwidth was set to 3 times broader than "normal" (ie 3*ERBn).  This sort of width is suitable for severe losses, where signal bandwidth is usually limited, hence the original software was written for 16 kHz samplerate, and used 13 overlapping filters, at 3-ERBN spacing. This version, with samplerate set to 44.1 kHz was intended for more moderate losses, hence the recruitment filterbank adjusts, depending on the mean hearing loss to be simulated, caclculated in the range 2-8 kHz.
 
 Three degrees of broadening are available, x1.5, x2 and x3 broadening (see "cochlear_simulate.m"), but now with greater overlap of filters (~33% hyper-sampled, 1.1-, 1.5- & 2.3-ERBn spaced).
-
 
 The degree of spectral smearing, applied uniformly across frequencies, also depends on the average audiogram between 2 and 8 kHz.  The higher the degree of smearing, the more "fuzziness” it applies to the signal, by bringing up the level of noise between signal components.  To a first order, this can be regarded as a form of degradation of IHC signal quality. Because of the non-linearity of the processing, and the overlap of the filters, this software does not (and cannot) provide an "exact" simulation, more a qualitative feel for the sorts of problems to be experienced.  So if a calibration tone comes out 1-2 dB away from where one expected it to, then do not be surprised.
