@@ -18,6 +18,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
+[![PyPI](https://img.shields.io/static/v1?label=ICASSP%202026%20Cadenza%20Challenge%20-%20pypi&message=v0.8.0&color=orange)](https://pypi.org/project/pyclarity/0.8.0/)
 [![PyPI](https://img.shields.io/static/v1?label=CPC3%20Challenge%20-%20pypi&message=v0.7.1&color=orange)](https://pypi.org/project/pyclarity/0.7.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CAD2%20Challenge%20-%20pypi&message=v0.6.0&color=orange)](https://pypi.org/project/pyclarity/0.6.0/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC3%20Challenge%20-%20pypi&message=v0.5.0&color=orange)](https://pypi.org/project/pyclarity/0.5.0/)
@@ -40,7 +41,7 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
 ## Current Events
 
 - The ICASSP 2026 Cadenza Challenge: Predicting Lyric Intelligibility is now open :fire::fire:
-  - Visit the [cadenza website](https://cadenzachallenge.org/docs/clip1/intro) for more details.
+  - Visit the [Cadenza website](https://cadenzachallenge.org/docs/clip1/intro) for more details.
   - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
 
 ## Installation
