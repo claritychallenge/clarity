@@ -1,8 +1,10 @@
 # MSBG Hearing Loss Simulator
+
 This distribution is an implementation of the MSBG (Moore, Stone, Baer, and Glasberg ) hearing-loss simulator from Cambridge University. For more details see this
 [blog post](https://claritychallenge.org/blog/Hearing%20loss%20simulation).
 
 ## History
+
 The first round of the Clarify Challenge needed an objective measure of hearing-impaired intelligibility. The aim was not to define a definitive perceptual model, but simply to have a principled way of ranking enhancement systems. The idea was to combine a hearing-loss simulation with STOI.
 
 Michael Stone and Brian Moore’s hearing-loss simulation had a MATLAB/C++ version that had been shared with several groups outside Cambridge, and Michael also had a more recent, fully MATLAB implementation. With Brian’s consent, Michael was happy to share that version for the purposes of the challenge.
@@ -12,6 +14,7 @@ Trevor Cox and Simone Graetzer translated the MATLAB code into Python. The trans
 The original MATLAB code itself was unpublished and does not have a single, definitive reference. From the comments and structure, it appears to have evolved over a long period (roughly 2005–2015, possibly later), with different components validated in different papers. We preserved all original comments in the Python version, including references to papers where specific parts of the model are mentioned.
 
 ## References
+
 Spectral smearing:
 
 T. Baer and B.C.J. Moore, Effects of spectral smearing on the intelligibility of sentences in the presence of noise, J. Acoust. Soc. Am. 94: 1229-1241 (1993). [PubMed](https://pubmed.ncbi.nlm.nih.gov/8201124/)
@@ -27,6 +30,7 @@ Filtering to equalise signal for cochlear presentation:
 M.A. Stone and B.C.J. Moore, Tolerable hearing-aid delays. I. Estimation of limits imposed by the auditory path alone using simulated hearing losses, Ear Hear. 20: 182-192 (1999). [PubMed](https://pubmed.ncbi.nlm.nih.gov/10386846/)
 
 ## Matlab Comments
+
 Here are selected parts of the header for original Matlab main control program.
 
 Hearing impairment simulator, written by members of Auditory Perception Group, University of Cambridge, ca 1991-2013.
@@ -35,7 +39,7 @@ In this version, user specifies a file in variable "IpFileNames", and this is pr
 each signal file for as many times as there are audiograms in "Audiogram_Master()" array.
 simulation is only intended for audiogram max of 80-90 dB HL, otherwise things go wrong/unrealistic')(excessive recruitment)
 
-Since 2007 this code maintained and updated by Michael A Stone, Michael.Stone@manchester.ac.uk
+Since 2007 this code maintained and updated by Michael A Stone, <Michael.Stone@manchester.ac.uk>
 Comments extended for AMToolbox version, Jan 2025
 further updated by M.A.Stone, Oct 2015 (more extensive comments)
 2013: converted to replace DOS C executables with MATLAB script. Filterbank made higher resolution than previous
@@ -70,5 +74,6 @@ tone and calibration speech-spectrum-shaped noise at start of each channel signa
 In the original recruitment simulation (1990s), the filter bandwidth was set to 3 times broader than "normal" (ie 3*ERBn).  This sort of width is suitable for severe losses, where signal bandwidth is usually limited, hence the original software was written for 16 kHz samplerate, and used 13 overlapping filters, at 3-ERBN spacing. This version, with samplerate set to 44.1 kHz was intended for more moderate losses, hence the recruitment filterbank adjusts, depending on the mean hearing loss to be simulated, caclculated in the range 2-8 kHz.
 
 Three degrees of broadening are available, x1.5, x2 and x3 broadening (see "cochlear_simulate.m"), but now with greater overlap of filters (~33% hyper-sampled, 1.1-, 1.5- & 2.3-ERBn spaced).
+
 
 The degree of spectral smearing, applied uniformly across frequencies, also depends on the average audiogram between 2 and 8 kHz.  The higher the degree of smearing, the more "fuzziness” it applies to the signal, by bringing up the level of noise between signal components.  To a first order, this can be regarded as a form of degradation of IHC signal quality. Because of the non-linearity of the processing, and the overlap of the filters, this software does not (and cannot) provide an "exact" simulation, more a qualitative feel for the sorts of problems to be experienced.  So if a calibration tone comes out 1-2 dB away from where one expected it to, then do not be surprised.
