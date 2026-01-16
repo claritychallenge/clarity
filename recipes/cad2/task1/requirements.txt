@@ -1,4 +1,4 @@
+alt-eval
 huggingface-hub
-jiwer
 openai-whisper
 safetensors
