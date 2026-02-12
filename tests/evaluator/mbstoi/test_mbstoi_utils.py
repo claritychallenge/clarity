@@ -14,6 +14,7 @@ from clarity.evaluator.mbstoi.mbstoi_utils import (
     stft,
     thirdoct,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_equalisation_cancellation() -> None:
@@ -65,10 +66,10 @@ def test_equalisation_cancellation() -> None:
 
     # check values
     assert np.sum(intermediate_grid) == pytest.approx(
-        277.84700307853785, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        277.84700307853785, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(p_ec_m) == pytest.approx(
-        73.14293826967146, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        73.14293826967146, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -89,7 +90,7 @@ def test_firstpartfunc() -> None:
     )
     assert result.shape == (n_taus, n_gammas)
     assert np.sum(result) == pytest.approx(
-        405590.0256254587, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        405590.0256254587, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -111,7 +112,7 @@ def test_secondpartfunc() -> None:
     )
     assert result.shape == (n_taus, n_gammas)
     assert np.sum(result) == pytest.approx(
-        127394.91897484378, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        127394.91897484378, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -133,7 +134,7 @@ def test_thirdpartfunc() -> None:
     )
     assert result.shape == (n_taus, n_gammas)
     assert np.sum(result) == pytest.approx(
-        9483.482148264484, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        9483.482148264484, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -153,7 +154,7 @@ def test_fourthpartfunc() -> None:
     )
     assert result.shape == (n_taus, n_gammas)
     assert np.sum(result) == pytest.approx(
-        75883.96658627654, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        75883.96658627654, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -167,7 +168,7 @@ def test_stft() -> None:
 
     assert stft_out.shape == (8, fft_size)
     assert np.sum(stft_out) == pytest.approx(
-        0.07977179832430759, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.07977179832430759, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -183,7 +184,7 @@ def test_remove_silent_frames() -> None:
     left_ear_noisy = left_ear_clean + np.random.random(n_frames)
     right_ear_noisy = right_ear_clean + np.random.random(n_frames)
 
-    (xl_sil, xr_sil, yl_sil, yr_sil) = remove_silent_frames(
+    xl_sil, xr_sil, yl_sil, yr_sil = remove_silent_frames(
         left_ear_clean=left_ear_clean,
         right_ear_clean=right_ear_clean,
         left_ear_noisy=left_ear_noisy,
@@ -194,19 +195,19 @@ def test_remove_silent_frames() -> None:
     )
 
     assert np.sum(xl_sil[0:300]) == pytest.approx(
-        0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(xl_sil) == pytest.approx(
-        128.15949932062742, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        128.15949932062742, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(xr_sil) == pytest.approx(
-        272.06229083012374, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        272.06229083012374, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(yl_sil) == pytest.approx(
-        413.65823132789836, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        413.65823132789836, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(yr_sil) == pytest.approx(
-        551.1857227061379, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        551.1857227061379, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -221,24 +222,24 @@ def test_thirdoct() -> None:
     ) = thirdoct(sample_rate=8000, nfft=512, num_bands=3, min_freq=100)
 
     assert freq_low == pytest.approx(
-        [93.75, 109.375, 140.625], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        [93.75, 109.375, 140.625], rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert freq_high == pytest.approx(
-        [109.375, 140.625, 171.875], rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        [109.375, 140.625, 171.875], rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert centre_frequencies == pytest.approx(
         np.array([[100.0, 125.99210499, 158.7401052]]),
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
     assert octave_band_matrix.shape == (3, 257)
     assert np.sum(octave_band_matrix) == pytest.approx(
-        5.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        5.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert frequency_band_edges_indices == pytest.approx(
         np.array([[7, 7], [8, 9], [10, 11]]),
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
 
 

@@ -10,6 +10,7 @@ from clarity.utils.audiogram import (
     AUDIOGRAM_MODERATE,
     AUDIOGRAM_MODERATE_SEVERE,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture
@@ -82,12 +83,8 @@ def test_msbg_hearing_model_measure_rms(use_torch, msbg_model):
     y_torch = msbg_model.measure_rms(x)
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 1)
-    assert y[0, 0] == pytest.approx(
-        1.0040439, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert y[1, 0] == pytest.approx(
-        0.99920964, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert y[0, 0] == pytest.approx(1.0040439, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
+    assert y[1, 0] == pytest.approx(0.99920964, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
 def test_msbg_hearing_model_calibrate_spl(use_torch, msbg_model):
@@ -98,7 +95,7 @@ def test_msbg_hearing_model_calibrate_spl(use_torch, msbg_model):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        32026.688, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        32026.688, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -116,7 +113,7 @@ def test_msbg_hearing_model_calibrate_spl_null(use_torch):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        initial_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        initial_sum, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )  # <--- No change
 
 
@@ -128,7 +125,7 @@ def test_msbg_hearing_model_src_to_cochlea_filt(use_torch, msbg_model):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (1, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        14804.21875, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        14804.21875, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -140,7 +137,7 @@ def test_msbg_hearing_model_smear(use_torch, msbg_model):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 1, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        29985.154, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        29985.154, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -152,7 +149,7 @@ def test_msbg_hearing_model_recruitment(use_torch, msbg_model_quick):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 1, 10000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        13046.6328125, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        13046.6328125, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -164,7 +161,7 @@ def test_msbg_hearing_model_recruitment_fir(use_torch, msbg_model_quick):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (1, 1, 10000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        5229.41162109375, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        5229.41162109375, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -196,7 +193,7 @@ def test_torchloudnorm_apply_filter(use_torch):
 
     assert y.shape == (2, 1, 40000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        98578.4921875, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        98578.4921875, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -214,7 +211,7 @@ def test_torchloudnorm_integrated_loudness(use_torch):
 
     assert y.shape == (2, 1)
     assert np.sum(np.abs(y)) == pytest.approx(
-        6.166536331176758, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        6.166536331176758, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -232,7 +229,7 @@ def test_torchloudnorm_normalise_loudness(use_torch):
 
     assert y.shape == (2, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        33388.645, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        33388.645, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert True
 
@@ -249,5 +246,5 @@ def test_torchloudnorm_forward(use_torch):
     y = y_torch.cpu().detach().numpy()
     assert y.shape == (2, 20000)
     assert np.sum(np.abs(y)) == pytest.approx(
-        355.77362060546875, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        355.77362060546875, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

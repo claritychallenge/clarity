@@ -10,6 +10,7 @@ from clarity.evaluator.haspi.ebm import (
     fir_modulation_filter,
     modulation_cross_correlation,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_env_filter_ok() -> None:
@@ -22,10 +23,10 @@ def test_env_filter_ok() -> None:
         freq_samp=16000,
     )
     assert reference_env == pytest.approx(
-        48.84481105, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        48.84481105, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert processed_env == pytest.approx(
-        32.32800458, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        32.32800458, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -90,10 +91,10 @@ def test_cepstral_correlation_coef_ok() -> None:
     assert ref_cep.shape == (72, n_basis)
     assert proc_cep.shape == (72, n_basis)
     assert np.mean(np.abs(ref_cep)) == pytest.approx(
-        82.4395877477838, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        82.4395877477838, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.mean(np.abs(proc_cep)) == pytest.approx(
-        110.74820232861624, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        110.74820232861624, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -128,7 +129,7 @@ def test_add_noise() -> None:
     reference = 100 * np.random.normal(size=(100, 4))
     noisy_reference = add_noise(reference, 0)
     assert noisy_reference == pytest.approx(
-        reference, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        reference, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -152,13 +153,13 @@ def test_fir_modulation_filter() -> None:
     assert out_center_freqs.shape == in_center_freqs.shape
     # Check return value have expected values
     assert in_center_freqs == pytest.approx(
-        out_center_freqs, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        out_center_freqs, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.mean(np.abs(ref_mod)) == pytest.approx(
-        14.477262943878237, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        14.477262943878237, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.mean(np.abs(proc_mod)) == pytest.approx(
-        13.85669526424176, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        13.85669526424176, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -178,9 +179,7 @@ def test_modulation_cross_correlation() -> None:
         reference_modulation=ref_mod, processed_modulation=ref_mod
     )
     assert cross_corr.shape == (n_mod_filters,)
-    assert cross_corr == pytest.approx(
-        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert cross_corr == pytest.approx(1.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
     # Check an expected value for a pair of random signals
     cross_corr = modulation_cross_correlation(
@@ -188,5 +187,5 @@ def test_modulation_cross_correlation() -> None:
     )
     assert cross_corr.shape == (n_mod_filters,)
     assert np.sum(cross_corr) == pytest.approx(
-        0.4414165879317118, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.4414165879317118, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

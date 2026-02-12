@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from clarity.evaluator.mbstoi import mbstoi
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.mark.parametrize(
@@ -40,5 +41,5 @@ def test_mbstoi(sr_signal, expected_score) -> None:
     )
 
     assert mbstoi_val == pytest.approx(
-        expected_score, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected_score, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

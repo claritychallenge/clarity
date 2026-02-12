@@ -12,6 +12,7 @@ from clarity.predictor.torch_stoi import (
     masked_norm,
     meanvar_norm,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture
@@ -96,7 +97,7 @@ def test_negstoi_loss_stft(use_torch):
     stft = NegSTOILoss.stft(x=signal, win=win, fft_size=fft_size, overlap=4)
     assert stft.shape == torch.Size([1, 9, 3998, 2])
     assert stft.cpu().detach().numpy().sum() == pytest.approx(
-        8025.33251953125, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        8025.33251953125, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -109,7 +110,7 @@ def test_negstoi_loss_rowcolnorn(use_torch):
     assert y.shape == torch.Size(x_size)
     y_array = y.cpu().detach().numpy()
     assert np.sum(np.abs(y_array)) == pytest.approx(
-        2589.76416015625, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        2589.76416015625, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

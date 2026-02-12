@@ -14,6 +14,7 @@ from omegaconf import DictConfig
 import recipes
 from clarity.utils.file_io import read_signal
 from recipes.icassp_2023.baseline.evaluate import run_calculate_si
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture()
@@ -98,7 +99,7 @@ def test_evaluate(hydra_cfg: DictConfig):
         signal = read_signal(filename)
         Path(filename).unlink()
         assert np.sum(np.abs(signal)) == pytest.approx(
-            expected_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+            expected_sum, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
         )
 
     # Clean up

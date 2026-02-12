@@ -15,6 +15,7 @@ from recipes.cpc2.baseline.predict import (
     make_disjoint_train_set,
     predict,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 # pylint: disable=redefined-outer-name
@@ -34,7 +35,7 @@ def test_logistic_model_symmetry(model: LogisticModel, value):
     """Test the LogisticModel is symmetric."""
     symmetric_value = 4 - value
     assert model.predict(value) + model.predict(symmetric_value) == pytest.approx(
-        100.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        100.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -49,11 +50,11 @@ def test_logistic_model_extremes(model, value):
     # logistic_model must asymptote to 0 and 100 for extreme values
     if value > 10:
         assert model.predict(value) == pytest.approx(
-            100, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+            100, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
         )
     elif value < -10:
         assert model.predict(value) == pytest.approx(
-            0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+            0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
         )
 
 
@@ -83,7 +84,7 @@ def test_make_disjoint_train_set_empty(data_1, data_2, expected):
     test_df2 = pd.DataFrame([data_2])
     disjoint = make_disjoint_train_set(test_df1, test_df2)
     assert disjoint.shape[0] == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

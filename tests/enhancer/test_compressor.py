@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from clarity.enhancer.compressor import Compressor
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 DEFAULT_FS = 44100
 
@@ -44,6 +45,6 @@ def test_compressor_process():
     assert len(output) == len(signal)
     assert np.all(rms >= 0.0)
     assert np.sum(rms) == pytest.approx(
-        0.9799197751960967, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.9799197751960967, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert len(comp_ratios) == len(signal)

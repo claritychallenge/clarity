@@ -7,6 +7,7 @@ import pytest
 from scipy.io import wavfile
 
 from recipes.cad1.task2.baseline.audio_manager import AudioManager
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_save_audios(tmp_path):
@@ -31,7 +32,7 @@ def test_save_audios(tmp_path):
     # Check if audio data was saved correctly
     sample_rate, _ = wavfile.read(audio_file)
     assert sample_rate == pytest.approx(
-        audio_manager.sample_rate, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        audio_manager.sample_rate, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

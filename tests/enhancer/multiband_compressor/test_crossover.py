@@ -8,6 +8,7 @@ from clarity.enhancer.multiband_compressor.crossover import (
     Crossover,
     compute_coefficients,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture
@@ -54,16 +55,16 @@ def test_compute_coefficients():
     )
     # Check that the coefficients are not None
     assert np.sum(bstore) == pytest.approx(
-        6.70591633, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        6.70591633, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(astore) == pytest.approx(
-        13.411832670, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        13.411832670, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(bstore_phi) == pytest.approx(
-        28.748181628, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        28.748181628, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(astore_phi) == pytest.approx(
-        28.748181628, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        28.748181628, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

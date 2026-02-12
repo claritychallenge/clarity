@@ -15,6 +15,7 @@ from recipes.cad1.task1.baseline.evaluate import (
     make_song_listener_list,
     set_song_seed,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.mark.parametrize(
@@ -157,7 +158,7 @@ def test_evaluate_song_listener(
     # Combined score
     assert isinstance(combined_score, float)
     assert combined_score == pytest.approx(
-        0.14358442152193474, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.14358442152193474, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
     # Per instrument score
@@ -167,8 +168,8 @@ def test_evaluate_song_listener(
         assert isinstance(per_instrument_score[instrument], float)
         assert per_instrument_score[instrument] == pytest.approx(
             expected_results[instrument],
-            rel=pytest.rel_tolerance,
-            abs=pytest.abs_tolerance,
+            rel=REL_TOLERANCE,
+            abs=ABS_TOLERANCE,
         )
 
 

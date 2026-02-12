@@ -12,6 +12,7 @@ from clarity.utils.signal_processing import (
     resample,
     to_16bit,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_clip_signal_hard_clip():
@@ -163,9 +164,7 @@ def test_compute_rms():
     sig_len = 600
     signal = 100 * np.random.random(size=sig_len)
     rms = compute_rms(signal)
-    assert rms == pytest.approx(
-        57.803515840, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert rms == pytest.approx(57.803515840, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
 @pytest.mark.parametrize(

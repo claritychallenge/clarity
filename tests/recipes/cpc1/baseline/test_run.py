@@ -17,6 +17,7 @@ from clarity.evaluator.msbg.msbg import Ear
 from clarity.utils.audiogram import Audiogram, Listener
 from clarity.utils.file_io import read_signal
 from recipes.cpc1.baseline.run import listen, run, run_calculate_SI, run_HL_processing
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def truncated_read_signal(
@@ -94,7 +95,7 @@ def test_run_HL_processing(hydra_cfg, tmp_path):
     for signal, expected_value in expected_signals:
         _fs, signal = read(tmp_path / "exps/train/eval_signals" / signal)
         assert np.sum(np.abs(signal)) == pytest.approx(
-            expected_value, rel=2 * pytest.rel_tolerance, abs=pytest.abs_tolerance
+            expected_value, rel=2 * REL_TOLERANCE, abs=ABS_TOLERANCE
         )
 
 

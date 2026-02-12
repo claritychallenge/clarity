@@ -8,6 +8,7 @@ import pytest
 
 from clarity.utils.file_io import read_signal
 from recipes.cec1.data_preparation import prepare_cec1_data
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def not_tqdm(iterable):
@@ -68,5 +69,5 @@ def test_prepare_data(tmp_path):
         # Check that the output signal is correct
         signal = read_signal(filename)
         assert np.sum(np.abs(signal)) == pytest.approx(
-            expected_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+            expected_sum, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
         )

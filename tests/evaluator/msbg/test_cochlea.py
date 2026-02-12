@@ -12,6 +12,7 @@ from clarity.evaluator.msbg.cochlea import (
     recruitment,
 )
 from clarity.utils.audiogram import Audiogram
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_filterbank():
@@ -55,12 +56,12 @@ def test_compute_recruitment_parameters(center_freqs, cf_expansion_expected):
     assert cf_expansion.shape == (n_channels,)
     assert eq_loud_db_catch_up.shape == (n_channels,)
     assert cf_expansion == pytest.approx(
-        cf_expansion_expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        cf_expansion_expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert eq_loud_db_catch_up == pytest.approx(
         np.array([catch_up] * n_channels),
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
 
 
@@ -89,7 +90,7 @@ def test_gammatone_filterbank():
     )
     assert coch_sig_out.shape == (28, len(signal))
     assert np.sum(np.abs(coch_sig_out)) == pytest.approx(
-        1327.2811434076052, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        1327.2811434076052, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -104,7 +105,7 @@ def test_compute_envelope():
     result = compute_envelope(coch_sig=signal, erbn_cf=erbn_cf, fs=sample_rate)
     assert result.shape == (n_channels, 1000)
     assert np.sum(np.abs(result)) == pytest.approx(
-        1444.2528021105204, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        1444.2528021105204, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -129,7 +130,7 @@ def test_recruitment():
     )
     assert result.shape == (n_channels, 1000)
     assert np.sum(np.abs(result)) == pytest.approx(
-        1512.7196632453372, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        1512.7196632453372, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -170,5 +171,5 @@ def test_cochlea_simulate(levels, expected, n_samples_out):
     result = cochlea.simulate(coch_sig=signal, equiv_0dB_file_SPL=100.0)
     assert result.shape == (n_samples_out,)
     assert np.sum(np.abs(result)) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
