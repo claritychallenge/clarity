@@ -101,15 +101,15 @@ class GTFParamDict(TypedDict):
     BROADEN: float
     SPACING: float
     NGAMMA: int
-    GTnDelays: list[int]
-    GTn_denoms: list[list[float]]
-    GTn_nums: list[list[float]]
-    GTn_CentFrq: list[float]
-    ERBn_CentFrq: list[float]
-    HP_denoms: list[list[float]]
-    HP_nums: list[list[float]]
-    HP_FCorner: list[float]
-    HP_Delays: list[int]
+    GTnDelays: ndarray
+    GTn_denoms: ndarray
+    GTn_nums: ndarray
+    GTn_CentFrq: ndarray
+    ERBn_CentFrq: ndarray
+    HP_denoms: ndarray
+    HP_nums: ndarray
+    HP_FCorner: ndarray
+    HP_Delays: ndarray
     NChans: int
     Start2PoleHP: int
     Recombination_dB: float
