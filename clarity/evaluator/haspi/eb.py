@@ -1185,9 +1185,9 @@ def group_delay_compensate(
     # Compute the group delay in samples at fsamp for each filter
     _group_delay = np.zeros(nchan)
     for n in range(nchan):
-        _, _group_delay[n] = group_delay(
+        _group_delay[n] = group_delay(
             ([1, a_1[n], a_5[n]], [1, -a_1[n], -a_2[n], -a_3[n], -a_4[n]]), 1
-        )
+        )[1][0]
     _group_delay = np.rint(_group_delay).astype(int)  # convert to integer samples
 
     # Compute the delay correlation
