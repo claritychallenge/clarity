@@ -6,6 +6,7 @@ import pytest
 from clarity.evaluator.msbg.msbg import Ear
 from clarity.evaluator.msbg.msbg_utils import DF_ED, FF_ED
 from clarity.utils.audiogram import AUDIOGRAM_MODERATE_SEVERE, Audiogram
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_ear():
@@ -35,7 +36,7 @@ def test_get_src_correction():
     assert np.all(correction == DF_ED)
     correction = Ear.get_src_correction("ITU")
     assert np.sum(correction) == pytest.approx(
-        215.69444085326438, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        215.69444085326438, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -57,7 +58,7 @@ def test_src_to_cochlea_filter():
     )
     assert signal.shape == (1000,)
     assert np.sum(np.abs(signal)) == pytest.approx(
-        285.70213562623803, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        285.70213562623803, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -76,12 +77,12 @@ def test_make_calibration_signal(n_channels):
         44100 * 0.05,
     )  # 50 ms silence
     assert np.sum(np.abs(silence)) == pytest.approx(
-        0.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(np.abs(signal)) == pytest.approx(
         90853246.9096005 * n_channels,
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
 
 
@@ -97,7 +98,7 @@ def test_ear_process():
     assert len(processed_signals) == 1
     assert processed_signals[0].shape == (500,)  # same length as input signal
     assert np.sum(np.abs(processed_signals[0])) == pytest.approx(
-        0.3250822358794586, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.3250822358794586, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
     ear.set_audiogram(audiogram=AUDIOGRAM_MODERATE_SEVERE)
@@ -106,7 +107,7 @@ def test_ear_process():
     assert len(processed_signals) == 1
     assert processed_signals[0].shape == (704,)  # longer than input due to smearing
     assert np.sum(np.abs(processed_signals[0])) == pytest.approx(
-        0.5448164192836198, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.5448164192836198, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
     signal2 = np.random.rand(500, 2)
@@ -115,10 +116,10 @@ def test_ear_process():
     assert processed_signals[0].shape == (704,)
     assert processed_signals[1].shape == (704,)
     assert np.sum(np.abs(processed_signals[0])) == pytest.approx(
-        0.4983800098691009, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.4983800098691009, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(np.abs(processed_signals[1])) == pytest.approx(
-        0.514370533984153, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.514370533984153, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
     signal1 = np.random.rand(500, 1)
@@ -126,7 +127,7 @@ def test_ear_process():
     assert len(processed_signals) == 1
     assert processed_signals[0].shape == (704,)
     assert np.sum(np.abs(processed_signals[0])) == pytest.approx(
-        0.5840767608116147, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.5840767608116147, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
     signal = np.random.rand(500)
@@ -134,7 +135,7 @@ def test_ear_process():
     assert len(processed_signals) == 1
     assert processed_signals[0].shape == (119808,)
     assert np.sum(np.abs(processed_signals[0])) == pytest.approx(
-        48480.61370282146, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        48480.61370282146, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

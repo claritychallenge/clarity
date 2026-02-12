@@ -15,6 +15,7 @@ from clarity.utils.file_io import read_signal
 
 # pylint: disable=import-error, no-name-in-module, no-member
 from recipes.cec1.baseline.evaluate import run_calculate_SI, run_HL_processing
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 # listen, run_calculate_SI,
 
@@ -96,7 +97,7 @@ def test_run_HL_processing(tmp_path: Path, hydra_cfg: DictConfig) -> None:
         assert (pathlib.Path(f"{tmp_path}/eval_signals/{filename}")).exists()
         x = read_signal(f"{tmp_path}/eval_signals/{filename}")
         assert np.sum(np.abs(x)) == pytest.approx(
-            sig_sum, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+            sig_sum, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
         )
 
 

@@ -11,6 +11,7 @@ from clarity.data.utils import (
     speechweighted_snr,
     sum_signals,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 SEED = 864813
 rng = np.random.default_rng(SEED)
@@ -48,7 +49,7 @@ def test_better_ear_speechweighted_snr(
     better_ear_signal_noise_ratio = better_ear_speechweighted_snr(target, noise)
     assert isinstance(better_ear_signal_noise_ratio, float)
     assert better_ear_signal_noise_ratio == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -85,7 +86,7 @@ def test_speechweighted_snr(
     signal_noise_ratio = speechweighted_snr(target, noise)
     assert isinstance(signal_noise_ratio, float)
     assert signal_noise_ratio == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

@@ -11,6 +11,7 @@ from clarity.enhancer.gha.gainrule_camfit import (
     isothr,
 )
 from clarity.utils.audiogram import Audiogram
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.mark.parametrize(
@@ -28,7 +29,7 @@ from clarity.utils.audiogram import Audiogram
 def test_compute_proportion_overlap(a1, a2, b1, b2, expected):
     """test that the proportion overlap is computed correctly"""
     assert compute_proportion_overlap(a1, a2, b1, b2) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -46,13 +47,13 @@ def test_isothr():
     assert not np.all(outputs_1 == outputs_3)  # they should be the different
 
     assert np.sum(outputs_1) == pytest.approx(
-        237.52941176470588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        237.52941176470588, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(outputs_2) == pytest.approx(
-        237.52941176470588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        237.52941176470588, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(outputs_3) == pytest.approx(
-        235.02941176470588, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        235.02941176470588, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -74,7 +75,7 @@ def test_gains():
     )
     assert uncorrected_gains.shape == (n_gains, n_gains)
     assert uncorrected_gains == pytest.approx(
-        expected_outputs, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected_outputs, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -103,17 +104,15 @@ def test_gainrule_camfit_linear():
     assert noisegate_slope.shape == (6, 2)
     assert insertion_gains.shape == (6, 2)
 
-    assert sGt.sum() == pytest.approx(
-        1589.2, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert sGt.sum() == pytest.approx(1589.2, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
     assert noisegate_level.sum() == pytest.approx(
-        540.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        540.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert noisegate_slope.sum() == pytest.approx(
-        12.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        12.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert insertion_gains.sum() == pytest.approx(
-        284.8, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        284.8, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -148,13 +147,13 @@ def test_gainrule_camfit_compr():
     assert noisegate_slope.shape == (6, 2)
 
     assert sGt.sum() == pytest.approx(
-        2140.1762291737905, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        2140.1762291737905, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert noisegate_levels.sum() == pytest.approx(
-        540.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        540.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert noisegate_slope.sum() == pytest.approx(
-        12.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        12.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -193,12 +192,10 @@ def test_gainrule_camfit_compr_varying_params(
         max_output_level=max_output_level,
     )
 
-    assert sGt.sum() == pytest.approx(
-        out_sgt, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert sGt.sum() == pytest.approx(out_sgt, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
     assert noisegate_levels.sum() == pytest.approx(
-        out_ng_level, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        out_ng_level, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert noisegate_slope.sum() == pytest.approx(
-        out_ng_slope, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        out_ng_slope, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

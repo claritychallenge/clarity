@@ -12,6 +12,7 @@ from clarity.evaluator.msbg.msbg_utils import (
     read_gtf_file,
 )
 from clarity.utils.file_io import read_signal, write_signal
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 # import scipy
 
@@ -65,7 +66,7 @@ def test_firwin2():
     # )
     assert params.shape == (128,)
     assert np.sum(np.abs(params)) == pytest.approx(
-        2.5662415502127844, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        2.5662415502127844, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
     # TODO: check why the test below fails
@@ -78,7 +79,7 @@ def test_gen_tone():
     signal = gen_tone(500, 0.1, 44100.0, 20.0)
     assert signal.shape == (4410,)
     assert np.sum(np.abs(signal)) == pytest.approx(
-        39703.40087188665, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        39703.40087188665, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -88,7 +89,7 @@ def test_gen_eh2008_speech_noise():
     signal = gen_eh2008_speech_noise(0.1, 44100.0, 0.0)
     assert signal.shape == (4410,)
     assert np.sum(np.abs(signal)) == pytest.approx(
-        3544.690935132768, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        3544.690935132768, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -99,18 +100,14 @@ def test_measure_rms():
     noise = gen_eh2008_speech_noise(0.05, 44100.0, 0.0)
     rms, idx, rel_dB_thresh, active = measure_rms(signal + noise, 44100, 0.0, 10.0)
     assert rms == pytest.approx(
-        10.723997044548266, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        10.723997044548266, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert idx.shape == (441,)
-    assert np.sum(idx) == pytest.approx(
-        97020, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert np.sum(idx) == pytest.approx(97020, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
     assert rel_dB_thresh == pytest.approx(
-        -0.0008828901826447577, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        -0.0008828901826447577, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
-    assert active == pytest.approx(
-        20.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert active == pytest.approx(20.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
 @pytest.mark.parametrize(
@@ -125,7 +122,7 @@ def test_pad(initial, desired_length):
     result = pad(initial, desired_length)
     assert result.shape == (desired_length,)
     assert np.sum(np.abs(result)) == pytest.approx(
-        np.sum(np.abs(initial)), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        np.sum(np.abs(initial)), rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

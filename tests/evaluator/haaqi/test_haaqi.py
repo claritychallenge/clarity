@@ -6,6 +6,7 @@ import pytest
 
 from clarity.evaluator.haaqi import compute_haaqi, haaqi_v1
 from clarity.utils.audiogram import Audiogram
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_haaqi_v1() -> None:
@@ -25,9 +26,7 @@ def test_haaqi_v1() -> None:
     score, _, _, _ = haaqi_v1(
         x, sample_rate, y, sample_rate, audiogram, equalisation_mode, level1
     )
-    assert score == pytest.approx(
-        0.111290948, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert score == pytest.approx(0.111290948, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
 @pytest.mark.parametrize(
@@ -65,6 +64,4 @@ def test_compute_haaqi(levels, freqs, expected_result):
     )
 
     # Check that the score is a float between 0 and 1
-    assert score == pytest.approx(
-        expected_result, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert score == pytest.approx(expected_result, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)

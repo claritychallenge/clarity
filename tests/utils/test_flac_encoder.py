@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from clarity.utils.flac_encoder import FlacEncoder, read_flac_signal
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_encode_decode():
@@ -33,8 +34,8 @@ def test_encode_decode():
     # check that the decoded signal matches the original signal
     assert np.sum(signal_int16) == pytest.approx(
         np.sum(decoded_signal),
-        rel=pytest.rel_tolerance,
-        abs=pytest.abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
 
     # check that the sample rate of the decoded signal is correct

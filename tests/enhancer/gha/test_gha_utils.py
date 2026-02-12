@@ -11,6 +11,7 @@ from clarity.enhancer.gha.gha_utils import (
     multifit_apply_noisegate,
 )
 from clarity.utils.audiogram import Audiogram
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture
@@ -51,10 +52,10 @@ def test_get_gaintable(gaintable):
     }
     # check that the gaintable has the expected values
     assert np.sum(np.array(gaintable["sGt_uncorr"])) == pytest.approx(
-        52476.611733926344, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        52476.611733926344, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(np.array(gaintable["sGt"])) == pytest.approx(
-        45866.4547337617, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        45866.4547337617, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -81,7 +82,7 @@ def test_multifit_apply_noisegate(gaintable):
     FINAL_SGT_SUM = 45866.4547337617
     sGt = gaintable["sGt_uncorr"]
     assert np.sum(sGt) == pytest.approx(
-        INITIAL_SGT_SUM, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        INITIAL_SGT_SUM, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     sFit_model_frequencies = gaintable["frequencies"]
     sFit_model_levels = gaintable["levels"]
@@ -96,8 +97,8 @@ def test_multifit_apply_noisegate(gaintable):
     )
 
     assert np.sum(sGt) == pytest.approx(
-        INITIAL_SGT_SUM, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        INITIAL_SGT_SUM, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(corrected_sGt) == pytest.approx(
-        FINAL_SGT_SUM, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        FINAL_SGT_SUM, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

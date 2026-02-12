@@ -12,6 +12,7 @@ from omegaconf import DictConfig
 
 from clarity.utils.file_io import read_signal
 from recipes.cec2.baseline.enhance import enhance
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture()
@@ -58,5 +59,5 @@ def test_enhance(tmp_path: Path, hydra_cfg: DictConfig) -> None:
     assert filename.exists()
     signal = read_signal(filename)
     assert np.sum(np.abs(signal)) == pytest.approx(
-        78939.73132324219, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        78939.73132324219, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

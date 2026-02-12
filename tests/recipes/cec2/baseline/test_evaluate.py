@@ -13,6 +13,7 @@ from scipy.io.wavfile import read
 
 import recipes
 from recipes.cec2.baseline.evaluate import read_csv_scores, run_calculate_SI
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def truncated_read_signal(
@@ -101,8 +102,8 @@ def test_calulate_SI(tmp_path: Path, hydra_cfg: DictConfig):
     si_unproc_dict = read_csv_scores(Path(f"{tmp_path}/si_unproc.csv"))
 
     assert si_dict["S06001_L0064"] == pytest.approx(
-        0.745459815729705, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.745459815729705, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert si_unproc_dict["S06001_L0064"] == pytest.approx(
-        0.981990966133383, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.981990966133383, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

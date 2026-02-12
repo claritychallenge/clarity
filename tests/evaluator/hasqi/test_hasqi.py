@@ -5,6 +5,7 @@ import pytest
 
 from clarity.evaluator.hasqi import hasqi_v2, hasqi_v2_better_ear
 from clarity.utils.audiogram import Audiogram, Listener
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_hasqi_v2() -> None:
@@ -24,9 +25,7 @@ def test_hasqi_v2() -> None:
     score, _, _, _ = hasqi_v2(
         x, sample_rate, y, sample_rate, audiogram, equalisation_mode, level1
     )
-    assert score == pytest.approx(
-        0.002525809, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert score == pytest.approx(0.002525809, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
 @pytest.mark.parametrize(
@@ -71,6 +70,4 @@ def test_hasqi_v2_better_ear(hl_left, hl_right, freqs, expected_score) -> None:
         level=100,
     )
 
-    assert score == pytest.approx(
-        expected_score, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert score == pytest.approx(expected_score, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)

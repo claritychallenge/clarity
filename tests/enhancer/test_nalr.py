@@ -5,6 +5,7 @@ import pytest
 
 from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 cfg_nalr = {"nfir": 220, "sample_rate": 44100}
 
@@ -33,7 +34,7 @@ def test_nalr(levels: np.ndarray, cfs: np.ndarray, expected: float) -> None:
     audiogram = Audiogram(levels=levels, frequencies=cfs)
     nalr_fir, _ = enhancer.build(audiogram)
     assert np.sum(np.abs(nalr_fir)) == pytest.approx(
-        expected, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -43,6 +44,4 @@ def test_nalr_default_cfs() -> None:
     nalr_fir1, _ = enhancer.build(
         Audiogram(np.array([45, 45, 35, 45, 60, 65]), STANDARD_CFS)
     )
-    assert nalr_fir1 == pytest.approx(
-        nalr_fir1, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert nalr_fir1 == pytest.approx(nalr_fir1, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)

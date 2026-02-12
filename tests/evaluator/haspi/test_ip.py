@@ -8,6 +8,7 @@ from clarity.evaluator.haspi.ip import (
     nn_feed_forward,
     nn_feed_forward_ensemble,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_get_neural_net() -> None:
@@ -45,10 +46,10 @@ def test_get_neural_net() -> None:
     # Check the specific values of the weights are correct
     assert normalization_factor == 0.9508
     assert np.sum(weights_out) == pytest.approx(
-        -33.8515, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        -33.8515, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.sum(weights_hidden) == pytest.approx(
-        -670.82009999, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        -670.82009999, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -68,9 +69,7 @@ def test_nn_feed_forward_ensemble() -> None:
 
     # Check that the output is correct
     x = nn_feed_forward_ensemble(data, neural_net_params, weights_hidden, weights_out)
-    assert x == pytest.approx(
-        0.95078679, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert x == pytest.approx(0.95078679, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
 def test_nn_feed_forward() -> None:
@@ -94,16 +93,12 @@ def test_nn_feed_forward() -> None:
     # Note, it adds a constant 1 to the start of the output and hidden layers
     assert hidden.shape == (neural_net_params["hidden_layer"] + 1,)
     assert output.shape == (neural_net_params["output_layer"] + 1,)
-    assert hidden[0] == pytest.approx(
-        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
-    assert output[0] == pytest.approx(
-        1.0, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
-    )
+    assert hidden[0] == pytest.approx(1.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
+    assert output[0] == pytest.approx(1.0, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
     # Check that the mean of the hidden and output layers are correct
     assert np.mean(hidden) == pytest.approx(
-        0.599999906437356, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.599999906437356, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert np.mean(output) == pytest.approx(
-        0.982229820658455, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        0.982229820658455, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )

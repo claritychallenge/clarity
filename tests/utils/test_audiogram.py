@@ -13,6 +13,7 @@ from clarity.utils.audiogram import (
     Audiogram,
     Listener,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 def test_audiogram():
@@ -137,10 +138,10 @@ def test_resample(requested_frequencies, expected_levels):
     # Include cfs that don't exist in the requested subset
     subset_audiogram = audiogram.resample(requested_frequencies)
     assert subset_audiogram.frequencies == pytest.approx(
-        requested_frequencies, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        requested_frequencies, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
     assert subset_audiogram.levels == pytest.approx(
-        expected_levels, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
+        expected_levels, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 

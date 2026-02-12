@@ -6,7 +6,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 BASE_DIR = Path.cwd()
@@ -49,12 +48,3 @@ def abs_tolerance() -> float:
 def rel_tolerance() -> float:
     """Fixture for relative tolerance value."""
     return REL_TOLERANCE
-
-
-def pytest_configure() -> None:
-    """Configure custom variables for pytest.
-
-    **NB**: pytest automatically calls this hook when the conftest is loaded.
-    """
-    pytest.abs_tolerance = ABS_TOLERANCE
-    pytest.rel_tolerance = REL_TOLERANCE
