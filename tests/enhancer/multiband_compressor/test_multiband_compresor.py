@@ -5,6 +5,7 @@ from clarity.enhancer.multiband_compressor.compressor_qmul import Compressor
 from clarity.enhancer.multiband_compressor.multiband_compressor import (
     MultibandCompressor,
 )
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
 @pytest.fixture
@@ -22,7 +23,7 @@ def test_compressor_initialization(default_compressor):
     assert default_compressor.sample_rate == 44100.0
 
 
-def test_compressor_signal_processing(default_compressor, rel_tolerance, abs_tolerance):
+def test_compressor_signal_processing(default_compressor):
     """Test the signal processing of the Compressor class."""
     input_signal = np.array([[1, 2, 3, 4, 5]])
     output_signal = default_compressor(input_signal)
@@ -30,7 +31,7 @@ def test_compressor_signal_processing(default_compressor, rel_tolerance, abs_tol
     assert isinstance(output_signal, np.ndarray)
     assert len(output_signal) == len(input_signal)
     assert np.sum(output_signal) == pytest.approx(
-        15, rel=rel_tolerance, abs=abs_tolerance
+        15, rel=REL_TOLERANCE, abs=ABS_TOLERANCE
     )
 
 
@@ -49,9 +50,7 @@ def test_multiband_compressor_onefreq():
     assert multiband_compressor.xover_freqs.shape[0] == 1
 
 
-def test_multiband_compressor_initialization(
-    default_multiband_compressor, rel_tolerance, abs_tolerance
-):
+def test_multiband_compressor_initialization(default_multiband_compressor):
     """Test the initialization of the MultibandCompressor class."""
     assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
         np.sum(
@@ -66,14 +65,14 @@ def test_multiband_compressor_initialization(
             )
             * np.sqrt(2)
         ),
-        rel=rel_tolerance,
-        abs=abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
 
     assert np.sum(default_multiband_compressor.xover_freqs) == pytest.approx(
         np.sum(np.array(default_multiband_compressor.xover_freqs)),
-        rel=rel_tolerance,
-        abs=abs_tolerance,
+        rel=REL_TOLERANCE,
+        abs=ABS_TOLERANCE,
     )
     assert default_multiband_compressor.sample_rate == 44100.0
     assert default_multiband_compressor.num_compressors == 6
@@ -93,7 +92,7 @@ def test_multiband_compressor_set_compressors(default_multiband_compressor):
     assert len(default_multiband_compressor.compressor) == 6
 
 
-def test_multiband_compressor_call(default_multiband_compressor, rel_tolerance):
+def test_multiband_compressor_call(default_multiband_compressor):
     """Test the __call__ method of the MultibandCompressor class."""
     np.random.seed(0)
     signal = np.random.rand(1000)
@@ -108,7 +107,7 @@ def test_multiband_compressor_call(default_multiband_compressor, rel_tolerance):
     assert bands.shape[0] == 6
 
     assert np.sum(compressed_signal) == pytest.approx(
-        441.09490986, rel=rel_tolerance, abs=0.0005
+        441.09490986, rel=REL_TOLERANCE, abs=0.0005
     )
 
 

@@ -6,7 +6,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 BASE_DIR = Path.cwd()
 RESOURCES = BASE_DIR / "tests" / "resources"
@@ -36,15 +35,3 @@ def make_random_matrix():
         return np.asarray(rng_to_use.random(size))
 
     return _random_matrix
-
-
-@pytest.fixture
-def abs_tolerance() -> float:
-    """Fixture for absolute tolerance value."""
-    return ABS_TOLERANCE
-
-
-@pytest.fixture
-def rel_tolerance() -> float:
-    """Fixture for relative tolerance value."""
-    return REL_TOLERANCE
