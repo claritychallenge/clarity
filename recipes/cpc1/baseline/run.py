@@ -115,7 +115,7 @@ def run_calculate_SI(cfg, path) -> None:
         ddf = read_signal(proc_folder / f"{scene}_{listener}_{system}_HLddf-output.wav")
 
         # Calculate channel-specific unit impulse delay due to HL model and audiograms
-        delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))
+        delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))[:, 0]
         if delay[0] != delay[1]:
             logging.info(f"Difference in delay of {delay[0] - delay[1]}.")
         maxdelay = int(np.max(delay))

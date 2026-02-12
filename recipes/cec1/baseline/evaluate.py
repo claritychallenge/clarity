@@ -115,13 +115,13 @@ def run_calculate_SI(cfg: DictConfig) -> None:
             logging.info(f"Running SI calculation: scene {scene}, listener {listener}")
             proc = read_signal(proc_folder / f"{scene}_{listener}_HL-output.wav")
             clean = read_signal(
-                Path(cfg.path.scenes_folder) / f"{scene}_target_anechoic.wav"
+                Path(cfg.path.scenes_folder) / f"{scene}_target_anechoic.wav",
             )
             ddf = read_signal(proc_folder / f"{scene}_{listener}_HLddf-output.wav")
 
             # Calculate channel-specific unit impulse delay due to HL model
             # and audiograms
-            delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))
+            delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))[:, 0]
             if delay[0] != delay[1]:
                 logging.info(f"Difference in delay of {delay[0] - delay[1]}.")
             max_delay = int(np.max(delay))
