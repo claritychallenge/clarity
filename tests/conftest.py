@@ -7,6 +7,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
+
 BASE_DIR = Path.cwd()
 RESOURCES = BASE_DIR / "tests" / "resources"
 
@@ -38,15 +40,15 @@ def make_random_matrix():
 
 
 @pytest.fixture
-def abs_tolerance():
+def abs_tolerance() -> float:
     """Fixture for absolute tolerance value."""
-    return 1e-7
+    return ABS_TOLERANCE
 
 
 @pytest.fixture
-def rel_tolerance():
+def rel_tolerance() -> float:
     """Fixture for relative tolerance value."""
-    return 1e-7
+    return REL_TOLERANCE
 
 
 def pytest_configure() -> None:
@@ -54,5 +56,5 @@ def pytest_configure() -> None:
 
     **NB**: pytest automatically calls this hook when the conftest is loaded.
     """
-    pytest.abs_tolerance = 1e-7
-    pytest.rel_tolerance = 1e-7
+    pytest.abs_tolerance = ABS_TOLERANCE
+    pytest.rel_tolerance = REL_TOLERANCE
