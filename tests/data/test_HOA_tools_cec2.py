@@ -30,6 +30,11 @@ from clarity.data.HOA_tools_cec2 import (
 from tests.testutils import ABS_TOLERANCE, REL_TOLERANCE
 
 
+def make_random_matrix(seed: int = 564687, size=(100, 100)) -> np.ndarray:
+    rng_to_use = np.random.default_rng(seed)
+    return np.asarray(rng_to_use.random(size))
+
+
 def test_convert_a_to_b_format() -> None:
     """Test for convert_a_to_b_format() function."""
     np.random.seed(1234)
@@ -131,9 +136,7 @@ def test_hoa_rotate(seed: int, expected: float) -> None:
         (1236, 18, 47, 0.2706397841499083),
     ],
 )
-def test_centred_element(
-    make_random_matrix, seed: int, row: int, col: int, expected: float
-) -> None:
+def test_centred_element(seed: int, row: int, col: int, expected: float) -> None:
     """Test for centered_element() function."""
     random_matrix = make_random_matrix(seed)
     assert centred_element(random_matrix, row, col) == pytest.approx(
@@ -141,7 +144,7 @@ def test_centred_element(
     )
 
 
-def test_centred_element_index_error(make_random_matrix) -> None:
+def test_centred_element_index_error() -> None:
     """Test that centered_element() raises an IndexError if centering is outside
     of matrix dimensions."""
     random_matrix = make_random_matrix()
@@ -159,9 +162,7 @@ def test_centred_element_index_error(make_random_matrix) -> None:
         (1, 1, 2, 2, 1236, -0.5552636713315029),
     ],
 )
-def test_P(
-    i: int, a: int, b: int, order: int, make_random_matrix, seed: int, expected: float
-) -> None:
+def test_P(i: int, a: int, b: int, order: int, seed: int, expected: float) -> None:
     """Test for P() function."""
     r1_matrix = make_random_matrix(seed)
     r2_matrix = make_random_matrix(seed + 10)  # Different seed to get different matrix
@@ -175,7 +176,7 @@ def test_P(
     ) == pytest.approx(expected, rel=REL_TOLERANCE, abs=ABS_TOLERANCE)
 
 
-def test_P_index_error(make_random_matrix) -> None:
+def test_P_index_error() -> None:
     """Test P() raises IndexError if invalid indices to r are provided."""
     random_matrix = make_random_matrix()
     rotation_matrices = TypedList([random_matrix])
@@ -195,9 +196,7 @@ def test_P_index_error(make_random_matrix) -> None:
         (1, 2, 2, 2236, -0.6545704498040456),
     ],
 )
-def test_U(
-    degree: int, n: int, order: int, make_random_matrix, seed: int, expected: float
-) -> None:
+def test_U(degree: int, n: int, order: int, seed: int, expected: float) -> None:
     """Test for U function."""
     r1_matrix = make_random_matrix(seed)
     r2_matrix = make_random_matrix(seed + 10)  # Different seed to get different matrix
@@ -219,9 +218,7 @@ def test_U(
         (-1, 2, -2, 3237, 0.44136069630527924),
     ],
 )
-def test_V(
-    degree: int, n: int, order: int, make_random_matrix, seed: int, expected: float
-) -> None:
+def test_V(degree: int, n: int, order: int, seed: int, expected: float) -> None:
     """Test for V() function."""
     r1_matrix = make_random_matrix(seed)
     r2_matrix = make_random_matrix(seed + 10)  # Different seed to get different matrix
@@ -242,9 +239,7 @@ def test_V(
         (-1, 2, 2, 4236, 0.38743574623364374),
     ],
 )
-def test_W(
-    degree: int, n: int, order: int, make_random_matrix, seed: int, expected: float
-) -> None:
+def test_W(degree: int, n: int, order: int, seed: int, expected: float) -> None:
     """Test for W() function."""
     r1_matrix = make_random_matrix(seed)
     r2_matrix = make_random_matrix(seed + 10 if seed is not None else None)
