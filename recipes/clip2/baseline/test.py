@@ -61,8 +61,16 @@ log = logging.getLogger(__name__)
 
 def compute_metrics(preds: np.ndarray, targets: np.ndarray) -> dict[str, float]:
     """Compute MSE, RMSE, MAE, PCC, and SCC between predictions and targets."""
-    pcc = float(pearsonr(preds, targets)[0]) if len(preds) > 1 else 0.0
-    scc = float(spearmanr(preds, targets)[0]) if len(preds) > 1 else 0.0
+    if len(preds) > 1:
+        pcc = float(pearsonr(preds, targets)[0])
+        scc = float(spearmanr(preds, targets)[0])
+        if np.isnan(pcc):
+            pcc = 0.0
+        if np.isnan(scc):
+            scc = 0.0
+    else:
+        pcc = 0.0
+        scc = 0.0
     return {
         "mse": float(np.mean((preds - targets) ** 2)),
         "rmse": float(np.sqrt(np.mean((preds - targets) ** 2))),
