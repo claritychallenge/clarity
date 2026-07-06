@@ -400,7 +400,7 @@ class LyricIntelligibilityDataset(Dataset):
         ValueError
             If ``self.strategy`` is not one of the recognised values.
         """
-        rng = random.Random(self.seed)  # seeded RNG, isolated from global state
+        rng = random.seed(self.seed)  # seeded RNG, isolated from global state
 
         if self.strategy == "full":
             # Return all records for "train"; return nothing for "dev".
