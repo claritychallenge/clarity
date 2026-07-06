@@ -37,6 +37,7 @@ The model always operates on mono input [B, T'].  For stereo audio use the
 better-ear strategy: run the model on left and right channels separately
 and take max(score_L, score_R) as the final prediction.
 """
+from __future__ import annotations
 
 import logging
 from typing import Optional

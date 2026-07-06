@@ -139,6 +139,7 @@ Usage
     eval_ds       = LyricIntelligibilityDataset("cadenza_data", split="eval")
     eval_loader   = build_dataloader(eval_ds, batch_size=16, shuffle=False)
 """
+from __future__ import annotations
 
 import json
 import logging
