@@ -585,19 +585,19 @@ class LyricIntelligibilityDataset(Dataset):
 
             return waveform  # shape: (T,), dtype: float32
 
-        else:
-            # Preserve channel layout.  Transpose [T, C] → [C, T] so the
-            # channel axis is leading, matching the PyTorch convention.
-            waveform = waveform.T  # [C, T]
+        
+        # Preserve channel layout.  Transpose [T, C] → [C, T] so the
+        # channel axis is leading, matching the PyTorch convention.
+        waveform = waveform.T  # [C, T]
 
-            # Resample each channel independently.  soxr handles 2-D arrays
-            # with shape [T, C] (channels-last), so we transpose back temporarily.
-            if sr != self.sample_rate:
-                waveform = soxr.resample(
-                    waveform.T, sr, self.sample_rate, quality="HQ"
-                ).T  # [T, C] → resample → [T, C] → transpose → [C, T]
+        # Resample each channel independently.  soxr handles 2-D arrays
+        # with shape [T, C] (channels-last), so we transpose back temporarily.
+        if sr != self.sample_rate:
+            waveform = soxr.resample(
+                waveform.T, sr, self.sample_rate, quality="HQ"
+            ).T  # [T, C] → resample → [T, C] → transpose → [C, T]
 
-            return waveform  # shape: (C, T), dtype: float32
+        return waveform  # shape: (C, T), dtype: float32
 
     # ------------------------------------------------------------------
     # Dataset interface
