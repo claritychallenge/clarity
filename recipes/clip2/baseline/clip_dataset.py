@@ -93,7 +93,7 @@ Split strategies (only relevant for train/dev)
 
     strategy="full"
         Returns 100 % of the samples as the "train" split (dev will be empty).
-        Useful for final training and when valid_metatda.json includes the correctness
+        Useful for final training and when valid_metadata.json includes the correctness
         score for all samples.
 
 Usage
