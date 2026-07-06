@@ -54,6 +54,7 @@ log = logging.getLogger(__name__)
 # Cross-layer attention
 # ---------------------------------------------------------------------------
 
+
 class CrossLayerAttention(nn.Module):
     """
     Fuse L layer representations into a single context vector.
@@ -72,14 +73,16 @@ class CrossLayerAttention(nn.Module):
         Dropout probability inside the attention module.
     """
 
-    def __init__(self, hidden_dim: int, num_heads: int = 4, dropout: float = 0.1) -> None:
+    def __init__(
+        self, hidden_dim: int, num_heads: int = 4, dropout: float = 0.1
+    ) -> None:
         super().__init__()
         self.query = nn.Parameter(torch.randn(1, 1, hidden_dim))
-        self.attn  = nn.MultiheadAttention(
-            embed_dim   = hidden_dim,
-            num_heads   = num_heads,
-            dropout     = dropout,
-            batch_first = True,
+        self.attn = nn.MultiheadAttention(
+            embed_dim=hidden_dim,
+            num_heads=num_heads,
+            dropout=dropout,
+            batch_first=True,
         )
         self.norm = nn.LayerNorm(hidden_dim)
 
@@ -94,14 +97,15 @@ class CrossLayerAttention(nn.Module):
         context : [B, hidden_dim]
         """
         B = layer_embeddings.size(0)
-        q = self.query.expand(B, -1, -1)                          # [B, 1, H]
+        q = self.query.expand(B, -1, -1)  # [B, 1, H]
         context, _ = self.attn(q, layer_embeddings, layer_embeddings)
-        return self.norm(context.squeeze(1))                       # [B, H]
+        return self.norm(context.squeeze(1))  # [B, H]
 
 
 # ---------------------------------------------------------------------------
 # Whisper intelligibility model
 # ---------------------------------------------------------------------------
+
 
 class WhisperIntelligibilityModel(nn.Module):
     """
@@ -134,10 +138,10 @@ class WhisperIntelligibilityModel(nn.Module):
     """
 
     SUPPORTED_MODELS: dict[str, str] = {
-        "whisper-tiny":     "openai/whisper-tiny",
-        "whisper-base":     "openai/whisper-base",
-        "whisper-small":    "openai/whisper-small",
-        "whisper-medium":   "openai/whisper-medium",
+        "whisper-tiny": "openai/whisper-tiny",
+        "whisper-base": "openai/whisper-base",
+        "whisper-small": "openai/whisper-small",
+        "whisper-medium": "openai/whisper-medium",
         "whisper-large-v3": "openai/whisper-large-v3",
     }
 
@@ -172,12 +176,11 @@ class WhisperIntelligibilityModel(nn.Module):
                 p.requires_grad_(False)
 
         d_model: int = self.encoder.config.d_model
-        n_enc: int   = self.encoder.config.encoder_layers
+        n_enc: int = self.encoder.config.encoder_layers
 
         # Default: use only the last encoder layer.
         self.use_encoder_layers: list[int] = (
-            use_encoder_layers if use_encoder_layers is not None
-            else [n_enc]
+            use_encoder_layers if use_encoder_layers is not None else [n_enc]
         )
         num_layers = len(self.use_encoder_layers)
 
@@ -185,20 +188,25 @@ class WhisperIntelligibilityModel(nn.Module):
         self.layer_weights = nn.Parameter(torch.ones(num_layers))
 
         # Per-layer projection: d_model → hidden_dim.
-        self.layer_projections = nn.ModuleList([
-            nn.Sequential(
-                nn.Linear(d_model, hidden_dim),
-                nn.GELU(),
-                nn.LayerNorm(hidden_dim),
-                nn.Dropout(dropout),
-            )
-            for _ in range(num_layers)
-        ])
+        self.layer_projections = nn.ModuleList(
+            [
+                nn.Sequential(
+                    nn.Linear(d_model, hidden_dim),
+                    nn.GELU(),
+                    nn.LayerNorm(hidden_dim),
+                    nn.Dropout(dropout),
+                )
+                for _ in range(num_layers)
+            ]
+        )
 
         # Cross-layer attention is used only when more than one layer is selected.
         self.cross_layer_attn: Optional[CrossLayerAttention] = (
-            CrossLayerAttention(hidden_dim=hidden_dim, num_heads=attn_heads, dropout=dropout)
-            if num_layers > 1 else None
+            CrossLayerAttention(
+                hidden_dim=hidden_dim, num_heads=attn_heads, dropout=dropout
+            )
+            if num_layers > 1
+            else None
         )
 
         # Regression head: hidden_dim → scalar score in (0, 1).
@@ -211,7 +219,7 @@ class WhisperIntelligibilityModel(nn.Module):
         )
 
         self.backbone_name = backbone
-        self.hidden_dim    = hidden_dim
+        self.hidden_dim = hidden_dim
 
     def forward(self, input_features: torch.Tensor) -> torch.Tensor:
         """
@@ -230,8 +238,8 @@ class WhisperIntelligibilityModel(nn.Module):
         backbone_frozen = not next(self.encoder.parameters()).requires_grad
         with torch.set_grad_enabled(not backbone_frozen):
             outputs = self.encoder(
-                input_features       = input_features,
-                output_hidden_states = True,
+                input_features=input_features,
+                output_hidden_states=True,
             )
 
         enc_states: tuple = outputs.hidden_states
@@ -239,19 +247,19 @@ class WhisperIntelligibilityModel(nn.Module):
 
         layer_pooled: list[torch.Tensor] = []
         for i, layer_idx in enumerate(self.use_encoder_layers):
-            h = enc_states[layer_idx]          # [B, T', d_model]
-            h = h * layer_weights[i]           # scale by learned weight
-            h = h.mean(dim=1)                  # temporal mean-pool → [B, d_model]
-            h = self.layer_projections[i](h)   # project → [B, hidden_dim]
+            h = enc_states[layer_idx]  # [B, T', d_model]
+            h = h * layer_weights[i]  # scale by learned weight
+            h = h.mean(dim=1)  # temporal mean-pool → [B, d_model]
+            h = self.layer_projections[i](h)  # project → [B, hidden_dim]
             layer_pooled.append(h)
 
         if self.cross_layer_attn is not None:
-            stack = torch.stack(layer_pooled, dim=1)   # [B, L, hidden_dim]
-            context = self.cross_layer_attn(stack)     # [B, hidden_dim]
+            stack = torch.stack(layer_pooled, dim=1)  # [B, L, hidden_dim]
+            context = self.cross_layer_attn(stack)  # [B, hidden_dim]
         else:
-            context = layer_pooled[0]                  # [B, hidden_dim]
+            context = layer_pooled[0]  # [B, hidden_dim]
 
-        return self.regressor(context).squeeze(-1)     # [B]
+        return self.regressor(context).squeeze(-1)  # [B]
 
     def unfreeze_backbone(
         self,
@@ -276,11 +284,11 @@ class WhisperIntelligibilityModel(nn.Module):
             Default: 2.
         """
         enc_layers = self.encoder.layers
-        total_enc  = len(enc_layers)
+        total_enc = len(enc_layers)
 
         indices_to_unfreeze: set[int] = set()
         for layer_idx in self.use_encoder_layers:
-            enc_idx = layer_idx - 1   # convert 1-based to 0-based
+            enc_idx = layer_idx - 1  # convert 1-based to 0-based
             for c in range(context_layers + 1):
                 idx = enc_idx - c
                 if 0 <= idx < total_enc:
@@ -300,6 +308,7 @@ class WhisperIntelligibilityModel(nn.Module):
 # ---------------------------------------------------------------------------
 # Loss functions
 # ---------------------------------------------------------------------------
+
 
 class BetterEarLoss(nn.Module):
     """

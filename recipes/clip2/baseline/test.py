@@ -42,14 +42,13 @@ import hydra
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from clip_dataset import LyricIntelligibilityDataset, build_dataloader
+from lyric_intelligibility_model import WhisperIntelligibilityModel
 from omegaconf import DictConfig
 from scipy.stats import pearsonr, spearmanr
 from tqdm import tqdm
-from transformers import WhisperProcessor
-
-from clip_dataset import LyricIntelligibilityDataset, build_dataloader
-from lyric_intelligibility_model import WhisperIntelligibilityModel
 from train import prepare_batch_whisper, prepare_batch_whisper_stereo
+from transformers import WhisperProcessor
 
 log = logging.getLogger(__name__)
 
@@ -58,16 +57,17 @@ log = logging.getLogger(__name__)
 # Metrics
 # ---------------------------------------------------------------------------
 
+
 def compute_metrics(preds: np.ndarray, targets: np.ndarray) -> dict[str, float]:
     """Compute MSE, RMSE, MAE, PCC, and SCC between predictions and targets."""
-    pcc = float(pearsonr(preds,  targets)[0]) if len(preds) > 1 else 0.0
+    pcc = float(pearsonr(preds, targets)[0]) if len(preds) > 1 else 0.0
     scc = float(spearmanr(preds, targets)[0]) if len(preds) > 1 else 0.0
     return {
-        "mse" : float(np.mean((preds - targets) ** 2)),
+        "mse": float(np.mean((preds - targets) ** 2)),
         "rmse": float(np.sqrt(np.mean((preds - targets) ** 2))),
-        "mae" : float(np.mean(np.abs(preds - targets))),
-        "pcc" : pcc,
-        "scc" : scc,
+        "mae": float(np.mean(np.abs(preds - targets))),
+        "pcc": pcc,
+        "scc": scc,
     }
 
 
@@ -106,13 +106,18 @@ def metrics_by_severity(
 # Plots
 # ---------------------------------------------------------------------------
 
+
 def plot_scatter(preds: np.ndarray, targets: np.ndarray, out_path: Path) -> None:
     """Scatter plot of predicted vs ground-truth scores."""
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.scatter(targets, preds, alpha=0.5, s=20, edgecolors="none", color="steelblue")
-    lims = [min(targets.min(), preds.min()) - 0.05, max(targets.max(), preds.max()) + 0.05]
+    lims = [
+        min(targets.min(), preds.min()) - 0.05,
+        max(targets.max(), preds.max()) + 0.05,
+    ]
     ax.plot(lims, lims, "k--", lw=1, label="Ideal (y = x)")
-    ax.set_xlim(lims); ax.set_ylim(lims)
+    ax.set_xlim(lims)
+    ax.set_ylim(lims)
     ax.set_xlabel("Ground-Truth Score")
     ax.set_ylabel("Predicted Score")
     ax.set_title("Predicted vs Ground-Truth")
@@ -130,7 +135,9 @@ def plot_error_histogram(
     errors = np.abs(preds - targets)
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.hist(errors, bins=30, color="tomato", edgecolor="white", linewidth=0.5)
-    ax.axvline(rmse, color="black", linestyle="--", linewidth=1.5, label=f"RMSE = {rmse:.4f}")
+    ax.axvline(
+        rmse, color="black", linestyle="--", linewidth=1.5, label=f"RMSE = {rmse:.4f}"
+    )
     ax.set_xlabel("Absolute Error  |pred − target|")
     ax.set_ylabel("Number of Samples")
     ax.set_title("Overall Error Distribution")
@@ -165,6 +172,7 @@ def plot_metric_by_severity(
 # Inference loop
 # ---------------------------------------------------------------------------
 
+
 @torch.no_grad()
 def run_inference(
     model: WhisperIntelligibilityModel,
@@ -198,10 +206,10 @@ def run_inference(
     ground_truths: list of per-sample transcript strings
     """
     model.eval()
-    all_preds:      list[float] = []
-    all_targets:    list[float] = []
-    all_severities: list        = []
-    all_gts:        list[str]   = []
+    all_preds: list[float] = []
+    all_targets: list[float] = []
+    all_severities: list = []
+    all_gts: list[str] = []
 
     pbar = tqdm(loader, desc="Inference", unit="batch", dynamic_ncols=True)
     for audio, _audio2, _sev_str, severity, ground_truth, score in pbar:
@@ -220,13 +228,17 @@ def run_inference(
         if not inference_only:
             all_targets.extend(scores.cpu().numpy())
             all_severities.extend(
-                severity.tolist() if isinstance(severity, np.ndarray) else list(severity)
+                severity.tolist()
+                if isinstance(severity, np.ndarray)
+                else list(severity)
             )
             all_gts.extend(
-                ground_truth if isinstance(ground_truth, (list, tuple)) else list(ground_truth)
+                ground_truth
+                if isinstance(ground_truth, (list, tuple))
+                else list(ground_truth)
             )
 
-    preds_arr   = np.array(all_preds, dtype=np.float32)
+    preds_arr = np.array(all_preds, dtype=np.float32)
     targets_arr = np.array(all_targets, dtype=np.float32) if all_targets else None
     return preds_arr, targets_arr, all_severities, all_gts
 
@@ -235,6 +247,7 @@ def run_inference(
 # Core evaluation logic
 # ---------------------------------------------------------------------------
 
+
 def evaluate(cfg: DictConfig, test_loader) -> dict:
     """
     Load a checkpoint and evaluate (or run inference) on a test set.
@@ -242,7 +255,7 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
     The model is always reconstructed from the config embedded in the
     checkpoint so the architecture is guaranteed to match the saved weights.
     """
-    device  = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     out_dir = Path(cfg.test.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -250,23 +263,23 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
     log.info(f"Checkpoint: {cfg.test.checkpoint}")
 
     # -- Load checkpoint ------------------------------------------------
-    ckpt      = torch.load(cfg.test.checkpoint, map_location=device)
+    ckpt = torch.load(cfg.test.checkpoint, map_location=device)
     saved_cfg = ckpt["cfg"]
 
     model = WhisperIntelligibilityModel(
-        backbone           = saved_cfg["model"]["backbone"],
-        hidden_dim         = saved_cfg["model"]["hidden_dim"],
-        use_encoder_layers = saved_cfg["model"].get("use_encoder_layers") or None,
-        freeze_backbone    = False,
-        attn_heads         = saved_cfg["model"]["attn_heads"],
-        dropout            = saved_cfg["model"].get("dropout", 0.1),
+        backbone=saved_cfg["model"]["backbone"],
+        hidden_dim=saved_cfg["model"]["hidden_dim"],
+        use_encoder_layers=saved_cfg["model"].get("use_encoder_layers") or None,
+        freeze_backbone=False,
+        attn_heads=saved_cfg["model"]["attn_heads"],
+        dropout=saved_cfg["model"].get("dropout", 0.1),
     ).to(device)
 
     # Remap legacy checkpoints saved with self.whisper (old key prefix) to
     # the current self.encoder layout.
     model_state = {
-        k.replace('whisper.encoder.', 'encoder.', 1): v
-        for k, v in ckpt['model_state'].items()
+        k.replace("whisper.encoder.", "encoder.", 1): v
+        for k, v in ckpt["model_state"].items()
     }
     missing, unexpected = model.load_state_dict(model_state, strict=False)
     # Expected missing: encoder.* when backbone was frozen at save time.
@@ -287,24 +300,33 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
         log.info("Running in FP16")
 
     # -- Processor -------------------------------------------------------
-    model_id  = WhisperIntelligibilityModel.SUPPORTED_MODELS[saved_cfg["model"]["backbone"]]
+    model_id = WhisperIntelligibilityModel.SUPPORTED_MODELS[
+        saved_cfg["model"]["backbone"]
+    ]
     processor = WhisperProcessor.from_pretrained(model_id)
 
     # -- Inference --------------------------------------------------------
     better_ear: bool = cfg.test.get("better_ear", False)
-    mode = "inference" if cfg.test.inference_only else (
-        "evaluation (better-ear)" if better_ear else "evaluation (mono)"
+    mode = (
+        "inference"
+        if cfg.test.inference_only
+        else ("evaluation (better-ear)" if better_ear else "evaluation (mono)")
     )
     log.info(f"Running {mode} on {len(test_loader.dataset)} samples...")
     t0 = time.time()
 
     preds, targets, severities, ground_truths = run_inference(
-        model, test_loader, processor, device,
-        inference_only = cfg.test.inference_only,
-        better_ear     = better_ear,
+        model,
+        test_loader,
+        processor,
+        device,
+        inference_only=cfg.test.inference_only,
+        better_ear=better_ear,
     )
     elapsed = time.time() - t0
-    log.info(f"{len(preds)} samples in {elapsed:.1f}s  ({len(preds) / elapsed:.1f} samples/sec)")
+    log.info(
+        f"{len(preds)} samples in {elapsed:.1f}s  ({len(preds) / elapsed:.1f} samples/sec)"
+    )
 
     # -- Metrics (evaluation mode only) ------------------------------------
     results: dict = {}
@@ -333,10 +355,16 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
                 )
 
         plot_scatter(preds, targets, out_dir / "scatter_pred_vs_gt.png")
-        plot_error_histogram(preds, targets, overall["rmse"], out_dir / "error_histogram.png")
+        plot_error_histogram(
+            preds, targets, overall["rmse"], out_dir / "error_histogram.png"
+        )
         if sev_metrics:
-            plot_metric_by_severity(sev_metrics, "mae",  out_dir / "mae_by_severity.png",  color="steelblue")
-            plot_metric_by_severity(sev_metrics, "rmse", out_dir / "rmse_by_severity.png", color="tomato")
+            plot_metric_by_severity(
+                sev_metrics, "mae", out_dir / "mae_by_severity.png", color="steelblue"
+            )
+            plot_metric_by_severity(
+                sev_metrics, "rmse", out_dir / "rmse_by_severity.png", color="tomato"
+            )
 
     # -- Save results.json (evaluation mode only) -------------------------
     if results:
@@ -361,18 +389,36 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
         csv_path = out_dir / "predictions_complete.csv"
         with open(csv_path, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow([
-                "index", "signal_id", "ground_truth_transcript", "severity",
-                "target_score", "predicted_score", "abs_error",
-            ])
+            writer.writerow(
+                [
+                    "index",
+                    "signal_id",
+                    "ground_truth_transcript",
+                    "severity",
+                    "target_score",
+                    "predicted_score",
+                    "abs_error",
+                ]
+            )
             for i, (sig_id, gt, sev, tgt, pred) in enumerate(
                 zip(signal_ids, ground_truths, severities, targets, preds)
             ):
-                sev_str = json.dumps(sev.tolist()) if isinstance(sev, np.ndarray) else str(sev)
-                writer.writerow([
-                    i, sig_id, gt, sev_str,
-                    f"{tgt:.6f}", f"{pred:.6f}", f"{abs(tgt - pred):.6f}",
-                ])
+                sev_str = (
+                    json.dumps(sev.tolist())
+                    if isinstance(sev, np.ndarray)
+                    else str(sev)
+                )
+                writer.writerow(
+                    [
+                        i,
+                        sig_id,
+                        gt,
+                        sev_str,
+                        f"{tgt:.6f}",
+                        f"{pred:.6f}",
+                        f"{abs(tgt - pred):.6f}",
+                    ]
+                )
 
     log.info(f"Predictions CSV    → {csv_path}")
     log.info(f"All outputs in     → {out_dir}")
@@ -383,19 +429,24 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
 # Hydra entry point
 # ---------------------------------------------------------------------------
 
+
 @hydra.main(config_path="conf", config_name="config", version_base=None)
 def main(cfg: DictConfig) -> None:
     better_ear: bool = cfg.test.get("better_ear", False)
     test_ds = LyricIntelligibilityDataset(
-        root_path = cfg.data.root_path,
-        split     = cfg.test.split,
-        mono      = not better_ear,
+        root_path=cfg.data.root_path,
+        split=cfg.test.split,
+        mono=not better_ear,
     )
     test_loader = build_dataloader(
         test_ds,
-        batch_size  = cfg.test.get("batch_size", cfg.data.batch_size),
-        shuffle     = False,
-        num_workers = 0 if not torch.cuda.is_available() else min(cfg.data.get("num_workers", 4), os.cpu_count() or 1),
+        batch_size=cfg.test.get("batch_size", cfg.data.batch_size),
+        shuffle=False,
+        num_workers=(
+            0
+            if not torch.cuda.is_available()
+            else min(cfg.data.get("num_workers", 4), os.cpu_count() or 1)
+        ),
     )
     evaluate(cfg, test_loader)
 
