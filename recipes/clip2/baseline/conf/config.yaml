@@ -45,7 +45,7 @@ train:
   # Gradual backbone unfreezing
   finetune:
     epoch: 5                           # epoch at which to start fine-tuning the backbone
-    layers: 4                          # top-N fallback (used if context_layers would exceed this)
+    layers: 4                          # maximum total encoder layers to unfreeze (top-most)
     context_layers: 2                  # layers below each selected layer to also unfreeze
                                        # e.g. use_encoder_layers=[32], context=2 → unfreezes 30, 31, 32
     lr: 1e-5                           # lower LR for the unfrozen backbone layers
