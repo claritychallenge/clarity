@@ -117,7 +117,7 @@ Usage
     )
 
     dev_ds = LyricIntelligibilityDataset(
-        shared_params*,
+        **shared_params,
         split="dev",
     )
 
