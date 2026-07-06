@@ -193,6 +193,7 @@ Batch = tuple[np.ndarray, np.ndarray, list[str], np.ndarray, list[str], np.ndarr
 # Dataset
 # ---------------------------------------------------------------------------
 
+
 class LyricIntelligibilityDataset(Dataset):
     """
     PyTorch Dataset for the CLIP lyric-intelligibility corpora (CLIP1 / CLIP2).
@@ -274,14 +275,13 @@ class LyricIntelligibilityDataset(Dataset):
         sample_rate: int = 16_000,
         mono: bool = True,
     ) -> None:
-        self.root_path   = Path(root_path)
-        self.split       = split
-        self.strategy    = strategy
+        self.root_path = Path(root_path)
+        self.split = split
+        self.strategy = strategy
         self.train_ratio = train_ratio
-        self.seed        = seed
+        self.seed = seed
         self.sample_rate = sample_rate
-        self.mono        = mono
-
+        self.mono = mono
 
         # "train" and "dev" both read from train_metadata; "valid"/"test" from test_metadata.
         self.set_name: str = "train" if split in ("train", "dev") else split
@@ -333,8 +333,13 @@ class LyricIntelligibilityDataset(Dataset):
         """
         valid: list[MetadataRecord] = []
         for r in records:
-            sig  = self.root_path / self.set_name / "signals"     / f"{r['signal']}.flac"
-            unpr = self.root_path / self.set_name / "unprocessed" / f"{r['signal']}_unproc.flac"
+            sig = self.root_path / self.set_name / "signals" / f"{r['signal']}.flac"
+            unpr = (
+                self.root_path
+                / self.set_name
+                / "unprocessed"
+                / f"{r['signal']}_unproc.flac"
+            )
 
             if not sig.exists():
                 log.warning(f"Missing signals file, skipping:     {sig}")
@@ -493,11 +498,11 @@ class LyricIntelligibilityDataset(Dataset):
         prompt_keys: list[str] = sorted(groups.keys())
         rng.shuffle(prompt_keys)
 
-        total  = len(records)
+        total = len(records)
         target = int(total * self.train_ratio)  # desired train sample count
 
         train_keys: list[str] = []
-        dev_keys:   list[str] = []
+        dev_keys: list[str] = []
         train_count = 0
 
         for key in prompt_keys:
@@ -574,9 +579,9 @@ class LyricIntelligibilityDataset(Dataset):
             # Average across the channel axis to produce a mono signal.
             # For a mono file (C=1) this is a no-op beyond removing the channel dim.
             if waveform.shape[1] > 1:
-                waveform = waveform.mean(axis=1)   # [T, C] → [T]
+                waveform = waveform.mean(axis=1)  # [T, C] → [T]
             else:
-                waveform = waveform[:, 0]          # [T, 1] → [T]
+                waveform = waveform[:, 0]  # [T, 1] → [T]
 
             # Resample only when the file's native rate differs from the target.
             if sr != self.sample_rate:
@@ -638,7 +643,7 @@ class LyricIntelligibilityDataset(Dataset):
         """
         r = self.records[idx]
 
-        audio1 = self._load_audio(str(r["signal"]), "signals")      # processed signal
+        audio1 = self._load_audio(str(r["signal"]), "signals")  # processed signal
         audio2 = self._load_audio(str(r["signal"]), "unprocessed")  # clean reference
 
         severity_string = str(r["hearing_loss"])
@@ -701,6 +706,7 @@ class LyricIntelligibilityDataset(Dataset):
 # Collate — pad variable-length waveforms within a batch
 # ---------------------------------------------------------------------------
 
+
 def collate_fn(batch: list[DatasetItem]) -> Batch:
     """
     Collate a list of dataset items into a padded batch.
@@ -736,7 +742,9 @@ def collate_fn(batch: list[DatasetItem]) -> Batch:
     scores : np.ndarray, shape (B,), dtype float32
         Listener correctness values.
     """
-    audio1_list, audio2_list, severity_strings, severities, ground_truths, scores = zip(*batch)
+    audio1_list, audio2_list, severity_strings, severities, ground_truths, scores = zip(
+        *batch
+    )
 
     def pad_waveforms(waveforms: tuple[np.ndarray, ...]) -> np.ndarray:
         """
@@ -761,35 +769,36 @@ def collate_fn(batch: list[DatasetItem]) -> Batch:
         """
         # Time is always the last axis for both mono (T,) and stereo (C, T).
         max_len = max(w.shape[-1] for w in waveforms)
-        first   = waveforms[0]
+        first = waveforms[0]
 
         if first.ndim == 1:
             # Mono: allocate [N, T_max]
             padded = np.zeros((len(waveforms), max_len), dtype=np.float32)
             for i, w in enumerate(waveforms):
-                padded[i, :w.shape[0]] = w
+                padded[i, : w.shape[0]] = w
         else:
             # Stereo (or any multi-channel): allocate [N, C, T_max]
             C = first.shape[0]
             padded = np.zeros((len(waveforms), C, max_len), dtype=np.float32)
             for i, w in enumerate(waveforms):
-                padded[i, :, :w.shape[-1]] = w
+                padded[i, :, : w.shape[-1]] = w
 
         return padded
 
     return (
-        pad_waveforms(audio1_list),              # [B, T_max] or [B, C, T_max]
-        pad_waveforms(audio2_list),              # [B, T_max] or [B, C, T_max]
-        list(severity_strings),                  # [B]  raw severity strings
-        np.array(severities, dtype=np.int64),    # [B]  integer labels
-        list(ground_truths),                     # [B]  prompt strings
-        np.array(scores, dtype=np.float32),      # [B]  correctness scores
+        pad_waveforms(audio1_list),  # [B, T_max] or [B, C, T_max]
+        pad_waveforms(audio2_list),  # [B, T_max] or [B, C, T_max]
+        list(severity_strings),  # [B]  raw severity strings
+        np.array(severities, dtype=np.int64),  # [B]  integer labels
+        list(ground_truths),  # [B]  prompt strings
+        np.array(scores, dtype=np.float32),  # [B]  correctness scores
     )
 
 
 # ---------------------------------------------------------------------------
 # Factory function
 # ---------------------------------------------------------------------------
+
 
 def build_dataloader(
     dataset: LyricIntelligibilityDataset,
@@ -825,18 +834,19 @@ def build_dataloader(
     """
     return DataLoader(
         dataset,
-        batch_size  = batch_size,
-        shuffle     = shuffle,
-        num_workers = num_workers,
-        collate_fn  = collate_fn,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
+        collate_fn=collate_fn,
         # Only pin memory when a GPU is actually available; avoids a warning otherwise.
-        pin_memory  = pin_memory and torch.cuda.is_available(),
+        pin_memory=pin_memory and torch.cuda.is_available(),
     )
 
 
 # ---------------------------------------------------------------------------
 # Convenience: build train + dev loaders in one call
 # ---------------------------------------------------------------------------
+
 
 def build_train_dev_loaders(
     root_path: str,
@@ -890,24 +900,24 @@ def build_train_dev_loaders(
     """
     # Common kwargs shared by both dataset instantiations.
     shared: dict = dict(
-        root_path    = root_path,
-        strategy     = strategy,
-        train_ratio  = train_ratio,
-        seed         = seed,          # identical seed → complementary splits
-        sample_rate  = sample_rate,
-        mono         = mono,
+        root_path=root_path,
+        strategy=strategy,
+        train_ratio=train_ratio,
+        seed=seed,  # identical seed → complementary splits
+        sample_rate=sample_rate,
+        mono=mono,
     )
 
     # Takes all train samples and split train_ratio for training
     # and 1 - train_ratio for development
     train_ds = LyricIntelligibilityDataset(**shared, split="train")
-    dev_ds   = LyricIntelligibilityDataset(**shared, split="dev")
+    dev_ds = LyricIntelligibilityDataset(**shared, split="dev")
 
     train_loader = build_dataloader(
-        train_ds, batch_size=train_batch_size, shuffle=True,  num_workers=num_workers
+        train_ds, batch_size=train_batch_size, shuffle=True, num_workers=num_workers
     )
     dev_loader = build_dataloader(
-        dev_ds,   batch_size=dev_batch_size,   shuffle=False, num_workers=num_workers
+        dev_ds, batch_size=dev_batch_size, shuffle=False, num_workers=num_workers
     )
 
     log.info(f"Train samples: {len(train_ds)}  Dev samples: {len(dev_ds)}")
