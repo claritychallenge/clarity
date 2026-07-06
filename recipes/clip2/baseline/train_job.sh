@@ -4,7 +4,7 @@
 #SBATCH --comment=B-Clip2
 #SBATCH --job-name=B-Clip2
 #SBATCH --mem=50GB
-#SBATCH --mail-user=g.roadabike@sheffield.ac.uk
+#SBATCH --mail-user=your.email@example.com
 #SBATCH --mail-type=FAIL
 #SBATCH --cpus-per-task=4
 #SBATCH --partition=gpu,gpu-h100,gpu-h100-nvl
