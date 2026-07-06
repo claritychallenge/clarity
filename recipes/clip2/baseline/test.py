@@ -17,8 +17,8 @@ the checkpoint, so no separate model config is needed.
 
 Usage
 -----
-    # Evaluate against labelled test set
-    python test.py test.checkpoint=./runs/best_model.pt test.split=test
+    # Evaluate against labelled eval set
+    python test.py test.checkpoint=./runs/best_model.pt test.split=eval
 
     # Evaluate against the dev split used during training
     python test.py test.checkpoint=./runs/best_model.pt test.split=valid
