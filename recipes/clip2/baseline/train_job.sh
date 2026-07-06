@@ -29,7 +29,7 @@ enc_layers=$(echo "$layers" | grep -oP '(?<=enc)\[[^\]]*\]')
 
 
 epochs_stage1=50                      # Max epoch stage 1 training - mono
-epochs_stage2=50                      # Max epoch stage 1 training - mono
+epochs_stage2=50                      # Max epoch stage 2 training - better-ear
 es_patience=10                        # Early stopping patience (in epochs)
 lr_patience=5                         # Learning rate scheduler patience (in epochs)
 finetune_epoch=5                      # Epochs at when finetuning whisper encoder layers (stage 1)
