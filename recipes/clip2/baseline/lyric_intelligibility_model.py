@@ -37,6 +37,7 @@ The model always operates on mono input [B, T'].  For stereo audio use the
 better-ear strategy: run the model on left and right channels separately
 and take max(score_L, score_R) as the final prediction.
 """
+
 from __future__ import annotations
 
 import logging
@@ -149,7 +150,7 @@ class WhisperIntelligibilityModel(nn.Module):
         self,
         backbone: str = "whisper-large-v3",
         hidden_dim: int = 256,
-        use_encoder_layers: Optional[list[int]] = None,
+        use_encoder_layers: list[int] | None = None,
         freeze_backbone: bool = True,
         attn_heads: int = 4,
         dropout: float = 0.1,
@@ -201,7 +202,7 @@ class WhisperIntelligibilityModel(nn.Module):
         )
 
         # Cross-layer attention is used only when more than one layer is selected.
-        self.cross_layer_attn: Optional[CrossLayerAttention] = (
+        self.cross_layer_attn: CrossLayerAttention | None = (
             CrossLayerAttention(
                 hidden_dim=hidden_dim, num_heads=attn_heads, dropout=dropout
             )

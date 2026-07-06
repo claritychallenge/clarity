@@ -29,6 +29,7 @@ Usage
     # Better-ear evaluation (Stage 2 checkpoint, stereo data)
     python test.py test.checkpoint=./runs/stage2/best_model.pt test.better_ear=true
 """
+
 from __future__ import annotations
 
 import csv

@@ -139,6 +139,7 @@ Usage
     eval_ds       = LyricIntelligibilityDataset("cadenza_data", split="eval")
     eval_loader   = build_dataloader(eval_ds, batch_size=16, shuffle=False)
 """
+
 from __future__ import annotations
 
 import json
@@ -590,7 +591,6 @@ class LyricIntelligibilityDataset(Dataset):
 
             return waveform  # shape: (T,), dtype: float32
 
-        
         # Preserve channel layout.  Transpose [T, C] → [C, T] so the
         # channel axis is leading, matching the PyTorch convention.
         waveform = waveform.T  # [C, T]
