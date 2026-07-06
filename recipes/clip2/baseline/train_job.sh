@@ -121,7 +121,7 @@ python test.py \
 
 echo "Inferring Stage 2 (mono)..."
 python test.py \
-    "hydra.run.dir=$stage1" \
+    "hydra.run.dir=$stage2" \
     "hydra.job.name=valid_mono.log" \
     test.checkpoint=$stage2/best_model.pt \
     test.output_dir=$stage2/valid_mono \
