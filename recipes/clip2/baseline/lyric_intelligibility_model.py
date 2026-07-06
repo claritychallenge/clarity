@@ -235,7 +235,9 @@ class WhisperIntelligibilityModel(nn.Module):
         scores : torch.Tensor, shape [B]
             Intelligibility score per sample in (0, 1).
         """
-        backbone_frozen = not any(p.requires_grad for p in self.encoder.parameters())
+        backbone_trainable = any(p.requires_grad for p in self.encoder.parameters())
+        with torch.set_grad_enabled(backbone_trainable):
+            outputs = self.encoder(
                 input_features=input_features,
                 output_hidden_states=True,
             )
@@ -292,9 +294,6 @@ class WhisperIntelligibilityModel(nn.Module):
                 if 0 <= idx < total_enc:
                     indices_to_unfreeze.add(idx)
 
-        if num_top_layers > 0 and len(indices_to_unfreeze) > num_top_layers:
-            # Keep only the top-most layers (highest indices).
-            indices_to_unfreeze = set(sorted(indices_to_unfreeze)[-num_top_layers:])
         for idx in sorted(indices_to_unfreeze):
             for p in enc_layers[idx].parameters():
                 p.requires_grad_(True)
