@@ -144,7 +144,12 @@ def prepare_batch_whisper_stereo(
 
 def compute_metrics(preds: np.ndarray, targets: np.ndarray) -> dict[str, float]:
     """Compute MSE and PCC between predictions and targets."""
-    pcc = float(pearsonr(preds, targets)[0]) if len(preds) > 1 else 0.0
+    if len(preds) > 1:
+        pcc = float(pearsonr(preds, targets)[0])
+        if np.isnan(pcc):
+            pcc = 0.0
+    else:
+        pcc = 0.0
     mse = float(np.mean((preds - targets) ** 2))
     return {
         "mse": mse,
