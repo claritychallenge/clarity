@@ -330,7 +330,7 @@ def save_checkpoint(
         torch.save(state, best_path)
         log.info(f"  ✓ New best → {best_path}  (val_loss={metrics['loss']:.4f})")
 
-    # ── Prune old checkpoints ─────────────────────────────────────────────
+    # -- Prune old checkpoints ----------------------------------------------------
     # Collect all epoch checkpoints sorted oldest → newest.
     all_ckpts = sorted(out_dir.glob("checkpoint_e*.pt"))
     # Epochs to keep: the last `keep_last` on disk + the best epoch.
@@ -388,7 +388,7 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
     log.info(f"Device : {device}")
     log.info(f"Config :\n{OmegaConf.to_yaml(cfg)}")
 
-    # ── Processor & model ────────────────────────────────────────────────
+    # -- Processor & model ------------------------------------------------
     model_id  = WhisperIntelligibilityModel.SUPPORTED_MODELS[cfg.model.backbone]
     processor = WhisperProcessor.from_pretrained(model_id)
 
@@ -402,7 +402,7 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
         dropout            = cfg.model.dropout,
     ).to(device)
 
-    # ── Resume from checkpoint (Stage 2 loads Stage 1 head weights) ──────
+    # -- Resume from checkpoint (Stage 2 loads Stage 1 head weights) ------
     resume_from: str | None = cfg.train.get("resume_from", None)
     if resume_from:
         ckpt = torch.load(resume_from, map_location=device)
@@ -429,19 +429,19 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
     n_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     log.info(f"Params — total: {n_total:,}  trainable: {n_trainable:,}")
 
-    # ── Loss ─────────────────────────────────────────────────────────────
+    # -- Loss -------------------------------------------------------------
     better_ear: bool = cfg.train.get("better_ear", False)
     criterion = BetterEarLoss() if better_ear else nn.MSELoss()
     log.info(f"Loss: {'BetterEarLoss' if better_ear else 'MSELoss'}")
 
-    # ── Optimiser — head parameters only ─────────────────────────────────
+    # -- Optimiser — head parameters only ---------------------------------
     head_params = [
         p for n, p in model.named_parameters()
         if not n.startswith("encoder.") and p.requires_grad
     ]
     optimizer = AdamW(head_params, lr=cfg.train.lr, weight_decay=cfg.train.weight_decay)
 
-    # ── Scheduler ────────────────────────────────────────────────────────
+    # -- Scheduler --------------------------------------------------------
     es_patience:  int   = cfg.train.get("early_stopping", {}).get("patience",  10)
     es_min_delta: float = cfg.train.get("early_stopping", {}).get("min_delta", 1e-4)
     use_early_stopping  = es_patience > 0
@@ -467,7 +467,7 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
         else None
     )
 
-    # ── Training loop ─────────────────────────────────────────────────────
+    # -- Training loop -----------------------------------------------------
     best_val_loss     = float("inf")
     best_epoch        = 1
     backbone_unfrozen = False
@@ -493,7 +493,7 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
     for epoch in epoch_pbar:
         t0 = time.time()
 
-        # ── Backbone unfreeze ─────────────────────────────────────────────
+        # -- Backbone unfreeze ---------------------------------------------
         if epoch == cfg.train.finetune.epoch and not backbone_unfrozen:
             log.info(f"[Epoch {epoch}] Unfreezing backbone layers")
             model.unfreeze_backbone(
@@ -522,7 +522,7 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
                 )
             backbone_unfrozen = True
 
-        # ── Train and eval ────────────────────────────────────────────────
+        # -- Train and eval ------------------------------------------------
         train_m = run_epoch(
             model, train_loader, processor, device, better_ear,
             criterion, epoch, cfg.train.epochs,
@@ -574,7 +574,7 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
             log.info(msg)
             break
 
-    # ── Post-training ─────────────────────────────────────────────────────
+    # -- Post-training -----------------------------------------------------
     (out_dir / "history.json").write_text(json.dumps(history, indent=2))
 
     final = f"\nTraining complete — best dev loss: {best_val_loss:.4f}  →  {out_dir}/best_model.pt"
