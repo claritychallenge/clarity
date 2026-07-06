@@ -118,6 +118,8 @@ def prepare_batch_whisper_stereo(
     feats_R : [B, 80/128, 3000]
     scores  : [B] or None
     """
+    if audio_np.ndim != 3 or audio_np.shape[1] < 2:
+        raise ValueError(f"Expected audio_np with shape [B, 2, T]; got {audio_np.shape}")
     left_list = [audio_np[i, 0] for i in range(len(audio_np))]
     right_list = [audio_np[i, 1] for i in range(len(audio_np))]
 
