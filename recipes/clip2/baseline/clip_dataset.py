@@ -112,7 +112,7 @@ Usage
     )
 
     train_ds = LyricIntelligibilityDataset(
-        shared_params*,
+        **shared_params,
         split="train",
     )
 
