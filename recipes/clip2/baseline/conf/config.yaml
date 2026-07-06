@@ -54,7 +54,7 @@ test:
   checkpoint: ???                      # required — set via CLI: test.checkpoint=path/to/best_model.pt
   output_dir: ./test_results/${now:%Y-%m-%d}/${now:%H-%M-%S}
   inference_only: true                # true = skip metrics, write predicted scores only
-  range_01: true                      # Use when inference_only = true
+  range_01: false                     # Use when inference_only = true
                                       # true = return values between 0 and 1,
                                       # false = return values between 0 and 100
   fp16: false

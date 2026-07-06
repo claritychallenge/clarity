@@ -337,11 +337,6 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
             plot_metric_by_severity(sev_metrics, "mae",  out_dir / "mae_by_severity.png",  color="steelblue")
             plot_metric_by_severity(sev_metrics, "rmse", out_dir / "rmse_by_severity.png", color="tomato")
 
-    # -- Save predictions with values between 0 and 100 -------------------
-    if cfg.test.inference_only:
-        if cfg.test.range_01 is False:
-            preds *= 100.0
-
     # -- Save results.json (evaluation mode only) -------------------------
     if results:
         results_path = out_dir / "results.json"
@@ -352,6 +347,10 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
     signal_ids = [str(r["signal"]) for r in test_loader.dataset.records]
 
     if cfg.test.inference_only:
+        # -- Save predictions with values between 0 and 100 -------------------
+        if cfg.test.inference_only:
+            preds *= 100
+
         csv_path = out_dir / "predictions.csv"
         with open(csv_path, "w", newline="") as f:
             writer = csv.writer(f)
