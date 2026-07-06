@@ -295,6 +295,9 @@ class WhisperIntelligibilityModel(nn.Module):
                 if 0 <= idx < total_enc:
                     indices_to_unfreeze.add(idx)
 
+        if len(indices_to_unfreeze) > num_top_layers:
+            # Keep the top-most layers (highest indices) if cap exceeded.
+            indices_to_unfreeze = set(sorted(indices_to_unfreeze, reverse=True)[:num_top_layers])
         for idx in sorted(indices_to_unfreeze):
             for p in enc_layers[idx].parameters():
                 p.requires_grad_(True)
