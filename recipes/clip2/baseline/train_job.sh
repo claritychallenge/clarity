@@ -20,7 +20,7 @@ source .venv/bin/activate
 backbone=whisper-large-v3
 layers="enc[32]"
 batch=32
-lr=-1e-4
+lr=1e-4
 layers_str=$(echo "$layers" | tr -d '[],' | tr ' ' '-')
 dataset=clip2
 
