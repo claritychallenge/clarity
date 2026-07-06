@@ -235,9 +235,7 @@ class WhisperIntelligibilityModel(nn.Module):
         scores : torch.Tensor, shape [B]
             Intelligibility score per sample in (0, 1).
         """
-        backbone_frozen = not next(self.encoder.parameters()).requires_grad
-        with torch.set_grad_enabled(not backbone_frozen):
-            outputs = self.encoder(
+        backbone_frozen = not any(p.requires_grad for p in self.encoder.parameters())
                 input_features=input_features,
                 output_hidden_states=True,
             )
