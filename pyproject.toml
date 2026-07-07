@@ -21,7 +21,7 @@ classifiers = [
     "Natural Language :: English",
 ]
 keywords = ["hearing", "signal processing", "clarity challenge"]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "audioread>=2.1.9",
     "gdown",
@@ -132,7 +132,7 @@ omit = ["*conftest.py", "*tests*", "**/__init__*", "clarity/_version.py"]
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
+target-version = ['py311']
 exclude = '''
 
 (
@@ -176,7 +176,7 @@ exclude = [
 ]
 # per-file-ignores = []
 line-length = 88
-target-version = "py39"
+target-version = "py311"
 
 [tool.ruff.lint]
 # removed "I001" import sort -> conflict with isort
