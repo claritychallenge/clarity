@@ -38,19 +38,18 @@ import hydra
 import numpy as np
 import torch
 import torch.nn as nn
-from omegaconf import DictConfig, OmegaConf
-from scipy.stats import pearsonr
-from torch.optim import AdamW
-from torch.optim.lr_scheduler import OneCycleLR, ReduceLROnPlateau
-from tqdm import tqdm
-from transformers import WhisperProcessor
-
 from clip_dataset import (
     LyricIntelligibilityDataset,
     build_dataloader,
     build_train_dev_loaders,
 )
 from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
+from omegaconf import DictConfig, OmegaConf
+from scipy.stats import pearsonr
+from torch.optim import AdamW
+from torch.optim.lr_scheduler import OneCycleLR, ReduceLROnPlateau
+from tqdm import tqdm
+from transformers import WhisperProcessor
 
 log = logging.getLogger(__name__)
 
