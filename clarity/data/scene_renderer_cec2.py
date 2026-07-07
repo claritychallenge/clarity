@@ -416,7 +416,7 @@ class SceneRenderer:
         out_path = out_path.format(dataset=scene["dataset"])
         file_stem = f"{out_path}/{scene['scene']}"
         for channel, (t, i, m, norm) in enumerate(
-            zip(targets, interferers, mix, norms)
+            zip(targets, interferers, mix, norms, strict=True)
         ):
             for sig, sig_type in zip(
                 [t, i, m], ["target", "interferer", "mix"], strict=True
