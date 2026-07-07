@@ -232,7 +232,7 @@ def run_inference(
             preds = torch.maximum(model(feats_L.to(dtype)), model(feats_R.to(dtype)))
         else:
             feats, scores = prepare_batch_whisper(audio, processor, device, score_np)
-            preds = model(feats)
+            preds = model(feats.to(next(model.parameters()).dtype))
 
         all_preds.extend(preds.cpu().numpy())
         if not inference_only:
