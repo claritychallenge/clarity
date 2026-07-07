@@ -132,9 +132,11 @@ def run_calculate_SI(cfg, path) -> None:
 
         if len(procpad) < len(proc):
             raise ValueError("Padded processed signal is too short.")
+        d0 = int(np.asarray(delay[0]).item())
+        d1 = int(np.asarray(delay[1]).item())
+        cleanpad[d0 : int(len(clean) + d0), 0] = clean[:, 0]
+        cleanpad[d1 : int(len(clean) + d1), 1] = clean[:, 1]
 
-        cleanpad[int(delay[0]) : int(len(clean) + int(delay[0])), 0] = clean[:, 0]
-        cleanpad[int(delay[1]) : int(len(clean) + int(delay[1])), 1] = clean[:, 1]
         procpad[: len(proc)] = proc
 
         sii = mbstoi(
