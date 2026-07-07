@@ -161,7 +161,9 @@ def test_full_cec1_pipeline(regtest):
     signal_processed = listen(ear, enhanced_audio, audiogram_left, audiogram_right)
 
     # Calculate channel-specific unit impulse delay due to HL model and audiograms
-    delay = np.asarray(find_delay_impulse(ddf_signal, initial_value=int(MSBG_FS / 2))).reshape(-1)
+    delay = np.asarray(
+        find_delay_impulse(ddf_signal, initial_value=int(MSBG_FS / 2))
+    ).reshape(-1)
     max_delay = int(np.max(delay))
 
     # Allow for value lower than 1000 samples in case of unimpaired hearing
