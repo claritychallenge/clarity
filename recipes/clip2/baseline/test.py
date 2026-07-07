@@ -394,7 +394,7 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
         csv_path = out_dir / "predictions.csv"
         with open(csv_path, "w", newline="") as f:
             writer = csv.writer(f)
-            for sig_id, pred in zip(signal_ids, preds):
+            for sig_id, pred in zip(signal_ids, preds, strict=True):
                 writer.writerow([sig_id, f"{pred:.6f}"])
     else:
         csv_path = out_dir / "predictions_complete.csv"
@@ -412,7 +412,7 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
                 ]
             )
             for i, (sig_id, gt, sev, tgt, pred) in enumerate(
-                zip(signal_ids, ground_truths, severities, targets, preds)
+                zip(signal_ids, ground_truths, severities, targets, preds, strict=True)
             ):
                 sev_str = (
                     json.dumps(sev.tolist())

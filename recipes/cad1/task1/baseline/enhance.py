@@ -137,7 +137,7 @@ def map_to_dict(sources: ndarray, sources_list: list[str]) -> dict:
     Returns:
         Dictionary: A dictionary of separated source audio split into channels.
     """
-    audios = dict(zip(sources_list, sources))
+    audios = dict(zip(sources_list, sources, strict=True))
 
     signal_stems = {}
     for source in sources_list:

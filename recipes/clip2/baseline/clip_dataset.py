@@ -745,7 +745,7 @@ def collate_fn(batch: list[DatasetItem]) -> Batch:
         Listener correctness values.
     """
     audio1_list, audio2_list, severity_strings, severities, ground_truths, scores = zip(
-        *batch
+        *batch, strict=True
     )
 
     def pad_waveforms(waveforms: tuple[np.ndarray, ...]) -> np.ndarray:

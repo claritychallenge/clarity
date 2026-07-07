@@ -397,11 +397,14 @@ class HOARotator:
         # Interpolate between the two nearest rotation matrices
         t_interp = (
             t_r0_ + alpha_ * (t_r1_ - t_r0_)
-            for t_r0_, t_r1_, alpha_ in zip(t_r0, t_r1, theta_i - theta_0)
+            for t_r0_, t_r1_, alpha_ in zip(t_r0, t_r1, theta_i - theta_0, strict=True)
         )
         # Apply the interpolated rotation matrices to the signal
         signal = np.array(
-            [np.dot(x, _t_interp) for x, _t_interp in zip(signal, t_interp)]
+            [
+                np.dot(x, _t_interp)
+                for x, _t_interp in zip(signal, t_interp, strict=True)
+            ]
         )
         return signal
 
@@ -495,7 +498,7 @@ def equalise_rms_levels(inputs: list[ndarray]) -> list[ndarray]:
     """
     rms = compute_rms(np.array(inputs)[:, :, 0], axis=1)
     levels = rms / np.max(rms)
-    outputs = [input / level for level, input in zip(levels, inputs)]
+    outputs = [input / level for level, input in zip(levels, inputs, strict=True)]
     return outputs
 
 

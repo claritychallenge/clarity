@@ -89,7 +89,9 @@ def run_HL_processing(cfg, path):
             listen(ear, ddf_signal, listener),
             listen(ear, mixture_signal, listener),
         ]
-        for signal, signal_file in zip(signals_to_write, signal_files_to_write):
+        for signal, signal_file in zip(
+            signals_to_write, signal_files_to_write, strict=True
+        ):
             write_signal(
                 signal_file,
                 signal,
