@@ -38,18 +38,19 @@ import hydra
 import numpy as np
 import torch
 import torch.nn as nn
-from clip_dataset import (
-    LyricIntelligibilityDataset,
-    build_dataloader,
-    build_train_dev_loaders,
-)
-from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 from omegaconf import DictConfig, OmegaConf
 from scipy.stats import pearsonr
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import OneCycleLR, ReduceLROnPlateau
 from tqdm import tqdm
 from transformers import WhisperProcessor
+
+from clip_dataset import (
+    LyricIntelligibilityDataset,
+    build_dataloader,
+    build_train_dev_loaders,
+)
+from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 
 log = logging.getLogger(__name__)
 
@@ -271,7 +272,7 @@ def run_epoch(
 
             running_loss += loss.item()
             all_preds.extend(preds.detach().cpu().numpy())
-            if not scores is None:
+            if scores is not None:
                 all_targets.extend(scores.cpu().numpy())
             pbar.set_postfix(loss=f"{loss.item():.4f}")
 
