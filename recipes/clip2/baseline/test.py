@@ -43,13 +43,14 @@ import hydra
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from clip_dataset import LyricIntelligibilityDataset, build_dataloader
-from lyric_intelligibility_model import WhisperIntelligibilityModel
 from omegaconf import DictConfig
 from scipy.stats import pearsonr, spearmanr
 from tqdm import tqdm
-from train import prepare_batch_whisper, prepare_batch_whisper_stereo
 from transformers import WhisperProcessor
+
+from clip_dataset import LyricIntelligibilityDataset, build_dataloader
+from lyric_intelligibility_model import WhisperIntelligibilityModel
+from train import prepare_batch_whisper, prepare_batch_whisper_stereo
 
 log = logging.getLogger(__name__)
 
@@ -463,4 +464,4 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter

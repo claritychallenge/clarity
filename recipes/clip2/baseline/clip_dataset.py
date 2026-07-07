@@ -373,7 +373,7 @@ class LyricIntelligibilityDataset(Dataset):
             Records to inspect (typically ``self.records`` after splitting).
         """
         unknown: set[str] = {
-            r["hearing_loss"]
+            str(r["hearing_loss"])
             for r in records
             if r["hearing_loss"] not in SEVERITY_TO_INT
         }

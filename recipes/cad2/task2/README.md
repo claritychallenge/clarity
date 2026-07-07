@@ -11,7 +11,7 @@ The Second Cadenza Challenge - task 2 is using two datasets for training:
 - EnsembleSet: This contains 80 pieces of synthesised classical music.
 - CadenzaWoodwind: This contains 19 pieces of woodwind quartets.
 
-To download the data, please visit [here](https://forms.gle/taYK6MfBeW9sQk5PA).
+To download the data, please visit [fill in this form](https://forms.gle/taYK6MfBeW9sQk5PA).
 The data is contained in several packages:
 
 - CadenzaWoodwind.zip: containing the CadenzaWoodwind dataset.
@@ -119,7 +119,7 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 A csv file containing the eight HAAQI scores and the combined score will be generated in the `path.exp_folder`.
 
-To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
+To check the HAAQI code, see the implementation on our [website](../../../../clarity/evaluator/haaqi).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined.
 This is due to the  random noises generated within HAAQI, but the differences should be sufficiently small.

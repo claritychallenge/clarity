@@ -148,7 +148,7 @@ python evaluate.py
 
 A csv file containing the left and right channels HAAQI scores and the mean of both will be generated in the `path.exp_folder`.
 
-To check the HAAQI code, see [here](https://github.com/claritychallenge/clarity/blob/main/clarity/evaluator/haaqi/haaqi.py).
+To check the HAAQI code, see the implementation on our [website](https://github.com/claritychallenge/clarity/blob/main/clarity/evaluator/haaqi/haaqi.py).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).

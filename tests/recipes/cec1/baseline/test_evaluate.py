@@ -11,10 +11,11 @@ from numpy import ndarray
 from omegaconf import DictConfig
 
 import recipes
+import recipes.cec1.baseline.evaluate
 from clarity.utils.file_io import read_signal
-
 # pylint: disable=import-error, no-name-in-module, no-member
 from recipes.cec1.baseline.evaluate import run_calculate_SI, run_HL_processing
+
 
 # listen, run_calculate_SI,
 

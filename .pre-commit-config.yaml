@@ -15,7 +15,7 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=2048]
       - id: debug-statements
-      - id: check-byte-order-marker
+      - id: fix-byte-order-marker   # was: check-byte-order-marker
       # - id: check-yaml
       - id: check-toml
 

@@ -38,18 +38,19 @@ import hydra
 import numpy as np
 import torch
 import torch.nn as nn
-from clip_dataset import (
-    LyricIntelligibilityDataset,
-    build_dataloader,
-    build_train_dev_loaders,
-)
-from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 from omegaconf import DictConfig, OmegaConf
 from scipy.stats import pearsonr
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import OneCycleLR, ReduceLROnPlateau
 from tqdm import tqdm
 from transformers import WhisperProcessor
+
+from clip_dataset import (
+    LyricIntelligibilityDataset,
+    build_dataloader,
+    build_train_dev_loaders,
+)
+from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 
 log = logging.getLogger(__name__)
 
@@ -232,6 +233,7 @@ def run_epoch(
     )
 
     with ctx:
+        assert optimizer is not None
         for audio, _audio2, _sev_str, _sev, _transcript, score in pbar:
             if better_ear:
                 feats_L, feats_R, scores = prepare_batch_whisper_stereo(
@@ -693,4 +695,4 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter
