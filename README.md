@@ -52,7 +52,7 @@ Clarity is available on the [Python Package Index (PyPI)](https://pypi.org/proje
 activate a virtual environment and then use `pip` to install.
 
 ```bash
-conda create --name clarity python=3.8
+conda create --name clarity python=3.11
 conda activate clarity
 
 pip install pyclarity
@@ -66,7 +66,7 @@ git clone https://github.com/claritychallenge/clarity.git
 cd clarity
 
 # Second create & activate environment with conda, see https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
-conda create --name clarity python=3.8
+conda create --name clarity python=3.11
 conda activate clarity
 
 # Last install with pip
@@ -86,10 +86,11 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
-- [The ICASSP 2026 Cadenza Challege](./recipes/cad_icassp_2026)
+- [The 2nd Cadenza Lyric Intelligibility Prediction Chellenge](./recipes/clip2)
 
 Previous challenges
 
+- [The ICASSP 2026 Cadenza Challege](./recipes/cad_icassp_2026)
 - [The 3rd Clarity Prediction Challenge](./recipes/cpc3)
 - [The 2nd Cadenza Challege](./recipes/cad2)
 - [The 3rd Clarity Enhancement Challenge](./recipes/cec3)
