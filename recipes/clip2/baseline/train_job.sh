@@ -25,7 +25,7 @@ layers_str=$(echo "$layers" | tr -d '[],' | tr ' ' '-')
 dataset=clip2
 
 # Extract encoder layer list from "enc[X,Y,...]" format → "[X,Y,...]"
-enc_layers=$(echo "$layers" | grep -oP '(?<=enc)\[[^\]]*\]')
+enc_layers="${layers#enc}"
 
 
 epochs_stage1=50                      # Max epoch stage 1 training - mono
