@@ -121,7 +121,7 @@ def run_calculate_SI(cfg: DictConfig) -> None:
 
             # Calculate channel-specific unit impulse delay due to HL model
             # and audiograms
-            delay = find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))
+            delay = np.asarray(find_delay_impulse(ddf, initial_value=int(MSBG_FS / 2))).reshape(-1)
             if delay[0] != delay[1]:
                 logging.info(f"Difference in delay of {delay[0] - delay[1]}.")
             max_delay = int(np.max(delay))
