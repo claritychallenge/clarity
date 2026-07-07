@@ -392,7 +392,7 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
             preds *= 100
 
         csv_path = out_dir / "predictions.csv"
-        with open(csv_path, "w", newline="") as f:
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             for sig_id, pred in zip(signal_ids, preds, strict=True):
                 writer.writerow([sig_id, f"{pred:.6f}"])

@@ -291,7 +291,7 @@ class LyricIntelligibilityDataset(Dataset):
 
         # Load the full metadata list from JSON.
         metadata_path = self.root_path / "metadata" / f"{self.set_name}_metadata.json"
-        with open(metadata_path) as f:
+        with open(metadata_path, encoding="utf-8") as f:
             all_records: list[MetadataRecord] = json.load(f)
 
         # Drop any records whose audio files are absent on disk.
