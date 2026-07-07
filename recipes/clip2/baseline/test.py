@@ -43,13 +43,14 @@ import hydra
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from clip_dataset import LyricIntelligibilityDataset, build_dataloader
-from lyric_intelligibility_model import WhisperIntelligibilityModel
 from omegaconf import DictConfig
 from scipy.stats import pearsonr, spearmanr
 from tqdm import tqdm
-from train import prepare_batch_whisper, prepare_batch_whisper_stereo
 from transformers import WhisperProcessor
+
+from clip_dataset import LyricIntelligibilityDataset, build_dataloader
+from lyric_intelligibility_model import WhisperIntelligibilityModel
+from train import prepare_batch_whisper, prepare_batch_whisper_stereo
 
 log = logging.getLogger(__name__)
 
@@ -224,11 +225,11 @@ def run_inference(
     for audio, _audio2, _sev_str, severity, ground_truth, score in pbar:
         score_np = None if inference_only else score
 
+        dtype = next(model.parameters()).dtype
         if better_ear:
             feats_L, feats_R, scores = prepare_batch_whisper_stereo(
                 audio, processor, device, score_np
             )
-            dtype = next(model.parameters()).dtype
             preds = torch.maximum(model(feats_L.to(dtype)), model(feats_R.to(dtype)))
         else:
             feats, scores = prepare_batch_whisper(audio, processor, device, score_np)
