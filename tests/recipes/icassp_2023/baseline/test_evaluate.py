@@ -12,6 +12,7 @@ import pytest
 from omegaconf import DictConfig
 
 import recipes
+import recipes.icassp_2023.baseline.evaluate
 from clarity.utils.file_io import read_signal
 from recipes.icassp_2023.baseline.evaluate import run_calculate_si
 

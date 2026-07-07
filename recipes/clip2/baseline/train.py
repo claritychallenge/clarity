@@ -38,18 +38,19 @@ import hydra
 import numpy as np
 import torch
 import torch.nn as nn
-from clip_dataset import (
-    LyricIntelligibilityDataset,
-    build_dataloader,
-    build_train_dev_loaders,
-)
-from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 from omegaconf import DictConfig, OmegaConf
 from scipy.stats import pearsonr
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import OneCycleLR, ReduceLROnPlateau
 from tqdm import tqdm
 from transformers import WhisperProcessor
+
+from clip_dataset import (
+    LyricIntelligibilityDataset,
+    build_dataloader,
+    build_train_dev_loaders,
+)
+from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 
 log = logging.getLogger(__name__)
 
@@ -271,7 +272,8 @@ def run_epoch(
 
             running_loss += loss.item()
             all_preds.extend(preds.detach().cpu().numpy())
-            all_targets.extend(scores.cpu().numpy())
+            if not scores is None:
+                all_targets.extend(scores.cpu().numpy())
             pbar.set_postfix(loss=f"{loss.item():.4f}")
 
     metrics = compute_metrics(np.array(all_preds), np.array(all_targets))
@@ -694,4 +696,5 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    main()  # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter
+    main()

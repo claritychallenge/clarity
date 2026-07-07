@@ -178,7 +178,7 @@ SEVERITY_TO_INT: dict[str, int] = {label: i for i, label in enumerate(SEVERITY_L
 # ---------------------------------------------------------------------------
 
 # A single metadata record as loaded from JSON.
-MetadataRecord = dict[str, str | float]
+MetadataRecord = dict[str, str | float]  # pylint: disable=unsupported-binary-operation
 
 # Return type of __getitem__.
 # audio shape is (T,) for mono=True and (C, T) for mono=False.

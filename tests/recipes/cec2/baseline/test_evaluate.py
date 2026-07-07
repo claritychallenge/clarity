@@ -8,6 +8,7 @@ from unittest.mock import patch
 import hydra
 import numpy as np
 import pytest
+import recipes.cec2.baseline.evaluate.wavfile
 from omegaconf import DictConfig
 from scipy.io.wavfile import read
 
