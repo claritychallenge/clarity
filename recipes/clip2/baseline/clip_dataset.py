@@ -285,7 +285,7 @@ class LyricIntelligibilityDataset(Dataset):
         self.sample_rate = sample_rate
         self.mono = mono
 
-        # "train" and "dev" both read from train_metadata; "valid"/"test" from test_metadata.
+        # "train" and "dev" both read from train_metadata; "valid"/"eval" read from the corresponding metadata file.
         self.set_name: str = "train" if split in ("train", "dev") else split
 
         # Load the full metadata list from JSON.
