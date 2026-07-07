@@ -44,9 +44,9 @@ lr_finetune=$(python3 -c "print(float('$lr') / 1000)")
 lr_finetune_stage2=$(python3 -c "print(float('$lr') / 10000)")
 
 # -- Output dirs ---------------------------------------------------------------
-output=output/${dataset}/${backbone}-${layers_str}-batch${batch}-lr${lr}
-stage1=$output/stage1
-stage2=$output/stage2
+output="output/${dataset}/${backbone}-${layers_str}-batch${batch}-lr${lr}"
+stage1="$output/stage1"
+stage2="$output/stage2"
 
 echo "============================================================"
 echo "  dataset               : $dataset"
@@ -67,80 +67,80 @@ echo "============================================================"
 # -- Stage 1 — mono pretraining ------------------------------------------------
 echo "Starting Stage 1 (mono)..."
 python train.py \
-    model.backbone=$backbone \
-    "model.use_encoder_layers=$enc_layers" \
-    "hydra.run.dir=$stage1" \
-    data.batch_size=$batch \
-    train.epochs=$epochs_stage1 \
-    train.lr=$lr \
-    train.finetune.epoch=$finetune_epoch \
-    train.finetune.layers=$finetune_layers \
-    train.finetune.lr=$lr_finetune \
-    data.root_path=$data_root \
-    train.output_dir=$stage1 \
-    data.num_workers=$workers \
+    model.backbone="$backbone" \
+    model.use_encoder_layers="$enc_layers" \
+    hydra.run.dir="$stage1" \
+    data.batch_size="$batch" \
+    train.epochs="$epochs_stage1" \
+    train.lr="$lr" \
+    train.finetune.epoch="$finetune_epoch" \
+    train.finetune.layers="$finetune_layers" \
+    train.finetune.lr="$lr_finetune" \
+    data.root_path="$data_root" \
+    train.output_dir="$stage1" \
+    data.num_workers="$workers" \
     train.better_ear=false \
-    train.early_stopping.patience=$es_patience \
-    train.lr_patience=$lr_patience \
+    train.early_stopping.patience="$es_patience" \
+    train.lr_patience="$lr_patience" \
     || { echo "Stage 1 training failed."; exit 1; }
 
 # -- Stage 2 — better-ear fine-tuning -----------------------------------------
 echo "Starting Stage 2 (better-ear)..."
 python train.py \
-    model.backbone=$backbone \
-    "model.use_encoder_layers=$enc_layers" \
-    "hydra.run.dir=$stage2" \
-    data.batch_size=$batch \
-    train.epochs=$epochs_stage2 \
-    train.lr=$lr_stage2 \
-    train.finetune.epoch=$finetune_epoch_stage2 \
-    train.finetune.layers=$finetune_layers \
-    train.finetune.lr=$lr_finetune_stage2 \
-    data.root_path=$data_root \
-    train.output_dir=$stage2 \
-    train.resume_from=$stage1/best_model.pt \
-    data.num_workers=$workers \
+    model.backbone="$backbone" \
+    model.use_encoder_layers="$enc_layers" \
+    hydra.run.dir="$stage2" \
+    data.batch_size="$batch" \
+    train.epochs="$epochs_stage2" \
+    train.lr="$lr_stage2" \
+    train.finetune.epoch="$finetune_epoch_stage2" \
+    train.finetune.layers="$finetune_layers" \
+    train.finetune.lr="$lr_finetune_stage2" \
+    data.root_path="$data_root" \
+    train.output_dir="$stage2" \
+    train.resume_from="$stage1/best_model.pt" \
+    data.num_workers="$workers" \
     train.better_ear=true \
-    train.early_stopping.patience=$es_patience \
-    train.lr_patience=$lr_patience \
+    train.early_stopping.patience="$es_patience" \
+    train.lr_patience="$lr_patience" \
     || { echo "Stage 2 training failed."; exit 1; }
 
 # -- Inference ----------------------------------------------------------------
 echo "Inferring Stage 1 (mono)..."
 python test.py \
-    "hydra.run.dir=$stage1" \
-    "hydra.job.name=valid_mono.log" \
-    test.checkpoint=$stage1/best_model.pt \
-    test.output_dir=$stage1/valid \
-    data.root_path=$data_root \
+    hydra.run.dir="$stage1" \
+    hydra.job.name=valid_mono.log \
+    test.checkpoint="$stage1/best_model.pt" \
+    test.output_dir="$stage1/valid" \
+    data.root_path="$data_root" \
     test.split=valid \
     test.better_ear=false \
-    data.num_workers=$workers \
+    data.num_workers="$workers" \
     test.inference_only=true \
     || { echo "Stage 1 eval failed."; exit 1; }
 
 echo "Inferring Stage 2 (mono)..."
 python test.py \
-    "hydra.run.dir=$stage2" \
-    "hydra.job.name=valid_mono.log" \
-    test.checkpoint=$stage2/best_model.pt \
-    test.output_dir=$stage2/valid_mono \
-    data.root_path=$data_root \
+    hydra.run.dir="$stage2" \
+    hydra.job.name=valid_mono.log \
+    test.checkpoint="$stage2/best_model.pt" \
+    test.output_dir="$stage2/valid_mono" \
+    data.root_path="$data_root" \
     test.split=valid \
     test.better_ear=false \
-    data.num_workers=$workers \
+    data.num_workers="$workers" \
     test.inference_only=true \
     || { echo "Stage 2 mono eval failed."; exit 1; }
 
 echo "Inferring Stage 2 (better-ear)..."
 python test.py \
-    "hydra.run.dir=$stage2" \
-    "hydra.job.name=valid_be.log" \
-    test.checkpoint=$stage2/best_model.pt \
-    test.output_dir=$stage2/valid_better_ear \
-    data.root_path=$data_root \
+    hydra.run.dir="$stage2" \
+    hydra.job.name=valid_be.log \
+    test.checkpoint="$stage2/best_model.pt" \
+    test.output_dir="$stage2/valid_better_ear" \
+    data.root_path="$data_root" \
     test.split=valid \
     test.better_ear=true \
-    data.num_workers=$workers \
+    data.num_workers="$workers" \
     test.inference_only=true \
     || { echo "Stage 2 better-ear eval failed."; exit 1; }
