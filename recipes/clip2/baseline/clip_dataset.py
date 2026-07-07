@@ -61,16 +61,16 @@ The ``mono`` parameter controls how multi-channel files are handled:
 
 Batch output (matches train.py / eval.py contract)
 ----------------------------------------------------
-    audio1        np.ndarray [B, T]    or [B, C, T]  – processed (degraded) waveforms
-    audio2        np.ndarray [B, T]    or [B, C, T]  – clean reference waveforms
-    severity_str  list[str]  [B]                     – raw hearing_loss strings
-    severity      np.ndarray [B]                     – hearing_loss encoded as int label
-                                                       (also available as ordered list
-                                                       via dataset.severity_labels)
-    ground_truth  list[str]  [B]                     – prompt / lyric text
-    score         np.ndarray [B]                     – correctness in [0, 1]
-                                                       nan when ``correctness`` is absent
-                                                       from the metadata (inference mode)
+    audio1        np.ndarray [B, T]   or [B, C, T]  – processed (degraded) waveforms
+    audio2        np.ndarray [B, T]   or [B, C, T]  – clean reference waveforms
+    severity_str  list[str]  [B]                    – raw hearing_loss strings
+    severity      np.ndarray [B]                    – hearing_loss encoded as int label
+                                                      (also available as ordered list
+                                                      via dataset.severity_labels)
+    ground_truth  list[str]  [B]                    – prompt / lyric text
+    score         np.ndarray [B]                    – correctness in [0, 1]
+                                                      nan when ``correctness`` is absent
+                                                      from the metadata (inference mode)
 
 Splits
 ------
@@ -255,13 +255,13 @@ class LyricIntelligibilityDataset(Dataset):
     Examples
     --------
     >>> # Mono (default)
-    >>> ds = LyricIntelligibilityDataset("cadenza_data/clip2", split="train", mono=True)
+    >>> ds = LyricIntelligibilityDataset("data/clip2", split="train", mono=True)
     >>> audio1, audio2, sev_str, sev_int, prompt, score = ds[0]
     >>> audio1.shape
     (T,)
 
     >>> # Stereo
-    >>> ds = LyricIntelligibilityDataset("cadenza_data/clip2", split="train", mono=False)
+    >>> ds = LyricIntelligibilityDataset("data/clip2", split="train", mono=False)
     >>> audio1, *_ = ds[0]
     >>> audio1.shape
     (2, T)
@@ -285,7 +285,8 @@ class LyricIntelligibilityDataset(Dataset):
         self.sample_rate = sample_rate
         self.mono = mono
 
-        # "train" and "dev" both read from train_metadata; "valid"/"eval" read from the corresponding metadata file.
+        # "train" and "dev" both read from train_metadata;
+        # "valid"/"eval" read from the corresponding metadata file.
         self.set_name: str = "train" if split in ("train", "dev") else split
 
         # Load the full metadata list from JSON.
@@ -644,8 +645,8 @@ class LyricIntelligibilityDataset(Dataset):
         """
         r = self.records[idx]
 
-        audio1 = self._load_audio(str(r["signal"]), "signals")  # processed signal
-        audio2 = self._load_audio(str(r["signal"]), "unprocessed")  # clean reference
+        audio1 = self._load_audio(str(r["signal"]), "signals")
+        audio2 = self._load_audio(str(r["signal"]), "unprocessed")
 
         severity_string = str(r["hearing_loss"])
         # Fall back to a catch-all index for any label outside the registry.

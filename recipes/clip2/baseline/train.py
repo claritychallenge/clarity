@@ -38,18 +38,19 @@ import hydra
 import numpy as np
 import torch
 import torch.nn as nn
-from clip_dataset import (
-    LyricIntelligibilityDataset,
-    build_dataloader,
-    build_train_dev_loaders,
-)
-from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 from omegaconf import DictConfig, OmegaConf
 from scipy.stats import pearsonr
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import OneCycleLR, ReduceLROnPlateau
 from tqdm import tqdm
 from transformers import WhisperProcessor
+
+from clip_dataset import (
+    LyricIntelligibilityDataset,
+    build_dataloader,
+    build_train_dev_loaders,
+)
+from lyric_intelligibility_model import BetterEarLoss, WhisperIntelligibilityModel
 
 log = logging.getLogger(__name__)
 
@@ -445,7 +446,8 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
             log.warning(f"resume_from: unexpected keys: {unexpected}")
         log.info(
             f"Resumed from {resume_from}  "
-            f"(epoch {ckpt.get('epoch', '?')}, backbone={ckpt.get('saved_backbone', '?')})"
+            f"(epoch {ckpt.get('epoch', '?')}, "
+            f"backbone={ckpt.get('saved_backbone', '?')})"
         )
 
     n_total = sum(p.numel() for p in model.parameters())
@@ -639,7 +641,10 @@ def train(cfg: DictConfig, train_loader, val_loader) -> None:
     # -- Post-training -----------------------------------------------------
     (out_dir / "history.json").write_text(json.dumps(history, indent=2))
 
-    final = f"\nTraining complete — best dev loss: {best_val_loss:.4f}  →  {out_dir}/best_model.pt"
+    final = (
+        f"\nTraining complete — best dev loss: {best_val_loss:.4f}  "
+        f"→  {out_dir}/best_model.pt"
+    )
     tqdm.write(final)
     log.info(final)
 

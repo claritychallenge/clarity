@@ -43,13 +43,14 @@ import hydra
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from clip_dataset import LyricIntelligibilityDataset, build_dataloader
-from lyric_intelligibility_model import WhisperIntelligibilityModel
 from omegaconf import DictConfig
 from scipy.stats import pearsonr, spearmanr
 from tqdm import tqdm
-from train import prepare_batch_whisper, prepare_batch_whisper_stereo
 from transformers import WhisperProcessor
+
+from clip_dataset import LyricIntelligibilityDataset, build_dataloader
+from lyric_intelligibility_model import WhisperIntelligibilityModel
+from train import prepare_batch_whisper, prepare_batch_whisper_stereo
 
 log = logging.getLogger(__name__)
 
@@ -334,7 +335,8 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
     )
     elapsed = time.time() - t0
     log.info(
-        f"{len(preds)} samples in {elapsed:.1f}s  ({len(preds) / elapsed:.1f} samples/sec)"
+        f"{len(preds)} samples in {elapsed:.1f}s  "
+        f"({len(preds) / elapsed:.1f} samples/sec)"
     )
 
     # -- Metrics (evaluation mode only) ------------------------------------
@@ -385,9 +387,10 @@ def evaluate(cfg: DictConfig, test_loader) -> dict:
     signal_ids = [str(r["signal"]) for r in test_loader.dataset.records]
 
     if cfg.test.inference_only:
-        # Save predictions either in [0, 1] (range_01=true) or [0, 100] (range_01=false).
+        # Save predictions either in [0, 1] (range_01=true) or [0, 100] (range_01=false)
         if not cfg.test.get("range_01", False):
             preds *= 100
+
         csv_path = out_dir / "predictions.csv"
         with open(csv_path, "w", newline="") as f:
             writer = csv.writer(f)
