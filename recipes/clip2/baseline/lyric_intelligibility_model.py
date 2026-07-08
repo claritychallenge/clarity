@@ -36,16 +36,34 @@ Better-ear inference
 The model always operates on mono input [B, T'].  For stereo audio use the
 better-ear strategy: run the model on left and right channels separately
 and take max(score_L, score_R) as the final prediction.
+
+Loading a pretrained model + running inference
+------------------------------------------------
+This file is self-contained: the architecture (WhisperIntelligibilityModel)
+and a ready-to-use inference wrapper (IntelligibilityPredictor) both live
+here, so downloading just this one file (plus config.json + model.safetensors
+from the same Hub repo) is enough.
+
+    from lyric_intelligibility_model import IntelligibilityPredictor
+
+    predictor = IntelligibilityPredictor.from_pretrained(
+        "your-username/lyric-intelligibility-whisper"
+    )
+    result = predictor.predict("path/to/song.wav")   # or a directory
 """
 
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import WhisperModel
+from safetensors.torch import save_file
+from transformers import WhisperModel, WhisperProcessor
 
 log = logging.getLogger(__name__)
 
@@ -307,6 +325,292 @@ class WhisperIntelligibilityModel(nn.Module):
             f"(layer-aware, context={context_layers}): "
             f"{sorted(i + 1 for i in indices_to_unfreeze)}"
         )
+
+    # -----------------------------------------------------------------
+    # Hub / checkpoint interface — public loading API for anyone who
+    # downloads this model. (Uploading is a separate, private concern;
+    # see save_and_push.py, which is not part of this file/repo.)
+    # -----------------------------------------------------------------
+
+    _WEIGHTS_SAFETENSORS = "model.safetensors"
+    _WEIGHTS_BIN = "pytorch_model.bin"
+    _CONFIG_NAME = "config.json"
+
+    def _to_config_dict(self) -> dict:
+        """Hyperparameters needed to reconstruct this model's architecture."""
+        return {
+            "backbone": self.backbone_name,
+            "hidden_dim": self.hidden_dim,
+            "use_encoder_layers": self.use_encoder_layers,
+            "attn_heads": (
+                self.cross_layer_attn.attn.num_heads
+                if self.cross_layer_attn is not None
+                else 4
+            ),
+            "whisper_processor_id": self.SUPPORTED_MODELS[self.backbone_name],
+        }
+
+    def save_pretrained(self, save_directory: str) -> None:
+        """
+        Save config.json + weights (safetensors) to a local directory, in a
+        layout that from_pretrained() understands.
+        """
+
+        save_directory = Path(save_directory)
+        save_directory.mkdir(parents=True, exist_ok=True)
+
+        config = self._to_config_dict()
+        with open(save_directory / self._CONFIG_NAME, "w") as f:
+            json.dump(config, f, indent=2)
+
+        # safetensors requires contiguous, non-shared tensors on CPU.
+        state_dict = {k: v.contiguous().cpu() for k, v in self.state_dict().items()}
+        save_file(state_dict, save_directory / self._WEIGHTS_SAFETENSORS)
+
+        log.info(f"Saved model + config to {save_directory}")
+
+    @classmethod
+    def from_pretrained(
+        cls,
+        pretrained_model_name_or_path: str,
+        revision: str | None = None,
+    ) -> "WhisperIntelligibilityModel":
+        """
+        Load a model previously saved with save_pretrained() / pushed via
+        save_and_push.py, either from a local directory or a Hugging Face
+        Hub repo id.
+
+        Example
+        -------
+            from lyric_intelligibility_model import WhisperIntelligibilityModel
+            model = WhisperIntelligibilityModel.from_pretrained(
+                "your-username/lyric-intelligibility-whisper"
+            )
+        """
+        local_dir = Path(pretrained_model_name_or_path)
+        if local_dir.is_dir():
+            config_path = local_dir / cls._CONFIG_NAME
+            weights_path = local_dir / cls._WEIGHTS_SAFETENSORS
+            if not weights_path.exists():
+                weights_path = local_dir / cls._WEIGHTS_BIN
+        else:
+            from huggingface_hub import hf_hub_download
+
+            repo_id = str(pretrained_model_name_or_path)
+            config_path = hf_hub_download(repo_id, cls._CONFIG_NAME, revision=revision)
+            try:
+                weights_path = hf_hub_download(
+                    repo_id, cls._WEIGHTS_SAFETENSORS, revision=revision
+                )
+            except Exception:
+                weights_path = hf_hub_download(
+                    repo_id, cls._WEIGHTS_BIN, revision=revision
+                )
+
+        with open(config_path) as f:
+            config = json.load(f)
+
+        model = cls(
+            backbone=config.get("backbone", "whisper-large-v3"),
+            hidden_dim=config.get("hidden_dim", 256),
+            use_encoder_layers=config.get("use_encoder_layers"),
+            freeze_backbone=True,  # irrelevant at inference time (no_grad anyway)
+            attn_heads=config.get("attn_heads", 4),
+            dropout=0.0,  # disable dropout for inference
+        )
+
+        weights_path = Path(weights_path)
+        if weights_path.suffix == ".safetensors":
+            from safetensors.torch import load_file
+
+            state_dict = load_file(weights_path)
+        else:
+            state_dict = torch.load(weights_path, map_location="cpu")
+            if "state_dict" in state_dict:
+                state_dict = state_dict["state_dict"]
+
+        missing, unexpected = model.load_state_dict(state_dict, strict=False)
+        if missing:
+            log.warning(f"Missing keys when loading state_dict: {missing}")
+        if unexpected:
+            log.warning(f"Unexpected keys when loading state_dict: {unexpected}")
+
+        return model
+
+
+# ---------------------------------------------------------------------------
+# Inference wrapper
+# ---------------------------------------------------------------------------
+
+
+class IntelligibilityPredictor:
+    """
+    Wraps WhisperIntelligibilityModel + WhisperProcessor for easy inference
+    on raw audio files, including stereo "better-ear" scoring and scoring
+    every audio file in a directory.
+    """
+
+    # Extensions attempted when scanning a directory. soundfile's actual
+    # format support depends on the installed libsndfile version.
+    AUDIO_EXTENSIONS = {
+        ".wav",
+        ".flac",
+        ".mp3",
+    }
+
+    def __init__(
+        self,
+        model: WhisperIntelligibilityModel,
+        processor: WhisperProcessor,
+        device: str | None = None,
+    ) -> None:
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.model = model.to(self.device).eval()
+        self.processor = processor
+
+    # ------------------------------------------------------------------
+    # Loading
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def from_pretrained(
+        cls,
+        pretrained_model_name_or_path: str,
+        revision: str | None = None,
+        device: str | None = None,
+    ) -> "IntelligibilityPredictor":
+        """
+        Load a WhisperIntelligibilityModel (config + weights) from a Hub repo
+        or local directory, plus the matching WhisperProcessor.
+
+        Example
+        -------
+            from lyric_intelligibility_model import IntelligibilityPredictor
+            predictor = IntelligibilityPredictor.from_pretrained(
+                "cadenzachallenge/CLIP2-BaselineMono"
+            )
+            results = predictor.predict("path/to/song.wav")
+        """
+        model = WhisperIntelligibilityModel.from_pretrained(
+            pretrained_model_name_or_path, revision=revision
+        )
+        processor = WhisperProcessor.from_pretrained(
+            WhisperIntelligibilityModel.SUPPORTED_MODELS[model.backbone_name]
+        )
+        return cls(model, processor, device=device)
+
+    # ------------------------------------------------------------------
+    # Inference
+    # ------------------------------------------------------------------
+
+    @torch.inference_mode()
+    def _score_mono(self, waveform: np.ndarray, sr: int) -> float:
+        """Score a single mono channel. waveform: 1-D float32 array."""
+        inputs = self.processor(waveform, sampling_rate=sr, return_tensors="pt")
+        input_features = inputs.input_features.to(self.device)
+        score = self.model(input_features)
+        return float(score.item())
+
+    def predict(self, audio_path: str | Path, better_ear: bool = True) -> dict:
+        """
+        Predict intelligibility for a single audio file, OR, if audio_path is
+        a directory, for every audio file at its top level (non-recursive).
+
+        Mono audio is always scored directly. For stereo audio:
+          - better_ear=True  (default): score left and right channels
+            separately and take max(score_L, score_R), matching how the
+            model is trained.
+          - better_ear=False: downmix to mono (average channels) first,
+            then score once.
+
+        Returns
+        -------
+        If audio_path is a file: a single result dict with keys
+            score       : float, final intelligibility score in (0, 1)
+            channel     : "mono" | "left" | "right" | "downmix"
+            per_channel : dict of per-channel scores (only when better_ear
+                          scoring was actually applied to stereo audio), or
+                          None
+        If audio_path is a directory: a dict mapping filename -> result dict
+        (as above), or {"error": "..."} for any file that failed to load.
+        """
+        path = Path(audio_path)
+        if path.is_dir():
+            return self.predict_directory(path, better_ear=better_ear)
+        return self._predict_file(path, better_ear=better_ear)
+
+    def predict_directory(self, directory: str | Path, better_ear: bool = True) -> dict:
+        """
+        Run predict() on every audio file at the top level of `directory`
+        (subdirectories are not searched). Returns {filename: result}, with
+        {"error": "..."} in place of a result for any file that fails.
+        """
+        directory = Path(directory)
+        files = sorted(
+            p
+            for p in directory.iterdir()
+            if p.is_file() and p.suffix.lower() in self.AUDIO_EXTENSIONS
+        )
+        if not files:
+            log.warning(f"No audio files found in {directory} (non-recursive).")
+
+        results: dict = {}
+        for f in files:
+            try:
+                results[f.name] = self._predict_file(f, better_ear=better_ear)
+            except Exception as e:
+                log.warning(f"Failed to score {f.name}: {e}")
+                results[f.name] = {"error": str(e)}
+        return results
+
+    def _predict_file(self, audio_path: str | Path, better_ear: bool = True) -> dict:
+        waveform, sr = self._load_audio(audio_path)
+
+        if waveform.ndim == 1:
+            score = self._score_mono(waveform, sr)
+            return {"score": score, "channel": "mono", "per_channel": None}
+
+        # Stereo input: [2, T]
+        if not better_ear:
+            mono = waveform.mean(axis=0)
+            score = self._score_mono(mono, sr)
+            return {"score": score, "channel": "downmix", "per_channel": None}
+
+        score_l = self._score_mono(waveform[0], sr)
+        score_r = self._score_mono(waveform[1], sr)
+        winner = "left" if score_l >= score_r else "right"
+        return {
+            "score": max(score_l, score_r),
+            "channel": winner,
+            "per_channel": {"left": score_l, "right": score_r},
+        }
+
+    @staticmethod
+    def _load_audio(audio_path: str | Path) -> tuple[np.ndarray, int]:
+        """
+        Load an audio file, resampled to 16 kHz. Returns (waveform, sr).
+        waveform is [T] for mono or [2, T] for stereo, float32 in [-1, 1].
+        """
+        import soundfile as sf
+        import soxr
+
+        waveform, sr = sf.read(str(audio_path), always_2d=False, dtype="float32")
+
+        # soundfile returns [T, channels] for multi-channel; transpose to [channels, T]
+        if waveform.ndim == 2:
+            waveform = waveform.T
+
+        target_sr = 16000
+        if sr != target_sr:
+            if waveform.ndim == 1:
+                waveform = soxr.resample(waveform, sr, target_sr, quality="HQ")
+            else:
+                waveform = np.stack(
+                    [soxr.resample(ch, sr, target_sr, quality="HQ") for ch in waveform]
+                )
+            sr = target_sr
+
+        return waveform, sr
 
 
 # ---------------------------------------------------------------------------
