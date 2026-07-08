@@ -374,7 +374,7 @@ class WhisperIntelligibilityModel(nn.Module):
         cls,
         pretrained_model_name_or_path: str,
         revision: str | None = None,
-    ) -> "WhisperIntelligibilityModel":
+    ) -> WhisperIntelligibilityModel:
         """
         Load a model previously saved with save_pretrained() / pushed via
         save_and_push.py, either from a local directory or a Hugging Face
@@ -478,7 +478,7 @@ class IntelligibilityPredictor:
         pretrained_model_name_or_path: str,
         revision: str | None = None,
         device: str | None = None,
-    ) -> "IntelligibilityPredictor":
+    ) -> IntelligibilityPredictor:
         """
         Load a WhisperIntelligibilityModel (config + weights) from a Hub repo
         or local directory, plus the matching WhisperProcessor.
