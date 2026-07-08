@@ -350,7 +350,7 @@ class WhisperIntelligibilityModel(nn.Module):
             "whisper_processor_id": self.SUPPORTED_MODELS[self.backbone_name],
         }
 
-    def save_pretrained(self, save_directory: str) -> None:
+    def save_pretrained(self, save_directory: str | Path) -> None:
         """
         Save config.json + weights (safetensors) to a local directory, in a
         layout that from_pretrained() understands.
