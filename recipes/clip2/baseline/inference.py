@@ -52,7 +52,7 @@ def main() -> None:
     parser.add_argument(
         "--repo_id",
         required=True,
-        help="Hugging Face Hub repo id, e.g. your-username/lyric-intelligibility-whisper",
+        help="Hugging Face Hub repo id, e.g. cadenzachallenge/CLIP2-BaselineMono",
     )
     parser.add_argument(
         "--audio",
