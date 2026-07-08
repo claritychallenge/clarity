@@ -58,18 +58,18 @@ Note, you need to set the `root.path` variable to the parent directory `cadenza_
 
 ## 3. Baseline
 
-The baseline prediction model is a DNN regression model that uses Whisper encoder as front-end and a series of MLP layers as back-end. 
+The baseline prediction model is a DNN regression model that uses Whisper encoder as front-end and a series of MLP layers as back-end.
 
 There are two baselines:
 
-1. Mono: which downmix the music signal to mono before the prediction. 
+1. Mono: which downmix the music signal to mono before the prediction.
 2. Better-ear: that predicts intelligibility for each channel independently using the same model and returns the maximum value.
 
 ### 3.1 Train the model
 
 To train the baseline model, you can follow the procedure in `train_job.sh` script.
 This script orchestrates the whole training by:
-1. Trains a mono model (downmixing stereo to mono). 
+1. Trains a mono model (downmixing stereo to mono).
 2. Trains a better-ear model (predicting intelligibility for each channel independently).
 3. Evaluate/Predict from validation set.
 
@@ -90,7 +90,7 @@ predictor = IntelligibilityPredictor.from_pretrained(
 )
 result = predictor.predict("path/to/song.wav")
 print(result["score"])          # e.g. 0.83
-print(result["channel"]) 
+print(result["channel"])
 ```
 
 or from a directory
