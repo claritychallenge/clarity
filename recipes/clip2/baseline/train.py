@@ -321,19 +321,8 @@ def save_checkpoint(
     keep_last : int
         Number of most-recent epoch checkpoints to retain.  Default: 3.
     """
-    backbone_unfrozen = any(p.requires_grad for p in model.encoder.parameters())
-
-    if backbone_unfrozen:
-        # Save fine-tuned encoder weights. The decoder no longer exists in the
-        # model (dropped at construction time) so no decoder keys are present.
-        model_state = model.state_dict()
-        saved_backbone = "encoder_only"
-    else:
-        # Backbone frozen: skip encoder.* — reloaded from HuggingFace at init.
-        model_state = {
-            k: v for k, v in model.state_dict().items() if not k.startswith("encoder.")
-        }
-        saved_backbone = "none (frozen)"
+    model_state = model.state_dict()
+    saved_backbone = "encoder_only"
 
     state = {
         "epoch": epoch,
