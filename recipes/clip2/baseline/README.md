@@ -69,6 +69,7 @@ There are two baselines:
 
 To train the baseline model, you can follow the procedure in `train_job.sh` script.
 This script orchestrates the whole training by:
+
 1. Trains a mono model (downmixing stereo to mono).
 2. Trains a better-ear model (predicting intelligibility for each channel independently).
 3. Evaluate/Predict from validation set.
@@ -94,6 +95,7 @@ print(result["channel"])
 ```
 
 or from a directory
+
 ```python
 results = predictor.predict("path/to/songs_dir")
 for filename, r in results.items():
