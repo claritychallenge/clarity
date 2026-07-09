@@ -232,7 +232,6 @@ def run_epoch(
     )
 
     with ctx:
-        assert optimizer is not None
         for audio, _audio2, _sev_str, _sev, _transcript, score in pbar:
             if better_ear:
                 feats_L, feats_R, scores = prepare_batch_whisper_stereo(
