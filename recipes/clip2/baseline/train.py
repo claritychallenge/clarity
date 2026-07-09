@@ -255,6 +255,7 @@ def run_epoch(
                     loss = criterion(preds, scores)
 
             if training:
+                assert optimizer is not None
                 if scaler is not None:
                     scaler.scale(loss).backward()
                     scaler.unscale_(optimizer)
