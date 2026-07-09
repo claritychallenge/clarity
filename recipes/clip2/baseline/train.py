@@ -238,6 +238,7 @@ def run_epoch(
                     audio, processor, device, score
                 )
                 if training:
+                    assert optimizer is not None
                     optimizer.zero_grad()
                 with torch.amp.autocast("cuda", enabled=scaler is not None):
                     preds_L = model(feats_L)
@@ -247,6 +248,7 @@ def run_epoch(
             else:
                 feats, scores = prepare_batch_whisper(audio, processor, device, score)
                 if training:
+                    assert optimizer is not None
                     optimizer.zero_grad()
                 with torch.amp.autocast("cuda", enabled=scaler is not None):
                     preds = model(feats)
