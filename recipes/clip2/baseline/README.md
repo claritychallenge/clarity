@@ -62,8 +62,8 @@ The baseline prediction model is a DNN regression model that uses Whisper encode
 
 There are two baselines:
 
-1. Mono: which downmix the music signal to mono before the prediction.
-2. Better-ear: that predicts intelligibility for each channel independently using the same model and returns the maximum value.
+1. Mono (`cadenzachallenge/CLIP2-BaselineMono`): which downmix the music signal to mono before the prediction.
+2. Better-ear (`cadenzachallenge/CLIP2-BaselineBE`): that predicts intelligibility for each channel independently using the same model and returns the maximum value.
 
 ### 3.1 Train the model
 
