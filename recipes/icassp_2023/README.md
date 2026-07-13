@@ -8,7 +8,7 @@ Clarity tutorials are [now available](https://claritychallenge.github.io/clarity
 
 ## Data structure
 
-The ICASSP 2023 Clarity Enhancement Challenge is using the Clarity CEC2 dataset. To download data, please visit [here](https://mab.to/KjXsa3EskhQuU). The data is split into three packages: `clarity_CEC2_core.v1_1.tgz` [28 GB], `clarity_CEC2_train.v1_1.tgz` [69 GB] and `clarity_CEC2_hoairs.v1_0.tgz` [144 GB].
+The ICASSP 2023 Clarity Enhancement Challenge is using the Clarity CEC2 dataset. To download data, please visit [this link](https://mab.to/KjXsa3EskhQuU). The data is split into three packages: `clarity_CEC2_core.v1_1.tgz` [28 GB], `clarity_CEC2_train.v1_1.tgz` [69 GB] and `clarity_CEC2_hoairs.v1_0.tgz` [144 GB].
 
 Unpack packages under the same root directory using
 

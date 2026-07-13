@@ -110,7 +110,9 @@ def run_msbg_simulation(cfg, track):
             listener = listener_dict[listener_id]
             signals_to_write = [listen(ear, signal, listener)]
 
-            for signal, signal_file in zip(signals_to_write, signal_files_to_write):
+            for signal, signal_file in zip(
+                signals_to_write, signal_files_to_write, strict=True
+            ):
                 write_signal(
                     signal_file,
                     signal,
@@ -245,7 +247,9 @@ def run_signal_generation_train(cfg, track):
         with list_to_generate.open("r", encoding="utf-8") as fp:
             datasets_to_generate.append(json.load(fp))
 
-    for list_to_generate, dataset in zip(lists_to_generate, datasets_to_generate):
+    for list_to_generate, dataset in zip(
+        lists_to_generate, datasets_to_generate, strict=True
+    ):
         # generate_data_split(
         #     train_json_path,
         #     train_signal_folder,

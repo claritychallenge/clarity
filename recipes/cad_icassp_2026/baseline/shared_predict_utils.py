@@ -151,7 +151,7 @@ def estimate_vocals(
     sources_list = model.sources
     sources = list(sources)
 
-    audios = dict(zip(sources_list, sources))
+    audios = dict(zip(sources_list, sources, strict=True))
     estimated_vocals = audios["vocals"]
     return estimated_vocals
 

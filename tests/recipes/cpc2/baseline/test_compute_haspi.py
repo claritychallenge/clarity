@@ -9,6 +9,7 @@ import pytest
 from omegaconf import DictConfig
 
 import recipes
+import recipes.cpc2.baseline.compute_haspi
 from clarity.utils.file_io import read_jsonl
 from recipes.cpc2.baseline.compute_haspi import (
     parse_cec2_signal_name,

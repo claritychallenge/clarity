@@ -8,10 +8,10 @@ from unittest.mock import patch
 import hydra
 import numpy as np
 import pytest
+import scipy.io.wavfile
 from omegaconf import DictConfig
 from scipy.io.wavfile import read
 
-import recipes
 from recipes.cec2.baseline.evaluate import read_csv_scores, run_calculate_SI
 
 
@@ -90,7 +90,7 @@ def test_calulate_SI(tmp_path: Path, hydra_cfg: DictConfig):
         to_file.write_bytes(from_file.read_bytes())
 
     with patch.object(
-        recipes.cec2.baseline.evaluate.wavfile,
+        scipy.io.wavfile,
         "read",
         side_effect=truncated_read_signal,
     ) as mock_read_signal:

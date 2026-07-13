@@ -10,7 +10,7 @@ The First Cadenza Challenge - task 1 is using the MUSDB18-HQ dataset.
 The data is split into train, validation and test following the same split from museval.
 I.e., 86 songs are for training, 16 for validation and 50 for evaluation.
 
-To download the data, please visit [here](https://forms.gle/UQkuCxqQVxZtGggPA). The data is split into `cadenza_cad1_task1_core_musdb18hq.tar.gz` (containing the MUSDB18-HQ dataset) and
+To download the data, please [fill in this form](https://forms.gle/UQkuCxqQVxZtGggPA). The data is split into `cadenza_cad1_task1_core_musdb18hq.tar.gz` (containing the MUSDB18-HQ dataset) and
 `cadenza_cad1_task1_core_metadata.tar.gz` (containing the list of songs and listeners' characteristics per split).
 Alternatively, you can download the MUSDB18-HQ dataset from the official [SigSep website](https://sigsep.github.io/datasets/musdb.html#musdb18-hq-uncompressed-wav).
 If you opt for this alternative, be sure to download the uncompressed wav version. Note that you will need both packages to run the baseline system.
@@ -106,7 +106,7 @@ To help you to start with the challenge, we provide a small subset of the data.
 The `demo_data` folder contains a single song and two listeners from the validation set.
 
 To use the demo data, simply download the package `cadenza_data_demo.tar.xz`
-from [here](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek5qKW?usp=share_link)
+from [this link](https://drive.google.com/drive/folders/1Yxo_R-yPByEUvX5O5lhsHk3tW1ek5qKW?usp=share_link)
 and unpack it under `recipes/cad1/task1/`, i.e., one level above the baseline directory.
 Note that the `root.path` variable in `config.yaml` is already set to the demo data by default.
 
@@ -177,7 +177,7 @@ python evaluate.py
 
 A csv file containing the eight HAAQI scores and the combined score will be generated in the `path.exp_folder`.
 
-To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
+To check the HAAQI code, see the implementation on our [website](../../../../clarity/evaluator/haaqi).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined.
 This is due to the  random noises generated within HAAQI, but the differences should be sufficiently small.

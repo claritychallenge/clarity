@@ -8,7 +8,7 @@ Clarity tutorials are now available in <https://claritychallenge.github.io/clari
 
 ## Data structure
 
-To download data, please visit [here](https://mab.to/zU7TS8jJelkoD). The data is split into three packages: `clarity_CEC2_core.v1_0.tgz` [28 GB], `clarity_CEC2_train.v1_0.tgz` [69 GB] and `clarity_CEC2_hoairs.v1_0.tgz` [144 GB].
+To download data, please visit [this link](https://mab.to/zU7TS8jJelkoD). The data is split into three packages: `clarity_CEC2_core.v1_0.tgz` [28 GB], `clarity_CEC2_train.v1_0.tgz` [69 GB] and `clarity_CEC2_hoairs.v1_0.tgz` [144 GB].
 
 Unpack packages under the same root directory using
 
@@ -148,7 +148,7 @@ python evaluate.py
 
 A csv file containing the HASPI scores will be generated in the `exp_folder`.
 
-To check the HASPI code, see [here](../../clarity/evaluator/haspi). The `_target_anechoic_CH1.wav` is used as the reference, with its level is normalised to match that of the corresponding `_target_CH1.wav`.
+To check the HASPI code, see the implementation on our [website](../../clarity/evaluator/haspi). The `_target_anechoic_CH1.wav` is used as the reference, with its level is normalised to match that of the corresponding `_target_CH1.wav`.
 
 The scores of both unprocessed signals and baseline enhanced signals are provided, whose averages are `0.1615` and `0.2492`, respectively. Please note: you will not get identical HASPI scores for the same signals if the random seed is not determined (in the given recipe, the random seed for each signal is set the last eight digits of the scene md5). As there are random noises generated within HASPI, but the differences should be sufficiently small. We ran evaluation for the baseline for five times, and the average overall score is 0.2491594 +/- 2.3366643e-6.
 

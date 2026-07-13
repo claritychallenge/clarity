@@ -21,7 +21,7 @@ classifiers = [
     "Natural Language :: English",
 ]
 keywords = ["hearing", "signal processing", "clarity challenge"]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "audioread>=2.1.9",
     "gdown",
@@ -132,7 +132,7 @@ omit = ["*conftest.py", "*tests*", "**/__init__*", "clarity/_version.py"]
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py311']
 exclude = '''
 
 (
@@ -176,8 +176,11 @@ exclude = [
 ]
 # per-file-ignores = []
 line-length = 88
-target-version = "py38"
-select = ["B", "E", "F", "I001", "W"]
+target-version = "py311"
+
+[tool.ruff.lint]
+# removed "I001" import sort -> conflict with isort
+select = ["B", "E", "F", "W"]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F", "R", "S", "W", "U"]
 

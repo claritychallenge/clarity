@@ -18,6 +18,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/claritychallenge/clarity/main.svg)](https://results.pre-commit.ci/latest/github/claritychallenge/clarity/main)
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 
+[![PyPI](https://img.shields.io/static/v1?label=CLIP2%20Challenge%20-%20pypi&message=v0.9.0&color=orange)](https://pypi.org/project/pyclarity/0.9.0/)
 [![PyPI](https://img.shields.io/static/v1?label=ICASSP%202026%20Cadenza%20Challenge%20-%20pypi&message=v0.8.0&color=orange)](https://pypi.org/project/pyclarity/0.8.0/)
 [![PyPI](https://img.shields.io/static/v1?label=CPC3%20Challenge%20-%20pypi&message=v0.7.1&color=orange)](https://pypi.org/project/pyclarity/0.7.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CAD2%20Challenge%20-%20pypi&message=v0.6.0&color=orange)](https://pypi.org/project/pyclarity/0.6.0/)
@@ -52,7 +53,7 @@ Clarity is available on the [Python Package Index (PyPI)](https://pypi.org/proje
 activate a virtual environment and then use `pip` to install.
 
 ```bash
-conda create --name clarity python=3.8
+conda create --name clarity python=3.11
 conda activate clarity
 
 pip install pyclarity
@@ -66,7 +67,7 @@ git clone https://github.com/claritychallenge/clarity.git
 cd clarity
 
 # Second create & activate environment with conda, see https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
-conda create --name clarity python=3.8
+conda create --name clarity python=3.11
 conda activate clarity
 
 # Last install with pip
@@ -86,10 +87,11 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
-- [The ICASSP 2026 Cadenza Challege](./recipes/cad_icassp_2026)
+- [The 2nd Cadenza Lyric Intelligibility Prediction Chellenge](./recipes/clip2)
 
 Previous challenges
 
+- [The ICASSP 2026 Cadenza Challege](./recipes/cad_icassp_2026)
 - [The 3rd Clarity Prediction Challenge](./recipes/cpc3)
 - [The 2nd Cadenza Challege](./recipes/cad2)
 - [The 3rd Clarity Enhancement Challenge](./recipes/cec3)

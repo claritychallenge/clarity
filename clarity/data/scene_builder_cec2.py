@@ -388,7 +388,7 @@ def add_interferer_to_scene_inner(
 
     # Randomly instantiate each interferer in the scene
     for scene_interferer, scene_type in zip(
-        scene["interferers"], selected_interferer_types
+        scene["interferers"], selected_interferer_types, strict=True
     ):
         desired_start_time = random.randint(*start_time_range)
 

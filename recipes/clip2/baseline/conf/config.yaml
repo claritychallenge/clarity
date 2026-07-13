@@ -1,0 +1,63 @@
+# config.yaml
+# Shared configuration for train.py and test.py
+# Override any value from CLI: python train.py data.root_path=/path/to/cadenza_data/clip2 data.strategy=by_prompt ...
+
+# For data parameters description, see clip_dataset.py
+data:
+  root_path: "/path/to/cadenza_data"   # set this to your local data root
+  strategy: by_prompt                  # by_prompt | random | full
+  batch_size: 32
+  seed: 42
+  num_workers: 4
+
+model:
+  backbone: whisper-large-v3           # whisper-tiny | whisper-base | whisper-small
+                                       # whisper-medium | whisper-large-v3
+  hidden_dim: 256
+
+  # Encoder layer indices to extract (1-indexed).
+  # null = use only the last encoder layer (recommended default).
+  # You can use more layers as [28, 32] to extract and fuse two layers from whisper-large-v3.
+  use_encoder_layers: null
+
+  attn_heads: 4   # attention heads in CrossLayerAttention (only used when
+                  # more than one encoder layer is selected)
+  dropout: 0.1
+
+train:
+  output_dir: ./runs/${now:%Y-%m-%d}/${now:%H-%M-%S}   # auto-timestamped by Hydra
+  epochs: 50
+  lr: 1e-4                             # head learning rate
+  weight_decay: 1e-4
+  fp16: false
+  better_ear: false                    # Stage 1 = false (mono), Stage 2 = true (stereo)
+  resume_from: null
+
+  early_stopping:
+    patience: 10                       # epochs without improvement before stopping (0 = disabled)
+    min_delta: 1e-4
+
+  lr_patience: 5                       # epochs before ReduceLROnPlateau halves the LR
+
+  keep_last_checkpoints: 3             # number of most-recent epoch checkpoints to keep on disk
+                                       # (best_model.pt is always kept separately)
+
+  # Gradual backbone unfreezing
+  finetune:
+    epoch: 5                           # epoch at which to start fine-tuning the backbone
+    layers: 4                          # maximum total encoder layers to unfreeze (top-most)
+    context_layers: 2                  # layers below each selected layer to also unfreeze
+                                       # e.g. use_encoder_layers=[32], context=2 → unfreezes 30, 31, 32
+    lr: 1e-5                           # lower LR for the unfrozen backbone layers
+
+test:
+  checkpoint: ???                      # required — set via CLI: test.checkpoint=path/to/best_model.pt
+  output_dir: ./test_results/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  inference_only: true                # true = skip metrics, write predicted scores only
+  range_01: false                     # Use when inference_only = true
+                                      # true = return values between 0 and 1,
+                                      # false = return values between 0 and 100
+  fp16: false
+  batch_size: 8
+  split: valid                         # eval | valid
+  better_ear: false                    # true = score L/R separately, take max(score_L, score_R)

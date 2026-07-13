@@ -183,7 +183,7 @@ def test_remove_silent_frames() -> None:
     left_ear_noisy = left_ear_clean + np.random.random(n_frames)
     right_ear_noisy = right_ear_clean + np.random.random(n_frames)
 
-    (xl_sil, xr_sil, yl_sil, yr_sil) = remove_silent_frames(
+    xl_sil, xr_sil, yl_sil, yr_sil = remove_silent_frames(
         left_ear_clean=left_ear_clean,
         right_ear_clean=right_ear_clean,
         left_ear_noisy=left_ear_noisy,
