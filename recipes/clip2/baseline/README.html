@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Baseline code for the Second Lyric Intelligibility Prediction (CLIP2) challenge &#8212; Project name not set  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="baseline-code-for-the-second-lyric-intelligibility-prediction-clip2-challenge">
+<h1>Baseline code for the Second Lyric Intelligibility Prediction (CLIP2) challenge<a class="headerlink" href="#baseline-code-for-the-second-lyric-intelligibility-prediction-clip2-challenge" title="Link to this heading">¶</a></h1>
+<p>Code to support the CLIP2 challenge.</p>
+<p>For more information about the CLIP2 please the <a class="reference external" href="https://cadenzachallenge.org/">Cadenza Challenge</a> website.</p>
+<section id="files">
+<h2>1. Files<a class="headerlink" href="#files" title="Link to this heading">¶</a></h2>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conf/config.yaml</code></td>
+<td>Configuration file</td>
+</tr>
+<tr>
+<td><code>clip_dataset.py</code></td>
+<td>Dataloader for CLIP2 dataset</td>
+</tr>
+<tr>
+<td><code>extra_requirements.txt</code></td>
+<td>Python requirements</td>
+</tr>
+<tr>
+<td><code>inference.py</code></td>
+<td>Command-line inference script</td>
+</tr>
+<tr>
+<td><code>lyric_intelligibility_model.py</code></td>
+<td>Model definition</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>This file</td>
+</tr>
+<tr>
+<td><code>test.py</code></td>
+<td>Evaluation script</td>
+</tr>
+<tr>
+<td><code>train.py</code></td>
+<td>Training script</td>
+</tr>
+<tr>
+<td><code>train_job.sh</code></td>
+<td>Orchrestrate the training pipeline</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-structure">
+<h2>2. Data Structure<a class="headerlink" href="#data-structure" title="Link to this heading">¶</a></h2>
+<section id="obtaining-the-clip2-data">
+<h3>2.1 Obtaining the CLIP2 data<a class="headerlink" href="#obtaining-the-clip2-data" title="Link to this heading">¶</a></h3>
+<p>To download the CLIP2 data, please <a class="reference external" href="https://cadenzachallenge.org/docs/clip2/take_part/registration">register</a>.</p>
+<p>The data will download into two package files called <code class="docutils literal notranslate"><span class="pre">cadenza_clip2_data.train.v1.0.tar.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">cadenza_clip2_data.valid.v1.0.tar.gz</span></code></p>
+<p>Unpack these packages under the same root using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>-xvzf<span class="w"> </span>cadenza_clip2_data.train.v1.0.tar.gz<span class="w">  </span><span class="c1"># For training data</span>
+tar<span class="w"> </span>-xvzf<span class="w"> </span>cadenza_clip2_data.valid.v1.0.tar.gz<span class="w"> </span><span class="c1"># For validation data</span>
+</pre></div>
+</div>
+<p>Once unpacked, the directory structure will be as follows</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cadenza_data/
+├──<span class="w"> </span>metadata/
+├──<span class="w"> </span>train/
+│<span class="w">   </span>├──<span class="w"> </span>signals/<span class="w">      </span><span class="c1"># Audio (1) to predict intelligibility</span>
+│<span class="w">   </span>└──<span class="w"> </span>unprocessed/<span class="w">  </span><span class="c1"># Audio (2) without hearing loss</span>
+├──<span class="w"> </span>valid/
+│<span class="w">   </span>├──<span class="w"> </span>signals/
+│<span class="w">   </span>└──<span class="w"> </span>unprocessed/
+└──<span class="w"> </span>Manifest/
+</pre></div>
+</div>
+</section>
+<section id="demo-data">
+<h3>2.2 Demo data<a class="headerlink" href="#demo-data" title="Link to this heading">¶</a></h3>
+<p>Running the baseline code over the full dataset can be time-consuming.
+To allow you to easily try out the code with a small amount of data, we have provided a small subset of demo data containing 10 signals.</p>
+<p>To use the demo data download the file <a class="reference external" href="https://drive.google.com/file/d/16WVDpJDFZNER1GoReomizWR-zg6J-QOn/view?usp=drive_link">cadenza_clip2_data.demo.v1.0.tar.gz</a>.</p>
+<p>Note, you need to set the <code class="docutils literal notranslate"><span class="pre">root.path</span></code> variable to the parent directory <code class="docutils literal notranslate"><span class="pre">cadenza_data/clip2</span></code> in <code class="docutils literal notranslate"><span class="pre">conf/config.yaml</span></code> config file.</p>
+</section>
+</section>
+<section id="baseline">
+<h2>3. Baseline<a class="headerlink" href="#baseline" title="Link to this heading">¶</a></h2>
+<p>The baseline prediction model is a DNN regression model that uses Whisper encoder as front-end and a series of MLP layers as back-end.</p>
+<p>There are two pre-trained baseline models available in HuggingFace:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://huggingface.co/cadenzachallenge/CLIP2-BaselineMono">Mono</a>: which downmix the music signal to mono before the prediction.</p></li>
+<li><p><a class="reference external" href="https://huggingface.co/cadenzachallenge/CLIP2-BaselineBetterEar">Better-ear</a>: that predicts intelligibility for each channel independently using the same model and returns the maximum value.</p></li>
+</ol>
+<section id="train-the-model">
+<h3>3.1 Train the model<a class="headerlink" href="#train-the-model" title="Link to this heading">¶</a></h3>
+<p>To train the baseline model, you can follow the procedure in <code class="docutils literal notranslate"><span class="pre">train_job.sh</span></code> script.
+This script orchestrates the whole training by:</p>
+<ol class="arabic simple">
+<li><p>Trains a mono model (downmixing stereo to mono).</p></li>
+<li><p>Trains a better-ear model (predicting intelligibility for each channel independently).</p></li>
+<li><p>Evaluate/Predict from validation set.</p></li>
+</ol>
+<p>Note that for training, the script is splitting the training set into train/valid subsets (80% / 20%)</p>
+</section>
+</section>
+<section id="making-intelligibility-predictions">
+<h2>4. Making intelligibility predictions<a class="headerlink" href="#making-intelligibility-predictions" title="Link to this heading">¶</a></h2>
+<section id="loading-and-using-the-model">
+<h3>4.1 Loading and using the model<a class="headerlink" href="#loading-and-using-the-model" title="Link to this heading">¶</a></h3>
+<p>To make intelligibility predictions, you can use the <code class="docutils literal notranslate"><span class="pre">IntelligibilityPredictor</span></code> class.
+This will download the pre-trained model from HuggingFace and make prediction from a song</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lyric_intelligibility_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntelligibilityPredictor</span>
+
+<span class="n">predictor</span> <span class="o">=</span> <span class="n">IntelligibilityPredictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+    <span class="s2">&quot;cadenzachallenge/CLIP2-BaselineMono&quot;</span>
+<span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;path/to/song.wav&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">])</span>          <span class="c1"># e.g. 0.83</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>or from a directory</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;path/to/songs_dir&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="command-line">
+<h3>4.2 Command-line<a class="headerlink" href="#command-line" title="Link to this heading">¶</a></h3>
+<p>We also provided the ‘inference.py’ script to make predictions from the command-line.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>transformers<span class="w"> </span>huggingface_hub<span class="w"> </span>safetensors<span class="w"> </span>soundfile<span class="w"> </span>soxr
+
+python<span class="w"> </span>inference.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--repo_id<span class="w"> </span>cadenzachallenge/CLIP2-BaselineMono<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--audio<span class="w"> </span>path/to/song.wav<span class="w">          </span><span class="c1"># or a directory</span>
+
+<span class="c1"># options:</span>
+<span class="c1">#   --no-better-ear   downmix stereo to mono instead of left/right max</span>
+<span class="c1">#   --max-100         scale scores to [0, 100] instead of [0, 1]</span>
+<span class="c1">#   --output FILE     custom CSV path (default: results.csv)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Project name not set</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes_doc.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CONTRIBUTING.html">Contributing to pyClarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../clarity.html">clarity package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../recipes.html">recipes package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../../../_sources/recipes/clip2/baseline/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
