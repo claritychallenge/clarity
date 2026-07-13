@@ -80,6 +80,9 @@ docs = [
     "sphinx_rtd_theme",
     "sphinxcontrib-mermaid",
     "sphinxcontrib-napoleon",
+    "sphinxcontrib-bibtex",
+    "numpydoc"
+
 ]
 dev = [
     "black",
