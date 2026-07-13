@@ -60,10 +60,10 @@ Note, you need to set the `root.path` variable to the parent directory `cadenza_
 
 The baseline prediction model is a DNN regression model that uses Whisper encoder as front-end and a series of MLP layers as back-end.
 
-There are two baselines:
+There are two pre-trained baseline models available in HuggingFace:
 
-1. Mono (`cadenzachallenge/CLIP2-BaselineMono`): which downmix the music signal to mono before the prediction.
-2. Better-ear (`cadenzachallenge/CLIP2-BaselineBE`): that predicts intelligibility for each channel independently using the same model and returns the maximum value.
+1. [Mono](https://huggingface.co/cadenzachallenge/CLIP2-BaselineMono): which downmix the music signal to mono before the prediction.
+2. [Better-ear](https://huggingface.co/cadenzachallenge/CLIP2-BaselineBetterEar): that predicts intelligibility for each channel independently using the same model and returns the maximum value.
 
 ### 3.1 Train the model
 
