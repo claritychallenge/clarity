@@ -1,0 +1,15 @@
+.wy-menu-vertical li.toctree-l1 > a {
+    font-size: 18px;
+}
+
+.wy-menu-vertical li.toctree-l2 > a {
+    font-size: 16px;
+}
+
+.wy-menu-vertical li.toctree-l3 > a {
+    font-size: 16px;
+}
+
+.wy-menu-vertical li.toctree-l4 > a {
+    font-size: 16px;
+}
