@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from pathlib import Path
@@ -11,7 +12,7 @@ import numpy as np
 import pyloudnorm as pyln
 import torch.nn
 import whisper
-from jiwer import compute_measures
+from alt_eval import compute_metrics
 from omegaconf import DictConfig
 
 from clarity.enhancer.multiband_compressor import MultibandCompressor
@@ -23,6 +24,17 @@ from clarity.utils.results_support import ResultsFile
 from clarity.utils.signal_processing import compute_rms, resample
 
 logger = logging.getLogger(__name__)
+
+
+def set_song_seed(song: str) -> None:
+    """Set a seed that is unique for the given song"""
+    song_encoded = hashlib.md5(song.encode("utf-8")).hexdigest()
+    song_md5 = int(song_encoded, 16) % (10**8)
+    np.random.seed(song_md5)
+
+    torch.manual_seed(song_md5)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(song_md5)
 
 
 def make_scene_listener_list(scenes_listeners: dict, small_test: bool = False) -> list:
@@ -90,6 +102,7 @@ def compute_intelligibility(
     ear = Ear(
         equiv_0db_spl=equiv_0db_spl,
         sample_rate=sample_rate,
+        verbose=False,
     )
 
     reference = segment_metadata["text"]
@@ -100,30 +113,38 @@ def compute_intelligibility(
     enhanced_left = ear.process(enhanced_signal[:, 0])[0]
     left_path = Path(f"{path_intermediate.as_posix()}_left.flac")
     save_flac_signal(
-        enhanced_signal,
+        enhanced_left,
         left_path,
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False)["text"]
+    hypothesis = scorer.transcribe(left_path.as_posix(), fp16=False, temperature=0.0)[
+        "text"
+    ]
     lyrics["hypothesis_left"] = hypothesis
 
-    left_results = compute_measures(reference, hypothesis)
+    left_results = compute_metrics(
+        [reference], [hypothesis], languages="en", include_other=False
+    )
 
     # Compute right ear
     ear.set_audiogram(listener.audiogram_right)
     enhanced_right = ear.process(enhanced_signal[:, 1])[0]
     right_path = Path(f"{path_intermediate.as_posix()}_right.flac")
     save_flac_signal(
-        enhanced_signal,
+        enhanced_right,
         right_path,
         44100,
         sample_rate,
     )
-    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False)["text"]
+    hypothesis = scorer.transcribe(right_path.as_posix(), fp16=False, temperature=0.0)[
+        "text"
+    ]
     lyrics["hypothesis_right"] = hypothesis
 
-    right_results = compute_measures(reference, hypothesis)
+    right_results = compute_metrics(
+        [reference], [hypothesis], languages="en", include_other=False
+    )
 
     # Compute the average score for both ears
     total_words = (
@@ -155,9 +176,23 @@ def compute_quality(
     reference_signal: np.ndarray,
     enhanced_signal: np.ndarray,
     listener: Listener,
-    config: DictConfig,
+    reference_sample_rate: int,
+    enhanced_sample_rate: int,
+    HAAQI_sample_rate: int,
 ) -> tuple[float, float]:
-    """Compute the HAAQI score for the left and right channels"""
+    """Compute the HAAQI score for the left and right channels
+
+    Args:
+        reference_signal: The reference signal
+        enhanced_signal: The enhanced signal
+        listener: The listener
+        reference_sample_rate: The sample rate of the reference signal
+        enhanced_sample_rate: The sample rate of the enhanced signal
+        HAAQI_sample_rate: The sample rate for the HAAQI computation
+
+    Returns:
+        The HAAQI score for the left and right channels
+    """
     scores = []
 
     for channel in range(2):
@@ -167,16 +202,16 @@ def compute_quality(
         s = compute_haaqi(
             processed_signal=resample(
                 enhanced_signal[:, channel],
-                config.remix_sample_rate,
-                config.HAAQI_sample_rate,
+                enhanced_sample_rate,
+                HAAQI_sample_rate,
             ),
             reference_signal=resample(
                 reference_signal[:, channel],
-                config.input_sample_rate,
-                config.HAAQI_sample_rate,
+                reference_sample_rate,
+                HAAQI_sample_rate,
             ),
-            processed_sample_rate=config.HAAQI_sample_rate,
-            reference_sample_rate=config.HAAQI_sample_rate,
+            processed_sample_rate=HAAQI_sample_rate,
+            reference_sample_rate=HAAQI_sample_rate,
             audiogram=audiogram,
             equalisation=2,
             level1=65 - 20 * np.log10(compute_rms(reference_signal[:, channel])),
@@ -304,6 +339,11 @@ def run_compute_scores(config: DictConfig) -> None:
         sample_rate=config.input_sample_rate,
     )
 
+    # Configure backend for determinism
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
+    # Load the Whisper model
     intelligibility_scorer = whisper.load_model(config.evaluate.whisper_version)
 
     # Loop over the scene-listener pairs
@@ -316,6 +356,10 @@ def run_compute_scores(config: DictConfig) -> None:
         )
 
         scene_id, listener_id = scene_listener_ids
+
+        # Set the random seed for the scene
+        if config.evaluate.set_random_seed:
+            set_song_seed(scene_id)
 
         # Load scene details
         scene = scenes[scene_id]
@@ -377,7 +421,15 @@ def run_compute_scores(config: DictConfig) -> None:
         # COMPUTE SCORES
 
         # Compute the HAAQI and Whisper scores
-        haaqi_scores = compute_quality(reference, enhanced_signal, listener, config)
+        haaqi_scores = compute_quality(
+            reference_signal=reference,
+            enhanced_signal=enhanced_signal,
+            listener=listener,
+            reference_sample_rate=config.input_sample_rate,
+            enhanced_sample_rate=config.remix_sample_rate,
+            HAAQI_sample_rate=config.HAAQI_sample_rate,
+        )
+
         whisper_left, whisper_right, lyrics_text = compute_intelligibility(
             enhanced_signal=enhanced_signal,
             segment_metadata=songs[scene["segment_id"]],
