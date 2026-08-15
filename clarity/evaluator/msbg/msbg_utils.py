@@ -211,7 +211,7 @@ def fir2(
         else 512
     )
 
-    lap = np.fix(n_interpolate / 25).astype(int)
+    lap = np.trunc(n_interpolate / 25).astype(int)
 
     nbrk = max(len(frequencies), len(filter_gains))
 
@@ -231,7 +231,7 @@ def fir2(
             nb = int(np.ceil(nb - lap / 2))
             ne: int = nb + lap - 1
         else:
-            ne = int(np.fix(frequencies[i + 1] * n_interpolate)) - 1
+            ne = int(np.trunc(frequencies[i + 1] * n_interpolate)) - 1
 
         j = np.arange(nb, ne + 1)
         inc: float | np.ndarray = 0.0 if nb == ne else (j - nb) / (ne - nb)
