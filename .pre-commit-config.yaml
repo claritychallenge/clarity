@@ -33,7 +33,7 @@ repos:
         additional_dependencies: ["click==8.0.4"]
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.23.0
+    rev: v0.23.2
     hooks:
       - id: markdownlint-cli2
 
@@ -45,7 +45,7 @@ repos:
         types: [python]
 
   - repo: https://github.com/pycqa/isort
-    rev: 9.0.0b1
+    rev: 9.0.1
     hooks:
       - id: isort
         name: isort (python)
@@ -65,7 +65,7 @@ repos:
       - id: nbstripout
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.3.0
+    rev: v2.3.1
     hooks:
       - id: mypy
         args:
@@ -75,13 +75,13 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.15.21"
+    rev: "v0.16.7"
     hooks:
       - id: ruff
 
   # Serious pylint errors that will be enforced by CI
   - repo: https://github.com/pycqa/pylint
-    rev: v4.0.6
+    rev: v4.0.8
     hooks:
       - id: pylint
         args:
