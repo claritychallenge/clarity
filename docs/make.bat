@@ -25,6 +25,8 @@ if errorlevel 9009 (
 
 if "%1" == "" goto help
 
+python generate_full_docs.py
+if errorlevel 1 exit /b %errorlevel%
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end
 
