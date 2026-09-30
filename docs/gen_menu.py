@@ -40,9 +40,8 @@ parser.add_argument(
 parser.add_argument(
     "--output_file_name",
     type=str,
-    default="index.rst",  # Can be customized, e.g., 'clarity_docs'
-    help="Name of the output directory within 'docs/'"
-    " where generated RST files will be placed.",
+    default="index",
+    help="Base name of generated RST files within the output directory.",
 )
 parser.add_argument(
     "--top_level_title",
