@@ -41,8 +41,9 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
 
 ## Current Events
 
-- The ICASSP 2026 Cadenza Challenge: Predicting Lyric Intelligibility is now open :fire::fire:
-  - Visit the [Cadenza website](https://cadenzachallenge.org/docs/clip1/intro) for more details.
+- The Second Cadenza Lyric Intelligibility Prediction Challenge (CLIP2) is now open :fire::fire:
+  - Run as part of the [ICASSP 2027 SP Grand Challenges](https://2027.ieeeicassp.org/sp-grand-challenges/#gc-10).
+  - Visit the [Cadenza website](https://cadenzachallenge.org/docs/clip2/intro) for more details.
   - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
 
 ## Installation
