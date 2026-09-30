@@ -11,16 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     name: Sphinx docs to gh-pages
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v4.3.0
+        uses: actions/setup-python@v7
         with:
-          python-version: 3.11
+          python-version: "3.14"
       - name: Installing the Documentation requirements
         run: |
           pip3 install .[docs]
+      - name: Generate RST files from docs_config.json
+        run: |
+          python docs/generate_full_docs.py
       - name: Copying recipe README.md
         run: |
          rsync -av --exclude-from="docs/recipe_rsync_exclude.txt" recipes docs/.
