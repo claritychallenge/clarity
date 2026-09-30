@@ -8,7 +8,7 @@ If you opt to use Conda it is recommended that you use the minimal
 tools you won't use. Once you have installed Conda you can create and activate a virtual environment by...
 ::
 
-  cond create --name clarity python=3.8
+  conda create --name clarity python=3.8
   conda activate clarity
 
 The following steps assume that you have activated the `clarity` virtual environment.
