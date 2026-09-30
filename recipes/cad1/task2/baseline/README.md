@@ -27,7 +27,7 @@ From MTG-Jamendo:
 
 The HRTFs data is based on the eBrIRD - ELOSPHERES binaural room impulse response database.
 
-To download the data, please visit [here](https://forms.gle/9L5ncYKe2YhD5c828).
+To download the data, please [fill in this form](https://forms.gle/9L5ncYKe2YhD5c828).
 
 The data will download into a package file called `cadenza_cad1_task2_core.v1_1.tar.gz`.
 
@@ -61,7 +61,7 @@ To help you to start with the challenge, we provide a small subset of the data.
 The `demo_data` folder contains a single song and two listeners from the validation set.
 
 To use the demo data, simply download the package `cadenza_task2_data_demo.tar.tar.xz`
-from [here](https://drive.google.com/drive/folders/1On5Bv7Sd6zLZWfA76jdkM-FmGS61Mbi-?usp=share_link)
+from [this link](https://drive.google.com/drive/folders/1On5Bv7Sd6zLZWfA76jdkM-FmGS61Mbi-?usp=share_link)
 and unpack it under `recipes/cad1/task2/`, i.e., one level above the baseline directory.
 Note that the `root.path` variable in `config.yaml` is already set to the demo data by default.
 
@@ -134,7 +134,7 @@ python evaluate.py
 A csv file containing the HAAQI scores for each ear and the average of both will be generated in
 the `path.exp_folder`.
 
-To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
+To check the HAAQI code, see the implementation on our [website](../../../../clarity/evaluator/haaqi).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined
 (in the given recipe, the random seed for each signal is set as the last eight digits of the song md5).

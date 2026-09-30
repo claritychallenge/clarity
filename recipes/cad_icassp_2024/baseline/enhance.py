@@ -148,7 +148,7 @@ def decompose_signal(
         sources = denormalize_signals(sources, ref)
 
     sources = np.transpose(sources, (0, 2, 1))
-    return dict(zip(sources_list, sources))
+    return dict(zip(sources_list, sources, strict=True))
 
 
 def process_remix_for_listener(

@@ -11,7 +11,7 @@ For more information about the CPC1 please visit [claritychallenge.org/docs/cpc1
 
 ## Data structure
 
-To download the CPC1 data, please visit [here](https://mab.to/R6H84YNf74p5U).
+To download the CPC1 data, please visit [this link](https://mab.to/R6H84YNf74p5U).
 
 **clarity_CPC1_data.v1_1** contains the training data:
 

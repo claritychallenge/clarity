@@ -79,7 +79,7 @@ class ASR(sb.core.Brain):
         """Computes the loss (CTC+NLL) given predictions and targets."""
         if self.wer_metric is None or self.acc_metric is None:
             raise ValueError("wer_metric or acc_metric is None")
-        (p_ctc, p_seq, wav_lens, hyps) = predictions
+        p_ctc, p_seq, wav_lens, hyps = predictions
 
         ids = batch.id
         tokens_eos, tokens_eos_lens = batch.tokens_eos

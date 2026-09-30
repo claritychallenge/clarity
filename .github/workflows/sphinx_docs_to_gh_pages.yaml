@@ -36,4 +36,3 @@ jobs:
           sphinxapiexclude: '../*setup* ../*tests* ../*.ipynb'
           sphinxapiopts: '--separate -o . ../'
           sphinxopts: ''
-

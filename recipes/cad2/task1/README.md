@@ -11,7 +11,7 @@ This extension comprises 96 manual transcriptions of English songs by
 non-native English speakers, following the same split for training, validation and test as museval,
 totalling 366 minutes of audio.
 
-To download the data, please visit [here](https://forms.gle/BzGrtdzqLvdjH6ja8).
+To download the data, please [fill in this form](https://forms.gle/BzGrtdzqLvdjH6ja8).
 The data is contained in the package `cadenza_cad2_task1_train.v1_0.tar.gz`.
 The package contains the transcribe version of the MUSDB18-HQ dataset in FLAC format
 and the metadata for the systems.
@@ -104,7 +104,7 @@ The folder `enhanced_signals` will appear in the `exp` folder.
 
 A csv file containing the HAAQI scores and Whisper correct transcribed words will be generated in the `path.exp_folder`.
 
-To check the HAAQI code, see [here](../../../../clarity/evaluator/haaqi).
+To check the HAAQI code, see the implementation on our [website](../../../../clarity/evaluator/haaqi).
 
 Please note: you will not get identical HAAQI scores for the same signals if the random seed is not defined.
 This is due to the  random noises generated within HAAQI, but the differences should be sufficiently small.

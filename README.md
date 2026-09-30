@@ -19,6 +19,8 @@
 [![Downloads](https://pepy.tech/badge/pyclarity)](https://pepy.tech/project/pyclarity)
 [![Documentation](https://img.shields.io/badge/Documentation-View_Docs-informational)](https://claritychallenge.org/clarity/index.html)
 
+[![PyPI](https://img.shields.io/static/v1?label=CLIP2%20Challenge%20-%20pypi&message=v0.9.0&color=orange)](https://pypi.org/project/pyclarity/0.9.0/)
+[![PyPI](https://img.shields.io/static/v1?label=ICASSP%202026%20Cadenza%20Challenge%20-%20pypi&message=v0.8.0&color=orange)](https://pypi.org/project/pyclarity/0.8.0/)
 [![PyPI](https://img.shields.io/static/v1?label=CPC3%20Challenge%20-%20pypi&message=v0.7.1&color=orange)](https://pypi.org/project/pyclarity/0.7.1/)
 [![PyPI](https://img.shields.io/static/v1?label=CAD2%20Challenge%20-%20pypi&message=v0.6.0&color=orange)](https://pypi.org/project/pyclarity/0.6.0/)
 [![PyPI](https://img.shields.io/static/v1?label=CEC3%20Challenge%20-%20pypi&message=v0.5.0&color=orange)](https://pypi.org/project/pyclarity/0.5.0/)
@@ -40,13 +42,9 @@ In this repository, you will find code to support all Clarity and Cadenza Challe
 
 ## Current Events
 
-- The 2nd Cadenza Challenge is now open :fire::fire:
-  - Visit the [cadenza website](https://cadenzachallenge.org/docs/cadenza2/intro) for more details.
+- The ICASSP 2026 Cadenza Challenge: Predicting Lyric Intelligibility is now open :fire::fire:
+  - Visit the [Cadenza website](https://cadenzachallenge.org/docs/clip1/intro) for more details.
   - Join the [Cadenza Challenge Group](https://groups.google.com/g/cadenza-challenge) to keep up-to-date on developments.
-- The 3rd Clarity Prediction Challenge is now open. :fire::fire:
-  - Visit the [challenge website](https://claritychallenge.org/docs/cpc3/cpc3_intro) for more details.
-  - Join the [Clarity Challenge Group](https://groups.google.com/g/clarity-challenge) to keep up-to-date on developments.
-- The 5th Clarity Workshop will be held as a satellite event of Interspeech 2025. For details visit the [workshop website](https://claritychallenge.org/clarity2025-workshop/).
 
 ## Installation
 
@@ -56,7 +54,7 @@ Clarity is available on the [Python Package Index (PyPI)](https://pypi.org/proje
 activate a virtual environment and then use `pip` to install.
 
 ```bash
-conda create --name clarity python=3.8
+conda create --name clarity python=3.11
 conda activate clarity
 
 pip install pyclarity
@@ -70,7 +68,7 @@ git clone https://github.com/claritychallenge/clarity.git
 cd clarity
 
 # Second create & activate environment with conda, see https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
-conda create --name clarity python=3.8
+conda create --name clarity python=3.11
 conda activate clarity
 
 # Last install with pip
@@ -90,11 +88,13 @@ pip install -e git+https://github.com/claritychallenge/clarity.git@main
 
 Current challenge
 
-- [The 3rd Clarity Prediction Challenge](./recipes/cpc3)
-- [The 2nd Cadenza Challege](./recipes/cad2)
+- [The 2nd Cadenza Lyric Intelligibility Prediction Chellenge](./recipes/clip2)
 
 Previous challenges
 
+- [The ICASSP 2026 Cadenza Challege](./recipes/cad_icassp_2026)
+- [The 3rd Clarity Prediction Challenge](./recipes/cpc3)
+- [The 2nd Cadenza Challege](./recipes/cad2)
 - [The 3rd Clarity Enhancement Challenge](./recipes/cec3)
 - [The ICASSP 2024 Cadenza Challenge](./recipes/cad_icassp_2024)
 - [The 1st Cadenza Challenge (CAD1)](./recipes/cad1)

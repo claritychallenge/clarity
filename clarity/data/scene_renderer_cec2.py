@@ -187,7 +187,9 @@ class SceneRenderer:
 
         signals = [
             signal[ss : (ss + sl)]
-            for (signal, ss, sl) in zip(signals, signal_starts, signal_lengths)
+            for (signal, ss, sl) in zip(
+                signals, signal_starts, signal_lengths, strict=True
+            )
         ]
 
         return signals
@@ -293,12 +295,14 @@ class SceneRenderer:
 
         hoa_interferers = [
             hoa.ambisonic_convolve(signal, ir, order=self.ambisonic_order)
-            for (signal, ir) in zip(interferers, irs)
+            for (signal, ir) in zip(interferers, irs, strict=True)
         ]
 
         padded_interferers = [
             pad_signal_start_end(signal, interferer["time_start"], scene["duration"])
-            for signal, interferer in zip(hoa_interferers, scene["interferers"])
+            for signal, interferer in zip(
+                hoa_interferers, scene["interferers"], strict=True
+            )
         ]
 
         if self.equalise_loudness:
@@ -404,7 +408,7 @@ class SceneRenderer:
             interferer *= sw_snr * hoa.dB_to_gain(-desired_snr)
 
         # Make mixture by summing target and interferers
-        mix = [t + i for t, i in zip(targets, interferers)]
+        mix = [t + i for t, i in zip(targets, interferers, strict=True)]
         norm = np.max(mix)
 
         # Save all signal types for all channels
@@ -412,9 +416,11 @@ class SceneRenderer:
         out_path = out_path.format(dataset=scene["dataset"])
         file_stem = f"{out_path}/{scene['scene']}"
         for channel, (t, i, m, norm) in enumerate(
-            zip(targets, interferers, mix, norms)
+            zip(targets, interferers, mix, norms, strict=True)
         ):
-            for sig, sig_type in zip([t, i, m], ["target", "interferer", "mix"]):
+            for sig, sig_type in zip(
+                [t, i, m], ["target", "interferer", "mix"], strict=True
+            ):
                 self.save_signal_16bit(
                     f"{file_stem}_{sig_type}_CH{channel}.wav", sig, norm
                 )

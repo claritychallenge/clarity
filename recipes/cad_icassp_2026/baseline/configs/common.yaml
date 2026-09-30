@@ -1,0 +1,12 @@
+data:
+  cadenza_data_root: ???
+  dataset: cadenza_data
+  sample_rate: 44100  # Sample rate of the audio files
+
+
+# Hydra parameters
+hydra:
+  run:
+    dir: exp
+  job:
+    chdir: True

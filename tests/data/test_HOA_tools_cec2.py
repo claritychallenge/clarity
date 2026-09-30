@@ -296,7 +296,9 @@ def test_compute_band_rotation() -> None:
     assert new_output == pytest.approx(
         np.eye(9), rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
     )
-    for new_rot_mat, expected_rot_mat in zip(new_rotation_matrices, rot_mats):
+    for new_rot_mat, expected_rot_mat in zip(
+        new_rotation_matrices, rot_mats, strict=True
+    ):
         assert new_rot_mat == pytest.approx(
             expected_rot_mat, rel=pytest.rel_tolerance, abs=pytest.abs_tolerance
         )

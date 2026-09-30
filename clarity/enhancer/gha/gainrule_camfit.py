@@ -398,10 +398,14 @@ def gainrule_camfit_compr(
 
     speech_level_65_in_dc_bands = np.zeros(np.shape(frequencies))
 
-    for band, (f_range_a, f_range_b) in enumerate(zip(edge_freq[:-1], edge_freq[1:])):
+    for band, (f_range_a, f_range_b) in enumerate(
+        zip(edge_freq[:-1], edge_freq[1:], strict=True)
+    ):
         portion = [
             compute_proportion_overlap(f_range_a, f_range_b, ltass_a, ltass_b)
-            for (ltass_a, ltass_b) in zip(LTASS_edge_freq[:-1], LTASS_edge_freq[1:])
+            for (ltass_a, ltass_b) in zip(
+                LTASS_edge_freq[:-1], LTASS_edge_freq[1:], strict=True
+            )
         ]
         intensity_sum = np.inner(LTASS_intensity, portion)  # weighted sum
         speech_level_65_in_dc_bands[band] = 10 * np.log10(intensity_sum) - 5

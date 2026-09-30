@@ -71,7 +71,7 @@ class ASR(sb.core.Brain):
     def compute_objectives(self, predictions, batch, stage):
         """Computes the loss (CTC+NLL) given predictions and targets."""
 
-        (p_ctc, p_seq, wav_lens, hyps) = predictions
+        p_ctc, p_seq, wav_lens, hyps = predictions
 
         ids = batch.id
         tokens_eos, tokens_eos_lens = batch.tokens_eos

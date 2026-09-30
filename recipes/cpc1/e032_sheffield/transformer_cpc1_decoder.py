@@ -520,7 +520,7 @@ class S2SBeamSearcher(S2SBaseSearcher):
 
         # Collect hypotheses
         for hyps_and_scores in all_hyps_and_scores:
-            hyps, log_probs, scores = zip(*hyps_and_scores)
+            hyps, log_probs, scores = zip(*hyps_and_scores, strict=True)
             top_hyps += hyps
             top_scores += scores
             top_log_probs += log_probs
