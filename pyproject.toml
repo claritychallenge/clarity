@@ -81,7 +81,8 @@ docs = [
     "sphinxcontrib-mermaid",
     "sphinxcontrib-napoleon",
     "sphinxcontrib-bibtex",
-    "numpydoc"
+    "numpydoc",
+    "sphinx-multiversion",
 
 ]
 dev = [
